@@ -86,6 +86,7 @@ begin
   
   Register("Внешние магазины","Внешние магазины",ExternalStoreVc,modMYCRM);
   Register("Внешние продажи","Внешние продажи",ExternalSalesVc,modMYCRM);
+  Register("Фиксация визитов","Фиксация визитов",MarketingVc,modMYCRM);
   
   Report("Информация о клиетах",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
   Report("Активные клиенты за период",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);

@@ -5735,3 +5735,109 @@ begin
   end;
   EndWindow;
 end;
+
+
+window MarketingDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h1,h2,v,vs,l;
+  WindowBegin("Фиксация визита",MarketingDClass,CGview,-);
+  SetWRect(64,80,640,600);
+  Sizeable(-1,-1,0,0);
+  UseView(MarketingVc);
+  vs = 20; h1 = 100; h2 = 260;
+  EditField(h1,v=16,40,"Номер",ViewOnly,SerNr,false,0);
+  EditField(h1+200,v,230,"Наименование",Normal,Name,false,0);
+  EditField(h1,v+=vs,70,"Код клиента",Normal,CustCode,false,CUSClass);
+  EditField(h1+200,v,80,"Дата",ViewOnly,TransDate,false,pastecurdate);
+  EditField(h1+350,v,80,"Время",ViewOnly,TransDate,false,pastecurtime);
+  EditField(h1,v+=vs,70,"Телефон 1",Normal,Phone1,false,0);
+  EditField(h1,v+=vs,70,"Телефон 2",Normal,Phone1,false,0);
+  EditField(h1,v+=vs,-50,"Адрес",Normal,Address,false,0);
+  EditField(h1,v+=vs,70,"e-Mail",Normal,eMail,false,0);
+  
+  v = 160; 
+  ButtonFrame(h1,v,l=160,6,"Возраст");
+  RadioButton(h1,v,0,0,"< 20",Age);
+  RadioButton(h1,v+=16,1,0,"20-30",Age);
+  RadioButton(h1,v+=16,2,0,"30-40",Age);
+  RadioButton(h1,v+=16,3,0,"40-50",Age);
+  RadioButton(h1,v+=16,4,0,"50-60",Age);
+  RadioButton(h1,v+=16,5,0,"> 60",Age);
+  
+  v = 160; h1 = h1+200;
+  ButtonFrame(h1,v,l=160,5,"Пол");
+  RadioButton(h1,v,0,0,"Мужчина",Gender);
+  RadioButton(h1,v+=16,1,0,"Женщина",Gender);
+  RadioButton(h1,v+=16,2,0,"Смешанная группа",Gender);
+  RadioButton(h1,v+=16,3,0,"Группа мужчин",Gender);
+  RadioButton(h1,v+=16,4,0,"Группа женщин",Gender);
+  
+  v = 160; h1 = 100;
+  ButtonFrame(h1,v,l=160,6,"Национальность");
+  RadioButton(h1,v,0,0,"Азербайджанец",Age);
+  RadioButton(h1,v+=16,1,0,"Русский",Age);
+  RadioButton(h1,v+=16,2,0,"30-40",Age);
+  RadioButton(h1,v+=16,3,0,"40-50",Age);
+  RadioButton(h1,v+=16,4,0,"50-60",Age);
+  RadioButton(h1,v+=16,5,0,"> 60",Age);
+  
+  /*ButtonFrame(h1,v+=vs+16,l=160,6,"Возраст");
+  RadioButton(h1,v,0,0,"< 20",Age);
+  RadioButton(h1,v+=16,1,0,"20-30",Age);
+  RadioButton(h1,v+=16,2,0,"30-40",Age);
+  RadioButton(h1,v+=16,3,0,"40-50",Age);
+  RadioButton(h1,v+=16,4,0,"50-60",Age);
+  RadioButton(h1,v+=16,5,0,"> 60",Age);*/
+  
+  /*RecordField(SerNr,M4Long,0,0);
+  RecordField(CustCode,M4Code,20,CUVc);
+  RecordField(Name,M4Str,200,0);
+  RecordField(TransDate,M4Date,0,0);
+  RecordField(TransTime,M4Time,0,0);
+  RecordField(Location,M4Code,20,LocationVc);
+  RecordField(LocalMachine,M4Code,20,0);
+  RecordField(Phone1,M4Str,20,0);
+  RecordField(Phone2,M4Str,20,0);
+  RecordField(Address,M4Str,200,0);
+  RecordField(eMail,M4Str,200,0);
+  RecordField(CommentResult,M4Str,200,0);
+  RecordField(Age,M4Int,0,0);
+  RecordField(Gender,M4Int,0,0);
+  RecordField(NationalityRbtn,M4Int,0,0);
+  RecordField(NationalityTxt,M4Str,200,0);
+  RecordField(Reason,M4Str,200,0);
+  RecordField(ReferenceRbtn,M4Int,0,0);
+  RecordField(ReferenceTxt,M4Str,200,0);
+  RecordField(ResultRbtn,M4Int,0,0);
+  RecordField(InvNn,M4Long,0,0);
+  RecordField(CityRbtn,M4Int,0,0);
+  RecordField(CityTxt,M4Str,200,0);
+  RecordField(PersonsQty,M4Int,0,0);
+  RecordField(SalesMan,M4Str,0,0);
+  RecordField(Math,M4TextField,0,0);*/
+  
+  
+  
+  EndWindow;
+end;
+
+
+window MarketingLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Регистрация клиентов",MarketingLClass,CGmlist,-);
+  SpawnClass(MarketingDClass);
+  SetWRect(20,80,1100,298);
+  Sizeable(-1,-1,0,0);
+  UseView(MarketingVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,2,"No.",SerNr,false,SerNr);
+  RlColKey(50,50,"Дата",TransDate,false,TransDate);
+  RlCol(150,150,"Время",TransTime,false);
+  RlColKey(250,250,"Имя",Name,false,Name);
+  RlColKey(-150,-150,"Склад",Location,false,Location);
+  RlColKey(-75,-75,"Локальная машина",LocalMachine,false,LocalMachine);
+  SearchField("Search");
+  EndWindow;
+end;

@@ -77,7 +77,7 @@ BEGIN
   insertmode = 1;
   updatemode = 2;
   
-  if(blank(Mrkr.SerNr))then begin
+  if(Mrkr.SerNr==-1)then begin
   	Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
   end;
   
