@@ -1,0 +1,1065 @@
+remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+remote procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);
+remote procedure GetBaseCurncy(Integer,var string);
+external procedure ExtractObj(string,var Integer,var string);
+external function longint DateDiff(date,date);
+remote procedure ItemStockStatExtWebRn(record RcVc,var area,string);
+remote procedure SalesReportExtPictRn(record RcVc,var area,string);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global procedure MiddleInvoiceRn(record RcVc RepSpec)
+begin
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,mtrw;
+	boolean TrHs,testf,first;
+	string 50 key;
+	integer fl;
+	record CYBlock CYb;
+	val day,total,dayqty,totalqty;
+	integer invday,invtotal;
+	date curdat;
+	val fr,to1,to2,br1,br2,ivfr,ivto;
+  string 20 curncy;
+	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
+  Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
+  Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
+  
+	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
+	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
+  
+	
+	blockload(CYb);
+	
+	startreportnoheaderjob("Отчет по среднему чеку");
+	
+	startformat(15);
+		outstring(0,0,"",false);
+		outstring(100,0,"Период:",false);
+		outstring(150,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,getyear(RepSpec.sStartDate),false);
+		outstring(50,0,"",false);
+		outstring(100,0,CYb.BusinessName,false);
+		outstring(150,0,RepSpec.f1,false);
+		outstring(190,0,"магазин",false);
+		if(nonblank(RepSpec.f2))then begin
+			outstring(240,0,RepSpec.f2,false);
+			outstring(300,0,"продавец",false);
+		end;
+	endformat;
+	black_divider(0,1);
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Дата",false);
+		outstring(50,0,"Кол-во чеков",false);
+		outstring(120,0,"Итого",false);
+		outstring(170,0,"Сред/цена чека",false);
+		outstring(240,0,"Кол-во позиций за день",false);
+	endformat;
+	startformat(15);
+	endformat;
+	
+	key = "TransDate";
+	fl = 1;
+	if(nonblank(RepSpec.f1))then begin
+		key = "MachineName";
+		IVr.MachineName = RepSpec.f1;
+		fl = 2;
+	end;
+	
+	IVr.TransDate = RepSpec.sStartDate;
+	TrHs = true;
+	curdat = stringtodate("1/1/2000");
+	day = 0;
+	dayqty = 0;
+	total = 0;
+	totalqty = 0;
+	invday = 0;
+	invtotal = 0;
+	first = true;
+	while(loopkey(key,IVr,fl,TrHs))begin
+		if(first)then begin
+			curdat = IVr.TransDate;
+			first = false;
+		end;
+		if(curdat!=IVr.TransDate and invday>0)then begin
+			startformat(15);
+				outstring(0,0,curdat,false);
+				outstring(50,0,invday,false);
+				outstring(120,0,day,false);
+				outstring(170,0,day/invday,false);
+				outstring(240,0,dayqty,false);
+			endformat;
+			invday = 0;
+			day = 0;
+			dayqty = 0;
+			curdat = IVr.TransDate;
+		end;
+		testf = true;
+		if(IVr.TransDate<RepSpec.sStartDate or IVr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
+		if(nonblank(RepSpec.f1) and IVr.MachineName!=RepSpec.f1)then begin 
+			testf = false;
+			if(key=="MachineName")then begin
+				TrHs = false;
+			end;
+		end;
+		if(nonblank(RepSpec.f2) and RepSpec.f2!=IVr.SalesMan)then begin testf = false; end;
+		if(IVr.OKFlag==0)then begin testf = false; end;
+		if(IVr.Invalid==1)then begin testf = false; end;
+		//if(IVr.Sum4<0)then begin testf = false; end;
+		
+		if(testf)then begin
+			ivfr = 1; ivto = 1;
+			fr = 1; to1 = 1;
+			if(IVr.CurncyCode!=curncy)then begin
+				ivfr = IVr.FrRate;
+				ivto = IVr.ToRateB1;
+				if(ivfr==0 or ivto==0)then begin
+					ivfr = 1;	ivto = 1;
+				end;
+				GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr = 1;	to1 = 1;
+				end;
+			end;
+			invday = invday + 1;
+			invtotal = invtotal + 1;
+			day = day + IVr.Sum4/ivfr*ivto*fr/to1;
+			
+			mtrw = matrowcnt(IVr);			
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(IVr,i,IVrw);
+	  		if(IVrw.stp==kInvoiceRowTypeNormal and IVrw.Quant!=0)then begin
+	  			dayqty = dayqty + 1;
+	  			totalqty = totalqty + 1;
+	  		end;
+			end; 
+			
+			total = total + IVr.Sum4/ivfr*ivto*fr/to1;
+		end;
+	end;
+	if(invday>0)then begin
+		startformat(15);
+			outstring(0,0,curdat,false);
+			outstring(50,0,invday,false);
+			outstring(120,0,day,false);
+			outstring(170,0,day/invday,false);
+			outstring(240,0,dayqty,false);
+		endformat;
+		invday = 0;
+		day = 0;
+		dayqty = 0;
+		curdat = IVr.TransDate;
+	end;
+	gray_divider(0,1);
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Всего:",false);
+		outstring(50,0,invtotal,false);
+		outstring(120,0,total,false);
+		outstring(170,0,total/invtotal,false);
+		outstring(240,0,totalqty,false);
+	endformat;
+	
+	endjob;
+
+return;
+end;
+
+global procedure MiddleInvoiceOrderRn(record RcVc RepSpec)
+begin
+	record IVVc IVr;
+	row IVVc IVrw;
+	record ORVc ORr;
+	row ORVc ORrw;
+	integer i,mtrw;
+	boolean TrHs,testf,first;
+	string 50 key;
+	integer fl;
+	record CYBlock CYb;
+	val day,total,dayqty,totalqty;
+	integer invday,invtotal;
+	date curdat;
+	val fr,to1,to2,br1,br2,ivfr,ivto;
+  string 20 curncy;
+	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
+  Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
+  Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
+  
+	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
+	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
+  
+	
+	blockload(CYb);
+	
+	startreportnoheaderjob("Отчет по среднему чеку по счетам клиентов");
+	
+	startformat(15);
+		outstring(0,0,"",false);
+		outstring(100,0,"Период:",false);
+		outstring(150,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+	endformat;
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,getyear(RepSpec.sStartDate),false);
+		outstring(50,0,"",false);
+		outstring(100,0,CYb.BusinessName,false);
+		outstring(150,0,RepSpec.f1,false);
+		outstring(190,0,"магазин",false);
+		if(nonblank(RepSpec.f2))then begin
+			outstring(240,0,RepSpec.f2,false);
+			outstring(300,0,"продавец",false);
+		end;
+	endformat;
+	black_divider(0,1);
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Дата",false);
+		outstring(50,0,"Кол-во чеков",false);
+		outstring(120,0,"Итого",false);
+		outstring(170,0,"Сред/цена чека",false);
+		outstring(240,0,"Кол-во позиций за день",false);
+	endformat;
+	startformat(15);
+	endformat;
+	
+	key = "OrdDate";
+	fl = 1;
+	/*
+	if(nonblank(RepSpec.f1))then begin
+		key = "MachineName";
+		IVr.MachineName = RepSpec.f1;
+		fl = 2;
+	end;
+	*/
+	
+	
+	ORr.OrdDate = RepSpec.sStartDate;
+	TrHs = true;
+	curdat = stringtodate("1/1/2000");
+	day = 0;
+	dayqty = 0;
+	total = 0;
+	totalqty = 0;
+	invday = 0;
+	invtotal = 0;
+	first = true;
+	while(loopkey(key,ORr,fl,TrHs))begin
+		if(first)then begin
+			curdat = ORr.OrdDate;
+			first = false;
+		end;
+		if(curdat!=ORr.OrdDate and invday>0)then begin
+			startformat(15);
+				outstring(0,0,curdat,false);
+				outstring(50,0,invday,false);
+				outstring(120,0,day,false);
+				outstring(170,0,day/invday,false);
+				outstring(240,0,dayqty,false);
+			endformat;
+			invday = 0;
+			day = 0;
+			dayqty = 0;
+			curdat = ORr.OrdDate;
+		end;
+		testf = true;
+		if(ORr.OrdDate<RepSpec.sStartDate or ORr.OrdDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
+		if(nonblank(RepSpec.f1) and ORr.LocalMachineCode!=RepSpec.f1)then begin testf = false; end;
+		if(nonblank(RepSpec.f3) and ORr.Location!=RepSpec.f3)then begin testf = false; end;
+		if(nonblank(RepSpec.f2) and RepSpec.f2!=ORr.SalesMan)then begin testf = false; end;
+		if(ORr.OKFlag==0)then begin testf = false; end;
+		
+		if(testf)then begin
+			ivfr = 1; ivto = 1;
+			fr = 1; to1 = 1;
+			if(ORr.CurncyCode!=curncy)then begin
+				ivfr = ORr.FrRate;
+				ivto = ORr.ToRateB1;
+				if(ivfr==0 or ivto==0)then begin
+					ivfr = 1;	ivto = 1;
+				end;
+				GetFullCurncyRate(curncy,ORr.OrdDate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr = 1;	to1 = 1;
+				end;
+			end;
+			invday = invday + 1;
+			invtotal = invtotal + 1;
+			day = day + ORr.Sum4/ivfr*ivto*fr/to1;
+			
+			mtrw = matrowcnt(ORr);			
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(ORr,i,ORrw);
+	  		//if(IVrw.stp==kInvoiceRowTypeNormal and IVrw.Quant!=0)then begin
+	  		if(nonblank(ORrw.ArtCode) and ORrw.Quant!=0 /*and ORrw.Sum!=0*/)then begin
+	  			dayqty = dayqty + ORrw.Quant;
+	  			totalqty = totalqty + ORrw.Quant;
+	  		end;
+			end; 
+			
+			total = total + ORr.Sum4/ivfr*ivto*fr/to1;
+		end;
+	end;
+	if(invday>0)then begin
+		startformat(15);
+			outstring(0,0,curdat,false);
+			outstring(50,0,invday,false);
+			outstring(120,0,day,false);
+			outstring(170,0,day/invday,false);
+			outstring(240,0,dayqty,false);
+		endformat;
+		invday = 0;
+		day = 0;
+		dayqty = 0;
+		curdat = ORr.OrdDate;
+	end;
+	gray_divider(0,1);
+	startformat(15);
+	endformat;
+	startformat(15);
+		outstring(0,0,"Всего:",false);
+		outstring(50,0,invtotal,false);
+		outstring(120,0,total,false);
+		outstring(170,0,total/invtotal,false);
+		outstring(240,0,totalqty,false);
+	endformat;
+	
+	endjob;
+
+return;
+end;
+
+global procedure StockMovPricingRn(record RcVc RepSpec)
+begin
+	record StockMovVc SMr,SM2r;
+	row StockMovVc SMrw,SM2rw;
+	integer i,mtrw,k,smmtrw;
+	record PLDefVc PLDr;
+	record PLVc PLr;
+	string 20 curcode,curdef,basecur;
+	val totqty,totsumb1;
+	boolean curfoundf;
+	val fr,to1,to2,br1,br2;
+	Array string 50 acrncy;
+  Array Boolean achangecrncyf;
+  Integer acrncnt;
+  
+	totqty = 0;
+	recordnew(SM2r);
+	startreportnoheaderjob("Розничные цены в перемещении");
+		startformat(15);
+			outstring(0,0,"Товар",false);
+			outstring(150,0,"Название",false);
+			outstring(300,0,"Цена RRP",true);
+			outstring(320,0,"Количество",false);
+			outstring(400,0,"Сумма",true);
+			outstring(1,0,"Валюта RRP",true);
+		endformat;
+	PLDr.Code = "RRP";
+	readfirstmain(PLDr,1,true);
+	curcode = PLDr.CurncyCode;
+	curdef = curcode;
+	SMr.SerNr = RepSpec.long1;
+	if(readfirstmain(SMr,1,true))then begin
+		mtrw = matrowcnt(SMr);
+		if(mtrw>0)then begin
+			for(i=0;i<mtrw;i=i+1)begin
+				matrowget(SMr,i,SMrw);
+				curcode = curdef;
+				PLr.ArtCode = SMrw.ArtCode;
+				PLr.PLCode = "RRP";
+				PLr.SerialNr = SMrw.SerialNr;
+				readfirstkey("SerialNr",PLr,3,true);
+				if(nonblank(PLr.CurncyCode))then begin
+					curcode = PLr.CurncyCode;
+				end;
+				startformat(15);
+					outstring(0,0,SMrw.ArtCode,false);
+					outstring(150,0,SMrw.Spec,false);
+					outstring(300,0,PLr.ExVatPrice,true);
+					outstring(320,0,SMrw.OrdQuant,false);
+					outstring(400,0,SMrw.OrdQuant*PLr.ExVatPrice,true);
+					outstring(1,0,curcode,true);
+				endformat;
+				totqty = totqty + SMrw.OrdQuant;
+				GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr=1; to1=1;
+				end;
+				totsumb1 = totsumb1 + SMrw.OrdQuant*PLr.ExVatPrice/fr*to1;
+				smmtrw = matrowcnt(SM2r);
+				if(smmtrw>0)then begin
+					curfoundf = false;
+					For(k=0;k<smmtrw;k=k+1) begin
+						matrowget(SM2r,k,SM2rw);
+	  				if(SM2rw.ArtCode==curcode)then begin
+	  					SM2rw.OldPrice = SM2rw.OldPrice + SMrw.OrdQuant*PLr.ExVatPrice;
+							SM2rw.NewPrice = SM2rw.NewPrice + SMrw.OrdQuant*PLr.ExVatPrice/fr*to1;
+	  					curfoundf = true;
+	  					matrowput(SM2r,k,SM2rw);
+	  				end;
+					end; 
+					if(curfoundf==false)then begin
+	  				SM2rw.ArtCode = curcode;
+						SM2rw.OldPrice = SMrw.OrdQuant*PLr.ExVatPrice;
+						SM2rw.NewPrice = SMrw.OrdQuant*PLr.ExVatPrice/fr*to1;
+						matrowput(SM2r,smmtrw,SM2rw);
+					end;
+					
+				end else begin
+					SM2rw.ArtCode = curcode;
+					SM2rw.OldPrice = SMrw.OrdQuant*PLr.ExVatPrice;
+					SM2rw.NewPrice = SMrw.OrdQuant*PLr.ExVatPrice/fr*to1;
+					matrowput(SM2r,0,SM2rw);
+				end;
+			end;
+		end;
+	end;
+	
+	if(totqty<>0)then begin
+		Black_Divider(320,1);
+		startformat(15);
+			outstring(300,0,"Всего кол-во",true);
+			outstring(320,0,totqty,false);
+		endformat;
+		smmtrw = matrowcnt(SM2r);
+		if(smmtrw>0)then begin
+			Gray_Divider(0,1);
+			startformat(15);
+				outstring(400,0,"Всего сумма",true);
+				outstring(1,0,"В валюте",true);
+			endformat;
+			For(k=0;k<smmtrw;k=k+1) begin
+				matrowget(SM2r,k,SM2rw);
+				startformat(15);
+					outstring(400,0,SM2rw.OldPrice,true);
+					outstring(1,0,SM2rw.ArtCode,true);
+				endformat;
+			end; 
+			
+		end;
+		GetBaseCurncy(1,basecur);
+		startformat(15);
+			outstring(1,0,"Всего в осовной валюте " & basecur,true);
+		endformat;
+		startformat(15);
+			outstring(1,0,totsumb1,true);
+		endformat;
+		
+		CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
+		if(acrncnt>1)then begin
+			Gray_Divider(300,1);
+			startformat(15);
+				outstring(1,0,"В валютах платежей:",true);
+			endformat;
+			For(i=1;i<acrncnt;i=i+1) begin
+				GetFullCurncyRate(acrncy[i],currentdate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr=1; to1=1;
+				end;
+	  		startformat(15);
+					outstring(400,0,totsumb1*fr/to1,true);
+					outstring(1,0,acrncy[i],true);
+				endformat;
+			end; 
+		end;
+	end;
+	
+	endjob;
+	
+return;
+end;
+
+
+global procedure StockMovSumCostRn(record RcVc RepSpec)
+begin
+	record StockMovVc SMr,SM2r;
+	row StockMovVc SMrw,SM2rw;
+	integer i,mtrw,k,smmtrw;
+	record PLDefVc PLDr;
+	record PLVc PLr;
+	string 20 curcode,curdef,basecur;
+	val totqty,totsumb1;
+	boolean curfoundf;
+	val fr,to1,to2,br1,br2;
+	Array string 50 acrncy;
+  Array Boolean achangecrncyf;
+  Integer acrncnt;
+  
+	totqty = 0;
+	startreportnoheaderjob("Статус перемещения");
+		startformat(15);
+			outstring(0,0,"Товар",false);
+			outstring(100,0,"Название",false);
+			outstring(300,0,"Себестоимость",true);
+			outstring(320,0,"Количество",false);
+			outstring(400,0,"Сумма",true);
+		endformat;
+	SMr.SerNr = RepSpec.long1;
+	if(readfirstmain(SMr,1,true))then begin
+		mtrw = matrowcnt(SMr);
+		if(mtrw>0)then begin
+			for(i=0;i<mtrw;i=i+1)begin
+				matrowget(SMr,i,SMrw);
+				startformat(15);
+					outstring(0,0,SMrw.ArtCode,false);
+					outstring(100,0,SMrw.Spec,false);
+					outstring(300,0,SMrw.NewPrice,true);
+					outstring(320,0,SMrw.OrdQuant,false);
+					outstring(400,0,SMrw.OrdQuant*SMrw.NewPrice,true);
+				endformat;
+				totqty = totqty + SMrw.OrdQuant;
+				totsumb1 = totsumb1 + SMrw.OrdQuant*SMrw.NewPrice;
+			end;
+		end;
+	end;
+	
+	if(totqty<>0)then begin
+		Black_Divider(320,1);
+		startformat(15);
+			outstring(300,0,"Всего:",true);
+			outstring(320,0,totqty,false);
+			outstring(400,0,totsumb1,true);
+		endformat;
+	end;
+	
+	endjob;
+	
+return;
+end;
+
+
+function longint FindIHReference(var longint source,string artcode)
+begin
+	record ItemHistVc IHr;
+	boolean testf;
+	longint res;
+	integer counter;
+	
+	res = -1;
+	counter = 0;
+	testf = true;
+	IHr.SerNr = source;
+	while(readfirstmain(IHr,1,true) and testf)begin
+		if(IHr.FileName=="PUVc")then begin
+			res = IHr.SerNr;
+			goto LFindIHReference;
+			testf = false;
+		end else begin
+			IHr.SerNr = IHr.Source;
+		end;
+		if(IHr.ArtCode!=artcode)then begin
+			testf = false;
+		end;
+		if(counter>20)then begin
+			testf = false;
+		end;
+		counter = counter + 1;
+	end;
+
+LFindIHReference:;
+	FindIHReference = res;
+return;
+end;
+
+global procedure ConsignationReportRn(record RcVc RepSpec)
+begin
+	record INConsVc INCr;
+	record ItemStatusVc ISr;
+	record ItemHistVc IHr,IH2r;
+	integer pos;
+	string 255 class;
+	record DIVc DIr;
+	record INVc INr;
+	boolean TrHs,testf,TrHs1,testf1;
+	val totqty,selqty,retqty,prosroch;
+	
+	startreportnoheaderjob("Отчет по товарам на консигнации");
+		
+		startformat(15);
+			outstring(0,0,"Код",false);
+			outstring(50,0,"Наименование",false);
+			outstring(200,0,"Бренд",false);
+			outstring(250,0,"Классификация",false);
+			outstring(320,0,"Сейчас на складах",false);
+			outstring(1,0,"Дней консигнации",true);
+		endformat;
+		
+		black_divider(0,1);
+		if(nonblank(RepSpec.f1))then begin
+			INCr.Code = RepSpec.f1;
+		end else begin
+			INCr.Code = "";
+		end;
+		TrHs = true;
+		While(loopmain(INCr,1,TrHs)) begin
+			testf = true;
+			
+			if(nonblank(RepSpec.f1) and INCr.Code!=RepSpec.f1)then begin TrHs=false; testf = false; end;
+			
+			if(nonblank(RepSpec.f2))then begin 
+				INr.Code = INCr.Code;
+				readfirstmain(INr,1,true);
+				pos = 0;
+				ExtractObj(INr.DispGroups,pos,class);
+				if(class!=RepSpec.f2)then begin
+					testf = false; 
+				end;
+			end;
+			if(testf)then begin
+				ISr.Code = INCr.Code;
+				ISr.Location = ";;;";
+				if(readfirstmain(ISr,2,true))then begin
+					INr.Code = INCr.Code;
+					readfirstmain(INr,1,true);
+					startformat(15);
+						outstring(0,0,INCr.Code,false);
+						outstring(50,0,INCr.Name,false);
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,class);
+						DIr.Code = class;
+						readfirstmain(DIr,1,true);
+						outstring(200,0,DIr.Name,false);
+						ExtractObj(INr.DispGroups,pos,class);
+						DIr.Code = class;
+						readfirstmain(DIr,1,true);
+						outstring(250,0,DIr.Name,false);
+						outstring(320,0,ISr.Instock,false);
+						outstring(1,0,INCr.Days,true);
+					endformat;
+					Gray_divider(0,1);
+					startformat(15);
+						outstring(80,0,"№ поступления",true);
+						outstring(100,0,"Дата поступления",false);
+						outstring(160,0,"Кол-во",false);
+					endformat;
+					IHr.ArtCode = INr.Code;
+					IHr.FileName = "PUVc";
+					TrHs1 = true;
+					totqty = 0;
+					prosroch = 0;
+					while(loopkey("FNArtCode",IHr,2,TrHs1))begin
+						testf1 = true;
+						if(IHr.ArtCode!=INr.Code or IHr.FileName!="PUVc")then begin testf1=false; TrHs1 = false; end;
+						if(IHr.Invalid>0)then begin testf=false; end;
+					
+						if(testf1)then begin
+							startformat(15);
+								outstring(80,0,IHr.TransNr,true);
+								outstring(100,0,IHr.TransDate,false);
+								outstring(160,0,IHr.Qty,false);
+							endformat;
+							totqty = totqty + IHr.Qty;
+							selqty = 0;
+							retqty = 0;
+							IH2r.ArtCode = IHr.ArtCode;
+							While(loopkey("ArtCode",IH2r,1,true) and IH2r.ArtCode==IHr.ArtCode) begin
+								if(IH2r.Source>0 and FindIHReference(IH2r.Source,IH2r.ArtCode)>0)then begin
+									if(IH2r.FileName=="IVVc")then begin
+										startformat(15);
+											outstring(250,0,"Продажа №",true);
+											outstring(260,0,IH2r.TransNr,false);
+											outstring(290,0,IH2r.TransDate,false);
+											outstring(330,0,IH2r.Qty,false);
+											outstring(350,0,IH2r.Location,false);
+										endformat;
+										selqty = selqty + IH2r.Qty;
+									end;
+									if(IH2r.FileName=="SHVc")then begin
+										startformat(15);
+											outstring(250,0,"Отгрузка №",true);
+											outstring(260,0,IH2r.TransNr,false);
+											outstring(290,0,IH2r.TransDate,false);
+											outstring(330,0,IH2r.Qty,false);
+											outstring(350,0,IH2r.Location,false);
+										endformat;
+										selqty = selqty + IH2r.Qty;
+									end;
+									if(IH2r.FileName=="SDVc")then begin
+										startformat(15);
+											outstring(250,0,"Списание №",true);
+											outstring(260,0,IH2r.TransNr,false);
+											outstring(290,0,IH2r.TransDate,false);
+											outstring(330,0,IH2r.Qty,false);
+											outstring(350,0,IH2r.Location,false);
+										endformat;
+										retqty = retqty + IH2r.Qty;
+									end;
+									if(IH2r.FileName=="RetVc")then begin
+										startformat(15);
+											outstring(250,0,"Возврат поставщику №",true);
+											outstring(260,0,IH2r.TransNr,false);
+											outstring(290,0,IH2r.TransDate,false);
+											outstring(330,0,IH2r.Qty,false);
+											outstring(350,0,IH2r.Location,false);
+										endformat;
+										retqty = retqty + IH2r.Qty;
+									end;
+								end;
+							end; 
+							resetloop(IH2r);
+							if(selqty<>0 or retqty<>0)then begin
+								gray_divider(250,350);
+							end;
+							if(selqty<>0)then begin
+								startformat(15);
+									outstring(250,0,"Всего продано:",true);
+									outstring(330,0,-selqty,false);
+								endformat;
+							end;
+							if(retqty<>0)then begin
+								startformat(15);
+									outstring(250,0,"Всего возвращено:",true);
+									outstring(330,0,-retqty,false);
+								endformat;
+							end;
+							startformat(15);
+								outstring(250,0,"Осталось на складе",true);
+								outstring(330,0,IHr.Qty + selqty + retqty,false);
+							endformat;
+							if((IHr.Qty + retqty)>0)then begin
+								startformat(15);
+									outstring(1,0,"Задолженность перед поставщиком",true);
+								endformat;
+								startformat(15);
+									outstring(400,0,"Кол-во",false);
+									outstring(1,0,"Дней",true);
+								endformat;
+								startformat(15);
+									outstring(400,0,IHr.Qty + retqty,false);
+									outstring(1,0,datediff(currentdate,IHr.TransDate),true);
+								endformat;
+								if(datediff(currentdate,IHr.TransDate)>0)then begin
+									prosroch = prosroch + IHr.Qty + retqty;
+								end;
+							end;
+						end;
+					end;
+					resetloop(IHr);
+					gray_divider(100,1);
+					startformat(15);
+						outstring(100,0,"Всего:",false);
+						outstring(160,0,totqty,false);
+						outstring(390,0,"Просроченно кол-во:",true);
+						outstring(400,0,prosroch,false);
+					endformat;
+					black_divider(0,1);
+				end;
+			end;
+		end; 
+
+	endjob;
+	
+return;
+end;
+
+
+global  procedure OstatkiSKartinkamiRn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	string 255 res;
+	record Attach2Vc Attachr;
+	record RLinkVc RLr;
+	string 255 uid;
+	longint lenth;
+	area attach,attachnew,webpage1;
+	string 255 filename,tstr;
+	string 20 rowcolor,pricecolor;
+	record ItemStatusVc ISr;
+	boolean filefind;
+	integer wn;
+	//record RcVc RepSpec;
+	string 255 serverip;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	integer mtrw,i;
+	boolean userlocation;
+	record UserVc User;
+	integer pos;
+	string 50 uloc,location,compfolder;
+	record ProgramStatusBlock PSb;
+	
+	/*blockload(PSb);
+	blockload(Cb);
+	
+	compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;*/
+	serverip = RepSpec.f6;
+	//setcompany(3,false);
+	/*wn = curwindow;
+	deselectwindow(wn,true);
+	getwindowrecord(wn,RepSpec);*/
+	
+	location = RepSpec.f2;
+	userlocation = false;
+  
+	if(userlocation)then begin
+		messagebox(0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад");
+  end else begin
+		if(false)then begin
+			Messagebox(0,"Укажите пожалуйста файл для выгрузки картинки");
+		end else begin
+			closewindow(wn);
+			if(right(RepSpec.ObjStr,5)==".html" or right(RepSpec.ObjStr,4)==".htm")then begin
+				filename = RepSpec.ObjStr;
+			end else begin
+				filename = RepSpec.ObjStr & ".html";
+			end;
+			//createfile(filename);
+			//closefile;
+	
+			setareazerosize(webpage1);
+			ItemStockStatExtWebRn(RepSpec,webpage1,serverip);
+			writeareatofile(webpage1,filename,0);
+	
+			messagebox(0,"Готово");
+		end;
+	end;
+end;
+
+global  procedure ProdajiSKartinkamiRn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	string 255 res;
+	record Attach2Vc Attachr;
+	record RLinkVc RLr;
+	string 255 uid;
+	longint lenth;
+	area attach,attachnew,webpage1;
+	string 255 filename,tstr;
+	string 20 rowcolor,pricecolor;
+	record ItemStatusVc ISr;
+	boolean filefind;
+	integer wn;
+	//record RcVc RepSpec;
+	string 255 serverip;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	integer mtrw,i;
+	boolean userlocation;
+	record UserVc User;
+	integer pos;
+	string 50 uloc,location,compfolder;
+	record ProgramStatusBlock PSb;
+	longint alenth;
+	string 255 res1;
+	
+	blockload(PSb);
+	blockload(Cb);
+	
+	/*compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;*/
+	serverip = RepSpec.f6;
+	//messagebox(0,serverip);
+	//logtext(0,serverip);
+	//setcompany(3,false);
+	/*wn = curwindow;
+	deselectwindow(wn,true);
+	selectwindow(wn);
+	getwindowrecord(wn,RepSpec);*/
+		
+	location = RepSpec.f2;
+	userlocation = false;
+	
+	//setexportcodepage("CP1251");
+	
+	if(userlocation)then begin
+		Messagebox(0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад");
+  end else begin
+		if(false)then begin
+			Messagebox(0,"Укажите пожалуйста файл для выгрузки картинки");
+		end else begin
+			closewindow(wn);
+			if(right(RepSpec.ObjStr,5)==".html" or right(RepSpec.ObjStr,4)==".htm")then begin
+				filename = RepSpec.ObjStr;
+			end else begin
+				filename = RepSpec.ObjStr & ".html";
+			end;
+			//createfile(filename);
+			//closefile;
+	
+			//setareazerosize(webpage1);
+			SalesReportExtPictRn(RepSpec,webpage1,serverip);
+			//writeareatofile(webpage1,filename,0);
+			//weboutarea(webpage1);
+			messagebox(0,"Готово");
+		end;
+	end;
+end;
+
+global
+function string 60 SalesWithImagesRClassDefaultFileName(record RcVc RepSpec)
+begin
+	string 60 res,serverip;
+	record ProgramStatusBlock PSb;
+	
+  res = "SalesWithImages.html";
+  SalesWithImagesRClassDefaultFileName = res;  
+  return;
+end;
+
+global
+procedure SalesWithImagesRClassOnOpenWindow(integer wn)
+begin
+	string 60 res,serverip;
+	record ProgramStatusBlock PSb;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	record RcVc RepSpec;
+	
+	blockload(PSb);
+	blockload(Cb);
+	
+	getwindowrecord(wn,RepSpec);
+	
+	compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
+  RepSpec.f6 = serverip;
+  putwindowrecord(wn,RepSpec);
+  
+  return;
+end;
+
+global
+procedure SalesWithImagesRClassReportDefaults(integer wn)
+begin
+	string 60 res,serverip;
+	record ProgramStatusBlock PSb;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	record RcVc RepSpec;
+	
+	blockload(PSb);
+	blockload(Cb);
+	
+	getwindowrecord(wn,RepSpec);
+	reportdefaults(RepSpec,"SalesWithImagesRClass");
+	compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
+  RepSpec.f6 = serverip;
+  
+  putwindowrecord(wn,RepSpec);
+  
+  return;
+end;
+
+global
+function string 60 ItemStockStatExtWebRClassDefaultFileName(record RcVc RepSpec)
+begin
+	string 60 res;
+	
+  res = "OstatkiWithImages.html";;
+  ItemStockStatExtWebRClassDefaultFileName = res;  
+  return;
+end;
+
+
+global
+procedure ItemStockStatExtWebRClassOnOpenWindow(integer wn)
+begin
+	string 60 res,serverip;
+	record ProgramStatusBlock PSb;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	record RcVc RepSpec;
+	
+	blockload(PSb);
+	blockload(Cb);
+	
+	getwindowrecord(wn,RepSpec);
+	
+	compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
+  RepSpec.f6 = serverip;
+  putwindowrecord(wn,RepSpec);
+  
+  return;
+end;
+
+global
+procedure ItemStockStatExtWebRClassReportDefaults(integer wn)
+begin
+	string 60 res,serverip;
+	record ProgramStatusBlock PSb;
+	integer compnr;
+	record CompaniesBlock Cb;
+	row CompaniesBlock Cbrw;
+	record RcVc RepSpec;
+	
+	blockload(PSb);
+	blockload(Cb);
+	
+	getwindowrecord(wn,RepSpec);
+	reportdefaults(RepSpec,"ItemStockStatExtWebRClass");
+	compnr = currentcompany;
+	matrowget(Cb,compnr-1,Cbrw);
+	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
+  RepSpec.f6 = serverip;
+  
+  putwindowrecord(wn,RepSpec);
+  
+  return;
+end;
+
+
+global procedure TestRn(record RcVc RepSpec)
+begin
+	record POVc POr;
+	row POVc POrw;
+	integer i,mtrw;
+	record INVc INr;
+	
+	
+	startreportnoheaderjob("test");
+	
+	startformat(15);
+		outstring(0,0,"PO",false);
+		outstring(50,0,"rw",false);
+		outstring(100,0,"Art",false);
+		outstring(150,0,"Unit1",false);
+		outstring(200,0,"Unit2",false);
+	endformat;
+	
+	POr.SerNr = "";
+	while(loopmain(POr,1,true))begin
+		mtrw = matrowcnt(POr);
+		For(i=0;i<mtrw;i=i+1) begin
+			matrowget(POr,i,POrw);
+			INr.Code = POrw.ArtCode;
+			readfirstmain(INr,1,true);
+			If(INr.Unittext!=POrw.UnitCode)then begin
+				startformat(15);
+					outstring(0,0,POr.SerNr,false);
+					outstring(50,0,i+1,false);
+					outstring(100,0,POrw.ArtCode,false);
+					outstring(150,0,POrw.UnitCode,false);
+					outstring(200,0,INr.Unittext,false);
+				endformat;
+			end;
+		end; 
+		
+	end;
+	
+	endjob;
+	
+return;
+end;

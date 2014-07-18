@@ -1,0 +1,344 @@
+global updating procedure ImportImagesMn(record RcVc RepSpec)
+begin
+record INVc INr;
+integer filesi,i;
+string 200 path,filename,itemname;
+integer comp;
+  
+  comp = currentcompany;
+  path = "Table_files";
+  
+  filesi = countfilesindir(path);
+  for (i=0;i<filesi;i=i+1) begin
+    filename = GetFileNameInDir(path,i);
+    
+    if(setinset(".jpg",right(filename,4)) or setinset(".png",right(filename,4)))then begin
+      itemname = left(filename,len(filename)-4);
+      INr.Code = itemname;
+      if(readfirstmain(INr,1,true))then begin
+        if(INr.Code==itemname)then begin
+          RecordLinkFile(path & "\\" & filename,0,INr,comp);
+        end;
+      end;
+    end;
+    
+  end;
+  
+return;
+end;
+
+global updating procedure CUChangeCurMn(record RcVc RepSpec)
+begin
+record CUVc CUr;
+record CurncyCodeVc CCr;
+string 10 curncy;
+  
+  
+  if(nonblank(RepSpec.f1))then begin
+    CCr.CurncyCode = RepSpec.f1;
+    if(readfirstmain(CCr,1,true))then begin
+      if(CCr.CurncyCode==RepSpec.f1)then begin
+        CUr.Code = "";
+        curncy = RepSpec.f1;
+        while(loopmain(CUr,1,true))begin
+          if(CUr.CurncyCode!=curncy)then begin
+            CUr.CurncyCode=curncy;
+            recordStore(CUr,true);
+          end;
+        end;
+      end else begin
+        messagebox(1120,"");
+      end;
+    end else begin
+        messagebox(1120,"");
+    end;
+  end else begin
+    if(RepSpec.flags[0]>0)then begin
+      CUr.Code = "";
+      curncy = "";
+      while(loopmain(CUr,1,true))begin
+        if(CUr.CurncyCode!=curncy)then begin
+          CUr.CurncyCode=curncy;
+          recordStore(CUr,true);
+        end;
+      end;
+    end;
+  end;
+return;
+end;
+
+global updating procedure CUChangeBALMn(record RcVc RepSpec)
+begin
+record CUVc CUr;
+record CurncyCodeVc CCr;
+string 10 curncy;
+  
+  
+CUr.Code = "";
+while(loopmain(CUr,1,true))begin
+	if(CUr.OnAccount<1)then begin
+		CUr.OnAccount=1;
+		recordStore(CUr,true);
+	end;
+end;
+    
+return;
+end;
+
+
+global updating procedure INChangeCSTMn(record RcVc RepSpec)
+begin
+record INVc INr;
+
+  INr.Code = "";
+  While(loopmain(INr,1,true))begin
+    if(INr.UpdateCost>0 or INr.SRUpdateCost>0)then begin
+      INr.UpdateCost=0; 
+      INr.SRUpdateCost = 0;
+      recordStore(INr,true);
+    end;
+  end;
+  
+return;
+end;
+
+
+global updating procedure FIXIHMn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	record PUVc PUr;
+	row PUVc PUrw;
+	record IVVc IVr;
+	row IVVc IVrw;
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	val rate;
+	integer i,mtrw;
+	date fd;
+	record ItemHistVc IHr,IH2r;
+	boolean TrHs,testf;
+	
+	
+	IVr.SerNr = 2976;
+	readfirstmain(IVr,1,true);
+		matrowdelete(IVr,2);
+		matrowget(IVr,1,IVrw);
+			IVrw.Sum = 63;
+			IVrw.Points = 63;
+		matrowPUt(IVr,1,IVrw);
+	
+	recordstore(IVr,true);
+	
+	/*rate = 0.82;
+	
+	fd = stringtodate("29/11/2013");
+	
+	IHr.TransDate = fd;
+	IHr.FileName = "StockMovVc";
+	TrHs = true;
+	while(loopkey("FNTransDate",IHr,2,TrHs))begin
+		testf = true;
+		if(IHr.TransDate<fd)then begin TrHs = false; testf = false; end;
+		
+		if(testf)then begin
+			if(IHr.Qty<0)then begin
+				IH2r.SerNr = IHr.Source;
+				if(readfirstmain(IH2r,1,true) and IH2r.TransDate>=fd and IH2r.FileName=="PUVc")then begin
+					PUr.SerNr = IH2r.TransNr;
+					readfirstmain(PUr,1,true);
+					if(PUr.CurncyCode=="AZN")then begin
+						SMr.SerNr = IHr.TransNr;
+						readfirstmain(SMr,1,true);
+						matrowget(SMr,IHr.Row,SMrw);
+						SMrw.NewPrice = round(SMrw.NewPrice * rate,defaultcurroundoff);
+						SMrw.OldPrice = round(SMrw.OldPrice * rate,defaultcurroundoff);
+						SMrw.FIFORowVal = round(SMrw.FIFORowVal * rate,defaultcurroundoff);
+						SMrw.SentNewPrice = round(SMrw.SentNewPrice * rate,defaultcurroundoff);
+						SMrw.SentOldPrice = round(SMrw.SentOldPrice * rate,defaultcurroundoff);
+						SMrw.SentFIFORowVal = round(SMrw.SentFIFORowVal * rate,defaultcurroundoff);
+						matrowput(SMr,IHr.Row,SMrw);
+						recordStore(SMr,true);
+					end;
+				end;
+			end;
+		end;
+	end;
+	resetloop(IHr);
+	
+	
+	IHr.TransDate = fd;
+	IHr.FileName = "IVVc";
+	TrHs = true;
+	while(loopkey("FNTransDate",IHr,2,TrHs))begin
+		testf = true;
+		if(IHr.TransDate<fd)then begin testf = false; TrHs = false; end;
+		if(IHr.Qty<0)then begin testf = false; end;
+		
+		if(testf)then begin
+			IH2r.FileName = "PUVc";
+			IH2r.ArtCode = IHr.ArtCode;
+			IH2r.TransDate = IHr.TransDate;
+			if(readlastkey("FNArtCode",IH2r,3,false) and IH2r.TransDate>=fd)then begin
+				PUr.SerNr = IH2r.TransNr;
+				readfirstmain(PUr,1,true);
+				if(PUr.CurncyCode=="AZN")then begin
+					IVr.SerNr = IHr.TransNr;
+					readfirstmain(IVr,1,true);
+					matrowget(IVr,IHr.Row,IVrw);
+					IVrw.FIFO = round(IVrw.FIFO * rate,defaultcurroundoff);
+					IVrw.FIFORowVal = round(IVrw.FIFORowVal * rate,defaultcurroundoff);
+					matrowput(IVr,IHr.Row,IVrw);
+					recordStore(IVr,true);
+				end;
+			end;
+		end;
+	end;
+	resetloop(IHr);
+	
+	PUr.TransDate = fd;
+	TrHs = true;
+	while(loopkey("TransDate",PUr,1,TrHs))begin
+		testf = true;
+		if(PUr.TransDate<fd)then begin testf = false; TrHs = false; end;
+		if(PUr.CurncyCode=="USD")then begin testf = false; end;
+		
+		if(testf)then begin
+			mtrw = matrowcnt(PUr);
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(PUr,i,PUrw);
+	  			PUrw.CostPrice = round(PUrw.CostPrice*rate,defaultcurroundoff);
+	  			//PUrw.UPrice = PUrw.UPrice*rate;
+	  			PUrw.Sum = round(PUrw.Sum*rate,defaultcurroundoff);
+	  		matrowput(PUr,i,PUrw);
+			end; 
+			PUr.CurncyCode = "USD";
+			PUr.Comment = "AZN -> USD";
+			recordstore(PUr,true);
+		end;
+		
+	end;*/
+	
+  
+return;
+end;
+
+
+global updating procedure FixIVChangeBackMn()
+begin
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,mtrw;
+	boolean putin;
+	
+	IVr.SerNr = "";
+	while(loopmain(IVr,1,true))begin
+		putin = false;
+		if(IVr.RetnValue>0)then begin
+			mtrw = matrowcnt(IVr);
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(IVr,i,IVrw);
+	  		if(IVrw.stp==kInvoiceRowTypeCashPayment)then begin
+					IVrw.Sum = IVrw.Sum - IVr.RetnValue;
+					IVr.RetnValue = 0;
+					IVr.RetValue = 0;
+					matrowput(IVr,i,IVrw);
+					putin = true;
+	  		end;
+			end; 			
+		end;
+		if(putin)then begin
+			recordstore(IVr,true);
+		end;
+	end;
+return;
+end;
+
+global updating procedure CreateGlobalLocationsMn()
+begin
+	record GlobalLocationVc Glocr;
+	record LocationVc Locr;
+	record CompaniesBlock CBb;
+	row CompaniesBlock CBrw;
+	integer mtrw,i;
+	
+	blockload(CBb);
+	mtrw = matrowcnt(CBb);
+	For(i=0;i<mtrw;i=i+1) begin
+	  if (SetCompany(i+1,false)) then begin
+			Locr.Code = "";
+			while(loopmain(Locr,1,true))begin
+				recordnew(Glocr);
+				Glocr.Code = Locr.Code;
+				Glocr.Name = Locr.Name;
+				Glocr.Company = i+1;
+				recordStore(GLocr,true);
+			end;
+			resetloop(Locr);
+		ResetCompany(i+1);  
+  	end;
+	end; 
+	
+return;
+end;
+
+
+
+
+global updating procedure UNOKStockFinDockMn()
+begin
+	record IVVc IVr;
+	record PUVc PUr;
+	record StockMovVc SMr;
+	record SDVc SDr;
+	record SHVc SHr;
+	record IPVc IPr;
+	record ORVc ORr;
+	record RetVc Retr;
+	
+	
+	IVr.SerNr = -1;
+	PUr.SerNr = -1;
+	SMr.SerNr = -1;
+	SDr.SerNr = -1;
+	SHr.SerNr = -1;
+	IPr.SerNr = -1;
+	ORr.SerNr = -1;
+	Retr.SerNr = -1;
+	
+	while(loopmain(IVr,1,true))begin
+		IVr.OKFlag = 0;	
+		recordStore(IVr,true);	
+	end;
+	while(loopmain(PUr,1,true))begin
+		PUr.OKFlag = 0;	
+		recordStore(PUr,true);	
+	end;
+	while(loopmain(SMr,1,true))begin
+		SMr.OrdFlag = 0;	
+		SMr.SentOKFlag = 0;
+		SMr.OKFlag = 0;
+		recordStore(SMr,true);	
+	end;
+	while(loopmain(SDr,1,true))begin
+		SDr.OKFlag = 0;	
+		recordStore(SDr,true);	
+	end;
+	while(loopmain(SHr,1,true))begin
+		SHr.OKFlag = 0;	
+		recordStore(SHr,true);	
+	end;
+	while(loopmain(IPr,1,true))begin
+		IPr.OKFlag = 0;	
+		recordStore(IPr,true);	
+	end;
+	/*while(loopmain(ORr,1,true))begin
+		ORr.OKFlag = 0;	
+		recordStore(ORr,true);	
+	end;*/
+	while(loopmain(Retr,1,true))begin
+		Retr.OKFlag = 0;	
+		recordStore(Retr,true);	
+	end;
+	
+return;
+end;

@@ -1,0 +1,110 @@
+
+function string 200 NormalizeFileName(string fname)
+begin
+	string 255 res,newname;
+	integer length,i;
+	
+	length = len(fname);
+	For(i=0;i<length;i=i+1) begin
+	  if(mid(fname,i,1)==" ")then begin
+	  	newname = newname & "\\ ";
+	  end else begin
+	  	newname = newname & mid(fname,i,1);
+	  end;
+	end; 
+	res = newname;
+	NormalizeFileName = res;
+return;
+end;
+
+webpublic global
+procedure WebGetINImage()
+begin
+  LongInt ser;
+  record Attach2Vc Attachr;
+  string 100 imname,curcomp,nimname;
+  string 255 filename;
+  
+  imname = WebGetArg	("image");
+  curcomp = WebGetArg	("curcomp");
+  
+  switch(curcomp)begin
+  	case 1: if(fileexists("webcust/SWAROVSKI/" & imname & ".jpg"))then begin
+							filename = "SWAROVSKI/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/SWAROVSKI/" & imname & ".png"))then begin
+							filename = "SWAROVSKI/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
+		case 2: if(fileexists("webcust/LLADRO/" & imname & ".jpg"))then begin
+							filename = "LLADRO/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/LLADRO/" & imname & ".png"))then begin
+							filename = "LLADRO/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+  	
+  	case 3: if(fileexists("webcust/J&W/" & imname & ".jpg"))then begin
+							filename = "J&W/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/J&W/" & imname & ".png"))then begin
+							filename = "J&W/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		
+		case 4: if(fileexists("webcust/V&B/" & imname & ".jpg"))then begin
+							filename = "V&B/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/V&B/" & imname & ".png"))then begin
+							filename = "V&B/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 9: if(fileexists("webcust/Creative/" & imname & ".jpg") or fileexists("webcust/Creative/" & urlencode(imname) & ".jpg"))then begin
+							if(imname!=urlencode(imname))then begin
+								renamefile("webcust/Creative/" & imname & ".jpg","webcust/Creative/" & urlencode(imname) & ".jpg");
+							end;
+							imname = urlencode(imname);
+							filename = "Creative/" & imname & ".jpg";
+							logtext(0,filename);
+						end;
+						if(fileexists("webcust/Creative/" & imname & ".png") or fileexists("webcust/Creative/" & urlencode(imname) & ".png"))then begin
+							if(imname!=urlencode(imname))then begin
+								renamefile("webcust/Creative/" & imname & ".png","webcust/Creative/" & urlencode(imname) & ".png");
+							end;
+							imname = urlencode(imname);
+							filename = "Creative/" & imname & ".png";
+							logtext(0,filename);
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		otherwise
+						WebSetContentType("image/jpeg");
+						WebOutAttachment(stringtoint(imname));
+  end;
+  
+  return;
+end;
+
+global
+function string 255 GetINImageAttach(string txt)
+begin
+record IVVc IVr;
+row IVVc IVrw;
+record INVc INr;
+record Attach2Vc Attachr;
+string 255 res;
+integer wn,rwcnt;
+record RLinkVc RLr;
+
+	res = "";
+	
+
+	INr.Code = txt;
+	if(readfirstmain(INr,1,true))then begin
+		ReadRecordLink(INr,1,Attachr,RLr);
+		res = Attachr.SerNr;
+	end;
+	
+	GetINImageAttach = res;
+return;
+end;

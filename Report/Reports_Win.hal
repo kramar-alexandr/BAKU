@@ -1,0 +1,499 @@
+//##ii
+procedure dummy() //##ii
+begin //##ii
+  SetLangMode(LangRussian,"RUS",0); //##ii
+  return; //##ii
+end; //##ii
+
+
+window MiddleInvoiceRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Отчет по среднему чеку",MiddleInvoiceRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+  PeriodField(h=100,v=6,"Период");
+  EditFieldTL(h,v+=20,150,"Магазин",M4UStr,Normal,41,f1,false,LocalMachineSClass);
+  EditFieldTL(h,v+=20,150,"Продавец",M4UStr,Normal,41,f2,false,UserSClass);//carefull we run ARRn
+  EndWindow;
+end;
+
+window MiddleInvoiceOrderRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Отчет по среднему чеку по счетам клиенту",MiddleInvoiceOrderRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+  PeriodField(h=100,v=6,"Период");
+  EditFieldTL(h,v+=20,150,"Магазин",M4UStr,Normal,41,f1,false,LocalMachineSClass);
+  EditFieldTL(h,v+=20,150,"Склад",M4UStr,Normal,41,f3,false,LocationSClass);
+  EditFieldTL(h,v+=20,150,"Продавец",M4UStr,Normal,41,f2,false,UserSClass);//carefull we run ARRn
+  EndWindow;
+end;
+
+window IStatRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите статистику товар/продавец",IStatRClass,CGRcW,RcType);
+  SetWRect(20,80,400,300);
+  vs=20;
+  PeriodField(h=120,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Счета-фактуры",M4UStr,Normal,50,f3,false,0);
+  EditFieldTL(h,v+=vs, 150,"Продавец",   M4UStr,Normal,50,f1,false,UserSClass);
+  EditFieldTL(h,v+=vs, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass);
+  EditFieldTL(h,v+=vs, 150,"Товары",   M4UStr,Normal,50,f2,false,INSClass);
+  EditFieldTL(h,v+=vs, 150,"Группы товаров",M4UStr,Normal,30,Stext,false,ITSClass);
+  EditFieldTL(h,v+=vs, 150,"Классиф. товара", M4UStr,Normal,60,f4,false,DISClass); 
+  EditFieldTL(h,v+=vs, 150,"Клиенты",M4UStr,Normal,41,ObjStr,false,CUSClass);
+  EditFieldTL(h,v+=vs, 150,"Категория",M4UStr,Normal,60,LastAcc,false,CCatSClass);
+ /* ButtonFrame(h=20,vm=(v+=40),200,2,"Выводить");
+  CheckBox(h,v,0,"утвержденные",flags[1]);
+  CheckBox(h,v+=16,0,"неутвержденные",flags[2]);*/
+  ButtonFrame(h=120,vm=(v+=40),200,2,"Сортировать");
+  RadioButton(h,v,0,0,"товар/продавец",flags[3]);
+  RadioButton(h,v+=16,1,0,"продавец/товар",flags[3]);
+  EndWindow;
+end;
+
+window IStatRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Новый Определите статистику товар/продавец",IStatRClass,CGRcW,RcType);
+  SetWRect(20,80,400,300);
+  vs=20;
+  PeriodField(h=120,v=6,"Период");
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 11 June 2013 09:35:00 Larisa
+    EditFieldTL(h,v+=vs, 150,"Счета-фактуры",M4UStr,Normal,50,f3,false,0);
+  end; // Edit ***** 11 June 2013 09:35:00 Larisa*/
+  EditFieldTL(h,v+=vs, 150,"Продавец",   M4UStr,Normal,50,f1,false,UserSClass);
+  EditFieldTL(h,v+=vs, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass);
+  EditFieldTL(h,v+=vs, 150,"Товар",   M4UStr,Normal,50,f2,false,INSClass);
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 11 June 2013 09:35:00 Larisa
+    EditFieldTL(h,v+=vs, 150,"Группы товаров",M4UStr,Normal,30,Stext,false,ITSClass);
+  end; // Edit ***** 11 June 2013 09:35:00 Larisa*/
+  EditFieldTL(h,v+=vs, 150,"Классиф. товара", M4UStr,Normal,60,f4,false,DISClass);
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 10 June 2013 10:53:00 Larisa
+    EditFieldTL(h,v+=vs, 150,"Клиенты",M4UStr,Normal,41,ObjStr,false,CUSClass);
+  	EditFieldTL(h,v+=vs, 150,"Категория",M4UStr,Normal,60,LastAcc,false,CCatSClass);
+  	ButtonFrame(h=120,vm=(v+=40),200,2,"Сортировать");
+  	RadioButton(h,v,0,0,"товар/продавец",flags[3]);
+  	RadioButton(h,v+=16,1,0,"продавец/товар",flags[3]);
+  end; // Edit ***** 10 June 2013 10:53:00 Larisa*/
+  EndWindow;
+end;
+
+window Cust2STRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите статистику скидок",Cust2STRClass,CGRcW,RcType);
+  SetWRect(20,80,450,400);
+  vs = 20;
+  EditFieldTL(h=180,v=6, 150,"Клиент",   M4UStr,Normal,30,f1,false,CUSClass);
+  EditFieldTL(h,v+=vs, 150,"Товар",   M4UStr,Normal,41,f2,false,INSClass);
+  //if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 13 June 2013 09:37:00 Larisa
+    EditFieldTL(h,v+=vs, 50,"Группа товаров",   M4UStr,Normal,20,FirstAcc,false,ITSClass);
+ // end; // Edit ***** 13 June 2013 09:37:00 Larisa
+  EditFieldTL(h,v+=vs ,100,"Классификация товара",M4UStr,Normal,20,f4,false,DISClass);
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 13 June 2013 09:37:00 Larisa
+      EditFieldTL(h,v+=vs, 150,"Филиал",   M4UStr,Normal,20,f5,false,CUSClass);
+      EditFieldTL(h,v+=vs, 100,"Класс сч. ресторана",   M4UStr,Normal,10,LastAcc,false,RestAccClassSClass);
+  end; // Edit ***** 13 June 2013 09:37:00 Larisa*/
+  //if(CurrentCompany>=4 and CurrentCompany<=6)then begin // Edit ***** 12 June 2013 14:22:00 Larisa
+    EditFieldTL(h,v+=vs, 150,"Склад",   M4UStr,Normal,20,f6,false,LocationSClass); // Edit ***** 12 June 2013 11:36:00 Larisa
+  //end; // Edit ***** 12 June 2013 14:22:00 Larisa
+  EditFieldTL(h,v+=vs ,100,"Продавец (от клиента)",M4UStr,Normal,10,AccStr,false,UserSClass);
+  PeriodField(h,v+=vs,"Период");
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 13 June 2013 09:37:00 Larisa
+    EditFieldTL(h,v+=vs, 50,"Категория",   M4UStr,Normal,5,f3,false,CCatSClass);
+    EditFieldTL(h,v+=vs ,100,"Объект (из сч/ф)",M4UStr,Normal,20,ObjStr,false,ObjSClass);
+    EditFieldTL(h,v+=vs ,100,"Мин. оборот",M4Val,Normal,0,vals0,true,0);
+    EditFieldTL(h,v+=vs ,100,"Мин. прибыль",M4Val,Normal,0,vals1,true,0);
+  end; // Edit ***** 13 June 2013 09:37:00 Larisa*/
+  ButtonFrame(h=30,vm=(v+=40),123,2,"Функция");
+  RadioButton(h,v,0,0,"Сводный",flags[2]);
+  RadioButton(h,v+=16,1,0,"Подробный",flags[2]);
+  /*if(CurrentCompany>=1 and CurrentCompany<=3)then begin // Edit ***** 13 June 2013 09:41:00 Larisa
+    ButtonFrame(h,v=(vm+60),123,2,"Сортировать по");
+    RadioButton(h,v,0,0,"клиентам",flags[1]);
+    RadioButton(h,v+=16,1,0,"прибыли",flags[1]);
+    ButtonFrame(h=227,v=vm,123,2,"Функция");
+    RadioButton(h,v,0,0,"Цена продажи",flags[3]);
+    RadioButton(h,v+=16,1,0,"Базовая цена",flags[3]);
+  end; // Edit ***** 13 June 2013 09:41:00 Larisa*/
+  EndWindow;
+end;
+
+window CuArtSTRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+
+  if (false) then begin
+		/*WindowBegin("Определите статистику клиент/товар",CuArtSTRClass,CGRcW,RcType);
+		SetWRect(20,80,460,330);
+		vs = 20;
+		EditFieldTL(h=160,v=6, 150,"Клиенты",   M4UStr,Normal,50,f1,false,CUSClass);
+		EditFieldTL(h,v+=20, 150,"Категории",   M4UStr,Normal,30,ObjStr,false,CCatSClass);
+		if (HasContactClassification) then begin
+			EditFieldTL(h,v+=20, 150,"Классификация", M4UStr,Normal,60,f4,false,CClassSClass);
+		end;
+		EditFieldTL(h,v+=20, 150,"Товар",   M4UStr,Normal,41,f2,false,INSClass);
+		if (IsEnterprise) then begin
+			EditFieldTL(h,v+=20, 150,"Группа товара",   M4UStr,Normal,20,f3,false,ITSClass);
+		end;
+		if (HasItemClassification) then begin
+			EditFieldTL(h,v+=20, 150,"Классификация товара", M4UStr,Normal,60,f5,false,DISClass); 
+		end;
+		if (IsEnterprise) then begin
+			EditFieldTL(h,v+=vs, 150,"Филиал",   M4UStr,Normal,20,f6,false,CUSClass);
+			EditFieldTL(h,v+=vs, 100,"Класс сч. рест.",   M4UStr,Normal,10,LastAcc,false,RestAccClassSClass);
+		end;
+		EditFieldTL(h,v+=20, 150,"Период",M4UStr,Normal,21,Period2Str,false,PerSClass);
+		EditFieldTL(h,v+=20, 150,"Период для сравнения",M4UStr,Normal,21,Stext,false,PerSClass);
+		if (HasObjects) then begin
+			EditFieldTL(h,v+=20, 150,"Объект клиента",M4UStr,Normal,20,AccStr,false,ObjSClass);
+		end;
+		if (IsEnterprise) then begin
+			EditFieldTL(h,v+=20, 100,"Страна клиента",M4UStr,Normal,5,TransStr,false,CountrySClass);
+			CheckBox(h,v+=20,0,"Показать только группы товаров",flags[1]);
+			CheckBox(h,v+=16,0,"Показать варианты",flags[2]);
+		end;
+		EndWindow;*/
+  end else begin
+		WindowBegin("Определите статистику клиент/товар",CuArtSTRClass,CGRcW,RcType);
+		SetWRect(20,80,460,330);
+		vs = 20;
+		EditFieldTL(h=160,v=6, 150,"Клиенты",   M4UStr,Normal,50,f1,false,CUSClass);
+		EditFieldTL(h,v+=20, 150,"Товар",   M4UStr,Normal,41,f2,false,INSClass);
+		EditFieldTL(h,v+=20, 150,"Группа товара",   M4UStr,Normal,20,f3,false,ITSClass);
+		EditFieldTL(h,v+=20, 150,"Классификация товара", M4UStr,Normal,60,f5,false,DISClass);
+		EditFieldTL(h,v+=20, 150,"Период",M4UStr,Normal,21,Period2Str,false,PerSClass);
+		EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass);
+		EndWindow;
+  end;
+end;
+
+window CustSalesRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+
+ if (false) then begin
+		/*WindowBegin("Определите статистику продаж по клиентам",CustSalesRClass,CGRcW,RcType);
+		SetWRect(20,80,450,300);
+		h = 150; vs = 20;
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs, 150,"Клиенты",   M4UStr,Normal,50,f1,false,CUSClass);
+		EditFieldTL(h,v+=vs, 150,"Категория",   M4UStr,Normal,5,f2,false,CCatSClass);  
+		EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,f5,false,CClassSClass);
+		EditFieldTL(h,v+=vs, 50,"Показать клиентов:",   M4Long,Normal,0,long1,false,0);
+		ButtonFrame(h,vm=(v+=41),133,3,"Функция");
+		RadioButton(h,v,0,0,"Наибольшая сумма",ArtMode);
+		RadioButton(h,v+=16,1,0,"Наименьшая сумма",ArtMode);
+		RadioButton(h,v+=16,2,0,"Наиб. прибыль",ArtMode);
+		CheckBox(h,v+=30,0,"Включить клиентов без продаж",flags[1]);
+		EndWindow;*/
+	end else begin
+		WindowBegin("Определите статистику продаж по клиентам",CustSalesRClass,CGRcW,RcType);
+		SetWRect(20,80,450,300);
+		h = 150; vs = 20;
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs, 150,"Клиенты",   M4UStr,Normal,50,f1,false,CUSClass);
+		EditFieldTL(h,v+=vs, 150,"Категория",   M4UStr,Normal,5,f2,false,CCatSClass);  
+		EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,f5,false,CClassSClass);
+		EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass);
+		EditFieldTL(h,v+=vs, 50,"Показать клиентов:",   M4Long,Normal,0,long1,false,0);
+		ButtonFrame(h,vm=(v+=41),133,3,"Функция");
+		RadioButton(h,v,0,0,"Наибольшая сумма",ArtMode);
+		RadioButton(h,v+=16,1,0,"Наименьшая сумма",ArtMode);
+		RadioButton(h,v+=16,2,0,"Наиб. прибыль",ArtMode);
+		CheckBox(h,v+=30,0,"Включить клиентов без продаж",flags[1]);
+		EndWindow;
+	end;
+end;
+
+window CustSalesRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+
+ 
+  WindowBegin("Определите статистику продаж по клиентам",CustSalesRClass,CGRcW,RcType);
+  SetWRect(20,80,450,300);
+  h = 150; vs = 20;
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Клиенты",   M4UStr,Normal,50,f1,false,CUSClass);
+  EditFieldTL(h,v+=vs, 150,"Категория",   M4UStr,Normal,5,f2,false,CCatSClass);  
+  EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,f5,false,CClassSClass);
+	EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass);
+  EditFieldTL(h,v+=vs, 50,"Показать клиентов:",   M4Long,Normal,0,long1,false,0);
+  ButtonFrame(h,vm=(v+=41),133,3,"Функция");
+  RadioButton(h,v,0,0,"Наибольшая сумма",ArtMode);
+  RadioButton(h,v+=16,1,0,"Наименьшая сумма",ArtMode);
+  RadioButton(h,v+=16,2,0,"Наиб. прибыль",ArtMode);
+  CheckBox(h,v+=30,0,"Включить клиентов без продаж",flags[1]);
+  EndWindow;
+
+
+end;
+
+
+window ItemSalesRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите статистику продаж по товарам",ItemSalesRClass,CGRcW,RcType);
+  SetWRect(20,80,400,300);
+  h = 130; vs = 20;
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Склад",   M4UStr,Normal,20,AccStr,false,LocationSClass); // Edit ***** 18 June 2013 16:09:00 Larisa
+  EditFieldTL(h,v+=vs, 150,"Товары",   M4UStr,Normal,50,f1,false,INSClass);
+  EditFieldTL(h,v+=vs, 150,"Группа",   M4UStr,Normal,5,f2,false,ITSClass);
+	EditFieldTL(h,v+=vs, 150,"Классиф. товара", M4UStr,Normal,60,f4,false,DISClass); 
+	EditFieldTL(h,v+=vs, 150,"Бренд", M4UStr,Normal,60,f5,false,DI2SClass); 
+  /*EditFieldTL(h,v+=vs, 50,"Показать товаров:",   M4Long,Normal,0,long1,false,0); // Edit ***** 19 June 2013 09:16:00 Larisa
+  if (StandardHansa==false) then begin
+    EditFieldTL(h,v+=vs, 150,"Филиал",   M4UStr,Normal,20,f6,false,CUSClass);
+    EditFieldTL(h,v+=vs, 100,"Класс сч. ресторана",   M4UStr,Normal,10,LastAcc,false,RestAccClassSClass);
+  end;*/ // Edit ***** 19 June 2013 09:16:00 Larisa
+  ButtonFrame(h,vm=(v+=41),150,1,"Сортировка");
+  RadioButton(h,v,0,0,"Наибольший оборот",ArtMode);
+  RadioButton(h,v+=16,1,0,"Наиболее продаваемые",ArtMode); // Edit ***** 19 June 2013 15:13:00 Larisa
+  RadioButton(h,v+=16,2,0,"Наименее продаваемые",ArtMode);
+  CheckBox(h,v+=30,0,"Включить непроданные товары",flags[1]); // Edit ***** 19 June 2013 09:16:00 Larisa
+  //CheckBox(h,v+=16,0,"Показывать варианты",flags[2]); // Edit ***** 19 June 2013 09:16:00 Larisa
+  EndWindow;
+end;
+
+window CustSTRClass:3
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите статистику по клиентам",CustSTRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Клиенты",   M4UStr,Normal,30,f1,false,CUSClass);
+  //EditFieldTL(h,v+=vs, 150,"Категории",   M4UStr,Normal,30,f3,false,CCatSClass);
+  //EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,Stext,false,CClassSClass);
+  EditFieldTL(h,v+=vs, 150,"Товар",   M4UStr,Normal,41,f2,false,INSClass);
+	EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,FirstAcc,false,LocationSClass);
+	EditFieldTL(h,v+=vs ,100,"Продавец (от кл.)",M4UStr,Normal,10,AccStr,false,UserSClass);
+	//EditFieldTL(h,v+=vs ,100,"Группа продажи (от кл.)",M4UStr,Normal,5,Language,false,SalesGroupSClass);
+	//EditFieldTL(h,v+=vs ,100,"Мин. оборот",M4Val,Normal,0,vals0,true,0);
+	//EditFieldTL(h,v+=vs ,100,"Мин. прибыль",M4Val,Normal,0,vals1,true,0);
+	//EditFieldTL(h,v+=vs, 150,"Объект клиента",M4UStr,Normal,20,ObjStr,false,ObjSClass);
+	//EditFieldTL(h,v+=vs, 100,"Страна клиента",M4UStr,Normal,5,TransStr,false,CountrySClass);
+	ButtonFrame(h,v+=40,130,2,"Сортировать по");
+	RadioButton(h,v,0,0,"номеру",flags[1]);
+	RadioButton(h,v+=16,1,0,"наименованию",flags[1]);
+    //CheckBox(h,v+=26,0,"Только инф. о клиенте",flags[2]); //Edit ************************** Sasha2, Thursday, 20 June 2013
+  EndWindow;
+end;
+
+
+window CustCompRClass:1 //Edit ************************** Sasha2, Tuesday, 25 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите статистику клиент-компания",CustCompRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Клиент",   M4UStr,Normal,30,f1,false,CUSClass);
+  //EditFieldTL(h,v+=vs, 150,"Категории",   M4UStr,Normal,30,f3,false,CCatSClass);
+  //EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,Stext,false,CClassSClass);
+  EditFieldTL(h,v+=vs, 150,"Компания",   M4UStr,Normal,41,f2,false, CompaniesbSClass);
+	//EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,FirstAcc,false,LocationSClass);
+	//EditFieldTL(h,v+=vs ,100,"Продавец (от кл.)",M4UStr,Normal,10,AccStr,false,UserSClass);
+	//EditFieldTL(h,v+=vs ,100,"Группа продажи (от кл.)",M4UStr,Normal,5,Language,false,SalesGroupSClass);
+	//EditFieldTL(h,v+=vs ,100,"Мин. оборот",M4Val,Normal,0,vals0,true,0);
+	//EditFieldTL(h,v+=vs ,100,"Мин. прибыль",M4Val,Normal,0,vals1,true,0);
+	//EditFieldTL(h,v+=vs, 150,"Объект клиента",M4UStr,Normal,20,ObjStr,false,ObjSClass);
+	//EditFieldTL(h,v+=vs, 100,"Страна клиента",M4UStr,Normal,5,TransStr,false,CountrySClass);
+	/*ButtonFrame(h,v+=40,130,2,"Сортировать по");
+	RadioButton(h,v,0,0,"номеру",flags[1]);
+	RadioButton(h,v+=16,1,0,"наименованию",flags[1]);*/
+    //CheckBox(h,v+=26,0,"Только инф. о клиенте",flags[2]); //Edit ************************** Sasha2, Thursday, 20 June 2013
+  EndWindow;
+end; //Edit ************************** Sasha2, Tuesday, 25 June 2013 }
+
+
+window ActiveCustCompRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите статистику активности клиентов",ActiveCustCompRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Клиент",   M4UStr,Normal,30,f1,false,CUSClass);
+  EditFieldTL(h,v+=vs, 150,"Компания",   M4UStr,Normal,41,f2,false, CompaniesbSClass);
+
+  EndWindow;
+end; //Edit ************************** Sasha2, Friday, 27 June 2013 }
+
+window  CompaniesbSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer,iPad")
+begin
+  WindowBegin("Выберите компанию", CompaniesbSClass,CGother,HBlRecType);
+
+  SetWRect(240,80,640,298);
+  Sizeable(-1,-1,-1,0);
+  StringList(9,9,-23,-10);
+  SearchField("Найти");
+  EndWindow;
+end;
+
+window RebItemSalesRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет по обороту акционных товаров",RebItemSalesRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Склад",   M4UStr,Normal,30,f1,false,LocationSClass);
+	//EditFieldTL(h,v+=vs, 150,"Таблица скидок (акция)",   M4UStr,Normal,30,f2,false,RebSClass);
+	
+  EndWindow;
+end;
+
+window BayAcivityRClass:1 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет активности по клиентам",BayAcivityRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCard);
+  EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
+	
+  EndWindow;
+end;
+
+window BayAcivityButiqueRClass:1 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет активности по бутикам",BayAcivityButiqueRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCard);
+  EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
+	
+  EndWindow;
+end;
+
+
+window TestRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Test",TestRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"f1",   M4UStr,Normal,30,f1,false,0);
+	
+  EndWindow;
+end;
+
+
+window MegaBalanceRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Баланс",MegaBalanceRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs, 150,"Магазин",M4UStr,Normal,30,f1,false,LocationSClass);
+	
+  EndWindow;
+end;
+
+window MegaBalanceByCatRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Баланс для монобрендового магазина",MegaBalanceByCatRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs, 150,"Магазин",M4UStr,Normal,30,f1,false,LocationSClass);
+	
+  EndWindow;
+end;
+
+window CLInRepRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет прихода",CLInRepRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs, 150,"Магазин",M4UStr,Normal,30,f1,false,LocationSClass);
+	
+  EndWindow;
+end;
+
+window CLOutRepRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет расхода",CLOutRepRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+		PeriodField(h,v=6,"Период");
+	  EditFieldTL(h,v+=vs, 150,"Магазин",M4UStr,Normal,30,f1,false,LocationSClass);
+	  
+  EndWindow;
+end;
+
+window MatReportRClass:1 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Материальный отчет новый",MatReportRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+		PeriodField(h,v+=6,"Период");
+	  EditFieldTL(h,v+=vs, 150,"Магазин",M4UStr,Normal,30,f1,false,LocationSClass);
+	  
+  EndWindow;
+end;
+

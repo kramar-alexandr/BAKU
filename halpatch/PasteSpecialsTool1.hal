@@ -1,0 +1,11 @@
+remote procedure FillSerialNr(string,string,var Array string,var Integer);
+
+global
+procedure PLVc_SerialNrSClass(Integer type,Integer wn,Integer mwn,var Array string asernrstr,var Integer acnt)
+BEGIN
+  record PLVc PLr;
+  
+  GetWindowRecord(mwn,PLr);
+  FillSerialNr(PLr.ArtCode,"",asernrstr,acnt);
+  RETURN;
+END;

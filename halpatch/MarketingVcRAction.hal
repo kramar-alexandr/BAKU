@@ -1,0 +1,122 @@
+
+
+global
+function LongInt MarketingVcRecordRemoveTest(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  Boolean testf;
+
+  res = 1;
+  if (testf) then begin
+    if (long3>0) then begin MessageBox(1122,""); end;
+    res = 0;
+  end;
+LMarketingVcRecordRemoveTest:;
+  MarketingVcRecordRemoveTest = res; 
+  RETURN;
+END;
+
+global
+function LongInt MarketingVcRecordDefaults(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  record LocalMachineBlock LMb;
+  
+  blockload(LMb);
+  
+  Mrkr.TransDate = currentdate;
+  Mrkr.TransTime = currenttime;
+  Mrkr.SalesMan = currentuser;
+  Mrkr.LocalMachine = LMb.LocalMachineCode;
+  Mrkr.Location = LMb.DefLocation;
+  Mrkr.CityRbtn = 1;
+  
+  MarketingVcRecordDefaults = res; 
+  RETURN;
+END;
+
+global
+function LongInt MarketingVcRecordDuplicate(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+	Mrkr.TransDate = currentdate;
+  Mrkr.TransTime = currenttime;
+  Mrkr.SalesMan = currentuser;
+  
+  MarketingVcRecordDuplicate = res; 
+  RETURN;
+END;
+
+global
+updating function LongInt MarketingVcRecordSave(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+begin
+  LongInt res;
+  
+  MarketingVcRecordSave = res; 
+  return;
+end;
+
+global
+function LongInt MarketingVcRecordUpdate(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+	
+
+  MarketingVcRecordUpdate = res; 
+  RETURN;
+END;
+
+
+global
+function LongInt MarketingVcRecordCheck(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN 
+	LongInt res;
+	integer insertmode,updatemode;
+  res = 0;
+  insertmode = 1;
+  updatemode = 2;
+  
+  if(blank(Mrkr.SerNr))then begin
+  	Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
+  end;
+  
+  /*if (blank(INr.Code)) then begin
+    if (GetNextItemNr(INr.Code)) then begin end;
+    lINr.Code = INr.Code;
+    if (ReadFirstMain(lINr,1,true)) then begin
+      RecordCheckError(1547,INr.Code,-1,"Code");      
+      res = -1; 
+      goto LMarketingVcRecordCheck;
+    end;
+  end;*/
+ 
+	
+LMarketingVcRecordCheck:;
+  MarketingVcRecordCheck = res;
+  RETURN;
+END;
+	
+global
+updating function LongInt MarketingVcRecordSaveAfter(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  	  	
+
+  
+  MarketingVcRecordSaveAfter = res;
+  RETURN;
+END;
+
+
+global
+updating function LongInt MarketingVcRecordUpdateAfter(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+  
+  MarketingVcRecordUpdateAfter = res;
+  RETURN;
+END;
+
+

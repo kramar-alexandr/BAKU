@@ -1,0 +1,448 @@
+external inner procedure ExtractObj(string,var Integer,var string);
+
+
+SetLangMode(LangRussian,"RUS",0);
+
+
+
+procedure ItemStockIHSerch(string item,string location,date sd,date ed,var array val qty_start,var array val pu_qty,
+                           var array val sm_poz_qty,var array val sm_neg_qty,var array val iv_poz_qty,
+                           var array val iv_neg_qty,var array val sd_qty,var array val qty_end,integer anum)
+begin
+  record ItemHistVc IHr;
+  record StockMovVc SMr;
+  row StockMovVc SMrw;  
+  record IVVc IVr;
+  row IVVc IVrw;
+  Boolean TrHs,testf,testf1;
+  string 100 oldartcode,oldfilename;
+	longint oldsernr;
+  integer oldrow,oldinvalid;
+	
+	qty_start[anum] = 0;
+	pu_qty[anum] = 0;
+	sm_poz_qty[anum] = 0;
+	sm_neg_qty[anum] = 0;
+	iv_poz_qty[anum] = 0;
+	iv_neg_qty[anum] = 0;
+	sd_qty[anum] = 0;
+	qty_end[anum] = 0;
+	
+  IHr.ArtCode = item;
+  IHr.Location = location;
+  IHr.TransDate = "1/1/2000";
+  TrHs = true;
+  while (LoopKey("ArtCodeLoc",IHr,3,TrHs)) begin
+    testf = true;
+    if (IHr.ArtCode!=item or IHr.Location!=location or IHr.TransDate>ed) then begin testf = false; TrHs = false; end;
+    if (IHr.Invalid!=0) then begin testf = false; end;
+    
+    testf1 = true;
+    if(IHr.FileName=="IVVc" and oldartcode==IHr.ArtCode and oldsernr==IHr.TransNr and oldrow==IHr.Row  and oldfilename==IHr.FileName)then begin
+      if(oldinvalid!=0)then begin
+      	testf = false;
+      end;
+    end;
+    
+    oldartcode = IHr.ArtCode;
+    oldsernr = IHr.TransNr;
+    oldrow = IHr.Row;
+    oldinvalid = IHr.Invalid;
+    oldfilename = IHr.FileName;
+    
+    
+    if (testf) then begin
+      switch (IHr.FileName) begin
+				case "IVVc":
+					if(IHr.TransDate<sd)then begin
+						if (IHr.StockAffectf==1) then begin
+								qty_start[anum] = qty_start[anum] + IHr.Qty;
+						end;
+					end else begin
+						if (IHr.StockAffectf==1) then begin
+							if IHr.Qty>0 then begin
+								iv_poz_qty[anum] = iv_poz_qty[anum] + IHr.Qty;
+								qty_end[anum] = qty_end[anum] + IHr.Qty;
+							end else begin
+								iv_neg_qty[anum] = iv_neg_qty[anum] + (-IHr.Qty);
+								qty_end[anum] = qty_end[anum] + IHr.Qty;
+							end;
+						end;
+					end;
+				case "PUVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						pu_qty[anum] = pu_qty[anum] + IHr.Qty;
+						qty_end[anum] = qty_end[anum] + IHr.Qty;
+					end;
+				case "SHVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						iv_neg_qty[anum] = iv_neg_qty[anum] + (-IHr.Qty);
+						qty_end[anum] = qty_end[anum] + IHr.Qty;
+					end;
+				case "SDVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						sd_qty[anum] = sd_qty[anum] + (-IHr.Qty);
+						qty_end[anum] = qty_end[anum] + IHr.Qty;
+					end;
+				case "StockMovVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						if IHr.Qty>0 then begin
+							sm_poz_qty[anum] = sm_poz_qty[anum] + IHr.Qty;
+							qty_end[anum] = qty_end[anum] + IHr.Qty;
+						end else begin
+							sm_neg_qty[anum] = sm_neg_qty[anum] + (-IHr.Qty);
+							qty_end[anum] = qty_end[anum] + IHr.Qty;
+						end;
+					end;
+				case "RetVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						iv_poz_qty[anum] = iv_poz_qty[anum] + IHr.Qty;
+						qty_end[anum] = qty_end[anum] + IHr.Qty;
+					end;
+				case "RetPUVc":
+					if(IHr.TransDate<sd)then begin
+						qty_start[anum] = qty_start[anum] + IHr.Qty;
+					end else begin
+						sd_qty[anum] = sd_qty[anum] + (-IHr.Qty);
+						qty_end[anum] = qty_end[anum] + IHr.Qty;
+					end;
+			end;
+		end;
+  end; // while
+  
+  qty_end[anum] = qty_start[anum] + qty_end[anum];
+  
+  return;
+end;
+
+global
+procedure ItemSaldoExtRn(record RcVc RepSpec)
+begin
+  record INVc INr,IN2r;
+  Date sd,ed;
+	record ItemStatusVc ISr;
+  boolean testf,TrHs,nonzerro;
+  string 200 locations;
+  string 20 curloc;
+  integer pos,acnt,i;
+  array val qty_start,pu_qty,sm_poz_qty,sm_neg_qty,iv_poz_qty,iv_neg_qty,sd_qty,qty_end;
+  array val total_qty_start,total_pu_qty,total_sm_poz_qty,total_sm_neg_qty,total_iv_poz_qty,total_iv_neg_qty,total_sd_qty,total_qty_end;
+  val subtotal_qty_start,subtotal_pu_qty,subtotal_sm_poz_qty,subtotal_sm_neg_qty,subtotal_iv_poz_qty,subtotal_iv_neg_qty,subtotal_sd_qty,subtotal_qty_end;
+	string 200 class;
+	string 50 key,item;
+
+		locations = "SW1,SW2,SW3,SW4,SW5";  
+    StartReportNoHeaderJob("Оборотно-сальдовая ведомость по товарам");
+    startformat(15);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Начальный остаток",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Поступило",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Поступило внутр.",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Возврат клиентов",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Отпущено",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Отпущено внутр.",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Credit note",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Конечный остаток",false);
+		endformat;
+    startformat(15);
+    	OutString(0,0,"Код товара",false);
+    	OutString(0,0,"Наименование товара",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin    		
+				OutString(0,0,curloc,false);
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin    		
+				OutString(0,0,curloc,false);
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin    		
+				OutString(0,0,curloc,false);
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin 
+				OutString(0,0,curloc,false);   		
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin  
+				OutString(0,0,curloc,false);  		
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin   
+				OutString(0,0,curloc,false); 		
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin  
+				OutString(0,0,curloc,false);  		
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+			pos = 0;
+			ExtractObj(locations,pos,curloc);
+			while(nonblank(curloc))begin  
+				OutString(0,0,curloc,false);  		
+				ExtractObj(locations,pos,curloc);
+			end;
+			OutString(0,0,"",false);
+		endformat;
+    
+    
+    sd = RepSpec.sStartDate;
+    ed = RepSpec.sEndDate;
+    class = RepSpec.f1;
+    item = RepSpec.f2;
+    
+    if(nonblank(item))then begin
+    	INr.Code = item;
+    	key = "Code";
+    end else begin
+    	INr.DispGroups = class;
+    	key = "MyDispGroups";
+    end;
+    
+    TrHs = true;    
+    while(loopkey(key,INr,1,TrHs))begin
+    	testf = true;
+    	ISr.Code = INr.Code;
+    	if(readfirstmain(ISr,1,true)==false)then begin
+    		testf = false;
+    	end;
+    	if(nonblank(class) and INr.DispGroups!=class)then begin TrHs = false; testf = false; end;
+    	if(nonblank(item) and INr.Code!=item)then begin TrHs = false; testf = false; end;
+    	
+    	
+    	if(testf)then begin
+				pos = 0;
+				acnt = 0;
+    		ExtractObj(locations,pos,curloc);
+    		while(nonblank(curloc))begin    		
+      		ItemStockIHSerch(INr.Code,curloc,sd,ed,qty_start,pu_qty,sm_poz_qty,sm_neg_qty,iv_poz_qty,iv_neg_qty,sd_qty,qty_end,acnt);
+      		total_qty_start[acnt] = total_qty_start[acnt] + qty_start[acnt];
+      		total_pu_qty[acnt] = total_pu_qty[acnt] + pu_qty[acnt];
+      		total_sm_poz_qty[acnt] = total_sm_poz_qty[acnt] + sm_poz_qty[acnt];
+      		total_sm_neg_qty[acnt] = total_sm_neg_qty[acnt] + sm_neg_qty[acnt];
+      		total_iv_poz_qty[acnt] = total_iv_poz_qty[acnt] + iv_poz_qty[acnt];
+      		total_iv_neg_qty[acnt] = total_iv_neg_qty[acnt] + iv_neg_qty[acnt];
+      		total_sd_qty[acnt] = total_sd_qty[acnt] + sd_qty[acnt];
+      		total_qty_end[acnt] = total_qty_end[acnt] + qty_end[acnt];
+      		
+    			acnt = acnt + 1;
+    			ExtractObj(locations,pos,curloc);
+    		end;
+    		
+    		nonzerro = false;
+    		For(i=0;i<acnt;i=i+1) begin
+	  			if(qty_start[i]!=0 or pu_qty[i]!=0 or sm_poz_qty[i]!=0 or sm_neg_qty[i]!=0 or iv_poz_qty[i]!=0 or iv_neg_qty[i]!=0 or sd_qty[i]!=0 or qty_end[i]!=0)then begin
+	  				nonzerro = true;
+	  			end;
+				end; 
+    		
+    		If(nonzerro)then begin
+					startformat(15);
+						outstring(0,0,INr.Code,false);
+						outstring(0,0,INr.Name,false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,qty_start[i],false);
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,pu_qty[i],false);//PU
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,sm_poz_qty[i],false);//SM+
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,iv_poz_qty[i],false);//IV+
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,iv_neg_qty[i],false);//IV-
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,sm_neg_qty[i],false);//SM-
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,sd_qty[i],false);//SD
+						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,qty_end[i],false);//End
+						end; 
+					endformat;
+				end;
+	   	end;
+    end;
+    For(i=0;i<acnt;i=i+1) begin
+			subtotal_qty_start = subtotal_qty_start + total_qty_start[i];
+			subtotal_pu_qty = subtotal_pu_qty + total_pu_qty[i];
+			subtotal_sm_poz_qty = subtotal_sm_poz_qty + total_sm_poz_qty[i];
+			subtotal_sm_neg_qty = subtotal_sm_neg_qty + total_sm_neg_qty[i];
+			subtotal_iv_poz_qty = subtotal_iv_poz_qty + total_iv_poz_qty[i];
+			subtotal_iv_neg_qty = subtotal_iv_neg_qty + total_iv_neg_qty[i];
+			subtotal_sd_qty = subtotal_sd_qty + total_sd_qty[i];
+			subtotal_qty_end = subtotal_qty_end + total_qty_end[i];
+		end; 
+		startformat(15);
+			outstring(0,0,"Всего по складам",false);
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_qty_start[i],false);//Begin
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_pu_qty[i],false);//PU
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_sm_poz_qty[i],false);//SM+
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_iv_poz_qty[i],false);//IV+
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_iv_neg_qty[i],false);//IV-
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_sm_neg_qty[i],false);//SM-
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_sd_qty[i],false);//SD
+			end; 
+			outstring(0,0,"",false);
+			For(i=0;i<acnt;i=i+1) begin
+				outstring(0,0,total_qty_end[i],false);//End
+			end; 
+		endformat;
+		startformat(15);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Начальный остаток",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_qty_start,false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Поступило",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_pu_qty,false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Поступило внутр.",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_sm_poz_qty,false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Возврат клиентов",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_iv_poz_qty,false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Отпущено",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_iv_neg_qty,false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Отпущено внутр.",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_sm_neg_qty,false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Credit note",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_sd_qty,false);
+    	OutString(0,0,"",false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"Всего: Конечный остаток",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,subtotal_qty_end,false);
+		endformat;
+		
+		
+    EndJob;
+  return;
+end;

@@ -1,0 +1,614 @@
+external inner procedure ExtractObj(string,var Integer,var string);
+external inner procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);
+external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, 19 June 2013 13:43:37
+
+
+
+procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,
+                           var val ivshtotsum,var val ivshpricesum,var val putotsum,var val sdtotsum,var val smpozitivtotsum,
+                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay)
+begin
+  record ItemHistVc IHr;
+  record SHVc SHr;
+  row SHVc SHrw;  
+  record IVVc IVr;
+  row IVVc IVrw;
+  Boolean TrHs,testf;
+  string 50 key;
+  integer kint;
+  record INVc INr;
+  val incost,ihcost;
+  string 100 oldartcode,oldfilename;
+  longint oldsernr;
+  integer oldrow;
+  record SDVc SDr;
+  record StandProblemVc SPr;
+  integer spi,oldinvalid;
+  boolean findf,testf1;
+ 	record ItemStatusVc ISr;
+ 	integer gi;
+ 	record ORVc ORr;
+ 	row ORVc ORrw;
+ 	val fr,to1,to2,br1,br2,ivfr,ivto;
+  string 20 curncy;
+	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
+  Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
+  Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
+  record RetVc Retr;
+  row RetVc Retrw;
+  
+  
+	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
+	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
+	
+ 	
+  spi=1;
+  
+  ISr.Code = item;
+	ISr.Location = ";;;";
+	readfirstmain(ISr,2,true);
+	inpo = inpo + ISr.POUnOKQty;
+  
+  IHr.ArtCode = item;
+  INr.Code = item;
+  readfirstmain(INr,1,true);
+  incost = INr.InPrice;
+  TrHs = true;
+    key = "ArtCode";
+    kint = 1;
+  if(nonblank(location))then begin
+    key = "ArtCodeLoc";
+    kint = 3;
+    IHr.Location = location;
+  end;
+  
+  while (LoopKey(key,IHr,kint,TrHs)) begin
+    ihcost = IHr.TotCostPrice;
+    if(ihcost==0)then begin
+      //ihcost = incost;
+    end;
+    testf = true;
+    testf1 = true;
+    if(IHr.FileName=="IVVc" and oldartcode==IHr.ArtCode and oldsernr==IHr.TransNr and oldrow==IHr.Row and oldfilename==IHr.FileName)then begin
+      testf1 = false;
+      if(oldinvalid!=0)then begin
+      	testf = false;
+      end;
+    end;
+    
+    oldartcode = IHr.ArtCode;
+    oldsernr = IHr.TransNr;
+    oldrow = IHr.Row;
+    oldinvalid = IHr.Invalid;
+    oldfilename = IHr.FileName;
+    
+    if IHr.ArtCode!=item or IHr.TransDate>ed then begin
+      testf = false;
+      TrHs = false;
+    end;
+    if IHr.Invalid!=0 then begin
+      testf = false;
+    end;
+    if(nonblank(location))then begin
+      if IHr.Location!=location then begin
+        testf = false;
+        TrHs = false;
+      end;
+    end;
+    if testf then begin
+      if IHr.TransDate<sd then begin
+        switch (IHr.FileName) begin
+          case "IVVc":
+            if IHr.StockAffectf==1 then begin
+              if IHr.Qty>=0 then begin
+                totcostsd = totcostsd + ihcost;
+              end else begin
+                totcostsd = totcostsd + (-ihcost);
+              end;
+            end;
+          case "PUVc":
+            totcostsd = totcostsd + ihcost;
+          case "SHVc":
+            totcostsd = totcostsd + (-ihcost);
+          case "SDVc":
+            totcostsd = totcostsd + (-ihcost);
+          case "StockMovVc":
+            if IHr.Qty>=0 then begin
+              totcostsd = totcostsd + ihcost;
+            end else begin
+              totcostsd = totcostsd + (-ihcost);
+            end;
+          case "RetVc":
+            totcostsd = totcostsd + ihcost;
+          case "RetPUVc":
+            totcostsd = totcostsd + (-ihcost);
+        end;
+      end else begin
+        switch (IHr.FileName) begin
+          case "IVVc":
+            qty = qty+1;
+						if IHr.Qty>=0 then begin
+							IVr.SerNr = IHr.TransNr;
+							if (ReadFirstMain(IVr,1,true) and testf1) then begin
+								ivfr = 1; ivto = 1;
+								fr = 1; to1 = 1;
+								if(IVr.CurncyCode!=curncy)then begin
+									ivfr = IVr.FrRate;
+									ivto = IVr.ToRateB1;
+									if(ivfr==0 or ivto==0)then begin
+										ivfr = 1;	ivto = 1;
+									end;
+									GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;	to1 = 1;
+									end;
+								end;
+								MatRowGet(IVr,IHr.Row,IVrw);
+								retsum = retsum - IVrw.Sum/ivfr*ivto*fr/to1;
+							end;						
+						end else begin
+							IVr.SerNr = IHr.TransNr;
+							if (ReadFirstMain(IVr,1,true)and testf1) then begin
+								ivfr = 1; ivto = 1;
+								fr = 1; to1 = 1;
+								if(IVr.CurncyCode!=curncy)then begin
+									ivfr = IVr.FrRate;
+									ivto = IVr.ToRateB1;
+									if(ivfr==0 or ivto==0)then begin
+										ivfr = 1;	ivto = 1;
+									end;
+									GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;	to1 = 1;
+									end;
+								end;
+								MatRowGet(IVr,IHr.Row,IVrw);
+								ivshpricesum = ivshpricesum + IVrw.Sum/ivfr*ivto*fr/to1;
+							end;
+						end;
+            if IHr.StockAffectf==1 then begin
+              if IHr.Qty>=0 then begin
+                ivtotsum = ivtotsum + ihcost; 
+                totcosted = totcosted + ihcost;
+                
+              end else begin
+                ivshtotsum = ivshtotsum + ihcost;
+                totcosted = totcosted + (-ihcost);                
+                IVr.SerNr = IHr.TransNr;
+              end;
+            end;
+          case "PUVc":
+            putotsum = putotsum + ihcost;
+            totcosted = totcosted + ihcost;
+          case "SHVc":
+            ivshtotsum = ivshtotsum + ihcost;
+            totcosted = totcosted + (-ihcost);
+            SHr.SerNr = IHr.TransNr;
+            if ReadFirstMain(SHr,1,true) then begin
+            	ORr.SerNr = SHr.OrderNr;
+            	if(readfirstmain(ORr,1,true))then begin
+								MatRowGet(SHr,IHr.Row,SHrw);
+								MatRowGet(ORr,SHrw.OrdRow,ORrw);
+								ivfr = 1; ivto = 1;
+								fr = 1; to1 = 1;
+								if(ORr.CurncyCode!=curncy)then begin
+									ivfr = ORr.FrRate;
+									ivto = ORr.ToRateB1;
+									if(ivfr==0 or ivto==0)then begin
+										ivfr = 1;	ivto = 1;
+									end;
+									GetFullCurncyRate(curncy,ORr.OrdDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;	to1 = 1;
+									end;
+								end;
+								if(ORrw.Invd>ORrw.Shipd2)then begin
+									ORrw.Invd=ORrw.Shipd2;
+								end;
+								qtynotpay = qtynotpay + (ORrw.Shipd2-ORrw.Invd)*(-IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
+  						end;
+              //ivshpricesum = ivshpricesum - IHr.Qty * ORrw.Sum/ORrw.Quant; 
+            end;
+          case "SDVc":
+          		SDr.SerNr = IHr.TransNr;
+          		if ReadFirstMain(SDr,1,true) then begin
+              SPr.Code = "";
+              findf = true;
+              spi=1;
+              while(loopmain(SPr,1,true))begin
+              		if(SPr.Code==SDr.Reason)then begin
+              			sdcost[spi]=sdcost[spi]+ihcost;
+              			findf = false;
+              		end;
+              		spi=spi+1;
+              end;
+              resetloop(SPr);
+              if(findf)then begin
+              		sdcost[0]=sdcost[0]+ihcost;
+              end;
+            end;
+	          sdtotsum = sdtotsum + ihcost;
+            totcosted = totcosted + (-ihcost);
+          case "StockMovVc":
+            if IHr.Qty>0 then begin
+              smpozitivtotsum = smpozitivtotsum + ihcost; 
+              totcosted = totcosted + ihcost;
+            end else begin
+              smnegativtotsum = smnegativtotsum + ihcost; 
+              totcosted = totcosted + (-ihcost);
+            end;
+          case "RetVc":
+						Retr.SerNr = IHr.TransNr;
+						if ReadFirstMain(Retr,1,true) then begin
+							ORr.SerNr = Retr.OrdNr;
+							matrowget(Retr,IHr.Row,Retrw);
+							if(readfirstmain(ORr,1,true))then begin
+								MatRowGet(ORr,Retrw.OrdRow,ORrw);
+								ivfr = 1; ivto = 1;
+								fr = 1; to1 = 1;
+								if(ORr.CurncyCode!=curncy)then begin
+									ivfr = ORr.FrRate;
+									ivto = ORr.ToRateB1;
+									if(ivfr==0 or ivto==0)then begin
+										ivfr = 1;	ivto = 1;
+									end;
+									GetFullCurncyRate(curncy,ORr.OrdDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;	to1 = 1;
+									end;
+								end;
+								if(ORrw.Invd>ORrw.Shipd2)then begin
+									ORrw.Invd=ORrw.Shipd2;
+								end;
+								qtynotpay = qtynotpay - (ORrw.Shipd2-ORrw.Invd)*(IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
+							end;
+						end;
+            totcosted = totcosted + ihcost;
+          case "RetPUVc":
+            totcosted = totcosted + (-ihcost);
+        end;
+      end;
+    end;
+  end;
+  return;
+end;
+
+global
+procedure SumCostByPeriodRn(record RcVc RepSpec)
+begin
+  record INVc INr,IN2r;
+  Date sd,ed;
+  string 20 curgr,curgr1;
+  integer rownr,qty;
+  val totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,retsum,qtynotpay;
+  array val totals;
+  record DIVc DIr;
+  string 100 tstr,location;
+  boolean calc;
+  array val sdcost,sdtotal;
+  record StandProblemVc SPr; 
+  integer spi,j;
+  val inpo,totalinpo;
+  integer gi;
+  val rate,fr,to1,to2,br1,br2;
+  
+  spi = 1;
+   
+  location = RepSpec.f1;
+  
+  rate = 1;
+  if(nonblank(RepSpec.f2))then begin
+    fr = 1; to1 = 1;
+		GetFullCurncyRate(RepSpec.f2,CurrentDate,fr,to1,to2,br1,br2);
+		if(fr==0 or to1==0)then begin
+			fr = 1;	to1 = 1;
+		end;
+		rate = fr/to1;
+  end;
+  SetLangMode(LangRussian,"RUS",0);
+  
+  StartReportNoHeaderJob("Суммарный отчет за период");
+  IF(blank(RepSpec.f2) and currentcompany!=1)THEN BEGIN
+    StartFormat(15);
+      OutString(0,0,"Укажите пожалуйста валюту в определении отчета",false);
+    EndFormat;
+  end else begin
+      sd = RepSpec.sStartDate;
+      ed = RepSpec.sEndDate;
+    
+      if blankdate(sd) then begin
+        StartFormat(15);
+        OutString(0,0,"Определите период",false);
+        EndFormat;
+      end else begin 
+        StartFormat(15);
+        OutString(0,0,"Суммарный отчет за период",false);
+        EndFormat;
+      
+        StartFormat(15);
+            OutString(0,0,"Период:",false);
+            OutString(100,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+        endformat;
+        if(nonblank(location))then begin
+          StartFormat(15);
+              OutString(0,0,"Склад:",false);
+              OutString(100,0,location,false);
+          endformat;
+        end else begin
+            StartFormat(15);
+              OutString(0,0,"Склад:",false);
+              OutString(100,0,"По всем складам",false);
+          endformat;
+        end;
+      
+        gray_divider(0,1);
+      
+        StartFormat(15);
+        OutString(0,0,"Классификация",false);
+        OutString(45,0,"Начальный остаток",false);
+        OutString(70,0,"Товар в пути",false);
+        OutString(90,0,"Поступления",false);
+        OutString(135,0,"Поступления внутр.",false);
+        OutString(180,0,"Возврат покупателей",false);
+        OutString(200,0,"Возврат покупателей(Цена)",false);
+        OutString(225,0,"Отпущено(Себестоимость)",false);
+        OutString(270,0,"Отпущено(Цена)",false);
+        OutString(315,0,"Отпущено внутр.",false);
+        OutString(360,0,"Списание",false);
+        OutString(370,0,"Отгружено без оплаты",false);
+        SPr.Code = "";
+        while(loopmain(SPr,1,true))begin
+            OutString(390,0,SPr.ShortDesc,false);
+            spi=spi+1;
+        end;
+        OutString(405,0,"Конечный остаток",false);
+        EndFormat;
+        qty=0;
+        IN2r.DispGroups = "";
+        if (ReadLastKey("MyDispGroups",IN2r,1,false)) then begin
+          curgr=IN2r.DispGroups;
+          gi=0;
+          ExtractObj(IN2r.DispGroups,gi,curgr);
+          if(currentcompany==9)then begin
+            ExtractObj(INr.DispGroups,gi,curgr1);
+            DIr.Code = curgr1;
+            if(readfirstmain(DIr,1,true))then begin
+              if(DIr.CType!="BRAND")then begin
+                curgr1 = "";
+              end;
+            end;
+          end;
+        end;
+        curgr = "";
+        rownr = 1;
+        totcostsd = 0;
+        ivtotsum = 0;
+        ivshtotsum = 0;
+        ivshpricesum = 0;
+        putotsum = 0;
+        sdtotsum = 0;
+        smpozitivtotsum = 0;
+        smnegativtotsum = 0;
+        totcosted = 0;
+        retsum = 0;
+        qtynotpay = 0;
+        inpo = 0;
+        INr.DispGroups = "";
+        calc = true;
+        while (LoopKey("MyDispGroups",INr,1,true)) begin
+          gi=0;
+          ExtractObj(INr.DispGroups,gi,curgr1);
+          if(currentcompany==9)then begin
+            ExtractObj(INr.DispGroups,gi,curgr1);
+            DIr.Code = curgr1;
+            if(readfirstmain(DIr,1,true))then begin
+              if(DIr.CType!="BRAND")then begin
+                curgr1 = "";
+              end;
+            end;
+          end;
+          if (curgr!=curgr1) then begin          
+            calc = false;
+          end;
+          if(calc==false)then begin
+          
+          
+            StartFormat(15);
+            //OutString(0,0,rownr,false);
+          
+            tstr = "";
+            if(nonblank(curgr))then begin
+              DIr.Code = curgr;
+              if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
+            end else begin
+              tstr = "---";
+            end;
+            if(tstr=="---")then begin
+              //messagebox(0,INr.Code & "  1  " & ivshpricesum);
+            end;
+            //OutString(15,0,curgr,false);
+            OutString(0,0,tstr,false);
+            OutString(45,0,totcostsd*rate,false);
+            OutString(70,0,inpo,false);
+            totalinpo = totalinpo + inpo;
+            totals[0] = totals[0] + totcostsd*rate;
+            OutString(90,0,putotsum*rate,false);
+            totals[1] = totals[1] + putotsum*rate;
+            OutString(135,0,smpozitivtotsum*rate,false);
+            totals[2] = totals[2] + smpozitivtotsum*rate;
+            OutString(180,0,ivtotsum*rate,false);
+            OutString(200,0,retsum*rate,false);// Edit ************************** Monday, 8 October 2012 10:21:45
+            totals[3] = totals[3] + ivtotsum*rate;
+            totals[9] = totals[9] + retsum*rate;
+            OutString(225,0,ivshtotsum*rate,false);
+            totals[4] = totals[4] + ivshtotsum*rate;
+            OutString(270,0,ivshpricesum*rate,false);
+            totals[5] = totals[5] + ivshpricesum*rate;
+            OutString(315,0,smnegativtotsum*rate,false);
+            totals[6] = totals[6] + smnegativtotsum*rate;
+            OutString(360,0,sdcost[0]*rate,false);         
+            totals[7] = totals[7] + sdcost[0]*rate;
+            OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
+            totals[8] = totals[8] + qtynotpay*rate;
+            totcosted = totcosted + totcostsd;
+            for(j=1;j<spi;j=j+1)begin
+              OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
+              sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
+            end;
+            OutString(405,0,totcosted*rate,false);
+            totals[10] = totals[10] + totcosted*rate;
+            EndFormat;
+            totcostsd = 0;
+            ivtotsum = 0;
+            ivshtotsum = 0;
+            ivshpricesum = 0;
+            putotsum = 0;
+            sdtotsum = 0;
+            smpozitivtotsum = 0;
+            smnegativtotsum = 0;
+            totcosted = 0;
+            qtynotpay = 0;// Edit ************************** Monday, 13 January 2014 13:37:23
+            retsum = 0;
+            inpo = 0;
+            rownr = rownr + 1;
+            for(j=0;j<spi;j=j+1)begin
+                sdcost[j]=0;
+            end;
+            calc = true;
+            curgr = INr.DispGroups;
+            gi=0;
+            ExtractObj(INr.DispGroups,gi,curgr);
+            if(currentcompany==9)then begin
+            ExtractObj(INr.DispGroups,gi,curgr);
+            DIr.Code = curgr1;
+            if(readfirstmain(DIr,1,true))then begin
+              if(DIr.CType!="BRAND")then begin
+                curgr1 = "";
+              end;
+            end;
+          end;
+          end;
+          if(calc)then begin
+          
+            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay);
+            if(blank(INr.DispGroups))then begin
+              //messagebox(0,INr.Code & "  2  " & ivshpricesum);
+            end;
+          end;
+         end; 
+      
+          StartFormat(15);
+            //OutString(0,0,rownr,false);
+            tstr = "";
+            if(nonblank(curgr))then begin
+              DIr.Code = curgr;
+              if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
+            end else begin
+              tstr = "---";
+            end;
+            if(tstr=="---")then begin
+              //messagebox(0,INr.Code & "  2  " & ivshpricesum);
+            end;
+            //OutString(15,0,curgr,false);
+            OutString(0,0,tstr,false);
+            OutString(45,0,totcostsd*rate,false);
+            OutString(70,0,inpo,false);
+            totalinpo = totalinpo + inpo;
+            totals[0] = totals[0] + totcostsd*rate;
+            OutString(90,0,putotsum*rate,false);
+            totals[1] = totals[1] + putotsum*rate;
+            OutString(135,0,smpozitivtotsum*rate,false);
+            totals[2] = totals[2] + smpozitivtotsum*rate;
+            OutString(180,0,ivtotsum*rate,false);
+            OutString(200,0,retsum*rate,false);// Edit ************************** Monday, 8 October 2012 10:21:45
+            totals[3] = totals[3] + ivtotsum*rate;
+            totals[9] = totals[9] + retsum*rate;
+            OutString(225,0,ivshtotsum*rate,false);
+            totals[4] = totals[4] + ivshtotsum*rate;
+            OutString(270,0,ivshpricesum*rate,false);
+            totals[5] = totals[5] + ivshpricesum*rate;
+            OutString(315,0,smnegativtotsum*rate,false);
+            totals[6] = totals[6] + smnegativtotsum*rate;
+          
+            OutString(360,0,sdcost[0]*rate,false);
+            totals[7] = totals[7] + sdcost[0]*rate;
+            OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
+            totals[8] = totals[8] + qtynotpay*rate;
+            totcosted = totcosted + totcostsd;
+            for(j=1;j<spi;j=j+1)begin
+              OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
+              sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
+            end;
+          
+            OutString(405,0,totcosted*rate,false);
+            totals[10] = totals[10] + totcosted*rate;
+            EndFormat;
+            totcostsd = 0;
+            ivtotsum = 0;
+            ivshtotsum = 0;
+            ivshpricesum = 0;
+            putotsum = 0;
+            sdtotsum = 0;
+            smpozitivtotsum = 0;
+            smnegativtotsum = 0;
+            totcosted = 0;
+            retsum = 0;
+            rownr = rownr + 1;
+            calc = true;
+            curgr = INr.DispGroups;
+            gi=0;
+            ExtractObj(INr.DispGroups,gi,curgr);
+            if(currentcompany==9)then begin
+              ExtractObj(INr.DispGroups,gi,curgr);
+              DIr.Code = curgr1;
+              if(readfirstmain(DIr,1,true))then begin
+                if(DIr.CType!="BRAND")then begin
+                  curgr1 = "";
+                end;
+              end;
+            end;
+            inpo = 0;
+          
+        Black_Divider(0,1);
+      
+        StartFormat(15);
+        OutString(0,0,"Итого",false);
+        //OutString(15,0,"",false);
+        OutString(45,0,totals[0],false);
+        OutString(70,0,totalinpo,false);
+        OutString(90,0,totals[1],false);
+        OutString(135,0,totals[2],false);
+        OutString(180,0,totals[3],false);
+        OutString(200,0,totals[9],false);// Edit ************************** Monday, 8 October 2012 10:22:20
+        OutString(225,0,totals[4],false);
+        OutString(270,0,totals[5],false);
+        OutString(315,0,totals[6],false);
+        OutString(360,0,totals[7],false);
+        OutString(370,0,totals[8],false);
+        for(j=1;j<spi;j=j+1)begin
+          OutString(390,0,sdtotal[j],false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
+        end;
+        OutString(405,0,totals[10],false);
+        EndFormat;
+      
+        StartFormat(15);
+        OutString(0,0,"Баланс сумма",false);
+        OutString(15,0,"",false);
+        OutString(45,0,"",false);
+        OutString(90,0,"",false);
+        OutString(135,0,"",false);
+        OutString(180,0,"",false);
+        OutString(200,0,"",false);// Edit ************************** Monday, 8 October 2012 10:22:20
+        OutString(225,0,"",false);
+        OutString(270,0,totals[5]-totals[9],false);
+        OutString(315,0,"",false);
+        OutString(360,0,"",false);
+        OutString(370,0,"",false);
+        OutString(405,0,"",false);
+        EndFormat;
+      
+      end;   
+    end;
+    EndJob;
+  return;
+end;

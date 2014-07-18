@@ -1,0 +1,428 @@
+external inner function Boolean SetInSet2(string,string);
+external inner function roundmode SetRoundModeD(Integer);// Edit ************************** Tuesday, 1 April 2014 17:03:06
+
+global
+updating function LongInt IVVcRecordCheck(record IVVc IVp,record IVVc IV2p,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  Integer insertmode,updatemode;
+  record IVrsVc IVrsr,IV1rsr;
+  record INVc INr;
+  record LocalMachineVc LMr;
+  LongInt sernr;
+  integer i,rwcnt;
+  row IVVc IVpw;
+  
+  res = 0;
+  
+  SetLangMode(LangRussian,"RUS",0);
+ 
+  res=inner.IVVcRecordCheck(IVp,IV2p,stat,long4);
+  if res!=-1 then begin
+    insertmode = 1;//Rs_insert
+    updatemode = 2;//Rs_update
+    if IVp.OKFlag==1 and (stat==insertmode or IV2p.OKFlag==0) then begin
+      rwcnt = MatRowCnt(IVp);
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVp,i,IVpw);
+        IV1rsr.SerNr = 999999999;
+        if ReadLastMain(IV1rsr,1,false) then begin
+          sernr = IV1rsr.SerNr + 1;
+        end else begin
+          sernr = 1;
+        end;
+        if nonblank(IVpw.ArtCode) then begin
+          RecordNew(IVrsr);
+          IVrsr.SerNr = sernr;
+          IVrsr.IVNr = IVp.SerNr;
+          IVrsr.TransDate = IVp.TransDate;
+          IVrsr.RowNr = i;
+          IVrsr.ArtCode = IVpw.ArtCode;
+          IVrsr.Spec = IVpw.Spec;
+          if IVp.InvType==3 then begin
+            IVrsr.Quant = -IVpw.Quant;
+            IVrsr.FIFO = -IVpw.FIFO;
+            IVrsr.Sum = -IVpw.Sum;
+          end else begin
+            IVrsr.Quant = IVpw.Quant;
+            IVrsr.FIFO = IVpw.FIFO;
+            IVrsr.Sum = IVpw.Sum;
+          end;
+          INr.Code = IVpw.ArtCode;
+          if ReadFirstMain(INr,1,true) then begin
+            IVrsr.Group = INr.Group;
+            IVrsr.DispGroups = INr.DispGroups;
+          end;
+          IVrsr.MachineName = IVp.MachineName;
+          if RecordInsert(IVrsr,true) then begin 
+          end;
+        end;
+      end;
+    end;
+  end;
+
+  LIVVcRecordCheck:;
+  IVVcRecordCheck = res;
+  RETURN;
+END;  
+
+
+global
+updating function LongInt IVVcRecordImportAfter(var record IVVc IVp,record IVVc IV2p,LongInt long3,LongInt long4)
+BEGIN
+  LongInt res;
+  record IVrsVc IVrsr,IV1rsr;
+  record INVc INr;
+  record LocalMachineVc LMr;
+  LongInt sernr;
+  integer i,rwcnt;
+  row IVVc IVpw;
+  
+  res = inner.IVVcRecordImportAfter(IVp,IV2p,long3,long4);
+  if res==-1 then begin
+    if (IVp.OKFlag==1 and IVp.Invalid==0) then begin
+      rwcnt = MatRowCnt(IVp);
+      IV1rsr.SerNr = 999999999;
+			if (ReadLastMain(IV1rsr,1,false)) then begin
+				sernr = IV1rsr.SerNr + 1;
+			end else begin
+				sernr = 1;
+			end;
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVp,i,IVpw);
+        if (nonblank(IVpw.ArtCode)) then begin
+          RecordNew(IVrsr);
+          IVrsr.SerNr = sernr;
+          IVrsr.IVNr = IVp.SerNr;
+          IVrsr.TransDate = IVp.TransDate;
+          IVrsr.RowNr = i;
+          IVrsr.ArtCode = IVpw.ArtCode;
+          IVrsr.Spec = IVpw.Spec;
+          if IVp.InvType==3 then begin
+            IVrsr.Quant = -IVpw.Quant;
+            IVrsr.FIFO = -IVpw.FIFO;
+            IVrsr.Sum = -IVpw.Sum;
+          end else begin
+            IVrsr.Quant = IVpw.Quant;
+            IVrsr.FIFO = IVpw.FIFO;
+            IVrsr.Sum = IVpw.Sum;
+          end;
+          INr.Code = IVpw.ArtCode;
+          if ReadFirstMain(INr,1,true) then begin
+            IVrsr.Group = INr.Group;
+            IVrsr.DispGroups = INr.DispGroups;
+          end;
+          IVrsr.MachineName = IVp.MachineName;
+          RecordInsert(IVrsr,true);
+          sernr = sernr + 1;
+        end;
+      end;
+    end;
+  end;
+  
+  IVVcRecordImportAfter = res; 
+  RETURN;
+END;
+
+procedure INConsDClasspateCode(integer wn, integer changed)
+begin
+	record INConsVc INCr;
+	record INVc INr;
+	
+	if(changed>0)then begin
+		getwindowrecord(wn,INCr);
+		INr.Code = INCr.Code;
+		if(readfirstmain(INr,1,true))then begin
+			INCr.Name = INr.Name;
+			putwindowrecord(wn,INCr);
+		end;
+	end;
+	
+return
+end;
+
+global
+function Boolean INConsDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+BEGIN
+  Boolean res;
+  
+  switch (fieldname) begin
+  	case "Code": INConsDClasspateCode(wn,changed);
+  end;
+  
+return;
+end;
+
+global function boolean HasOpenActivity(string user)
+begin
+	record ActVc Actr;
+	boolean TrHs,testf,res;
+	
+	res = false;
+	
+	Actr.OKFlag=0;
+	TrHs = true;
+	While(loopkey("OKFlag",Actr,1,TrHs)) begin
+		testf = true;
+	  if(Actr.OKFlag>0)then begin TrHs=false; end;	  
+	  
+	  if(TrHs)then begin
+	  	if(SetInSet2(user,Actr.MainPersons))then begin
+	  		res = true;
+	  	end;
+	  end;	
+	end; 
+	
+	HasOpenActivity = res;
+
+return;
+end;
+
+global procedure ExportRegIVDsm()
+begin
+	record IVVc IVr;
+	integer wn;
+	area arec;
+	
+	setareazerosize(arec);
+	wn = curwindow;
+	if(fileexists("IVBack/IV.txt"))then begin
+	end else begin
+		createfile("IVBack/IV.txt");
+		closefile;
+	end;
+	getwindowrecord(wn,IVr);
+	addrecordtoarea(IVr,"IVVc",arec);
+	writeareatofile(arec,"IVBack/IV.txt",1);
+	NewLine;
+	
+	
+return;
+end;
+
+
+
+procedure CalcEANCHS(var string str)
+begin
+integer c1,c2,lenth,i,chsum,litle;
+val sum;
+  sum = 0;
+  lenth = len(str);
+  if (lenth==12)then begin
+    for(i=0;i<12;i=i+2)begin
+      c1 = evaltoval(mid(str,i,1));
+      c2 = evaltoval(mid(str,i+1,1));
+      c2=c2*3;
+      sum = sum+c1+c2;
+    end;
+    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
+      litle = round(sum/10,SetRoundModeD(0))-1;
+    end else begin
+      litle = round(sum/10,SetRoundModeD(0));
+    end;
+    chsum  = 10-(10*(sum/10-litle));
+    if(chsum==10) then begin chsum = 0; end;
+    str = str & chsum;
+  end else begin
+    str = "";
+  end;
+  
+return;
+end;
+
+global updating procedure CreateLoyaltyCardRemote(record CUVc CUr,var record LoyaltyCardVc LCr)
+begin
+	record LoyaltyCardVc LoyaltyCardr;
+	string 50 code;
+	longint newcode;
+
+	LoyaltyCardr.SerNr = "ID001";
+	loopmain(LoyaltyCardr,1,true);
+	stepback(LoyaltyCardr);
+	stepback(LoyaltyCardr);
+	loopmain(LoyaltyCardr,1,true);
+	code = left(LoyaltyCardr.SerNr,12);
+	code = right(code,9);
+	newcode = stringtolongint(code);
+	newcode = newcode+1;
+	code = "999" & newcode;
+	CalcEANCHS(code);
+	LCr.SerNr = code;
+	LCr.CustCode = CUr.Code;
+	LCr.LCMLevel = "1";
+	LCr.StartDate = currentdate;
+	LCr.CustName = CUr.Name;
+	recordstore(LCr,true);
+	logtext(0,1);
+	
+return;
+end;
+
+/*global procedure SpamSendRClassReportDefaults(integer wn)
+begin
+	record RcVc RepSpec;
+	record UserVc User;
+	integer i;
+	string 20 loc;
+	
+	getwindowrecord(wn,RepSpec);
+	RepSpec.Media = mtPrinter;
+	RepSpec.repname = "SpamSendForm";
+  RepSpec.JobDf = 1;
+  PutWindowRecord(wn,RepSpec);
+return;
+end;*/
+/*
+global
+procedure SpamSendRClassOnOpenWindow(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  
+  DeselectWindow(wn,false);
+  ReportDefaults(RepSpec,"SpamSendRClass");  
+  SelectWindow(wn);
+  RETURN;
+END;
+*/
+
+global procedure OrderStatusInfoMn()
+begin
+	integer wn,nwn;
+	record RcVc RepSpec;
+	
+	
+	nwn = OpenWindow("OrderStatusInfoAClass",0,0,"","",RepSpec);
+	
+
+end;
+
+
+
+
+global
+updating function LongInt ExternalStoreVcRecordCheck(record ExternalStoreVc ESp,record ExternalStoreVc ES2p,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  
+  
+  res = 0;
+  if (blank(ESp.Code)) then begin
+    RecordCheckError(1058,ESp.Code,-1,"Code");      
+    res = -1; 
+    goto LExternalStoreVcRecordCheck;
+  end;
+  
+
+  LExternalStoreVcRecordCheck:;
+  ExternalStoreVcRecordCheck = res;
+  RETURN;
+END; 
+
+updating procedure ExtSalesUpdateLoyaltyCard(string custcode,val sum)
+begin
+ record LoyaltyCardVc LCr;
+ 
+ LCr.CustCode = custcode;
+ if(readfirstkey("ActCustCode",LCr,1,true))then begin
+ 	LCr.PointsBalance = LCr.PointsBalance + sum;
+ 	recordstore(LCr,true);
+ end;
+
+return;
+end;
+
+
+global
+updating function LongInt ExternalSalesVcRecordRemoveTest(record ExternalSalesVc ESp,record ExternalSalesVc ES2p,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  
+  res = 1;
+  
+  if(ESp.OKFlag==1)then begin
+  	if (stat>0) then begin
+			MessageBox(1560,"");
+			res = 0;
+		end;
+  	
+  end;
+  ExternalSalesVcRecordRemoveTest = res;
+  RETURN;
+END;
+
+
+global
+updating function LongInt ExternalSalesVcRecordDefaults(record ExternalSalesVc ESp,record ExternalSalesVc ES2p,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+ 
+  ESp.TransDate = currentdate;
+	
+  ExternalSalesVcRecordDefaults = res;
+  RETURN;
+END; 
+
+global
+updating function LongInt ExternalSalesVcRecordCheck(record ExternalSalesVc ESp,record ExternalSalesVc ES2p,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  Integer insertmode,updatemode;
+  record LoyaltyCardVc LCr;
+
+  res = 0;
+  
+  if (ESp.SerNr<0) then begin
+  	ESp.SerNr = NextSerNr("ExternalSalesVc",CurrentDate,-1,false,"");
+  end;
+  if (blank(ESp.CustCode)) then begin
+    RecordCheckError(1058,ESp.CustCode,-1,"CustCode");      
+    res = -1; 
+    goto LExternalSalesVcRecordCheck;
+  end;
+  if (blank(ESp.TransDate)) then begin
+    RecordCheckError(1058,ESp.TransDate,-1,"TransDate");      
+    res = -1; 
+    goto LExternalSalesVcRecordCheck;
+  end;
+  if (blank(ESp.Location)) then begin
+    RecordCheckError(1058,ESp.Location,-1,"Location");      
+    res = -1; 
+    goto LExternalSalesVcRecordCheck;
+  end;
+  if (ESp.Sum==0) then begin
+    RecordCheckError(1058,ESp.Sum,-1,"Sum");      
+    res = -1; 
+    goto LExternalSalesVcRecordCheck;
+  end;
+  if(ESp.OKFlag==1)then begin
+  	LCr.CustCode = ESp.CustCode;
+  	if(readfirstkey("ActCustCode",LCr,1,true)==false)then begin
+  		RecordCheckError(31003,ESp.CustCode,-1,"CustCode");      
+			res = -1; 
+			goto LExternalSalesVcRecordCheck;
+  	end;
+  end;
+  
+  
+	insertmode = 1;
+  updatemode = 2;
+  
+  if(stat==insertmode)then begin
+  	if(ESp.OKFlag==1)then begin
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum);
+		end;
+	end;
+	if(stat==updatemode)then begin
+  	if(ESp.OKFlag==1 and ES2p.OKFlag==0)then begin
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum);
+		end;
+		if(ESp.OKFlag==0 and ES2p.OKFlag==1)then begin
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,-ESp.Sum);
+		end;
+	end;
+	
+  LExternalSalesVcRecordCheck:;
+  ExternalSalesVcRecordCheck = res;
+  RETURN;
+END; 

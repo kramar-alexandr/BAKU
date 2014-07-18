@@ -1,0 +1,537 @@
+external procedure ExtractObj(string,var Integer,var string);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external procedure ExtractObj(string,var Integer,var string);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global procedure MatReportRClassReportDefaults(integer wn)
+begin
+	record LocalMachineBlock LMb;
+	record RcVc RepSpec;
+	
+	blockload(LMb);
+	
+	getwindowrecord(wn,RepSpec);
+	RepSpec.repname = "MatReportRn";
+	RepSpec.f1 = LMb.DefLocation;
+  RepSpec.d1 = currentdate;
+  PutWindowRecord(wn,RepSpec);
+return;
+end;
+
+global procedure MatReportRn(record RcVc RepSpec)
+begin
+  string 100 item,location,findkey;
+  record INVc INr;
+  boolean TrHs,testf,TrHs1,testf1,TrHs2,testf2;
+  record DIVc DIr;
+  integer findint,pos;
+  string 100 class,classname;
+  record UserVc User;
+  boolean userlocation;
+  string 50 uloc,brand,model,classfind,curcode;
+  record SerBalVc SBr;
+  date frdate,todate;
+  val total_qty;
+  val total_cost,total_price;
+  record IVVc IVr;
+  row IVVc IVrw;
+  record LocationVc Locr;
+	val fr,to1,to2,br1,br2;
+	val payAZN,payUSD,payEUR,payTRM,ivsum;
+	val ccAZN,ccUSD,ccEUR;
+	integer i,mtrw;
+	val dolg;
+	record IPVc IPr;
+	row IPVc IPrw;
+	record ORVc ORr;
+	boolean posmat;
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	integer sign;
+	val totpayUSD,totpayEUR,totpayAZN,totccUSD,totccAZN,totccEUR,totpayTRM;
+	
+	location = RepSpec.f1;
+	//todate = RepSpec.d1;
+	
+	userlocation = false;
+  User.Code = currentuser;
+  if(readfirstmain(User,1,true))then begin
+  	if(nonblank(User.UserLocations) and usercanaction("AllowReportWithUserLoc",false))then begin
+  		userlocation = true;
+  		pos = 0;
+			ExtractObj(User.UserLocations,pos,uloc);
+			while (nonblank(uloc)) begin
+				if(uloc==location)then begin
+					userlocation = false;
+				end;
+				ExtractObj(User.UserLocations,pos,uloc);
+			end;
+  	end;
+  end;
+
+	
+  startreportnoheaderjob("Материальный отчет новый");
+		
+		
+		if(userlocation)then begin
+			startformat(15);
+				outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+			endformat;
+		end else begin
+			if(nonblank(location))then begin
+				Locr.Code = location;
+				readfirstmain(Locr,1,True);
+				startformat(15);
+					outstring(0,0,"Название салона",false);
+					outstring(0,0,Locr.Name,false);
+				endformat;
+				
+				todate = RepSpec.sStartDate;
+        while(todate<=RepSpec.sEndDate)begin
+				  
+				  total_qty = 0;
+          total_cost = 0;
+          total_price = 0;
+				  payAZN = 0;
+				  payUSD = 0;
+				  payEUR = 0;
+				  payTRM = 0;
+				  ivsum = 0;
+	        ccAZN = 0;
+	        ccUSD = 0;
+	        ccEUR = 0;
+				  dolg = 0;
+				  totpayUSD = 0;
+				  totpayEUR = 0;
+				  totpayAZN = 0;
+				  totccUSD = 0;
+				  totccAZN = 0;
+				  totccEUR = 0;
+				  totpayTRM = 0;
+				  
+				  
+          startformat(15);
+            outstring(0,0,"Материальный отчет за",false);
+            outstring(0,0,todate,false);
+          endformat;
+        
+          curcode = "EUR";
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"EUR:AZN",false);
+            outstring(0,0,fr & ":" & to1,false);
+          endformat;
+          curcode = "USD";
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"USD:AZN",false);
+            outstring(0,0,fr & ":" & to1,false);
+          endformat;
+          curcode = "CHF";
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"CHF:AZN",false);
+            outstring(0,0,fr & ":" & to1,false);
+          endformat;
+        
+        
+        
+          startformat(15);
+            outstring(0,0,"Код Ханса",false);
+            outstring(50,0,"Код поставщика",false);
+            outstring(150,0,"Категория",false);
+            outstring(200,0,"Наименование",false);
+            outstring(250,0,"кол-во",false);
+            outstring(300,0,"Долг",false);
+            outstring(300,0,"USD (per unit)",false);
+            outstring(350,0,"TOTAL USD",false);
+            outstring(400,0,"AZN (per unit)",false);
+            outstring(450,0,"TOTAL AZN",false);
+            outstring(500,0,"EUR (per unit)",false);
+            outstring(550,0,"TOTAL EUR",false);
+            outstring(600,0,"ТЕРМИНАЛ AZN(per unit)",false);
+            outstring(650,0,"TOTAL ТЕРМИНАЛ AZN",false);
+            //outstring(650,0,"TOTAL Bank EUR",false);
+            //outstring(650,0,"TOTAL Bank USD",false);
+            outstring(700,0,"Комментарий",false);
+          endformat;
+				
+				
+        
+          IVr.InvDate = todate;
+          IVr.Location = location;
+          TrHs = true;
+          resetloop(IVr);
+          while(loopkey("Location",IVr,2,TrHs))begin
+            testf = true;
+            if(IVr.Location!=location)then begin TrHs = false; testf = false; end;
+            if(IVr.InvDate!=todate)then begin TrHs = false; testf = false; end;
+            if(IVr.OKFlag==0)then begin testf = false; end;
+            if(IVr.Invalid==1)then begin testf = false; end;
+          
+            if(testf)then begin
+              payAZN = 0;
+              payUSD = 0;
+              payEUR = 0;
+              payTRM = 0;
+              ivsum = 0;
+              dolg = 0;
+              mtrw = matrowcnt(IVr);
+              For(i=0;i<mtrw;i=i+1) begin
+                matrowget(IVr,i,IVrw);
+                if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
+                  dolg = dolg + IVrw.Price;
+                end;
+                if(IVrw.stp==kInvoiceRowTypeCashPayment)then begin
+                  switch(IVrw.CurncyCode)begin
+                    case"AZN":payAZN = payAZN + IVrw.Sum;dolg = dolg + IVrw.Sum;
+                              totpayAZN = totpayAZN + IVrw.Sum;
+                    case"EUR":payEUR = payEUR + IVrw.Sum;
+                              totpayEUR = totpayEUR + IVrw.Sum;
+                              curcode = "EUR";
+                              GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                              dolg = dolg + IVrw.Sum*fr/to1;
+                    case"USD":payUSD = payUSD + IVrw.Sum;
+                              totpayUSD = totpayUSD + IVrw.Sum;
+                              curcode = "USD";
+                              GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                              dolg = dolg + IVrw.Sum*fr/to1;
+                  end;
+                end;
+                if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin
+                  payTRM = payTRM + IVrw.Sum;
+                  totpayTRM = totpayTRM + IVrw.Sum;
+                  dolg = dolg + IVrw.Sum;
+                end;
+                if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+                  if(IVrw.Quant>0)then begin
+                    ivsum = ivsum + IVrw.Sum;
+                  end;
+                end;
+              end; 
+              dolg = dolg - IVr.Sum4;
+              For(i=0;i<mtrw;i=i+1) begin
+                matrowget(IVr,i,IVrw);
+                INr.Code = IVrw.ArtCode;
+                readfirstmain(INr,1,true);
+                pos = 0;
+                classname = "";
+                class = "";
+                ExtractObj(INr.DispGroups,pos,class);
+                while(nonblank(class))begin
+                  DIr.Code = class;
+                  readfirstmain(DIr,1,true);
+                  if(DIr.CType=="TYPE")then begin
+                    classname = DIr.Name;
+                  end;
+                  ExtractObj(INr.DispGroups,pos,class);
+                end;
+                posmat = true;
+              
+                if(setinset("31",INr.DispGroups))then begin posmat = false; end;
+                if(setinset("32",INr.DispGroups))then begin posmat = false; end;
+                if(setinset("33",INr.DispGroups))then begin posmat = false; end;
+                if(setinset("34",INr.DispGroups))then begin posmat = false; end;
+                if(setinset("35",INr.DispGroups))then begin posmat = false; end;
+              
+                if(IVrw.stp==kInvoiceRowTypeNormal and posmat)then begin
+                  if(IVrw.Quant>0 and IVr.CustCode!="FOB")then begin
+                  startformat(15);
+                    outstring(0,0,IVrw.ArtCode,false);
+                    outstring(50,0,INr.AlternativeCode,false);
+                    outstring(150,0,classname,false);
+                    outstring(200,0,IVrw.Spec,false);
+                    outstring(250,0,IVrw.Quant,false);
+                    if(IVr.PayDeal!="O" and IVr.RetValue<0)then begin
+                      outstring(300,0,"Долг",false);
+                    end else begin
+                      outstring(300,0,"",false);
+                    end;
+                    //outstring(250,0,IVrw.Quant,false);
+                    if(ivsum==payUSD)then begin
+                      ivsum = 1;
+                      payUSD = 1;
+                    end;
+                    if(ivsum==payAZN)then begin
+                      ivsum = 1;
+                      payAZN = 1;
+                    end;
+                    if(ivsum==payEUR)then begin
+                      ivsum = 1;
+                      payEUR = 1;
+                    end;
+                    if(ivsum==payTRM)then begin
+                      ivsum = 1;
+                      payTRM = 1;
+                    end;
+                    outstring(300,0,IVrw.Sum/ivsum/IVrw.Quant*payUSD,false);
+                    outstring(350,0,IVrw.Sum/ivsum*payUSD,false);
+                    outstring(400,0,IVrw.Sum/ivsum/IVrw.Quant*payAZN,false);
+                    outstring(450,0,IVrw.Sum/ivsum*payAZN,false);
+                    outstring(500,0,IVrw.Sum/ivsum/IVrw.Quant*payEUR,false);
+                    outstring(550,0,IVrw.Sum/ivsum*payEUR,false);
+                    outstring(600,0,IVrw.Sum/ivsum/IVrw.Quant*payTRM,false);
+                    outstring(650,0,IVrw.Sum/ivsum*payTRM,false);
+                    //outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    outstring(700,0,IVr.InvComment,false);
+                  endformat;
+                  end;
+                  if(IVrw.Quant<0 and posmat)then begin
+                  startformat(15);
+                    outstring(0,0,IVrw.ArtCode,false);
+                    outstring(50,0,INr.AlternativeCode,false);
+                    outstring(150,0,classname,false);
+                    outstring(200,0,IVrw.Spec,false);
+                    outstring(250,0,IVrw.Quant,false);
+                    outstring(300,0,"",false);
+                    outstring(300,0,"",false);
+                    outstring(350,0,"",false);
+                    outstring(400,0,"",false);
+                    outstring(450,0,"Возврат",false);
+                    outstring(500,0,"",false);
+                    outstring(550,0,"",false);
+                    outstring(600,0,"",false);
+                    outstring(650,0,"",false);
+                    outstring(700,0,"",false);
+                    outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    outstring(700,0,IVr.InvComment,false);
+                  endformat;
+                  end;
+                  if(IVrw.Quant>0 and IVr.CustCode=="FOB" and posmat)then begin
+                  startformat(15);
+                    outstring(0,0,IVrw.ArtCode,false);
+                    outstring(50,0,INr.AlternativeCode,false);
+                    outstring(150,0,classname,false);
+                    outstring(200,0,IVrw.Spec,false);
+                    outstring(250,0,IVrw.Quant,false);
+                    outstring(300,0,"",false);
+                    outstring(350,0,"",false);
+                    outstring(400,0,"",false);
+                    outstring(450,0,"Офисный расход",false);
+                    outstring(500,0,"",false);
+                    outstring(550,0,"",false);
+                    outstring(600,0,"",false);
+                    outstring(650,0,"",false);
+                    outstring(700,0,"",false);
+                    outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    //outstring(700,0,"",false);
+                    outstring(700,0,IVr.InvComment,false);
+                  endformat;
+                  end;
+                end;
+              end;
+            end;
+          end;
+          IPr.TransDate = todate;
+          TrHs = true;
+          resetloop(IPr);
+          while(loopkey("TransDate",IPr,1,TrHs))begin
+            testf = true;
+            if(IPr.TransDate!=todate)then begin testf = false; TrHs = false; end;
+            if(IPr.OKFlag!=1)then begin testf = false; end;
+          
+            if(testf)then begin
+            
+              mtrw= matrowcnt(IPr);
+              For(i=0;i<mtrw;i=i+1) begin
+                matrowget(IPr,i,IPrw);
+                payAZN = 0;
+                payUSD = 0;
+                payEUR = 0;
+                payTRM = 0;
+                if(IPrw.InvoiceNr>0)then begin
+                  IVr.SerNr = IPrw.InvoiceNr;
+                  readfirstmain(IVr,1,true);
+                  if(IVr.Location==location)then begin
+                    if(left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
+                      switch(IPrw.BankCurncy)begin
+                        case"USD":payUSD = IPrw.BankVal;
+                                  totpayUSD = totpayUSD + payUSD;
+                        case"AZN":payAZN = IPrw.BankVal;
+                                  totpayAZN = totpayAZN + payAZN;
+                        case"EUR":payEUR = IPrw.BankVal;
+                                  totpayEUR = totpayEUR + payEUR;
+                      
+                      end;
+                    end;
+                    if(left(IPr.PayMode,1)=="B")then begin
+                      switch(IPrw.BankCurncy)begin
+                        case"USD":ccUSD = IPrw.BankVal;
+                                  totccUSD = totccUSD + IPrw.BankVal;
+                        case"AZN":ccAZN = IPrw.BankVal;
+                                  totccAZN = totccAZN + IPrw.BankVal;
+                        case"EUR":ccEUR = IPrw.BankVal;
+                                  totccEUR = totccEUR + IPrw.BankVal;
+                      end;
+                    end;
+                    startformat(15);
+                      outstring(0,0,"",false);
+                      outstring(50,0,"",false);
+                      outstring(150,0,"",false);
+                      outstring(200,0,"",false);
+                      outstring(250,0,"",false);
+                      outstring(300,0,"",false);
+                      outstring(350,0,"",false);
+                      outstring(400,0,payUSD,false);
+                      outstring(450,0,"",false);
+                      outstring(500,0,payAZN,false);
+                      outstring(550,0,"",false);
+                      outstring(600,0,payEUR,false);
+                      outstring(650,0,"",false);
+                      outstring(700,0,ccAZN,false);
+                      //outstring(700,0,ccEUR,false);
+                      //outstring(700,0,ccUSD,false);
+                      outstring(700,0,IPr.Comment,false);
+                    endformat;
+                  end;
+                end;
+                if(IPrw.OrderNr>0)then begin
+                  ORr.SerNr = IPrw.OrderNr;
+                  readfirstmain(ORr,1,true);
+                  if(ORr.Location==location)then begin
+                    if(left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
+                      switch(IPrw.BankCurncy)begin
+                        case"USD":payUSD = IPrw.BankVal;
+                                  totpayUSD = totpayUSD + payUSD;
+                        case"AZN":payAZN = IPrw.BankVal;
+                                  totpayAZN = totpayAZN + payAZN;
+                        case"EUR":payEUR = IPrw.BankVal;
+                                  totpayEUR = totpayEUR + payEUR;
+                      end;
+                    end;
+                    if(left(IPr.PayMode,1)=="B")then begin
+                      switch(IPrw.BankCurncy)begin
+                        case"USD":ccUSD = IPrw.BankVal;
+                                  totccUSD = totccUSD + ccUSD;
+                        case"AZN":ccAZN = IPrw.BankVal;
+                                  totccAZN = totccAZN + ccAZN;
+                        case"EUR":ccEUR = IPrw.BankVal;
+                                  totccEUR = totccEUR + ccEUR;
+                      end;
+                    end;
+                    startformat(15);
+                      outstring(0,0,"",false);
+                      outstring(50,0,"",false);
+                      outstring(150,0,"",false);
+                      outstring(200,0,"",false);
+                      outstring(250,0,"",false);
+                      outstring(300,0,"",false);
+                      outstring(350,0,"",false);
+                      outstring(400,0,payUSD,false);
+                      outstring(450,0,"",false);
+                      outstring(500,0,payAZN,false);
+                      outstring(550,0,"",false);
+                      outstring(600,0,payEUR,false);
+                      outstring(650,0,"",false);
+                      outstring(700,0,"",false);
+                      outstring(700,0,ccAZN,false);
+                      //outstring(700,0,ccEUR,false);
+                      //outstring(700,0,ccUSD,false);
+                      outstring(700,0,IPr.Comment,false);
+                    endformat;
+                  end;
+                end;
+              end; 
+            end;
+          end;
+        
+          SMr.TransDate = todate;
+          TrHs = true;
+          resetloop(SMr);
+          while(loopkey("TransDate",SMr,1,true))begin
+            testf = true;
+            if(SMr.TransDate!=todate)then begin TrHs = false; testf = false; end;
+            if(SMr.FrLocation!=location and SMr.ToLocation!=location)then begin testf = false; end;
+          
+            if(testf)then begin
+          
+              if(SMr.ToLocation==location)then begin
+                sign = 1;
+              end else begin
+                sign = -1;
+              end;
+              mtrw = matrowcnt(SMr);
+              For(i=0;i<mtrw;i=i+1) begin
+                matrowget(SMr,i,SMrw);
+                INr.Code = SMrw.ArtCode;
+                readfirstmain(INr,1,true);
+                pos = 0;
+                classname = "";
+                class = "";
+                ExtractObj(INr.DispGroups,pos,class);
+                while(nonblank(class))begin
+                  DIr.Code = class;
+                  readfirstmain(DIr,1,true);
+                  if(DIr.CType=="TYPE")then begin
+                    classname = DIr.Name;
+                  end;
+                  ExtractObj(INr.DispGroups,pos,class);
+                end;
+                startformat(15);
+                  outstring(0,0,SMrw.ArtCode,false);
+                  outstring(50,0,INr.AlternativeCode,false);
+                  outstring(150,0,classname,false);
+                  outstring(200,0,SMrw.Spec,false);
+                  outstring(250,0,SMrw.OrdQuant,false);
+                  outstring(300,0,"",false);
+                  outstring(350,0,"",false);
+                  outstring(400,0,"",false);
+                  outstring(450,0,"Перемешение",false);
+                  outstring(500,0,"",false);
+                  outstring(550,0,"",false);
+                  outstring(600,0,"",false);
+                  outstring(650,0,"",false);
+                  outstring(700,0,"",false);
+                  outstring(700,0,"",false);
+                  //outstring(700,0,"",false);
+                  //outstring(700,0,"",false);
+                  outstring(700,0,SMr.Comment,false);
+                endformat;
+              end; 						
+            end;
+          end;
+        
+          startformat(15);
+            outstring(0,0,"",false);
+            outstring(50,0,"",false);
+            outstring(150,0,"",false);
+            outstring(200,0,"Итого:",false);
+            outstring(250,0,"",false);
+            outstring(300,0,"",false);
+            outstring(300,0,"",false);
+            outstring(350,0,totpayUSD,false);
+            outstring(400,0,"",false);
+            outstring(450,0,totpayAZN,false);
+            outstring(500,0,"",false);
+            outstring(550,0,totpayEUR,false);
+            outstring(600,0,"",false);
+            outstring(650,0,totpayTRM,false);
+            //outstring(650,0,totccEUR,false);
+            //outstring(650,0,totccUSD,false);
+            outstring(700,0,"",false);
+          endformat;
+          
+          startformat(15);
+          endformat;
+          startformat(15);
+          endformat;
+          todate = addday(todate,1);
+        end;
+			end else begin
+				startformat(15);
+					outstring(50,0,"Магазин не выбран",false);
+				endformat;
+			end;
+		end;
+		
+	endjob;
+
+return;
+end;

@@ -1,0 +1,30 @@
+external inner function Integer OpenToDoWClass(string,string,record RcVc);
+external remote function boolean HasOpenActivity(string);
+
+global
+updating function Boolean OnLogin()
+BEGIN
+  boolean res;
+  record PLHistSetBlock PLSb;
+  record RcVc priceRepSpec;
+  integer nwn;
+  string 200 mailboxnr,mailboxname;
+  
+  blockload(PLSb);
+  
+  res = inner.OnLogin;
+  
+  if(PLSb.DoHist>0)then begin
+  	if(HasOpenActivity(currentuser))then begin
+			priceRepSpec.sStartDate = stringtodate("1/1/" & getyear(currentdate)-1);
+			priceRepSpec.sEndDate = currentdate;
+			priceRepSpec.f1 = currentuser;
+			priceRepSpec.flags[3] = 3;
+			nwn = OpenToDoWClass(mailboxnr,mailboxname,priceRepSpec);
+		end;
+	end;
+	
+  OnLogin = res/* and (forcestockmaint==0)*/;//when offline records it should not open Master Control
+  RETURN;
+END;
+

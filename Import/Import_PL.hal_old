@@ -1,0 +1,118 @@
+Global updating procedure ImportPLIn()
+begin
+	record PLVc PLr;
+	Integer i;
+	array string 255 sfield;
+	string 5 flag;
+	record INVc INr;
+	record PLDefVc PLDr;
+	val price;		
+	record CurncyCodeVc Curncyr;
+		
+		while (TestEOF()==false) begin
+		  for (i=0;i<5;i=i+1) begin
+        sfield[i]=ImportField;
+      end;
+      INr.Code = sfield[1];
+      if(readfirstmain(INr,1,true))then begin
+        PLDr.Code = sfield[0];
+        if(readfirstmain(PLDr,1,true))then begin
+          if(nonblank(sfield[2]))then begin
+            price = evaltoval(sfield[2]);
+            if(price>0)then begin
+              recordnew(PLr);
+              PLr.PLCode = PLDr.Code;
+              PLr.ArtCode = INr.Code;
+              PLr.Comment = INr.Name;
+              PLr.ExVatPrice = price;
+              Curncyr.CurncyCode = sfield[3];
+              if(readfirstmain(Curncyr,1,true))then begin
+              	PLr.CurncyCode = Curncyr.CurncyCode;
+              end;
+              if(nonblank(sfield[4]))then begin
+              	PLr.SerialNr = sfield[4];
+              end;
+              RecordInsert(PLr,true);
+            end;            
+          end;
+        end;
+      end;
+      NextImportLine(true);
+		end;
+
+ return;
+end;
+
+
+Global updating procedure ImportDiskTableIn()
+begin
+	record CUVc CUr;
+	record RebVc Rebr;
+	integer i;
+	string 255 sfield0,sfield1;
+	
+		while (TestEOF()==false) begin
+			sfield0 = "";
+			sfield1 = "";
+			sfield0=ImportField;
+			sfield1=ImportField;
+      CUr.Code = sfield0;
+      if(readfirstmain(CUr,1,true))then begin
+        Rebr.Code = sfield1;
+        if(readfirstmain(Rebr,1,true))then begin
+          if(CUr.RebCode!=Rebr.Code)then begin
+          	CUr.RebCode = Rebr.Code;
+          	recordStore(CUr,true);
+          end;
+        end;
+      end;
+      NextImportLine(true);
+		end;
+
+ return;
+end;
+
+Global updating procedure ImportMyINIn()
+begin
+	record INVc INr;
+	record RebVc Rebr;
+	integer i;
+	string 255 sfield0,sfield1,sfield2,sfield3,sfield4;
+	
+		while (TestEOF()==false) begin
+			sfield0 = "";
+			sfield1 = "";
+			sfield2 = "";
+			sfield3 = "";
+			sfield4 = "";
+			sfield0=ImportField;
+			sfield1=ImportField;
+			sfield2=ImportField;
+			sfield3=ImportField;
+			sfield4=ImportField;
+      INr.Code = sfield0;
+      if(readfirstmain(INr,1,true))then begin
+				INr.Name = sfield1;
+				INr.BarCode = sfield2;
+				INr.Group = sfield3;
+				//INr.DispGroups = sfield4;
+				recordStore(INr,True);
+      end else begin
+      	recordNew(INr);
+      	INr.Code = sfield0;
+				INr.Name = sfield1;
+				INr.BarCode = sfield2;
+				INr.Group = sfield3;
+				INr.DispGroups = sfield4;
+      	recordStore(INr,true);
+      end;
+      NextImportLine(true);
+		end;
+
+ return;
+end;
+	 
+
+	 
+	
+	 

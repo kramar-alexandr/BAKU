@@ -1,0 +1,733 @@
+external procedure GetCurncyRateOnDate(string,date,var val);
+external inner procedure ExtractObj(string,var Integer,var string);
+external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external inner function roundmode SetRoundModeD(Integer);
+external inner function Boolean SetInSet2(string,string);
+external inner function val AbsoluteVal(val);
+
+function string 200 prepareStr(string input)
+begin
+integer i,length;
+string 200 res;
+  length = len(input);
+  For(i=0;i<length;i=i+1) begin
+	  if(mid(input,i,1)==chr(34))then begin
+	    res = res;
+	  end else begin
+	    res = res & mid(input,i,1);
+	  end;	  
+	end; 
+  
+  prepareStr = res;
+return;
+end;
+
+function string 200 ParseClassification(string class)
+begin
+	string 200 res,cl;
+	record DIVc DIr;
+	integer pos;
+	
+	if(nonblank(class))then begin
+		pos = 0;
+		ExtractObj(class,pos,cl);
+		DIr.Code = cl;
+		if(readfirstmain(DIr,1,true))then begin
+			res = DIr.Name;
+			outstring(0,0,DIr.Name,false);
+		end else begin
+			outstring(0,0,"",false);
+		end;
+	
+		ExtractObj(class,pos,cl);
+		if(nonblank(cl))then begin
+			DIr.Code = cl;
+			if(readfirstmain(DIr,1,true))then begin
+				if(nonblank(DIr.Code))then begin
+					res = res & "," & DIr.Name;
+				end;
+				if(currentcompany>3)then begin
+					outstring(0,0,DIr.Name,false);
+				end;
+			end else begin
+				if(currentcompany>3)then begin
+					outstring(0,0,"",false);
+				end;
+			end;
+		end else begin
+			if(currentcompany>3)then begin
+				outstring(0,0,"",false);
+			end;
+		end;
+	end else begin
+		outstring(0,0,"",false);
+		if(currentcompany>3)then begin
+			outstring(0,0,"",false);
+		end;
+	end;
+	
+	ParseClassification = res;
+return;
+end;
+
+
+global
+procedure SalesReportExtRClassReportDefaults(Integer wn)
+BEGIN
+  record RcVc RepSpec;
+  record LocalMachineBlock LMb;
+
+  BlockLoad(LMb);
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+  ReportDefaults(RepSpec,"SalesReportExtRClass");  
+  RepSpec.f1 = LMb.LocalMachineCode;
+  PutWindowRecord(wn,RepSpec);
+  SelectWindow(wn);
+  
+  RETURN;
+END;
+
+global
+procedure FindFIFOOrigValAndCurncyIV(longint sernr, integer rownr, var val fifo, var string cur,var val fifobase,boolean updst)
+begin
+	record ItemHistVc IHr,IH2r;
+	record PUVc PUr;
+	row PUVc PUrw;
+	integer mtrw,i;
+	record INVc INr;
+	string 20 artcode;
+	date ivdate;
+	boolean find;
+	record IVVc IVr;
+	row IVVc IVrw;
+	record ORVc ORr;
+	row ORVc ORrw;
+	record SHVc SHr;
+	row SHVc SHrw;
+	boolean TrHs,testf,findsec,TrHs1;
+	val fr,to1,to2,br1,br2;
+	integer halt;
+	
+	
+	fifo = 0;
+	cur = "";
+	fifobase = 0;
+	
+	if(updst)then begin
+		IHr.FileName = "IVVc";
+		IHr.TransNr = sernr;
+		IHr.Row = rownr;
+		TrHs = true;
+		while(loopkey("FNTransNr",IHr,3,TrHs))begin
+			if(IHr.FileName!="IVVc")then begin TrHs = false; end;
+			if(IHr.TransNr!=sernr)then begin TrHs = false; end;
+			if(IHr.Row!=rownr)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				fifobase = fifobase + IHr.TotCostPrice;
+				fifo = fifo + IHr.TotCostPriceCurncy;
+				cur = IHr.CurncyCode;
+			end;
+		end;
+	end else begin
+		IVr.SerNr = sernr;
+		readfirstmain(IVr,1,true);
+		matrowget(IVr,rownr,IVrw);
+		halt = 0;
+		TrHs = true;
+		SHr.OrderNr=IVr.OrderNr;
+		while(loopkey("OrderKey",SHr,1,TrHs))begin
+			if(SHr.OrderNr!=IVr.OrderNr)then begin TrHs=false; end;
+			
+			if(TrHs)then begin
+				mtrw = matrowcnt(SHr);
+				For(i=0;i<mtrw;i=i+1) begin
+					matrowget(SHr,i,SHrw);
+					if(SHrw.OrdRow==IVrw.OrdRow)then begin
+						IHr.FileName = "SHVc";
+						IHr.TransNr = SHr.SerNr;
+						IHr.Row = i;
+						TrHs1 = true;
+						resetloop(IHr);
+						while(loopkey("FNTransNr",IHr,3,TrHs1))begin
+							if(IHr.FileName!="SHVc")then begin TrHs1 = false; end;
+							if(IHr.TransNr!=SHr.SerNr)then begin TrHs1 = false; end;
+							if(IHr.Row!=i)then begin TrHs1 = false; end;
+						
+					
+							if(TrHs1)then begin
+								if(halt<IVrw.Quant)then begin
+									fifobase = fifobase + IHr.TotCostPrice;
+									fifo = fifo + IHr.TotCostPriceCurncy;
+									cur = IHr.CurncyCode;
+									halt = halt - IHr.Qty;
+								end else begin
+									TrHs1 = false;
+									TrHs = false;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;
+	
+	
+	/*if(updst)then begin
+		resetloop(IHr);
+		IHr.FileName = "IVVc";
+		IHr.TransNr = sernr;
+		IHr.Row = rownr;
+		TrHs = true;
+		while(loopkey("FNTransNr",IHr,3,TrHs))begin
+			if(IHr.FileName!="IVVc")then begin TrHs = false; end;
+			if(IHr.TransNr!=sernr)then begin TrHs = false; end;
+			if(IHr.Row!=rownr)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				fifobase = fifobase + IHr.TotCostPrice;
+				find = false;
+				IH2r.Source = IHr.Source;
+				halt = 0;
+				IH2r.SerNr = IHr.Source;
+				while(IH2r.Source>0 and halt<40) begin
+					readfirstmain(IH2r,1,true);
+					IH2r.SerNr = IH2r.Source;
+					halt = halt + 1;
+				end;
+				if(IH2r.FileName=="PUVc")then begin
+					PUr.SerNr = IH2r.TransNr;
+					readfirstmain(PUr,1,true);
+					matrowget(PUr,IH2r.Row,PUrw);
+					fifo = fifo + PUrw.UPrice*IHr.Qty;
+					cur = PUr.CurncyCode;
+					find = true;
+				end;
+				findsec=false;
+				if(find==false)then begin
+					IH2r.ArtCode = artcode;
+					IH2r.TransDate = ivdate;
+					find = true;
+					while(loopbackkey("ArtCode",IH2r,2,find))begin
+						if(IH2r.ArtCode!=artcode)then begin find = false; end;
+						if(IH2r.FileName=="PUVc" and find)then begin
+							PUr.SerNr = IH2r.TransNr;
+							readfirstmain(PUr,1,true);
+							matrowget(PUr,IH2r.Row,PUrw);
+							fifo = fifo + PUrw.UPrice*IHr.Qty;
+							cur = PUr.CurncyCode;
+							find = false;
+							findsec = true;
+						end;
+					end;
+					resetloop(IH2r);
+					if(blank(cur) or findsec==false)then begin
+						INr.Code = IHr.ArtCode;
+						readfirstmain(INr,1,true);
+						if(INr.LastPurchPrice2<>0)then begin
+							fifo = fifo + INr.LastPurchPrice2*IHr.Qty;
+						end else begin
+							GetFullCurncyRate(INr.LastPurchCurncyCode,INr.LastBasePriceChange,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr = 1; to1 = 1;
+							end;
+							fifo = fifo + INr.InPrice*fr/to1*IHr.Qty;
+						end;
+						cur = INr.LastPurchCurncyCode;
+					end;
+				end;
+			end;
+		end;
+	end else begin
+		IVr.SerNr = sernr;
+		readfirstmain(IVr,1,true);
+		matrowget(IVr,rownr,IVrw);
+		
+		TrHs = true;
+		SHr.OrderNr=IVr.OrderNr;
+		while(loopkey("OrderKey",SHr,1,TrHs))begin
+			if(SHr.OrderNr!=IVr.OrderNr)then begin TrHs=false; end;
+			
+			if(TrHs)then begin
+			mtrw = matrowcnt(SHr);
+			For(i=0;i<mtrw;i=i+1) begin
+				matrowget(SHr,i,SHrw);
+				if(SHrw.OrdRow==IVrw.OrdRow)then begin
+					IHr.FileName = "SHVc";
+					IHr.TransNr = SHr.SerNr;
+					IHr.Row = i;
+					TrHs1 = true;
+					resetloop(IHr);
+					while(loopkey("FNTransNr",IHr,3,TrHs1))begin
+						if(IHr.FileName!="SHVc")then begin TrHs1 = false; end;
+						if(IHr.TransNr!=SHr.SerNr)then begin TrHs1 = false; end;
+						if(IHr.Row!=i)then begin TrHs1 = false; end;
+						
+					
+						if(TrHs1)then begin
+							fifobase = fifobase + IHr.TotCostPrice;
+							find = false;
+							IH2r.Source = IHr.Source;
+							halt = 0;
+							IH2r.SerNr = IHr.Source;
+							while(IH2r.Source>0 and halt<40) begin
+								readfirstmain(IH2r,1,true);
+								IH2r.SerNr = IH2r.Source;
+								halt = halt + 1;
+							end;
+							if(IH2r.FileName=="PUVc")then begin
+								PUr.SerNr = IH2r.TransNr;
+								readfirstmain(PUr,1,true);
+								matrowget(PUr,IH2r.Row,PUrw);
+								fifo = fifo + PUrw.UPrice*IHr.Qty;
+								cur = PUr.CurncyCode;
+								find = true;
+							end;
+							findsec=false;
+							if(find==false)then begin
+								IH2r.ArtCode = artcode;
+								IH2r.TransDate = ivdate;
+								find = true;
+								while(loopbackkey("ArtCode",IH2r,2,find))begin
+									if(IH2r.ArtCode!=artcode)then begin find = false; end;
+									if(IH2r.FileName=="PUVc" and find)then begin
+										PUr.SerNr = IH2r.TransNr;
+										readfirstmain(PUr,1,true);
+										matrowget(PUr,IH2r.Row,PUrw);
+										fifo = fifo + PUrw.UPrice*IHr.Qty;
+										cur = PUr.CurncyCode;
+										find = false;
+										findsec = true;
+									end;
+								end;
+								resetloop(IH2r);
+								if(blank(cur) or findsec==false)then begin
+									INr.Code = IHr.ArtCode;
+									readfirstmain(INr,1,true);
+									if(INr.LastPurchPrice2<>0)then begin
+										fifo = fifo + INr.LastPurchPrice2*IHr.Qty;
+									end else begin
+										GetFullCurncyRate(INr.LastPurchCurncyCode,INr.LastBasePriceChange,fr,to1,to2,br1,br2);
+										if(fr==0 or to1==0)then begin
+											fr = 1; to1 = 1;
+										end;
+										fifo = fifo + INr.InPrice*fr/to1*IHr.Qty;
+									end;
+									cur = INr.LastPurchCurncyCode;
+								end;
+							end;
+						end;
+					end;
+				end;	  
+			end; 
+			end;
+		end;
+	end;*/
+
+	if(fifo<0)then begin fifo=-fifo; end;
+	if(fifobase<0)then begin fifobase=-fifobase; end;
+	
+return;
+end;
+
+global
+procedure SalesReportExtRn(record RcVc RepSpec)
+begin
+  record LocalMachineVc LMr;
+  Date sd,ed;
+  Boolean TrHs,testf;
+  record IVVc IVr;
+  row IVVc IVrw;
+  integer i,keyi,mtrw,k;
+  string 20 keystr;
+  record INVc INr;
+  string 100 classname,classcode;
+  record DIVc DIr;
+  val brandfifo;
+  string 5 brandcur;
+  record PLVc PLr;
+  val fr,to1,to2,br1,br2;
+  val ivfr,ivto1;
+  val basesum,curcusm,curprice,fifob1;
+  boolean testf1,userlocation;
+  string 50 location,tstr;
+  record UserVc User;
+  integer pos;
+  string 50 uloc;
+  boolean updst;
+  val total_qty;
+  val total_cost,total_price,total_gp;
+  string 200 classfind,model,brand;
+  record ORVc ORr;
+  record BaseCurBlock BCb;
+  string 5 bcur,azn;
+  val bfr,bto;
+  val aznfr,aznto,fifoazn;
+  val btotal_cost,btotal_price,btotal_gp;
+  
+  blockload(BCb);
+  bcur = BCb.BaseCur1;
+	azn = "AZN";
+  SetLangMode(LangRussian,"RUS",0);
+  		
+  	
+    StartReportNoHeaderJob("Отчёт по продажам расширенный");
+    
+    sd = RepSpec.sStartDate;
+    ed = RepSpec.sEndDate;
+    location = RepSpec.f1;
+  
+  
+		userlocation = false;
+		User.Code = currentuser;
+		if(readfirstmain(User,1,true))then begin
+			if(nonblank(User.UserLocations) and usercanaction("AllowReportWithUserLoc",false))then begin
+				userlocation = true;
+				pos = 0;
+				ExtractObj(User.UserLocations,pos,uloc);
+				while (nonblank(uloc)) begin
+					if(uloc==location)then begin
+						userlocation = false;
+					end;
+					ExtractObj(User.UserLocations,pos,uloc);
+				end;
+			end;
+		end;
+	
+    if(userlocation)then begin
+			startformat(15);
+				outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+			endformat;
+		end else begin
+			if(nonblank(RepSpec.sStartDate) and nonblank(RepSpec.sEndDate))then begin
+				startformat(15);
+					outstring(0,0,"Кодировка для системы Ханза",false);
+					outstring(0,0,"Кодировка поставщика",false);
+					outstring(0,0,"Склад",false);
+					outstring(0,0,"Бренд",false);
+					outstring(0,0,"Классификация",false);
+					outstring(0,0,"Наименование",false);
+					outstring(0,0,"Коллекция",false);//Reference
+					outstring(0,0,"Тип металла",false);
+					outstring(0,0,"Вес",false);
+					outstring(0,0,"Каратность",false);
+					if(currentcompany==3)then begin
+						outstring(0,0,"Браслет/ремешок",false);
+						outstring(0,0,"Цвет циферблата",false);
+					end;
+					outstring(0,0,"Серийный номер",false);
+					outstring(0,0,"EAN code",false);
+					outstring(0,0,"Дополнительно",false);//EKNCode
+					outstring(0,0,"Кол-во продаж",false);
+					outstring(100,0,"Себестоимость за ед-цу в валюте Бренда ",false);
+					outstring(101,0,"Себестоимость за ед-цу в валюте АЗН",false);
+					if(bcur!="AZN")then begin
+						outstring(102,0,"Себестоимость за ед-цу в валюте " & bcur,false);
+					end;
+					outstring(110,0,"Сумма по себестоимости в валюте Бренда",false);
+					outstring(111,0,"Сумма по себестоимости в валюте АЗН",false);
+					if(bcur!="AZN")then begin
+						outstring(112,0,"Сумма по себестоимости в валюте " & bcur,false);
+					end;
+					outstring(120,0,"Ритейл за ед-цу в валюте Бренда ",false);
+					outstring(121,0,"Ритейл за ед-цу в валюте АЗН",false);
+					if(bcur!="AZN")then begin
+						outstring(122,0,"Ритейл за ед-цу в валюте " & bcur,false);
+					end;
+					outstring(130,0,"Сумма продажи в валюте Бренда",false);
+					outstring(131,0,"Сумма продажи в валюте АЗН",false);
+					if(bcur!="AZN")then begin
+						outstring(132,0,"Сумма продажи в валюте " & bcur,false);
+					end;
+					outstring(140,0,"Разница в валюте Бренда",false);
+					outstring(141,0,"Разница в валюте АЗН",false);
+					if(bcur!="AZN")then begin
+						outstring(142,0,"Разница в валюте " & bcur,false);
+					end;
+					outstring(0,0,"Валюта Брэнда",false);
+					outstring(0,0,"Клиент (Имя или номер карты)",false);
+					outstring(0,0,"Имя клиента",false);
+					outstring(0,0,"Процент скидки",false);
+					outstring(0,0,"Продавец",false);
+					outstring(0,0,"Дата покупки",false);
+					outstring(0,0,"Условия оплаты",false);
+					outstring(0,0,"Комментарии",false);
+					if(currentcompany==9)then begin
+						outstring(0,0,"Вид счета",false);
+					end;
+					outstring(0,0,"Способы оплаты",false);
+				endformat;
+				
+				total_qty = 0;
+				total_cost = 0;
+				total_price = 0;
+				total_gp = 0;
+				btotal_cost = 0;
+				btotal_price = 0;
+				btotal_gp = 0;
+
+				
+				IVr.TransDate = sd;
+				keyi = 1;
+				keystr = "TransDate";
+				if(nonblank(location))then begin	
+					IVr.Location = location;
+					keyi = 2;
+					keystr = "Location";
+				end;
+			
+				TrHs =true;
+				while(loopkey(keystr,IVr,keyi,TrHs))begin
+					testf = true;
+					if(IVr.InvDate<sd)then begin testf = false; end;
+					if(IVr.InvDate>ed)then begin TrHs = false; testf = false; end;
+					if(nonblank(location) and IVr.Location!=location)then begin TrHs = false; testf = false; end;
+					if(IVr.OKFlag==0)then begin testf = false; end;
+					if(IVr.Invalid>0)then begin testf = false; end;
+				
+					if(testf)then begin
+						mtrw = matrowcnt(IVr);
+						
+						tstr = "";
+						For(i=0;i<mtrw;i=i+1) begin
+	  					matrowget(IVr,i,IVrw);
+	  					if(setinset(IVrw.PayMode,tstr)==false)then begin
+	  						if(nonblank(tstr))then begin
+	  							tstr = tstr & ",";
+	  						end;
+	  						tstr = tstr & IVrw.PayMode;
+	  					end;
+						end; 
+						
+						For(i=0;i<mtrw;i=i+1) begin
+							matrowget(IVr,i,IVrw);
+							if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin
+								INr.Code = IVrw.ArtCode;
+								readfirstmain(INr,1,true);
+								testf1=true;
+							
+								if(nonblank(RepSpec.f2))then begin
+									testf1=SetInSet2(RepSpec.f2,INr.DispGroups);
+								end;
+									if(testf1)then begin
+										if(nonblank(RepSpec.f4) or nonblank(RepSpec.f5))then begin
+											brand = "";
+											model = "";
+											pos = 0;
+											classfind = "";
+											ExtractObj(INr.DispGroups,pos,classfind);
+											while(nonblank(classfind))begin
+												DIr.Code = classfind;
+												readfirstmain(DIr,1,true);
+												if(DIr.CType=="BRAND")then begin
+													brand = DIr.Code;
+												end;
+												if(DIr.CType=="MODEL")then begin
+													model = DIr.Code;
+												end;
+												ExtractObj(INr.DispGroups,pos,classfind);
+											end;
+											if(nonblank(RepSpec.f4) and brand!=RepSpec.f4)then begin
+												testf1 = false;
+											end;
+											if(nonblank(RepSpec.f5) and model!=RepSpec.f5)then begin
+												testf1 = false;
+											end;
+										end;
+									end;
+								
+								if(testf1)then begin
+									startformat(15);
+										outstring(0,0,IVrw.ArtCode,false);
+										outstring(0,0,INr.AlternativeCode,false);
+										outstring(0,0,IVr.Location,false);
+										classname = "";
+										k=0;
+										ExtractObj(INr.DispGroups,k,classcode);
+										DIr.Code = classcode;
+										readfirstmain(DIr,1,true);
+										classname = DIr.Name;
+										outstring(0,0,classname,false);
+										classname = "";
+										ExtractObj(INr.DispGroups,k,classcode);
+										DIr.Code = classcode;
+										readfirstmain(DIr,1,true);
+										classname = DIr.Name;
+										outstring(0,0,classname,false);
+										outstring(0,0,prepareStr(IVrw.Spec),false);
+										outstring(0,0,INr.Reference,false);
+										outstring(0,0,INr.Metal,false);
+										outstring(0,0,INr.RowWeight,false);
+										outstring(0,0,INr.MajStoneDet,false);
+										if(currentcompany==3)then begin
+											outstring(0,0,INr.BrcStr,false);
+											outstring(0,0,INr.Gender,false);
+										end;
+										outstring(0,0,IVrw.SerialNr,false);
+										outstring(0,0,INr.BarCode,false);
+										outstring(0,0,INr.EKNCode,false);
+										outstring(0,0,IVrw.Quant,false);
+										total_qty = total_qty + IVrw.Quant;
+										
+										fr = IVr.FrRate;
+										to1 = IVr.ToRateB1;
+										if(fr==0 or to1==0)then begin
+											fr = 1;
+											to1 = 1;
+										end;
+										IVrw.Price = IVrw.Price/fr*to1;
+										IVrw.Sum = IVrw.Sum/fr*to1;
+										
+										if(IVr.UpdStockFlag>0 and IVr.OrderNr<0)then begin
+											updst = true;
+										end else begin
+											updst = false;
+										end;
+										
+										
+										FindFIFOOrigValAndCurncyIV(IVr.SerNr,i,brandfifo,brandcur,fifob1,updst);
+										if(fifob1==0)then begin
+											fifob1 = INr.WeighedAvPrice;
+										end;
+										brandfifo = AbsoluteVal(brandfifo/IVrw.Quant);
+										fifob1 = AbsoluteVal(fifob1/IVrw.Quant);
+										
+										GetFullCurncyRate(azn,IVr.TransDate,aznfr,aznto,to2,br1,br2);
+										if(aznfr==0 or aznto==0)then begin
+											aznfr = 1; aznto = 1;
+										end;
+										fifoazn = fifob1*aznfr/aznto;
+										
+										outstring(100,0,brandfifo,false);//brandcur
+										outstring(101,0,fifoazn,false);//AZN
+										if(bcur!="AZN")then begin
+											outstring(102,0,fifob1,false);//basecur
+										end;
+										outstring(110,0,brandfifo*IVrw.Quant,false);//brandcur
+										outstring(111,0,fifoazn*IVrw.Quant,false);//AZN
+										if(bcur!="AZN")then begin
+											outstring(112,0,fifob1*IVrw.Quant,false);//basecur
+										end;
+										
+										GetFullCurncyRate(brandcur,IVr.TransDate,fr,to1,to2,br1,br2);
+										if(fr==0 or to1==0)then begin
+											fr = 1; to1 = 1;
+										end;
+										if(fr==0 or to1==0)then begin
+											fr = 1; to1 = 1;
+										end;
+										bfr = IVr.FrRate;
+										bto = IVr.ToRateB1;
+										if(bfr==0 or bto==0)then begin
+											bfr = 1;
+											bto = 1;
+										end;
+										
+										total_cost = total_cost + fifoazn*IVrw.Quant;
+										btotal_cost = btotal_cost + fifob1*IVrw.Quant;
+										
+										
+										
+										curprice = round(IVrw.Price*fr/to1,SetRoundModeD(1));
+										outstring(120,0,curprice,false);//brandcur
+										outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+										if(bcur!="AZN")then begin
+											Outstring(122,0,IVrw.Price,false);//basecur
+										end;
+										curcusm = round(IVrw.Sum*fr/to1,SetRoundModeD(1));
+										outstring(130,0,curcusm,false);//brandcur
+										outstring(131,0,IVrw.Sum*aznfr/aznto,false);//AZN
+										if(bcur!="AZN")then begin
+											outstring(132,0,IVrw.Sum,false);//basecur
+										end;
+										
+										total_price = total_price + IVrw.Sum*aznfr/aznto;
+										btotal_price = btotal_price + IVrw.Sum;
+										
+										outstring(140,0,curcusm - brandfifo*IVrw.Quant,false);//brandcur
+										outstring(141,0,IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto,false);//AZN
+										if(bcur!="AZN")then begin
+											outstring(142,0,IVrw.Sum - fifob1*IVrw.Quant,false);//basecur
+										end;
+										
+										outstring(0,0,brandcur,false);
+										outstring(0,0,IVr.CustCode,false);
+										outstring(0,0,IVr.Addr0,false);
+										outstring(0,0,IVrw.vRebate,false);
+										outstring(0,0,IVr.SalesMan,false);
+										outstring(0,0,IVr.TransDate,false);
+										outstring(0,0,IVr.PayDeal,false);
+										outstring(0,0,IVr.InvComment,false);
+										if(currentcompany==9)then begin
+											if(IVr.OrderNr>-1)then begin
+												ORr.SerNr = IVr.OrderNr;
+												readfirstmain(ORr,1,true);
+												if(nonblank(ORr.OrderClass))then begin
+													outstring(0,0,ORr.OrderClass,false);
+												end;
+											end;
+										end;	
+										outstring(0,0,tstr,false);									
+									endformat;
+								end;
+							end;
+						end; 
+					end;
+				end;
+								
+				startformat(15);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					if(currentcompany==3)then begin
+						outstring(0,0,"",false);
+						outstring(0,0,"",false);
+					end;
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"Всего кол-во:",false);
+					outstring(0,0,total_qty,false);
+					if(bcur!="AZN")then begin
+						outstring(0,0,"",false);
+					end;
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					
+					outstring(0,0,"Всего себестоимость:",false);
+					outstring(0,0,total_cost,false);
+					if(bcur!="AZN")then begin
+						outstring(0,0,btotal_cost,false);
+						outstring(0,0,"",false);
+					end;
+					outstring(0,0,"",false);
+					outstring(0,0,"",false);
+					outstring(0,0,"Всего сумма:",false);
+					outstring(0,0,total_price,false);
+					if(bcur!="AZN")then begin
+						outstring(0,0,btotal_price,false);
+					end;
+					outstring(0,0,"Всего разница:",false);
+					outstring(0,0,total_price - total_cost,false);
+					if(bcur!="AZN")then begin
+						outstring(0,0,btotal_price - btotal_cost,false);
+					end;
+	
+				endformat;
+			end else begin
+				startformat(15);
+					outstring(100,0,"Определите даты",false);
+				endformat;
+			end;
+		end;
+	EndJob;
+return;
+end;
