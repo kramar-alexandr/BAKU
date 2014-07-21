@@ -39,7 +39,8 @@ global
 function LongInt MarketingVcRecordDuplicate(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+	
+	Mrkr.SerNr = -1;
 	Mrkr.TransDate = currentdate;
   Mrkr.TransTime = currenttime;
   Mrkr.SalesMan = currentuser;

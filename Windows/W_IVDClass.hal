@@ -5749,10 +5749,14 @@ begin
   EditField(h1,v=16,40,"Номер",ViewOnly,SerNr,false,0);
   EditField(h1+200,v,230,"Наименование",Normal,Name,false,0);
   EditField(h1,v+=vs,70,"Код клиента",Normal,CustCode,false,CUSClass);
-  EditField(h1+200,v,80,"Дата",ViewOnly,TransDate,false,pastecurdate);
-  EditField(h1+350,v,80,"Время",ViewOnly,TransDate,false,pastecurtime);
+  EditField(h1+200,v,80,"Дата",ViewOnly,TransDate,false,PasteCurDate);
+  EditField(h1+350,v,80,"Время",ViewOnly,TransTime,false,);
+  EditField(h1+200,v+vs,80,"Заполнил",ViewOnly,SalesMan,false,0);
+  EditField(h1+350,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
+  EditField(h1+350,v+vs+vs,80,"Лок.маш.",Normal,LocalMachine,false,LocalMachineSClass);
+  
   EditField(h1,v+=vs,70,"Телефон 1",Normal,Phone1,false,0);
-  EditField(h1,v+=vs,70,"Телефон 2",Normal,Phone1,false,0);
+  EditField(h1,v+=vs,70,"Телефон 2",Normal,Phone2,false,0);
   EditField(h1,v+=vs,-50,"Адрес",Normal,Address,false,0);
   EditField(h1,v+=vs,70,"e-Mail",Normal,eMail,false,0);
   
@@ -5773,14 +5777,43 @@ begin
   RadioButton(h1,v+=16,3,0,"Группа мужчин",Gender);
   RadioButton(h1,v+=16,4,0,"Группа женщин",Gender);
   
-  v = 160; h1 = 100;
-  ButtonFrame(h1,v,l=160,6,"Национальность");
-  RadioButton(h1,v,0,0,"Азербайджанец",Age);
-  RadioButton(h1,v+=16,1,0,"Русский",Age);
-  RadioButton(h1,v+=16,2,0,"30-40",Age);
-  RadioButton(h1,v+=16,3,0,"40-50",Age);
-  RadioButton(h1,v+=16,4,0,"50-60",Age);
-  RadioButton(h1,v+=16,5,0,"> 60",Age);
+  v = 160; h1 = h1 + 200;
+  ButtonFrame(h1,v,l=160,3,"Национальность");
+  RadioButton(h1,v,0,0,"Азербайджанец",NationalityRbtn);
+  RadioButton(h1,v+=16,1,0,"Русский",NationalityRbtn);
+  RadioButton(h1,v+=16,2,0,"",NationalityRbtn);
+  v = v + 5;
+  EditField(h1+30,v-3,-50,"",Normal,NationalityTxt,false,0);
+  
+  h1 = 120;
+  v = v + 60;
+  EditField(h1,v+=vs,-50,"Причина посещения",Normal,Reason,false,0);
+  
+  h1 = 100;
+  v = 320;
+  ButtonFrame(h1,v,l=200,2,"Город");
+  RadioButton(h1,v,1,0,"Баку",CityRbtn);
+  RadioButton(h1,v+=16,0,0,"Друой",CityRbtn);
+	v = v + 5;
+  EditField(h1+70,v-3,100,"",Normal,CityTxt,false,0);
+  
+  
+  h1 = h1 + 250;
+  v = 320;
+  ButtonFrame(h1,v,l=300,6,"Откуда узнали");
+  RadioButton(h1,v,0,0,"Magazines",ReferenceRbtn);
+  RadioButton(h1,v+=16,1,0,"Outdoor (bilboard or video)",ReferenceRbtn);
+  RadioButton(h1,v+=16,2,0,"Internet",ReferenceRbtn);
+  RadioButton(h1,v+=16,3,0,"Instagram",ReferenceRbtn);
+  RadioButton(h1,v+=16,4,0,"Frends",ReferenceRbtn);
+  RadioButton(h1,v+=16,5,0,"Others...",ReferenceRbtn);
+	v = v + 5;
+  EditField(h1+70,v-3,-50,"",Normal,ReferenceTxt,false,0);
+  
+  h1 = 10;
+  v = 360;
+  StaticText(h1,v+=vs,"Комментарий",false);
+  TextField(h1,v,300,-16,Math,0);
   
   /*ButtonFrame(h1,v+=vs+16,l=160,6,"Возраст");
   RadioButton(h1,v,0,0,"< 20",Age);
@@ -5836,7 +5869,7 @@ begin
   RlColKey(50,50,"Дата",TransDate,false,TransDate);
   RlCol(150,150,"Время",TransTime,false);
   RlColKey(250,250,"Имя",Name,false,Name);
-  RlColKey(-150,-150,"Склад",Location,false,Location);
+  RlColKey(-150,-150,"Магазин",Location,false,Location);
   RlColKey(-75,-75,"Локальная машина",LocalMachine,false,LocalMachine);
   SearchField("Search");
   EndWindow;
