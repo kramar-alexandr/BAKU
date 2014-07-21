@@ -5755,10 +5755,10 @@ begin
   EditField(h1+350,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
   EditField(h1+350,v+vs+vs,80,"Лок.маш.",Normal,LocalMachine,false,LocalMachineSClass);
   
-  EditField(h1,v+=vs,70,"Телефон 1",Normal,Phone1,false,0);
-  EditField(h1,v+=vs,70,"Телефон 2",Normal,Phone2,false,0);
+  EditField(h1,v+=vs,100,"Телефон 1",Normal,Phone1,false,0);
+  EditField(h1,v+=vs,100,"Телефон 2",Normal,Phone2,false,0);
   EditField(h1,v+=vs,-50,"Адрес",Normal,Address,false,0);
-  EditField(h1,v+=vs,70,"e-Mail",Normal,eMail,false,0);
+  EditField(h1,v+=vs,120,"e-Mail",Normal,eMail,false,0);
   
   v = 160; 
   ButtonFrame(h1,v,l=160,6,"Возраст");
@@ -5798,9 +5798,9 @@ begin
   EditField(h1+70,v-3,100,"",Normal,CityTxt,false,0);
   
   
-  h1 = h1 + 250;
+  h1 = h1 + 220;
   v = 320;
-  ButtonFrame(h1,v,l=300,6,"Откуда узнали");
+  ButtonFrame(h1,v,l=190,6,"Откуда узнали");
   RadioButton(h1,v,0,0,"Magazines",ReferenceRbtn);
   RadioButton(h1,v+=16,1,0,"Outdoor (bilboard or video)",ReferenceRbtn);
   RadioButton(h1,v+=16,2,0,"Internet",ReferenceRbtn);
@@ -5808,7 +5808,18 @@ begin
   RadioButton(h1,v+=16,4,0,"Frends",ReferenceRbtn);
   RadioButton(h1,v+=16,5,0,"Others...",ReferenceRbtn);
 	v = v + 5;
-  EditField(h1+70,v-3,-50,"",Normal,ReferenceTxt,false,0);
+  EditField(h1+70,v-3,120,"",Normal,ReferenceTxt,false,0);
+  
+  //Start edit Victor --------------------- 21.08 
+  
+  h1 = h1 + 210;
+  v = 320;
+  ButtonFrame(h1,v,l=150,2,"Результат");
+  RadioButton(h1,v,0,0,"Нет продаж",ResultRbtn);
+  RadioButton(h1,v+=16,1,0,"Есть продажи",ResultRbtn);
+ 
+  
+  //End Edit
   
   h1 = 10;
   v = 360;

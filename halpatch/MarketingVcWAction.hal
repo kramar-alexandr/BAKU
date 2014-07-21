@@ -1,0 +1,98 @@
+function boolean PasteClientInfo(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+record CUVc CUr;
+string 200 adr;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,Marketingr);
+    CUr.Code = Marketingr.CustCode;
+    if(Readfirstmain(CUr,1,true))then begin
+		Marketingr.Name = CUr.Name;
+		adr = CUr.InvAddr0 & " " & CUr.InvAddr1 & " " & CUr.InvAddr2;
+		Marketingr.Phone1 = CUr.Phone;
+		Marketingr.Phone2 = CUr.Mobile;
+		Marketingr.eMail = CUr.eMail;	
+	end;
+	
+	Marketingr.Address = adr;
+	
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+PasteClientInfo = true;
+return;
+end;
+
+function boolean SwitchRadioButton1(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+string 200 adr;
+integer h1,h2,v,vs,l;
+  
+  if(changed>0)then begin
+    getwindowrecord(wn,Marketingr);
+	
+	Marketingr.NationalityRbtn = 2;
+		
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+SwitchRadioButton1 = true;
+return;
+end;
+
+function boolean SwitchRadioButton2(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+string 200 adr;
+integer h1,h2,v,vs,l;
+  
+  if(changed>0)then begin
+    getwindowrecord(wn,Marketingr);
+	
+	Marketingr.ReferenceRbtn = 5;
+		
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+SwitchRadioButton2 = true;
+return;
+end;
+
+function boolean SwitchRadioButton3(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+string 200 adr;
+integer h1,h2,v,vs,l;
+  
+  if(changed>0)then begin
+    getwindowrecord(wn,Marketingr);
+	
+	Marketingr.CityRbtn = 0;
+		
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+SwitchRadioButton3 = true;
+return;
+end;
+
+global
+function Boolean MarketingDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+BEGIN
+  Boolean res;
+  
+  res = inner.MarketingDClassAfterEditField(wn,fieldname,fn,rownr,changed);
+  
+  switch (fieldname) begin
+    case "CustCode": res = PasteClientInfo(wn,fieldname,fn,rownr,changed);
+    case "NationalityTxt": res = SwitchRadioButton1(wn,fieldname,fn,rownr,changed);
+    case "ReferenceTxt": res = SwitchRadioButton2(wn,fieldname,fn,rownr,changed);
+    case "CityTxt": res = SwitchRadioButton3(wn,fieldname,fn,rownr,changed);
+    
+  end;
+  MarketingDClassAfterEditField = res;
+  RETURN;
+END;
