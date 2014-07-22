@@ -1,4 +1,4 @@
-
+external procedure ExtractObj(string,var Integer,var string);
 
 global
 function LongInt MarketingVcRecordRemoveTest(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt long3,LongInt long4)
@@ -73,14 +73,100 @@ global
 function LongInt MarketingVcRecordCheck(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
 BEGIN 
 	LongInt res;
-	integer insertmode,updatemode;
+	record CUVc CUr;
+	record IVVc IVr;
+	string 255 serNum, invNum,tmpCust;
+	integer insertmode,updatemode, pos, i;
+	record SysFormatBlock SysFormatRec;
+  
+  BlockLoad(SysFormatRec);
   res = 0;
   insertmode = 1;
   updatemode = 2;
+  invNum = "";
+  pos = 0;
+  i = 0;
+  tmpCust = "";
   
   if(Mrkr.SerNr==-1)then begin
   	Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
   end;
+  
+  if (blank(Mrkr.Name)) then begin
+    RecordCheckError(1058,Mrkr.Name,-1,"Name");      
+    res = -1;
+    goto LMarketingVcRecordCheck; 
+  end;   
+  
+  if (blank(Mrkr.Location)) then begin
+    RecordCheckError(1058,Mrkr.Location,-1,"Location");      
+    res = -1; 
+    goto LMarketingVcRecordCheck;
+  end;
+  
+  if(Mrkr.NationalityRbtn == 2) then begin
+  	if(blank(Mrkr.NationalityTxt)) then begin
+  		RecordCheckError(1058,Mrkr.NationalityTxt,-1,"NationalityTxt");
+  		res = -1; 
+    	goto LMarketingVcRecordCheck;
+  	end;
+  end;
+  
+  if(Mrkr.ReferenceRbtn == 5) then begin
+  	if(blank(Mrkr.ReferenceTxt)) then begin
+  		RecordCheckError(1058,Mrkr.ReferenceTxt,-1,"ReferenceTxt");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
+  end;
+  
+  if(Mrkr.CityRbtn == 0) then begin
+  	if(blank(Mrkr.CityTxt)) then begin
+  		RecordCheckError(1058,Mrkr.CityTxt,-1,"CityTxt");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
+  end;
+  
+  
+  if (SizeTextCnt(Mrkr) == 0) then begin
+    RecordCheckError(1058,Mrkr.Math,-1,"Math");      
+    res = -1;
+    goto LMarketingVcRecordCheck; 
+  end;
+  
+  if(Mrkr.ResultRbtn == 1) then begin
+  		
+	  ExtractObj(Mrkr.InvNr,pos,serNum);
+      while (nonblank(serNum)) begin
+        IVr.SerNr = serNum;
+		if(Readfirstmain(IVr,1,true)==false)then begin
+			res	= -1;
+			RecordCheckError(1451,serNum,-1,"InvNr");
+			goto LMarketingVcRecordCheck;		
+        end else begin
+        		if(nonBlank(Mrkr.CustCode))then begin
+        				if(IVr.CustCode != Mrkr.CustCode)then begin
+        					res	= -1;
+							RecordCheckError(2130,serNum,-1,"InvNr");
+							goto LMarketingVcRecordCheck;		
+						end;
+        		end else begin
+        			if(i > 0) then begin
+        				if(tmpCust != IVr.CustCode)then begin
+        					res	= -1;
+							RecordCheckError(2130,serNum,-1,"InvNr");
+							goto LMarketingVcRecordCheck;
+        				end;
+        			end;
+        			tmpCust = IVr.CustCode;
+        			i = i + 1;
+        		end;
+        	end;
+        ExtractObj(Mrkr.InvNr,pos,serNum);
+      end;
+  end;
+  
   
   /*if (blank(INr.Code)) then begin
     if (GetNextItemNr(INr.Code)) then begin end;

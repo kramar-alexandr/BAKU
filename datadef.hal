@@ -3526,7 +3526,7 @@ begin
   RecordField(ReferenceRbtn,M4Int,0,0);
   RecordField(ReferenceTxt,M4Str,200,0);
   RecordField(ResultRbtn,M4Int,0,0);
-  RecordField(InvNr,M4string,200,0);
+  RecordField(InvNr,M4Str,200,0);//Edit by Victor July 22 10.17 M4string -> M4Str
   RecordField(CityRbtn,M4Int,0,0);
   RecordField(CityTxt,M4Str,200,0);
   RecordField(PersonsQty,M4Int,0,0);

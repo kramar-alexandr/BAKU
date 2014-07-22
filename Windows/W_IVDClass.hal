@@ -5812,12 +5812,13 @@ begin
   
   //Start edit Victor --------------------- 21.08 
   
-  h1 = h1 + 210;
-  v = 320;
+  //h1 = h1 + 210;
+  v = 450;
   ButtonFrame(h1,v,l=150,2,"Результат");
   RadioButton(h1,v,0,0,"Нет продаж",ResultRbtn);
   RadioButton(h1,v+=16,1,0,"Есть продажи",ResultRbtn);
- 
+  
+  EditField(h1+70,v+=18,100,"№ счёта",Normal,InvNr,false,0);
   
   //End Edit
   
