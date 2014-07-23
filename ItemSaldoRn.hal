@@ -29,13 +29,13 @@ begin
 			end;
 			ExtractObj(class,pos,cl);
 		end;
-		CUr.Name = dicnt[0];
-		readfirstkey("Name",CUr,1,true);
-		outstring(35,0,CUr.Code,false);// Edit ************************** Friday, June 27, 2014 at 15:57:18
+		//CUr.Name = dicnt[0];
+		//readfirstkey("Name",CUr,1,true);
+		//outstring(35,0,CUr.Code,false);// Edit ************************** Friday, June 27, 2014 at 15:57:18
 		
 		switch(currentcompany)begin
 			case 1:outstring(0,0,dicnt[0],false);
-			case 2:outstring(0,0,dicnt[0],false);
+			case 2:	outstring(0,0,dicnt[0],false);
 			case 3:	outstring(0,0,dicnt[0],false);
 							outstring(0,0,dicnt[1],false);
 			case 4:	outstring(0,0,dicnt[0],false);
@@ -376,9 +376,9 @@ begin
         StartFormat(15);
           OutString(0,0,reprownr,false);
           OutString(20,0,INr.Code,false);
-          if(currentcompany==9)then begin
+          //if(currentcompany==9)then begin
 						OutString(25,0,INr.AlternativeCode,false);
-					end;
+					//end;
           OutString(30,0,INr.Name,false);
           
           ParseClassification(INr.DispGroups);
@@ -474,13 +474,13 @@ begin
   
   StartFormat(15);
 		OutString(0,0,"Итого",false);
-		OutString(20,0,"",false);
+		//OutString(20,0,"",false);
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutString(20,0,"",false);
     end;
-		if(currentcompany==9)then begin
+		//if(currentcompany==9)then begin
 			OutString(25,0,"",false);
-		end;
+		//end;
 		OutString(30,0,"",false);
 		if(currentcompany>2)then begin
 			OutString(40,0,"",false);
@@ -627,9 +627,9 @@ begin
 							StartFormat(15);
 							OutString(0,0,"",false);
 							OutString(20,0,"",false);
-							if(currentcompany==9)then begin
+							//if(currentcompany==9)then begin
 								OutString(25,0,"",false);
-							end;
+							//end;
 							OutString(30,0,"",false);
 							if(currentcompany>2)then begin
 								OutString(40,0,"",false);
@@ -665,11 +665,11 @@ begin
 							StartFormat(15);
 							OutString(0,0,"№",false);
 							OutString(20,0,"Код",false);
-							if(currentcompany==9)then begin
-								OutString(25,0,"Альтернативный код",false);
-							end;
+							//if(currentcompany==9)then begin
+								OutString(25,0,"Код поставщика",false);
+							//end;
 							OutString(30,0,"Наименование",false);
-							OutString(35,0,"Код поставщика",false);
+							//OutString(35,0,"Код поставщика",false);
 							OutString(40,0,"Классификация",false);
 							if(currentcompany>2)then begin
 								OutString(40,0,"Модель",false);
