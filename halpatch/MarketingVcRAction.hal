@@ -1,26 +1,37 @@
 external procedure ExtractObj(string,var Integer,var string);
 
-global
+SetLangMode(LangRussian,"RUS",0); 
+
+global 
 function LongInt MarketingVcRecordRemoveTest(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt long3,LongInt long4)
 BEGIN
   LongInt res;
   Boolean testf;
+  record UserVc Userr;
 
   res = 1;
   if (testf) then begin
-    if (long3>0) then begin MessageBox(1122,""); end;
+    if (long3>0) then begin MessageBox(1040,""); end;
     res = 0;
   end;
+ 
+  if(UserCanAction("AllowDeleteMarketingRecord",true)==false)then begin
+	MessageBox(1040," У Вас недостаточно прав на удаление!");
+	res = 0;
+	goto LMarketingVcRecordRemoveTest;
+  end;
+
 LMarketingVcRecordRemoveTest:;
   MarketingVcRecordRemoveTest = res; 
   RETURN;
 END;
 
-global
+global updating
 function LongInt MarketingVcRecordDefaults(var record MarketingVc Mrkr,record MarketingVc Mrk2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
   record LocalMachineBlock LMb;
+  record UserVc Userr;
   
   blockload(LMb);
   
@@ -30,7 +41,15 @@ BEGIN
   Mrkr.LocalMachine = LMb.LocalMachineCode;
   Mrkr.Location = LMb.DefLocation;
   Mrkr.CityRbtn = 1;
+  Mrkr.ResultRbtn = 0;	
   
+  if(Mrkr.SerNr==-1)then begin
+		Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
+  end;
+  
+  /*if(RecordStore(Mrkr,true)) then begin
+	  end;
+  *///************************ Save Record when after creation	  
   MarketingVcRecordDefaults = res; 
   RETURN;
 END;
@@ -40,8 +59,8 @@ function LongInt MarketingVcRecordDuplicate(var record MarketingVc Mrkr,record M
 BEGIN
   LongInt res;
 	
-	Mrkr.SerNr = -1;
-	Mrkr.TransDate = currentdate;
+  Mrkr.SerNr = -1;
+  Mrkr.TransDate = currentdate;
   Mrkr.TransTime = currenttime;
   Mrkr.SalesMan = currentuser;
   

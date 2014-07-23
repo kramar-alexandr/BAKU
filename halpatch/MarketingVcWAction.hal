@@ -1,3 +1,7 @@
+external function Integer OpenMasterWClass();
+
+SetLangMode(LangRussian,"RUS",0); 
+
 function boolean CustCodeEditAfter(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 begin
 record MarketingVc Marketingr;
@@ -76,6 +80,23 @@ CityTxtEditAfter = true;
 return;
 end;
 
+function boolean InvNrEditAfter(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+string 200 adr;
+  
+  getwindowrecord(wn,Marketingr);
+  if((changed>0) or nonblank(Marketingr.InvNr))then begin
+  	
+	Marketingr.ResultRbtn = 1;
+		
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+InvNrEditAfter = true;
+return;
+end;
+
 global
 function Boolean MarketingDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 BEGIN
@@ -88,8 +109,42 @@ BEGIN
     case "NationalityTxt": res = NationalityTxtEditAfter(wn,fieldname,fn,rownr,changed);
     case "ReferenceTxt": res = ReferenceTxtEditAfter(wn,fieldname,fn,rownr,changed);
     case "CityTxt": res = CityTxtEditAfter(wn,fieldname,fn,rownr,changed);
+    case "InvNr": res = InvNrEditAfter(wn,fieldname,fn,rownr,changed);
         
   end;
   MarketingDClassAfterEditField = res;
   RETURN;
 END;
+
+global updating
+function Boolean MarketingDClassOnClose(Integer wn,Integer wn2)
+begin
+  Integer nwn;
+  record MarketingVc Mrkr;
+  
+  getwindowrecord(wn,Mrkr);
+  if(blank(Mrkr.Name) or blank(Mrkr.Location) or (SizeTextCnt(Mrkr) == 0))then begin
+	  nwn = CurWindow;
+	  messagebox(1006, " (наименование, магазин, комментарии)");
+  end else begin
+  		RecordStore(Mrkr,true);
+    	closewindow(wn);
+  end;
+  MarketingDClassOnClose = true;
+  return;
+end;
+
+global
+procedure MarketingDClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+    duplOK = false;
+    restOK = false;
+  return;
+end;
+
+global
+procedure MarketingLClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  return;
+end;

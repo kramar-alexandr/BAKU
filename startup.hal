@@ -332,6 +332,7 @@ StrSetText(AllowReportWithUserLoc,"Учитывать склады пользователя");	// Edit ****
 StrSetText(POToDropSH,"Уведомл. об отгр. из заказа поставщику");	
 StrSetText(DeleteSharedRecord,"Удаление записей из разделенных регистров");	
 StrSetText(DeleteAnyRecord,"Удаление записей");	
+StrSetText(AllowDeleteMarketingRecord,"Удаление записи фиксации визита");// Edit by Victor 23.07 10:40
 StrSetText(AllowRestAccRowsDelete,"Удаление товаров из счета ресторана");	
 StrSetText(AllowIVTSRowsDelete,"Удаление товаров из счета, сенс. экран");	
 StrSetText(ExpenseOK,"Утверждение авансового отчета");	
