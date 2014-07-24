@@ -5814,11 +5814,11 @@ begin
   
   //h1 = h1 + 210;
   v = 450;
-  ButtonFrame(h1,v,l=150,2,"Результат");
+  ButtonFrame(h1,v,l=300,2,"Результат");
   RadioButton(h1,v,0,0,"Нет продаж",ResultRbtn);
-  RadioButton(h1,v+=16,1,0,"Есть продажи",ResultRbtn);
+  RadioButton(h1,v+=16,1,0,"Есть продажи: номера сч/ф",ResultRbtn);
   
-  EditField(h1+70,v+=18,100,"№ счёта",Normal,InvNr,false,0);
+  EditField(h1+180,v,100,"",Normal,InvNr,false,0);
   
   //End Edit
   
@@ -5826,43 +5826,6 @@ begin
   v = 360;
   StaticText(h1,v+=vs,"Комментарий",false);
   TextField(h1,v,300,-16,Math,0);
-  
-  /*ButtonFrame(h1,v+=vs+16,l=160,6,"Возраст");
-  RadioButton(h1,v,0,0,"< 20",Age);
-  RadioButton(h1,v+=16,1,0,"20-30",Age);
-  RadioButton(h1,v+=16,2,0,"30-40",Age);
-  RadioButton(h1,v+=16,3,0,"40-50",Age);
-  RadioButton(h1,v+=16,4,0,"50-60",Age);
-  RadioButton(h1,v+=16,5,0,"> 60",Age);*/
-  
-  /*RecordField(SerNr,M4Long,0,0);
-  RecordField(CustCode,M4Code,20,CUVc);
-  RecordField(Name,M4Str,200,0);
-  RecordField(TransDate,M4Date,0,0);
-  RecordField(TransTime,M4Time,0,0);
-  RecordField(Location,M4Code,20,LocationVc);
-  RecordField(LocalMachine,M4Code,20,0);
-  RecordField(Phone1,M4Str,20,0);
-  RecordField(Phone2,M4Str,20,0);
-  RecordField(Address,M4Str,200,0);
-  RecordField(eMail,M4Str,200,0);
-  RecordField(CommentResult,M4Str,200,0);
-  RecordField(Age,M4Int,0,0);
-  RecordField(Gender,M4Int,0,0);
-  RecordField(NationalityRbtn,M4Int,0,0);
-  RecordField(NationalityTxt,M4Str,200,0);
-  RecordField(Reason,M4Str,200,0);
-  RecordField(ReferenceRbtn,M4Int,0,0);
-  RecordField(ReferenceTxt,M4Str,200,0);
-  RecordField(ResultRbtn,M4Int,0,0);
-  RecordField(InvNn,M4Long,0,0);
-  RecordField(CityRbtn,M4Int,0,0);
-  RecordField(CityTxt,M4Str,200,0);
-  RecordField(PersonsQty,M4Int,0,0);
-  RecordField(SalesMan,M4Str,0,0);
-  RecordField(Math,M4TextField,0,0);*/
-  
-  
   
   EndWindow;
 end;

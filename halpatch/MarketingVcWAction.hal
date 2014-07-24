@@ -121,16 +121,11 @@ function Boolean MarketingDClassOnClose(Integer wn,Integer wn2)
 begin
   Integer nwn;
   record MarketingVc Mrkr;
+  boolean res;
   
-  getwindowrecord(wn,Mrkr);
-  if(blank(Mrkr.Name) or blank(Mrkr.Location) or (SizeTextCnt(Mrkr) == 0))then begin
-	  nwn = CurWindow;
-	  messagebox(1006, " (наименование, магазин, комментарии)");
-  end else begin
-  		RecordStore(Mrkr,true);
-    	closewindow(wn);
-  end;
-  MarketingDClassOnClose = true;
+  res = !WindowDoOk(wn,0);
+
+  MarketingDClassOnClose = res;
   return;
 end;
 
