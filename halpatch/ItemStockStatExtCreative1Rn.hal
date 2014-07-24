@@ -101,20 +101,9 @@ begin
 			While(loopkey(key,IHr,keys,TrHs)) begin
 				testf = true;
 				if (IHr.ArtCode!=artcode or IHr.Location!=location or IHr.TransDate>idate) then begin testf = false; TrHs = false; end;
-				//if (IHr.Invalid!=0) then begin testf = false; end;
 				if(IHr.StockAffectf<1)then begin testf = false; end;
 				if(nonblank(serial) and IHr.SerialNr!=serial)then begin testf = false; end;
-				
-				/*if(IHr.FileName=="IVVc" and oldartcode==IHr.ArtCode and oldsernr==IHr.TransNr and oldrow==IHr.Row)then begin
-					if(oldinvalid!=0)then begin
-						testf = false;
-					end;
-				end;
-				oldartcode = IHr.ArtCode;
-				oldsernr = IHr.TransNr;
-				oldrow = IHr.Row;
-				oldinvalid = IHr.Invalid;*/
-			
+	
 				if(testf)then begin
 					res = res + IHr.Qty;
 					if(IHr.Qty>=0)then begin
@@ -155,11 +144,8 @@ begin
 			testf = true;
 			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
 			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
-			//if(IHr.Invalid>0)then begin testf=false; end;
-			//if(IHr.StockAffectf==0)then begin testf=false; end;
 		
 			if(testf)then begin
-				//curval = curval + IHr.RemQty;
 				if(IHr.Source>0)then begin
 					lastsernr = IHr.Source;
 	LFind:;
@@ -186,7 +172,6 @@ begin
 							matrowget(PUr,IH2r.Row,PUrw);
 							curcost = curcost + PUrw.UPrice * IHr.RemQty;
 							curqty = curqty + IHr.RemQty;
-							//curcost = -1;
 						end;
 					end;
 				end else begin
@@ -238,7 +223,6 @@ begin
 			testf = true;
 			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
 			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
-			//if(IHr.Invalid>0)then begin testf=false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
 		
 			if(testf)then begin
@@ -269,7 +253,6 @@ begin
 							matrowget(PUr,IH2r.Row,PUrw);
 							curcost = curcost + PUrw.UPrice * IHr.Qty;
 							curqty = curqty + IHr.Qty;
-							//curcost = -1;
 						end;
 					end;
 				end else begin
@@ -325,7 +308,6 @@ begin
 			testf = true;
 			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
 			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
-			//if(IHr.Invalid>0)then begin testf=false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
 		
 			if(testf)then begin
@@ -345,17 +327,6 @@ begin
 			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
 			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
-			//if (IHr.Invalid!=0) then begin testf = false; end;
-			
-			/*if(IHr.FileName=="IVVc" and oldartcode==IHr.ArtCode and oldsernr==IHr.TransNr and oldrow==IHr.Row)then begin
-				if(oldinvalid!=0)then begin
-					testf = false;
-				end;
-			end;
-			oldartcode = IHr.ArtCode;
-			oldsernr = IHr.TransNr;
-			oldrow = IHr.Row;
-			oldinvalid = IHr.Invalid;*/
 		
 			if(testf)then begin
 				if(IHr.Qty>=0)then begin
@@ -444,64 +415,15 @@ begin
 		outstring(0,0,DIr.Name,false);
 		
 		outstring(0,0,INr.Name,false);
-		//outstring(0,0,INr.Reference,false);
-		//outstring(0,0,INr.Metal,false);
-		//outstring(0,0,INr.RowWeight,false);
-		//outstring(0,0,INr.MajStoneDet,false);
+		outstring(0,0,INr.InvCode,false);// Edit ************************** Thursday, 24 July 2014 10:34:00
 		outstring(0,0,INr.Colour,false);
 		outstring(0,0,INr.Size,false);
-		outstring(0,0,serial,false);// Edit ************************** Tuesday, 7 May 2013 10:13:07
-		//outstring(0,0,INr.BarCode,false);
-		//outstring(0,0,INr.EKNCode,false);
-		/*INCr.Code = INr.Code;
-		if(readfirstmain(INCr,1,true))then begin
-			outstring(0,0,"Консигнация",false);
-		end else begin
-			outstring(0,0,"",false);
-		end;*/
-		
+		outstring(0,0,serial,false);// Edit ************************** Tuesday, 7 May 2013 10:13:07		
 		outstring(0,0,instock,false);
 		outstring(0,0,totresqty,false);
 		outstring(0,0,INr.Unittext,false);
 		total_qty = total_qty + instock;
-		/*GetFullCurncyRate(INr.LastPurchCurncyCode,todate,fr,to1,to2,br1,br2);
-		if(fr==0 or to1==0)then begin
-			fr=1; to1=0;
-		end;
-		
-		//outstring(0,0,INr.WeighedAvPrice/fr*to1,false);
-		awercost = 0;
-		awercostcur = 0;
-		awercost = FindAwerageCost(INr.Code,ISr.Location,todate);
-		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate);
-		if(costprice>0 and nonblank(serial) and INr.SerNrf>0)then begin
-			awercost = costprice;
-			IHr.ArtCode = INr.Code;
-			IHr.SerialNr = serial;
-			IHr.FileName = "PUVc";
-			if(readlastkey("ArtCodeSerialNr",IHr,3,true))then begin
-				PUr.SerNr = IHr.TransNr;
-				readfirstmain(PUr,1,true);
-				matrowget(PUr,IHr.Row,PUrw);
-				awercostcur = PUrw.UPrice;
-			end else begin
-				IHr.ArtCode = INr.Code;
-				IHr.SerialNr = serial;
-				IHr.FileName = "IVVc";
-				readfirstkey("ArtCodeSerialNr",IHr,3,true);
-				IVr.SerNr = IHr.TransNr;
-				readfirstmain(IVr,1,true);
-				matrowget(IVr,IHr.Row,IVrw);
-				awercostcur = IVrw.Sum;
-			end;
-		end;
-		outstring(0,0,awercostcur,false);
-		outstring(0,0,awercost,false);
-		//outstring(0,0,INr.WeighedAvPrice/fr*to1*instock,false);
-		outstring(0,0,awercostcur*instock,false);
-		outstring(0,0,awercost*instock,false);
-		total_cost = total_cost + awercost*instock;
-		*/
+	
 		baseprice = 0;
 		PLr.ArtCode = ISr.Code;
 		PLr.PLCode = "RRP";
@@ -552,10 +474,6 @@ begin
 			price = baseprice*fr/to1;
 		end;
 		outstring(0,0,price,false);
-		//outstring(0,0,baseprice,false);
-		//outstring(0,0,price*instock,false);
-		/*outstring(0,0,baseprice*instock,false);
-		total_price = total_price + baseprice*instock;*/
 		outstring(0,0,INr.LastPurchCurncyCode,false);
 	endformat;
 
@@ -622,28 +540,14 @@ begin
 			outstring(0,0,"Бренд",false);
 			outstring(0,0,"Модель",false);
 			outstring(0,0,"Наименование",false);
-			//outstring(0,0,"Коллекция",false);
-			//outstring(0,0,"Тип металла",false);
-			//outstring(0,0,"Вес",false);
-			//outstring(0,0,"Каратность",false);
+			outstring(0,0,"Полка",false);// Edit ************************** Thursday, 24 July 2014 10:31:44
 			outstring(0,0,"Цвет",false);
 			outstring(0,0,"Размер",false);
 			outstring(0,0,"Серийный номер",false);
-			//outstring(0,0,"EAN code",false);
-			//outstring(0,0,"Дополнительно*",false);
-			//outstring(0,0,"Тип прихода",false);
 			outstring(0,0,"Кол-во",false);
 			outstring(0,0,"Резерв",false);
 			outstring(0,0,"Ед.изм.",false);
-			/*outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
-			outstring(0,0,"Себестоимость за ед-цу в валюте АЗН",false);
-			outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
-			outstring(0,0,"Сумма по себестоимости в валюте АЗН",false);
-			outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);*/
 			outstring(0,0,"Розница",false);
-			/*outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
-			outstring(0,0,"Сумма по ритейлу в валюте АЗН",false);
-			outstring(0,0,"Валюта",false);*/
 		endformat;
 	
 		if(nonblank(item))then begin
@@ -733,9 +637,6 @@ begin
 						if(ISr.Instock<=0)then begin testf2 = false; end;
 					
 						if(testf2)then begin
-							/*if(INr.DispGroups!=class)then begin
-								class = INr.DispGroups;
-							end;*/
 							if(INr.SerNrf==0)then begin
 								PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price);
 							end else begin
@@ -765,25 +666,14 @@ begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			//outstring(0,0,"",false);
-			//outstring(0,0,"",false);
-			//outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			//outstring(0,0,"",false);
-			//outstring(0,0,"",false);
+			outstring(0,0,"",false);
 			outstring(0,0,"Всего кол-во:",false);
 			outstring(0,0,total_qty,false);
-			/*outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,"Всего себестоимость:",false);
-			outstring(0,0,total_cost,false);*/
-			outstring(0,0,"",false);
-			outstring(0,0,"",false);
-			/*outstring(0,0,"Всего по ритейлу в валюте АЗН",false);
-			outstring(0,0,total_price,false);*/
 		endformat;
 		
   end;

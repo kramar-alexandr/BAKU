@@ -237,6 +237,7 @@ StrSetText(DisallowChangeIVQtyFromOR,"Не разрешать изменять к-во на сч/ф созданн
 StrSetText(DisallowSalesmanChange,"Не разрешать менять продавца на неутвержденных сч/ф");	
 StrSetText(NotOKORToSH,"Не разрешать отгрузку из неутвержденных счетов");	
 StrSetText(DisallowPrintCopy,"Не разрешать печать копий");	
+StrSetText(DisallowFullINDClass,"Не разрешать полное окно товара");	// Edit ************************** Thursday, 24 July 2014 10:15:03
 StrSetText(NotOKPOToPU,"Не разрешать поступления из неутвержденных заказов поставщику");	
 StrSetText(DisallowPrepToNotOKPO,"Не разрешать предоплаты для неутвержденных заказов");	
 StrSetText(DisallowPrepToNotOKOR,"Не разрешать предоплаты для неутвержденных счетов");	

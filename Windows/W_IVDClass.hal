@@ -2882,6 +2882,75 @@ begin
   EndWindow;
 end;
 
+window cutINDClass:8
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  integer tilenr;
+  real h,h1,h2,h3,h4,h5,v,vm,vs;
+  string 255 label;
+  WindowBegin("Товар",cutINDClass,CGview,-);
+  SetWRect(20,80,830,400);//##cc
+  Sizeable(-1,-1,-1,0);
+  DynamicWindow;
+  UseView(INVc);
+  Tile(0,87,false,"",Code); 
+  v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
+  EditField(h,v, 150,"Код товара",VIewOnly,Code,false,0);
+  EditField(h2,v,80,"Группа",VIewOnly,Group,false,ITSClass);
+  EditField(h,v+=vs,-40,"Наименование",VIewOnly,Name,false,0);
+  tilenr = 1;
+  TileButton(tilenr,"Цена"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Склад"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Структура"); tilenr = tilenr + 1;
+ 
+  tilenr = 1;
+  
+  Tile(tilenr,209,false,tilenr,Unittext); tilenr = tilenr + 1;
+  EditField(h,v=6 ,100,"Единица измерения",VIewOnly,Unittext,false,UnitSClass);
+  EditField(h,v+=vs,-240,"Классификация",VIewOnly,DispGroups,false,DISClass);
+  
+  Tile(tilenr,170,false,tilenr,MinLevel);  tilenr = tilenr + 1; // Need to clean this Tile up!
+  v = 6;
+  vm = v;
+  EditField(h,v,100,"Отдел",Normal,Department,false,DepSClass);
+  EditField(h,v+=vs,100,"Полка",Normal,InvCode,false,0);
+  EditField(h5,v ,80,"Участок погрузки",Normal,PickArea,false,LocAreaSClass);
+  EditField(h,v+=vs ,100,"Участ. склада по умолч.",Normal,LocArea,false,LocAreaSClass);
+  EditField(h5,v ,50,"Паллет на участке погрузки",Normal,PalletsInPickArea,true,0);
+  EditField(h,v+=vs ,50,"Макс. кол. на паллете",Normal,QtyonPallet,true,0);
+  EditField(h4,v ,50,"Слои в палл.",Normal,PalletLayers,true,0);
+  EditField(h5,v ,50,"Кол-во в слое",Normal,QtyonPalletLayer,true,0);
+  EditField(h,v+=vs ,50,"Ширина паллеты",Normal,PalletWidth,true,0);
+  EditField(h4,v ,50,"Высота",Normal,PalletHeight,true,0);
+  EditField(h5,v ,50,"Глубина",Normal,PalletDepth,true,0);
+  EditField(h,v+=vs ,50,"Ширина места по умолч.",Normal,DefPosWidth,true,0);
+  EditField(h4,v ,50,"Высота",Normal,DefPosHeight,true,0);
+  EditField(h5,v ,50,"Глубина",Normal,DefPosDepth,true,0);
+  EditField(h,v+=vs ,50,"Ширина",Normal,Width,true,0);
+  EditField(h4,v ,50,"Высота",Normal,Height,true,0);
+  EditField(h5,v ,50,"Глубина",Normal,Depth,true,0);
+  EditField(h,v+=vs ,50,"Объем",Normal,Volume,true,0);
+  EditField(h4,v ,50,"Плотность",Normal,Density,true,0);
+  EditField(h5,v ,50,"Нетто",Normal,NetWeight,true,0);
+  EditField(h5,v+=vs ,50,"Вес",Normal,Weight,true,0);
+ 
+  Tile(tilenr,170,false,tilenr,Recepy);  tilenr = tilenr + 1;
+  v = 6;
+  EditField(h,v,150,"Штрих-код",VIewOnly,BarCode,false,0);
+  EditField(h,v+=vs,-40,"Альтернативный код",VIewOnly,AlternativeCode,false,0);
+  
+  
+  if (UserCanReport("INInfoRn","",true)) then begin 
+  SpecialMenu("Справка по товару",'I',0,"INStatusINDsm");
+  end;
+  if (UserCanReport("INrsRn","INrsRClass",true)) then begin 
+  SpecialMenu("История товара",'h',3,"INHistINDsm");
+  end;
+  SpecialMenu("Статус товара по складу",' ',4,"LocItemStatDsm");
+  SpecialMenu("Напечатать ценник",' ',5,"DoPrintLablDsm");// Edit ************************** Tuesday, 27 May 2014 10:45:08
+  EndWindow;
+end;
+
 window INImageIClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -3468,7 +3537,11 @@ window INLClass:3
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Товары",INLClass,CGmlist,-);
-  SpawnClass(INDClass);
+  if(UserCanAction("DisallowFullINDClass",true)==true)then begin// Edit ************************** Thursday, 24 July 2014 10:09:24
+		SpawnClass(INDClass);
+  end else begin
+  	SpawnClass(cutINDClass);// Edit ************************** Thursday, 24 July 2014 10:09:27
+  end;
   SetWRect(64,80,609,298);
   Sizeable(-1,-1,0,0);
   UseView(INVc);
@@ -3484,11 +3557,11 @@ begin
   if (IsEnterprise) then begin
     RlColKey(-150,-150,"Альт. код",AlternativeCode,false,AlternativeCode); 
   end;
-  if (IsEnterprise) or (HasModIN) then begin
+  /*if (IsEnterprise) or (HasModIN) then begin// Edit ************************** Thursday, 24 July 2014 10:29:18
     RlCol(-70,-70,"Баз. цена",UPrice1,true); 
   end else begin
     RlCol(-70,-70,"Цена",UPrice1,true); 
-  end;
+  end;*/
   SearchField("Найти");
   if (GuiType==kGuiMetro) then begin
     RowMenuBegin(""); //!!TRANSLATE
