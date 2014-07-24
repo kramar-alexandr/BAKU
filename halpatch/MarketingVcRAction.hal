@@ -127,7 +127,7 @@ BEGIN
   end else begin
   	Locr.Code = Mrkr.Location;
   	if(ReadFirstMain(Locr,1,true)==false) then begin
-  		RecordCheckError(1767,Mrkr.Location,-1,"Location");
+  		RecordCheckError(1058,Mrkr.Location,-1,"Location");
   		res = -1; 
 	    goto LMarketingVcRecordCheck;
   	end;
@@ -180,33 +180,39 @@ BEGIN
   if(Mrkr.ResultRbtn == 1) then begin
   		
 	  ExtractObj(Mrkr.InvNr,pos,serNum);
-      while (nonblank(serNum)) begin
-        IVr.SerNr = serNum;
-		if(Readfirstmain(IVr,1,true)==false)then begin
-			res	= -1;
-			RecordCheckError(1451,serNum,-1,"InvNr");
-			goto LMarketingVcRecordCheck;		
-        end else begin
-        		if(nonBlank(Mrkr.CustCode))then begin
-        				if(IVr.CustCode != Mrkr.CustCode)then begin
-        					res	= -1;
-							RecordCheckError(2130,serNum,-1,"InvNr");
-							goto LMarketingVcRecordCheck;		
-						end;
-        		end else begin
-        			if(i > 0) then begin
-        				if(tmpCust != IVr.CustCode)then begin
-        					res	= -1;
+    while (nonblank(serNum)) begin
+      IVr.SerNr = serNum;
+			if(Readfirstmain(IVr,1,true)==false)then begin
+				res	= -1;
+				RecordCheckError(1451,serNum,-1,"InvNr");
+				goto LMarketingVcRecordCheck;		
+      end else begin
+				if(nonBlank(Mrkr.CustCode))then begin
+					if(IVr.CustCode != Mrkr.CustCode)then begin
+						res	= -1;
+						RecordCheckError(2130,serNum,-1,"InvNr");
+						goto LMarketingVcRecordCheck;		
+					end;
+				end else begin
+					if(i > 0) then begin
+						if(tmpCust != IVr.CustCode)then begin
+							res	= -1;
 							RecordCheckError(2130,serNum,-1,"InvNr");
 							goto LMarketingVcRecordCheck;
-        				end;
-        			end;
-        			tmpCust = IVr.CustCode;
-        			i = i + 1;
-        		end;
-        	end;
-        ExtractObj(Mrkr.InvNr,pos,serNum);
-      end;
+						end;
+					end;
+					tmpCust = IVr.CustCode;
+					i = i + 1;
+				end;
+			end;
+      ExtractObj(Mrkr.InvNr,pos,serNum);
+    end;
+  end else begin
+  	if(Mrkr.ResultRbtn == 0)then begin
+  		if(nonblank(Mrkr.InvNr)) then begin
+  			Mrkr.ResultRbtn = 1;
+  		end;
+  	end;
   end;
   
   if(nonblank(Mrkr.CustCode)) then begin
