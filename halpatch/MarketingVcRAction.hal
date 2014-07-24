@@ -97,6 +97,9 @@ BEGIN
 	string 255 serNum, invNum,tmpCust;
 	integer insertmode,updatemode, pos, i;
 	record SysFormatBlock SysFormatRec;
+	record LocalMachineVc LMr;
+	record LocationVc Locr;
+	record UserVc Userr;
   
   BlockLoad(SysFormatRec);
   res = 0;
@@ -121,6 +124,26 @@ BEGIN
     RecordCheckError(1058,Mrkr.Location,-1,"Location");      
     res = -1; 
     goto LMarketingVcRecordCheck;
+  end else begin
+  	Locr.Code = Mrkr.Location;
+  	if(ReadFirstMain(Locr,1,true)==false) then begin
+  		RecordCheckError(1767,Mrkr.Location,-1,"Location");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
+  end;
+  
+  if (blank(Mrkr.SalesMan)) then begin
+    RecordCheckError(1058,Mrkr.SalesMan,-1,"SalesMan");      
+    res = -1; 
+    goto LMarketingVcRecordCheck;
+  end else begin
+  	Userr.Code = Mrkr.SalesMan;
+  	if(ReadFirstMain(Userr,1,true)==false) then begin
+  		RecordCheckError(20047,Mrkr.SalesMan,-1,"SalesMan");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
   end;
   
   if(Mrkr.NationalityRbtn == 2) then begin
@@ -186,18 +209,24 @@ BEGIN
       end;
   end;
   
-  
-  /*if (blank(INr.Code)) then begin
-    if (GetNextItemNr(INr.Code)) then begin end;
-    lINr.Code = INr.Code;
-    if (ReadFirstMain(lINr,1,true)) then begin
-      RecordCheckError(1547,INr.Code,-1,"Code");      
-      res = -1; 
-      goto LMarketingVcRecordCheck;
-    end;
-  end;*/
- 
-	
+  if(nonblank(Mrkr.CustCode)) then begin
+  	CUr.Code = Mrkr.CustCode;
+  	if(ReadFirstMain(CUr,1,true)==false) then begin
+  		RecordCheckError(1218,Mrkr.CustCode,-1,"CustCode");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
+  end;
+   
+  if(nonblank(Mrkr.LocalMachine)) then begin
+  	LMr.Code = Mrkr.LocalMachine;
+  	if(ReadFirstMain(LMr,1,true)==false) then begin
+  		RecordCheckError(1770,Mrkr.LocalMachine,-1,"LocalMachine");
+  		res = -1; 
+	    goto LMarketingVcRecordCheck;
+  	end;
+  end;
+ 	
 LMarketingVcRecordCheck:;
   MarketingVcRecordCheck = res;
   RETURN;

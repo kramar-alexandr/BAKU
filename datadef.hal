@@ -3530,7 +3530,7 @@ begin
   RecordField(CityRbtn,M4Int,0,0);
   RecordField(CityTxt,M4Str,200,0);
   RecordField(PersonsQty,M4Int,0,0);
-  RecordField(SalesMan,M4Str,100,0);
+  RecordField(SalesMan,M4Str,100,UserVc);//Edit by Victor July 22 10.17 100,0 -> 100,UserVc
   RecordField(Math,M4TextField,0,0);
 	  
   MainKeyBegin(SerNr,0);
