@@ -113,6 +113,7 @@ begin
 	SString(31007,"Город");
 	SString(31008,"Откуда узнали");
 	SString(31009,"Результат");
+	SString(31010,"Неверный формат телефона. Длина должна быть 10 знаков");
 	
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */

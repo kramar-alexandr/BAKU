@@ -14,7 +14,7 @@ string 200 adr;
     CUr.Code = Marketingr.CustCode;
     if(Readfirstmain(CUr,1,true))then begin
 		Marketingr.Name = CUr.Name;
-		adr = CUr.InvAddr0 & " " & CUr.InvAddr1 & " " & CUr.InvAddr2;
+		adr = CUr.InvAddr0;
 		Marketingr.Phone1 = CUr.Phone;
 		Marketingr.Phone2 = CUr.Mobile;
 		Marketingr.eMail = CUr.eMail;	
