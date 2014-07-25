@@ -88,12 +88,29 @@ string 200 adr;
   getwindowrecord(wn,Marketingr);
   if((changed>0) or nonblank(Marketingr.InvNr))then begin
   	
-	Marketingr.ResultRbtn = 1;
+	Marketingr.ResultRbtn = 2;
 		
 	putwindowrecord(wn,Marketingr);   
   end;
   
 InvNrEditAfter = true;
+return;
+end;
+
+function boolean ResultTxtEditAfter(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record MarketingVc Marketingr;
+string 200 adr;
+  
+  getwindowrecord(wn,Marketingr);
+  if((changed>0) or nonblank(Marketingr.ResultTxt))then begin
+  	
+	Marketingr.ResultRbtn = 1;
+		
+	putwindowrecord(wn,Marketingr);   
+  end;
+  
+ResultTxtEditAfter = true;
 return;
 end;
 
@@ -110,6 +127,7 @@ BEGIN
     case "ReferenceTxt": res = ReferenceTxtEditAfter(wn,fieldname,fn,rownr,changed);
     case "CityTxt": res = CityTxtEditAfter(wn,fieldname,fn,rownr,changed);
     case "InvNr": res = InvNrEditAfter(wn,fieldname,fn,rownr,changed);
+    case "ResultTxt": res = ResultTxtEditAfter(wn,fieldname,fn,rownr,changed);
         
   end;
   MarketingDClassAfterEditField = res;

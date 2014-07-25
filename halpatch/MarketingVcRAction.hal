@@ -15,8 +15,8 @@ BEGIN
     res = 0;
   end;
  
-  if(UserCanAction("AllowDeleteMarketingRecord",true)==false)then begin
-	MessageBox(1040," У Вас недостаточно прав на удаление!");
+  if(UserCanAction("AllowDeleteMarketingRecord",false)==false)then begin
+		MessageBox(1040," У Вас недостаточно прав на удаление!");
 	res = 0;
 	goto LMarketingVcRecordRemoveTest;
   end;
@@ -40,16 +40,9 @@ BEGIN
   Mrkr.SalesMan = currentuser;
   Mrkr.LocalMachine = LMb.LocalMachineCode;
   Mrkr.Location = LMb.DefLocation;
-  Mrkr.CityRbtn = 1;
+  Mrkr.CityRbtn = 0;
   Mrkr.ResultRbtn = 0;	
-  
-  if(Mrkr.SerNr==-1)then begin
-		Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
-  end;
-  
-  /*if(RecordStore(Mrkr,true)) then begin
-	  end;
-  *///************************ Save Record when after creation	  
+   
   MarketingVcRecordDefaults = res; 
   RETURN;
 END;
@@ -114,11 +107,13 @@ BEGIN
   	Mrkr.SerNr = NextSerNr("MarketingVc",Mrkr.TransDate,-1,false,"");
   end;
   
-  if (blank(Mrkr.Name)) then begin
+  /*if (blank(Mrkr.Name)) then begin
     RecordCheckError(1058,Mrkr.Name,-1,"Name");      
     res = -1;
     goto LMarketingVcRecordCheck; 
-  end;   
+  end;   */// Edit ************************** Thursday, 24 July 2014 13:12:38
+  
+  
   
   if (blank(Mrkr.Location)) then begin
     RecordCheckError(1058,Mrkr.Location,-1,"Location");      
@@ -146,7 +141,12 @@ BEGIN
   	end;
   end;
   
-  if(Mrkr.NationalityRbtn == 2) then begin
+  if(Mrkr.NationalityRbtn==0) then begin
+  	RecordCheckError(1058," " & USetStr(31004),-1,"NationalityRbtn");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.NationalityRbtn == 3) then begin
   	if(blank(Mrkr.NationalityTxt)) then begin
   		RecordCheckError(1058,Mrkr.NationalityTxt,-1,"NationalityTxt");
   		res = -1; 
@@ -154,7 +154,12 @@ BEGIN
   	end;
   end;
   
-  if(Mrkr.ReferenceRbtn == 5) then begin
+  if(Mrkr.ReferenceRbtn==0) then begin
+		RecordCheckError(1058," " & USetStr(31008),-1,"ReferenceRbtn");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.ReferenceRbtn==6) then begin
   	if(blank(Mrkr.ReferenceTxt)) then begin
   		RecordCheckError(1058,Mrkr.ReferenceTxt,-1,"ReferenceTxt");
   		res = -1; 
@@ -162,7 +167,13 @@ BEGIN
   	end;
   end;
   
-  if(Mrkr.CityRbtn == 0) then begin
+  
+  if(Mrkr.CityRbtn==0) then begin
+		RecordCheckError(1058," " & USetStr(31007),-1,"CityTxt");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.CityRbtn==1) then begin
   	if(blank(Mrkr.CityTxt)) then begin
   		RecordCheckError(1058,Mrkr.CityTxt,-1,"CityTxt");
   		res = -1; 
@@ -171,14 +182,41 @@ BEGIN
   end;
   
   
-  if (SizeTextCnt(Mrkr) == 0) then begin
+  /*if (SizeTextCnt(Mrkr) == 0) then begin
     RecordCheckError(1058,Mrkr.Math,-1,"Math");      
     res = -1;
     goto LMarketingVcRecordCheck; 
+  end;*/// Edit ************************** Thursday, 24 July 2014 13:12:33
+  
+  if(Mrkr.ResultRbtn==0) then begin
+		RecordCheckError(1058," " & USetStr(31009),-1,"ResultRbtn");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
   end;
   
-  if(Mrkr.ResultRbtn == 1) then begin
-  		
+  if(Mrkr.Age==0) then begin
+		RecordCheckError(1058," " & USetStr(31005),-1,"Age");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.Gender==0) then begin
+		RecordCheckError(1058," " & USetStr(31006),-1,"Gender");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  
+  if(Mrkr.ResultRbtn==1 and blank(Mrkr.ResultTxt)) then begin
+  	RecordCheckError(1058,"",-1,"ResultTxt");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.ResultRbtn==2 and blank(Mrkr.InvNr)) then begin
+  	RecordCheckError(1058,"",-1,"InvNr");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  
+  if(Mrkr.ResultRbtn==2) then begin
 	  ExtractObj(Mrkr.InvNr,pos,serNum);
     while (nonblank(serNum)) begin
       IVr.SerNr = serNum;
@@ -207,12 +245,6 @@ BEGIN
 			end;
       ExtractObj(Mrkr.InvNr,pos,serNum);
     end;
-  end else begin
-  	if(Mrkr.ResultRbtn == 0)then begin
-  		if(nonblank(Mrkr.InvNr)) then begin
-  			Mrkr.ResultRbtn = 1;
-  		end;
-  	end;
   end;
   
   if(nonblank(Mrkr.CustCode)) then begin
