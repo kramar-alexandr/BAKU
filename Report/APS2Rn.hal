@@ -239,8 +239,10 @@ BEGIN
   OutString(0,0,USetStr(10801),false);
   OutString(100,0,USetStr(10802),false);
   OutString(150,0,USetStr(10803),false);
-  OutString(250,0,USetStr(10804),false);
-  OutString(340,0,USetStr(10805),true);
+  OutString(220,0,"Усл.оп.",false); //Edit***************************Sasha2,12:16 29.07.2014
+  OutString(260,0,"Дата отгр.",false); //Edit***************************Sasha2,12:16 29.07.2014
+  OutString(250 +70,0,USetStr(10804),false); //Edit***************************Sasha2,12:04 29.07.2014 (+70)
+  OutString(340 +70,0,USetStr(10805),true); //Edit***************************Sasha2,12:06 29.07.2014 (+70)
   if (RepSpec.flags[14]!=0) then begin
     OutString(390,0,USetStr(10807),true);
   end;
@@ -273,6 +275,7 @@ BEGIN
   record AgedBlock Ab;
   record VIVc VIr;// Edit ************************** Thursday, 15 May 2014 13:00:56
   record POVc POr;// Edit ************************** Thursday, 15 May 2014 13:00:57
+  record ORVc ORr; //Edit***************************Sasha2,14:41 29.07.2014
   string 100 ortstr,ortypetstr;
   
   BlockLoad(Ab);
@@ -317,7 +320,7 @@ BEGIN
       	POr.SerNr = VIr.POSerNr;
       	if(readfirstmain(POr,1,true))then begin
       		ortstr = POr.SerNr;
-					ortypetstr = POr.InvAddr4;
+			ortypetstr = POr.InvAddr4;
       	end;
       end;
       outstring(0,0,ortypetstr,false);// Edit ************************** Thursday, 15 May 2014 13:00:30
@@ -335,18 +338,29 @@ BEGIN
         otherwise  
           OutString(150,"DblVePerVI",tstr,false);
       end;
-      OutDate(250,0,aDueDate[i],false);
+      if (NonBlank(POr.OrdNr)) then begin //Edit***************************Sasha2,14:50 29.07.2014 {
+      	ORr.SerNr = POr.OrdNr;
+      	if (readfirstmain(ORr,1,true)) then begin
+      		if (NonBlank(ORr.PayDeal)) then begin
+      			OutString(220,0,ORr.PayDeal,false); 
+      		end;
+      		if (NonBlank(ORr.PlanShip)) then begin
+      			OutString(260,0,ORr.PlanShip,false);
+      		end;
+      	end;
+      end; //Edit***************************Sasha2,12:17 29.07.2014 }
+      OutDate(250 +70,0,aDueDate[i],false); //Edit***************************Sasha2,12:04 29.07.2014 (+70)
       if (Ab.ShowDelayDays!=0) then begin
         if (alatedays[i]<0) then begin
-          OutLongInt(340,0,-alatedays[i],true);      
+          OutLongInt(340 +70,0,-alatedays[i],true); //Edit***************************Sasha2,12:05 29.07.2014 (+70)
         end else begin
-          OutLongInt(340,0,0,true);      
+          OutLongInt(340 +70,0,0,true);//Edit***************************Sasha2,12:05 29.07.2014 (+70)
         end;
       end else begin      
         if (alatedays[i]==-1) then begin
-          OutString(340,0,alatedays[i],true);      
+          OutString(340 +70,0,alatedays[i],true);  //Edit***************************Sasha2,12:05 29.07.2014 (+70)
         end else begin
-          OutLongInt(340,0,alatedays[i],true);      
+          OutLongInt(340 +70,0,alatedays[i],true); //Edit***************************Sasha2,12:05 29.07.2014 (+70)
         end;
       end;
       if (RepSpec.flags[14]!=0) then begin
@@ -605,7 +619,7 @@ BEGIN
   Boolean skip2;
   Array string 20 ac;
   Date d1;
-  
+
   d1 = RepSpec.d1;  
   frve = FirstInRange(RepSpec.f1,20);
   tove = LastInRange(RepSpec.f1,20);
