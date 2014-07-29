@@ -239,8 +239,8 @@ BEGIN
   OutString(0,0,USetStr(10801),false);
   OutString(100,0,USetStr(10802),false);
   OutString(150,0,USetStr(10803),false);
-  OutString(220,0,"Усл.оп.",false); //Edit***************************Sasha2,12:16 29.07.2014
-  OutString(260,0,"Дата отгр.",false); //Edit***************************Sasha2,12:16 29.07.2014
+  	OutString(220,0,"Усл.оп.",false); //Edit***************************Sasha2,12:16 29.07.2014
+  	OutString(260,0,"Дата отгр.",false); //Edit***************************Sasha2,12:16 29.07.2014
   OutString(250 +70,0,USetStr(10804),false); //Edit***************************Sasha2,12:04 29.07.2014 (+70)
   OutString(340 +70,0,USetStr(10805),true); //Edit***************************Sasha2,12:06 29.07.2014 (+70)
   if (RepSpec.flags[14]!=0) then begin

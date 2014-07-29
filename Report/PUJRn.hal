@@ -500,7 +500,7 @@ LSKIPPUROW:;
         OutLongInt(0,"DblPU",PUr.SerNr,false);
         OutDate(60,0,PUr.TransDate,false);
         //OutString(140,0,PUr.Comment,false); //Edit***************************Sasha2,10:59 29.07.2014
-        OutString(120,0,PUr.VEName,false); //Edit***************************Sasha2,10:25 29.07.2014
+        	OutString(120,0,PUr.VEName,false); //Edit***************************Sasha2,10:25 29.07.2014
     		OutVal(220,0,PUr.SumQuant,M4UVal,false); //Edit***************************Sasha2,10:25 29.07.2014
     		OutString(280,0,PUr.Comment,false); //Edit***************************Sasha2,10:59 29.07.2014
         OutValBiDi(480,0,pursum,M4Val,true,515);
