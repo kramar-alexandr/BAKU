@@ -5295,7 +5295,7 @@ begin
   MatCol(1,32,"Товар",0,ArtCode,false,INSClass);
 //  MatCol(1,94,"Var",0,VARList,false,VARSClass);
 //  MatCol(1,144,"Description",0,Spec,false,0);
-  MatCol(1,94,"Наимен.",0,Spec,false,0);
+  MatCol(1,144,"Наимен.",0,Spec,false,0);
   MatCol(t=kInvoiceRowTypeStructuredItemComponent,32,"Товар",0,ArtCode,false,INSClass);
 //  MatCol(t,94,"Var",0,VARList,false,VARSClass);
 //  MatCol(t,144,"Description",0,Spec,false,0);

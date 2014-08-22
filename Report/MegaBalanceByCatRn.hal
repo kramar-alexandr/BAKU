@@ -12,11 +12,11 @@ external procedure PrintCLIn5ByCat(integer,date,date,string,array string,var val
 external procedure PrintCLOut61ByCat(integer,date,date,string,array string);
 external procedure PrintStockSelRet468ByCat(integer,date,date,string,array string);
 external procedure PrintStockVEPAy6ByCat(array val,array val,array val,array val,integer);
-external procedure PrintStockVECred7ByCat(array val,array val,array val,array val,array val,array val,array val,array val,integer,var val);
-external procedure PrintStockIVDeb8ByCat(val,val,val,val,val,val,val,val,var val);
+external procedure PrintStockVECred7ByCat(date,date,integer,array string,var val,string);
+external procedure PrintStockIVDeb8ByCat(date,date,integer,array string,var val,string);
 
 external procedure PrintStockRetFob9ByCat(integer,date,date,string,array string);
-external procedure PrintRates10ByCat();
+external procedure PrintRates10ByCat(date);
 external function string 255 PrepareDispGroups(string);
 
 
@@ -319,7 +319,7 @@ val totusd;
 		end; 
 			
 		
-		BlockLoad(CreditLimitRec);
+		/*BlockLoad(CreditLimitRec);
 	  CUr.Code = "";
 		while(loopmain(CUr,1,true))begin
 			IPrsr.CustCode = CUr.Code;
@@ -443,9 +443,9 @@ val totusd;
 					end;
 				end;
 			end;
-			resetloop(IPrsr);
+			resetloop(IPrsr);*/
 			
-			TrHs = false;
+			/*TrHs = false;
 			OPrsr.VECode = CUr.Code;
 			For(i=0;i<brandscnt;i=i+1) begin
 				DIr.Code = aBrands[i];
@@ -507,7 +507,7 @@ val totusd;
 				end;
 			end;
 			resetloop(OPrsr);
-		end;
+		end;*/
 		
 		PrintStockStat1ByCat(brandscnt,sd,ed,location,aBrands,totusd);
 		//PrintStockStat1(aBrandsBalEUR,aBrandsBalCHF,aBrandsBalUSD,brandscnt);
@@ -525,8 +525,8 @@ val totusd;
 		PrintStockVEPAy6ByCat(aBrandsPaymAZN,aBrandsPaymEUR,aBrandsPaymCHF,aBrandsPaymUSD,brandscnt);
 		PrintCLOut61ByCat(brandscnt,sd,ed,location,aBrands);
 
-		PrintStockVECred7ByCat(aVEVIAZN,aVEOPAZN,aVEVIEUR,aVEOPEUR,aVEVICHF,aVEOPCHF,aVEVIUSD,aVEOPUSD,brandscnt,totusd);
-		PrintStockIVDeb8ByCat(CUIVAZN,CUIPAZN,CUIVEUR,CUIPEUR,CUIVCHF,CUIPCHF,CUIVUSD,CUIPUSD,totusd);
+		PrintStockVECred7ByCat(sd,ed,brandscnt,aBrands,totusd,location);
+		PrintStockIVDeb8ByCat(sd,ed,brandscnt,aBrands,totusd,location);
 		PrintStockRetFob9ByCat(brandscnt,sd,ed,location,aBrands);
 		startformat(15);
 			outstring(0,0,"10",false);
@@ -534,7 +534,7 @@ val totusd;
 			outstring(150,0,totusd,false);
 		endformat;
 		
-		PrintRates10ByCat;
+		PrintRates10ByCat(ed);
 		
 				
 			

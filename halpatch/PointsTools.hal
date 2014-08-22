@@ -170,6 +170,7 @@ begin
   boolean testf;
   string 20 nextlevel;
   
+  
   RecordNew(PHr);
   qty = 0;
   PHr.TransNr  = transnr;
@@ -213,7 +214,13 @@ begin
             LoyaltyCardr.LCMLevel = nextlevel;
           end;
         end;  
-        if (RecordUpdate(oldLoyaltyCardr,LoyaltyCardr,false)==0) then begin end;
+        if (RecordUpdate(oldLoyaltyCardr,LoyaltyCardr,false)==0) then begin
+        	if(LoyaltyCardr.LCMLevel=="C3000")then begin// Edit ************************** Thursday, 7 August 2014 16:00:58// Edit ************************** Thursday, 7 August 2014 16:01:00
+        		if(LoyaltyCardr.PointsBalance>3000)then begin
+        			messagebox(31011,"");
+        		end;
+        	end;// Edit ************************** Thursday, 7 August 2014 16:00:57
+        end;
       end else begin 
         // which card level to update ??
         RecordCopy(oldLoyaltyCardr,LoyaltyCard2r);
@@ -327,7 +334,9 @@ end;
 updating procedure LoyaltyCardPointsRedemption(string LoyaltyCardNr,val Points,Boolean negf)
 begin
   record LoyaltyCardVc LCr,oldLCr;
-
+	
+	logtext(0,1);
+	
   LCr.SerNr = LoyaltyCardNr;
   if (ReadFirstMain(LCr,1,true)) then begin 
     RecordCopy(oldLCr,LCr);

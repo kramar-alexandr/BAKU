@@ -4,6 +4,31 @@ external procedure ExtractObj(string,var Integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+global
+function string 200 ValToMyString(val value,integer dec)
+begin
+string 200 res,tempres;
+val tempval;
+integer i,templen;
+
+	res = "";
+	tempval = value;
+	For(i=0;i<dec;i=i+1) begin
+	  tempval = tempval * 10;
+	end; 
+	tempres = ValToString(tempval,M4Val,"",".",1);
+	templen = len(tempres);
+	if(left(tempres,templen-dec)=="")then begin
+		res = "0." & right(tempres,dec);
+	end else begin
+		res = left(tempres,templen-dec) & "." & right(tempres,dec);
+	end;
+	
+	ValToMyString = res;
+return;
+end;
+
+
 global procedure MatReportRClassReportDefaults(integer wn)
 begin
 	record LocalMachineBlock LMb;
@@ -50,6 +75,12 @@ begin
 	row StockMovVc SMrw;
 	integer sign;
 	val totpayUSD,totpayEUR,totpayAZN,totccUSD,totccAZN,totccEUR,totpayTRM;
+	boolean fullcash;
+	roundmode rnd;
+	
+	
+	rnd = DefaultValRoundoff;
+  rnd.decimals = 0;
 	
 	location = RepSpec.f1;
 	//todate = RepSpec.d1;
@@ -120,19 +151,19 @@ begin
           GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
           startformat(15);
             outstring(0,0,"EUR:AZN",false);
-            outstring(0,0,fr & ":" & to1,false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
           curcode = "USD";
           GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
           startformat(15);
             outstring(0,0,"USD:AZN",false);
-            outstring(0,0,fr & ":" & to1,false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
           curcode = "CHF";
           GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
           startformat(15);
             outstring(0,0,"CHF:AZN",false);
-            outstring(0,0,fr & ":" & to1,false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
         
         
@@ -178,6 +209,7 @@ begin
               ivsum = 0;
               dolg = 0;
               mtrw = matrowcnt(IVr);
+              fullcash = false;
               For(i=0;i<mtrw;i=i+1) begin
                 matrowget(IVr,i,IVrw);
                 if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
@@ -191,12 +223,12 @@ begin
                               totpayEUR = totpayEUR + IVrw.Sum;
                               curcode = "EUR";
                               GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
-                              dolg = dolg + IVrw.Sum*fr/to1;
+                              dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
                     case"USD":payUSD = payUSD + IVrw.Sum;
                               totpayUSD = totpayUSD + IVrw.Sum;
                               curcode = "USD";
                               GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
-                              dolg = dolg + IVrw.Sum*fr/to1;
+                              dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
                   end;
                 end;
                 if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin
@@ -210,6 +242,18 @@ begin
                   end;
                 end;
               end; 
+              if(payAZN==0 and payEUR==0 and payUSD==0 and IVr.PayDeal=="O")then begin
+              	fullcash = true;
+              	switch(IVr.CurncyCode)begin
+                    case"AZN":payAZN = payAZN + IVr.Sum4;
+                              totpayAZN = totpayAZN + IVr.Sum4;
+                    case"EUR":payEUR = payEUR + IVr.Sum4;
+                              totpayEUR = totpayEUR + IVr.Sum4;
+                    case"USD":payUSD = payUSD + IVr.Sum4;
+                              totpayUSD = totpayUSD + IVr.Sum4;
+                  end;
+              end;
+              
               dolg = dolg - IVr.Sum4;
               For(i=0;i<mtrw;i=i+1) begin
                 matrowget(IVr,i,IVrw);
@@ -265,14 +309,14 @@ begin
                       ivsum = 1;
                       payTRM = 1;
                     end;
-                    outstring(300,0,IVrw.Sum/ivsum/IVrw.Quant*payUSD,false);
-                    outstring(350,0,IVrw.Sum/ivsum*payUSD,false);
-                    outstring(400,0,IVrw.Sum/ivsum/IVrw.Quant*payAZN,false);
-                    outstring(450,0,IVrw.Sum/ivsum*payAZN,false);
-                    outstring(500,0,IVrw.Sum/ivsum/IVrw.Quant*payEUR,false);
-                    outstring(550,0,IVrw.Sum/ivsum*payEUR,false);
-                    outstring(600,0,IVrw.Sum/ivsum/IVrw.Quant*payTRM,false);
-                    outstring(650,0,IVrw.Sum/ivsum*payTRM,false);
+                    outstring(300,0,round(IVrw.Sum/ivsum/IVrw.Quant*payUSD,rnd),false);
+                    outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
+                    outstring(400,0,round(IVrw.Sum/ivsum/IVrw.Quant*payAZN,rnd),false);
+                    outstring(450,0,round(IVrw.Sum/ivsum*payAZN,rnd),false);
+                    outstring(500,0,round(IVrw.Sum/ivsum/IVrw.Quant*payEUR,rnd),false);
+                    outstring(550,0,round(IVrw.Sum/ivsum*payEUR,rnd),false);
+                    outstring(600,0,round(IVrw.Sum/ivsum/IVrw.Quant*payTRM,rnd),false);
+                    outstring(650,0,round(IVrw.Sum/ivsum*payTRM,rnd),false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);

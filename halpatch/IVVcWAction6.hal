@@ -509,6 +509,7 @@ begin
       LLPr.Location = IVr.Location;
       found = ReadFirstMain(LLPr,1,true);
     end;
+    
     rwcnt = MatRowCnt(IVr);
     t = MulRateToBase1(IVr.CurncyCode,IVr.Sum4,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
     if (found) then begin
@@ -568,6 +569,17 @@ begin
         LPr.LCMLevel = "";
         found = ReadFirstMain(LPr,1,true);
       end;
+      
+      if(found and LPr.LCMLevel=="C3000")then begin
+    		balcurncy = "AZN";
+				GetFullCurncyRate(balcurncy,CurrentDate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr = 1;
+					to1 = 1;
+				end;
+				rate = fr/to1;
+			end;
+      
       if (found) then begin
         if (LPr.MinAmount>0) then begin
           if (t<LPr.MinAmount) then begin

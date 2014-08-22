@@ -3,6 +3,7 @@ external procedure GetOnAccBalance(record RcVc,string,string,Boolean,Integer,var
                    Array string,Array val,var Integer);
 external procedure GetFindCustBalance(string,LongInt,var val,var val,var val,var val,Integer,Integer,Integer,Integer,Integer,Integer,Boolean,var Boolean);
 external procedure ExtractObj(string,var Integer,var string);
+external function string 200 ValToMyString(val,integer);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -70,7 +71,7 @@ begin
 		if(nonblank(INr.LastPurchCurncyCode))then begin
 			incurncy = INr.LastPurchCurncyCode;
 		end else begin
-			incurncy = "USD";
+			incurncy = "USDB";
 		end;
 		For(i=0;i<brandscnt;i=i+1) begin
 			if(setinset(aBrands[i],PrepareDispGroups(INr.DispGroups)))then begin
@@ -125,8 +126,8 @@ begin
 	end;
 	
 	
-	incurncy = "EUR";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "EURB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalEUR[i];
@@ -141,8 +142,8 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "CHF";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "CHFB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalCHF[i];
@@ -157,8 +158,8 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "USD";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "USDB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalUSD[i];
@@ -173,8 +174,8 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "USD";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "USDB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,"Итого " & incurncy,false);
@@ -187,8 +188,8 @@ begin
 		outstring(0,0,"Временный ввоз",false);
 	endformat;
 	
-	incurncy = "EUR";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "EURB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalEURcons[i];
@@ -203,12 +204,12 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "CHF";
+	incurncy = "CHFB";
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalCHFcons[i];
 	end;
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
@@ -219,12 +220,12 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "USD";
+	incurncy = "USDB";
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 		totrow = totrow + aBrandsBalUSDcons[i];
 	end;
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
@@ -235,8 +236,8 @@ begin
 		end; 
 	endformat;
 	
-	incurncy = "USD";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	incurncy = "USDB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -279,7 +280,7 @@ begin
 			if(nonblank(INr.LastPurchCurncyCode))then begin
 				incurncy = INr.LastPurchCurncyCode;
 			end else begin
-				incurncy = "USD";
+				incurncy = "USDB";
 			end;
 			For(i=0;i<brandscnt;i=i+1) begin
 				if(setinset(aBrands[i],PrepareDispGroups(INr.DispGroups)))then begin
@@ -333,8 +334,8 @@ begin
 		end;
 		
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUEUR[i];
@@ -349,8 +350,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUCHF[i];
@@ -365,8 +366,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUUSD[i];
@@ -381,8 +382,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -394,8 +395,8 @@ begin
 			outstring(0,0,"Временный ввоз",false);
 		endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUEURcons[i];
@@ -410,8 +411,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUCHFcons[i];
@@ -426,8 +427,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsPUUSDcons[i];
@@ -442,8 +443,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -466,8 +467,8 @@ begin
 			outstring(0,0,"Стоимость возврата от покупателей",false);
 		endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,incurncy,false);
@@ -477,8 +478,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,incurncy,false);
@@ -488,8 +489,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,incurncy,false);
@@ -499,8 +500,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -543,7 +544,7 @@ begin
 		if(nonblank(INr.LastPurchCurncyCode))then begin
 			incurncy = INr.LastPurchCurncyCode;
 		end else begin
-			incurncy = "USD";
+			incurncy = "USDB";
 		end;
 		For(i=0;i<brandscnt;i=i+1) begin
 			if(setinset(aBrands[i],PrepareDispGroups(INr.DispGroups)))then begin
@@ -620,8 +621,8 @@ begin
 			outstring(0,0,"Стоимость возврата от покупателей",false);
 		endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetEUR[i];
@@ -636,8 +637,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetCHF[i];
@@ -652,8 +653,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetUSD[i];
@@ -668,8 +669,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -681,8 +682,8 @@ begin
 			outstring(0,0,"Реализация товара,FOB",false);
 		endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelEUR[i];
@@ -697,8 +698,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelCHF[i];
@@ -713,8 +714,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelUSD[i];
@@ -729,8 +730,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -743,8 +744,8 @@ begin
 			outstring(0,0,"Реализация товара на консигнации, FOB",false);
 		endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelEURcons[i];
@@ -759,8 +760,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelCHFcons[i];
@@ -775,8 +776,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsSelUSDcons[i];
@@ -791,8 +792,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -824,16 +825,16 @@ begin
 	string 10 curcode;
 	val totrow;
 	
-	curcode = "USD";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
+	curcode = "USDB";
+	GetFullCurncyRate(curcode,ed,fr,to1,to2,br1,br2);
 	rateusd = fr * to1;
 	
-	curcode = "CHF";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
+	curcode = "CHFB";
+	GetFullCurncyRate(curcode,ed,fr,to1,to2,br1,br2);
 	ratechf = fr * to1;
 	
-	curcode = "EUR";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
+	curcode = "EURB";
+	GetFullCurncyRate(curcode,ed,fr,to1,to2,br1,br2);
 	rateeur = fr * to1;
 	
 	
@@ -947,7 +948,7 @@ begin
 			outstring(0,0,"товаром  (офисные расходы)",false);
 		endformat;
 		
-		incurncy = "EUR";
+		incurncy = "EURB";
 			totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + SumEUR[i];
@@ -960,7 +961,7 @@ begin
 					outstring(150+j*50,0,SumEUR[j],false);
 				end;
 			endformat;
-		incurncy = "CHF";
+		incurncy = "CHFB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + SumCHF[i];
@@ -973,7 +974,7 @@ begin
 					outstring(150+j*50,0,SumCHF[j],false);
 				end;
 			endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + SumUSD[i];
@@ -1027,7 +1028,7 @@ begin
 				end;*/
 			endformat;
 
-		incurncy = "EUR";
+		incurncy = "EURB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + aBrandsCashEUR[i];
@@ -1040,7 +1041,7 @@ begin
 					outstring(150+j*50,0,aBrandsCashEUR[j],false);
 				end;*/
 			endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + aBrandsCashUSD[i];
@@ -1072,7 +1073,7 @@ begin
 				outstring(150+j*50,0,aBrandsCCAZN[j],false);
 			end;*/
 		endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + aBrandsCCUSD[i];
@@ -1111,19 +1112,7 @@ begin
 	val t,fr,to1,to2,br1,br2;
 	string 10 curcode;
 	val totrow;
-	
-	/*curcode = "USD";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
-	rateusd = fr * to1;
-	
-	curcode = "CHF";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
-	ratechf = fr * to1;
-	
-	curcode = "EUR";
-	GetFullCurncyRate(curcode,currentdate,fr,to1,to2,br1,br2);
-	rateeur = fr * to1;*/
-	
+		
 	startformat(15);
 		outstring(0,0,"4.3",false);
 		outstring(0,0,"Приход от бутиков ювелирной Программы",false);
@@ -1165,7 +1154,7 @@ begin
 	  	outstring(150+i*50,0,BrandsCLInAZN[i],false);
 	  	end;
 		endformat;
-		incurncy = "EUR";
+		incurncy = "EURB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + BrandsCLInEUR[i];
@@ -1178,7 +1167,7 @@ begin
 	  	outstring(150+i*50,0,BrandsCLInEUR[i],false);
 	  	end;
 		endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		totrow = 0;
 			For(i=0;i<brandscnt;i=i+1) begin
 				totrow = totrow + BrandsCLInUSD[i];
@@ -1513,13 +1502,13 @@ begin
 		outstring(100,0,incurncy,false);
 		outstring(150+i*50,0,BalAZN,false);
 	endformat;
-	incurncy = "EUR";
+	incurncy = "EURB";
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
 		outstring(150+i*50,0,BalEUR,false);
 	endformat;
-	incurncy = "USD";
+	incurncy = "USDB";
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
@@ -1560,20 +1549,20 @@ begin
 		outstring(100,0,incurncy,false);
 		outstring(150+i*50,0,BalAZN,false);
 	endformat;
-	incurncy = "EUR";
+	incurncy = "EURB";
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
 		outstring(150+i*50,0,BalEUR,false);
 	endformat;
-	incurncy = "USD";
+	incurncy = "USDB";
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,incurncy,false);
 		outstring(150+i*50,0,BalUSD,false);
 	endformat;
 	
-	incurncy = "USD";
+	incurncy = "USDB";
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,"Итого " & incurncy,false);
@@ -1608,7 +1597,7 @@ begin
 			outstring(150+i*50,0,aBrandsPaymAZN[i],false);
 		end;
 	endformat;
-	incurncy = "EUR";
+	incurncy = "EURB";
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 	  totrow = totrow + aBrandsPaymEUR[i];
@@ -1621,7 +1610,7 @@ begin
 			outstring(150+i*50,0,aBrandsPaymEUR[i],false);
 		end;
 	endformat;
-	incurncy = "CHF";
+	incurncy = "CHFB";
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 	  totrow = totrow + aBrandsPaymCHF[i];
@@ -1634,7 +1623,7 @@ begin
 			outstring(150+i*50,0,aBrandsPaymCHF[i],false);
 		end;
 	endformat;
-	incurncy = "USD";
+	incurncy = "USDB";
 	totrow = 0;
 	For(i=0;i<brandscnt;i=i+1) begin
 	  totrow = totrow + aBrandsPaymUSD[i];
@@ -1731,7 +1720,7 @@ begin
 	  	outstring(150+i*50,0,BrandsCLOutAZN[i],false);
 	  	end;
 		endformat;
-		incurncy = "EUR";
+		incurncy = "EURB";
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + BrandsCLOutEUR[i];
@@ -1744,7 +1733,7 @@ begin
 	  	outstring(150+i*50,0,BrandsCLOutEUR[i],false);
 	  	end;
 		endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + BrandsCLOutUSD[i];
@@ -1757,7 +1746,7 @@ begin
 	  	outstring(150+i*50,0,BrandsCLOutUSD[i],false);
 	  	end;
 		endformat;
-		incurncy = "USD";
+		incurncy = "USDB";
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого" & incurncy,false);
@@ -1769,100 +1758,426 @@ return;
 end;
 
 global
-procedure PrintStockVECred7ByCat(array val aVEVIAZN,array val aVEOPAZN,array val aVEVIEUR,array val aVEOPEUR,array val aVEVICHF,array val aVEOPCHF,array val aVEVIUSD,array val aVEOPUSD,integer brandscnt,var val totusd) 
+procedure PrintStockVECred7ByCat(date sd,date ed,integer brandscnt, array string aBrands,var val totusd,string location) 
 begin
-	integer i;
-	val VEVITotalUSD;
-	string 10 incurncy;
+	val CUIVTotalUSD;
 	val fr,to1,to2,br1,br2;
-	val totrow;
+	string 10 incurncy;
+	record CUVc CUr;
+	boolean TrHs,testf;
+	val CUIVAZN,CUIPAZN,CUIVEUR,CUIPEUR,CUIVCHF,CUIPCHF,CUIVUSD,CUIPUSD;
+	array val CUIVAZNprc,CUIVEURprc,CUIVCHFprc,CUIVUSDprc;
+	record OPrsVc OPrsr,OPrsr1;
+	record VIVc VIr;
+	row VIVc VIrw;
+	integer i,mtrw,rwcnt,j;
+	val CUDebSum;
+	record OPVc OPr;
+	row OPVc OPrw;
+	record ORVc ORr;
+	row ORVc ORrw;
+	val prepayment,dif;
+	boolean TrHs1,testf1;
+	record INVc INr;
+	record POVc POr;
+	row POVc POrw;
 	
-	incurncy = "USD";
-	GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+	
+	POr.SerNr = "";
+	TrHs = true;
+	while(loopkey("TransDate",POr,1,TrHs))begin
+		testf = true;
+		if(POr.TransDate>ed)then begin TrHs = false; testf = false; end;
+		if(POr.OKFlag==0)then begin testf = false; end;
+		
+		dif = 0;
+		if(testf)then begin
+			mtrw = matrowcnt(POr);
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(POr,i,POrw);
+	  		switch(POr.CurncyCode)begin
+					case"AZN":CUIVAZN = CUIVAZN + POrw.Price * POrw.Shipd2;
+					case"EUR":CUIVEUR = CUIVEUR + POrw.Price * POrw.Shipd2;
+					case"CHF":CUIVCHF = CUIVCHF + POrw.Price * POrw.Shipd2;
+					case"USD":CUIVUSD = CUIVUSD + POrw.Price * POrw.Shipd2;
+				end;
+				dif = dif + POrw.Price * POrw.Shipd2;
+				switch(POr.CurncyCode)begin
+					case"AZN":CUIPAZN = CUIPAZN + POrw.Price * POrw.Invd;
+					case"EUR":CUIPEUR = CUIPEUR + POrw.Price * POrw.Invd;
+					case"CHF":CUIPCHF = CUIPCHF + POrw.Price * POrw.Invd;
+					case"USD":CUIPUSD = CUIPUSD + POrw.Price * POrw.Invd;
+				end;
+				dif = dif - POrw.Price * POrw.Invd;
+			end; 
+			
+			if(dif!=0)then begin
+				startformat(15);
+					outstring(0,"DblPOVc",POr.SerNr,false);
+					outstring(50,0,dif,false);
+					outstring(100,0,POr.CurncyCode,false);
+				endformat;
+			end;
+		end;
+	end;
+	/*
+	CUr.Code = "";
+	while(loopmain(CUr,1,true))begin
+		OPrsr.VECode = CUr.Code;
+		OPrsr.TransDate = "";
+		OPrsr.TransType = 0;
+		TrHs = true;
+		while(loopkey("TransType",OPrsr,3,TrHs))begin
+			if(OPrsr.VECode!=CUr.Code)then begin TrHs = false; end;
+			if(OPrsr.TransDate>ed)then begin TrHs = false; end;
+			if(OPrsr.TransType!=0)then begin TrHs = false; end;
+			
+			if(TrHs and CUr.VEType!=0)then begin			
+				VIr.SerNr = OPrsr.TransNr;
+				if(readfirstmain(VIr,1,true)) begin
+					testf = true;
+					POr.SerNr = VIr.POSerNr;
+					if(POr.SerNr>-1)then begin
+						if(readfirstmain(POr,1,true))then begin
+						end;
+					end;
+					if(nonblank(location) and location!=POr.Location)then begin testf = false; end;
+					
+					if(testf)then begin
+						dif = 0;
+						prepayment = 0;
+						if(VIr.InvType==kInvoiceTypeCredit and VIr.CredInv>-1)then begin
+							switch(VIr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN - VIr.PayVal;
+								case"EUR":CUIVEUR = CUIVEUR - VIr.PayVal;
+								case"CHF":CUIVCHF = CUIVCHF - VIr.PayVal;
+								case"USD":CUIVUSD = CUIVUSD - VIr.PayVal;
+							end;
+						end;
+						if(VIr.InvType==kInvoiceTypeNormal)then begin
+							switch(VIr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN + VIr.PayVal;
+								case"EUR":CUIVEUR = CUIVEUR + VIr.PayVal;
+								case"CHF":CUIVCHF = CUIVCHF + VIr.PayVal;
+								case"USD":CUIVUSD = CUIVUSD + VIr.PayVal;
+							end;
+						end;
+						CUDebSum = 0;
+						if(true)then begin
+							mtrw = matrowcnt(VIr);
+							For(i=0;i<mtrw;i=i+1) begin
+								matrowget(VIr,i,VIrw);
+								if(VIrw.stp==kInvoiceRowTypePrepayment)then begin
+									CUDebSum = CUDebSum + VIrw.Sum;
+								end; 													
+							end; 
+
+							switch(VIr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN - CUDebSum;
+								case"EUR":CUIVEUR = CUIVEUR - CUDebSum;
+								case"CHF":CUIVCHF = CUIVCHF - CUDebSum;
+								case"USD":CUIVUSD = CUIVUSD - CUDebSum;
+							end;
+							dif = VIr.PayVal - CUDebSum;
+							TrHs1 = true;
+							OPrsr1.VINr = VIr.SerNr;
+							OPrsr1.TransDate = "";
+							while(loopkey("VIKeyTransDate",OPrsr1,2,TrHs1))begin
+								testf1 = true;
+								if(OPrsr1.TransDate>ed)then begin testf1 = false; TrHs1 = false; end;
+								if(OPrsr1.VINr!=VIr.SerNr)then begin testf1 = false; TrHs1 = false; end;
+								if(OPrsr1.TransType!=1)then begin testf1 = false; end;
+								
+								if(testf1)then begin
+									OPr.SerNr = OPrsr1.TransNr;
+									if(readfirstmain(OPr,1,true))then begin
+										mtrw = matrowcnt(OPr);
+										For(i=0;i<mtrw;i=i+1) begin
+											matrowget(OPr,i,OPrw);
+												if(OPrsr1.VINr>0 and OPrw.VISerNr==OPrsr1.VINr and OPrsr1.TransDate==OPr.TransDate)then begin
+												if(testf)then begin
+													switch(OPrw.PInvCurncy)begin
+														case"AZN":CUIPAZN = CUIPAZN + OPrw.PInvVal;
+														case"EUR":CUIPEUR = CUIPEUR + OPrw.PInvVal;
+														case"CHF":CUIPCHF = CUIPCHF + OPrw.PInvVal;
+														case"USD":CUIPUSD = CUIPUSD + OPrw.PInvVal;
+													end;
+													dif = dif - OPrw.PInvVal;
+												end;
+											end;
+										end; 
+									end;
+								end;
+							end;
+							resetloop(OPrsr1);
+							
+							if(dif!=0)then begin
+								startformat(15);
+									outstring(0,"DblVIVc",VIr.SerNr,false);
+									Outstring(50,0,VIr.CurncyCode,false);
+									Outstring(100,0,dif,false);
+								endformat;
+								
+								mtrw = matrowcnt(VIr);
+								For(i=0;i<mtrw;i=i+1) begin
+									matrowget(VIr,i,VIrw);
+									if(nonblank(VIrw.Item) and VIrw.qty>0)then begin
+										INr.Code = VIrw.Item;
+										if(Readfirstmain(INr,1,true))then begin
+											For(j=0;j<brandscnt;j=j+1) begin
+												if(setinset(aBrands[j],PrepareDispGroups(INr.DispGroups)))then begin
+													switch(VIr.CurncyCode)begin
+														case"AZN":CUIVAZNprc[j] = CUIVAZNprc[j] + dif*VIrw.Sum/VIr.PayVal;
+														case"EUR":CUIVEURprc[j] = CUIVEURprc[j] + dif*VIrw.Sum/VIr.PayVal;
+														case"CHF":CUIVCHFprc[j] = CUIVCHFprc[j] + dif*VIrw.Sum/VIr.PayVal;
+														case"USD":CUIVUSDprc[j] = CUIVUSDprc[j] + dif*VIrw.Sum/VIr.PayVal;
+													end;
+												end;
+											end;
+										end;
+									end;
+								end; 
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+		resetloop(OPrsr);
+	end;
+	*/
+	
+	/*incurncy = "USDB";
+	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);*/
 	
 	startformat(15);
 			outstring(0,0,"7",false);
 			outstring(0,0,"Кредит. задолженность Поставщиков",false);
 		endformat;
 		
-		totrow = 0;
-		For(i=0;i<brandscnt;i=i+1) begin
-			totrow = totrow + aVEVIAZN[i] - aVEOPAZN[i];
-		end;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"AZN",false);
-			outstring(0,0,totrow,false);
+			outstring(100,0,CUIVAZN - CUIPAZN,false);
 			For(i=0;i<brandscnt;i=i+1) begin
-				outstring(150+50*i,0,aVEVIAZN[i] - aVEOPAZN[i],false);
+	  		outstring(150+i*50,0,CUIVAZNprc[i],false);
 			end; 
 		endformat;
-		totrow = 0;
-		For(i=0;i<brandscnt;i=i+1) begin
-			totrow = totrow + aVEVIEUR[i] - aVEOPEUR[i];
-		end;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"EUR",false);
-			outstring(0,0,totrow,false);
+			outstring(100,0,CUIVEUR - CUIPEUR,false);
 			For(i=0;i<brandscnt;i=i+1) begin
-				outstring(150+50*i,0,aVEVIEUR[i] - aVEOPEUR[i],false);
-			end;
+	  		outstring(150+i*50,0,CUIVEURprc[i],false);
+			end; 
 		endformat;
-		totrow = 0;
-		For(i=0;i<brandscnt;i=i+1) begin
-			totrow = totrow + aVEVICHF[i] - aVEOPCHF[i];
-		end;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"CHF",false);
-			outstring(0,0,totrow,false);
+			outstring(100,0,CUIVCHF - CUIPCHF,false);
 			For(i=0;i<brandscnt;i=i+1) begin
-				outstring(150+50*i,0,aVEVICHF[i] - aVEOPCHF[i],false);
-			end;
+	  		outstring(150+i*50,0,CUIVCHFprc[i],false);
+			end; 
 		endformat;
-		totrow = 0;
-		For(i=0;i<brandscnt;i=i+1) begin
-			totrow = totrow + aVEVIUSD[i] - aVEOPUSD[i];
-		end;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"USD",false);
-			outstring(0,0,totrow,false);
+			outstring(100,0,CUIVUSD - CUIPUSD,false);
 			For(i=0;i<brandscnt;i=i+1) begin
-				outstring(150+50*i,0,aVEVIUSD[i] - aVEOPUSD[i],false);
-			end;
+	  		outstring(150+i*50,0,CUIVUSDprc[i],false);
+			end; 
 		endformat;
 		
-		For(i=0;i<brandscnt;i=i+1) begin
-			VEVITotalUSD = VEVITotalUSD + (aVEVIAZN[i] - aVEOPAZN[i]);
-			incurncy = "EUR";
-			GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-			VEVITotalUSD = VEVITotalUSD + (aVEVIEUR[i] - aVEOPEUR[i])/fr*to1;
-			incurncy = "CHF";
-			GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-			VEVITotalUSD = VEVITotalUSD + (aVEVICHF[i] - aVEOPCHF[i])/fr*to1;
-			incurncy = "USD";
-			GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-			VEVITotalUSD = VEVITotalUSD + (aVEVIUSD[i] - aVEOPUSD[i])/fr*to1;
-		end;
+		CUIVTotalUSD = CUIVTotalUSD + (CUIVAZN - CUIPAZN);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		CUIVTotalUSD = CUIVTotalUSD + (CUIVEUR - CUIPEUR)/fr*to1;
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		CUIVTotalUSD = CUIVTotalUSD + (CUIVCHF - CUIPCHF)/fr*to1;
 		
-		VEVITotalUSD = VEVITotalUSD*fr/to1;
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		/*CUIVTotalUSD = CUIVTotalUSD + (CUIVUSD - CUIPUSD)/fr*to1;*/
+		
+		CUIVTotalUSD = CUIVTotalUSD*fr/to1;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"Итого USD",false);
-			outstring(100,0,VEVITotalUSD,false);
+			outstring(100,0,CUIVTotalUSD + (CUIVUSD - CUIPUSD),false);
 		endformat;
-		totusd = totusd - VEVITotalUSD;
+		totusd = totusd - (CUIVTotalUSD + (CUIVUSD - CUIPUSD));
 return;
 end; 
 
 global
-procedure	PrintStockIVDeb8ByCat(val CUIVAZN,val CUIPAZN,val CUIVEUR,val CUIPEUR,val CUIVCHF,val CUIPCHF,val CUIVUSD,val CUIPUSD,var val totusd)
+procedure	PrintStockIVDeb8ByCat(date sd,date ed,integer brandscnt, array string aBrands,var val totusd,string location)
 begin
 	val CUIVTotalUSD;
 	val fr,to1,to2,br1,br2;
 	string 10 incurncy;
+	record CUVc CUr;
+	boolean TrHs,testf;
+	val CUIVAZN,CUIPAZN,CUIVEUR,CUIPEUR,CUIVCHF,CUIPCHF,CUIVUSD,CUIPUSD;
+	array val CUIVAZNprc,CUIVEURprc,CUIVCHFprc,CUIVUSDprc;
+	record IPrsVc IPrsr,IPrsr1;
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,mtrw,rwcnt,j;
+	val CUDebSum;
+	record IPVc IPr;
+	row IPVc IPrw;
+	record ORVc ORr;
+	row ORVc ORrw;
+	val prepayment,dif;
+	boolean TrHs1,testf1;
+	record INVc INr;
+	
+	CUr.Code = "";
+	while(loopmain(CUr,1,true))begin
+		IPrsr.CustCode = CUr.Code;
+		IPrsr.CustDate = "";
+		IPrsr.TransType = 0;
+		TrHs = true;
+		while(loopkey("CustType",IPrsr,3,TrHs))begin
+			if(IPrsr.CustCode!=CUr.Code)then begin TrHs = false; end;
+			if(IPrsr.CustDate>ed)then begin TrHs = false; end;
+			if(IPrsr.TransType!=0)then begin TrHs = false; end;
+			
+			if(TrHs)then begin
+				IVr.SerNr = IPrsr.TransNr;
+				if(readfirstmain(IVr,1,true)) begin
+					testf = true;
+					if(nonblank(location) and location!=IVr.Location)then begin testf = false; end;
+					
+					if(testf)then begin
+						dif = 0;
+						prepayment = 0;
+						if(IVr.InvType==kInvoiceTypeCredit)then begin
+							switch(IVr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN - IVr.Sum4;
+								case"EUR":CUIVEUR = CUIVEUR - IVr.Sum4;
+								case"CHF":CUIVCHF = CUIVCHF - IVr.Sum4;
+								case"USD":CUIVUSD = CUIVUSD - IVr.Sum4;
+							end;
+						end;
+						if(IVr.InvType==kInvoiceTypeNormal)then begin
+							switch(IVr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN + IVr.Sum4;
+								case"EUR":CUIVEUR = CUIVEUR + IVr.Sum4;
+								case"CHF":CUIVCHF = CUIVCHF + IVr.Sum4;
+								case"USD":CUIVUSD = CUIVUSD + IVr.Sum4;
+							end;
+						end;
+						CUDebSum = 0;
+						if(IVr.InvType==kInvoiceTypeNormal)then begin
+							mtrw = matrowcnt(IVr);
+							For(i=0;i<mtrw;i=i+1) begin
+								matrowget(IVr,i,IVrw);
+								if(IVrw.stp==kInvoiceRowTypeCashPayment)then begin
+									GetFullCurncyRate(IVrw.CurncyCode,IVr.TransDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;
+										to1 =1;
+									end;
+									if(IVr.FrRate!=0)then begin
+										CUDebSum = CUDebSum + IVrw.Sum*fr/to1*IVr.ToRateB1/IVr.FrRate;
+									end else begin
+										CUDebSum = CUDebSum + IVrw.Sum*fr/to1;
+									end;
+								end;
+								if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin
+									if(IVr.FrRate!=0)then begin
+										CUDebSum = CUDebSum + IVrw.Sum*IVr.ToRateB1/IVr.FrRate;
+									end else begin
+										CUDebSum = CUDebSum + IVrw.Sum;
+									end;
+								end;
+								if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
+									if(IVr.FrRate!=0)then begin
+										CUDebSum = CUDebSum + IVrw.Sum*IVr.ToRateB1/IVr.FrRate;
+									end else begin
+										CUDebSum = CUDebSum + IVrw.Sum;
+									end;
+								end; 
+								if(IVrw.stp==kInvoiceRowTypePrepayment)then begin
+									CUDebSum = CUDebSum + IVrw.Sum;
+								end; 													
+							end; 
+
+							switch(IVr.CurncyCode)begin
+								case"AZN":CUIVAZN = CUIVAZN - CUDebSum;
+								case"EUR":CUIVEUR = CUIVEUR - CUDebSum;
+								case"CHF":CUIVCHF = CUIVCHF - CUDebSum;
+								case"USD":CUIVUSD = CUIVUSD - CUDebSum;
+							end;
+							dif = IVr.Sum4 - CUDebSum;
+							TrHs1 = true;
+							IPrsr1.IVNr = IVr.SerNr;
+							IPrsr1.CustDate = "";
+							while(loopkey("IVKeyCustDate",IPrsr1,2,TrHs1))begin
+								testf1 = true;
+								if(IPrsr1.CustDate>ed)then begin testf1 = false; TrHs1 = false; end;
+								if(IPrsr1.IVNr!=IVr.SerNr)then begin testf1 = false; TrHs1 = false; end;
+								if(IPrsr1.TransType!=1)then begin testf1 = false; end;
+								
+								if(testf1)then begin
+									IPr.SerNr = IPrsr1.TransNr;
+									if(readfirstmain(IPr,1,true))then begin
+										mtrw = matrowcnt(IPr);
+										For(i=0;i<mtrw;i=i+1) begin
+											matrowget(IPr,i,IPrw);
+												if(IPrsr1.IVNr>0 and IPrw.InvoiceNr==IPrsr1.IVNr and IPrsr1.CustDate==IPrw.PayDate)then begin
+												if(testf)then begin
+													switch(IPrw.InvCurncy)begin
+														case"AZN":CUIPAZN = CUIPAZN + IPrw.InvVal;
+														case"EUR":CUIPEUR = CUIPEUR + IPrw.InvVal;
+														case"CHF":CUIPCHF = CUIPCHF + IPrw.InvVal;
+														case"USD":CUIPUSD = CUIPUSD + IPrw.InvVal;
+													end;
+													dif = dif - IPrw.InvVal;
+												end;
+											end;
+										end; 
+									end;
+								end;
+							end;
+							resetloop(IPrsr1);
+							
+							if(dif!=0)then begin
+								/*startformat(15);
+									outstring(0,"DblIVVc",IVr.SerNr,false);
+									Outstring(50,0,IVr.CurncyCode,false);
+									Outstring(100,0,dif,false);
+								endformat;*/
+								
+								mtrw = matrowcnt(IVr);
+								For(i=0;i<mtrw;i=i+1) begin
+									matrowget(IVr,i,IVrw);
+									if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode) and IVrw.Quant>0)then begin
+										INr.Code = IVrw.ArtCode;
+										if(Readfirstmain(INr,1,true))then begin
+											For(j=0;j<brandscnt;j=j+1) begin
+												if(setinset(aBrands[j],PrepareDispGroups(INr.DispGroups)))then begin
+													switch(IVr.CurncyCode)begin
+														case"AZN":CUIVAZNprc[j] = CUIVAZNprc[j] + dif*IVrw.Sum/IVr.Sum4;
+														case"EUR":CUIVEURprc[j] = CUIVEURprc[j] + dif*IVrw.Sum/IVr.Sum4;
+														case"CHF":CUIVCHFprc[j] = CUIVCHFprc[j] + dif*IVrw.Sum/IVr.Sum4;
+														case"USD":CUIVUSDprc[j] = CUIVUSDprc[j] + dif*IVrw.Sum/IVr.Sum4;
+													end;
+												end;
+											end;
+										end;
+									end;
+								end; 
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+		resetloop(IPrsr);
+	end;
 	
 	startformat(15);
 			outstring(0,0,"8",false);
@@ -1873,85 +2188,59 @@ begin
 			outstring(0,0,"",false);
 			outstring(50,0,"AZN",false);
 			outstring(100,0,CUIVAZN - CUIPAZN,false);
+			For(i=0;i<brandscnt;i=i+1) begin
+	  		outstring(150+i*50,0,CUIVAZNprc[i],false);
+			end; 
 		endformat;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"EUR",false);
 			outstring(100,0,CUIVEUR - CUIPEUR,false);
+			For(i=0;i<brandscnt;i=i+1) begin
+	  		outstring(150+i*50,0,CUIVEURprc[i],false);
+			end; 
 		endformat;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"CHF",false);
 			outstring(100,0,CUIVCHF - CUIPCHF,false);
+			For(i=0;i<brandscnt;i=i+1) begin
+	  		outstring(150+i*50,0,CUIVCHFprc[i],false);
+			end; 
 		endformat;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"USD",false);
 			outstring(100,0,CUIVUSD - CUIPUSD,false);
+			For(i=0;i<brandscnt;i=i+1) begin
+	  		outstring(150+i*50,0,CUIVUSDprc[i],false);
+			end; 
 		endformat;
 		
 		CUIVTotalUSD = CUIVTotalUSD + (CUIVAZN - CUIPAZN);
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		CUIVTotalUSD = CUIVTotalUSD + (CUIVEUR - CUIPEUR)/fr*to1;
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		CUIVTotalUSD = CUIVTotalUSD + (CUIVCHF - CUIPCHF)/fr*to1;
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-		CUIVTotalUSD = CUIVTotalUSD + (CUIVUSD - CUIPUSD)/fr*to1;
+		
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		/*CUIVTotalUSD = CUIVTotalUSD + (CUIVUSD - CUIPUSD)/fr*to1;*/
 		
 		CUIVTotalUSD = CUIVTotalUSD*fr/to1;
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(50,0,"Итого USD",false);
-			outstring(100,0,CUIVTotalUSD,false);
+			outstring(100,0,CUIVTotalUSD + (CUIVUSD - CUIPUSD),false);
 		endformat;
-		totusd = totusd + CUIVTotalUSD;
+		totusd = totusd + CUIVTotalUSD + (CUIVUSD - CUIPUSD);
 	
 return;
 end;
 
-global
-procedure PrintRates10ByCat()
-begin
-	val rateAZN,rateEUR,rateCHF,rateUSD;
-	string 10 incurncy;
-	val fr,to1,to2,br1,br2;
 
-		rateAZN = 1;
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-		rateEUR = fr/to1;
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-		rateCHF = fr/to1;
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
-		rateUSD = fr/to1;
-		
-		startformat(15);
-			outstring(0,0,"11",false);
-			outstring(0,0,"Курс на отчетную дату",false);
-		endformat;
-		startformat(15);
-			outstring(0,0,"",false);
-			outstring(100,0,"AZN/USD",false);
-			outval(200,0,rateUSD,M4Val,false);
-		endformat;
-		startformat(15);
-			outstring(0,0,"",false);
-			outstring(100,0,"EUR/USD",false);
-			outval(200,0,rateUSD/rateEUR,M4Val,false);
-		endformat;
-		startformat(15);
-			outstring(0,0,"",false);
-			outstring(100,0,"CHF/USD",false);
-			outval(200,0,rateCHF/rateUSD,M4Val,false);
-		endformat;
-
-return;
-end;
 
 
 
@@ -1989,7 +2278,7 @@ begin
 		if(nonblank(INr.LastPurchCurncyCode))then begin
 			incurncy = INr.LastPurchCurncyCode;
 		end else begin
-			incurncy = "USD";
+			incurncy = "USDB";
 		end;
 		For(i=0;i<brandscnt;i=i+1) begin
 			if(setinset(aBrands[i],PrepareDispGroups(INr.DispGroups)))then begin
@@ -2065,8 +2354,8 @@ begin
 		outstring(0,0,"Возврат от покупателей (FOB)",false);
 	endformat;
 		
-		incurncy = "EUR";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetEUR[i];
@@ -2081,8 +2370,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "CHF";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetCHF[i];
@@ -2097,8 +2386,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		totrow = 0;
 		For(i=0;i<brandscnt;i=i+1) begin
 			totrow = totrow + aBrandsRetUSD[i];
@@ -2113,8 +2402,8 @@ begin
 			end; 
 		endformat;
 		
-		incurncy = "USD";
-		GetFullCurncyRate(incurncy,CurrentDate,fr,to1,to2,br1,br2);
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(100,0,"Итого " & incurncy,false);
@@ -2122,5 +2411,47 @@ begin
 		endformat;
 	
 	
+return;
+end;
+
+
+global
+procedure PrintRates10ByCat(date ed)
+begin
+	val rateAZN,rateEUR,rateCHF,rateUSD;
+	string 10 incurncy;
+	val fr,to1,to2,br1,br2;
+
+		rateAZN = 1;
+		incurncy = "EURB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		rateEUR = fr/to1;
+		incurncy = "CHFB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		rateCHF = fr/to1;
+		incurncy = "USDB";
+		GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);
+		rateUSD = fr/to1;
+		
+		startformat(15);
+			outstring(0,0,"11",false);
+			outstring(0,0,"Курс на отчетную дату",false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"",false);
+			outstring(100,0,"AZN/USD",false);
+			outstring(200,0,ValToMyString(1/rateUSD,5),false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"",false);
+			outstring(100,0,"EUR/USD",false);
+			outstring(200,0,ValToMyString(rateUSD/rateEUR,5),false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"",false);
+			outstring(100,0,"CHF/USD",false);
+			outstring(200,0,ValToMyString(rateCHF/rateUSD,5),false);
+		endformat;
+
 return;
 end;
