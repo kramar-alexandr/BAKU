@@ -48,6 +48,7 @@ begin
   Report("Расчет RRP по заказу поставщику",CalcPricesFromPORClass,CalcPricesFromPORn,0,modPO);
   Report("Отчет по необходимым заказам поставщикам",POfromORRClass,POFromORRn,0,modSO);
   Report("Статус заказанных товаров",POfromORstatusRClass,POFromORstatusRn,0,modSO);
+  Report("Оформленные счета клиентам",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
   Report("Отчет по продажам расширенный",SalesReportExtRClass,SalesReportExtRn,0,modSL);
   Report("Отчет продаж по материалам и коллекциям",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
   Report("Материальный отчет новый",MatReportRClass,MatReportRn,0,modSL);
