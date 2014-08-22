@@ -1789,27 +1789,44 @@ begin
 		testf = true;
 		if(POr.TransDate>ed)then begin TrHs = false; testf = false; end;
 		if(POr.OKFlag==0)then begin testf = false; end;
+		if(POr.Location!=location and nonblank(location))then begin testf = false; end;
+		if(POr.Closed>0)then begin testf = false; end;
 		
 		dif = 0;
 		if(testf)then begin
 			mtrw = matrowcnt(POr);
 			For(i=0;i<mtrw;i=i+1) begin
 	  		matrowget(POr,i,POrw);
-	  		switch(POr.CurncyCode)begin
-					case"AZN":CUIVAZN = CUIVAZN + POrw.Price * POrw.Shipd2;
-					case"EUR":CUIVEUR = CUIVEUR + POrw.Price * POrw.Shipd2;
-					case"CHF":CUIVCHF = CUIVCHF + POrw.Price * POrw.Shipd2;
-					case"USD":CUIVUSD = CUIVUSD + POrw.Price * POrw.Shipd2;
+	  		
+	  		if(nonblank(POrw.ArtCode) and POrw.Quant>0)then begin
+					INr.Code = POrw.ArtCode;
+					if(Readfirstmain(INr,1,true))then begin
+						For(j=0;j<brandscnt;j=j+1) begin
+							if(setinset(aBrands[j],PrepareDispGroups(INr.DispGroups)))then begin
+								switch(POr.CurncyCode)begin
+									case"AZN":CUIVAZNprc[j] = CUIVAZNprc[j] + POrw.Price * POrw.Shipd2 - POrw.Price * POrw.Invd;
+									case"EUR":CUIVEURprc[j] = CUIVEURprc[j] + POrw.Price * POrw.Shipd2 - POrw.Price * POrw.Invd;
+									case"CHF":CUIVCHFprc[j] = CUIVCHFprc[j] + POrw.Price * POrw.Shipd2 - POrw.Price * POrw.Invd;
+									case"USD":CUIVUSDprc[j] = CUIVUSDprc[j] + POrw.Price * POrw.Shipd2 - POrw.Price * POrw.Invd;
+								end;
+							end;
+						end;
+					end;
+					switch(POr.CurncyCode)begin
+						case"AZN":CUIVAZN = CUIVAZN + POrw.Price * POrw.Shipd2;
+						case"EUR":CUIVEUR = CUIVEUR + POrw.Price * POrw.Shipd2;
+						case"CHF":CUIVCHF = CUIVCHF + POrw.Price * POrw.Shipd2;
+						case"USD":CUIVUSD = CUIVUSD + POrw.Price * POrw.Shipd2;
+					end;
+					switch(POr.CurncyCode)begin
+						case"AZN":CUIPAZN = CUIPAZN + POrw.Price * POrw.Invd;
+						case"EUR":CUIPEUR = CUIPEUR + POrw.Price * POrw.Invd;
+						case"CHF":CUIPCHF = CUIPCHF + POrw.Price * POrw.Invd;
+						case"USD":CUIPUSD = CUIPUSD + POrw.Price * POrw.Invd;
+					end;
+					dif = dif + POrw.Price * POrw.Shipd2 - POrw.Price * POrw.Invd;
 				end;
-				dif = dif + POrw.Price * POrw.Shipd2;
-				switch(POr.CurncyCode)begin
-					case"AZN":CUIPAZN = CUIPAZN + POrw.Price * POrw.Invd;
-					case"EUR":CUIPEUR = CUIPEUR + POrw.Price * POrw.Invd;
-					case"CHF":CUIPCHF = CUIPCHF + POrw.Price * POrw.Invd;
-					case"USD":CUIPUSD = CUIPUSD + POrw.Price * POrw.Invd;
-				end;
-				dif = dif - POrw.Price * POrw.Invd;
-			end; 
+	  	end;	
 			
 			if(dif!=0)then begin
 				startformat(15);
@@ -1820,135 +1837,7 @@ begin
 			end;
 		end;
 	end;
-	/*
-	CUr.Code = "";
-	while(loopmain(CUr,1,true))begin
-		OPrsr.VECode = CUr.Code;
-		OPrsr.TransDate = "";
-		OPrsr.TransType = 0;
-		TrHs = true;
-		while(loopkey("TransType",OPrsr,3,TrHs))begin
-			if(OPrsr.VECode!=CUr.Code)then begin TrHs = false; end;
-			if(OPrsr.TransDate>ed)then begin TrHs = false; end;
-			if(OPrsr.TransType!=0)then begin TrHs = false; end;
-			
-			if(TrHs and CUr.VEType!=0)then begin			
-				VIr.SerNr = OPrsr.TransNr;
-				if(readfirstmain(VIr,1,true)) begin
-					testf = true;
-					POr.SerNr = VIr.POSerNr;
-					if(POr.SerNr>-1)then begin
-						if(readfirstmain(POr,1,true))then begin
-						end;
-					end;
-					if(nonblank(location) and location!=POr.Location)then begin testf = false; end;
-					
-					if(testf)then begin
-						dif = 0;
-						prepayment = 0;
-						if(VIr.InvType==kInvoiceTypeCredit and VIr.CredInv>-1)then begin
-							switch(VIr.CurncyCode)begin
-								case"AZN":CUIVAZN = CUIVAZN - VIr.PayVal;
-								case"EUR":CUIVEUR = CUIVEUR - VIr.PayVal;
-								case"CHF":CUIVCHF = CUIVCHF - VIr.PayVal;
-								case"USD":CUIVUSD = CUIVUSD - VIr.PayVal;
-							end;
-						end;
-						if(VIr.InvType==kInvoiceTypeNormal)then begin
-							switch(VIr.CurncyCode)begin
-								case"AZN":CUIVAZN = CUIVAZN + VIr.PayVal;
-								case"EUR":CUIVEUR = CUIVEUR + VIr.PayVal;
-								case"CHF":CUIVCHF = CUIVCHF + VIr.PayVal;
-								case"USD":CUIVUSD = CUIVUSD + VIr.PayVal;
-							end;
-						end;
-						CUDebSum = 0;
-						if(true)then begin
-							mtrw = matrowcnt(VIr);
-							For(i=0;i<mtrw;i=i+1) begin
-								matrowget(VIr,i,VIrw);
-								if(VIrw.stp==kInvoiceRowTypePrepayment)then begin
-									CUDebSum = CUDebSum + VIrw.Sum;
-								end; 													
-							end; 
-
-							switch(VIr.CurncyCode)begin
-								case"AZN":CUIVAZN = CUIVAZN - CUDebSum;
-								case"EUR":CUIVEUR = CUIVEUR - CUDebSum;
-								case"CHF":CUIVCHF = CUIVCHF - CUDebSum;
-								case"USD":CUIVUSD = CUIVUSD - CUDebSum;
-							end;
-							dif = VIr.PayVal - CUDebSum;
-							TrHs1 = true;
-							OPrsr1.VINr = VIr.SerNr;
-							OPrsr1.TransDate = "";
-							while(loopkey("VIKeyTransDate",OPrsr1,2,TrHs1))begin
-								testf1 = true;
-								if(OPrsr1.TransDate>ed)then begin testf1 = false; TrHs1 = false; end;
-								if(OPrsr1.VINr!=VIr.SerNr)then begin testf1 = false; TrHs1 = false; end;
-								if(OPrsr1.TransType!=1)then begin testf1 = false; end;
-								
-								if(testf1)then begin
-									OPr.SerNr = OPrsr1.TransNr;
-									if(readfirstmain(OPr,1,true))then begin
-										mtrw = matrowcnt(OPr);
-										For(i=0;i<mtrw;i=i+1) begin
-											matrowget(OPr,i,OPrw);
-												if(OPrsr1.VINr>0 and OPrw.VISerNr==OPrsr1.VINr and OPrsr1.TransDate==OPr.TransDate)then begin
-												if(testf)then begin
-													switch(OPrw.PInvCurncy)begin
-														case"AZN":CUIPAZN = CUIPAZN + OPrw.PInvVal;
-														case"EUR":CUIPEUR = CUIPEUR + OPrw.PInvVal;
-														case"CHF":CUIPCHF = CUIPCHF + OPrw.PInvVal;
-														case"USD":CUIPUSD = CUIPUSD + OPrw.PInvVal;
-													end;
-													dif = dif - OPrw.PInvVal;
-												end;
-											end;
-										end; 
-									end;
-								end;
-							end;
-							resetloop(OPrsr1);
-							
-							if(dif!=0)then begin
-								startformat(15);
-									outstring(0,"DblVIVc",VIr.SerNr,false);
-									Outstring(50,0,VIr.CurncyCode,false);
-									Outstring(100,0,dif,false);
-								endformat;
-								
-								mtrw = matrowcnt(VIr);
-								For(i=0;i<mtrw;i=i+1) begin
-									matrowget(VIr,i,VIrw);
-									if(nonblank(VIrw.Item) and VIrw.qty>0)then begin
-										INr.Code = VIrw.Item;
-										if(Readfirstmain(INr,1,true))then begin
-											For(j=0;j<brandscnt;j=j+1) begin
-												if(setinset(aBrands[j],PrepareDispGroups(INr.DispGroups)))then begin
-													switch(VIr.CurncyCode)begin
-														case"AZN":CUIVAZNprc[j] = CUIVAZNprc[j] + dif*VIrw.Sum/VIr.PayVal;
-														case"EUR":CUIVEURprc[j] = CUIVEURprc[j] + dif*VIrw.Sum/VIr.PayVal;
-														case"CHF":CUIVCHFprc[j] = CUIVCHFprc[j] + dif*VIrw.Sum/VIr.PayVal;
-														case"USD":CUIVUSDprc[j] = CUIVUSDprc[j] + dif*VIrw.Sum/VIr.PayVal;
-													end;
-												end;
-											end;
-										end;
-									end;
-								end; 
-							end;
-						end;
-					end;
-				end;
-			end;
-		end;
-		resetloop(OPrsr);
-	end;
-	*/
 	
-	/*incurncy = "USDB";
-	GetFullCurncyRate(incurncy,ed,fr,to1,to2,br1,br2);*/
 	
 	startformat(15);
 			outstring(0,0,"7",false);
