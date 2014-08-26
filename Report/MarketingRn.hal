@@ -7,9 +7,9 @@ begin
 date sd,ed;
 record MarketingVc MRr;
 record IVVc IVr;
-boolean findf, TrHs;
-val totalqty, totalcost;
-record LocationVc Locr,Loc2r;
+boolean findf, TrHs, testf;
+val totalqty, totalcost, totalcost2;
+record LocationVc Locr, Loc2r;
 string 20 location;
 string 255 serNum;
 integer i, pos;
@@ -17,144 +17,129 @@ integer i, pos;
 	sd = RepSpec.sStartDate;
   ed = RepSpec.sEndDate;
   totalcost = 0;
+  totalcost2 = 0;
   
   location = RepSpec.f1;
 
-	startreportnoheaderjob("ќтчет по маркетингу");
+	startreportnoheaderjob("Отчет по маркетингу");
 	
 	StartFormat(15);
-		outstring(0,0,"ќтчет по маркетингу",false);
+		outstring(0,0,"Отчет по маркетингу",false);
 	endformat;
 	
-	totalqty = 0;
-	totalcost = 0;
-	
 	StartFormat(15);
-		outstring(0,0,"ѕериод:",false);
-		outstring(0,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+		outstring(0,0,"Период:",false);
+		outstring(40,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
 	endformat;
 	StartFormat(15);
-		outstring(0,0,"ћагазин:",false);
+		outstring(0,0,"Магазин:",false);
 		if(nonblank(RepSpec.f1))then begin
-			outstring(0,0,RepSpec.f1,false);
+			outstring(40,0,RepSpec.f1,false);
 		end else begin
-			outstring(0,0,"ѕо всем",false);
+			outstring(40,0,"По всем",false);
 		end;
 	endformat;
+	Black_Divider(0,1);
 		
 	StartFormat(15);
-		outstring(0,0,"ƒата посещени€",false);
-		outstring(60,0," лиент",false);
-		outstring(140,0,"Ќациональность ",false);
-		outstring(200,0,"¬озраст",false);
-		outstring(230,0,"ѕричина посещени€ ",false);
-		outstring(300,0,"–езультат посещени€ ",false);
-		outstring(400,0,"ѕродано на суму ",false);
+		if(blank(RepSpec.f1))then begin
+			OutString(0,0,"",false);	
+		end;
+		outstring(0,0,"Дата посещения",false);
+		outstring(60,0,"Клиент",false);
+		outstring(140,0,"Национальность",false);
+		outstring(200,0,"Возраст",false);
+		outstring(230,0,"Причина посещения",false);
+		outstring(310,0,"Результат посещения",false);
+		outstring(420,0,"Продано на суму",false);
+		outstring(470,0,"Продано на суму (валюта)",false);
 				
 	endformat;
 	
-
-					/*
-					ExtractObj(INr.DispGroups,cnt,class);
-					if(nonblank(class))then begin
-						Dir.Code = class;
-						if(readfirstmain(DIr,1,true))then begin
-							outstring(250,0,DIr.Name,false);
-						end else begin
-							outstring(250,0,"",false);
-						end;
-					end else begin
-						outstring(250,0,"",false);
-					end;
-					ExtractObj(INr.DispGroups,cnt,class);*/
-					
-	Locr.Code = location;
-					
+	gray_divider(0,1);
+								
 	TrHs = true;
-	while (Loopmain(Locr,1,TrHs)) begin
-		if (nonblank(location) and (Locr.Code!=location)) then begin
-			TrHs = false;
-		end;
-		if(TrHs)then begin
+	MRr.TransDate = sd;
+	findf = true;
+	while(loopKey("TransDate",MRr,1,TrHs))begin
+		testf = true;
+		if(MRr.TransDate<sd and MRr.TransDate>ed)then begin TrHs = false; testf = false; end;
+		if(nonblank(location) and MRr.Location!=location)then begin testf = false; end;
+		
+		if(testf)then begin
 			StartFormat(15);
-				OutString(0,0,Locr.Code,false);		
-				MRr.SerNr = "";
-				findf = true;
-				while(loopMain(MRr,1,findf))begin
-					if(MRr.TransDate>sd and MRr.TransDate<ed)then begin
-						outstring(0,0,MRr.TransDate,false);
-						if(nonblank(MRr.Name))then begin
-							OutString(60,0,MRr.Name,false);
-						end else begin
-								OutString(60,0,"No name",false);
-						end;
-						
-						switch (MRr.NationalityRbtn) begin
-							case 0: 
-								OutString(140,0,"-",false);
-							case 1: 
-								OutString(140,0,"јзербайджанец",false);
-							case 2: 
-								OutString(140,0,"–усский",false);
-							case 3: 
-								OutString(140,0,MRr.NationalityTxt,false);			
-						end;
-						
-						switch (MRr.Age) begin
-							case 0: 
-								OutString(200,0,"-",false);
-							case 1: 
-								OutString(200,0,"< 20",false);
-							case 2: 
-								OutString(200,0,"20-30",false);
-							case 3: 
-								OutString(200,0,"30-40",false);
-							case 4: 
-								OutString(200,0,"40-50",false);			
-							case 5: 
-								OutString(200,0,"50-60",false);
-							case 6: 
-								OutString(200,0,"Ѕольше 60",false);
-						end;
-						
-						outstring(230,0,MRr.Reason,false);
-						
-						switch (MRr.ResultRbtn) begin
-							case 0: 
-								OutString(300,0,"-",false);
-							case 1: 
-								OutString(300,0,"Ќет продаж: " & MRr.ResultTxt,false);
-							case 2: 
-								OutString(300,0,"≈сть продажи: номера сч/ф:" & MRr.ResultTxt,false);
-						end;
-						
-						/*if(MRr.ResultRbtn==2) then begin
-							ExtractObj(MRr.InvNr,pos,serNum);
-							while (nonblank(serNum)) begin
-								IVr.SerNr = serNum;
-								if(Readfirstmain(IVr,1,true)==false)then begin
-									totalcost = totalcost + IVr.Sum4;
-								end; 
-								ExtractObj(MRr.InvNr,pos,serNum);
-							end;
-							outstring(400,0,totalcost,false);
-						end;*/
-											
-						
-						
-						findf = false;
+				if(blank(RepSpec.f1))then begin
+					OutString(0,0,MRr.Location,false);	
 				end;
+				outstring(0,0,MRr.TransDate,false);
+			if(nonblank(MRr.Name))then begin
+				OutString(60,0,MRr.Name,false);
+			end else begin
+					OutString(60,0,"No name",false);
 			end;
-			resetloop(Mrr);			
+			
+			switch (MRr.NationalityRbtn) begin
+				case 0: 
+					OutString(140,0,"-",false);
+				case 1: 
+					OutString(140,0,"Азербайджанец",false);
+				case 2: 
+					OutString(140,0,"Русский",false);
+				case 3: 
+					OutString(140,0,MRr.NationalityTxt,false);			
+			end;
+			
+			switch (MRr.Age) begin
+				case 0: 
+					OutString(200,0,"-",false);
+				case 1: 
+					OutString(200,0,"< 20",false);
+				case 2: 
+					OutString(200,0,"20-30",false);
+				case 3: 
+					OutString(200,0,"30-40",false);
+				case 4: 
+					OutString(200,0,"40-50",false);			
+				case 5: 
+					OutString(200,0,"50-60",false);
+				case 6: 
+					OutString(200,0,"Больше 60",false);
+			end;
+			
+			outstring(230,0,MRr.Reason,false);
+			
+			switch (MRr.ResultRbtn) begin
+				case 0: 
+					OutString(310,0,"-",false);
+				case 1: 
+					OutString(310,0,"Нет продаж: " & MRr.ResultTxt,false);
+				case 2: 
+					OutString(310,0,"Есть продажи: номера сч/ф: " & MRr.InvNr,false);
+					pos = 0;
+					totalcost = 0;
+					totalcost2 = 0;
+					ExtractObj(MRr.InvNr,pos,serNum);
+					while(nonblank(serNum))begin
+						IVr.SerNr = serNum;
+						if(Readfirstmain(IVr,1,true))then begin
+							totalcost = totalcost + IVr.Sum4;
+							totalcost2 = totalcost2 + IVr.Sum4 / IVr.FrRate * IVr.ToRateB1;		
+						end; 
+						ExtractObj(MRr.InvNr,pos,serNum);
+					end;
 					
-				endformat;
-	  end;
-	end; 
-		
-		
+					outstring(420,0,totalcost & " " & IVr.CurncyCode,false);
+					
+					if(totalcost2!=0)then begin
+						outstring(460,0,totalcost2 & " " & IVr.CurncyCode,false);					
+					end;
+									
+			end;
+						
+			endformat;									
+		end;
+	end;
 	
-	
-
 	endjob;
 	
 return;
