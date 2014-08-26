@@ -357,6 +357,7 @@ begin
   integer pos;
   string 50 uloc;
   boolean updst;
+	val total_rebate;//Edit***********************Vitalii 14:28 26.08.2014
   val total_qty;
   val total_cost,total_price,total_gp;
   string 200 classfind,model,brand;
@@ -460,6 +461,7 @@ begin
 					outstring(0,0,"Способы оплаты",false);
 				endformat;
 				
+				total_rebate = 0;//Edit***********************Vitalii 14:28 26.08.2014
 				total_qty = 0;
 				total_cost = 0;
 				total_price = 0;
@@ -656,6 +658,7 @@ begin
 										outstring(0,0,IVr.CustCode,false);
 										outstring(0,0,IVr.Addr0,false);
 										outstring(0,0,IVrw.vRebate,false);
+										total_rebate = total_rebate + IVrw.vRebate;//Edit***********************Vitalii 14:28 26.08.2014
 										outstring(0,0,IVr.SalesMan,false);
 										outstring(0,0,IVr.TransDate,false);
 										outstring(0,0,IVr.PayDeal,false);
@@ -720,6 +723,9 @@ begin
 					if(bcur!="AZN")then begin
 						outstring(0,0,btotal_price - btotal_cost,false);
 					end;
+					//Edit***********************Vitalii 14:28 26.08.2014
+					outstring(0,0,"Средняя скидка:",false);
+					outstring(0,0,total_rebate/total_qty,false);
 	
 				endformat;
 			end else begin
