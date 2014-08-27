@@ -477,7 +477,6 @@ global
 updating function LongInt POVcRecordSave(var record POVc POr,record POVc PO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-MessageBox(0,"POVcRecordSave");
   AutRecNonStockItem(POr);
   SetPOFlags(POr,false);
   SetPOAcceptanceFlag(POr,PO2r,stat);
@@ -597,7 +596,6 @@ global
 updating function LongInt POVcRecordSaveAfter(var record POVc POr,record POVc PO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-  MessageBox(0,"POVcRecordSaveAfter");
 
   POUpdatePOCO(POr,false);
   if (POr.IntORNo!=-1) then begin
