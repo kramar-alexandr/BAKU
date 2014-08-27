@@ -477,7 +477,7 @@ global
 updating function LongInt POVcRecordSave(var record POVc POr,record POVc PO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+MessageBox(0,"POVcRecordSave");
   AutRecNonStockItem(POr);
   SetPOFlags(POr,false);
   SetPOAcceptanceFlag(POr,PO2r,stat);
@@ -597,7 +597,8 @@ global
 updating function LongInt POVcRecordSaveAfter(var record POVc POr,record POVc PO2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-  
+  MessageBox(0,"POVcRecordSaveAfter");
+
   POUpdatePOCO(POr,false);
   if (POr.IntORNo!=-1) then begin
     UpdateIntOrderFromPO(POr,PO2r);
@@ -911,8 +912,8 @@ newINr.LastPurchPrice2 = POrw.Price;
 			changef = true;
 			INr.MajStoneDet = POrw.MajStoneDet;
 		end;
-		
-		if(changef)then begin
+
+		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
@@ -1052,11 +1053,9 @@ begin
 		end;
 		if(POrw.Price>0 and (POrw.Price!=INr.LastPurchPrice2 or INr.LastPurchCurncyCode!=POr.CurncyCode))then begin
 			changef = true;
-			if (INr.LastPriceChange<POr.TransDate) then begin 
-				INr.LastPurchCurncyCode = POr.CurncyCode;
-				INr.LastPurchPrice2 = POrw.Price;
-				INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
-			end;
+			INr.LastPurchCurncyCode = POr.CurncyCode;
+			INr.LastPurchPrice2 = POrw.Price;
+			INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 		end;
 		if(nonblank(POrw.EAN13Code) and INr.BarCode!=POrw.EAN13Code)then begin
 			changef = true;
@@ -1087,7 +1086,7 @@ begin
 			INr.Reference = POrw.Reference;
 		end;
 		
-		if(changef)then begin
+		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
 			recordupdate(IN2r,INr,true);
 			//recordStore(INr,true);
 		end;	
@@ -1224,7 +1223,7 @@ begin
 			INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 		end;
 		
-		if(changef)then begin
+		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
@@ -1366,7 +1365,9 @@ newINr.LastPurchPrice2 = POrw.Price;
 					end;
 				recordStore(PLr,true);
 			end;
-			recordupdate(IN2r,INr,true);
+			if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
+				recordupdate(IN2r,INr,true);
+			end;
 			POrw.Price = INr.InPrice/POrw.VEQuant*POrw.Quant;
 			matrowput(POr,i,POrw);
 			POVc_PastePrice(POr,i);
@@ -1426,7 +1427,6 @@ begin
   GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
 	
 	// Edit Start ---------------------------------------------- Edit Start
-	
 	
   res = 0;
   insertmode = 1;
@@ -1752,7 +1752,7 @@ begin
 					matrowget(POr,i,POrw);
           
           
-          if(POrw.Quant>0)then begin
+          if ((POrw.Quant>0) and (POr.Closed==0)) then begin
 						switch(currentcompany)begin
 							case 1:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);// Edit ************************** Monday, 18 February 2013 09:36:54// Edit ************************** Monday, 18 February 2013 09:36:55// Edit ************************** Monday, 18 February 2013 09:36:57
 							case 2:NewINLLardo(POr,i,found,INr,fr,to1,to2,br1,br2);
