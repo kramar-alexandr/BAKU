@@ -538,6 +538,7 @@ begin
 	val BrandsSelUSDtotalcons;
 	
 	record INVc INr;
+	record IVVc IVr;
 	boolean TrHs,testf;
 	integer i,j,mtrw,sign,br;
 	record ItemHistVc IHr;
@@ -589,12 +590,15 @@ begin
 					end;
 					BrandsRetUSDtotal = BrandsRetUSDtotal + IHr.TotCostPrice * sign;
 				end;
-				
 				if(IHr.TransDate>=sd and IHr.FileName=="IVVc" and IHr.Qty>0)then begin
-					switch(IHr.CurncyCode)begin
-						case"EUR":aBrandsRetEUR[br] = aBrandsRetEUR[br] + IHr.TotCostPriceCurncy * sign;
-						case"CHF":aBrandsRetCHF[br] = aBrandsRetCHF[br] + IHr.TotCostPriceCurncy * sign;
-						case"USD":aBrandsRetUSD[br] = aBrandsRetUSD[br] + IHr.TotCostPriceCurncy * sign;
+					IVr.SerNr = IHr.TransNr;
+					ReadFirstMain(IVr,1,true);
+					if (IVr.Invalid!=1) then begin
+						switch(IHr.CurncyCode) begin
+							case"EUR":aBrandsRetEUR[br] = aBrandsRetEUR[br] + IHr.TotCostPriceCurncy * sign;
+							case"CHF":aBrandsRetCHF[br] = aBrandsRetCHF[br] + IHr.TotCostPriceCurncy * sign;
+							case"USD":aBrandsRetUSD[br] = aBrandsRetUSD[br] + IHr.TotCostPriceCurncy * sign;
+						end;
 					end;
 				end;
 				if(IHr.TransDate>=sd and IHr.FileName=="IVVc" and IHr.Qty<=0)then begin
