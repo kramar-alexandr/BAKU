@@ -11,7 +11,9 @@ external procedure PrintCUDEb445ByCat(date,date,string);
 external procedure PrintCLIn5ByCat(integer,date,date,string,array string,var val);
 external procedure PrintCLOut61ByCat(integer,date,date,string,array string);
 external procedure PrintStockSelRet468ByCat(integer,date,date,string,array string);
-external procedure PrintStockVEPAy6ByCat(array val,array val,array val,array val,integer);
+//external procedure PrintStockVEPAy6ByCat(array val,array val,array val,array val,integer);
+external procedure PrintStockVEPAy6ByCat(record RcVc,array string,integer);//Edit***********************Vitalii 10:20 01.09.2014
+
 external procedure PrintStockVECred7ByCat(date,date,integer,array string,var val,string);
 external procedure PrintStockIVDeb8ByCat(date,date,integer,array string,var val,string);
 
@@ -114,7 +116,7 @@ val totusd;
 	brandscnt = 0;
 	DIr.CType = "TYPE";
 	TrHs = true;
-	while(loopkey("CType",DIr,1,TrHs))begin
+	while(loopkey("CType",DIr,1,TrHs)) begin
 		if(DIr.CType!="TYPE")then begin TrHs = false; end;
 		
 		if(TrHs)then begin
@@ -132,6 +134,8 @@ val totusd;
 			end;
 		end;
 	end;
+	aBrands[brandscnt] = "Other";
+	brandscnt = brandscnt + 1;
 	
 	location = RepSpec.f1;
 	
@@ -282,7 +286,7 @@ val totusd;
 			TrHs = true;
 			while(loopmain(OPrsr,2,TrHs))begin
 				testf = true;
-				if(OPrsr.VECode!=CUr.Code)then begin TrHs = false; testf = false; end;
+				//if(OPrsr.VECode!=CUr.Code)then begin TrHs = false; testf = false; end;
 				if(OPrsr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
 				if(OPrsr.TransType!=1)then begin testf = false; end;
 				//if(OPrsr.OKFlag==0)then begin testf = false; end;
@@ -518,13 +522,14 @@ val totusd;
 		PrintCashIn412ByCat(aBrandsCashAZN,aBrandsCashEUR,aBrandsCashUSD,aBrandsCCAZN,aBrandsCCUSD,brandscnt);
 		PrintCLIn43ByCat(brandscnt,sd,ed,location,aBrands);
 		PrintCUDEb445ByCat(sd,ed,location);
-		
+	
 		PrintStockSelRet468ByCat(brandscnt,sd,ed,location,aBrands);
 		PrintCLIn5ByCat(brandscnt,sd,ed,location,aBrands,totusd);
 		//PrintStockSel47(aBrandsSelEUR,aBrandsSelCHF,aBrandsSelUSD,brandscnt);
-		PrintStockVEPAy6ByCat(aBrandsPaymAZN,aBrandsPaymEUR,aBrandsPaymCHF,aBrandsPaymUSD,brandscnt);
+//		PrintStockVEPAy6ByCat(aBrandsPaymAZN,aBrandsPaymEUR,aBrandsPaymCHF,aBrandsPaymUSD,brandscnt);
+		//Edit***********************Vitalii 18:03 28.08.2014
+		PrintStockVEPAy6ByCat(RepSpec,aBrands,brandscnt);
 		PrintCLOut61ByCat(brandscnt,sd,ed,location,aBrands);
-
 		PrintStockVECred7ByCat(sd,ed,brandscnt,aBrands,totusd,location);
 		PrintStockIVDeb8ByCat(sd,ed,brandscnt,aBrands,totusd,location);
 		PrintStockRetFob9ByCat(brandscnt,sd,ed,location,aBrands);

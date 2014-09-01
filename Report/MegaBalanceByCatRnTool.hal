@@ -22,7 +22,13 @@ begin
     if(nonblank(tstr))then begin
     	DIr.Code = tstr;
     	if(readfirstmain(DIr,1,true))then begin
-    		res = res & DIr.CCat & ",";
+				if (NonBlank(DIr.CCat)) then begin
+	     		res = res & DIr.CCat & ",";
+				end else begin
+					if (DIr.CType == "TYPE") then begin
+						res = res & "Other,";
+					end;
+				end;
     	end;
     end;
     ExtractObj(dispgroups,pos,tstr);
@@ -30,7 +36,7 @@ begin
   if(nonblank(res))then begin
 		res = left(res,len(res)-1);
 	end;
-		
+	
 	PrepareDispGroups = res;
 
 return;
@@ -1572,73 +1578,121 @@ begin
 return;
 end;
 
+//Edit***********************Vitalii 12:02 28.08.2014
 global
-procedure PrintStockVEPAy6ByCat(array val aBrandsPaymAZN,array val aBrandsPaymEUR,array val aBrandsPaymCHF,array val aBrandsPaymUSD,integer brandscnt)
+procedure PrintStockVEPAy6ByCat(record RcVc RepSpec,array string aBrands,integer brandscnt)
 begin
-	integer i;
-	string 10 incurncy;
-	val totrow;
+  record CUVc CUr;
+	record OPrsVc OPrsr;
+	record OPVc OPr;
+	record VIVc VIr;
+	record INVc INr;
+	row OPVc OPrw;
+	row VIVc VIrw;
+	Integer i,j,k,rwcnt,rwcnt2;
+	Boolean TrHs,testf;
+	val PaymAZN,PaymEUR,PaymCHF,PaymUSD;
+	array val aBrandPercent;
+	array val aBrandPartAZN;
+	array val aBrandPartEUR;
+	array val aBrandPartCHF;
+	array val aBrandPartUSD;
 	
 	startformat(15);
-		outstring(0,0,"6",false);
-		outstring(0,0,"Оплата поставщикам",false);
+	outstring(0,0,"6",false);
+	outstring(0,0,"Оплата поставщикам",false);
 	endformat;
-			
-	incurncy = "AZN";
-	totrow = 0;
-	For(i=0;i<brandscnt;i=i+1) begin
-	  totrow = totrow + aBrandsPaymAZN[i];
-	end; 
+
+	CUr.Name = RepSpec.f1;
+	ReadFirstKey("Name",CUr,1,true);
+	OPrsr.VECode = CUr.Code;
+	OPrsr.TransDate = RepSpec.sStartDate;
+	TrHs = true;
+	while (loopmain(OPrsr,2,TrHs)) begin
+		testf = true;
+		if (OPrsr.TransDate>RepSpec.sEndDate) then begin TrHs = false; testf = false; end;
+		if (OPrsr.TransType!=1) then begin testf = false; end;
+		if (testf) then begin
+			OPr.SerNr = OPrsr.TransNr;
+			readfirstmain(OPr,1,true);
+			rwcnt = MatRowCnt(OPr);
+			for (i=0;i<rwcnt;i=i+1) begin
+				MatRowGet(OPr,i,OPrw);
+				if ((OPRsr.VINr == OPrw.VISerNr) and (OPrsr.VECode == OPrw.VECode)) then begin
+					switch (OPrw.RecCurncy) begin
+						case "AZN": PaymAZN = PaymAZN + OPrw.RecVal;
+						case "EUR": PaymEUR = PaymEUR + OPrw.RecVal;
+						case "CHF":	PaymCHF = PaymCHF + OPrw.RecVal;
+						case "USD": PaymUSD = PaymUSD + OPrw.RecVal;
+					end;
+					VIr.SerNr = OPrw.VISerNr;
+					for (k=0;k<brandscnt;k=k+1) begin
+ 						aBrandPercent[k] = 0;
+					end; 
+					readfirstmain(VIr,1,true);
+					rwcnt2 = MatRowCnt(VIr);
+					for (j=0;j<rwcnt2;j=j+1) begin
+						MatRowGet(VIr,j,VIrw);
+						INr.Code = VIrw.Item;
+						readfirstmain(INr,1,true);
+						for (k=0;k<brandscnt;k=k+1) begin
+	  					if (setinset(aBrands[k],PrepareDispGroups(INr.DispGroups))) then begin
+	  						aBrandPercent[k] = aBrandPercent[k] + VIrw.Sum;
+	  					end;
+						end; 
+					end;
+					For(i=0;i<brandscnt;i=i+1) begin
+						aBrandPercent[i] = aBrandPercent[i]/VIr.PayVal;
+						switch (OPrw.RecCurncy) begin
+							case "AZN": aBrandPartAZN[i] = aBrandPartAZN[i] + aBrandPercent[i]*OPrw.RecVal;
+							case "EUR": aBrandPartEUR[i] = aBrandPartEUR[i] + aBrandPercent[i]*OPrw.RecVal;
+							case "CHF":	aBrandPartCHF[i] = aBrandPartCHF[i] + aBrandPercent[i]*OPrw.RecVal;
+							case "USD": aBrandPartUSD[i] = aBrandPartUSD[i] + aBrandPercent[i]*OPrw.RecVal;
+						end;
+
+					end;
+				end;
+			end;
+		end;
+	end;
+
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,incurncy,false);
-		outstring(0,0,totrow,false);
+		outstring(100,0,"AZN",false);
+		outstring(0,0,PaymAZN,false);
 		For(i=0;i<brandscnt;i=i+1) begin
-			outstring(150+i*50,0,aBrandsPaymAZN[i],false);
+			outstring(150+i*50,0,aBrandPartAZN[i],false);
 		end;
 	endformat;
-	incurncy = "EURB";
-	totrow = 0;
-	For(i=0;i<brandscnt;i=i+1) begin
-	  totrow = totrow + aBrandsPaymEUR[i];
-	end; 
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,incurncy,false);
-		outstring(0,0,totrow,false);
+		outstring(100,0,"EURB",false);
+		outstring(0,0,PaymEUR,false);
 		For(i=0;i<brandscnt;i=i+1) begin
-			outstring(150+i*50,0,aBrandsPaymEUR[i],false);
+			outstring(150+i*50,0,aBrandPartEUR[i],false);
 		end;
 	endformat;
-	incurncy = "CHFB";
-	totrow = 0;
-	For(i=0;i<brandscnt;i=i+1) begin
-	  totrow = totrow + aBrandsPaymCHF[i];
-	end; 
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,incurncy,false);
-		outstring(0,0,totrow,false);
+		outstring(100,0,"CHFB",false);
+		outstring(0,0,PaymCHF,false);
 		For(i=0;i<brandscnt;i=i+1) begin
-			outstring(150+i*50,0,aBrandsPaymCHF[i],false);
+			outstring(150+i*50,0,aBrandPartCHF[i],false);
 		end;
 	endformat;
-	incurncy = "USDB";
-	totrow = 0;
-	For(i=0;i<brandscnt;i=i+1) begin
-	  totrow = totrow + aBrandsPaymUSD[i];
-	end; 
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,incurncy,false);
-		outstring(0,0,totrow,false);
+		outstring(100,0,"USDB",false);
+		outstring(0,0,PaymUSD,false);
 		For(i=0;i<brandscnt;i=i+1) begin
-			outstring(150+i*50,0,aBrandsPaymUSD[i],false);
+			outstring(150+i*50,0,aBrandPartUSD[i],false);
 		end;
 	endformat;
 	
 return;
+
 end;
+//EndEdit***********************Vitalii 12:02 28.08.2014
 
 
 global 
