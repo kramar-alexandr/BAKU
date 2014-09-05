@@ -39,6 +39,7 @@ begin
 	Maintenance("Выгрузить прикрепленные картинки",ExtractINAttachVClass,ExtractINAttachMn,modDBMain);
 	Maintenance("Заполнить глобальные склады",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
   Maintenance("Заполнить коллекции товаров из заказов п.",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
+  Maintenance("Удалить план счетов и записи операций",FIXVClass,DellAccAndMainMn,modDBMain);
 	  
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);

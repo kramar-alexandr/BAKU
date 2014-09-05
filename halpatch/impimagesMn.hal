@@ -342,3 +342,24 @@ begin
 	
 return;
 end;
+
+
+global updating procedure DellAccAndMainMn()
+begin
+	record AccVc Accr;
+	record TRVc TRr;
+	
+	Accr.AccNumber = "";
+	while(loopmain(Accr,1,true))begin
+		recorddelete(Accr);
+		stepback(Accr);
+	end;
+	
+	TRr.IntYc = -1;
+	while(loopmain(TRr,1,true))begin
+		recorddelete(TRr);
+		stepback(TRr);
+	end;
+  
+return;
+end;
