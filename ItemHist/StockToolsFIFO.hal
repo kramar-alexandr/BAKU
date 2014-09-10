@@ -1391,8 +1391,10 @@ begin
 									curncy = INr.LastPurchCurncyCode;
   								totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
   	case	"StockMovVc":	if(IHr.Qty>=0)then begin
-  												sourceIHr.SerNr = 9000000;
-  												readlastmain(sourceIHr,1,false);
+  												sourceIHr.FileName = "StockMovVc";
+  												sourceIHr.TransNr = IHr.TransNr;
+  												sourceIHr.Row = IHr.Row;
+  												readlastkey("FNTransNr",sourceIHr,3,false);
 													curncy = sourceIHr.CurncyCode;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
   											end;

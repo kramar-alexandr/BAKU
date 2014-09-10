@@ -181,12 +181,20 @@ begin
 	record LetVc Letr;
 	record IVVc IVr;
 	val sum,compsum;
-	record CompaniesBlock CBb;
-	row CompaniesBlock CBrw;
 	string 100 curcompstr,lastbaycompany;
 	date lastbaydate,curcomplastbaydate;
+	array string 40 compnames;
+	record CompaniesBlock CBb;
+	row CompaniesBlock CBrw;
 	
 	blockload(CBb);
+	
+	compnames[0] = "";
+	For(i=0;i<mtrw;i=i+1) begin
+	  matrowget(CBb,i,CBrw);
+	  compnames[i+1] = CBrw.CompName;
+	end; 
+	
 	matrowget(CBb,currentcompany-1,CBrw);
 	curcompstr = CBrw.CompName;
 	frcode = firstinrange(RepSpec.f1,20);
@@ -201,6 +209,7 @@ begin
 		outstring(260,0,"Дата последней покупки",false);
 		outstring(300,0,"Компания последней покупки",false);
 		outstring(400,0,"Чеков",true);
+		outstring(450,0,"Клиент создан в комп.",true);
 		outstring(1,0,"Сумма",true);
 	endformat;
 	
@@ -272,11 +281,13 @@ begin
 						resetloop(IVr);
 						if(compact>0 and RepSpec.flags[1]>0)then begin
 							startformat(15);
-								outstring(0,0,CUr.Code,false);
+								outstring(0,"DblCUVc",CUr.Code,false);
 								outstring(100,0,CUr.Name,false);
 								outstring(200,0,CBrw.CompName,false);
 								outstring(260,0,curcomplastbaydate,false);
+								outstring(400,0,"",false);
 								outstring(400,0,compact,false);
+								outstring(450,0,compnames[CUr.CreateCompany],false);
 								outstring(1,0,compsum,true);
 							endformat;
 						end;
@@ -286,7 +297,7 @@ begin
 			end;
 			if(act>0)then begin
 				startformat(15);
-					outstring(0,0,CUr.Code,false);
+					outstring(0,"DblCUVc",CUr.Code,false);
 					outstring(100,0,CUr.Name,false);
 					if(RepSpec.flags[0]==0)then begin
 						outstring(200,0,curcompstr,false);
@@ -300,6 +311,7 @@ begin
 					end;
 					outstring(300,0,lastbaycompany,false);
 					outstring(400,0,act,false);
+					outstring(450,0,compnames[CUr.CreateCompany],false);
 					outstring(1,0,sum,true);
 				endformat;
 			end;

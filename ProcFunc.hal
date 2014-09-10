@@ -268,10 +268,10 @@ begin
   row ORVc ORrw;
   integer ori,ormtrw;
   record LocationVc Locr;
-  
+  integer sign;
   recordnew(SMr);
   
-  
+  sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
   
   BlockLoad(PMRec);
@@ -475,7 +475,13 @@ begin
 								//OutVal(320,0,IVrw.Price*IVrw.Quant-IVrw.Sum,M4Val,false);
 								OutVal(320,0,IVrw.vRebate,M4Val,false);
 								if (UserCanAction("ViewCostPrice",true)==true) then begin
-									OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate,M4Val,false);
+									if(IVrw.Quant>0)then begin
+										sign = 1;
+										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate,M4Val,false);
+									end else begin
+										sign = -1;
+										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate*sign,M4Val,false);
+									end;
 									OutString(410,0,IVr.InvComment,false);
 								end else begin
 									OutString(360,0,"",false);
@@ -486,7 +492,7 @@ begin
 								totsum = totsum+IVrw.Sum;
 								totqtyprice = totqtyprice+IVrw.Price*IVrw.Quant;
 								totqtypricesum =IVrw.vRebate;//totqtypricesum+IVrw.Price*IVrw.Quant-IVrw.Sum;
-								totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate;
+								totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign;
 						
 							EndFormat;
             end;

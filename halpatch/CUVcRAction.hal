@@ -174,7 +174,14 @@ BEGIN
   LongInt res;
   string 255 tstr;
   record CustomerSettingBlock CSb;
+	record LocalMachineBlock LMb;// Edit ************************** Tuesday, 28 January 2014 17:02:55
+  
+  BlockLoad(LMb);// Edit ************************** Tuesday, 28 January 2014 17:02:56
 
+  BlockLoad(CSb);	
+	CUr.CreateLocation = LMb.DefLocation;// Edit ************************** Tuesday, 28 January 2014 17:05:33
+	CUr.CreateCompany = currentcompany;// Edit ************************** Friday, 5 September 2014 11:10:24
+	
   BlockLoad(CSb);
   if (SingleUserMode) then begin
     if (GetNextCustNr(tstr)) then begin end;
