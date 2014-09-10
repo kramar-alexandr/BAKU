@@ -31,11 +31,16 @@ begin
 	row ORVc ORrw;
 	record INVc INr;
 	record DIVc DIr;
+	record SHVc SHr;
+	row SHVc SHrw;
+	record RetVc Retr;
+	row RetVc Retrw;
+	record ItemHistVc IHr;
 	record BaseCurBlock BCb;
-	Boolean TrHs;
-	Integer rwcnt,i,pos;
-	string 10 classtr, brandstr;
-	val price, sum;
+	Boolean TrHs,TrHs2,TrHs3,printf;
+	Integer rwcnt,rwcnt1,i,j,pos;
+	string 10 classtr,brandstr;
+	val price,sum,stoim,quant,razn;
 
 	fromdate = RepSpec.sStartDate;
 	todate = RepSpec.sEndDate;
@@ -47,24 +52,26 @@ begin
 
 	startformat(15);
 	outstring(0,0,"Вид счета",false);
-	outstring(25,0,"№ Счета",false);
-	outstring(50,0,"Дата покупки",false);
-	outstring(75,0,"Ханза",false);
-	outstring(100,0,"Код поставщика",false);
-	outstring(125,0,"Склад",false);
-	outstring(150,0,"Бренд",false);
-	outstring(175,0,"Наименование",false);
-	outstring(200,0,"Кол-во продаж",false);
-	outstring(225,0,"Ед.измерения",false);
-	outstring(250,0,"Ритейл за ед-цу в валюте бренда ",false);
-	outstring(275,0,"Ритейл за ед-цу в валюте АЗН",false);
-	outstring(300,0,"Сумма продажи в валюте бренда",false);
-	outstring(325,0,"Сумма продажи в валюте АЗН",false);
-	outstring(350,0,"Валюта брэнда",false);
-	outstring(375,0,"Номер клиента",false);
-	outstring(400,0,"Имя клиента",false);
-	outstring(425,0,"Процент скидки",false);
-	outstring(450,0,"Продавец",false);
+	outstring(1,0,"№ Счета",false);
+	outstring(2,0,"Дата покупки",false);
+	outstring(3,0,"Ханза",false);
+	outstring(4,0,"Код поставщика",false);
+	outstring(5,0,"Склад",false);
+	outstring(6,0,"Бренд",false);
+	outstring(7,0,"Наименование",false);
+	outstring(8,0,"Кол-во продаж",false);
+	outstring(9,0,"Ед.измерения",false);
+	outstring(10,0,"Ритейл за ед-цу в валюте бренда ",false);
+	outstring(11,0,"Ритейл за ед-цу в валюте АЗН",false);
+	outstring(12,0,"Сумма продажи в валюте бренда",false);
+	outstring(13,0,"Сумма продажи в валюте АЗН",false);
+	outstring(14,0,"Себестоимость",false);
+	outstring(15,0,"Разница в валюте АЗН",false);
+	outstring(16,0,"Валюта брэнда",false);
+	outstring(17,0,"Номер клиента",false);
+	outstring(18,0,"Имя клиента",false);
+	outstring(19,0,"Процент скидки",false);
+	outstring(20,0,"Продавец",false);
 	endformat;
 	gray_divider(0,480); 
 	
@@ -73,7 +80,7 @@ begin
   while (LoopKey("OKFlag",ORr,1,TrHs)) begin
     if ((TrHs) and (ORr.OrdDate >= RepSpec.sStartDate) and (ORr.OrdDate <= RepSpec.sEndDate)) then begin
 			rwcnt = MatRowCnt(ORr);
-  		for(i=0;i<rwcnt;i=i+1) begin
+  		for (i=0;i<rwcnt;i=i+1) begin
     		MatRowGet(ORr,i,ORrw);
 				startformat(15);
 				outstring(0,0,ORr.OrderClass,false);
@@ -91,7 +98,7 @@ begin
 				pos = 0;
 				brandstr = "";
 				ExtractObj(INr.DispGroups,pos,classtr);
-				while(nonblank(classtr))begin
+				while (nonblank(classtr)) begin
 					DIr.Code = classtr;
 					ReadFirstKey("Code",DIr,1,true);
 					if (DIr.CType=="BRAND") then begin
@@ -113,11 +120,73 @@ begin
 				outstring(12,0,ORrw.Sum,false);
 				CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,ORrw.Sum,BCb.StdBaseCur,sum,DefaultCurRoundOff);
 				outstring(13,0,sum,false);
-				outstring(14,0,ORr.CurncyCode,false);
-				outstring(15,0,ORr.CustCode,false);
-				outstring(16,0,ORr.Addr0,false);
-				outstring(17,0,ORrw.vRebate,false);
-				outstring(18,0,ORr.SalesMan,false);
+			//Edit***********************Vitalii 10:31 09.09.2014
+				stoim = 0;
+				quant = 0;
+				TrHs2 = true;
+				SHr.OrderNr = ORr.SerNr;
+				while (LoopKey("OrderKey",SHr,1,TrHs2)) begin
+					if (SHr.OrderNr != ORr.SerNr) then begin TrHs2 = false; end;
+					if (TrHs2) then begin
+						rwcnt1 = MatRowCnt(SHr);
+	  				for(j=0;j<rwcnt1;j=j+1) begin
+	    				MatRowGet(SHr,j,SHrw);
+							if (SHrw.OrdRow == i) then begin
+								TrHs3 = true;
+								IHr.FileName = "SHVc";
+								IHr.TransNr = SHr.SerNr;
+								IHr.Row = j;
+								while (LoopKey("FNTransNr",IHr,3,TrHs3)) begin
+									if ((IHr.FileName != "SHVc") or (IHr.TransNr != SHr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
+									if (TrHs3) then begin
+										stoim = stoim + IHr.TotCostPriceCurncy;
+										quant = quant - IHr.Qty;
+									end;
+								end;
+								resetloop(IHr);
+							end;
+						end;
+					end;
+				end;
+				resetloop(SHr);
+				TrHs2 = true;
+				Retr.OrdNr = ORr.SerNr;
+				while (LoopKey("OrdNr",Retr,1,TrHs2)) begin
+					if (Retr.OrdNr != ORr.SerNr) then begin TrHs2 = false; end;
+					if (TrHs2) then begin
+						rwcnt1 = MatRowCnt(Retr);
+	  				for(j=0;j<rwcnt1;j=j+1) begin
+	    				MatRowGet(Retr,j,Retrw);
+							if (Retrw.OrdRow == i) then begin
+								TrHs3 = true;
+								IHr.FileName = "RetVc";
+								IHr.TransNr = Retr.SerNr;
+								IHr.Row = j;
+								while (LoopKey("FNTransNr",IHr,3,TrHs3)) begin
+									if ((IHr.FileName != "RetVc") or (IHr.TransNr != Retr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
+									if (TrHs3) then begin
+										stoim = stoim - IHr.TotCostPriceCurncy;
+										quant = quant - IHr.Qty;
+									end;
+								end;
+								resetloop(IHr);
+							end;
+						end;
+					end;
+				end;
+				resetloop(Retr);
+				if (quant < ORrw.Quant) then begin
+					stoim = stoim + INr.InPrice*(ORrw.Quant - quant);
+				end;
+				razn = sum - stoim;
+				stoim = stoim/ORrw.Quant;
+				outstring(14,0,stoim,false);
+				outstring(15,0,razn,false);
+				outstring(16,0,INr.LastPurchCurncyCode,false);
+				outstring(17,0,ORr.CustCode,false);
+				outstring(18,0,ORr.Addr0,false);
+				outstring(19,0,ORrw.vRebate,false);
+				outstring(20,0,ORr.SalesMan,false);
 				endformat;
 			end;
 		end;
