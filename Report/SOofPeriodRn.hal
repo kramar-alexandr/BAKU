@@ -178,8 +178,13 @@ begin
 				if (quant < ORrw.Quant) then begin
 					stoim = stoim + INr.InPrice*(ORrw.Quant - quant);
 				end;
-				razn = sum - stoim;
-				stoim = stoim/ORrw.Quant;
+				if (ORrw.Quant == 0) then begin
+					razn = 0;
+					stoim = 0;
+				end else begin
+					razn = sum - stoim;
+					stoim = stoim/ORrw.Quant;
+				end;
 				outstring(14,0,stoim,false);
 				outstring(15,0,razn,false);
 				outstring(16,0,INr.LastPurchCurncyCode,false);
