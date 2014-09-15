@@ -1295,6 +1295,8 @@ begin
   RecordField(WHMDefPUVECode,M4Code,20,VEVc);
   RecordField(WHMExpressOrderClass,M4Code,5,OrderClassVc);
   RecordField(ThrouLocation,M4Code,10,0);
+  RecordField(SalesAcc,M4Code,10,AccVc);// Edit ************************** Monday, 15 September 2014 10:08:11
+  RecordField(ARAcc,M4Code,10,AccVc);// Edit ************************** Monday, 15 September 2014 10:08:11
   MainKeyBegin(Code,0);
   KeySegment(Code);
   KeyBegin(Name);
