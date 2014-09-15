@@ -341,8 +341,8 @@ BEGIN
       if (NonBlank(POr.OrdNr)) then begin //Edit***************************Sasha2,14:50 29.07.2014 {
       	ORr.SerNr = POr.OrdNr;
       	if (readfirstmain(ORr,1,true)) then begin
-      		if (NonBlank(ORr.PayDeal)) then begin
-      			OutString(220,0,ORr.PayDeal,false); 
+      		if (NonBlank(VIr.PayDeal)) then begin //Edit***********************Vitalii 11:10 15.09.2014
+      			OutString(220,0,VIr.PayDeal,false);
       		end;
       		if (NonBlank(ORr.PlanShip)) then begin
       			OutString(260,0,ORr.PlanShip,false);
