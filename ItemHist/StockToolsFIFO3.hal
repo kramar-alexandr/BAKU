@@ -1013,6 +1013,20 @@ begin
         end;
 //        StoreItemHistory_In(MSb,artcode,IHr.SerialNr,location,filename,IHr.TransDate,fifod,-IHr.Qty,coeff,IHr.TotCostPrice,transnr,rownr,stockaffectf,topos,"");
         StoreItemHistory_In(MSb,artcode,IHr.SerialNr,location,filename,IHr.TransDate,fifod,-IHr.Qty,coeff,-IHr.Qty*unitcost,transnr,rownr,stockaffectf,topos,"");
+        // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 25 September 2014 11:56:18
+	
+        newIHr.FileName = "StockMovVc";
+				newIHr.TransNr = transnr;
+				newIHr.Row = rownr;
+				if(readlastkey("FNTransNr",newIHr,3,true))then begin
+					newIHr.CurncyCode = IHr.CurncyCode;
+					newIHr.TotCostPriceCurncy = IHr.TotCostPriceCurncy;
+					recordstore(newIHr,true);
+				end;
+				
+	// Edit End ---------------------------------------------- Edit End
+	
         ihf = true;
       end;
     end;

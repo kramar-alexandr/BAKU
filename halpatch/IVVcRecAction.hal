@@ -232,7 +232,20 @@ BEGIN
   record EInvoiceBlock EIb;
   record Uservc USr;// Edit ************************** Friday, 12 October 2012 11:47:58
   roundmode rnd;// Edit ************************** Friday, 15 March 2013 11:35:23
+  record LocationVc Locationr;
   
+  
+  Locationr.Code = IVp.Location;
+	if(readfirstmain(Locationr,1,true))then begin// Edit ************************** Wednesday, 24 September 2014 15:41:19
+		if(blank(IVp.Objects))then begin
+			IVp.Objects = Locationr.Objects;// Edit ************************** Wednesday, 17 September 2014 14:48:31
+		end else begin
+			if(!setinset(Locationr.Objects,IVp.Objects))then begin
+				IVp.Objects = IVp.Objects & "," & Locationr.Objects;// Edit ************************** Wednesday, 17 September 2014 14:48:30
+			end;
+		end;
+	end;
+    
   res = 0;
   curcomp = CurrentCompany;    
   insertmode = 1;//Rs_insert

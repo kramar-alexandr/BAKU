@@ -68,6 +68,8 @@ begin
   Report("Поиск контактных лиц",SearchContactRClass,SearchContactRn,0,modMYCRM);
   Report("Отчет активности покупок",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
   Report("Отчет активности по бутикам",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
+  Report("Накопленные баллы клиента",LoyaltyCardCounterRClass,LoyaltyCardCounterRn,0,modMYCRM);
+  Report("Оборотно-сальдовая ведомость (изм.)",MBARClass,MBA2Rn,0,modNL);
   
   Report("Отчет по маркетингу",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   
@@ -91,7 +93,8 @@ begin
 	SString(31009,"Результат");
 	SString(31010,"Неверный формат телефона. Длина должна быть 10 знаков");
 	SString(31011,"Сумма баллов на данной накопительной карте привысила 3000 АЗН");
-	
+	SString(31012,"Активная накопительная карта для этого клиента уже существует ");
+
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

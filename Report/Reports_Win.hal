@@ -405,6 +405,19 @@ begin
   EndWindow;
 end;
 
+window LoyaltyCardCounterRClass:1 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет активности по бутикам",LoyaltyCardCounterRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+		EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f1,false,CUSClass);
+		EditFieldTL(h,v+=vs, 150,"Накопительная карта",   M4UStr,Normal,30,f2,false,LoyaltyCard);
+  EndWindow;
+end;
+
 
 window TestRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")

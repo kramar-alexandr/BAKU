@@ -252,8 +252,8 @@ begin
 	LCr.LCMLevel = "1";
 	LCr.StartDate = currentdate;
 	LCr.CustName = CUr.Name;
-	recordstore(LCr,true);
-	logtext(0,1);
+	//recordinsert(LCr,true);
+	//logtext(0,1);
 	
 return;
 end;

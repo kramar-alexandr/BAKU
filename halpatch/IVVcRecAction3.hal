@@ -657,6 +657,23 @@ LkInvoiceRowTypeNormal2:;
             end;
           end;
         end;  
+        // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 17 September 2014 09:23:40
+	
+        if(currentcompany==3)then begin
+        	if (MSb.requireLocation!=0) then begin            
+            if (nonblank(IVrw.ArtCode)) then begin
+              if (blank(IVp.Location)) and (blank(IVrw.Location)) then begin
+                RecordCheckError(26213," " & IVp.Location,-1,"Location");      
+                res = -1; 
+                goto L99;
+              end;
+            end;
+          end;
+        end;
+        
+	// Edit End ---------------------------------------------- Edit End
+	
         if (transf) then begin
           if (ARAccb.DisallowNegativeRowSumsonSales!=0) then begin
             if (IVrw.Sum<0) then begin

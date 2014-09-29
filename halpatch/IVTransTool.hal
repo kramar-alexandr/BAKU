@@ -223,13 +223,13 @@ BEGIN
   switch (IVrw.stp) begin
     case kInvoiceRowTypeMultiBuyDiscount:
       revacc = ARAccb.DiscountAcc;
-    case kInvoiceRowTypeNormal:// Edit ************************** Monday, 15 September 2014 10:53:51
+    /*case kInvoiceRowTypeNormal:// Edit ************************** Monday, 15 September 2014 10:53:51
     	Locationr.Code = IVp.Location;
     	if(readfirstmain(Locationr,1,true))then begin
     		if(nonblank(Locationr.SalesAcc))then begin
     			revacc = Locationr.SalesAcc;// Edit ************************** Monday, 15 September 2014 10:55:36
     		end;
-    	end;// Edit ************************** Monday, 15 September 2014 10:55:41
+    	end;// Edit ************************** Monday, 15 September 2014 10:55:41*/
     otherwise
       revacc = IVrw.SalesAcc;
   end;

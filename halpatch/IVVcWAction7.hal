@@ -65,6 +65,7 @@ external updating procedure ProceedLoyaltyPaymentNPTSSClassExecuteMy(Integer);
 external remote function string 255 GetClassString(string);// Edit ************************** Thursday, 9 May 2013 16:59:59
 external remote function string 255 GetPriceString(string,string,string);// Edit ************************** Thursday, 9 May 2013 16:59:59
 external remote procedure GetTwoStrings(string,string,string,var string,var string,string);// Edit ************************** Thursday, 9 May 2013 17:27:58
+remote procedure IVVc_PasteLocation(var record IVVc,Integer);// Edit ************************** Wednesday, 17 September 2014 14:55:33
 
 
 function string 200 ParseClassification(string class)
@@ -2551,8 +2552,10 @@ begin
         IVr.ClientContact = RepSpec.f3;
         IVr.OfficialSerNr = RepSpec.f4;
         IVr.Location = RepSpec.LastAcc;
-        IVr.LangCode = RepSpec.Language;
         IVr.Objects = RepSpec.ObjStr;
+        IVVc_PasteLocation(IVr,-1);// Edit ************************** Wednesday, 17 September 2014 14:54:31
+        IVr.LangCode = RepSpec.Language;
+        
         PutWindowRecord(mwn,IVr);
         IVDClass_RefreshStringList(mwn,IVr);
         ReRunWindowDef(mwn);
