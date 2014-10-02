@@ -157,7 +157,17 @@ BEGIN
   sbal = sbdp + sbcp;
   if (lmod==1) then begin
     StartFormat(15);
-    OutString(0,dblstr,accnr,false);
+    // Edit Start ---------------------------------------------- Edit Start
+	//Monday, 29 September 2014 17:51:10
+	
+    if(dblstr!="DblMBA")then begin
+			OutString(0,dblstr,accnr,false);
+    end else begin
+    	OutStringID(0,dblstr,accnr,false,comment);
+    end;
+    
+	// Edit End ---------------------------------------------- Edit End
+	
     OutString(2,0,comment,false);
     if ((RepSpec.Media==screen) and (RepSpec.flags[9]==1)) then begin
       if (nonblank(comment)) then begin
@@ -188,7 +198,6 @@ why to print only one ?
       if (asdp>0) then begin OutValBiDi(7,0,asdp,M4DVal,true,490); end;
 //      if ((sbdp>0) and (sbcp<0)) then begin OutVal(8,0,sbcp,M4CVal,true); end;//OutVal(8 is twice
       if (ascp<0) then begin OutValBiDi(1,0,ascp,M4CVal,true,520); end;
-      //gray_divider(0,1);// Edit ************************** Monday, 29 September 2014 11:46:43
     end else begin
       OutVal(450 - (47*6),0,sbdp,M4DVal,true);
       OutVal(8,0,sbcp,M4CVal,true);
@@ -209,7 +218,9 @@ why to print only one ?
       end;
     end;
     EndFormat;
-    Gray_Divider(0,1);// Edit ************************** Monday, 29 September 2014 11:43:22
+    if(RepSpec.flags[12]==1)then begin
+			Gray_Divider(0,1);// Edit ************************** Monday, 29 September 2014 11:43:22
+    end;
     if (RepSpec.flags[15]!=0) then begin
       PrintObjectsResults(RepSpec,accnr);
     end;
@@ -633,7 +644,7 @@ L22:;
                 Gray_Divider(2,1);
               end;  
             end;      
-            MBALine(RepSpec,USetStr(3478),lastsub,ufwd,ufwc,upd,upc,uad,uac,uedb,uecb,lmod,"DblNL");
+            MBALine(RepSpec,USetStr(3478),lastsub,ufwd,ufwc,upd,upc,uad,uac,uedb,uecb,lmod,"DblMBA");// Edit ************************** Monday, 29 September 2014 17:50:33
             if (RepSpec.flags[1]==0) then begin
               if (lmod==1) then begin
                 StartFormat(10);
@@ -653,7 +664,7 @@ L22:;
         subaccCnt = 0;
       end;
       if (CharacterMatch(lastgroup,Accr.AccNumber,1)==false) then begin
-        if ((RepSpec.flags[10]==0) or (RepSpec.flags[0]==1))  then begin        
+        if (((RepSpec.flags[10]==0) or (RepSpec.flags[0]==1)) and RepSpec.flags[12]==0)  then begin // Edit ************************** Monday, 29 September 2014 15:54:43  
           if (RepSpec.flags[1]==0) then begin
             if (lmod==1) then begin
               Gray_Divider(2,1);
@@ -664,7 +675,9 @@ L22:;
           tstr = tstr & lastgroup;
           tstr = tstr & "'";
           if (tpd!=0) or (tpc!=0) or (tad!=0) or (tac!=0) or (tfwd!=0) or (tfwc!=0) then begin
-            //MBALine(RepSpec,tstr,blankstr,tfwd,tfwc,tpd,tpc,tad,tac,tedb,tecb,lmod,"");// Edit ************************** Monday, 29 September 2014 13:02:47
+          	if(RepSpec.flags[12]==0)then begin
+							MBALine(RepSpec,tstr,blankstr,tfwd,tfwc,tpd,tpc,tad,tac,tedb,tecb,lmod,"");
+            end;
           end;
         end;  
         if (RepSpec.flags[1]==0) then begin
@@ -739,7 +752,7 @@ L44:;
       end;
     end;
   end;
-  if ((RepSpec.flags[10]==0) or (RepSpec.flags[0]==1))  then begin
+  if (((RepSpec.flags[10]==0) or (RepSpec.flags[0]==1)) and RepSpec.flags[12]==0)  then begin// Edit ************************** Monday, 29 September 2014 15:49:02
     if (RepSpec.flags[1]==0) then begin
       if (lmod==1) then begin
         Gray_Divider(2,1);
@@ -749,7 +762,7 @@ L44:;
     tstr = tstr & gstr;
     tstr = tstr & lastgroup;    
     tstr = tstr & "'";    
-    //MBALine(RepSpec,tstr,blankstr,tfwd,tfwc,tpd,tpc,tad,tac,tedb,tecb,lmod,"");// Edit ************************** Monday, 29 September 2014 13:02:58
+    MBALine(RepSpec,tstr,blankstr,tfwd,tfwc,tpd,tpc,tad,tac,tedb,tecb,lmod,"");
   end;  
   if (RepSpec.flags[1]==0) then begin
     if (lmod==1) then begin

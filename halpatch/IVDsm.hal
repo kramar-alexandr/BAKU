@@ -2508,3 +2508,42 @@ begin
 	
 return;
 end;
+
+
+
+global
+procedure DblMBA(string dblstr,string l,Integer currepwn)
+begin
+	record AccVc Accr;
+	boolean TrHs,testf,first;
+	integer lenth;
+	string 20 facc,lacc;
+	record RcVc RepSpec,RcVcr1;
+	
+	getwindowrecord(currepwn,RcVcr1);
+	
+	lenth = len(l);
+  Accr.AccNumber = l;
+  TrHs = true;
+  while(loopmain(Accr,1,TrHs))begin
+  	if(left(Accr.AccNumber,lenth)!=l)then begin TrHs = false; end;
+  	
+  	if(TrHs)then begin
+  		if(!first)then begin
+  			facc = Accr.AccNumber;
+  			first = true;
+  		end;
+  		lacc = Accr.AccNumber;
+  	end;
+  end;
+		
+		ReportDefaults(RepSpec,"MBARClass");    
+		RepSpec.sStartDate = RcVcr1.sStartDate;
+		RepSpec.sEndDate = RcVcr1.sEndDate;
+		RepSpec.ObjStr = RcVcr1.ObjStr;
+		RepSpec.AccStr = facc & ":" & lacc;
+    RepSpec.repname = "MBA2Rn";
+    RunReport(RepSpec,0); 
+  
+  return;
+end;

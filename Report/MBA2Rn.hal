@@ -359,7 +359,7 @@ begin
   StartHeader2(50,false);
   MBHeader2(RepSpec);
   EndHeader2;
-  
+    
   RecordNew(SMr);
   Accr.AccNumber = RepSpec.FirstAcc;
   while (LoopMain(Accr,1,foundf)) begin
@@ -384,7 +384,7 @@ begin
       TMPdeb = 0;TMPcred = 0;
       ObjBalr.AccNumber = Accr.AccNumber;
       ObjBalr.Object = RepSpec.ObjStr;
-      if (ReadFirstMain(ObjBalr,1,true)) then begin
+      if (ReadFirstMain(ObjBalr,2,true)) then begin// Edit ************************** Monday, 29 September 2014 16:29:20
 
 //        SimVerf = RepSpec.SimVerf;
 //        RepSpec.SimVerf = 0;
@@ -398,7 +398,7 @@ begin
         GetAccDCBalance(Accr.AccNumber,RepSpec.ObjStr,sbd,ObjBalr,RepSpec.SimVerf,RepSpec.basecurncy,0,RepSpec.CurncyCode,dv,cv,RepSpec.flags[6]);
         pdeb = pdeb + dv; //PerDeb
         pcred = pcred - cv; //PerCred
-
+ 
 //        RepSpec.SimVerf = SimVerf;
 
         if ((RepSpec.SimVerf == 2)) then begin
@@ -513,6 +513,7 @@ begin
  // kypp --
  
       end; 
+            
       GetAccountDescription2(Accr.AccNumber,RepSpec.Language,accname);        
       AnalyticLineMem(SMr,Accr.AccNumber,accname,pdeb,pcred,adeb,acred,sdeb,scred,edeb,ecred,0);
     end;

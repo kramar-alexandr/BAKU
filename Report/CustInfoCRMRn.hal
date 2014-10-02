@@ -190,6 +190,7 @@ begin
 	blockload(CBb);
 	
 	compnames[0] = "";
+	mtrw = matrowcnt(CBb);
 	For(i=0;i<mtrw;i=i+1) begin
 	  matrowget(CBb,i,CBrw);
 	  compnames[i+1] = CBrw.CompName;

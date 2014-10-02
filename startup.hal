@@ -40,6 +40,7 @@ begin
 	Maintenance("Заполнить глобальные склады",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
   Maintenance("Заполнить коллекции товаров из заказов п.",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
   Maintenance("Удалить план счетов и записи операций",FIXVClass,DellAccAndMainMn,modDBMain);
+  Maintenance("AddRecHistToCU",FIXVClass,RHist2Mn,modDBMain);// Edit ************************** Tuesday, 30 September 2014 13:06:54
 	  
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
@@ -70,6 +71,8 @@ begin
   Report("Отчет активности по бутикам",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
   Report("Накопленные баллы клиента",LoyaltyCardCounterRClass,LoyaltyCardCounterRn,0,modMYCRM);
   Report("Оборотно-сальдовая ведомость (изм.)",MBARClass,MBA2Rn,0,modNL);
+  
+ // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
   
   Report("Отчет по маркетингу",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   
