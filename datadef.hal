@@ -8,6 +8,7 @@ SourceFile("halcust\\Windows",3);
 SourceFile("halcust\\WAction",3);
 SourceFile("halcust\\WEB",0);
 SourceFile("halcust\\itemhist",0);
+SourceFile("halcust\\Fiscal",0);
 
 //SourceFile("halcust\\Fiscal",0);
 

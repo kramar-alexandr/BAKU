@@ -107,8 +107,7 @@ begin
 	row SHVc SHrw;
 	boolean TrHs,testf,findsec,TrHs1;
 	val fr,to1,to2,br1,br2;
-	integer halt;
-	
+	integer halt;	
 	
 	fifo = 0;
 	cur = "";
@@ -154,8 +153,6 @@ begin
 							if(IHr.FileName!="SHVc")then begin TrHs1 = false; end;
 							if(IHr.TransNr!=SHr.SerNr)then begin TrHs1 = false; end;
 							if(IHr.Row!=i)then begin TrHs1 = false; end;
-						
-					
 							if(TrHs1)then begin
 								if(halt<IVrw.Quant)then begin
 									fifobase = fifobase + IHr.TotCostPrice;
@@ -591,8 +588,13 @@ begin
 										
 										FindFIFOOrigValAndCurncyIV(IVr.SerNr,i,brandfifo,brandcur,fifob1,updst);
 										if(fifob1==0)then begin
-											fifob1 = INr.WeighedAvPrice;
+											fifob1 = INr.WeighedAvPrice * IVrw.Quant;
 										end;
+										if(brandfifo==0)then begin
+											brandfifo = INr.LastPurchPrice2 * IVrw.Quant;
+										end;
+										
+										
 										brandfifo = AbsoluteVal(brandfifo/IVrw.Quant);
 										fifob1 = AbsoluteVal(fifob1/IVrw.Quant);
 										

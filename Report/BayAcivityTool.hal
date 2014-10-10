@@ -313,6 +313,10 @@ record CUVc CUr;
 		endformat;
 		
 		if(findf)then begin
+			For(ivi=0;ivi<aqty;ivi=ivi+1) begin
+				qty[ivi] = blankval;
+				sum[ivi] = blankval;
+			end;
 			aqty = 0;
 			lastdate = "";
 			lasttime = "";
@@ -387,6 +391,10 @@ record CUVc CUr;
 						custcode = "";
 						readfirstmain(CUr,1,true);
 						custcode = CUr.Code;
+						For(ivi=0;ivi<aqty;ivi=ivi+1) begin
+							qty[ivi] = blankval;
+							sum[ivi] = blankval;
+						end;
 						aqty = 0;
 						lastdate = "";
 						lasttime = "";

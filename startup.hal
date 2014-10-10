@@ -361,6 +361,8 @@ begin
 	StrSetText(ActOK,"Утвержение активностей");	
 	StrSetText(JobELockingSystem,"Электронная замочная система");	
   EndStrSet;
-  
+	
+
+	  
  return;
 end;  

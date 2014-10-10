@@ -499,7 +499,7 @@ begin
   IVr.Points = blankval;
   if (nonblank(IVr.LoyaltyCardNr)) then begin
     rnd = DefaultValRoundoff;
-    rnd.decimals = 0;
+    rnd.decimals = 2;
     rnd.mode = kRoundingModeTruncate;
     
     LLPr.Location = IVr.Location;

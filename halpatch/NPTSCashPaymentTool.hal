@@ -17,7 +17,7 @@ begin
   roundmode rnd;// Edit ************************** Friday, 15 March 2013 11:36:08
   
   rnd = DefaultValRoundoff;
-  rnd.decimals = 0;
+  rnd.decimals = 2;
   rnd.mode = kRoundingModeHalfUp;
   if(currentcompany==3)then begin
 		rnd.step = kRoundingStep5;

@@ -1000,7 +1000,7 @@ BEGIN
 	roundmode rnd;// Edit ************************** Thursday, 14 March 2013 16:37:12
 	
 	rnd = DefaultValRoundoff;
-  rnd.decimals = 0;
+  rnd.decimals = 2;
 	
   rwcnt = MatRowCnt(IVr);
   for (i=0;i<rwcnt;i=i+1) begin

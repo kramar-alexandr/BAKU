@@ -524,7 +524,7 @@ begin
 	val torate,frrate;
 	
 	rnd = DefaultValRoundoff;
-  rnd.decimals = 0;
+  rnd.decimals = 2;
   rnd.mode = kRoundingModeHalfDown;
 	
   BlockLoad(OTCheckr);

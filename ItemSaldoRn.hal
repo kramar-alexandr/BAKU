@@ -155,7 +155,7 @@ begin
                   if(fifob1==0)then begin
                     INr.Code = IVrw.ArtCode;
                     readfirstmain(INr,1,true);
-                    fifob1 = INr.WeighedAvPrice;
+                    fifob1 = INr.WeighedAvPrice*IVrw.Quant;
                   end;
                   fifob1 = AbsoluteVal(fifob1/IVrw.Quant);
                   gp = gp + fifob1*fr/to1*IHr.Qty;									
@@ -197,7 +197,7 @@ begin
                   if(fifob1==0)then begin
                     INr.Code = IVrw.ArtCode;
                     readfirstmain(INr,1,true);
-                    fifob1 = INr.WeighedAvPrice;
+                    fifob1 = INr.WeighedAvPrice*IVrw.Quant;
                   end;
                   fifob1 = AbsoluteVal(fifob1/IVrw.Quant);
                   gp = gp + fifob1*fr/to1*IHr.Qty;
@@ -310,6 +310,8 @@ begin
 						qty_start = qty_start + IHr.Qty;
 						cost_start = cost_start - IHr.TotCostPrice;
 					end else begin
+						sd_qty = sd_qty + (-IHr.Qty);
+						sd_cost = sd_cost + IHr.TotCostPrice;
 						cost_end = cost_end - IHr.TotCostPrice;
 						qty_end = qty_end + IHr.Qty;
 					end;

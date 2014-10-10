@@ -1539,7 +1539,7 @@ begin
     end;
   end;
   rnd = DefaultCurRoundoff;
-  rnd.decimals = 0;
+  rnd.decimals = 2;
   rnd.mode = kRoundingModeHalfUp;
 
   LLPRr.Location = IVr.Location;
