@@ -743,7 +743,7 @@ L44:;
           Gray_Divider(2,1);
         end;  
       end;    
-      MBALine(RepSpec,USetStr(3478),lastsub,ufwd,ufwc,upd,upc,uad,uac,uedb,uecb,lmod,"DblNL");
+      MBALine(RepSpec,USetStr(3478),lastsub,ufwd,ufwc,upd,upc,uad,uac,uedb,uecb,lmod,"DblMBA");
       if (RepSpec.flags[1]==0) then begin
         if (lmod==1) then begin
           StartFormat(10);

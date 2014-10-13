@@ -6661,3 +6661,71 @@ begin
   end;
   EndWindow;
 end;
+
+
+window ResRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm;
+  WindowBegin("Определите отчет о прибыли и убытках",ResRClass,CGRcW,RcType);
+  SetWRect(20,80,527,370);
+  PeriodField(h=100,v=6,"Период");
+  if (IsEnterprise) then begin
+  EditFieldTL(h,v+=20,150,"Период бюджета",M4UStr,Normal,21,Stext,false,PerSClass);
+  end;
+  if (HasObjects) then begin
+  EditFieldTL(h,v+=20,150,"Объект",M4UStr,Normal,60 ,ObjStr,false,ObjSClass);
+  EditFieldTL(h,v+=20,50,"Тип объекта",M4UStr,Normal,5 ,ObjType,false,OTSClass);
+  CheckBox(180,v,0,"Включая объекты без типа",flags[2]);
+  end;
+  if (HasMultiCurrency) then begin
+  EditField(h,v+=20,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+  end;
+  if (HasLanguages) then begin
+  EditField(h,v+=20,50,"Язык",Normal,Language,false,LangSClass);  
+  end;
+  if (HasObjects) then begin
+  EditFieldTL(h,v+=20,150,"Искл. объект",M4UStr,Normal,60,f6,false,ObjSClass);
+  end;
+  EditFieldTL(345,6,120,"Заголовок",M4Str,Normal,60 ,f1,false,0);
+  ButtonFrame(h=30,vm=(v+=41),123,5,"Счета");
+  RadioButton(h,v,0,0,"все",AccSpec);
+  RadioButton(h,v+=16,1,0,"только использ.",AccSpec);
+  if (IsEnterprise) then begin
+  RadioButton(h,v+=16,2,0,"только группы",AccSpec);
+  RadioButton(h,v+=16,3,0,"только исп.группы",AccSpec);
+  RadioButton(h,v+=16,4,0,"с сальдо",AccSpec);
+  end;
+  EndFrame;
+  ButtonFrame(h+=148,v=vm,123,6,"Представление");
+  RadioButton(h,v,0,0,"точное",Notation);
+  RadioButton(h,v+=16,4,0,"без десятичных",Notation);
+  RadioButton(h,v+=16,1,0,"тысячи",Notation);
+  RadioButton(h,v+=16,2,0,"миллионы",Notation);
+  if (IsEnterprise) then begin
+  RadioButton(h,v+=16,3,0,"% оборот",Notation);
+    CheckBox(h,v+=16,0,"Сравнение в %",flags[1]); 
+  end;
+  EndFrame;
+  ButtonFrame(h+=148,v=vm,140,2,"Сравнение");// Edit ************************** Monday, 13 October 2014 09:57:57
+  RadioButton(h,v,0,0,"накопленное",Comparison);
+  RadioButton(h,v+=16,1,0,"предыдущ. год",Comparison);
+  //RadioButton(h,v+=16,4,0,"предыдущ. результат",Comparison);
+  //if (IsEnterprise) then begin
+  //RadioButton(h,v+=16,2,0,"бюджет",Comparison);
+  //RadioButton(h,v+=16,3,0,"пересмотр. бюджет",Comparison);
+  //end;
+  EndFrame;
+  //CheckBox(h+100,v-16,0,"Add",flags[6]);//fir internal use only
+  if (HasBase2) then begin
+  ButtonFrame(h,v+=40,123,2,"Значения в");
+  RadioButton(h,v,0,0,"В осн. валюте 1",basecurncy);
+  RadioButton(h,v+=16,1,0,"В осн. валюте 2",basecurncy);
+  end;
+  if (IsEnterprise) then begin
+    CheckBox(h=30,v=270,0,"Включая симуляции",SimVerf);
+  CheckBox(h,v+=16,0,"Список номеров записей операций",flags[4]);
+  CheckBox(h,v+=16,0,"Без заголовка",flags[5]);
+end;
+  EndWindow;
+end;
