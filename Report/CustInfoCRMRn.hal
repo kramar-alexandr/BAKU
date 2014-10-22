@@ -211,6 +211,7 @@ begin
 		outstring(300,0,"Компания последней покупки",false);
 		outstring(400,0,"Чеков",true);
 		outstring(450,0,"Клиент создан в комп.",true);
+		outstring(500,0,"Клиента создал пользователь/лок.машина",true);
 		outstring(1,0,"Сумма",true);
 	endformat;
 	
@@ -289,6 +290,7 @@ begin
 								outstring(400,0,"",false);
 								outstring(400,0,compact,false);
 								outstring(450,0,compnames[CUr.CreateCompany],false);
+								outstring(500,0,CUr.CreateLocation,false);
 								outstring(1,0,compsum,true);
 							endformat;
 						end;
@@ -313,6 +315,7 @@ begin
 					outstring(300,0,lastbaycompany,false);
 					outstring(400,0,act,false);
 					outstring(450,0,compnames[CUr.CreateCompany],false);
+					outstring(500,0,CUr.CreateLocation,false);
 					outstring(1,0,sum,true);
 				endformat;
 			end;

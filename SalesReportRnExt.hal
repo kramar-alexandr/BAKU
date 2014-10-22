@@ -636,14 +636,18 @@ begin
 										
 										
 										curprice = round(IVrw.Price*fr/to1,SetRoundModeD(1));
+										
 										outstring(120,0,curprice,false);//brandcur
 										outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+										total_rebate = total_rebate + IVrw.Price*aznfr/aznto*IVrw.Quant;// Edit ************************** Wednesday, 22 October 2014 16:43:55
+										
 										if(bcur!="AZN")then begin
 											Outstring(122,0,IVrw.Price,false);//basecur
 										end;
 										curcusm = round(IVrw.Sum*fr/to1,SetRoundModeD(1));
 										outstring(130,0,curcusm,false);//brandcur
 										outstring(131,0,IVrw.Sum*aznfr/aznto,false);//AZN
+										total_rebate_qty = total_rebate_qty + IVrw.Sum*aznfr/aznto;// Edit ************************** Wednesday, 22 October 2014 16:44:51
 										if(bcur!="AZN")then begin
 											outstring(132,0,IVrw.Sum,false);//basecur
 										end;
@@ -661,14 +665,16 @@ begin
 										outstring(0,0,IVr.CustCode,false);
 										outstring(0,0,IVr.Addr0,false);
 										outstring(0,0,IVrw.vRebate,false);
-										total_rebate = total_rebate + IVrw.vRebate*AbsoluteVal(IVrw.Quant);//Edit***********************Vitalii 14:28 26.08.2014
-										if(IVrw.vRebate!=0)then begin
-											total_rebate_qty = total_rebate_qty + AbsoluteVal(IVrw.Quant);
-										end;
+										//total_rebate = total_rebate + IVrw.vRebate*AbsoluteVal(IVrw.Quant);//Edit***********************Vitalii 14:28 26.08.2014
+										/*if(IVrw.vRebate!=0)then begin
+											total_rebate_qty = total_rebate_qty + AbsoluteVal(IVrw.Quant);											
+										end;*/
 										outstring(0,0,IVr.SalesMan,false);
 										outstring(0,0,IVr.TransDate,false);
 										outstring(0,0,IVr.PayDeal,false);
 										outstring(0,0,IVr.InvComment,false);
+										
+										
 										if(currentcompany==9)then begin
 											if(IVr.OrderNr>-1)then begin
 												ORr.SerNr = IVr.OrderNr;
@@ -733,7 +739,8 @@ begin
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"Средняя скидка:",false);
-					outstring(0,0,total_rebate/total_rebate_qty,false);
+					//outstring(0,0,total_rebate/total_rebate_qty,false);
+					outstring(0,0,100-(100*(total_rebate_qty/total_rebate)),false);// Edit ************************** Wednesday, 22 October 2014 16:45:31
 	
 				endformat;
 			end else begin
