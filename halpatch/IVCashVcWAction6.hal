@@ -648,6 +648,9 @@ begin
         if (IVrw.Sum>GCSr.Balance) then begin
           IVrw.Sum = GCSr.Balance;
         end;
+        if(IVrw.Sum>IVr.Sum4)then begin// Edit ************************** Tuesday, 14 October 2014 11:09:00
+        	IVrw.Sum=IVr.Sum4;// Edit ************************** Tuesday, 14 October 2014 11:09:29
+        end;
         IVrw.VATCode = DCb.DefGCSVATCode;          
         IVrw.PayMode = RepSpec.AccStr;
         if (GetPMRow(IVrw.PayMode,PMrw)) then begin end;
@@ -2976,7 +2979,12 @@ begin
       res = false;
       goto LGiftVoucherTouchScreenDClassf1EFAfter;
     end;
-    RepSpec.vals0 = GCSr.Balance;
+    If(RepSpec.vals0>GCSr.Balance)then begin// Edit ************************** Tuesday, 14 October 2014 11:09:47
+    	RepSpec.vals0 = GCSr.Balance;
+    end else begin
+    	//RepSpec.vals0 = GCSr.Balance;
+    end;
+    
     PutWindowRecord(wn,RepSpec);
   end;
 LGiftVoucherTouchScreenDClassf1EFAfter:;  

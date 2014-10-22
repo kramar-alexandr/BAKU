@@ -277,7 +277,8 @@ BEGIN
   record ObjVc Objr;
   Boolean found;
   val v1,v2;
-
+	
+	
   Sbp = 0;
   S4bp = 0;
   S5bp = 0;

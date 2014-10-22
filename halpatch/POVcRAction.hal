@@ -911,7 +911,7 @@ newINr.LastPurchPrice2 = POrw.Price;
 			INr.MajStoneDet = POrw.MajStoneDet;
 		end;
 
-		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
+		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
@@ -1084,7 +1084,7 @@ begin
 			INr.Reference = POrw.Reference;
 		end;
 		
-		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
+		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
 			//recordStore(INr,true);
 		end;	
@@ -1221,7 +1221,7 @@ begin
 			INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 		end;
 		
-		if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
+		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
@@ -1363,7 +1363,7 @@ newINr.LastPurchPrice2 = POrw.Price;
 					end;
 				recordStore(PLr,true);
 			end;
-			if ((changef) and (INr.LastPriceChange<=POr.TransDate)) then begin
+			if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 				recordupdate(IN2r,INr,true);
 			end;
 			POrw.Price = INr.InPrice/POrw.VEQuant*POrw.Quant;

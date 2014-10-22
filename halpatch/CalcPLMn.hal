@@ -76,16 +76,28 @@ begin
       newpr = newpr + t;
     end;
     if (pldfound) then begin
+    // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 14 October 2014 18:39:54
+	
     	if(nonblank(PLDr.CurncyCode))then begin
     		plcurcode = PLDr.CurncyCode;
     	end else begin
-    		plcurcode = INp.LastPurchCurncyCode;
+    		if(PFr.SelBase==2)then begin
+					plcurcode = INp.LastPurchCurncyCode;
+    		end;
     	end;
+    	
+	// Edit End ---------------------------------------------- Edit End
+	
+    /*if(INp.Code=="5658_1001")then begin
+    	messagebox(0,newpr);
+    	messagebox(0,plcurcode);
+    end;*/
       switch (PFr.SelBase) begin
         case 2:
           if (plcurcode<>INp.LastPurchCurncyCode) then begin
             if (nonblank(INp.LastPurchCurncyCode)) then begin
-              newpr = DivWithRateToBase1(INp.LastPurchCurncyCode,CurrentDate,newpr,DefaultCurRoundOff);
+              newpr = MulWithRateToBase1(INp.LastPurchCurncyCode,CurrentDate,newpr,DefaultCurRoundOff);
             end;
             if (nonblank(plcurcode)) then begin
               newpr = DivWithRateToBase1(plcurcode,CurrentDate,newpr,DefaultCurRoundOff);
@@ -109,6 +121,10 @@ begin
         theroundof = 3;
       end;
     end;
+    /*if(INp.Code=="5658_1001")then begin
+    	messagebox(0,newpr);
+    	messagebox(0,plcurcode);
+    end;*/
     if (PFr.SelBase==5) and (pricefoundf==false) then begin
       switch (PFr.BasePriceListOption) begin
         case 0: //Don't add price
@@ -162,7 +178,10 @@ begin
   Boolean AddPricef;
 	record PLDefVc PLDr;// Edit ************************** Wednesday, 22 May 2013 11:43:06
   string 20 plcurcode;// Edit ************************** Wednesday, 22 May 2013 11:43:07
+  record PFormVc PFr;// Edit ************************** Tuesday, 14 October 2014 18:11:52
   
+  PFr.Code = formula;// Edit ************************** Tuesday, 14 October 2014 18:12:06
+  ReadFirstMain(PFr,1,true);// Edit ************************** Tuesday, 14 October 2014 18:12:05
   
   PLDr.Code = pricelist;// Edit ************************** Wednesday, 22 May 2013 11:43:43
 	readfirstmain(PLDr,1,true);// Edit ************************** Wednesday, 22 May 2013 11:43:44
@@ -218,8 +237,13 @@ begin
                 changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
                 PLr.ExVatPrice = exvatpr;
                 if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:17
-									plcurcode = INr.LastPurchCurncyCode;
-									PLr.CurncyCode = plcurcode;
+                	if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+										plcurcode = INr.LastPurchCurncyCode;
+										PLr.CurncyCode = plcurcode;
+									end else begin
+										plcurcode = "";
+										PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+									end;
 								end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
                 if (changed) then begin
                   if (plfound) then begin
@@ -236,8 +260,13 @@ begin
               PLr.Comment = INr.Name;
               PLr.SalesAcc = "";
               if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:17
-              	plcurcode = INr.LastPurchCurncyCode;
-              	PLr.CurncyCode = plcurcode;
+              	if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+									plcurcode = INr.LastPurchCurncyCode;
+									PLr.CurncyCode = plcurcode;
+								end else begin
+									plcurcode = "";
+									PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+								end;
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
               exvatpr = PLr.ExVatPrice;
               changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
@@ -259,8 +288,13 @@ begin
               PLQr.Comment = INr.Name;
               PLQr.SalesAcc = "";
               if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:17
-              	plcurcode = INr.LastPurchCurncyCode;
-              	PLr.CurncyCode = plcurcode;
+              	if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+									plcurcode = INr.LastPurchCurncyCode;
+									PLr.CurncyCode = plcurcode;
+								end else begin
+									plcurcode = "";
+									PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+								end;
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
               PLQrw.QtyLimit = 1;
               exvatpr = BlankVal;
@@ -325,7 +359,10 @@ begin
   string 20 plcurcode;// Edit ************************** Wednesday, 22 May 2013 11:43:07
   integer keys;
   string 50 keystring;
-	
+	record PFormVc PFr;// Edit ************************** Tuesday, 14 October 2014 18:11:52
+  
+  PFr.Code = formula;// Edit ************************** Tuesday, 14 October 2014 18:12:06
+  ReadFirstMain(PFr,1,true);// Edit ************************** Tuesday, 14 October 2014 18:12:05
 	
 	PLDr.Code = pricelist;// Edit ************************** Wednesday, 22 May 2013 11:43:43
 	readfirstmain(PLDr,1,true);// Edit ************************** Wednesday, 22 May 2013 11:43:44
@@ -391,8 +428,13 @@ begin
                 RecordCopy(oldPLr,PLr);
                 exvatpr = PLr.ExVatPrice;
                 if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:17
-									plcurcode = INr.LastPurchCurncyCode;
-									PLr.CurncyCode = plcurcode;
+									if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+										plcurcode = INr.LastPurchCurncyCode;
+										PLr.CurncyCode = plcurcode;
+									end else begin
+										plcurcode = "";
+										PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+									end;
 								end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
                 changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
                 PLr.ExVatPrice = exvatpr;
@@ -411,8 +453,13 @@ begin
               PLr.Comment = INr.Name;
               PLr.SalesAcc = "";
               if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:17
-              	plcurcode = INr.LastPurchCurncyCode;
-              	PLr.CurncyCode = plcurcode;
+              	if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+									plcurcode = INr.LastPurchCurncyCode;
+									PLr.CurncyCode = plcurcode;
+								end else begin
+									plcurcode = "";
+									PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+								end;
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
               exvatpr = PLr.ExVatPrice;
               changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
@@ -435,8 +482,13 @@ begin
               PLQr.Comment = INr.Name;
               PLQr.SalesAcc = "";
               if(blank(PLDr.CurncyCode))then begin// Edit ************************** Wednesday, 22 May 2013 11:43:26
-              	plcurcode = INr.LastPurchCurncyCode;
-              	PLr.CurncyCode = plcurcode;
+              	if(PFr.SelBase==2)then begin// Edit ************************** Tuesday, 14 October 2014 18:14:14
+									plcurcode = INr.LastPurchCurncyCode;
+									PLr.CurncyCode = plcurcode;
+								end else begin
+									plcurcode = "";
+									PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
+								end;
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:26
               PLQrw.QtyLimit = 1;
               exvatpr = BlankVal;

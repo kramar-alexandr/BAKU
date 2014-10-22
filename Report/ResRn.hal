@@ -39,20 +39,24 @@ BEGIN
   record CYBlock CompYear;
   string 255 tstr,tstr2;
   Date budsd,buded;
-  
-  
+    
   budsd = StringToDate(FirstInRange(RepSpec.Stext,10));
   if (blankdate(budsd)) then begin budsd = RepSpec.sStartDate; end;    
   buded = StringToDate(LastInRange(RepSpec.Stext,10));
-  if (blankdate(buded)) then begin buded = RepSpec.sEndDate; end;    
+  if (blankdate(buded)) then begin buded = RepSpec.sEndDate; end; 
+
 //  if (AccBlockedTest((AccessView*)appSlotArr[gCurSlot].ast_Accessp,Accp->AccNumber)) then goto LALPB2;
   BlockLoad(CompYear);
   nru = anru;//??
   //nru = RepSpec.ObjStr;//??// Edit ************************** Thursday, 25 September 2014 17:07:20
+
+  
   if (blank(UserDefRepLinesr.CorspAcc)) then begin
     usedf = AccRuPerBal(RepSpec,PLf,Accp.AccNumber,nru,S3b1,Pb1,Eb1,S4b1,S5b1,S6b1,UserDefRepLinesr.DCSide,resUseAccum,AccumStartDate,budsd,buded);
   end else begin
+  
     CorspAccSums(RepSpec,Accp,UserDefRepLinesr.CorspAcc,S3b1,S4b1);
+    
     switch (UserDefRepLinesr.DCSide) begin
       case 0:
         Pb1 = S3b1 - S4b1;
@@ -66,6 +70,16 @@ BEGIN
         Eb1 = S3b1 + Pb1;
     end;
   end;
+  
+  /*if(UserDefRepLinesr.IdKey==1)then begin
+		messagebox(0,"S3b1 " & S3b1 & " Pb1 " & Pb1 & " Eb1 " & Eb1 & " S4b1 " & S4b1 & " S5b1 " & S5b1 & " S6b1 " & S6b1);
+  end;*/
+  
+  if(UserDefRepLinesr.CustType==1 and RepSpec.Comparison==0)then begin
+  	Pb1 = S3b1;
+  end;
+
+  
 /*  
   if (UserDefRepLinesr.DCSaldo==1) then begin
     if (Eb1<0) then begin goto LALPB2ResGr; end;
@@ -790,6 +804,8 @@ BEGIN
   record RcVc tmpKeyRepSpec;
   record RcVc newRepSpec;
   
+  date tempsd,temped;// Edit ************************** Tuesday, 21 October 2014 12:17:12
+  
   RepSpec.Stext = RepSpec.sStartDate2 & ":" & RepSpec.sEndDate2;
   PLf = true;
   headerf = true;
@@ -1002,8 +1018,47 @@ end;
           if (CYb.NS0[4]==0) then begin
             negf = false;
           end;
-        end;              
+        end;    
+        // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 21 October 2014 12:16:16
+	
+        switch(UserDefRepLinesr.CustType)begin
+        	case 1:	tempsd = RepSpec.sStartDate;
+        					RepSpec.sStartDate = stringtodate("1/1/2000");
+        					temped = RepSpec.sEndDate;
+        					RepSpec.sEndDate = addday(tempsd,-1);
+        					
+        	case 2:	tempsd = RepSpec.sStartDate;
+        					RepSpec.sStartDate = stringtodate("1/1/" & getYear(RepSpec.sStartDate));
+        					temped = RepSpec.sEndDate;
+        					if(RepSpec.sEndDate>stringtodate("30/6/" & getYear(tempsd)))then begin
+        						RepSpec.sEndDate = stringtodate("30/6/" & getYear(tempsd));
+        					end;
+        					
+        	case 3:	tempsd = RepSpec.sStartDate;
+        					RepSpec.sStartDate = stringtodate("1/7/" & getYear(RepSpec.sStartDate));
+        					temped = RepSpec.sEndDate;
+        					if(RepSpec.sEndDate<stringtodate("1/7/" & getYear(temped)))then begin
+        						RepSpec.sEndDate = stringtodate("1/7/" & getYear(temped));
+        					end;
+        end;
+        
+	// Edit End ---------------------------------------------- Edit End
+	
         AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,true);
+        // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 21 October 2014 12:23:57
+	
+        switch(UserDefRepLinesr.CustType)begin
+        	case 1:	RepSpec.sStartDate = tempsd;
+        					RepSpec.sEndDate = temped;
+        	case 2:	RepSpec.sStartDate = tempsd;
+        					RepSpec.sEndDate = temped;
+        	case 3:	RepSpec.sStartDate = tempsd;
+        					RepSpec.sEndDate = temped;
+        end;
+	// Edit End ---------------------------------------------- Edit End
+	
       case kRsTypeSum:
         negf = false;
         if (UserDefRepLinesr.AccType==kAccTypeAsset) then begin
