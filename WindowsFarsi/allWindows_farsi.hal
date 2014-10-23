@@ -2977,19 +2977,6 @@ begin
   EndWindow;
 end;
 
-window PecuniaryRClass:1
-  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
-begin
-  real h,v,vm,vs;
-WindowBegin("ê“«—‘ „Ê«œ",PecuniaryRClass,CGRcW,RcType);
-  SetWRect(20,80,400,250);
-  v = 6; vs = 20; h = 120;
-  EditFieldTL(h,v,150," «—ÌŒ",M4Date,Normal,0,d1,false,PasteCurDate);
-  EditFieldTL(h,v+=vs,150,"›—Ê‘ê«Â",M4Str,Normal,20,f2,false,LocationSClass);
-  EditFieldTL(h,v+=vs,150,"„«‘Ì‰ „Õ·Ì ",M4Str,Normal,20,f1,false,LocalMachineSClass);
-  EndWindow;
-End;  
-
 window RebItemSalesRClass:1 //Edit ************************** Sasha2, Friday, 27 June 2013 {
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -3092,7 +3079,7 @@ begin
 end;
 
 window MatReportRClass:1 
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("ê“«—‘ Ìò „«œÂ ÃœÌœ(Pecuniary report)",MatReportRClass,CGRcW,RcType);
@@ -3107,7 +3094,7 @@ begin
 end;
 
 window PecuniaryRClass:1 
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
 WindowBegin("(Pecuniary report) ê“«—‘ „Ê«œ",PecuniaryRClass,CGRcW,RcType);
@@ -3116,5 +3103,20 @@ WindowBegin("(Pecuniary report) ê“«—‘ „Ê«œ",PecuniaryRClass,CGRcW,RcType);
   EditFieldTL(h,v,150,"œÊ—Â",M4Date,Normal,0,d1,false,PasteCurDate);
   EditFieldTL(h,v+=vs,150,"›—Ê‘ê«Â",M4Str,Normal,20,f2,false,LocationSClass);
   EditFieldTL(h,v+=vs,150,"„«‘Ì‰ „Õ·Ì ",M4Str,Normal,20,f1,false,LocalMachineSClass);
+  EndWindow;
+end;
+
+window SumCostByPeriodRClass:1 
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+WindowBegin("ê“«—‘ Œ·«’Â »—«Ì œÊ—Â",SumCostByPeriodRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"œÊ—Â ");
+  EditFieldTL(h,v+=vs,150,"„ÊÃÊœÌ",M4Str,Normal,41,f1,false,LocationSClass);
+  if(currentcompany!=1)then begin
+    EditField(h,v+=vs,150,"œ— «—“ œ— Õ«· Õ«÷— ‰—Œ «—“",Normal,f2,false,CurncyCodeSClass);
+  end;
   EndWindow;
 end;
