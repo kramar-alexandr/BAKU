@@ -4,6 +4,23 @@ external function longint DateDiff(date,date);
 	SetLangMode(LangRussian,"RUS",0);
 
 
+function string 200 prepareStr(string input)
+begin
+integer i,length;
+string 200 res;
+  length = len(input);
+  For(i=0;i<length;i=i+1) begin
+	  if(mid(input,i,1)==chr(34))then begin
+	    res = res;
+	  end else begin
+	    res = res & mid(input,i,1);
+	  end;	  
+	end; 
+  
+  prepareStr = res;
+return;
+end;
+
 global procedure CustInfoCRMRn(record RcVc RepSpec)
 begin
 	record CUVc CUr;
@@ -135,12 +152,12 @@ begin
 			
 			startformat(15);
 				OutString(0,0,CUr.Code,false);
-				OutString(130,0,CUr.Name,false);
+				OutString(130,0,prepareStr(CUr.Name),false);
 				OutString(300,0,CUr.Phone,false);
 				OutString(300,0,CUr.AltPhone,false);
 				OutString(300,0,CUr.Mobile,false);
 				OutString(300,0,CUr.eMail,false);
-				OutString(300,0,CUr.RebCode,false);
+				OutString(300,0,prepareStr(CUr.RebCode),false);
 				OutString(300,0,CUr.DateCreated,false);
 				OutString(300,0,CUr.CreateLocation,false);
 				GLocr.Code = CUr.CreateLocation;
@@ -149,8 +166,8 @@ begin
 				end else begin
 					OutString(300,0,"",false);
 				end;
-				OutString(300,0,CUr.CreateComment,false);
-				OutString(300,0,CUr.Comment0,false);
+				OutString(300,0,prepareStr(CUr.CreateComment),false);
+				OutString(300,0,prepareStr(CUr.Comment0),false);
 				if(CUr.NoLetterPosting>0)then begin
 					OutString(300,0,"Ћтключен",false);
 				end else begin
@@ -161,7 +178,7 @@ begin
 				end else begin
 					OutString(300,0,"",false);
 				end;
-				OutString(300,0,CUr.InvAddr0,false);
+				OutString(300,0,prepareStr(CUr.InvAddr0),false);
 			endformat;		
 		end;
 	end;

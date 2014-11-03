@@ -631,6 +631,8 @@ begin
   row PMBlock PMrw;
   record CLInVc CLInr;
   record CLOutVc CLOutr;
+  row CLInVc CLInrw;// Edit ************************** Thursday, 30 October 2014 11:31:04
+  row CLOutVc CLOutrw;// Edit ************************** Thursday, 30 October 2014 11:31:05
   record CostAccBlock CostAccRec;
   record AccBlock ARAccRec;
   record INVc INr;
@@ -638,6 +640,7 @@ begin
   record PRVc PRr;
   record Bud1Vc Bud1r;
   record Bud2Vc Bud2r;
+  record CLCorspVc CLCr;// Edit ************************** Thursday, 30 October 2014 10:42:24
     
   res = false;
   plbl = subset;
@@ -769,6 +772,8 @@ begin
       MatRowGet(Expr,rownr,Exprw);
       accnr = Exprw.AccNumber;
     end;
+    
+    /*// Edit ************************** Thursday, 30 October 2014 11:26:17
     if (GetWindowClass(wn)=="CLInDClass") then begin 
       GetWindowRecord(wn,CLInr);
         if (GetPMRow(CLInr.PayMode,PMrw)) then begin end;
@@ -778,7 +783,45 @@ begin
       GetWindowRecord(wn,CLOutr);
       if (GetPMRow(CLOutr.PayMode,PMrw)) then begin end;
       accnr = PMrw.AccNr;
+    end;   */
+    // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 30 October 2014 11:26:26
+	
+    if (GetWindowClass(wn)=="CLInDClass") then begin 
+      GetWindowRecord(wn,CLInr);
+      rownr = WindowActiveRow(wn);
+      if (rownr>=0) then begin
+				matrowget(CLInr,rownr,CLInrw);
+				CLCr.Code = CLInrw.CorspCode;
+				if(readfirstmain(CLCr,1,true))then begin
+				end;
+			end else begin
+				CLCr.Code = CLInr.CorspCode;
+				if(readfirstmain(CLCr,1,true))then begin
+				end;
+			end;
+      accnr = CLCr.AccNumber;
     end;   
+    
+    if (GetWindowClass(wn)=="CLOutDClass") then begin 
+      GetWindowRecord(wn,CLOutr);
+      rownr = WindowActiveRow(wn);
+      if (rownr>=0) then begin
+				matrowget(CLOutr,rownr,CLOutrw);
+				CLCr.Code = CLOutrw.CorspCode;
+				if(readfirstmain(CLCr,1,true))then begin
+				end;
+			end else begin
+				CLCr.Code = CLOutr.CorspCode;
+				if(readfirstmain(CLCr,1,true))then begin
+				end;
+			end;
+      accnr = CLCr.AccNumber;
+    end; 
+    
+	// Edit End ---------------------------------------------- Edit End
+	
+    
     if (GetWindowClass(wn)=="PRDClass") then begin 
       GetWindowRecord(wn,PRr);
       accnr = PRr.PRClass;
@@ -802,7 +845,16 @@ begin
       GetWindowRecord(wn,Bud2r);
       accnr = Bud2r.AccNumber;
     end;
+    // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 30 October 2014 10:42:45
+	
+    if (GetWindowClass(wn)=="CLCorspDClass") then begin 
+      GetWindowRecord(wn,CLCr);
+      accnr = CLCr.AccNumber;
+    end;
     
+	// Edit End ---------------------------------------------- Edit End
+	
 //      accnr = GetWindowNameArg(wn);
     fn = StringToLongInt(fldname);
     if (fn==0) then begin 

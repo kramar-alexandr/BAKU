@@ -136,6 +136,7 @@ external procedure CustRouteVc_DelAddrSClass(Integer,Integer);
 external procedure CourtesyTitlesSClassArrayOnOpen(var Array string,var Integer);
 external procedure PLVc_SerialNrSClass(Integer,Integer,Integer,var Array string,var Integer);
 external procedure PasteFromSysList(Integer,Integer);// Edit ************************** Wednesday, 26 June 2013 17:23:07
+remote   procedure CLCorspVc_TRObjSClass(record CLCorspVc,var record RcVc);// Edit ************************** Thursday, 30 October 2014 10:24:27
 
 
 global
@@ -1009,6 +1010,7 @@ begin
   row SHVc SHrw;
   row QTVc QTrw;
   row ORVc ORrw;
+  record CLCorspVc CLCr;// Edit ************************** Thursday, 30 October 2014 10:34:37
   
   wn = CurWindow;
   mwn = MotherWindow(wn);
@@ -1134,6 +1136,13 @@ begin
       Bud2r.Objects = "";
       PutWindowRecord(mwn,Bud2r);
       WindowFieldGoto(mwn,Bud2r,RepSpec.long1,RepSpec.TransStr,true);
+    case "CLCorspVc":// Edit ************************** Thursday, 30 October 2014 10:34:15
+      GetWindowRecord(mwn,CLCr);
+      DeselectWindow(mwn,false);
+      CLCr.Objects = "";
+      PutWindowRecord(mwn,CLCr);
+      WindowFieldGoto(mwn,CLCr,RepSpec.long1,RepSpec.TransStr,true);// Edit ************************** Thursday, 30 October 2014 10:34:16
+      
   end;
   PasteFromTRObjS(wn,1);
   return;
@@ -1159,7 +1168,8 @@ begin
   record WSVc WSr;
   record Bud1Vc Bud1r;
   record Bud2Vc Bud2r;
-  
+  record CLCorspVc CLCr;// Edit ************************** Thursday, 30 October 2014 10:25:13
+    
   mwn = MotherWindow(wn);
   ar = WindowActiveRow(mwn);
   switch (GetWindowFileName(mwn)) begin
@@ -1208,6 +1218,9 @@ begin
     case "Bud2Vc":
       GetWindowRecord(mwn,Bud2r);
       Bud2Vc_TRObjSClass(Bud2r,RepSpec); 
+    case "CLCorspVc":// Edit ************************** Thursday, 30 October 2014 10:23:51
+      GetWindowRecord(mwn,CLCr);// Edit ************************** Thursday, 30 October 2014 10:23:52
+      CLCorspVc_TRObjSClass(CLCr,RepSpec);   // Edit ************************** Thursday, 30 October 2014 10:23:53
   end;  
   RepSpec.TransStr = WindowActiveField(mwn);
   RepSpec.long1 = WindowActiveRow(mwn);
@@ -1224,7 +1237,7 @@ begin
   record ObjVc Objr;
   Integer nwn,pos;
   string 255 obj;
-  
+
   GetWindowRecord(wn,RepSpec);  
   switch (fieldname) begin
     case "f1": obj = RepSpec.f1;

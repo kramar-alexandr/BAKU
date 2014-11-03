@@ -49,7 +49,9 @@ BEGIN
   BlockLoad(CompYear);
   nru = anru;//??
   //nru = RepSpec.ObjStr;//??// Edit ************************** Thursday, 25 September 2014 17:07:20
-
+	if(nonblank(RepSpec.ObjStr))then begin
+		nru = RepSpec.ObjStr;// Edit ************************** Wednesday, 29 October 2014 13:12:10
+	end;
   
   if (blank(UserDefRepLinesr.CorspAcc)) then begin
     usedf = AccRuPerBal(RepSpec,PLf,Accp.AccNumber,nru,S3b1,Pb1,Eb1,S4b1,S5b1,S6b1,UserDefRepLinesr.DCSide,resUseAccum,AccumStartDate,budsd,buded);

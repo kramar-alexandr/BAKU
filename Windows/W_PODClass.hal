@@ -1998,6 +1998,19 @@ begin
 				MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);
 				MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);
 				MatCol(1,-60,"Цена",0,Price,true,0);
+	case 10:
+				MatCol(1,194,"Наименование",0,Spec,false,0);
+				MatCol(1,300,"Код поставщика",0,Comment,false,0);
+				if (HasVarieties) then begin
+					MatCol(1,-300,"Кол-во",0,VEQuant,true,MATVARINSClass);
+				end else begin
+					MatCol(1,-300,"Кол-во",0,VEQuant,true,0); 
+				end;
+	
+				MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);
+				MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);
+				MatCol(1,-60,"Цена",0,Price,true,0);
+				
 		otherwise begin
 			MatCol(1,194,"Наименование",0,Spec,false,0);
 			if (HasVarieties) then begin
@@ -2029,7 +2042,15 @@ begin
 				MatCol(1,194,"Наименование",0,Spec,false,0);
 				MatCol(1,-160,"Размер",0,Size,false,0);
 				MatCol(1,-100,"Цвет",0,Colour,false,0);
-	
+	case 10:
+				Flip(flipnr); flipnr = flipnr + 1;
+				MatCol(1,194,"Наименование",0,Spec,false,0);
+				MatCol(1,-350,"Коллекция",0,Reference,false,0);
+				MatCol(1,-300,"Браслет/ремешок",0,BrcStr,false,0);
+				MatCol(1,-240,"Цвет циферблата",0,Gender,false,0);
+				MatCol(1,-180,"Вес",0,RowWeight,false,0);
+				MatCol(1,-120,"Метал",0,Metal,false,0);
+				MatCol(1,-60,"Каратность",0,MajStoneDet,true,0);
 	otherwise begin
 				Flip(flipnr); flipnr = flipnr + 1;
 				MatCol(1,194,"Наименование",0,Spec,false,0);
@@ -2200,6 +2221,9 @@ begin
   //SpecialMenu("Открыть нал. матрицу",' ',25,"OpenVatMatrixPODsm"); 
   end;
   if(currentcompany==3)then begin
+  	SpecialMenu("Просмотреть расчитанные розничные цены",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
+  end;
+  if(currentcompany==10)then begin
   	SpecialMenu("Просмотреть расчитанные розничные цены",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
   end;
   

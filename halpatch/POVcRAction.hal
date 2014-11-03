@@ -961,6 +961,10 @@ begin
 			newINr.Name = POrw.Spec;
 			newINr.Unittext = "˜’";
 			newINr.VATCode = "0%I";
+			if(currentcompany==10)then begin
+				newINr.Unittext = "EACH";
+				newINr.VATCode = "0";
+			end;
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
 			newINr.LastPurchPrice2 = POrw.Price;
 			if(nonblank(POrw.xClassification))then begin
@@ -1760,6 +1764,8 @@ begin
 							case 6:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 7:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 8:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
+							
+							case 10:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
 						end;
 						matrowget(POr,i,POrw);
 					end;

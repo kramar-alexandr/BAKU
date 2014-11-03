@@ -6809,3 +6809,63 @@ begin
   end;
   EndWindow;
 end;
+  
+  window CLCorspDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real v;
+  WindowBegin("Способ корреспонденции",CLCorspDClass,CGview,CLCorspView);
+  SetWRect(64,80,509,150);
+  UseView(CLCorspVc);
+  EditField(120,v=6,140,"Код",St_i,Code,false,0);
+  EditField(120,v+=20,300,"Комментарий",Normal,Comment,false,0);
+  EditField(120,v+=20,80,"Счет",Normal,AccNumber,false,AccSClass);
+  EditField(120,v+=20,300,"Объекты",Normal,Objects,false,ObjSClass);// Edit ************************** Thursday, 30 October 2014 09:41:58
+  EndWindow;
+end;
+
+window CLCorspLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Способы корреспонденции",CLCorspLClass,CGmlist,CLCorspView);
+  SetWRect(64,80,509,298);
+  SpawnClass(CLCorspDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(CLCorspVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,  "Код",Code,false,Code);
+  RlColKey(141,141,"Комментарий",Comment,false,Comment);
+  RlCol(300,300,"Объекты",Objects,false);// Edit ************************** Thursday, 30 October 2014 09:50:50
+  SearchField("Найти");
+  EndWindow;
+end;
+
+window CLCorspSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выберите способ корреспонденции",CLCorspSClass,CGslist,CLCorspView);
+  SetWRect(240,80,550,250);
+  Sizeable(-1,-1,0,0);
+  UseView(CLCorspVc);
+  SpawnClass(CLCorspDClass);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,  "Код",Code,false,Code);
+  RlColKey(141,141,"Комментарий",Comment,false,Comment);
+  RlCol(300,300,"Объекты",Objects,false);// Edit ************************** Thursday, 30 October 2014 09:50:54
+  SearchField("Найти");
+  EndWindow;
+end;
+  
+window AddObjTRVClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите добавление объекта в записи операций",AddObjTRVClass,CGMnt,RcType);
+  SetWRect(20,80,400,200);
+  PeriodField(h=100,v=6,"Период");
+  vs=20;
+  EditFieldTL(h,v+=vs,200,"Объект",M4UStr,Normal,60,f1,false,ObjSClass);
+  EditFieldTL(h,v+=vs,200,"Счет",M4UStr,Normal,60,f2,false,AccSClass);// Edit ************************** Saturday, 1 November 2014 13:01:08
+  CheckBox(h,v+=20,0,"Пропустить все проверки",flags[0]);
+  EndWindow;
+end;

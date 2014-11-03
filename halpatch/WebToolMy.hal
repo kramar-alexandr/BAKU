@@ -59,6 +59,12 @@ begin
 						if(fileexists("webcust/V&B/" & imname & ".png"))then begin
 							filename = "V&B/" & imname & ".png";
 						end;
+		case 7: if(fileexists("webcust/AMBIANCE/" & imname & ".jpg"))then begin
+							filename = "V&B/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/AMBIANCE/" & imname & ".png"))then begin
+							filename = "V&B/" & imname & ".png";
+						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 		case 9: if(fileexists("webcust/Creative/" & imname & ".jpg") or fileexists("webcust/Creative/" & urlencode(imname) & ".jpg"))then begin
 							if(imname!=urlencode(imname))then begin
