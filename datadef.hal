@@ -5,7 +5,7 @@ SourceFile("halcust\\Export",0);
 SourceFile("halcust\\Report",0);
 SourceFile("halcust\\RemoteWA",0);
 SourceFile("halcust\\Windows",3);
-SourceFile("halcust\\WindowsFarsi",3);	//Edit by Victor 22.10.14
+SourceFile("halcust\\Windows_ENG",3);// Edit ************************** Monday, 3 November 2014 10:59:24
 SourceFile("halcust\\WAction",0);
 SourceFile("halcust\\WEB",0);
 SourceFile("halcust\\itemhist",0);
