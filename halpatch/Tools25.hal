@@ -12,7 +12,7 @@ external function val MulWithRateToBase1(var string,Date,val,roundmode);
 external function string 255 GetNextValue(var string);
 external function string 255 AddStr(string,string,string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);// Edit ************************** Wednesday, 5 November 2014 13:30:47
 
 global procedure FindReItems(string artcode, date todate,var array string artcodes,var integer counter)
 begin

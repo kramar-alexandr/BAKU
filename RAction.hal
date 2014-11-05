@@ -15,7 +15,7 @@ BEGIN
   
   res = 0;
   
-  SetLangMode(LangRussian,"RUS",0);
+  //SetLangMode(LangRussian,"RUS",0);// Edit ************************** Wednesday, 5 November 2014 13:31:31
  
   res=inner.IVVcRecordCheck(IVp,IV2p,stat,long4);
   if res!=-1 then begin
