@@ -2360,7 +2360,7 @@ end else begin
       sessdesc = "Discount: " & IVr.RebCode;
       
       
-    DisplayRecordDetails_RUS(10,26,compname,td,tt,lmc,sm,nr,IVr.CustCode,IVr.Addr0,IVr.LoyaltyCardNr,LMb.ShowBaggerSupervisor,"","","",blankval,sessdesc,true,IVr.OfficialSerNr);
+    DisplayRecordDetails_ENG(10,26,compname,td,tt,lmc,sm,nr,IVr.CustCode,IVr.Addr0,IVr.LoyaltyCardNr,LMb.ShowBaggerSupervisor,"","","",blankval,sessdesc,true,IVr.OfficialSerNr);
     
     if (bm<650) then begin
       SoftEditFieldTLX(360,6,h4,"",M4Str,ViewOnly,100,20,patM4black,"CustomerDisplayData_Line1",true,0);
@@ -2372,7 +2372,7 @@ end else begin
     
     
     
-    HalPushButton(20,350,120,680,"IVDClassUpdateWebBrowser","Show item picture");
+    HalPushButton(20,350,150,680,"IVDClassUpdateWebBrowser","Show item picture");
     SoftEditFieldTLX(20,380,650,"",M4Str,ViewOnly,100,10,patM4black,"CustomerDisplayData_Line3",false,0);
    	WebPage(20,400,700,-80,"$subset","");
     //WebPage(20,700,390,-80,"$HWStore","");
@@ -2386,7 +2386,7 @@ end else begin
     EditField(360,116,-10,"Comment",Normal,InvComment,false,0);
     
     SoftEditField(2000,-22,200,""  ,Normal ,"ivcashcommandlastitemsernrf",false,0,M4Str,255);        
-    DrawPOSInterface_RUS(bc1,bc2,POSBr,acnt,"",100);
+    DrawPOSInterface_ENG(bc1,bc2,POSBr,acnt,"",100);
     BottomBar;
     SpecialMenu("Paste products from moving",'B',6,"PasteStoclMovToIVsm");
 end;
