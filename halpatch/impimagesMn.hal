@@ -363,3 +363,47 @@ begin
   
 return;
 end;
+
+global updating procedure DellNewINMn()
+begin
+	record INVc INr;
+	record RHistVc RHistr;
+  record RHistVc RHist2r;
+  Boolean Accs;
+  record CUVc CUr;
+  string 200 tstr;
+  boolean testf,TrHs;
+  
+  
+	while(loopmain(INr,1,true))begin
+		
+		tstr = BuildRecordIdStr(INr,currentcompany);
+		Accs = true;
+		RHist2r.RecidStr = tstr;
+		if (ReadFirstKey("RecidStr",RHist2r,1,true)) then begin
+			if(RHist2r.TransDate==stringtodate("04/11/2014"))then begin
+				if(RHist2r.TransTime>stringtotime("18:36:00") and RHist2r.TransTime<stringtotime("18:37:00"))then begin
+					testf = true;
+					if(setinset("CARRERA_CA",INr.DispGroups))then begin testf = false; end;
+					if(setinset("DUPONT",INr.DispGroups))then begin testf = false; end;
+					if(setinset("LEO_PIZZO",INr.DispGroups))then begin testf = false; end;
+					if(setinset("PASQUALE_B",INr.DispGroups))then begin testf = false; end;
+					if(setinset("STEPHEN_WE",INr.DispGroups))then begin testf = false; end;
+					if(setinset("UTOPIA",INr.DispGroups))then begin testf = false; end;
+					if(setinset("VICTOR_MAY",INr.DispGroups))then begin testf = false; end;
+					if(setinset("ZANCAN",INr.DispGroups))then begin testf = false; end;
+					
+					if(testf)then begin
+						logtext(0,"delete " & INr.Code & " Date & time: " & RHist2r.TransDate & " " & RHist2r.TransTime);
+						recorddelete(INr);
+						stepback(INr);
+					end;
+					
+				end;
+			end;
+		end;
+		
+	end;
+	
+return;
+end;

@@ -7,6 +7,7 @@ begin
 	
 	Register("ARVc","ARVc",ARVc,modDBMain);
   Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
+  Register("APVc","APVc",APVc,modDBMain);
 	Register("Ссылки регистров","Ссылки регистров",RLinkVc,modDBMain);  
 	Register("Новые товары","Новые товары",NewINVc,modPO);
 	Register("Контакты","Контакты",CUVc,modMYCRM);
@@ -25,7 +26,7 @@ begin
 	Setting("Настройки истории изменения цен",PLHistSetTClass,modDI);
   Setting("История изменения цен",PLHistLClass,modDI);
 	Setting("Товар консигнации",INConsLClass,modIN);
-	
+		
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
   Maintenance("Удалить классификации",EmptyVClass,DelDIVcMn,modSL);
@@ -40,6 +41,9 @@ begin
 	Maintenance("Заполнить глобальные склады",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
   Maintenance("Заполнить коллекции товаров из заказов п.",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
   Maintenance("Удалить план счетов и записи операций",FIXVClass,DellAccAndMainMn,modDBMain);
+  
+  Maintenance("DEltodayINr",FIXVClass,DellNewINMn,modDBMain);// Edit ************************** Tuesday, 4 November 2014 18:43:39
+
   Maintenance("AddRecHistToCU",FIXVClass,RHist2Mn,modDBMain);// Edit ************************** Tuesday, 30 September 2014 13:06:54
 	  
   if(currentcompany==1)then begin
