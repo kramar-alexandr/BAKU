@@ -368,10 +368,10 @@ begin
   blockload(BCb);
   bcur = BCb.BaseCur1;
 	azn = "AZN";
-  SetLangMode(LangRussian,"RUS",0);
+  //SetLangMode(LangRussian,"RUS",0);
   		
   	
-    StartReportNoHeaderJob("Отчёт по продажам расширенный");
+    StartReportNoHeaderJob(USetStr(31041));
     
     sd = RepSpec.sStartDate;
     ed = RepSpec.sEndDate;
@@ -396,66 +396,66 @@ begin
 	
     if(userlocation)then begin
 			startformat(15);
-				outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+				outstring(50,0,USetStr(31014),false);
 			endformat;
 		end else begin
 			if(nonblank(RepSpec.sStartDate) and nonblank(RepSpec.sEndDate))then begin
 				startformat(15);
-					outstring(0,0,"Кодировка для системы Ханза",false);
-					outstring(0,0,"Кодировка поставщика",false);
-					outstring(0,0,"Склад",false);
-					outstring(0,0,"Бренд",false);
-					outstring(0,0,"Классификация",false);
-					outstring(0,0,"Наименование",false);
-					outstring(0,0,"Коллекция",false);//Reference
-					outstring(0,0,"Тип металла",false);
-					outstring(0,0,"Вес",false);
-					outstring(0,0,"Каратность",false);
+					outstring(0,0,USetStr(31042),false);
+					outstring(0,0,USetStr(31043),false);
+					outstring(0,0,USetStr(12815),false);
+					outstring(0,0,USetStr(31044),false);
+					outstring(0,0,USetStr(19357),false);
+					outstring(0,0,USetStr(12713),false);
+					outstring(0,0,USetStr(31045),false);//Reference
+					outstring(0,0,USetStr(31047),false);
+					outstring(0,0,USetStr(14533),false);
+					outstring(0,0,USetStr(31048),false);
 					if(currentcompany==3)then begin
-						outstring(0,0,"Браслет/ремешок",false);
-						outstring(0,0,"Цвет циферблата",false);
+						outstring(0,0,USetStr(31049),false);
+						outstring(0,0,USetStr(31050),false);
 					end;
-					outstring(0,0,"Серийный номер",false);
+					outstring(0,0,USetStr(31051),false);
 					outstring(0,0,"EAN code",false);
-					outstring(0,0,"Дополнительно",false);//EKNCode
-					outstring(0,0,"Кол-во продаж",false);
-					outstring(100,0,"Себестоимость за ед-цу в валюте Бренда ",false);
-					outstring(101,0,"Себестоимость за ед-цу в валюте АЗН",false);
+					outstring(0,0,USetStr(13199),false);//EKNCode
+					outstring(0,0,USetStr(31052),false);
+					outstring(100,0,USetStr(31053),false);
+					outstring(101,0,USetStr(31054),false);
 					if(bcur!="AZN")then begin
-						outstring(102,0,"Себестоимость за ед-цу в валюте " & bcur,false);
+						outstring(102,0,USetStr(31055) & bcur,false);
 					end;
-					outstring(110,0,"Сумма по себестоимости в валюте Бренда",false);
-					outstring(111,0,"Сумма по себестоимости в валюте АЗН",false);
+					outstring(110,0,USetStr(31056),false);
+					outstring(111,0,USetStr(31057),false);
 					if(bcur!="AZN")then begin
-						outstring(112,0,"Сумма по себестоимости в валюте " & bcur,false);
+						outstring(112,0,USetStr(31058) & bcur,false);
 					end;
-					outstring(120,0,"Ритейл за ед-цу в валюте Бренда ",false);
-					outstring(121,0,"Ритейл за ед-цу в валюте АЗН",false);
+					outstring(120,0,USetStr(31059),false);
+					outstring(121,0,USetStr(31060),false);
 					if(bcur!="AZN")then begin
-						outstring(122,0,"Ритейл за ед-цу в валюте " & bcur,false);
+						outstring(122,0,USetStr(31061) & bcur,false);
 					end;
-					outstring(130,0,"Сумма продажи в валюте Бренда",false);
-					outstring(131,0,"Сумма продажи в валюте АЗН",false);
+					outstring(130,0,USetStr(31062),false);
+					outstring(131,0,USetStr(31063),false);
 					if(bcur!="AZN")then begin
-						outstring(132,0,"Сумма продажи в валюте " & bcur,false);
+						outstring(132,0,USetStr(31064) & bcur,false);
 					end;
-					outstring(140,0,"Разница в валюте Бренда",false);
-					outstring(141,0,"Разница в валюте АЗН",false);
+					outstring(140,0,USetStr(31065),false);
+					outstring(141,0,USetStr(31066),false);
 					if(bcur!="AZN")then begin
-						outstring(142,0,"Разница в валюте " & bcur,false);
+						outstring(142,0,USetStr(31067) & bcur,false);
 					end;
-					outstring(0,0,"Валюта Брэнда",false);
-					outstring(0,0,"Клиент (Имя или номер карты)",false);
-					outstring(0,0,"Имя клиента",false);
-					outstring(0,0,"Процент скидки",false);
-					outstring(0,0,"Продавец",false);
-					outstring(0,0,"Дата покупки",false);
-					outstring(0,0,"Условия оплаты",false);
-					outstring(0,0,"Комментарии",false);
+					outstring(0,0,USetStr(31068),false);
+					outstring(0,0,USetStr(31069),false);
+					outstring(0,0,USetStr(31070),false);
+					outstring(0,0,USetStr(31071),false);
+					outstring(0,0,USetStr(16709),false);
+					outstring(0,0,USetStr(31072),false);
+					outstring(0,0,USetStr(9269),false);
+					outstring(0,0,USetStr(16574),false);
 					if(currentcompany==9)then begin
-						outstring(0,0,"Вид счета",false);
+						outstring(0,0,USetStr(3264),false);
 					end;
-					outstring(0,0,"Способы оплаты",false);
+					outstring(0,0,USetStr(31073),false);
 				endformat;
 				
 				total_rebate = 0;//Edit***********************Vitalii 14:28 26.08.2014
@@ -709,7 +709,7 @@ begin
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Всего кол-во:",false);
+					outstring(0,0,USetStr(31074),false);
 					outstring(0,0,total_qty,false);
 					if(bcur!="AZN")then begin
 						outstring(0,0,"",false);
@@ -717,7 +717,7 @@ begin
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					
-					outstring(0,0,"Всего себестоимость:",false);
+					outstring(0,0,USetStr(31075),false);
 					outstring(0,0,total_cost,false);
 					if(bcur!="AZN")then begin
 						outstring(0,0,btotal_cost,false);
@@ -725,12 +725,12 @@ begin
 					end;
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Всего сумма:",false);
+					outstring(0,0,USetStr(31076),false);
 					outstring(0,0,total_price,false);
 					if(bcur!="AZN")then begin
 						outstring(0,0,btotal_price,false);
 					end;
-					outstring(0,0,"Всего разница:",false);
+					outstring(0,0,USetStr(31077),false);
 					outstring(0,0,total_price - total_cost,false);
 					if(bcur!="AZN")then begin
 						outstring(0,0,btotal_price - btotal_cost,false);
@@ -738,14 +738,14 @@ begin
 					//Edit***********************Vitalii 14:28 26.08.2014
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Средняя скидка:",false);
+					outstring(0,0,USetStr(31078),false);
 					//outstring(0,0,total_rebate/total_rebate_qty,false);
 					outstring(0,0,100-(100*(total_rebate_qty/total_rebate)),false);// Edit ************************** Wednesday, 22 October 2014 16:45:31
 	
 				endformat;
 			end else begin
 				startformat(15);
-					outstring(100,0,"Определите даты",false);
+					outstring(100,0,USetStr(31079),false);
 				endformat;
 			end;
 		end;

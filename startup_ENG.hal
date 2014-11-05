@@ -26,6 +26,7 @@ begin
 	Setting("Prices changes history setting",PLHistSetTClass,modDI);
   Setting("Prices changes history",PLHistLClass,modDI);
 	Setting("Consignation items",INConsLClass,modIN);
+	Setting("Support IVsrVc",IVrsLClass,modSL); //Edit***************************Sasha2,15:14 05.11.2014
 		
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	//Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
@@ -54,7 +55,7 @@ begin
   Report("Billing customers",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
   Report("Sales report extended",SalesReportExtRClass,SalesReportExtRn,0,modSL);
   Report("Sales report by materials and collections",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
-  Report("material report new",MatReportRClass,MatReportRn,0,modSL);
+  Report("Material report new",MatReportRClass,MatReportRn,0,modSL);
   if(currentcompany!=9)then begin
 		Report("Report on item balances extended",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
   end else begin
@@ -76,6 +77,10 @@ begin
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
   
   Report("Marketing report",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
+  Report("Material report",PecuniaryRClass,PecuniaryRn,0,modSL); //Материальный отчет
+  //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
+  Report("Turnover balance sheet for items",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Оборотно-сальдовая ведомость по товарам
+  Report("Summary report for period",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Сумарный отчет за период
   
   Document("Mails",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Item Labels",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -91,14 +96,80 @@ begin
   SString(31003,"The client has no active accumulative card");
   SString(31004,"Nationality");
   SString(31005,"Age");
-	SString(31006,"Sex");
-	SString(31007,"City");
-	SString(31008,"How did you hear");
-	SString(31009,"Result");
-	SString(31010,"Wrong format of the phone. The length should be 10 characters");
-	SString(31011,"The total score on this map are exceeding 3000 funded AZN");
-	SString(31012,"Active loyalty card for this customer already exists ");
-
+  SString(31006,"Sex");
+  SString(31007,"City");
+  SString(31008,"How did you hear");
+  SString(31009,"Result");
+  SString(31010,"Wrong format of the phone. The length should be 10 characters");
+  SString(31011,"The total score on this map are exceeding 3000 funded AZN");
+  SString(31012,"Active loyalty card for this customer already exists ");
+  SString(31013,"Matherial report new"); //Материальный отчет новый
+  SString(31014,"You are not allowed to use report for current location, please select your location"); //Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад
+  SString(31015,"Salon name"); //Название салона
+  SString(31016,"Material report for"); //Материальный отчет за
+  SString(31017,"Hansa code");
+  SString(31018,"Supplier code");
+  SString(31019,"TERMINAL AZN(per unit)");
+  SString(31020,"TOTAL TERMINAL AZN");
+  SString(31021,"Office loss"); //Офисный расход
+  SString(31022,"Store is not sellected"); //Магазин не выбран
+  SString(31023,"Material report"); //Материальный отчет
+  SString(31024,"Store:");
+  SString(31025,"Machine:");
+  SString(31026,"Including all machines"); //По всем машинам
+  SString(31027,"Machine code is absent or not found"); //Код машины отсутствует или не найден
+  SString(31028,"Classification(brand)");
+  SString(31029,"Classification(model)");
+  SString(31030,"Invoice payment"); //Оплата сч/ф
+  SString(31031,"Agreement prepayment"); //Предоплата по договору
+  SString(31032,"Payment modes total"); //Итого по способам оплаты:
+  SString(31033,"By credit card "); //Кредитной картой 
+  SString(31034,"Points used: "); //Баллов использованнно: 
+  SString(31035,"Received prepayments"); //Принятые предоплаты
+  SString(31036,"Existing invoice payments"); //Существующие оплаты по счетам/фактурам
+  SString(31037,"Prepayment №"); //Предоплата №
+  SString(31038,"Cheques quantity:"); //Количество чеков:
+  SString(31039,"Cashier: _______________"); //Касир: _______________
+  SString(31040,"Director: _______________"); //Директор: _______________
+  SString(31041,"Sales report extended"); //Отчет по продажам расширенный
+  SString(31042,"Encoding for Hansa system"); //Кодировка для системы Ханса
+  SString(31043,"Supplier encoding"); //Кодировка поставщика
+  SString(31044,"Brand");
+  SString(31045,"Collection");
+  SString(31046,"Return"); //Возврат
+  SString(31047,"Metal type"); //Тип металла
+  SString(31048,"Carat"); //Каратность
+  SString(31049,"Bracelet/wristlet"); //Браслет/ремешок
+  SString(31050,"Dial color"); //Цвет циферблата
+  SString(31051,"Serial number");
+  SString(31052,"Sales quantity"); //Кол-во продаж
+  SString(31053,"Unit cost in Brand currency"); //Себестоимость за ед-цу в валюте Бренда
+  SString(31054,"Unit cost in AZN currency"); //Себестоимость за ед-цу в валюте АЗН
+  SString(31055,"Unit cost in currency "); //Себестоимость за ед-цу в валюте
+  SString(31056,"Cost total in Brand currency"); //Сумма по себестоимости в валюте Бренда
+  SString(31057,"Cost total in AZN currency"); //Сумма по себестоимости в валюте АЗН
+  SString(31058,"Cost total in currency ");
+  SString(31059,"Unit retail in Brand currency"); //Ритейл за ед-цу в валюте Бренда
+  SString(31060,"Unit retail in AZN currency"); //Ритейл за ед-цу в валюте АЗН
+  SString(31061,"Unit retail in currency "); //Ритейл за ед-цу в валюте
+  SString(31062,"Sales total in Brand currency"); //Сумма продажи в валюте Бренда
+  SString(31063,"Sales total in AZN currency"); //Сумма продажи в валюте АЗН
+  SString(31064,"Sales total in currency "); //Сумма продажи в валюте
+  SString(31065,"Difference in Brand currency"); //Разница в валюте Бренда
+  SString(31066,"Difference in AZN currency"); //Разница в валюте АЗН
+  SString(31067,"Difference in currency "); //Разница в валюте
+  SString(31068,"Brand currency");
+  SString(31069,"Client (name or card number)"); //Клиент (Имя или номер карты)
+  SString(31070,"Client name");
+  SString(31071,"Rebate percent");
+  SString(31072,"Sale date");
+  SString(31073,"Payment modes"); //Способы оплаты
+  SString(31074,"Quantity total:");
+  SString(31075,"Cost total:");
+  SString(31076,"Sum total:");
+  SString(31077,"Difference total:");
+  SString(31078,"Average rebate:");
+  SString(31079,"Define dates");
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	
