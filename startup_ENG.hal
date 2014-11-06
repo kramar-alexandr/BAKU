@@ -170,6 +170,23 @@ begin
   SString(31077,"Difference total:");
   SString(31078,"Average rebate:");
   SString(31079,"Define dates");
+  SString(31080,"Turnover ballance sheet for items"); //Оборотно-сальдовая ведомость по товарам
+  SString(31081,"Opening balance"); //Начальный остаток
+  SString(31082,"Received inner"); //Поступило внутр.
+  SString(31083,"Clients' return");  //Возврат клиентов
+  SString(31084,"Shipped"); //Отпущено
+  SString(31085,"Shipped inner"); //Отпущено внутр.
+  SString(31086,"Final ballance"); //Конечный остаток
+  SString(31087,"Locations total"); //Всего по складам
+  SString(31088,"Define the period"); //Определите период
+  SString(31089,"Including all"); //По всем
+  SString(31090,"Existed"); //Состояло
+  SString(31091,"Purchasers' return"); //Возврат покупателей
+  SString(31092,"Qty inner"); //Кол-во внутр.
+  SString(31093,"Sum inner"); //Сумма внутр.
+  SString(31094,"Qty ballance"); //Остаток к-ва
+  SString(31095,"Cost total"); //Сумма себестоимости
+  SString(31096,"Price total"); //Сумма цена
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

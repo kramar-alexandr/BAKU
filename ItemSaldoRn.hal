@@ -333,7 +333,7 @@ begin
   val price;
   string 200 curgr,curgr1;
   
-  SetLangMode(LangRussian,"RUS",0);
+  //SetLangMode(LangRussian,"RUS",0);
   
   
   ClearValArray(20,totals);
@@ -475,7 +475,7 @@ begin
   end; // while
   
   StartFormat(15);
-		OutString(0,0,"Итого",false);
+		OutString(0,0,USetStr(12010),false);
 		//OutString(20,0,"",false);
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutString(20,0,"",false);
@@ -549,7 +549,7 @@ begin
 
   SetLangMode(LangRussian,"RUS",0);
   
-    StartReportNoHeaderJob("Оборотно-сальдовая ведомость по товарам");
+    StartReportNoHeaderJob(USetStr(31080));
     
     sd = RepSpec.sStartDate;
     ed = RepSpec.sEndDate;
@@ -575,42 +575,42 @@ begin
     
     if(userlocation)then begin
 			startformat(15);
-				outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+				outstring(50,0,USetStr(31014),false);
 			endformat;
 		end else begin
 			if blankdate(sd) then begin
 				StartFormat(15);
-				OutString(0,0,"Определите период",false);
+				OutString(0,0,USetStr(31088),false);
 				EndFormat;
 			end else begin 
 				StartFormat(15);
-				OutString(0,0,"Оборотно-сальдовая ведомость по товарам",false);
+				OutString(0,0,USetStr(31080),false);
 				EndFormat;
 						
 				StartFormat(15);
-						OutString(0,0,"Период:",false);
+						OutString(0,0,USetStr(13835),false);
 						OutString(100,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
 				endformat;
 				if(nonblank(RepSpec.f1))then begin
 					StartFormat(15);
-							OutString(0,0,"Склад:",false);
+							OutString(0,0,USetStr(12706),false);
 							OutString(100,0,RepSpec.f1,false);
 					endformat;
 				end else begin
 						StartFormat(15);
-							OutString(0,0,"Склад:",false);
-							OutString(100,0,"По всем",false);
+							OutString(0,0,USetStr(12706),false);
+							OutString(100,0,USetStr(31089),false);
 					endformat;
 				end;
 				if(nonblank(RepSpec.f2))then begin
 					StartFormat(15);
-							OutString(0,0,"Классификация:",false);
+							OutString(0,0,USetStr(11605),false);
 							OutString(100,0,ParseClassification(RepSpec.f2),false);
 					endformat;
 				end else begin
 						StartFormat(15);
-							OutString(0,0,"Классификация:",false);
-							OutString(100,0,"По всем",false);
+							OutString(0,0,USetStr(11605),false);
+							OutString(100,0,USetStr(31089),false);
 					endformat;
 				end;
 			
@@ -644,77 +644,77 @@ begin
 							OutString(50,0,"",false);
 							end;
 							OutString(60,0,"",false);
-							OutString(70,0,"Состояло",false);
+							OutString(70,0,USetStr(31090),false);
               OutString(80,0,"",false);
-							OutString(90,0,"Поступило",false);
+							OutString(90,0,USetStr(5051),false);
 							OutString(100,0,"",false);
 							if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
                 OutString(110,0,"",false);
                 OutString(120,0,"",false);
 							end;
-							OutString(130,0,"Возврат покупателей",false);
+							OutString(130,0,USetStr(31091),false);
 							if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
                 OutString(140,0,"",false);
 							end;
-							OutString(150,0,"Отпущено",false);
+							OutString(150,0,USetStr(31084),false);
 							OutString(160,0,"",false);
 							if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
                 OutString(170,0,"",false);
                 OutString(180,0,"",false);
 							end;
-							OutString(190,0,"Возврат поставщикам",false);
+							OutString(190,0,USetStr(5058),false);
 							EndFormat;
 							StartFormat(15);
 							OutString(0,0,"№",false);
-							OutString(20,0,"Код",false);
+							OutString(20,0,USetStr(12501),false);
 							//if(currentcompany==9)then begin
-								OutString(25,0,"Код поставщика",false);
+								OutString(25,0,USetStr(31018),false);
 							//end;
-							OutString(30,0,"Наименование",false);
+							OutString(30,0,USetStr(12713),false);
 							//OutString(35,0,"Код поставщика",false);
-							OutString(40,0,"Классификация",false);
+							OutString(40,0,USetStr(9048),false);
 							if(currentcompany>2)then begin
-								OutString(40,0,"Модель",false);
+								OutString(40,0,USetStr(8833),false);
 							end;
 							if(RepSpec.flags[0]==0)then begin
-							  OutString(50,0,"Себестоимость",false);
+							  OutString(50,0,USetStr(18240),false);
 							end;
-							OutString(60,0,"Цена",false);
+							OutString(60,0,USetStr(12005),false);
 							//  Состояло
-							OutString(70,0,"К-во",false);
+							OutString(70,0,USetStr(12004),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(80,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:52
+                OutString(80,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:52
 							end;
 							//  Поступило
-							OutString(90,0,"К-во",false);
-							OutString(100,0,"К-во внутр.",false);
+							OutString(90,0,USetStr(12004),false);
+							OutString(100,0,USetStr(31092),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(110,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
-                OutString(120,0,"Сумма внутр",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
+                OutString(110,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
+                OutString(120,0,USetStr(31093),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
 							end;
 							//  Возврат покупателей
-							OutString(130,0,"К-во",false);
+							OutString(130,0,USetStr(12004),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(140,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
+                OutString(140,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
 							end;
 							//  Отпущено
-							OutString(150,0,"К-во",false);
-							OutString(160,0,"К-во внутр.",false);
+							OutString(150,0,USetStr(12004),false);
+							OutString(160,0,USetStr(31092),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(170,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
-                OutString(180,0,"Сумма внутр",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:29
+                OutString(170,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
+                OutString(180,0,USetStr(31093),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:29
 							end;
 							//Возврат поставщикам
-							OutString(190,0,"К-во",false);
+							OutString(190,0,USetStr(12004),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(200,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:28
-                OutString(210,0,"Прибыль",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
+                OutString(200,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:28
+                OutString(210,0,USetStr(14548),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
 							end;
-							OutString(220,0,"Остаток к-во",false);
+							OutString(220,0,USetStr(31094),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(230,0,"Сумма себестоимости",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:25
+                OutString(230,0,USetStr(31095),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:25
 							end;
-							OutString(240,0,"Сумма цена",false);
+							OutString(240,0,USetStr(31096),false);
 							EndFormat;
 							ItemStockCombination(RepSpec,group,sd,ed,Locr.Code);
 					end;

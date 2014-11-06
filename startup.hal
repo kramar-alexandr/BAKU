@@ -173,6 +173,23 @@ begin
   SString(31077,"Всего разница:");
   SString(31078,"Средняя скидка:");
   SString(31079,"Определите даты");
+  SString(31080,"Оборотно-сальдовая ведомость по товарам");
+  SString(31081,"Начальный остаток");
+  SString(31082,"Поступило внутр.");
+  SString(31083,"Возврат клиентов");
+  SString(31084,"Отпущено");
+  SString(31085,"Отпущено внутр.");
+  SString(31086,"Конечный остаток");
+  SString(31087,"Всего по складам");
+  SString(31088,"Определите период");
+  SString(31089,"По всем");
+  SString(31090,"Состояло");
+  SString(31091,"Возврат покупателей");
+  SString(31092,"Кол-во внутр.");
+  SString(31093,"Сумма внутр.");
+  SString(31094,"Остаток к-вo");
+  SString(31095,"Сумма себестоимости");
+  SString(31096,"Сумма цена");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	
