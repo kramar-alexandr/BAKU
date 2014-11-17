@@ -629,13 +629,16 @@ LkInvoiceRowTypeNormal:;
     CtrlSeq = CtrlSeq & "jm" & IVrw.UnitCode & chr(POSNET_FS);
     if (IVrw.vRebate!=0) then begin
       CtrlSeq = CtrlSeq & "rd" & "1" & chr(POSNET_FS);
-      if (downpaysum==0) then begin
-        tstr = ValToString(IVrw.vRebate*100,M40Val,"",",",1);
+      /*if (downpaysum==0) then begin
+        tstr = ValToString(IVrw.vRebate*100,M40Val,"",",",1);// Edit ************************** Thursday, 13 November 2014 15:46:00
         CtrlSeq = CtrlSeq & "rp" & tstr & chr(POSNET_FS);
       end else begin
         tstr = ValToString((IVrw.Quant*IVrw.Price - IVrw.Sum)*100,M40Val,"",",",1);
         CtrlSeq = CtrlSeq & "rw" & tstr & chr(POSNET_FS);
-      end;
+      end;*/
+      tstr = ValToString((IVrw.Quant*IVrw.Price - IVrw.Sum)*100,M40Val,"",",",1);
+      CtrlSeq = CtrlSeq & "rw" & tstr & chr(POSNET_FS);
+      
     end;
     res = POSNETWrite(CtrlSeq,POSNETPROTOCOL_DELAY);
 //    MilliSleep(200);

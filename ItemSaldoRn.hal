@@ -254,7 +254,7 @@ begin
 						  qty_end = qty_end - IHr.Qty;
               iv_neg_qty = iv_neg_qty - (-IHr.Qty);
 						end;
-						//iv_neg_cost = iv_neg_cost + IHr.TotCostPrice;
+						iv_neg_cost = iv_neg_cost + IHr.TotCostPrice;
 					end;
 				case "SDVc":
 					if(IHr.TransDate<sd)then begin
@@ -286,6 +286,7 @@ begin
 							sm_neg_cost = sm_neg_cost + IHr.TotCostPrice;
 							cost_end = cost_end - IHr.TotCostPrice;
 							qty_end = qty_end + IHr.Qty;
+							//iv_neg_cost = iv_neg_cost + IHr.TotCostPrice;// Edit ************************** Friday, 14 November 2014 10:30:20
 						end;
 					end;
 				case "RetVc":
@@ -303,7 +304,7 @@ begin
 						  qty_end = qty_end - IHr.Qty;
               iv_poz_qty = iv_poz_qty - IHr.Qty;
 						end;
-						//iv_poz_cost = iv_poz_cost + IHr.TotCostPrice;
+						iv_poz_cost = iv_poz_cost + IHr.TotCostPrice;
 					end;
 				case "RetPUVc":
 					if(IHr.TransDate<sd)then begin
@@ -427,6 +428,7 @@ begin
           
           if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
             OutVal(140,0,iv_poz_sum,M4Val,false);//Возврат покупателей сумма
+            OutVal(145,0,iv_poz_cost,M4Val,false);//Возврат покупателей сумма
             totals[7] = totals[7] + iv_poz_sum;
             totals[18] = totals[18] + iv_poz_cost;//Кост продаж
           end;
@@ -441,8 +443,8 @@ begin
             OutVal(170,0,iv_neg_sum,M4Val,false);//Отпущено сумма
             totals[10] = totals[10] + iv_neg_sum;
             totals[19] = totals[19] + iv_neg_cost;
-          
             OutVal(180,0,sm_neg_cost,M4Val,false);//Отпущено сумма внутр
+            OutVal(185,0,iv_neg_cost,M4Val,false);//Отпущено сумма себестоимость// Edit ************************** Wednesday, 12 November 2014 16:40:34
             totals[11] = totals[11] + sm_neg_cost;
           end;
           
@@ -508,6 +510,7 @@ begin
 		OutVal(130,0,totals[6],m4val,false);
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutVal(140,0,totals[7],m4val,false);
+      OutVal(145,0,totals[18],m4val,false);// Edit ************************** Friday, 14 November 2014 11:53:37
 		end;
 		//  Отпущено
 		OutVal(150,0,totals[8],m4val,false);
@@ -515,6 +518,7 @@ begin
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutVal(170,0,totals[10],m4val,false);
       OutVal(180,0,totals[11],m4val,false);
+      OutVal(185,0,totals[19],m4val,false);// Edit ************************** Friday, 14 November 2014 10:28:05
 		end;
 		//Возврат поставщикам
 		OutVal(190,0,totals[12],m4val,false);
@@ -655,12 +659,14 @@ begin
 							OutString(130,0,"Возврат покупателей",false);
 							if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
                 OutString(140,0,"",false);
+                OutString(145,0,"",false);
 							end;
 							OutString(150,0,"Отпущено",false);
 							OutString(160,0,"",false);
 							if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
                 OutString(170,0,"",false);
                 OutString(180,0,"",false);
+                OutString(175,0,"",false);// Edit ************************** Wednesday, 12 November 2014 16:40:56
 							end;
 							OutString(190,0,"Возврат поставщикам",false);
 							EndFormat;
@@ -696,6 +702,7 @@ begin
 							OutString(130,0,"К-во",false);
 							if(RepSpec.flags[0]==0)then begin
                 OutString(140,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
+                OutString(145,0,"Себестоимость",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
 							end;
 							//  Отпущено
 							OutString(150,0,"К-во",false);
@@ -703,6 +710,7 @@ begin
 							if(RepSpec.flags[0]==0)then begin
                 OutString(170,0,"Сумма",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
                 OutString(180,0,"Сумма внутр",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:29
+                OutString(185,0,"Отпущено всего себестоимость",false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
 							end;
 							//Возврат поставщикам
 							OutString(190,0,"К-во",false);

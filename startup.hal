@@ -75,6 +75,8 @@ begin
   Report("Отчет активности по бутикам",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
   Report("Накопленные баллы клиента",LoyaltyCardCounterRClass,LoyaltyCardCounterRn,0,modMYCRM);
   Report("Оборотно-сальдовая ведомость (изм.)",MBARClass,MBA2Rn,0,modNL);
+  Report("Оборот по объектам",ObjMainRClass,ObjMainRn,0,modNL);
+  
   
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
   

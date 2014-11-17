@@ -2635,10 +2635,10 @@ begin
   EditField(h,v+=vs,-40,"Description",Normal,Name,false,0);
   tilenr = 1;
   TileButton(tilenr,"Pricing"); tilenr = tilenr + 1;
-  if (UserCanAction("AllowJewelleryInterface",false)) then begin
+  //if (UserCanAction("AllowJewelleryInterface",false)) then begin
     TileButton(tilenr,"Jewellery"); tilenr = tilenr + 1; 
     TileButton(tilenr,"Watch"); tilenr = tilenr + 1;
-  end;
+  //end;
   TileButton(tilenr,"#Stock#"); tilenr = tilenr + 1;
   TileButton(tilenr,"Warehouse"); tilenr = tilenr + 1;
   if (UserCanAction("ViewCostPrice",true)) then begin
@@ -2679,7 +2679,7 @@ begin
     PushButton(-190,182,-50,202,ToolImagePicker,"Add picture");//##cc  
   end;
   CheckBox(h1,v+=32,0,"Treat Item as Material on Project",ItemMaterial);
-  if (UserCanAction("AllowJewelleryInterface",false)) then begin
+  //if (UserCanAction("AllowJewelleryInterface",false)) then begin
     Tile(tilenr,110,false,tilenr,-); tilenr = tilenr + 1;
 			EditField(h,v=6, 140,"Metal",Normal,Metal,false,0);
 			EditField(h,v+=vs, 140,"Weight",Normal,RowWeight,false,0);
@@ -2702,7 +2702,7 @@ begin
 			EditField(h5,v+=vs, 140,"Gender",Normal,Gender,false,0);
 			EditField(h5,v+=vs, 140,"Other",Normal,Other,false,0);
 			EditField(h5,v+=vs, 140,"Other2",Normal,Other2,false,0); 
-  end;
+  //end;
   Tile(tilenr,170,false,tilenr,MinLevel);  tilenr = tilenr + 1; // Need to clean this Tile up!
   v = 6;
   vm = v;
@@ -3522,7 +3522,7 @@ end;
   end; 
   
 window INLClass:3
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Items",INLClass,CGmlist,-);
   if(UserCanAction("DisallowFullINDClass",true)==true)then begin// Edit ************************** Thursday, 24 July 2014 10:09:24

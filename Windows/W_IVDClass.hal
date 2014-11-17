@@ -6901,10 +6901,39 @@ begin
   real h,v,vs;
   WindowBegin("Ћпределите добавление объекта в записи операций",AddObjTRVClass,CGMnt,RcType);
   SetWRect(20,80,400,200);
-  PeriodField(h=100,v=6,"Џериод");
+  
+  PeriodField(h=150,v=6,"Џериод");
   vs=20;
   EditFieldTL(h,v+=vs,200,"Ћбъект",M4UStr,Normal,60,f1,false,ObjSClass);
+  EditFieldTL(h,v+=vs,200,"“брать объект из счета",M4UStr,Normal,60,f3,false,ObjSClass);
+  EditFieldTL(h,v+=vs,200,"‡аменить на объект",M4UStr,Normal,60,f4,false,ObjSClass);
   EditFieldTL(h,v+=vs,200,"‘чет",M4UStr,Normal,60,f2,false,AccSClass);// Edit ************************** Saturday, 1 November 2014 13:01:08
   CheckBox(h,v+=20,0,"Џропустить все проверки",flags[0]);
+  EndWindow;
+end;
+
+
+
+window ObjMainRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,hacc,v,vm,vs;
+  Integer tilenr;
+
+  WindowBegin("Ћпределите отчет оборота по объектам",ObjMainRClass,CGRcW,RcType);
+  UseView(RcVc);
+  SetWRect(20,80,600,380);
+	h = 100;
+  vs = 20;
+  hacc = 342;
+  PeriodField(h,v=6,"Џериод");
+  EditFieldTL(h,v+=vs,150,"‘чет",M4UStr,Normal,60,f4,false,AccSClass); 
+  
+  v = v+20;
+  
+  EditFieldTL(h,v,250,"Ћбъект",M4UStr,Normal,60,ObjStr,false,ObjSClass);
+  EditFieldTL(h,v+=vs,50,"’ип объекта",M4UStr,Normal,5,ObjType,false,OTSClass);
+
+  
   EndWindow;
 end;

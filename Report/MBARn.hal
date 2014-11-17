@@ -161,7 +161,11 @@ BEGIN
 	//Monday, 29 September 2014 17:51:10
 	
     if(dblstr!="DblMBA")then begin
-			OutString(0,dblstr,accnr,false);
+    	if(dblstr!="DblNL")then begin
+				OutString(0,dblstr,accnr,false);
+			end else begin
+				OutStringID(0,"DblMyNL",accnr,false,comment);
+			end;
     end else begin
     	OutStringID(0,dblstr,accnr,false,comment);
     end;

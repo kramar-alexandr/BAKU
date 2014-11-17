@@ -774,14 +774,25 @@ begin
 			outstring(0,0,"Тип прихода",false);
 			outstring(0,0,"Кол-во",false);
 			outstring(0,0,"Ед.изм.",false);
-			outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
-			outstring(0,0,"Себестоимость за ед-цу в валюте АЗН",false);
-			outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
-			outstring(0,0,"Сумма по себестоимости в валюте АЗН",false);
-			outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);
-			outstring(0,0,"Ритейл за ед-цу в валюте АЗН",false);
-			outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
-			outstring(0,0,"Сумма по ритейлу в валюте АЗН",false);
+			if(currentcompany!=10)then begin
+				outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
+				outstring(0,0,"Себестоимость за ед-цу в валюте АЗН",false);
+				outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
+				outstring(0,0,"Сумма по себестоимости в валюте АЗН",false);
+				outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);
+				outstring(0,0,"Ритейл за ед-цу в валюте АЗН",false);
+				outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
+				outstring(0,0,"Сумма по ритейлу в валюте АЗН",false);
+			end else begin
+				outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
+				outstring(0,0,"Себестоимость за ед-цу в валюте PLN",false);
+				outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
+				outstring(0,0,"Сумма по себестоимости в валюте PLN",false);
+				outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);
+				outstring(0,0,"Ритейл за ед-цу в валюте PLN",false);
+				outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
+				outstring(0,0,"Сумма по ритейлу в валюте PLN",false);
+			end;
 			outstring(0,0,"Валюта",false);
 		endformat;
 

@@ -2547,3 +2547,36 @@ begin
   
   return;
 end;
+
+global
+procedure DblMyNL(string dblstr,string l,Integer currepwn)
+begin
+	record AccVc Accr;
+	boolean TrHs,testf,first;
+	integer lenth;
+	string 20 facc,lacc;
+	record RcVc RepSpec,RcVcr1;
+	integer wn;
+	
+		getwindowrecord(currepwn,RcVcr1);
+
+		ReportDefaults(RepSpec,"ObjMainRClass");   
+		//OpenWindow("ObjMainRClass",0,0,"","",RepSpec);
+		wn = curwindow;
+		
+		//messagebox(0,RcVcr1.sStartDate);
+		RepSpec.sStartDate = RcVcr1.sStartDate;
+		RepSpec.sEndDate = RcVcr1.sEndDate;
+		RepSpec.Period2Str = RcVcr1.sStartDate & ":" & RcVcr1.sEndDate;
+		RepSpec.ObjStr = RcVcr1.ObjStr;
+		RepSpec.f4 = dblstr;
+		RepSpec.Media = mtScreen;
+    RepSpec.repname = "ObjMainRn";
+
+    //PutWindowRecord(wn,RepSpec);
+    
+    //WindowFieldGoto	(wn,RepSpec,-1,"ObjType",true)
+    RunReport(RepSpec,0); 
+  
+  return;
+end;

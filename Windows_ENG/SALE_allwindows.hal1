@@ -2432,13 +2432,20 @@ begin
       RLCell(210,26,280,39,UPrice1,false,12,patM4black);
     end else begin
       v = 0;
-      if (GuiType==kGuiCocoa) then begin
+      // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 5 November 2014 15:50:21
+	
+      /*if (GuiType==kGuiCocoa) then begin
         SetWRect(210,80,850,498);
         FlowView(0,0,-1,200);
         v = v+200;
       end else begin
         SetWRect(210,80,850,298);
-      end;
+      end;*/
+      SetWRect(210,80,850,298);
+      
+	// Edit End ---------------------------------------------- Edit End
+	
       RecordList(4,v+17,-21,-39);
       RlColKey(4,4,"No.",Code,false,ActCode);
       if (HasModIN) then begin
