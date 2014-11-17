@@ -2,7 +2,7 @@ external procedure ExtractObj(string,var Integer,var string);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure ExtractObj(string,var Integer,var string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);
 
 global
 function string 200 ValToMyString(val value,integer dec)
@@ -102,19 +102,19 @@ begin
   end;
 
 	
-  startreportnoheaderjob("Материальный отчет новый");
+  startreportnoheaderjob(USetStr(31013));
 		
 		
 		if(userlocation)then begin
 			startformat(15);
-				outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+				outstring(50,0,USetStr(31014),false);
 			endformat;
 		end else begin
 			if(nonblank(location))then begin
 				Locr.Code = location;
 				readfirstmain(Locr,1,True);
 				startformat(15);
-					outstring(0,0,"Название салона",false);
+					outstring(0,0,USetStr(31015),false);
 					outstring(0,0,Locr.Name,false);
 				endformat;
 				
@@ -143,7 +143,7 @@ begin
 				  
 				  
           startformat(15);
-            outstring(0,0,"Материальный отчет за",false);
+            outstring(0,0,USetStr(31016),false);
             outstring(0,0,todate,false);
           endformat;
         
@@ -169,23 +169,23 @@ begin
         
         
           startformat(15);
-            outstring(0,0,"Код Ханса",false);
-            outstring(50,0,"Код поставщика",false);
-            outstring(150,0,"Категория",false);
-            outstring(200,0,"Наименование",false);
-            outstring(250,0,"кол-во",false);
-            outstring(300,0,"Долг",false);
+            outstring(0,0,USetStr(31017),false);
+            outstring(50,0,USetStr(31018),false);
+            outstring(150,0,USetStr(9131),false);
+            outstring(200,0,USetStr(8105),false);
+            outstring(250,0,USetStr(12004),false);
+            outstring(300,0,USetStr(9134),false);
             outstring(300,0,"USD (per unit)",false);
             outstring(350,0,"TOTAL USD",false);
             outstring(400,0,"AZN (per unit)",false);
             outstring(450,0,"TOTAL AZN",false);
             outstring(500,0,"EUR (per unit)",false);
             outstring(550,0,"TOTAL EUR",false);
-            outstring(600,0,"ТЕРМИНАЛ AZN(per unit)",false);
-            outstring(650,0,"TOTAL ТЕРМИНАЛ AZN",false);
+            outstring(600,0,USetStr(31019),false);
+            outstring(650,0,USetStr(31020),false);
             //outstring(650,0,"TOTAL Bank EUR",false);
             //outstring(650,0,"TOTAL Bank USD",false);
-            outstring(700,0,"Комментарий",false);
+            outstring(700,0,USetStr(8121),false);
           endformat;
 				
 				
@@ -288,7 +288,7 @@ begin
                     outstring(200,0,IVrw.Spec,false);
                     outstring(250,0,IVrw.Quant,false);
                     if(IVr.PayDeal!="O" and IVr.RetValue<0)then begin
-                      outstring(300,0,"Долг",false);
+                      outstring(300,0,USetStr(9134),false);
                     end else begin
                       outstring(300,0,"",false);
                     end;
@@ -335,7 +335,7 @@ begin
                     outstring(300,0,"",false);
                     outstring(350,0,"",false);
                     outstring(400,0,"",false);
-                    outstring(450,0,"Возврат",false);
+                    outstring(450,0,USetStr(31046),false);
                     outstring(500,0,"",false);
                     outstring(550,0,"",false);
                     outstring(600,0,"",false);
@@ -357,7 +357,7 @@ begin
                     outstring(300,0,"",false);
                     outstring(350,0,"",false);
                     outstring(400,0,"",false);
-                    outstring(450,0,"Офисный расход",false);
+                    outstring(450,0,USetStr(31021),false);
                     outstring(500,0,"",false);
                     outstring(550,0,"",false);
                     outstring(600,0,"",false);
@@ -527,7 +527,7 @@ begin
                   outstring(300,0,"",false);
                   outstring(350,0,"",false);
                   outstring(400,0,"",false);
-                  outstring(450,0,"Перемешение",false);
+                  outstring(450,0,USetStr(13103),false);
                   outstring(500,0,"",false);
                   outstring(550,0,"",false);
                   outstring(600,0,"",false);
@@ -546,7 +546,7 @@ begin
             outstring(0,0,"",false);
             outstring(50,0,"",false);
             outstring(150,0,"",false);
-            outstring(200,0,"Итого:",false);
+            outstring(200,0,USetStr(12867),false);
             outstring(250,0,"",false);
             outstring(300,0,"",false);
             outstring(300,0,"",false);
@@ -570,7 +570,7 @@ begin
         end;
 			end else begin
 				startformat(15);
-					outstring(50,0,"Магазин не выбран",false);
+					outstring(50,0,USetStr(31022),false);
 				endformat;
 			end;
 		end;

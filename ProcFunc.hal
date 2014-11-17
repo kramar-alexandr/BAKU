@@ -4,7 +4,7 @@ external procedure OutCashRows(array val,array string,integer);
 remote inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external inner procedure ExtractObj(string,var Integer,var string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);
 
 function string 200 ParseClassification(string class)
 begin
@@ -275,7 +275,7 @@ begin
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
   
   BlockLoad(PMRec);
-    StartReportNoHeaderJob("Материальный отчет");
+    StartReportNoHeaderJob(USetStr(31023));
     if nonblank(RepSpec.d1) then begin
       d1 = RepSpec.d1;
     end else begin
@@ -286,7 +286,7 @@ begin
 			if nonblank(RepSpec.f2) then begin
 				Locr.Code = RepSpec.f2;
 				if ReadFirstMain(Locr,1,true) then begin
-				OutString(0,0,"Магазин:",false);
+				OutString(0,0,USetStr(31024),false);
 				OutString(100,0,Locr.Name,false);
 				end;
 			end else begin
@@ -296,16 +296,16 @@ begin
 			if nonblank(RepSpec.f1) then begin
 				LMr.Code = RepSpec.f1;
 				if ReadFirstMain(LMr,1,true) then begin
-				OutString(0,0,"Машина:",false);
+				OutString(0,0,USetStr(31025),false);
 				OutString(100,0,LMr.Comment,false);
 				end;
 			end else begin
-				OutString(0,0,"По всем машинам",false);
+				OutString(0,0,USetStr(31026),false);
 				OutString(0,0,"",false);
 			end;
-			OutString(150,0,"Материальный отчет за",false);
+			OutString(150,0,USetStr(31016),false);
 			OutString(285,0,d1,false);
-			OutString(360,0,"Курс",false);
+			OutString(360,0,USetStr(16681),false);
 			GetCurncyRateOnDate("AZN",d1,rate);
 			//rate = 1;
 			OutString(410,0,rate,false);
@@ -398,7 +398,7 @@ begin
               EndFormat;
             end else begin
               StartFormat(15);
-              OutString(0,0,"Код машины отсутствует или не найден",false);
+              OutString(0,0,USetStr(31027),false);
               EndFormat;
             end;
           end;
@@ -407,21 +407,21 @@ begin
           StartFormat(15);
           OutString(0,0,"№",false);
           if(currentcompany>3)then begin
-          	OutString(0,0,"Классификация(бренд)",true);// Edit ************************** Monday, 15 April 2013 15:12:07
-						OutString(0,0,"Классификация(модель)",true);// Edit ************************** Monday, 15 April 2013 15:12:07
+          	OutString(0,0,USetStr(31028),true);// Edit ************************** Monday, 15 April 2013 15:12:07
+						OutString(0,0,USetStr(31029),true);// Edit ************************** Monday, 15 April 2013 15:12:07
           end;
-          OutString(20,0,"Код",false);
-          OutString(50,0,"Наименование",false);
-          OutString(190,0,"К-во",false);
-          OutString(220,0,"Цена",false);
-          OutString(270,0,"Сумма",false);
-          OutString(320,0,"Скидка",false);
+          OutString(20,0,USetStr(12501),false);
+          OutString(50,0,USetStr(12713),false);
+          OutString(190,0,USetStr(12751),false);
+          OutString(220,0,USetStr(12754),false);
+          OutString(270,0,USetStr(12732),false);
+          OutString(320,0,USetStr(12007),false);
           if (UserCanAction("ViewCostPrice",true)==true) then begin
-            OutString(360,0,"Себестоимость",false);
-            OutString(410,0,"Комментарий",false);
+            OutString(360,0,USetStr(18240),false);
+            OutString(410,0,USetStr(12423),false);
           end else begin
             OutString(360,0,"",false);
-            OutString(410,0,"Комментарий",false);
+            OutString(410,0,USetStr(12423),false);
           end;
           
           EndFormat;
@@ -499,7 +499,7 @@ begin
             case 15:
               //if(IVr.MachineName!="SW4")then begin	
               		switch(IVrw.PayMode)begin
-									case "С1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
 																end;
@@ -522,7 +522,7 @@ begin
             case 16:
             		//if(IVr.MachineName!="SW4")then begin
               		switch(IVrw.PayMode)begin
-									case "С1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
 																end;
@@ -543,7 +543,7 @@ begin
             case 29:
             		//if(IVr.MachineName!="SW4")then begin
               		switch(IVrw.PayMode)begin
-									case "С1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
 															if(acrncy[j]==IVrw.CurncyCode)then begin
 																cashsum[j] = cashsum[j] + IVrw.Sum;
 															end;
@@ -630,10 +630,10 @@ begin
 					prepaymentval = prepaymentval + IPrw.BankVal*coef;
 					ORrw.Spec = IPrw.CustCode;
 					if(IPrw.InvoiceNr>-1)then begin
-						ORrw.SerialNr = "Оплата сч/ф";
+						ORrw.SerialNr = USetStr(31030);
 						ORrw.Objects = IPrw.InvoiceNr;
 					end else begin
-						ORrw.SerialNr = "Предоплата по договору";
+						ORrw.SerialNr = USetStr(31031);
 						ORrw.Objects = IPrw.OrderNr;
 					end;
 					ORrw.Sum = IPrw.BankVal;
@@ -643,7 +643,7 @@ begin
 					ori = ori + 1;
 	  			switch(IPr.PayMode)begin
 	  				
-        		case "С1":  for(j=0;j<acrncnt;j=j+1)begin
+        		case "C1":  for(j=0;j<acrncnt;j=j+1)begin
 													if(acrncy[j]==IPrw.BankCurncy)then begin
 														//cashsum[j] = cashsum[j] + IPrw.BankVal;
 														totcash[j] = totcash[j] + IPrw.BankVal;
@@ -670,7 +670,7 @@ begin
     resetloop(IPr);
     Gray_Divider(0,1);
     StartFormat(15);
-    OutString(0,0,"Всего",false);
+    OutString(0,0,USetStr(8330),false);
     if(currentcompany>3)then begin
 			OutString(0,0,"",true);// Edit ************************** Monday, 15 April 2013 15:12:07
 			OutString(0,0,"",true);// Edit ************************** Monday, 15 April 2013 15:12:07
@@ -691,7 +691,7 @@ begin
     StartFormat(15);
     OutString(0,0,"",false);
     OutString(0,0,"",false);
-    OutString(0,0,"Итого по способам оплаты:",false);
+    OutString(0,0,USetStr(31032),false);
     OutVal(220,0,totsumpay,M4Val,false);
     EndFormat;
     
@@ -705,12 +705,12 @@ begin
           StartFormat(15);
 						OutString(0,0,"",false);
 						OutString(0,0,"",false);
-						tstr = "Кредитной картой ";
+						tstr = USetStr(31033);
 						if(i==5)then begin tstr = ""; end;
             OutString(0,0,tstr & PDr.pdComment & ":",false);
             OutVal(220,0,totcc[i],M4Val,false);
             if(i==5)then begin
-							OutString(270,0,"Баллов использованнно: ",false);
+							OutString(270,0,USetStr(31034),false);
 							OutVal(360,0,loybals,M4Val,false);
             end;
           EndFormat;
@@ -721,18 +721,18 @@ begin
     
     if(ormtrw>0)then begin
 			StartFormat(15);
-				outstring(0,0,"Принятые предоплаты",false);
+				outstring(0,0,USetStr(31035),false);
 			endformat;
 			For(ori=0;ori<ormtrw;ori=ori+1) begin
 	  		matrowget(ORr,ori,ORrw);
 	  		StartFormat(15);
 					outstring(0,0,ORrw.SerialNr,false);
 					outstring(80,0,ORrw.Spec,false);
-					outstring(160,0,"Сумма",false);
+					outstring(160,0,USetStr(12448),false);
 					outstring(200,0,ORrw.Sum,false);
-					outstring(250,0,"Валюта",false);
+					outstring(250,0,USetStr(16018),false);
 					outstring(280,0,ORrw.ArtCode,false);
-					outstring(310,0,"№ Документа",false);
+					outstring(310,0,USetStr(9214),false);
 					outstring(390,0,ORrw.Objects,false);
 				endformat;
 			end; 
@@ -743,24 +743,24 @@ begin
     mtrw = matrowcnt(SMr);
     if(mtrw>0)then begin
 			StartFormat(15);
-				outstring(0,0,"Существующие оплаты по счетам/фактурам",false);
+				outstring(0,0,USetStr(31036),false);
 			endformat;
 			For(i=0;i<mtrw;i=i+1) begin
 	  		matrowget(SMr,i,SMrw);
 	  		StartFormat(15);
-					outstring(0,0,"Сч./ф.",false);
+					outstring(0,0,USetStr(12788),false);
 					outstring(30,0,SMrw.InvoiceNr,false);
 					if(SMrw.stp==0)then begin
-						outstring(70,0,"Платеж №",false);
+						outstring(70,0,USetStr(4087),false);
 					end else begin
-						outstring(70,0,"Предоплата №",false);
+						outstring(70,0,USetStr(31037),false);
 					end;
 					outstring(120,0,SMrw.ChequeNr,false);
-					outstring(160,0,"Сумма",false);
+					outstring(160,0,USetStr(12448),false);
 					outstring(200,0,SMrw.RecVal,false);
-					outstring(250,0,"Валюта",false);
+					outstring(250,0,USetStr(8107),false);
 					outstring(280,0,SMrw.RecCurncy,false);
-					outstring(310,0,"Дата",false);
+					outstring(310,0,USetStr(12443),false);
 					outstring(350,0,SMrw.PayDate,false);
 					outstring(380,0,SMrw.CustName,false);
 				endformat;
@@ -769,7 +769,7 @@ begin
     StartFormat(15);
 		endformat;
     StartFormat(15);
-    	outstring(0,0,"Количество чеков:",false);
+    	outstring(0,0,USetStr(31038),false);
     	outstring(220,0,ivcount,false);
 		endformat;
 		StartFormat(15);
@@ -777,11 +777,11 @@ begin
 		StartFormat(15);
 		endformat;
 		StartFormat(15);
-		OutString(0,0,"Касир: _______________",false);
+		OutString(0,0,USetStr(31039),false);
 		OutString(270,0,"",false);
 		OutString(270,0,"",false);
 		OutString(270,0,"",false);
-		OutString(300,0,"Директор: _______________",false);
+		OutString(300,0,USetStr(31040),false);
 		EndFormat;
    
     Gray_Divider(0,1);  
