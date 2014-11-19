@@ -3609,6 +3609,120 @@ begin
   KeySegment(Comment);
   KeySegment(Code);
   EndRecord;
+  
+  RecordBegin(IntORVc,-,"");
+  RecordField(SerNr,M4Long,0,0);
+  SerialNoBlock(IntORSerBlock);    
+  RecordField(OurUser,M4Code,5,0);
+  RecordField(Name,M4Str,60,0);
+  RecordField(TransDate,M4Date,0,0);
+  FieldIsTransDate(TransDate);
+  RecordField(PlanShip,M4Str,10,0);
+  RecordField(ReceivedDate,M4Date,0,0);
+  RecordField(OSFlag,M4Int,0,0);
+  RecordField(StatusFlag,M4Int,0,0);
+  RecordField(StatusMark,M4Mark,0,0);
+  RecordField(OKPersons,M4UStr,60,UserVc);
+  RecordField(Reference,M4Str,20,0);
+  RecordField(Department,M4Code,10,0);
+  RecordField(Location,M4Code,10,0);
+  RecordField(ShipMode,M4Code,5,0);
+  RecordField(ShipDeal,M4Code,5,0);
+  RecordField(ShipAddr0,M4Str,60,0);
+  RecordField(ShipAddr1,M4Str,60,0);
+  RecordField(ShipAddr2,M4Str,60,0);
+  RecordField(ShipAddr3,M4Str,60,0);
+  RecordField(Sign,M4Code,10,UserVc);
+  RecordField(InclVAT,M4Int,0,0);
+  RecordField(Total,M4Val,0,0);
+  RecordField(Phone,M4Str,20,0);
+  RecordField(Fax,M4Str,20,0);
+  RecordField(emailAddr,M4Str,60,0);
+  RecordField(LangCode,M4Code,5,0);
+  RecordField(Math2,M4Matrix,0,0);
+  RecordField(Math,M4TextField,0,0);
+  RecordField(DelAddr3,M4Str,60,0);
+  RecordField(DelAddr4,M4Str,60,0);
+  RecordField(xAcceptanceGroup,M4Code,20,AcceptGroupVc);
+  RecordField(Closed,M4Int,0,0);
+  RecordField(PlanShipDate,M4Date,0,0);
+  RecordField(IntORClass,M4Code,5,IntORClassVc);
+  RecordField(FrLocation,M4Code,10,0);
+  RecordField(SalesGroup,M4Code,5,SalesGroupVc);
+  FieldIsGroup(SalesGroup);
+  RecordField(AcceptanceStatus,M4Int,0,0);
+  RecordField(AcceptanceBy,M4List,200,UserVc);
+  RecordField(AcceptanceFYI,M4List,200,UserVc);
+  
+  //RecordField(CurncyCode,M4Code,5,CurncyCodeVc);	//Edit by Victor 19.11.14
+  
+  ArrayBegin(Math2,-,1);
+  ArrayField(ovst,M4Int,0,0);
+  ArrayField(ArtCode,M4Code,20,INVc);
+  ArrayField(Quant,M4UVal,0,0);
+  ArrayField(Spec,M4Str,100,0);
+  ArrayField(Price,M4Val,0,0);
+  ArrayField(Sum,M4Val,0,0);
+  ArrayField(VATCode,M4Code,10,VATCodeBlock);
+  ArrayField(VARList,M4UStr,30,0);
+  ArrayField(CostAcc,M4UStr,10,AccVc);
+  ArrayField(Objects,M4UStr,60,ObjVc);
+  ArrayField(Recepy,M4Code,20,PRVc);
+  ArrayField(Shipd1,M4UVal,0,0);
+  ArrayField(Shipd2,M4UVal,0,0);
+  ArrayField(POOrd,M4UVal,0,0);
+  ArrayField(Sent,M4UVal,0,0);
+  ArrayField(SerialNr,M4Str,30,0);
+  
+  ArrayField(EAN13Code,M4UStr,200,0);	//Edit by Victor 19.11.14
+  ArrayField(xClassification,M4UStr,200,0);	//Edit by Victor 19.11.14
+  ArrayField(Colour,M4Str,20,0);	//Edit by Victor 19.11.14
+  ArrayField(Size,M4Str,20,0);	//Edit by Victor 19.11.14
+  ArrayField(VEQuant,M4UVal,0,0);	//Edit by Victor 19.11.14
+  ArrayField(AlternativeCode,M4Str,40,0);	//Edit by Victor 19.11.14
+  
+  EndArray;
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(OurUser);
+  KeySegment(OurUser);
+  KeySegment(SerNr);
+  KeyBegin(Name);
+  KeySegment(Name);
+  KeySegment(SerNr);
+  KeyBegin(StatusFlag);
+  KeySegment(StatusFlag);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(Department);
+  KeySegment(Department);
+  KeySegment(StatusMark);
+  KeySegment(SerNr);
+  KeyBegin(Reference);
+  KeySegment(Reference);
+  KeySegment(SerNr);
+  KeyBegin(OSFlag);
+  KeySegment(OSFlag);
+  KeySegment(SerNr);
+  KeyBegin(PlanShip);
+  KeySegment(PlanShip);
+  KeySegment(SerNr);
+  SubsetKeyBegin2(ArtCode);
+  AppendMatrixFieldToKeyName(ArtCode,0);
+  KeySegment(SerNr);
+  KeyBegin(Location);
+  KeySegment(Location);
+  KeySegment(SerNr);
+  KeyBegin(PlanShipDate);
+  KeySegment(PlanShipDate);
+  KeySegment(SerNr);  
+  SubsetKeyBegin2(ArtCodeOSFlag);
+  AppendMatrixFieldToKeyName(ArtCode,0);
+  KeySegment(OSFlag);
+  KeySegment(SerNr);  
+  EndRecord;
 			  
   return;  
 end;

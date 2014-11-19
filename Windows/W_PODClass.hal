@@ -3201,3 +3201,125 @@ begin
 
   EndWindow;
 end;
+
+window IntORDClass:1		//	Edit by Victor 19.11.14
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,t,v,vm,vs;
+  WindowBegin("Внутренний заказ",IntORDClass,CGview,-);
+  SetWRect(20,80,615,350);
+  Sizeable(-1,-1,0,0);
+  UseView(IntORVc);
+  FormName(IntORForm);
+  ActiveFieldOnNew("OurUser");      
+  h = 100; h2 = 230; h3 = 450; vs = 20;
+  Tile(0,50+24,false,"",OurUser);
+  EditField(75,vm=(v=6),95,"Номер",Normal,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Сотрудник",ViewOnly,OurUser,false,UserSClass);
+  EnterSkip(PlanShip);
+  EditField(h2=250,v=vm,-40,"ФИО",Normal,Name,false,0);
+  EditField(h2,vm=(v+=20),95,"Отдел",Normal,Department,false,DepSClass);
+  CheckBox(h2+120,vm,0,"Закрыт",Closed);
+  TileButton(1,"Условия");
+  TileButton(2,"Товары");
+  TileButton(3,"Адрес отгрузки");
+  TileButton(4,"Комментарий");
+  Tile(1,70,false,"1",PlanShip);
+  vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = 600;
+  EditField(h1,v=6,82,"Дата",Normal,TransDate,false,PasteCurDate);
+  EditField(h1,v+=vs,82,"Запл. отгр.",Normal,PlanShip,false,PasteCurDate);
+  EditField(h1,v+=vs,82,"Со склада",Normal,FrLocation,false,LocationSClass);
+  EditField(h2,v=6,82,"Усл. отгр.",Normal,ShipDeal,false,ShipDealSClass);
+  EditField(h2,v+=vs,82,"Способ отгр.",Normal,ShipMode,false,DMSClass);
+  EditField(h2,v+=vs,82,"На склад",Normal,Location,false,LocationSClass);
+  EditField(h3,v=6,82,"Класс внутр. заказ.",Normal,IntORClass,false,IntORClassSClass);
+  EditField(h3,v+=vs,82,"Язык",Normal,LangCode,false,LangSClass);
+  EditField(h3,v+=vs,135,"Ссылка",Normal,Reference,false,0);
+//  EditField(h,v+=vs,280,"Авторизировано",ViewOnly,OKPersons,false,UserSClass);
+  EnterSkip(Math2);
+  Tile(2,120,true,"2",Math2);
+  //EditField(110,-21,70,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);	// new field	Edit by Victor 19.11.14
+  EditField(-144,-21,90,"ИТОГО",ViewOnly,Total,true,0);
+  v = 24;
+  MatrixBegin(3,v,-50,-27,-,99);
+  MatOverStrike(ovst);
+  Flip(0);
+  MatCol(1,24,"Товар",0,ArtCode,false,INSClass);
+  
+  EnterSkip(ArtCode);
+  Flip(1);
+  if (HasVarieties) then begin	//	Edit by Victor 19.11.14
+  	MatCol(1,94,"Кол-во",0,Quant,true,MATVARINSClass);
+  end else begin
+    MatCol(1,94,"Кол-во",0,Quant,true,0); 
+  end;	// end edit
+  MatCol(1,144,"Обработ.",0,Shipd1,true,0);
+  MatCol(1,194,"Отгр.",0,Shipd2,true,0);
+  MatCol(1,244,"Описание",0,Spec,false,0);
+  MatCol(1,-180,"Стоимость",0,Price,true,0);
+  MatCol(1,-90,"Итого ст-ть",0,Sum,true,0);
+  Flip(2);
+  MatCol(t=1,144,"Описание",0,Spec,false,0);
+  MatCol(t,-400,"Альтернативный код",0,AlternativeCode,false,0);	// new field	Edit by Victor 19.11.14
+  MatCol(t,-304,"Сер. №",0,SerialNr,false,SerialNrSClass);
+  MatCol(t,-204,"Счет стоим.",0,CostAcc,false,AccSClass);
+  MatCol(t,-124,"Объекты",0,Objects,false,ObjSClass);
+  MatCol(1,-70,"Структура",0,Recepy,false,RecSClass);
+  Flip(3);
+  MatCol(t=1,144,"Опис.",0,Spec,false,0);
+  MatCol(1,-280,"Испол.",0,Shipd1,false,0);
+  MatCol(1,-210,"Достав.",0,Shipd2,false,0);
+  MatCol(t,-140,"Отправ.",0,Sent,true,0);
+  MatCol(t,-70,"Заказ/П.",0,POOrd,true,0);
+  Flip(4);//	Edit by Victor 19.11.14
+  MatCol(1,194,"Наименование",0,Spec,false,0);//	Edit by Victor 19.11.14
+	if (HasVarieties) then begin
+		MatCol(1,-300,"Кол-во",0,VEQuant,true,MATVARINSClass);
+	end else begin
+		MatCol(1,-300,"Кол-во",0,VEQuant,true,0); 
+	end;
+	MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);
+	MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);
+	MatCol(1,-60,"Цена",0,Price,true,0);
+	Flip(5);	//	Edit by Victor 19.11.14
+	MatCol(1,194,"Наименование",0,Spec,false,0);
+	MatCol(1,-160,"Размер",0,Size,false,0);
+	MatCol(1,-100,"Цвет",0,Colour,false,0);//	end Edit by Victor 19.11.14 
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,4,"D");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,5,"E");
+  Tile(3,170,false,"3",ShipDeal);
+  EditField(h,v=6,-20,"Отгрузка",Normal,ShipAddr0,false,0);
+  EditField(h,v+=vs,-20,"Адрес",Normal,ShipAddr1,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr2,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr4,false,0);
+  EditField(h2=-170,v+=vs,150,"Телефон",Normal,Phone,false,0);
+  EditField(h2,v+=vs,150,"Факс",Normal,Fax,false,0);
+  Tile(4,120,false,"4",Math); vs = 20;
+  StaticText(h-6,v=20,"Комментарии",true);
+  TextField(h,v-5,-170,-10,Math,0);
+  ButtonFrame(h3=-150,v=16,123,6,"Статус утверждения");
+  RadioButton(h3,v,kAcceptanceStateNotRequired,0,"не обязательно",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateNotStarted,0,"не начато",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateNotRequested,0,"не запрошено",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStatePending,0,"в ожидании",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateApproved,0,"утверждено",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateRejected,0,"отклонено",AcceptanceStatus);  
+  SpecialMenu("Перемещение товаров",' ',0,"StockMovFromIntORDsm");
+  SpecialMenu("Списание со склада",' ',1,"SDFromIntORDsm");
+  SpecialMenu("Заказ поставщику",' ',2,"POFromIntORDsm");
+//  SpecialMenu("Авторизировать",' ',2,"AuthorizeIntORDsm");changed to below
+  SpecialMenu("Отправить для утверждения",' ',6,"IntORSendforAcceptanceIntORDsm");
+  SpecialMenu("Отменить запрос на утверждение",' ',2,"CancelApprovalRequestDsm"); 
+  SpecialMenu("Статус внутреннего заказа",'r',5,"IntORStatIntORDsm");
+  SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");
+  SpecialMenu("Резервирования",' ',15,"IntORReservIntORDsm");
+  EndWindow;
+end;
