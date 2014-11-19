@@ -261,7 +261,7 @@ begin
                   end;
                 end;
               end; 
-              if(payAZN==0 and payEUR==0 and payUSD==0 and PDIsCash(IVr.PayDeal))then begin
+              if(payAZN==0 and payEUR==0 and payUSD==0 and payTRM==0 and PDIsCash(IVr.PayDeal))then begin
               	fullcash = true;
               	if(IVr.PayDeal=="O")then begin
 									switch(IVr.CurncyCode)begin
@@ -318,19 +318,19 @@ begin
                       outstring(300,0,"",false);
                     end;
                     //outstring(250,0,IVrw.Quant,false);
-                    if(ivsum==payUSD)then begin
+                    if(ivsum==payUSD or ivsum-payUSD<1)then begin
                       ivsum = 1;
                       payUSD = 1;
                     end;
-                    if(ivsum==payAZN)then begin
+                    if(ivsum==payAZN or ivsum-payAZN<1)then begin
                       ivsum = 1;
                       payAZN = 1;
                     end;
-                    if(ivsum==payEUR)then begin
+                    if(ivsum==payEUR or ivsum-payEUR<1)then begin
                       ivsum = 1;
                       payEUR = 1;
                     end;
-                    if(ivsum==payTRM)then begin
+                    if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
                     end;
