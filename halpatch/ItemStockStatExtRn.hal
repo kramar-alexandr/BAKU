@@ -659,12 +659,25 @@ begin
 							if(fileexists("webcust/V&B/" & INr.Code & ".png"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".png";
 							end;
+			case 6: if(fileexists("webcust/BACCARAT/" & INr.Code & ".jpg"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+							end;
+							if(fileexists("webcust/BACCARAT/" & INr.Code & ".png"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".png";
+							end;
 			case 7: if(fileexists("webcust/AMBIANCE/" & INr.Code & ".jpg"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
 							end;
 							if(fileexists("webcust/AMBIANCE/" & INr.Code & ".png"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".png";
 							end;
+			case 8: if(fileexists("webcust/YD/" & INr.Code & ".jpg"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+							end;
+							if(fileexists("webcust/YD/" & INr.Code & ".png"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".png";
+							end;
+							
 			case 9: if(fileexists("webcust/Creative/" & INr.AlternativeCode & ".jpg") or fileexists("webcust/Creative/" & urlencode(INr.AlternativeCode) & ".jpg"))then begin
 								if(INr.AlternativeCode!=urlencode(INr.AlternativeCode))then begin
 									renamefile("webcust/Creative/" & INr.AlternativeCode & ".jpg","webcust/Creative/" & urlencode(INr.AlternativeCode) & ".jpg");

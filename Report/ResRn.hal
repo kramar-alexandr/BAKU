@@ -50,7 +50,14 @@ BEGIN
   nru = anru;//??
   //nru = RepSpec.ObjStr;//??// Edit ************************** Thursday, 25 September 2014 17:07:20
 	if(nonblank(RepSpec.ObjStr))then begin
-		nru = RepSpec.ObjStr;// Edit ************************** Wednesday, 29 October 2014 13:12:10
+		if(nonblank(nru))then begin
+			if(!setinset(nru,RepSpec.ObjStr))then begin
+			nru = RepSpec.ObjStr & "," & nru;
+			end;
+		end else begin
+			nru = RepSpec.ObjStr;// Edit ************************** Wednesday, 29 October 2014 13:12:10
+		end;
+		
 	end;
   
   if (blank(UserDefRepLinesr.CorspAcc)) then begin
@@ -738,7 +745,8 @@ begin
   Boolean AGrs;
   string 255 ckey;
   val tmpS3ba,tmpS4ba,tmpS5ba,tmpS6ba,tmpPba,tmpEba;
-  
+  date tempsd,temped;// Edit ************************** Tuesday, 18 November 2014 18:10:25
+
   ckey = "ShortIDKey:" & shortname;
   UserDefRepLinesr.IdKey = 0; 
   AGrs = ReadFirstKey(ckey,UserDefRepLinesr,1,false);
@@ -753,7 +761,47 @@ begin
     if (AGrs) then begin
       switch (UserDefRepLinesr.RsType) begin
         case kRsTypeAccounts:
+        	// Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 18 November 2014 18:09:40
+	
+        	switch(UserDefRepLinesr.CustType)begin
+						case 1:	tempsd = RepSpec.sStartDate;
+										RepSpec.sStartDate = stringtodate("1/1/2000");
+										temped = RepSpec.sEndDate;
+										RepSpec.sEndDate = addday(tempsd,-1);
+									
+						case 2:	tempsd = RepSpec.sStartDate;
+										RepSpec.sStartDate = stringtodate("1/1/" & getYear(RepSpec.sStartDate));
+										temped = RepSpec.sEndDate;
+										if(RepSpec.sEndDate>stringtodate("30/6/" & getYear(tempsd)))then begin
+											RepSpec.sEndDate = stringtodate("30/6/" & getYear(tempsd));
+										end;
+									
+						case 3:	tempsd = RepSpec.sStartDate;
+										RepSpec.sStartDate = stringtodate("1/7/" & getYear(RepSpec.sStartDate));
+										temped = RepSpec.sEndDate;
+										if(RepSpec.sEndDate<stringtodate("1/7/" & getYear(temped)))then begin
+											RepSpec.sEndDate = stringtodate("1/7/" & getYear(temped));
+										end;
+					end;
+					
+	// Edit End ---------------------------------------------- Edit End
+	
           AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,false);
+          // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 18 November 2014 18:10:00
+	
+          switch(UserDefRepLinesr.CustType)begin
+						case 1:	RepSpec.sStartDate = tempsd;
+										RepSpec.sEndDate = temped;
+						case 2:	RepSpec.sStartDate = tempsd;
+										RepSpec.sEndDate = temped;
+						case 3:	RepSpec.sStartDate = tempsd;
+										RepSpec.sEndDate = temped;
+					end;
+          
+	// Edit End ---------------------------------------------- Edit End
+	
           S3ba[UserDefRepLinesr.IdKey] = tmpS3ba;
           S4ba[UserDefRepLinesr.IdKey] = tmpS4ba;
           S5ba[UserDefRepLinesr.IdKey] = tmpS5ba;
@@ -1048,6 +1096,7 @@ end;
 	// Edit End ---------------------------------------------- Edit End
 	
         AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,true);
+        //messagebox(0," tmpS3ba " & tmpS3ba & " tmpPba " & tmpPba & " tmpEba " & tmpEba & " tmpS4ba " & tmpS4ba & " tmpS5ba " & tmpS5ba & " tmpS6ba " & tmpS6ba);
         // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 21 October 2014 12:23:57
 	

@@ -59,13 +59,32 @@ begin
 						if(fileexists("webcust/V&B/" & imname & ".png"))then begin
 							filename = "V&B/" & imname & ".png";
 						end;
-		case 7: if(fileexists("webcust/AMBIANCE/" & imname & ".jpg"))then begin
-							filename = "V&B/" & imname & ".jpg";
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
+		case 6: if(fileexists("webcust/BACCARAT/" & imname & ".jpg"))then begin
+							filename = "BACCARAT/" & imname & ".jpg";
 						end;
-						if(fileexists("webcust/AMBIANCE/" & imname & ".png"))then begin
-							filename = "V&B/" & imname & ".png";
+						if(fileexists("webcust/BACCARAT/" & imname & ".png"))then begin
+							filename = "BACCARAT/" & imname & ".png";
 						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+											
+		case 7: if(fileexists("webcust/AMBIANCE/" & imname & ".jpg"))then begin
+							filename = "AMBIANCE/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/AMBIANCE/" & imname & ".png"))then begin
+							filename = "AMBIANCE/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
+		case 8: if(fileexists("webcust/YD/" & imname & ".jpg"))then begin
+							filename = "YD/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/YD/" & imname & ".png"))then begin
+							filename = "YD/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
 		case 9: if(fileexists("webcust/Creative/" & imname & ".jpg") or fileexists("webcust/Creative/" & urlencode(imname) & ".jpg"))then begin
 							if(imname!=urlencode(imname))then begin
 								renamefile("webcust/Creative/" & imname & ".jpg","webcust/Creative/" & urlencode(imname) & ".jpg");

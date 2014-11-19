@@ -407,3 +407,33 @@ begin
 	
 return;
 end;
+
+
+global updating procedure ChangeAccInPO()
+begin
+	record POVc POr;
+	row POVc POrw;
+	integer i,mtrw;
+	boolean findf;
+	
+	
+	while(loopmain(POr,1,true))begin
+		mtrw = matrowcnt(POr);
+		if(mtrw>0)then begin
+			findf = false;
+			For(i=0;i<mtrw;i=i+1) begin
+	  		matrowget(POr,i,POrw);
+				if(nonblank(POrw.CostAcc) and POrw.CostAcc!="41/01")then begin
+					POrw.CostAcc = "41/01";
+					matrowput(POr,i,POrw);
+					findf = true;
+				end;
+			end; 
+			if(findf)then begin
+				recordStore(POr,true);
+			end;
+		end;
+	end;
+
+return;
+end;
