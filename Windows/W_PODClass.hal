@@ -1843,7 +1843,8 @@ begin
   EnterSkip(Math);
   Tile(tilenr,120,true,tilenr,Math); tilenr = tilenr + 1;
   if (HasMultiCurrency or HasBase2) then begin
-  EditField(110,-41,70,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+  	EditField(50,-41,30,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
+  	EditField(150,-41,30,"Пров. вал.",Normal,CheckCurncyCode,false,CurncyCodeSClass);
   end;
   if (IsEnterprise) then begin
   EditField(110,-21,70,"Паллеты",ViewOnly,TotPalletNr,true,0);

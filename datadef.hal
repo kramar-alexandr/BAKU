@@ -714,6 +714,7 @@ begin
 	RecordField(OKDate,M4Date,0,0);// Edit ************************** Wednesday, 13 November 2013 15:49:09
 	RecordField(OrderDoneFlag,M4Int,0,0);// Edit ************************** Wednesday, 13 November 2013 17:15:36
 	RecordField(OrderDoneDate,M4Date,0,0);// Edit ************************** Wednesday, 13 November 2013 17:15:48
+	RecordField(CheckCurncyCode,M4Code,5,CurncyCodeVc);
 	
   ArrayBegin(Math,-,1);
   ArrayField(stp,M4Int,0,0);

@@ -854,6 +854,12 @@ newINr.LastPurchPrice2 = POrw.Price;
 		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
+			
+		/*if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
+			changef = true;
+			INr.DispGroups = POrw.xClassification;
+		*/ //ToChange. Comment upper condition	
+			
 			foundgroup = false;
 			lenth = len(INr.DispGroups);
 			For(k=0;k<lenth;k=k+1) begin
@@ -1027,6 +1033,12 @@ begin
 		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
+			
+		/*if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
+			changef = true;
+			INr.DispGroups = POrw.xClassification;
+		*/ //ToChange. Comment upper condition	
+			
 			foundgroup = false;
 			lenth = len(INr.DispGroups);
 			For(k=0;k<lenth;k=k+1) begin
@@ -1192,6 +1204,12 @@ begin
 		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
+			
+		/*if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
+			changef = true;
+			INr.DispGroups = POrw.xClassification;
+		*/ //ToChange. Comment upper condition	
+			
 			foundgroup = false;
 			lenth = len(INr.DispGroups);
 			For(k=0;k<lenth;k=k+1) begin
@@ -1315,6 +1333,12 @@ newINr.LastPurchPrice2 = POrw.Price;
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
 		end;
+		
+		/*if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
+			changef = true;
+			INr.DispGroups = POrw.xClassification;
+		end;*/ //ToChange. Comment upper condition
+		
 		if(nonblank(POrw.EAN13Code) and INr.AlternativeCode!=POrw.EAN13Code)then begin
 			changef = true;
 			INr.AlternativeCode = POrw.EAN13Code;
@@ -1458,11 +1482,13 @@ begin
 		end;
 	end;
 	
-	
-	
 	// Edit End ---------------------------------------------- Edit End
-	
-  
+
+	if(POr.OKFlag==1 and POr.CheckCurncyCode!=POr.CurncyCode)then begin	// Edit by Victor 20.11.14
+		RecordCheckError(1217,"",-1,"CheckCurncyCode");      
+    res = 1217;
+    goto LPOVcRecordCheck;
+	end;
   
   BlockLoad(SRb);
   if (long4>0) then begin
