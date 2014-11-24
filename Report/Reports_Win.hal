@@ -261,10 +261,13 @@ begin
     EditFieldTL(h,v+=vs, 150,"Филиал",   M4UStr,Normal,20,f6,false,CUSClass);
     EditFieldTL(h,v+=vs, 100,"Класс сч. ресторана",   M4UStr,Normal,10,LastAcc,false,RestAccClassSClass);
   end;*/ // Edit ***** 19 June 2013 09:16:00 Larisa
-  ButtonFrame(h,vm=(v+=41),150,1,"Сортировка");
+  ButtonFrame(h=30,vm=(v+=41),150,1,"Сортировка");
   RadioButton(h,v,0,0,"Наибольший оборот",ArtMode);
   RadioButton(h,v+=16,1,0,"Наиболее продаваемые",ArtMode); // Edit ***** 19 June 2013 15:13:00 Larisa
   RadioButton(h,v+=16,2,0,"Наименее продаваемые",ArtMode);
+  RadioButton(h,v+=16,3,0,"Не продаваемые",ArtMode);	// Edit by Victor 21.11.14
+  CheckBox(h+110,v,0,"В наличии",flags[2]);
+  
   CheckBox(h,v+=30,0,"Включить непроданные товары",flags[1]); // Edit ***** 19 June 2013 09:16:00 Larisa
   //CheckBox(h,v+=16,0,"Показывать варианты",flags[2]); // Edit ***** 19 June 2013 09:16:00 Larisa
   EndWindow;

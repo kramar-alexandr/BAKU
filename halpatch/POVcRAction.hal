@@ -851,15 +851,14 @@ newINr.LastPurchPrice2 = POrw.Price;
 	if(found==true)then begin
 		recordcopy(IN2r,INr);
 		changef = false;
-		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+		/*if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+			changef = true;
+			INr.DispGroups = POrw.xClassification;*/
+			
+		if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
-			
-		/*if(nonblank(POrw.xClassification) and blank(INr.DispGroups))then begin	// Edit by Victor 21.11.14
-			changef = true;
-			INr.DispGroups = POrw.xClassification;
-		*/ //ToChange. Comment upper condition	
-			
+				
 			foundgroup = false;
 			lenth = len(INr.DispGroups);
 			For(k=0;k<lenth;k=k+1) begin
