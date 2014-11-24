@@ -793,20 +793,8 @@ begin
 												outstring(122,0,IVrw.Price,false);//basecur
 											end;
 										end else  begin //Edit***************************Sasha2,11:17 20.11.2014 {
-											if(bcur!="AZN")then begin
-										if (IVrw.ArtCode=="1079448") then begin
-											LogText(0,"Price row = " & IVrw.Price * 100);
-											LogText(0,"index = " & valscnt);
-											LogText(0,"Price arrvals bef = " & arrvals[valscnt]);
-										end;
-												arrvals[valscnt] = arrvals[valscnt] + IVrw.Price;
-												
-										if (IVrw.ArtCode=="1079448") then begin
-											LogText(0,"Price arrvals aft = " & arrvals[valscnt]);
-										end;		
-												
-												valscnt = valscnt + 1;
-
+											if(bcur!="AZN")then begi
+												arrvals[valscnt] = arrvals[valscnt] + IVrw.Price; valscnt = valscnt + 1;
 											end;
 										end; //Edit***************************Sasha2,11:18 20.11.2014 }
 										
@@ -922,9 +910,6 @@ begin
 							outstring(22,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //curprice
 							outstring(23,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
 							if(bcur!="AZN")then begin
-							if (IVrw.ArtCode=="1079448") then begin
-								LogText(0,"Price = " & arrvals[valscnt]);
-							end;
 								outstring(24,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price
 							end;
 							outstring(25,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm
