@@ -6448,7 +6448,7 @@ begin
   UseView(ItemHistVc);
   RecordList(4,17,-21,-39);
   RlColKey(4,2,"Item Code",ArtCode,false,ArtCode);
-  RlColKey(80,80, "File Name",FileName,false,FutArtFile);
+  RlColKey(80,80, "File Name1",FileName,false,FNTransNr);// Edit ************************** Thursday, 20 November 2014 09:42:10
   RlCol(160,160, "Trans. No.",TransNr,false);
   RlCol(240,240, "Row",Row,false);
   RlColKey(300,300, "Trans. Date",TransDate,false,TransDate);

@@ -5741,7 +5741,7 @@ begin
 end;
 
 window ItemHistLClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Item History",ItemHistLClass,CGmlist,-);
   SpawnClass(ItemHistDClass);
