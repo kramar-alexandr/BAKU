@@ -187,6 +187,7 @@ begin
   SString(31094,"Qty ballance"); //Остаток к-ва
   SString(31095,"Cost total"); //Сумма себестоимости
   SString(31096,"Price total"); //Сумма цена
+  SString(31097,"Location(Store)"); //Склад(магазин)
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

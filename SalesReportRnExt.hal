@@ -329,18 +329,55 @@ begin
 return;
 end;
 
+//Edit***************************Sasha2,17:31 19.11.2014 {
+function integer CalculateCoef(var record IVVc IV2r,var integer coefcnt,string item,string location,var Boolean iteminf,integer arrsize)
+begin
+  Integer i,rwcnt,coefv,pos;
+  row IVVc IV2rw;
+  Boolean foundf;
+  
+  foundf = false;
+  iteminf = false;
+  rwcnt = MatRowCnt(IV2r);
+  for (i=0;i<rwcnt;i=i+1) begin
+  	MatRowGet(IV2r,i,IV2rw);
+    if (item==IV2rw.ArtCode and location==IV2rw.Location) then begin
+      pos = i;
+      coefv = IV2rw.Quant;
+      foundf = true;
+      iteminf = true;
+      i = rwcnt;
+      IV2rw.Sum = IV2rw.Sum + 1;
+    end;
+  end;
+  if (foundf==false) then begin
+    IV2rw.ArtCode = item;
+    IV2rw.Location = location;
+    IV2rw.Quant = coefcnt*arrsize;
+    coefv = coefcnt*arrsize;
+    coefcnt = coefcnt + 1;
+    pos = rwcnt;
+    IV2rw.Sum = 1;
+  end;
+  MatRowPut(IV2r,pos,IV2rw);
+  
+  CalculateCoef = coefv;
+  
+  return;
+end; //Edit***************************Sasha2,17:32 19.11.2014 }
+
 global
 procedure SalesReportExtRn(record RcVc RepSpec)
 begin
   record LocalMachineVc LMr;
   Date sd,ed;
   Boolean TrHs,testf;
-  record IVVc IVr;
+  record IVVc IVr,IV2r;
   row IVVc IVrw;
-  integer i,keyi,mtrw,k;
+  integer i,keyi,mtrw,k,j;
   string 20 keystr;
   record INVc INr;
-  string 100 classname,classcode;
+  string 100 classname,classname2,classcode; //Edit***************************Sasha2,11:14 20.11.2014
   record DIVc DIr;
   val brandfifo;
   string 5 brandcur;
@@ -351,9 +388,9 @@ begin
   boolean testf1,userlocation;
   string 50 location,tstr;
   record UserVc User;
-  integer pos;
+  integer pos,headrow;
   string 50 uloc;
-  boolean updst;
+  boolean updst,modef;
 	val total_rebate,total_rebate_qty;//Edit***********************Vitalii 14:28 26.08.2014
   val total_qty;
   val total_cost,total_price,total_gp;
@@ -364,19 +401,65 @@ begin
   val bfr,bto;
   val aznfr,aznto,fifoazn;
   val btotal_cost,btotal_price,btotal_gp;
+  array val arrvals; //Edit***************************Sasha2,10:46 20.11.2014
+  array string 20 strs; //Edit***************************Sasha2,10:46 20.11.2014
+  integer valscnt,strscnt,coefval,coefcnt,arrsize; //Edit***************************Sasha2,12:11 20.11.2014
+  val tval; //Edit***************************Sasha2,12:11 20.11.2014
+  boolean iteminf;
   
   blockload(BCb);
   bcur = BCb.BaseCur1;
 	azn = "AZN";
+	headrow = 2;
   //SetLangMode(LangRussian,"RUS",0);
   		
   	
-    StartReportNoHeaderJob(USetStr(31041));
+    StartReportJob(USetStr(31041)); //Edit***************************Sasha2,16:57 19.11.2014 {
     
     sd = RepSpec.sStartDate;
     ed = RepSpec.sEndDate;
     location = RepSpec.f1;
-  
+    
+    Header(headrow,USetStr(13835) & sd & ":" & ed,0);
+    headrow = headrow + 1;
+    
+    if (NonBlank(location)) then begin
+  		Header(headrow,USetStr(31097) & ": " & location,0);
+  	end else begin
+  		Header(headrow,USetStr(31097) & ": " & USetStr(12727),0);
+  	end;
+  	headrow = headrow + 1;
+  	
+  	if (NonBlank(RepSpec.f2)) then begin
+  		Header(headrow,USetStr(11605) & RepSpec.f2,0);
+  	end else begin
+  		Header(headrow,USetStr(11605) & USetStr(12727),0);
+  	end;
+    headrow = headrow + 1;
+    
+    if (NonBlank(RepSpec.f4)) then begin
+  		Header(headrow,USetStr(31044) & ": " & RepSpec.f4,0);
+  	end else begin
+  		Header(headrow,USetStr(31044) & ": " & USetStr(12727),0);
+  	end;
+  	headrow = headrow + 1;
+  	
+  	if (NonBlank(RepSpec.f5)) then begin
+  		Header(headrow,USetStr(8833) & ": " & RepSpec.f5,0);
+  	end else begin
+  		Header(headrow,USetStr(8833) & ": " & USetStr(12727),0);
+  	end;
+  	headrow = headrow + 1;
+  	
+  	EndHeader; //Edit***************************Sasha2,16:57 19.11.2014 }
+  	
+  	if (RepSpec.ArtMode==0) then begin
+  		modef = true;
+  	end else begin
+  		modef = false;
+  		RECORDNEW(IV2r);
+  	end;
+
   
 		userlocation = false;
 		User.Code = currentuser;
@@ -467,6 +550,8 @@ begin
 				btotal_cost = 0;
 				btotal_price = 0;
 				btotal_gp = 0;
+				coefcnt = 0; //Edit***************************Sasha2,11:41 20.11.2014
+				arrsize = 20; //Edit***************************Sasha2,17:19 21.11.2014
 
 				
 				IVr.TransDate = sd;
@@ -479,7 +564,7 @@ begin
 				end;
 			
 				TrHs =true;
-				while(loopkey(keystr,IVr,keyi,TrHs))begin
+				while(loopkey(keystr,IVr,keyi,TrHs)) begin
 					testf = true;
 					if(IVr.InvDate<sd)then begin testf = false; end;
 					if(IVr.InvDate>ed)then begin TrHs = false; testf = false; end;
@@ -511,66 +596,111 @@ begin
 								if(nonblank(RepSpec.f2))then begin
 									testf1=SetInSet2(RepSpec.f2,INr.DispGroups);
 								end;
-									if(testf1)then begin
-										if(nonblank(RepSpec.f4) or nonblank(RepSpec.f5))then begin
-											brand = "";
-											model = "";
-											pos = 0;
-											classfind = "";
+								if(testf1)then begin
+									if(nonblank(RepSpec.f4) or nonblank(RepSpec.f5))then begin
+										brand = "";
+										model = "";
+										pos = 0;
+										classfind = "";
+										ExtractObj(INr.DispGroups,pos,classfind);
+										while(nonblank(classfind)) begin
+											DIr.Code = classfind;
+											readfirstmain(DIr,1,true);
+											if(DIr.CType=="BRAND")then begin
+												brand = DIr.Code;
+											end;
+											if(DIr.CType=="MODEL")then begin
+												model = DIr.Code;
+											end;
 											ExtractObj(INr.DispGroups,pos,classfind);
-											while(nonblank(classfind))begin
-												DIr.Code = classfind;
-												readfirstmain(DIr,1,true);
-												if(DIr.CType=="BRAND")then begin
-													brand = DIr.Code;
-												end;
-												if(DIr.CType=="MODEL")then begin
-													model = DIr.Code;
-												end;
-												ExtractObj(INr.DispGroups,pos,classfind);
-											end;
-											if(nonblank(RepSpec.f4) and brand!=RepSpec.f4)then begin
-												testf1 = false;
-											end;
-											if(nonblank(RepSpec.f5) and model!=RepSpec.f5)then begin
-												testf1 = false;
-											end;
+										end;
+										if(nonblank(RepSpec.f4) and brand!=RepSpec.f4)then begin
+											testf1 = false;
+										end;
+										if(nonblank(RepSpec.f5) and model!=RepSpec.f5)then begin
+											testf1 = false;
 										end;
 									end;
+								end;
 								
-								if(testf1)then begin
-									startformat(15);
-										outstring(0,0,IVrw.ArtCode,false);
-										outstring(0,0,INr.AlternativeCode,false);
-										outstring(0,0,IVr.Location,false);
-										classname = "";
-										k=0;
-										ExtractObj(INr.DispGroups,k,classcode);
-										DIr.Code = classcode;
-										readfirstmain(DIr,1,true);
-										classname = DIr.Name;
-										outstring(0,0,classname,false);
-										classname = "";
-										ExtractObj(INr.DispGroups,k,classcode);
-										DIr.Code = classcode;
-										readfirstmain(DIr,1,true);
-										classname = DIr.Name;
-										outstring(0,0,classname,false);
-										outstring(0,0,prepareStr(IVrw.Spec),false);
-										outstring(0,0,INr.Reference,false);
-										outstring(0,0,INr.Metal,false);
-										outstring(0,0,INr.RowWeight,false);
-										outstring(0,0,INr.MajStoneDet,false);
-										if(currentcompany==3)then begin
-											outstring(0,0,INr.BrcStr,false);
-											outstring(0,0,INr.Gender,false);
-										end;
-										outstring(0,0,IVrw.SerialNr,false);
-										outstring(0,0,INr.BarCode,false);
-										outstring(0,0,INr.EKNCode,false);
-										outstring(0,0,IVrw.Quant,false);
-										total_qty = total_qty + IVrw.Quant;
+								if(testf1) then begin
+									if (modef) then begin
+										startformat(15);
+									end;
+										if (modef) then begin
+											outstring(0,0,IVrw.ArtCode,false);
+											outstring(0,0,INr.AlternativeCode,false);
+											outstring(0,0,IVr.Location,false);
+											classname = "";
+											k=0;
+											ExtractObj(INr.DispGroups,k,classcode);
+											DIr.Code = classcode;
+											readfirstmain(DIr,1,true);
+											classname = DIr.Name;
+											outstring(0,0,classname,false);
+											classname2 = "";
+											ExtractObj(INr.DispGroups,k,classcode);
+											DIr.Code = classcode;
+											readfirstmain(DIr,1,true);
+											classname2 = DIr.Name;
+											outstring(0,0,classname2,false);
+											outstring(0,0,prepareStr(IVrw.Spec),false);
+											outstring(0,0,INr.Reference,false);
+											outstring(0,0,INr.Metal,false);
+											outstring(0,0,INr.RowWeight,false);
+											outstring(0,0,INr.MajStoneDet,false);
+											if(currentcompany==3)then begin
+												outstring(0,0,INr.BrcStr,false);
+												outstring(0,0,INr.Gender,false);
+											end;
+											outstring(0,0,IVrw.SerialNr,false);
+											outstring(0,0,INr.BarCode,false);
+											outstring(0,0,INr.EKNCode,false);
+											outstring(0,0,IVrw.Quant,false);
+										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											coefval = CalculateCoef(IV2r,coefcnt,IVrw.ArtCode,IVr.Location,iteminf,arrsize);
+											valscnt = coefval;
+											strscnt = coefval;
+											if (iteminf==false) then begin
+												/*for (j=coefval;j<(coefval + arrsize);j=j+1) begin
+													arrvals[j] = 0;
+												end;*/
+												strs[strscnt] = IVrw.ArtCode; strscnt = strscnt + 1;
+												strs[strscnt] = INr.AlternativeCode; strscnt = strscnt + 1;
+												strs[strscnt] = IVr.Location; strscnt = strscnt + 1;
+												classname = "";
+												k=0;
+												ExtractObj(INr.DispGroups,k,classcode);
+												DIr.Code = classcode;
+												readfirstmain(DIr,1,true);
+												classname = DIr.Name;
+												strs[strscnt] = classname; strscnt = strscnt + 1;
+												classname2 = "";
+												ExtractObj(INr.DispGroups,k,classcode);
+												DIr.Code = classcode;
+												readfirstmain(DIr,1,true);
+												classname2 = DIr.Name;
+												strs[strscnt] = classname2; strscnt = strscnt + 1;
+												strs[strscnt] = prepareStr(IVrw.Spec); strscnt = strscnt + 1;
+												strs[strscnt] = INr.Reference; strscnt = strscnt + 1; strs[strscnt] = INr.Metal; strscnt = strscnt + 1; strs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
+												strs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
+												if(currentcompany==3)then begin
+													strs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
+													strs[strscnt] = INr.Gender; strscnt = strscnt + 1;
+												end;
+												strs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
+												strs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
+											end else begin
+												if(currentcompany==3)then begin
+													strscnt = strscnt + 14;
+												end else begin
+													strscnt = strscnt + 12;
+												end;
+											end;
+											arrvals[valscnt] = arrvals[valscnt] + IVrw.Quant; valscnt = valscnt + 1;
+										end; //Edit***************************Sasha2,11:18 20.11.2014 }
 										
+										total_qty = total_qty + IVrw.Quant;
 										fr = IVr.FrRate;
 										to1 = IVr.ToRateB1;
 										if(fr==0 or to1==0)then begin
@@ -605,24 +735,37 @@ begin
 										end;
 										fifoazn = fifob1*aznfr/aznto;
 										
-										outstring(100,0,brandfifo,false);//brandcur
-										outstring(101,0,fifoazn,false);//AZN
-										if(bcur!="AZN")then begin
-											outstring(102,0,fifob1,false);//basecur
-										end;
-										outstring(110,0,brandfifo*IVrw.Quant,false);//brandcur
-										outstring(111,0,fifoazn*IVrw.Quant,false);//AZN
-										if(bcur!="AZN")then begin
-											outstring(112,0,fifob1*IVrw.Quant,false);//basecur
-										end;
+										if (modef) then begin
+											outstring(100,0,brandfifo,false);//brandcur
+											outstring(101,0,fifoazn,false);//AZN
+											if(bcur!="AZN")then begin
+												outstring(102,0,fifob1,false);//basecur
+											end;
+											outstring(110,0,brandfifo*IVrw.Quant,false);//brandcur
+											outstring(111,0,fifoazn*IVrw.Quant,false);//AZN
+											if(bcur!="AZN")then begin
+												outstring(112,0,fifob1*IVrw.Quant,false);//basecur
+											end;
+										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											arrvals[valscnt] = arrvals[valscnt] + brandfifo; valscnt = valscnt + 1;
+											arrvals[valscnt] = arrvals[valscnt] + fifoazn; valscnt = valscnt + 1;
+											if(bcur!="AZN")then begin
+												arrvals[valscnt] = arrvals[valscnt] + fifob1; valscnt = valscnt + 1;
+											end;
+											arrvals[valscnt] = arrvals[valscnt] + brandfifo*IVrw.Quant; valscnt = valscnt + 1;
+											arrvals[valscnt] = arrvals[valscnt] + fifoazn*IVrw.Quant; valscnt = valscnt + 1;
+											if(bcur!="AZN")then begin
+												arrvals[valscnt] = arrvals[valscnt] + fifob1*IVrw.Quant; valscnt = valscnt + 1;
+											end;
+										end; //Edit***************************Sasha2,11:18 20.11.2014 }
 										
 										GetFullCurncyRate(brandcur,IVr.TransDate,fr,to1,to2,br1,br2);
 										if(fr==0 or to1==0)then begin
 											fr = 1; to1 = 1;
 										end;
-										if(fr==0 or to1==0)then begin
+										/*if(fr==0 or to1==0)then begin
 											fr = 1; to1 = 1;
-										end;
+										end;*/
 										bfr = IVr.FrRate;
 										bto = IVr.ToRateB1;
 										if(bfr==0 or bto==0)then begin
@@ -633,62 +776,169 @@ begin
 										total_cost = total_cost + fifoazn*IVrw.Quant;
 										btotal_cost = btotal_cost + fifob1*IVrw.Quant;
 										
-										
-										
 										curprice = round(IVrw.Price*fr/to1,SetRoundModeD(1));
 										
-										outstring(120,0,curprice,false);//brandcur
-										outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+										if (modef) then begin
+											outstring(120,0,curprice,false);//brandcur
+											outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											arrvals[valscnt] = arrvals[valscnt] + curprice; valscnt = valscnt + 1;
+											arrvals[valscnt] = arrvals[valscnt] + IVrw.Price*aznfr/aznto; valscnt = valscnt + 1;
+										end; //Edit***************************Sasha2,11:18 20.11.2014 }
+										
 										total_rebate = total_rebate + IVrw.Price*aznfr/aznto*IVrw.Quant;// Edit ************************** Wednesday, 22 October 2014 16:43:55
 										
-										if(bcur!="AZN")then begin
-											Outstring(122,0,IVrw.Price,false);//basecur
+										if (modef) then begin
+											if(bcur!="AZN")then begin
+												outstring(122,0,IVrw.Price,false);//basecur
+											end;
+										end else  begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											if(bcur!="AZN")then begin
+										if (IVrw.ArtCode=="1079448") then begin
+											LogText(0,"Price row = " & IVrw.Price * 100);
+											LogText(0,"index = " & valscnt);
+											LogText(0,"Price arrvals bef = " & arrvals[valscnt]);
 										end;
+												arrvals[valscnt] = arrvals[valscnt] + IVrw.Price;
+												
+										if (IVrw.ArtCode=="1079448") then begin
+											LogText(0,"Price arrvals aft = " & arrvals[valscnt]);
+										end;		
+												
+												valscnt = valscnt + 1;
+
+											end;
+										end; //Edit***************************Sasha2,11:18 20.11.2014 }
+										
 										curcusm = round(IVrw.Sum*fr/to1,SetRoundModeD(1));
-										outstring(130,0,curcusm,false);//brandcur
-										outstring(131,0,IVrw.Sum*aznfr/aznto,false);//AZN
+										
+										if (modef) then begin
+											outstring(130,0,curcusm,false);//brandcur
+											outstring(131,0,IVrw.Sum*aznfr/aznto,false);//AZN
+										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											arrvals[valscnt] = arrvals[valscnt] + curcusm; valscnt = valscnt + 1;
+											arrvals[valscnt] = arrvals[valscnt] + IVrw.Sum*aznfr/aznto; valscnt = valscnt + 1;
+										end; //Edit***************************Sasha2,11:17 20.11.2014 }
+										
 										total_rebate_qty = total_rebate_qty + IVrw.Sum*aznfr/aznto;// Edit ************************** Wednesday, 22 October 2014 16:44:51
-										if(bcur!="AZN")then begin
-											outstring(132,0,IVrw.Sum,false);//basecur
-										end;
+										if (modef) then begin
+											if(bcur!="AZN")then begin
+												outstring(132,0,IVrw.Sum,false);//basecur
+											end;
+										end else  begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											if(bcur!="AZN")then begin
+												arrvals[valscnt] = arrvals[valscnt] + IVrw.Sum; valscnt = valscnt + 1;
+											end;
+										end; //Edit***************************Sasha2,11:17 20.11.2014 {
 										
 										total_price = total_price + IVrw.Sum*aznfr/aznto;
 										btotal_price = btotal_price + IVrw.Sum;
 										
-										outstring(140,0,curcusm - brandfifo*IVrw.Quant,false);//brandcur
-										outstring(141,0,IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto,false);//AZN
-										if(bcur!="AZN")then begin
-											outstring(142,0,IVrw.Sum - fifob1*IVrw.Quant,false);//basecur
-										end;
+										if (modef) then begin
+											outstring(140,0,curcusm - brandfifo*IVrw.Quant,false);//brandcur
+											outstring(141,0,IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto,false);//AZN
+											if(bcur!="AZN")then begin
+												outstring(142,0,IVrw.Sum - fifob1*IVrw.Quant,false);//basecur
+											end;
+											outstring(0,0,brandcur,false);
+											outstring(0,0,IVr.CustCode,false);
+											outstring(0,0,IVr.Addr0,false);
+											outstring(0,0,IVrw.vRebate,false);
+											//total_rebate = total_rebate + IVrw.vRebate*AbsoluteVal(IVrw.Quant);//Edit***********************Vitalii 14:28 26.08.2014
+											/*if(IVrw.vRebate!=0)then begin
+												total_rebate_qty = total_rebate_qty + AbsoluteVal(IVrw.Quant);											
+											end;*/
+											outstring(0,0,IVr.SalesMan,false);
+											outstring(0,0,IVr.TransDate,false);
+											outstring(0,0,IVr.PayDeal,false);
+											outstring(0,0,IVr.InvComment,false);
+										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
+											arrvals[valscnt] = arrvals[valscnt] + (curcusm - brandfifo*IVrw.Quant); valscnt = valscnt + 1;
+											arrvals[valscnt] = arrvals[valscnt] + (IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto); valscnt = valscnt + 1;
+											if(bcur!="AZN")then begin
+												arrvals[valscnt] = arrvals[valscnt] + (IVrw.Sum - fifob1*IVrw.Quant); valscnt = valscnt + 1;
+											end;
+											strs[strscnt] = brandcur; strscnt = strscnt + 1;
+										end; //Edit***************************Sasha2,11:17 20.11.2014 }
 										
-										outstring(0,0,brandcur,false);
-										outstring(0,0,IVr.CustCode,false);
-										outstring(0,0,IVr.Addr0,false);
-										outstring(0,0,IVrw.vRebate,false);
-										//total_rebate = total_rebate + IVrw.vRebate*AbsoluteVal(IVrw.Quant);//Edit***********************Vitalii 14:28 26.08.2014
-										/*if(IVrw.vRebate!=0)then begin
-											total_rebate_qty = total_rebate_qty + AbsoluteVal(IVrw.Quant);											
-										end;*/
-										outstring(0,0,IVr.SalesMan,false);
-										outstring(0,0,IVr.TransDate,false);
-										outstring(0,0,IVr.PayDeal,false);
-										outstring(0,0,IVr.InvComment,false);
-										
-										
-										if(currentcompany==9)then begin
-											if(IVr.OrderNr>-1)then begin
-												ORr.SerNr = IVr.OrderNr;
-												readfirstmain(ORr,1,true);
-												if(nonblank(ORr.OrderClass))then begin
-													outstring(0,0,ORr.OrderClass,false);
+										if (modef) then begin //Edit***************************Sasha2,11:17 20.11.2014	
+											if(currentcompany==9)then begin
+												if(IVr.OrderNr>-1)then begin
+													ORr.SerNr = IVr.OrderNr;
+													readfirstmain(ORr,1,true);
+													if(nonblank(ORr.OrderClass))then begin
+														outstring(0,0,ORr.OrderClass,false);
+													end;
 												end;
 											end;
-										end;	
-										outstring(0,0,tstr,false);									
-									endformat;
+											outstring(0,0,tstr,false);
+										end;
+										
+									if (modef) then begin	//Edit***************************Sasha2,11:12 20.11.2014								
+										endformat;
+									end;
 								end;
 							end;
 						end; 
+					end;
+				end;
+				
+				if (modef==false) then begin
+					mtrw = matrowcnt(IV2r);
+					for (i=0;i<mtrw;i=i+1) begin
+						matrowget(IV2r,i,IVrw);
+						valscnt = IVrw.Quant;
+						strscnt = IVrw.Quant;
+						tval = IVrw.Sum;
+						startformat(15);
+							outstring(1,0,strs[strscnt],false); strscnt = strscnt + 1; //IVrw.ArtCode
+							outstring(2,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.AlternativeCode
+							outstring(3,0,strs[strscnt],false); strscnt = strscnt + 1; //IVr.Location
+							outstring(4,0,strs[strscnt],false); strscnt = strscnt + 1; //classname
+							outstring(5,0,strs[strscnt],false); strscnt = strscnt + 1; //classname2
+							outstring(6,0,strs[strscnt],false); strscnt = strscnt + 1; //prepareStr(IVrw.Spec)
+							outstring(7,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Reference
+							outstring(8,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
+							outstring(9,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
+							outstring(10,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
+							if(currentcompany==3)then begin
+								outstring(11,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
+								outstring(12,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
+							end;
+							outstring(13,0,"",false); //IVrw.SerialNr
+							outstring(13,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.BarCode
+							outstring(14,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
+							outstring(15,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Quant
+							outstring(16,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //brandfifo
+							outstring(17,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //fifoazn
+							if(bcur!="AZN")then begin
+								outstring(18,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //fifob1
+							end;
+							outstring(19,0,arrvals[valscnt],false); valscnt = valscnt + 1; //brandfifo*IVrw.Quant
+							outstring(20,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifoazn*IVrw.Quant
+							if(bcur!="AZN")then begin
+								outstring(21,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifob1*IVrw.Quant
+							end;
+							outstring(22,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //curprice
+							outstring(23,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
+							if(bcur!="AZN")then begin
+							if (IVrw.ArtCode=="1079448") then begin
+								LogText(0,"Price = " & arrvals[valscnt]);
+							end;
+								outstring(24,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price
+							end;
+							outstring(25,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm
+							outstring(26,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto
+							if(bcur!="AZN")then begin
+								outstring(27,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum
+							end;
+							outstring(28,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm - brandfifo*IVrw.Quant
+							outstring(29,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto
+							if(bcur!="AZN")then begin
+								outstring(30,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum - fifob1*IVrw.Quant
+							end;
+							outstring(31,0,strs[strscnt],false); strscnt = strscnt + 1; //brandcur
+						endformat;
 					end;
 				end;
 								

@@ -137,7 +137,7 @@ RETURN;
 END;
 
 global
-procedure ClearStringArray(integer maxcnt, var array string cleararray)
+procedure ClearStringArr(integer maxcnt, var array string cleararray)
 begin
 integer i;
 
@@ -145,8 +145,8 @@ integer i;
     cleararray[i] = "";
   end;
 
-RETURN;
-END;
+return;
+end;
 
 global
 procedure PecuniaryRClassReportDefaults(Integer wn)
