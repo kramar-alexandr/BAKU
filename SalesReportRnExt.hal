@@ -330,7 +330,7 @@ return;
 end;
 
 //Edit***************************Sasha2,17:31 19.11.2014 {
-function integer CalculateCoef(var record IVVc IV2r,var integer coefcnt,string item,string location,var Boolean iteminf,integer arrsize)
+function integer CalculateCoef(var record IVVc IV2r,var integer rangecnt,string item,string location,var Boolean iteminf,integer arrsize)
 begin
   Integer i,rwcnt,coefv,pos;
   row IVVc IV2rw;
@@ -353,9 +353,9 @@ begin
   if (foundf==false) then begin
     IV2rw.ArtCode = item;
     IV2rw.Location = location;
-    IV2rw.Quant = coefcnt*arrsize;
-    coefv = coefcnt*arrsize;
-    coefcnt = coefcnt + 1;
+    IV2rw.Quant = rangecnt*arrsize;
+    coefv = rangecnt*arrsize;
+    rangecnt = rangecnt + 1;
     pos = rwcnt;
     IV2rw.Sum = 1;
   end;
@@ -402,9 +402,9 @@ begin
   val aznfr,aznto,fifoazn;
   val btotal_cost,btotal_price,btotal_gp;
   array val arrvals; //Edit***************************Sasha2,10:46 20.11.2014
-  array string 20 strs; //Edit***************************Sasha2,10:46 20.11.2014
-  integer valscnt,strscnt,coefval,coefcnt,arrsize; //Edit***************************Sasha2,12:11 20.11.2014
-  val tval; //Edit***************************Sasha2,12:11 20.11.2014
+  array string 20 arrstrs; //Edit***************************Sasha2,10:46 20.11.2014
+  integer valscnt,strscnt,rangeval,rangecnt,arrsize; //Edit***************************Sasha2,12:11 20.11.2014
+  val itemoccurrences; //Edit***************************Sasha2,12:11 20.11.2014
   boolean iteminf;
   
   blockload(BCb);
@@ -550,7 +550,7 @@ begin
 				btotal_cost = 0;
 				btotal_price = 0;
 				btotal_gp = 0;
-				coefcnt = 0; //Edit***************************Sasha2,11:41 20.11.2014
+				rangecnt = 0; //Edit***************************Sasha2,11:41 20.11.2014
 				arrsize = 20; //Edit***************************Sasha2,17:19 21.11.2014
 
 				
@@ -658,38 +658,37 @@ begin
 											outstring(0,0,INr.EKNCode,false);
 											outstring(0,0,IVrw.Quant,false);
 										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
-											coefval = CalculateCoef(IV2r,coefcnt,IVrw.ArtCode,IVr.Location,iteminf,arrsize);
-											valscnt = coefval;
-											strscnt = coefval;
+											rangeval = CalculateCoef(IV2r,rangecnt,IVrw.ArtCode,IVr.Location,iteminf,arrsize);
+											valscnt = rangeval;
+											strscnt = rangeval;
 											if (iteminf==false) then begin
-												/*for (j=coefval;j<(coefval + arrsize);j=j+1) begin
-													arrvals[j] = 0;
-												end;*/
-												strs[strscnt] = IVrw.ArtCode; strscnt = strscnt + 1;
-												strs[strscnt] = INr.AlternativeCode; strscnt = strscnt + 1;
-												strs[strscnt] = IVr.Location; strscnt = strscnt + 1;
+												arrstrs[strscnt] = IVrw.ArtCode; strscnt = strscnt + 1;
+												arrstrs[strscnt] = INr.AlternativeCode; strscnt = strscnt + 1;
+												arrstrs[strscnt] = IVr.Location; strscnt = strscnt + 1;
 												classname = "";
 												k=0;
 												ExtractObj(INr.DispGroups,k,classcode);
 												DIr.Code = classcode;
 												readfirstmain(DIr,1,true);
 												classname = DIr.Name;
-												strs[strscnt] = classname; strscnt = strscnt + 1;
+												arrstrs[strscnt] = classname; strscnt = strscnt + 1;
 												classname2 = "";
 												ExtractObj(INr.DispGroups,k,classcode);
 												DIr.Code = classcode;
 												readfirstmain(DIr,1,true);
 												classname2 = DIr.Name;
-												strs[strscnt] = classname2; strscnt = strscnt + 1;
-												strs[strscnt] = prepareStr(IVrw.Spec); strscnt = strscnt + 1;
-												strs[strscnt] = INr.Reference; strscnt = strscnt + 1; strs[strscnt] = INr.Metal; strscnt = strscnt + 1; strs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
-												strs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
+												arrstrs[strscnt] = classname2; strscnt = strscnt + 1;
+												arrstrs[strscnt] = prepareStr(IVrw.Spec); strscnt = strscnt + 1;
+												arrstrs[strscnt] = INr.Reference; strscnt = strscnt + 1; 
+												arrstrs[strscnt] = INr.Metal; strscnt = strscnt + 1; 
+												arrstrs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
+												arrstrs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
 												if(currentcompany==3)then begin
-													strs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
-													strs[strscnt] = INr.Gender; strscnt = strscnt + 1;
+													arrstrs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
+													arrstrs[strscnt] = INr.Gender; strscnt = strscnt + 1;
 												end;
-												strs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
-												strs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
+												arrstrs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
+												arrstrs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
 											end else begin
 												if(currentcompany==3)then begin
 													strscnt = strscnt + 14;
@@ -793,7 +792,7 @@ begin
 												outstring(122,0,IVrw.Price,false);//basecur
 											end;
 										end else  begin //Edit***************************Sasha2,11:17 20.11.2014 {
-											if(bcur!="AZN")then begi
+											if(bcur!="AZN")then begin
 												arrvals[valscnt] = arrvals[valscnt] + IVrw.Price; valscnt = valscnt + 1;
 											end;
 										end; //Edit***************************Sasha2,11:18 20.11.2014 }
@@ -846,7 +845,7 @@ begin
 											if(bcur!="AZN")then begin
 												arrvals[valscnt] = arrvals[valscnt] + (IVrw.Sum - fifob1*IVrw.Quant); valscnt = valscnt + 1;
 											end;
-											strs[strscnt] = brandcur; strscnt = strscnt + 1;
+											arrstrs[strscnt] = brandcur; strscnt = strscnt + 1;
 										end; //Edit***************************Sasha2,11:17 20.11.2014 }
 										
 										if (modef) then begin //Edit***************************Sasha2,11:17 20.11.2014	
@@ -877,40 +876,40 @@ begin
 						matrowget(IV2r,i,IVrw);
 						valscnt = IVrw.Quant;
 						strscnt = IVrw.Quant;
-						tval = IVrw.Sum;
+						itemoccurrences = IVrw.Sum;
 						startformat(15);
-							outstring(1,0,strs[strscnt],false); strscnt = strscnt + 1; //IVrw.ArtCode
-							outstring(2,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.AlternativeCode
-							outstring(3,0,strs[strscnt],false); strscnt = strscnt + 1; //IVr.Location
-							outstring(4,0,strs[strscnt],false); strscnt = strscnt + 1; //classname
-							outstring(5,0,strs[strscnt],false); strscnt = strscnt + 1; //classname2
-							outstring(6,0,strs[strscnt],false); strscnt = strscnt + 1; //prepareStr(IVrw.Spec)
-							outstring(7,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Reference
-							outstring(8,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
-							outstring(9,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
-							outstring(10,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
+							outstring(1,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //IVrw.ArtCode
+							outstring(2,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.AlternativeCode
+							outstring(3,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //IVr.Location
+							outstring(4,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //classname
+							outstring(5,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //classname2
+							outstring(6,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //prepareStr(IVrw.Spec)
+							outstring(7,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Reference
+							outstring(8,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
+							outstring(9,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
+							outstring(10,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
 							if(currentcompany==3)then begin
-								outstring(11,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
-								outstring(12,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
+								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
+								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
 							end;
 							outstring(13,0,"",false); //IVrw.SerialNr
-							outstring(13,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.BarCode
-							outstring(14,0,strs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
+							outstring(13,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BarCode
+							outstring(14,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
 							outstring(15,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Quant
-							outstring(16,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //brandfifo
-							outstring(17,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //fifoazn
+							outstring(16,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //brandfifo
+							outstring(17,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //fifoazn
 							if(bcur!="AZN")then begin
-								outstring(18,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //fifob1
+								outstring(18,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //fifob1
 							end;
 							outstring(19,0,arrvals[valscnt],false); valscnt = valscnt + 1; //brandfifo*IVrw.Quant
 							outstring(20,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifoazn*IVrw.Quant
 							if(bcur!="AZN")then begin
 								outstring(21,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifob1*IVrw.Quant
 							end;
-							outstring(22,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //curprice
-							outstring(23,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
+							outstring(22,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //curprice
+							outstring(23,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
 							if(bcur!="AZN")then begin
-								outstring(24,0,arrvals[valscnt]/tval,false); valscnt = valscnt + 1; //IVrw.Price
+								outstring(24,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //IVrw.Price
 							end;
 							outstring(25,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm
 							outstring(26,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto
@@ -922,7 +921,7 @@ begin
 							if(bcur!="AZN")then begin
 								outstring(30,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum - fifob1*IVrw.Quant
 							end;
-							outstring(31,0,strs[strscnt],false); strscnt = strscnt + 1; //brandcur
+							outstring(31,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //brandcur
 						endformat;
 					end;
 				end;
