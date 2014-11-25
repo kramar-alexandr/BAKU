@@ -194,6 +194,8 @@ begin
   SString(31095,"Сумма себестоимости");
   SString(31096,"Сумма цена");
   SString(31097,"Склад(магазин)");
+  SString(31098,"Вы должны подтвердить валюту заказа");
+  SString(31099,"Отпущено всего себестоимость");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

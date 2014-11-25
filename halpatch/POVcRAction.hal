@@ -1481,11 +1481,19 @@ begin
 	end;
 	
 	// Edit End ---------------------------------------------- Edit End
-
-	if(POr.OKFlag==1 and POr.CheckCurncyCode!=POr.CurncyCode)then begin	// Edit by Victor 20.11.14
-		RecordCheckError(1217,"",-1,"CheckCurncyCode");      
-    res = 1217;
-    goto LPOVcRecordCheck;
+	if(stat==updatemode)then begin
+		if(POr.OKFlag==1 and PO2r.OKFlag==0 and  POr.CheckCurncyCode!=POr.CurncyCode)then begin	// Edit by Victor 20.11.14
+			RecordCheckError(31098,"",-1,"CheckCurncyCode");      
+			res = 31098;
+			goto LPOVcRecordCheck;
+		end;
+	end;
+	if(stat==insertmode)then begin
+		if(POr.OKFlag==1 and  POr.CheckCurncyCode!=POr.CurncyCode)then begin	// Edit by Victor 20.11.14
+			RecordCheckError(31098,"",-1,"CheckCurncyCode");      
+			res = 31098;
+			goto LPOVcRecordCheck;
+		end;
 	end;
   
   BlockLoad(SRb);

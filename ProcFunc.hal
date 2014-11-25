@@ -4,7 +4,7 @@ external procedure OutCashRows(array val,array string,integer);
 remote inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external inner procedure ExtractObj(string,var Integer,var string);
 
-//SetLangMode(LangRussian,"RUS",0);
+SetLangMode(LangRussian,"RUS",0);
 
 function string 200 ParseClassification(string class)
 begin
@@ -270,7 +270,7 @@ begin
   record LocationVc Locr;
   integer sign;
   recordnew(SMr);
-  
+    
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
   
@@ -499,7 +499,7 @@ begin
             case 15:
               //if(IVr.MachineName!="SW4")then begin	
               		switch(IVrw.PayMode)begin
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
 																end;
@@ -522,7 +522,7 @@ begin
             case 16:
             		//if(IVr.MachineName!="SW4")then begin
               		switch(IVrw.PayMode)begin
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
 																end;
@@ -543,7 +543,7 @@ begin
             case 29:
             		//if(IVr.MachineName!="SW4")then begin
               		switch(IVrw.PayMode)begin
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
+									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 															if(acrncy[j]==IVrw.CurncyCode)then begin
 																cashsum[j] = cashsum[j] + IVrw.Sum;
 															end;
@@ -643,7 +643,7 @@ begin
 					ori = ori + 1;
 	  			switch(IPr.PayMode)begin
 	  				
-        		case "C1":  for(j=0;j<acrncnt;j=j+1)begin
+        		case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 													if(acrncy[j]==IPrw.BankCurncy)then begin
 														//cashsum[j] = cashsum[j] + IPrw.BankVal;
 														totcash[j] = totcash[j] + IPrw.BankVal;

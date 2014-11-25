@@ -2200,7 +2200,7 @@ if (HasTouchScreenLook==false) then begin
   EditField(h1,v+=vs,80,"Авторизация",Normal,AuthorizationCode,false,0);
   EditField(h1,v+=vs,80,"Счет дебиторов",Normal,ARAcc,false,AccSClass);
   EditField(h1,v+=vs,-20,"Комментарий",Normal,InvComment,false,0);
-  EditField(h2,v=vm,80,"Группа продаж",ViewOnly,SalesGroup,true,0);
+  EditField(h2,v=vm,80,"Группа продаж",Normal,SalesGroup,true,0);
   EditField(h2,v+=vs,80,"Язык",Normal,LangCode,false,LangSClass);
   EditField(h2,v+=vs,80,"Комиссия",Normal,Commision,true,0);
   EditField(h2,v+=vs,80,"Итого вкл. ком.",ViewOnly,SumIncCom,true,0);

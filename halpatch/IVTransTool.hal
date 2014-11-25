@@ -1150,6 +1150,8 @@ BEGIN
   record PLVc PLr;
   record ORVc ORr;
 
+
+	
   lbaserate2 = baserate2;
   CostModel = 0;
   errstrno = 1085; // Transaction could not be generated 
@@ -1401,14 +1403,19 @@ L22AddIVCostRow:;
                 end;
               end;
               if (costaccf) then begin
-                negamf = NegativeAmountsOnIVTrans(IVp.InvType,t1);                
+                negamf = NegativeAmountsOnIVTrans(IVp.InvType,t1);  
+                //messagebox(0,negamf);   
+                 //negamf = true;          
                 if (bbtrf) then begin
                   if (IVrw.BasePrice!=0) then begin
-                    t1 = IVrw.Quant*IVrw.BasePrice;
+                    t1 = -IVrw.Quant*IVrw.BasePrice;
                   end;
                 end;
                 if (CheckTTRPerRow("IVVc",CostAcc,objstr,ldc1,taccnumber,0)) then begin end;    
-                AddEuroTrRowType(gTRp,CostAcc,objstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc1,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock);
+                if(IVrw.Quant<0)then begin// Edit ************************** Tuesday, 25 November 2014 14:37:48
+                	t1 = -t1;// Edit ************************** Tuesday, 25 November 2014 14:37:50
+                end;// Edit ************************** Tuesday, 25 November 2014 14:37:49
+/****************/AddEuroTrRowType(gTRp,CostAcc,objstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc1,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock);
                 if (bbtrf) then begin
                   if (IVrw.BasePrice!=0) then begin
                     t1 = Round(IVrw.FIFORowVal,DefaultRoundMode) - t1;
@@ -1457,7 +1464,10 @@ L22AddIVCostRow:;
 
                   lobjstr = AddObjectToObjectList(lobjstr,locobjstr);
                   if (CheckTTRPerRow("IVVc",rowstockacc,lobjstr,ldc2,taccnumber,0)) then begin end;
-                  AddEuroTrRowType(gTRp,rowstockacc,lobjstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc2,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock);
+                  if(IVrw.Quant<0)then begin// Edit ************************** Tuesday, 25 November 2014 14:37:52
+										t1 = -t1;// Edit ************************** Tuesday, 25 November 2014 14:37:52
+									end;// Edit ************************** Tuesday, 25 November 2014 14:37:53
+/*--------------*/AddEuroTrRowType(gTRp,rowstockacc,lobjstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc2,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock);
                 end;
               end;
              end;
