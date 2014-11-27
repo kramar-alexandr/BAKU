@@ -6780,6 +6780,7 @@ begin
   PeriodField(h=180,v=6,"Период");
   EditFieldTL(h,v+=vs,150,"Основной счет",M4UStr,Normal,20,AccStr,false,AccSClass);// Edit ************************** Monday, 13 October 2014 16:59:58
   EditFieldTL(h,v+=vs,150,"Корресп. счет",M4UStr,Normal,20,f2,false,AccSClass);// Edit ************************** Monday, 13 October 2014 16:59:59
+  EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,20,ObjStr,false,ObjSClass);// Edit ************************** Wednesday, 26 November 2014 10:29:46
   CheckBox(h1=200,v+=30,0,"Только сальдо",ArtMode);
   CheckBox(h1,v+=16,0,"Список номеров записей операций",flags[4]);
   EndWindow;
