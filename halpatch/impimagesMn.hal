@@ -437,3 +437,44 @@ begin
 
 return;
 end;
+
+
+global updating procedure MoveRowUPInTRVcMn(record RcVc RepSpec)
+begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	boolean TrHs, testf;
+	integer mtrw,i;
+	
+	
+	TRr.IntYc=IVYc;
+	TrHs = true;
+	while(loopmain(TRr,1,TrHs))begin
+		if(TRr.IntYc!=IVYc)then begin TrHs = false; end;
+		
+		
+		if(TrHs)then begin	
+			testf = false;
+			mtrw = matrowcnt(TRr);
+			For(i=0;i<mtrw;i=i+1) begin
+				matrowget(TRr,i,TRrw);	  
+				if(TRrw.AccNumber=="51" and i>0)then begin
+					matrowdelete(TRr,i);
+					matrowinsert(TRr,0,TRrw);
+					testf = true;				
+				end;
+				matrowget(TRr,i,TRrw);	  
+				if(TRrw.AccNumber=="50" and i>0)then begin
+					matrowdelete(TRr,i);
+					matrowinsert(TRr,0,TRrw);
+					testf = true;				
+				end;
+			end; 
+			if(testf)then begin
+				recordstore(TRr,true);
+			end;
+		end;
+	end;
+	
+return;
+end;

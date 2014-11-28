@@ -43,6 +43,7 @@ begin
   Maintenance("Заполнить коллекции товаров из заказов п.",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
   Maintenance("Удалить план счетов и записи операций",FIXVClass,DellAccAndMainMn,modDBMain);
   Maintenance("Заменить счет коста во всез заказах поставщика",FIXVClass,ChangeAccInPO,modDBMain);
+  Maintenance("Поменять местами 50 счет",FIXVClass,MoveRowUPInTRVcMn,modDBMain);
   
   Maintenance("DEltodayINr",FIXVClass,DellNewINMn,modDBMain);// Edit ************************** Tuesday, 4 November 2014 18:43:39
 
