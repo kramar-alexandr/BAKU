@@ -2776,7 +2776,7 @@ RadioButton(h5,v,0,0,"No",SRUpdateCost);
   EditField(h2,v,150,"Commodity Code",Normal,EUCodex,false,CommoditySClass);
   EditField(h,v+=vs ,120,"Rental Invoicing",Normal,RentalItem,false,INSClass);
   EditField(h2,v,150,"EKN Code",Normal,EKNCode,false,0); // i think it is same as Commodity Code
-  EditField(h2,v+=vs,150,"PP Code",Normal,CPSCode,false,0);//Edited **** //ПП код
+  EditField(h2,v+=vs,150,"PKWiU Code",Normal,CPSCode,false,0);//Edited **** //ПП код	// Edit by Victor 02.12.14
   EditField(h,v+=vs ,120,"Warranty Months",Normal,WarrantyLength,true,0);
   EditField(h2,v,150,"#Colour#",Normal,colnr,false,SetSClass);
   EditField(h,v+=vs,-40,"Alternative Code",Normal,AlternativeCode,false,0);
