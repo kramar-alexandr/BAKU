@@ -6,7 +6,7 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 
 procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,
                            var val ivshtotsum,var val ivshpricesum,var val putotsum,var val sdtotsum,var val smpozitivtotsum,
-                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay)
+                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu)
 begin
   record ItemHistVc IHr;
   record SHVc SHr;
@@ -263,8 +263,10 @@ begin
 								qtynotpay = qtynotpay - (ORrw.Shipd2-ORrw.Invd)*(IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
 							end;
 						end;
+						ivshtotsum = ivshtotsum + ihcost;
             totcosted = totcosted + ihcost;
           case "RetPUVc":
+          	retpu = retpu + ihcost;
             totcosted = totcosted + (-ihcost);
         end;
       end;
@@ -280,7 +282,7 @@ begin
   Date sd,ed;
   string 20 curgr,curgr1;
   integer rownr,qty;
-  val totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,retsum,qtynotpay;
+  val totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,retsum,qtynotpay,retpu;
   array val totals;
   record DIVc DIr;
   string 100 tstr,location;
@@ -355,7 +357,8 @@ begin
         OutString(270,0,"Отпущено(Цена)",false);
         OutString(315,0,"Отпущено внутр.",false);
         OutString(360,0,"Списание",false);
-        OutString(370,0,"Отгружено без оплаты",false);
+        OutString(370,0,"Отгружено без оплаты (Розн.)",false);
+        OutString(380,0,"Возврат поставщику",false);
         SPr.Code = "";
         while(loopmain(SPr,1,true))begin
             OutString(390,0,SPr.ShortDesc,false);
@@ -392,6 +395,7 @@ begin
         totcosted = 0;
         retsum = 0;
         qtynotpay = 0;
+        retpu = 0;
         inpo = 0;
         INr.DispGroups = "";
         calc = true;
@@ -450,6 +454,10 @@ begin
             totals[7] = totals[7] + sdcost[0]*rate;
             OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
             totals[8] = totals[8] + qtynotpay*rate;
+            OutString(380,0,retpu*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
+            totals[11] = totals[11] + retpu*rate;
+            
+            
             totcosted = totcosted + totcostsd;
             for(j=1;j<spi;j=j+1)begin
               OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
@@ -470,6 +478,7 @@ begin
             qtynotpay = 0;// Edit ************************** Monday, 13 January 2014 13:37:23
             retsum = 0;
             inpo = 0;
+            retpu = 0;
             rownr = rownr + 1;
             for(j=0;j<spi;j=j+1)begin
                 sdcost[j]=0;
@@ -490,7 +499,7 @@ begin
           end;
           if(calc)then begin
           
-            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay);
+            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu);
             if(blank(INr.DispGroups))then begin
               //messagebox(0,INr.Code & "  2  " & ivshpricesum);
             end;
@@ -534,12 +543,15 @@ begin
             totals[7] = totals[7] + sdcost[0]*rate;
             OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
             totals[8] = totals[8] + qtynotpay*rate;
+            OutString(380,0,retpu*rate,false);
+            totals[11] = totals[11] + retpu*rate;
+            
             totcosted = totcosted + totcostsd;
             for(j=1;j<spi;j=j+1)begin
               OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
               sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
             end;
-          
+          	
             OutString(405,0,totcosted*rate,false);
             totals[10] = totals[10] + totcosted*rate;
             EndFormat;
@@ -553,6 +565,7 @@ begin
             smnegativtotsum = 0;
             totcosted = 0;
             retsum = 0;
+            retpu = 0;
             rownr = rownr + 1;
             calc = true;
             curgr = INr.DispGroups;
@@ -585,6 +598,7 @@ begin
         OutString(315,0,totals[6],false);
         OutString(360,0,totals[7],false);
         OutString(370,0,totals[8],false);
+        OutString(380,0,totals[11],false);
         for(j=1;j<spi;j=j+1)begin
           OutString(390,0,sdtotal[j],false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
         end;
@@ -604,6 +618,7 @@ begin
         OutString(315,0,"",false);
         OutString(360,0,"",false);
         OutString(370,0,"",false);
+        OutString(380,0,"",false);
         OutString(405,0,"",false);
         EndFormat;
       
