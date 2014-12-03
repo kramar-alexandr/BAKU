@@ -436,6 +436,44 @@ begin
   return;
 end;
 
+
+
+function val TurnoverFromStartDate(record INVc INr,Date sEndDate) //add-----------------------Dima  03.12.2014
+BEGIN
+	record ItemHistVc IHr;
+	Boolean TrHs,testf;
+	Val quant;	
+ 	
+	quant = 0;
+	IHr.ArtCode = INr.Code;
+	TrHs = true;
+	while(LoopKey("ArtCode",IHr,1,TrHs))begin
+		testf = true;
+
+		if(IHr.ArtCode!=INr.Code)then begin
+			TrHs = false;
+			testf = false;		
+		end;
+
+		if(IHr.TransDate>sEndDate)then begin
+			TrHs = false;
+			testf = false;		
+		end;
+		if(IHr.StockAffectf==0)then begin
+			testf = false;		
+		end;		
+		
+		if(testf)then begin
+			quant=quant+IHr.Qty;	
+		end; 
+	end; 
+
+TurnoverFromStartDate=quant;
+	RETURN;
+END; // Edit   ------------------Dima   03.12.2014
+
+
+
 procedure GetINTurnover2(record INVc INr,Date sStartDate,Date sEndDate,string location,var val quant,var val sales, string curncy) // Edit ***** 19 June 2013 09:19:00 Larisa
 BEGIN
 	record ItemHistVc IHr;
@@ -587,8 +625,7 @@ begin
   record SMVc SM2r;
   string 50 frcc,tocc;
   Boolean found,testf;
-  val q,s,sort;
-val s2,s3,q2,q3;
+  val q,s,sort,qBefore;
   row SMVc SMrw; 
   val tot;
   Integer i,rwcnt;
@@ -607,6 +644,7 @@ val s2,s3,q2,q3;
   string 100 class,brand,loc;// Edit ************************** Monday, 18 November 2013 11:21:45
   record DIVc DIr;// Edit ************************** Monday, 18 November 2013 11:21:45
   val itemqty;
+  date toDate; //Edit----------Dima 03.12.2014
   
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14	
@@ -682,7 +720,7 @@ val s2,s3,q2,q3;
 		RecordNew(SMr);
 	end;
 
-	while (LoopMain(INr,1,found) ) begin
+	while (LoopMain(INr,1,found)) begin
 		testf = true;i=i+1;
 		if (nonblank(RepSpec.f1)) then begin
 			if (tocc<INr.Code) then begin found = false; end;
@@ -765,9 +803,16 @@ val s2,s3,q2,q3;
 
 				//Edit-----------Dima  02.12.2014------------------Start Edit
 				end else begin
-					GetINTurnover2(INr,RepSpec.sStartDate,RepSpec.sEndDate,RepSpec.AccStr,q,s,curncy);
-					if ((q==0) and (s==0)) then begin
-						AddToUnsoldItems(SMr,INr,"",q,s);
+					toDate=AddDay(RepSpec.sStartDate,-1);
+					qBefore=TurnoverFromStartDate(INr,toDate);
+
+					if(qBefore>0) then begin
+						GetINTurnover2(INr,RepSpec.sStartDate,RepSpec.sEndDate,RepSpec.AccStr,q,s,curncy);
+						//q - quantity
+						//s - turnover
+						if ((q==0) and (s==0)) then begin
+							AddToUnsoldItems(SMr,INr,"",q,s);
+						end;
 					end;
 				
 				end;//----------------------------------------------Edit  End 
