@@ -438,17 +438,33 @@ end;
 
 
 
-function val TurnoverFromStartDate(record INVc INr,Date sEndDate) //add-----------------------Dima  03.12.2014
+function val TurnoverFromStartDate(record INVc INr,Date sEndDate,string location) //add-----------------------Dima  03.12.2014
 BEGIN
 	record ItemHistVc IHr;
-	Boolean TrHs,testf;
+	Boolean TrHs,testf,locfind;
 	Val quant;	
+	integer pos;
+	string 100 loc;
  	
 	quant = 0;
 	IHr.ArtCode = INr.Code;
 	TrHs = true;
 	while(LoopKey("ArtCode",IHr,1,TrHs))begin
 		testf = true;
+
+		if(nonblank(location))then begin
+			pos = 0;
+			loc = "";
+			locfind = false;
+			ExtractObj(location,pos,loc);
+			while(nonblank(loc))begin
+				if(loc==IHr.Location)then begin
+					locfind = true;
+				end;
+				ExtractObj(location,pos,loc);
+			end;
+			testf = locfind;
+		end;
 
 		if(IHr.ArtCode!=INr.Code)then begin
 			TrHs = false;
@@ -461,7 +477,8 @@ BEGIN
 		end;
 		if(IHr.StockAffectf==0)then begin
 			testf = false;		
-		end;		
+		end;	
+	
 		
 		if(testf)then begin
 			quant=quant+IHr.Qty;	
@@ -804,7 +821,7 @@ begin
 				//Edit-----------Dima  02.12.2014------------------Start Edit
 				end else begin
 					toDate=AddDay(RepSpec.sStartDate,-1);
-					qBefore=TurnoverFromStartDate(INr,toDate);
+					qBefore=TurnoverFromStartDate(INr,toDate,RepSpec.AccStr);
 
 					if(qBefore>0) then begin
 						GetINTurnover2(INr,RepSpec.sStartDate,RepSpec.sEndDate,RepSpec.AccStr,q,s,curncy);
