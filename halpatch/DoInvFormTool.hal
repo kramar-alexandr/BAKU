@@ -138,6 +138,10 @@ BEGIN
 	// Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 14 May 2013 16:14:32
 	
+	if(FIELDINFORM("F_MYINVDATE"))then begin// Edit by Victor 04.12.14
+		OUTFORMFIELD("F_MYINVDATE",IVr.InvDate);
+  end;
+	
 		if (FIELDINFORM("F_AGREEDPRICE")) then begin
 		if(nonblank(IVr.PriceList))then begin
 			PLr.ArtCode = IVrw.ArtCode;
