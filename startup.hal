@@ -27,7 +27,7 @@ begin
   Setting("История изменения цен",PLHistLClass,modDI);
 	Setting("Товар консигнации",INConsLClass,modIN);
 	Setting("Саппорт IVsrVc",IVrsLClass,modSL); //Edit***************************Sasha2,15:14 05.11.2014
-		
+	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
   Maintenance("Удалить классификации",EmptyVClass,DelDIVcMn,modSL);

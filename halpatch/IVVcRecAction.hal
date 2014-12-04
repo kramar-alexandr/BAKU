@@ -337,6 +337,39 @@ BEGIN
   end; 
   
   
+  // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 3 December 2014 17:29:08
+	
+  if(updatemode)then begin
+  	if(IV2p.OKFlag==0 or (IVp.OKFlag==0 and IV2p.OKFlag==1))then begin
+			rwcnt = matrowcnt(IVp);
+			For(i=0;i<rwcnt;i=i+1) begin
+				matrowget(IVp,i,IVrw);
+				if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+					if(IVrw.Quant<0)then begin
+						IVrw.SalesAcc = ARAccb.CredDomSalesAcc;
+						matrowput(IVp,i,IVrw);
+					end;
+				end;
+			end; 
+		end;
+	end;
+	if(insertmode)then begin
+		rwcnt = matrowcnt(IVp);
+		For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVp,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+				if(IVrw.Quant<0)then begin
+					IVrw.SalesAcc = ARAccb.CredDomSalesAcc;
+					matrowput(IVp,i,IVrw);
+				end;
+			end;
+		end; 
+	end;
+  
+	// Edit End ---------------------------------------------- Edit End
+  
+  
   if (MainCLRec.CashCollection!=0) then begin
     if (CLInforIVRecordExists(IVp.SerNr,"IVVc",clin)) then begin
       errcode = CheckCLInAmount(clin,IVp.Sum4,IVp.BaseSum4,IVp.CurncyCode);
@@ -398,7 +431,7 @@ BEGIN
   oldnr = IVp.SerNr;
   if (check) then begin  
     GetPayType(IVp.PayDeal,i);    
-    if (i==3) then begin      
+    /*if (i==3) then begin    // Edit ************************** Thursday, 4 December 2014 09:27:02  
       if blank(IVp.CreditCard) then begin
         RecordCheckError(1058,IVp.CreditCard,-1,"CreditCard");  
         res = -1;
@@ -411,7 +444,7 @@ BEGIN
           goto L99;
         end;
       end;
-    end;
+    end;*/
   end;
   rwcnt = MatRowCnt(IVp);
   if ((IVp.OKFlag==1) and ((rwcnt==0) or (blank(IVp.Sum4)))) then begin
