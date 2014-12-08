@@ -5024,7 +5024,7 @@ begin
 			end;
 			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
 			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
-			MatCol(1,-60,"Price",0,Price,true,0);
+			MatCol(1,-60,"PP Num.",0,PPNum,true,0);
   end;
       
   switch(currentcompany)begin
