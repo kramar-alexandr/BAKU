@@ -765,6 +765,7 @@ BEGIN
   record PDVc PDr;// Edit ************************** Thursday, 30 May 2013 09:59:52
   boolean findpayrow;// Edit ************************** Tuesday, 4 June 2013 14:48:42
   val norebval,fullreb;
+  val realDisc, one; //Edit by Victor 05.12.14
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -1840,6 +1841,21 @@ BEGIN
 
   end;
   
+  if(FIELDINFORM("F_MYREALDISCOUNT"))then begin// Edit by Victor 05.12.14
+		norebval = 0;
+		rwcnt = matrowcnt(IVr);
+		For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+				norebval = norebval + IVrw.Price*IVrw.Quant;
+			end;
+		end;
+		one = norebval/100;
+		realDisc = round((norebval - IVr.Sum4)/one,SetRoundModeD(0));//Edit by Victor 08.12.14
+		OUTFORMFIELD("F_MYREALDISCOUNT",realDisc);
+
+  end;
+  
   if(FIELDINFORM("F_MYFULLREB"))then begin// Edit ************************** Thursday, 30 May 2013 09:59:03
 		norebval = 0;
 		rwcnt = matrowcnt(IVr);
@@ -1854,6 +1870,16 @@ BEGIN
 
   end;
   
+  if(FIELDINFORM("F_MYDISCOUNT"))then begin// Edit by Victor 05.12.14
+		CUr.Code = IVr.CustCode;
+		if(ReadFirstMain(CUr, 1, true))then begin
+			if(nonblank(CUr.RebCode))then begin
+				OUTFORMFIELD("F_MYDISCOUNT",CUr.RebCode);
+			end else begin
+			OUTFORMFIELD("F_MYDISCOUNT", "-");
+			end;
+		end;
+	end;
   
   
   PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc");
