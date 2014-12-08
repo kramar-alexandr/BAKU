@@ -1,3 +1,7 @@
+external function Boolean GetObjBal(string,string,var record ObjBalVc);
+external procedure ExtractObj(string,var Integer,var string);
+
+
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
 record INVc INr;
@@ -467,6 +471,91 @@ begin
 				if(TRrw.AccNumber=="50" and i>0)then begin
 					matrowdelete(TRr,i);
 					matrowinsert(TRr,0,TRrw);
+					testf = true;				
+				end;
+			end; 
+			if(testf)then begin
+				recordstore(TRr,true);
+			end;
+		end;
+	end;
+	
+return;
+end;
+
+
+global updating procedure ChangeAccInTRVcMn(record RcVc RepSpec)
+begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	boolean TrHs, testf;
+	integer mtrw,i;
+	record AccVc Accr;
+	string 100 comment,obj,comment2;
+	record ObjBalVc ObjBalr;
+	integer pos;
+	
+	Accr.AccNumber="45";
+	readfirstmain(Accr,1,true);
+	comment = Accr.Comment;
+	Accr.AccNumber="47";
+	readfirstmain(Accr,1,true);
+	comment2 = Accr.Comment;
+	
+	
+	TRr.IntYc=IVYc;
+	TrHs = true;
+	while(loopmain(TRr,1,TrHs))begin
+		if(TRr.IntYc!=IVYc)then begin TrHs = false; end;
+		
+		
+		if(TrHs)then begin	
+			testf = false;
+			mtrw = matrowcnt(TRr);
+			For(i=0;i<mtrw;i=i+1) begin
+				matrowget(TRr,i,TRrw);	  
+				if(TRrw.AccNumber=="46" and nonblank(TRrw.VATCode) and TRrw.DebVal>0)then begin
+					TRrw.AccNumber="47";
+					TRrw.Comment=comment2;
+					matrowput(TRr,i,TRrw);
+					testf = true;
+				end;
+				if(TRrw.AccNumber=="46" and blank(TRrw.VATCode))then begin
+					
+					/*balrfound = GetObjBal("46","",ObjBalr);
+					AddBalance(ObjBalr,TRr.TransDate,"transdebit",-TRrw.DebVal,"transcredit",-TRrw.CredVal,"",blankval,"",blankval,"",blankval,"",blankval);
+					
+					pos = 0;
+					obj = "";
+					ExtractObj(TRrw.Objects,pos,obj);
+					While (nonblank(obj)) begin
+						if(nonblank(obj))then begin
+							balrfound = GetObjBal("46",obj,ObjBalr);
+							AddBalance(ObjBalr,TRr.TransDate,"transdebit",-TRrw.DebVal,"transcredit",-TRrw.CredVal,"",blankval,"",blankval,"",blankval,"",blankval);
+						end;
+						ExtractObj(TRrw.Objects,pos,obj);
+					end;*/
+					
+					
+					TRrw.AccNumber="45";
+					TRrw.Comment=comment;
+					matrowput(TRr,i,TRrw);
+					
+					/*balrfound = GetObjBal("45","",ObjBalr);
+					AddBalance(ObjBalr,TRr.TransDate,"transdebit",TRrw.DebVal,"transcredit",TRrw.CredVal,"",blankval,"",blankval,"",blankval,"",blankval);
+					
+					pos = 0;
+					obj = "";
+					ExtractObj(TRrw.Objects,pos,obj);
+					While (nonblank(obj)) begin
+						if(nonblank(obj))then begin
+							balrfound = GetObjBal("45",obj,ObjBalr);
+							AddBalance(ObjBalr,TRr.TransDate,"transdebit",TRrw.DebVal,"transcredit",TRrw.CredVal,"",blankval,"",blankval,"",blankval,"",blankval);
+						end;
+						ExtractObj(TRrw.Objects,pos,obj);
+					end;*/
+					
+					
 					testf = true;				
 				end;
 			end; 
