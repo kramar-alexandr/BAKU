@@ -1796,8 +1796,10 @@ begin
 							case 6:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 7:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 8:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
-							
 							case 10:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
+							case 11:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
+							case 12:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
+							
 						end;
 						matrowget(POr,i,POrw);
 					end;
