@@ -592,7 +592,7 @@ begin
         	end;
         	totcccnt = 6;
         end else begin
-        	totsumpay = totsumpay  + IVr.Sum4;
+        	//totsumpay = totsumpay  + IVr.Sum4;	//не включать в totsumpay ранние предоплаты  //Edit-------------------Dima 08.12.2014
         end;
         for(j=0;j<acrncnt;j=j+1)begin
 					totcash[j] = totcash[j] + cashsum[j];
