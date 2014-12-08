@@ -567,3 +567,47 @@ begin
 	
 return;
 end;
+
+
+global updating procedure Remove54AccToOtherTRVcMn(record RcVc RepSpec)
+begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	boolean TrHs, testf;
+	integer mtrw,i;
+	record AccVc Accr;
+	string 100 comment,obj,comment2;
+	record ObjBalVc ObjBalr;
+	integer pos;
+	
+	Accr.AccNumber="58";
+	readfirstmain(Accr,1,true);
+	comment = Accr.Comment;
+
+	
+	
+	TRr.IntYc=IPYc;
+	TrHs = true;
+	while(loopmain(TRr,1,TrHs))begin
+		if(TRr.IntYc!=IPYc)then begin TrHs = false; end;
+		
+		if(TrHs)then begin	
+			testf = false;
+			mtrw = matrowcnt(TRr);
+			For(i=0;i<mtrw;i=i+1) begin
+				matrowget(TRr,i,TRrw);	  
+				if(TRrw.AccNumber=="52")then begin
+					TRrw.AccNumber="58";
+					TRrw.Comment=comment;
+					matrowput(TRr,i,TRrw);
+					testf = true;
+				end;
+			end; 
+			if(testf)then begin
+				recordstore(TRr,true);
+			end;
+		end;
+	end;
+	
+return;
+end;
