@@ -8,6 +8,8 @@ remote procedure SalesReportExtPictRn(record RcVc,var area,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+/*
+///////Перенесено в файл  MiddleInvoiceRn.hal ---------Dima  09.12.2014
 global procedure MiddleInvoiceRn(record RcVc RepSpec)
 begin
 	record IVVc IVr;
@@ -32,12 +34,12 @@ begin
 	
 	blockload(CYb);
 	
-	startreportnoheaderjob("Отчет по среднему чеку");
+	startreportnoheaderjob(USetStr(31117));
 	
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,"Период:",false);
-		outstring(150,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+		outstring(100,0,USetStr(31101),false);
+		outstring(150,0,RepSpec.sStartDate & USetStr(31116) & RepSpec.sEndDate,false);
 	endformat;
 	startformat(15);
 	endformat;
@@ -46,21 +48,21 @@ begin
 		outstring(50,0,"",false);
 		outstring(100,0,CYb.BusinessName,false);
 		outstring(150,0,RepSpec.f1,false);
-		outstring(190,0,"магазин",false);
+		outstring(190,0,USetStr(31118),false);
 		if(nonblank(RepSpec.f2))then begin
 			outstring(240,0,RepSpec.f2,false);
-			outstring(300,0,"продавец",false);
+			outstring(300,0,USetStr(31119),false);
 		end;
 	endformat;
 	black_divider(0,1);
 	startformat(15);
 	endformat;
-	startformat(15);
-		outstring(0,0,"Дата",false);
-		outstring(50,0,"Кол-во чеков",false);
-		outstring(120,0,"Итого",false);
-		outstring(170,0,"Сред/цена чека",false);
-		outstring(240,0,"Кол-во позиций за день",false);
+	startformat(15);//Edit -----Dima-----------09.12.2014
+		outstring(0,0,USetStr(31120),false);	//date
+		outstring(50,0,USetStr(31121),false);	//quantity of receipts
+		outstring(120,0,USetStr(31122),false);	//in total
+		outstring(170,0,USetStr(31123),false);	//check's average cost
+		outstring(240,0,USetStr(31124),false);	//total quantity per day 
 	endformat;
 	startformat(15);
 	endformat;
@@ -171,7 +173,8 @@ begin
 	endjob;
 
 return;
-end;
+end;//////////////////////////////////Перенесено в файл  MiddleInvoiceRn.hal ---------Dima  09.12.2014/
+*/
 
 global procedure MiddleInvoiceOrderRn(record RcVc RepSpec)
 begin

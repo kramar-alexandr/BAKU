@@ -10,7 +10,7 @@ external procedure ExtractObj(string,var Integer,var string); // Edit ***** 11 J
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, 19 June 2013 13:43:37
 external procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);// Edit ************************** Wednesday, 19 June 2013 14:02:13
 
-SetLangMode(LangRussian,"RUS",0); 
+//SetLangMode(LangRussian,"RUS",0); 	//Edit-------------Dima-----09.12.2014
 
 procedure HTSaleMan1(string a, string b, var string res)
 begin
@@ -565,56 +565,56 @@ end; // Edit ***** 10 June 2013 13:17:00 Larisa
   if(true)then begin // Edit ***** 10 June 2013 13:19:00 Larisa
 		if(RepSpec.Media==mtFile or RepSpec.Media==mtExcel)then begin
 			StartFormat(15)
-			OutString(0,0,"Период",false);
+			OutString(0,0,USetStr(31201),false);
 			OutString(30,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
 			EndFormat;
 			if(nonblank(RepSpec.f1))then begin
 				tstr = RepSpec.f1;
 			end else begin
-				tstr = "Все продавцы";
+				tstr = USetStr(31232);
 			end;
 			StartFormat(15)
-			OutString(0,0,"Продавец",false);
+			OutString(0,0,USetStr(31219),false);
 			OutString(30,0,tstr,false);
 			EndFormat;
 			if(nonblank(RepSpec.AccStr))then begin
 				tstr = RepSpec.AccStr;
 			end else begin
-				tstr = "Все склады";
+				tstr = USetStr(31225);
 			end;
 			StartFormat(15)
-			OutString(0,0,"Склад",false);
+			OutString(0,0,USetStr(31202),false);
 			OutString(30,0,tstr,false);
 			EndFormat;
 			if(nonblank(RepSpec.f2))then begin
 				tstr = RepSpec.f2;
 			end else begin
-				tstr = "Все товары";
+				tstr = USetStr(31233);
 			end;
 			StartFormat(15)
-			OutString(0,0,"Товары",false);
+			OutString(0,0,USetStr(31234),false);
 			OutString(30,0,tstr,false);
 			EndFormat;
 			if(nonblank(RepSpec.f4))then begin
 				tstr = RepSpec.f4;
 			end else begin
-				tstr = "Все классификации товара";
+				tstr = USetStr(31229);
 			end;
 			StartFormat(15)
-			OutString(0,0,"Классификация товара",false);
+			OutString(0,0,USetStr(31228),false);
 			OutString(30,0,tstr,false);
 			EndFormat;
     end;
     StartFormat(15);
-      OutString(0,0,"Код продавца",false);
-      OutString(30,0,"ФИО продавца",false);
-      OutString(80,0,"Код товара",false);
-      OutString(120,0,"Товар",false);
-      OutString(200,0,"Бренд",false);
-      OutString(250,0,"Модель",false);
-      OutString(300,0,"Кол-во",false);
-      OutString(350,0,"Сумма",false);
-      OutString(400,0,"Прибыль",false);
+      OutString(0,0,USetStr(31235),false);
+      OutString(30,0,USetStr(31236),false);
+      OutString(80,0,USetStr(31231),false);
+      OutString(120,0,USetStr(31203),false);
+      OutString(200,0,USetStr(31205),false);
+      OutString(250,0,USetStr(31206),false);
+      OutString(300,0,USetStr(31238),false);
+      OutString(350,0,USetStr(31239),false);
+      OutString(400,0,USetStr(31237),false);
     EndFormat;
     Black_divider(0,1);
 	
@@ -803,7 +803,7 @@ end; // Edit ***** 10 June 2013 13:17:00 Larisa
 					OutString(80,0,"",false);
 					OutString(120,0,"",false);
 					OutString(200,0,"",false);
-					OutString(250,0,"Всего:",false);
+					OutString(250,0,USetStr(31211),false);
 					OutString(300,0,totqtysum,false);
 					OutString(350,0,totvalsum,false);
 					OutString(400,0,totgpsum,false);
@@ -835,7 +835,7 @@ end; // Edit ***** 10 June 2013 13:17:00 Larisa
 					OutString(80,0,"",false);
 					OutString(120,0,"",false);
 					OutString(200,0,"",false);
-					OutString(250,0,"Чеков:",false);
+					OutString(250,0,USetStr(31240),false);
 					OutString(300,0,ivcount,false);
 				EndFormat;
       end;
@@ -852,7 +852,7 @@ end; // Edit ***** 10 June 2013 13:17:00 Larisa
     OutString(80,0,"",false);
     OutString(120,0,"",false);
     OutString(200,0,"",false);
-    OutString(250,0,"Общее:",false);
+    OutString(250,0,USetStr(31242),false);
     OutString(300,0,totallqty,false);
     OutString(350,0,totallval,false);
     OutString(400,0,totallgp,false);
@@ -863,7 +863,7 @@ end; // Edit ***** 10 June 2013 13:17:00 Larisa
 		OutString(80,0,"",false);
 		OutString(120,0,"",false);
 		OutString(200,0,"",false);
-		OutString(250,0,"Всего чеков:",false);
+		OutString(250,0,USetStr(31241),false);
 		OutString(300,0,ivcounttotal,false);
 	EndFormat;
 end; // Edit ***** 10 June 2013 13:19:00 Larisa

@@ -1,5 +1,6 @@
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure GetBaseCurncy(Integer,var string);
+external function Boolean IsDigit(string);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -33,6 +34,7 @@ begin
 	boolean TrHs1,testf1,TrHs0,foundCode,testf0;
 	val allSums; //sum of totsums
 
+
 	TrHs0 = true;
 	azn = "AZN";
 	CUr.Code = RepSpec.f1;
@@ -53,16 +55,17 @@ begin
 		testf0=true;
 	//if(nonblank(RepSpec.f1) and readfirstmain(CUr,1,true))then begin
 
-		//if(Left(CUr.Code,2) != "ID" or (!(IsNumeric(mid(CUr.Code,2,1)))) then begin
-		if(not((Left(CUr.Code,2) == "ID"))) then begin
-		testf0 = false;
+		if((Left(CUr.Code,2) != "ID")) then begin	//Edit Dima ---------09.12.2014
+			testf0 = false;
+		end else begin
+			if (not(IsDigit(mid(CUr.Code,2,1)))) then begin
+				testf0 = false; 
+			end;
 		end;
 		
 		if (testf0) then begin
 
-
-		curcmp = currentcompany;
-	
+		curcmp = currentcompany;	
 	
 		blockload(CBb);
 		
@@ -208,7 +211,7 @@ begin
 										outstring(20,0,ARPayr.OrderNr,false);
 										outstring(100,0,ifr/ito1,false);
 										outstring(100,0,- ARPayr.BookRVal/ifr*ito1,false);
-									endformat;*/
+									endformat;*/ 
 								end;
 							end;
 						end;
@@ -236,7 +239,8 @@ begin
 			endformat;
 			endformat;
 			endformat;
-			allSums = allSums+totsum;	//Edit Dima ---------------09.12.2014		
+			allSums = allSums+totsum;	//Edit Dima ---------------09.12.2014	
+			acnt = 0;	
 
 		if (nonblank(RepSpec.f1)) then begin
 			TrHs0 = false;
@@ -244,12 +248,12 @@ begin
 	end;//testf0;
 
 	end;//while
-	if (blank(RepSpec.f1)) then begin
-		EndFormat;
-		Black_Divider(0,1);
-		outstring(0,0,"Общая сумма",false);
-		outstring(200,0,allSums,false);
-	end;
+		if (blank(RepSpec.f1)) then begin
+			EndFormat;
+			Black_Divider(0,1);
+			outstring(0,0,"Общая сумма",false);
+			outstring(200,0,allSums,false);
+		end;
 end; 
 
 

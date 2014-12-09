@@ -5,7 +5,7 @@ external procedure ExtractObj(string,var Integer,var string);
 external procedure FindItemSales(string,string,date,date,var val,var val,var val);
 
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);	//Edit------------Dima 09.12.2014
 
 
 procedure FillSM(var record SMVc SMr, record RebVc Rebr)
@@ -65,10 +65,10 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 
 	blockload(BCb);
 
-	startreportnoheaderjob("Отчет по обороту акционных товаров");
+	startreportnoheaderjob(USetStr(31200));
 	
 	StartFormat(15);
-		outstring(0,0,"Отчет по обороту акционных товаров",false);
+		outstring(0,0,USetStr(31200),false);	
 	endformat;
 	
 	totalqty = 0;
@@ -78,31 +78,31 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 	totalsaleqty = 0;
 	
 	StartFormat(15);
-		outstring(0,0,"Период:",false);
-		outstring(0,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+		outstring(0,0,USetStr(31201),false);
+		outstring(0,0,RepSpec.sStartDate & USetStr(31216) & RepSpec.sEndDate,false);
 	endformat;
 	StartFormat(15);
-		outstring(0,0,"Склад:",false);
+		outstring(0,0,USetStr(31202),false);
 		if(nonblank(RepSpec.f1))then begin
 			outstring(0,0,RepSpec.f1,false);
 		end else begin
-			outstring(0,0,"По всем складам",false);
+			outstring(0,0,USetStr(31215),false);
 		end;
 	endformat;
 	
 	
 	StartFormat(15);
-		outstring(0,0,"Товар",false);
-		outstring(0,0,"Название",false);
-		outstring(0,0,"Бренд",false);
-		outstring(0,0,"Модель",false);
-		outstring(0,0,"На начало периода кол-во",false);
-		outstring(0,0,"На начало периода кост " & BCb.BaseCur1,false);
-		outstring(0,0,"Продано кол-во",false);
-		outstring(0,0,"Продано сумма " & acrncy[0],false);
-		outstring(0,0,"Продано кост " & BCb.BaseCur1,false);
-		outstring(0,0,"На конец периода кол-во ",false);
-		outstring(0,0,"На конец периода кост " & BCb.BaseCur1,false);
+		outstring(0,0,USetStr(31203),false);
+		outstring(0,0,USetStr(31204),false);
+		outstring(0,0,USetStr(31205),false);
+		outstring(0,0,USetStr(31206),false);
+		outstring(0,0,USetStr(31207),false);
+		outstring(0,0,USetStr(31213) & BCb.BaseCur1,false);
+		outstring(0,0,USetStr(31208),false);
+		outstring(0,0,USetStr(31210) & acrncy[0],false);
+		outstring(0,0,USetStr(31212) & BCb.BaseCur1,false);
+		outstring(0,0,USetStr(31209),false);
+		outstring(0,0,USetStr(31214) & BCb.BaseCur1,false);
 	endformat;
 	
 	Rebr.Code = "";
@@ -183,7 +183,7 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 		end; 
 		
 		startformat(15);
-					outstring(0,0,"Всего",false);
+					outstring(0,0,USetStr(31211),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);

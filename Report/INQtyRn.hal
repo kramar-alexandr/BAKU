@@ -8,7 +8,7 @@ external function Boolean CheckDeliveryLocation(string,string,LongInt,val,var va
 external function Boolean SetInSet2(string,string);
 external procedure ExtractObj(string,var Integer,var string); // Edit ***** 18 June 2013 14:30:00 Larisa
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);		Edit Dima-----------09.12.2014
 
 procedure PrintISInfo(record INVc INr,string lastitem,val Instock,val OrddOut,val POQty,val thisfiscalyearq,val thismonthq,val lastyear,string specloc)
 BEGIN
@@ -377,10 +377,10 @@ BEGIN
   FindFiscalYear(ltd,lfsd,lfed);
   //PrintHeaderIQ; // Edit ***** 18 june 2013 14:16:00 Larisa
   StartFormat(15); // Edit ***** 18 june 2013 14:16:00 Larisa
-   OutString(0,0,"Код товара",false);
+   OutString(0,0,USetStr(31231),false);
    OutString(40,0,USetStr(2463),false);
-   OutString(140,0,"Бренд",false);
-   OutString(200,0,"Модель",false);
+   OutString(140,0,USetStr(31226),false);//Edit Dima----------- 09.12.2014
+   OutString(200,0,USetStr(31206),false);//Edit Dima----------- 09.12.2014
    OutString(250,0,USetStr(2339),true);
    OutString(280,0,USetStr(2569),true);
    OutString(310,0,USetStr(2570),true);
