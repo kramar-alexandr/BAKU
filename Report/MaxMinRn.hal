@@ -11,7 +11,7 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);// Edit ************************** Wednesday, 19 June 2013 14:02:13
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode); // Edit ***** 18 June 2013 16:02:00 Larisa
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);  Edit----------------Dima
 
 
 procedure AddToSMSort(var record SMVc SMr,var record SMVc SM2r,record INVc INr,string Variety,val q,val s,val sort)
@@ -198,7 +198,7 @@ begin
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
 	
 	
-	startreportnoheaderjob(Usetstr(31132));
+	startreportnoheaderjob("Статистика продаж по клиентам");
 	  customer = RepSpec.f1;
 	  profCheck = false;
 	  s = 1;
@@ -207,43 +207,43 @@ begin
       if (RepSpec.ArtMode==2) then begin sort = gp; profCheck = true; end;
 		
 	Startformat(15);
-		outstring(60,0,Usetstr(31102),true);
+		outstring(60,0,"Период:",true);
 		outstring(130,0,RepSpec.sStartDate & chr(58) & RepSpec.sEndDate,true);	
 	endformat;
 
 	if (NonBlank(RepSpec.f1)) then begin
 		Startformat(15);
-			outstring(60,0,Usetstr(31114),true);
+			outstring(60,0,"Клиент:",true);
 			outstring(130,0,RepSpec.f1,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,Usetstr(31114),true);
-			outstring(130,0,Usetstr(31115),true);	
+			outstring(60,0,"Клиент:",true);
+			outstring(130,0,"По всем клиентам",true);	
 		endformat;
 	end;
 
 	if (NonBlank(RepSpec.AccStr)) then begin
 		Startformat(15);
-			outstring(60,0,Usetstr(31103),true);
+			outstring(60,0,"Склад:",true);
 			outstring(130,0,RepSpec.AccStr,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,Usetstr(31103),true);
-			outstring(130,0,Usetstr(31104),true);	
+			outstring(60,0,"Склад:",true);
+			outstring(130,0,"По всем складам",true);	
 		endformat;
 	end;
 
 	Startformat(15);
-		outstring(40,0,Usetstr(31114),true);
-		outstring(130,0,Usetstr(31115),true);
-		outstring(200,0,Usetstr(31135),true);
-		outstring(260,0,Usetstr(31122),true);
-		outstring(290,0,Usetstr(31123),true);
-		outstring(320,0,Usetstr(31124),true);
-		outstring(350,0,Usetstr(31125),true);
-		outstring(400,0,Usetstr(31126),true);
+		outstring(40,0,"Клиент",true);
+		outstring(130,0,"Имя клиента",true);
+		outstring(200,0,"Прибыль",true);
+		outstring(260,0,"Сумма",true);
+		outstring(290,0,"Контакты",true);
+		outstring(320,0,"Адрес",true);
+		outstring(350,0,"E-mail",true);
+		outstring(400,0,"Способ рассылки",true);
 	endformat;
 
 	Black_Divider(0,1); 
@@ -370,16 +370,16 @@ begin
 				outstring(350,0,CUr.eMail,true);
 				tstr = "";
 				if(CUr.AllowSendSMS>0)then begin
-					tstr = tstr & Usetstr(31128);
+					tstr = tstr & "СМС ";
 				end;
 				if(CUr.AllowSendeMail>0)then begin
-					tstr = tstr & Usetstr(31125);
+					tstr = tstr & "eMail ";
 				end;
 				if(CUr.AllowSendCall>0)then begin
-					tstr = tstr & Usetstr(31129);
+					tstr = tstr & "звонок ";
 				end;
 				if(CUr.AllowSendkMail>0)then begin
-					tstr = tstr & Usetstr(31130);
+					tstr = tstr & "куръер ";
 				end;
 				
 				outstring(400,0,tstr,true);
@@ -390,7 +390,7 @@ begin
 		Gray_Divider(0,1);
 			Startformat(15);
 				outstring(40,0,"",true);
-				outstring(120,0,Usetstr(31131),true);
+				outstring(120,0,"Итог:",true);
 				outstring(200,0,finalProfit,true);
 				outstring(260,0,finalSum,true);
 			endformat;
@@ -677,9 +677,9 @@ begin
 	Header(rw,tstr,0);
 	rw = rw + 1; // Edit ***** 18 June 2013 16:23:00 Larisa
 	if(nonblank(RepSpec.AccStr))then begin
-		tstr = "Склад " & RepSpec.AccStr;
+		tstr = USetStr(31202) & RepSpec.AccStr;
 	end else begin
-		tstr = "Все склады";
+		tstr = USetStr(31225);
 	end;
 	Header(rw,tstr,0); // Edit ***** 18 June 2013 16:29:00 Larisa
 	EndHeader;
@@ -692,25 +692,25 @@ begin
 	// Edit ************************** Monday, 18 November 2013 10:59:06
 	startformat(15);
 		if(nonblank(RepSpec.AccStr))then begin
-			tstr = "Склад: " & RepSpec.AccStr;
+			tstr = USetStr(31202) & RepSpec.AccStr;		//Location
 		end else begin
-			tstr = "Все склады";
+			tstr = USetStr(31225);					//All locatoins
 		end;
 		OutString(0,0,tstr,false);
 	endformat;
 	startformat(15);
 		if(nonblank(RepSpec.f5))then begin
-			tstr = "Бренд: " & RepSpec.f5;
+			tstr = USetStr(31226) & RepSpec.f5;		//Brand
 		end else begin
-			tstr = "Все бренды";
+			tstr = USetStr(31227);
 		end;
 		OutString(0,0,tstr,false);
 	endformat;
 	startformat(15);
 		if(nonblank(RepSpec.f4))then begin
-			tstr = "Классификация: " & RepSpec.f4;
+			tstr = USetStr(31228) & RepSpec.f4;		//Classification
 		end else begin
-			tstr = "Все классификации";
+			tstr = USetStr(31229);
 		end;
 		OutString(0,0,tstr,false);
 	endformat;
@@ -718,12 +718,12 @@ begin
 	StartFormat(15);
 		OutString(0,0,USetStr(2462),false);
 		OutString(100,0,USetStr(2448),false);
-		OutString(160,0,"Бренд",false);// Edit ************************** Monday, 18 November 2013 11:02:23
+		OutString(160,0,USetStr(31226),false);// Edit ************************** Monday, 18 November 2013 11:02:23
 		if(nonblank(RepSpec.AccStr))then begin // Edit ***** 19 June 2013 09:32:00 Larisa
 			OutString(250,0,USetStr(5010),false);
 		end; // Edit ***** 19 June 2013 09:32:00 Larisa
 		OutStringAdjustBiDi(340,0,USetStr(2464),true,M4Val,380);
-		OutString(400,0,"На складе",true);// Edit ************************** Thursday, 31 October 2013 16:01:29
+		OutString(400,0,USetStr(31230),true);// Edit ************************** Thursday, 31 October 2013 16:01:29
 		//OutString(410,0,USetStr(2465),true);
 		OutStringAdjustBiDi(1,0,USetStr(2466),true,M4Val,510);
 	EndFormat;
@@ -888,7 +888,7 @@ begin
 		OutString(0,0,"",false); // Edit ***** 19 June 2013 15:35:00 Larisa
 		OutString(100,0,"",false); // Edit ***** 19 June 2013 15:35:00 Larisa
 		if(nonblank(RepSpec.AccStr))then begin // Edit ***** 19 June 2013 09:32:00 Larisa
-			OutString(250,0,"Всего:",false); // Edit ***** 18 June 2013 17:19:00 Larisa
+			OutString(250,0,USetStr(31211),false); // Edit ***** 18 June 2013 17:19:00 Larisa
 		end; // Edit ***** 19 June 2013 09:32:00 Larisa
 		OutString(340,0,"",false); // Edit ***** 19 June 2013 13:59:00 Larisa
 		OutString(340,0,sumqty,false); // Edit ***** 19 June 2013 13:59:00 Larisa
