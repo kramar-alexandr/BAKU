@@ -188,6 +188,21 @@ begin
   SString(31095,"Cost total"); //Сумма себестоимости
   SString(31096,"Price total"); //Сумма цена
   SString(31097,"Location(Store)"); //Склад(магазин)
+  SString(31098,"You should confirm an order currency"); //Вы должны подтвердить валюту заказа
+  SString(31099,"Total shipped cost"); //Отпущено всего себестоимость
+  SString(31100,"Summary report for period"); //Сумарный отчет за период
+  SString(31101,"Please, insert currency into report specification"); //Укажите, пожалуйста, валюту в определении отчета
+  SString(31102,"Period:");
+  SString(31103,"Location:");
+  SString(31104,"Among all locations"); //По всем складам
+  SString(31105,"Classification");
+  SString(31106,"Good is coming");
+  SString(31107,"Purchasers' return(Price)"); //Возврат покупателей(Цена)
+  SString(31108,"Shipped(cost)"); //Отпущено (себестоимость)
+  SString(31109,"Shipped(price)"); //Отпущено(цена)
+  SString(31110,"Shipped without payment (retail)"); //Отгружено без оплаты (Розн.)
+  SString(31111,"Return to supplier"); //Возврат поставщику
+  SString(31112,"Balance Sum"); //Баланс сумма
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

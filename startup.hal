@@ -89,7 +89,7 @@ begin
   Report("Материальный отчет",PecuniaryRClass,PecuniaryRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
-  Report("Сумарный отчет за период",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
+  Report("Суммарный отчет за период",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -199,6 +199,19 @@ begin
   SString(31097,"Склад(магазин)");
   SString(31098,"Вы должны подтвердить валюту заказа");
   SString(31099,"Отпущено всего себестоимость");
+  SString(31100,"Суммарный отчет за период");
+  SString(31101,"Укажите, пожалуйста, валюту в определении отчета");
+  SString(31102,"Период:");
+  SString(31103,"Склад:");
+  SString(31104,"По всем складам");
+  SString(31105,"Классификация");
+  SString(31106,"Товар в пути");
+  SString(31107,"Возврат покупателей(Цена)");
+  SString(31108,"Отпущено(себестоимость)");
+  SString(31109,"Отпущено(цена)");
+  SString(31110,"Отгружено без оплаты (Розн.)");
+  SString(31111,"Возврат поставщику");
+  SString(31112,"Баланс сумма");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

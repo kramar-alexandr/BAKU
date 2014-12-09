@@ -307,12 +307,12 @@ begin
 		end;
 		rate = fr/to1;
   end;
-  SetLangMode(LangRussian,"RUS",0);
+  //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,15:17 09.12.2014
   
-  StartReportNoHeaderJob("Суммарный отчет за период");
+  StartReportNoHeaderJob(USetStr(31100));
   IF(blank(RepSpec.f2) and currentcompany!=1)THEN BEGIN
     StartFormat(15);
-      OutString(0,0,"Укажите пожалуйста валюту в определении отчета",false);
+      OutString(0,0,USetStr(31101),false);
     EndFormat;
   end else begin
       sd = RepSpec.sStartDate;
@@ -320,51 +320,51 @@ begin
     
       if blankdate(sd) then begin
         StartFormat(15);
-        OutString(0,0,"Определите период",false);
+        OutString(0,0,USetStr(31088),false);
         EndFormat;
       end else begin 
         StartFormat(15);
-        OutString(0,0,"Суммарный отчет за период",false);
+        OutString(0,0,USetStr(31100),false);
         EndFormat;
       
         StartFormat(15);
-            OutString(0,0,"Период:",false);
+            OutString(0,0,USetStr(31102),false);
             OutString(100,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
         endformat;
         if(nonblank(location))then begin
           StartFormat(15);
-              OutString(0,0,"Склад:",false);
+              OutString(0,0,USetStr(31103),false);
               OutString(100,0,location,false);
           endformat;
         end else begin
             StartFormat(15);
-              OutString(0,0,"Склад:",false);
-              OutString(100,0,"По всем складам",false);
+              OutString(0,0,USetStr(31103),false);
+              OutString(100,0,USetStr(31104),false);
           endformat;
         end;
       
         gray_divider(0,1);
       
         StartFormat(15);
-        OutString(0,0,"Классификация",false);
-        OutString(45,0,"Начальный остаток",false);
-        OutString(70,0,"Товар в пути",false);
-        OutString(90,0,"Поступления",false);
-        OutString(135,0,"Поступления внутр.",false);
-        OutString(180,0,"Возврат покупателей",false);
-        OutString(200,0,"Возврат покупателей(Цена)",false);
-        OutString(225,0,"Отпущено(Себестоимость)",false);
-        OutString(270,0,"Отпущено(Цена)",false);
-        OutString(315,0,"Отпущено внутр.",false);
-        OutString(360,0,"Списание",false);
-        OutString(370,0,"Отгружено без оплаты (Розн.)",false);
-        OutString(380,0,"Возврат поставщику",false);
+        OutString(0,0,USetStr(31105),false);
+        OutString(45,0,USetStr(31081),false);
+        OutString(70,0,USetStr(31106),false);
+        OutString(90,0,USetStr(1828),false);
+        OutString(135,0,USetStr(31082),false);
+        OutString(180,0,USetStr(31091),false);
+        OutString(200,0,USetStr(31107),false);
+        OutString(225,0,USetStr(31108),false);
+        OutString(270,0,USetStr(31109),false);
+        OutString(315,0,USetStr(31085),false);
+        OutString(360,0,USetStr(17167),false);
+        OutString(370,0,USetStr(31110),false);
+        OutString(380,0,USetStr(31111),false);
         SPr.Code = "";
         while(loopmain(SPr,1,true))begin
             OutString(390,0,SPr.ShortDesc,false);
             spi=spi+1;
         end;
-        OutString(405,0,"Конечный остаток",false);
+        OutString(405,0,USetStr(31086),false);
         EndFormat;
         qty=0;
         IN2r.DispGroups = "";
@@ -585,7 +585,7 @@ begin
         Black_Divider(0,1);
       
         StartFormat(15);
-        OutString(0,0,"Итого",false);
+        OutString(0,0,USetStr(23659),false);
         //OutString(15,0,"",false);
         OutString(45,0,totals[0],false);
         OutString(70,0,totalinpo,false);
@@ -606,7 +606,7 @@ begin
         EndFormat;
       
         StartFormat(15);
-        OutString(0,0,"Баланс сумма",false);
+        OutString(0,0,USetStr(31112),false);
         OutString(15,0,"",false);
         OutString(45,0,"",false);
         OutString(90,0,"",false);
