@@ -503,6 +503,61 @@ begin
   SString(31135,"سود");
   SString(31136,"سودبخشی");
   SString(31137,"حجم معاملات");
+  
+  
+  
+    //RebItemSalesRn
+  SString(31200,"گزارش گردش مالی محصولات تبلیغاتی"); 
+  SString(31201,"دوره "); 	//Period
+  SString(31202,"انبار:"); //Location
+  SString(31203,"محصولات"); //Item
+  SString(31204,"عنوان"); //Name
+  SString(31205,"نام تجاری"); //Brand
+  SString(31206,"مدل"); 	//Model
+  SString(31207,"در آغاز دوره تعداد"); //Quantity at the beginning of period
+  SString(31208,"تعداد فروخته شده"); //Sold quantity
+  SString(31209,"در پایان دوره تعداد"); //Quantity at the end of period
+  SString(31210,"مجموع فروش"); //Sold sum
+  SString(31211,"تنها"); //Total
+  SString(31212,"هزینه کالاهای فروخته شده"); //Cost of sold items
+  SString(31213,"هزینه در اوایل دوره"); //Cost at the beginning of period
+  SString(31214,"هزینه در پایان"); //Cost at the end of period
+  SString(31215,"برای تمام انبارها"); //For all locations
+  SString(31216,":"); 
+  
+  //MiddleInvoiceRn
+  SString(31217,"به طور متوسط رسید گزارش"); //Average invoice report
+  SString(31218,"فروشگاه"); 		//shop
+  SString(31219,"فروشنده"); 		//salesman
+  SString(31220,"تاریخ "); 			//Date
+  SString(31221,"مقدار رسید"); 		//Quantity of receipts
+  SString(31222,"در کل"); 			// In total
+  SString(31223,"قیمت به طور متوسط از رسید"); 	//average cost of receipt
+  SString(31224,"تعداد آیتم های پستها در طول روز");  //total quantity per day 
+
+  //ItemSalesRn
+  SString(31225,"همه انبارها "); 		//All locations
+  SString(31226,"نام تجاری"); 			//Brand
+  SString(31227,"همه برندها"); 			//All brands
+  SString(31228,"دسته بندی:"); 			//Classification
+  SString(31229,"همه طبقه بندی"); 		//All classifications
+  SString(31230,"موجود در انبار"); 		//in stock
+  
+  // INQtyRn  
+  SString(31231,"کد محصول"); 		//item code
+  
+  // IStatRn  
+  SString(31232,"همه فروشندگان"); 		//all salesmen
+  SString(31233,"همه محصولات"); 			//all items
+  SString(31234,"محصولات"); 				//items
+  SString(31235,"کد فروشنده"); 			//salesman code
+  SString(31236,"اول نام"); 			//Name
+  SString(31237,"سود"); 				//Profit
+  SString(31238,"مقدار"); 				//Quantity
+  SString(31239,"مجموع"); 				//Sum
+  SString(31240,"رسید:"); 				//receipts:
+  SString(31241,"مجموع رسید:"); 		//Total receipts  
+  SString(31242,"نتایج"); 				//Overall    
 
   
  return;
