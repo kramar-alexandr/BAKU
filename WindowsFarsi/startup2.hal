@@ -1,0 +1,848 @@
+event startup
+begin
+
+	SetLangMode(LangFarsi,"ENG",0);
+	
+	Setting("สๆุ?ๅ ๅวิ?ๆ ๅอไ?",LocalMachineTClass,modUserSet);//	????????? ????????? ??????
+		
+	Report("?าวัิ ๅ่วฯ",PecuniaryRClass,PecuniaryRn,0,modSL);//???????????? ?????
+	Report("ฬำสฬ่? ??ิัแส็ ?าวัิ แั่ิ ",SalesReportExtRClass,SalesReportExtRn,0,modSL);//????? ?? ???????? ???????????
+  /*if(currentcompany==1 or currentcompany==11)then begin
+  	Report("สัวาๆวๅ็ ?ัฯิ ๅวไ? ?ำสัิ ส่ำื ?วไว็ว ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);//????????-????????? ????????? ?? ??????? ???????????
+  end;*/
+  Report("?ัฯิ ๅวไ? สัวาๆวๅ็ ส่ำื ?วไว็ว",ItemSaldoRClass,ItemSaldoRn,0,modSL);//????????-????????? ????????? ?? ???????
+  Report("?าวัิ ?ัฯิ ๅวไ? ๅอี่ไวส สศไ?ฺวส?",RebItemSalesRClass,RebItemSalesRn,0,modSL); //????? ?? ??????? ????????? ???????
+  Report("ๅ?วๆ??ๆ ??",MiddleInvoiceRClass,MiddleInvoiceRn,0,modSL);	//??????? ???
+  Report("?าวัิ ฮไวี็ ศัว? ฯ่ั็",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL);		//????????? ????? ?? ??????
+  
+  Report("ยๅวั ๅิสั? / ๅอี่ไ",CuArtSTRClass,CuArtSTRn,0,modSL);	//?????????? ??????/?????
+  Report("ยๅวั ฯั ๅิสั?วๆ",CustSTRClass,CustSTRn,0,modSL);	//?????????? ?? ????????
+  Report("ยๅวั แั่ิ ส่ำื ๅิสั?",CustSalesRClass,CustSalesRn,0,modSL);	//?????????? ?????? ?? ????????
+  Report("ยๅวั แั่ิ ส่ำื ?วไว็ว",ItemSalesRClass,ItemSalesRn,0,modSL);		//?????????? ?????? ?? ???????
+  Report("ยๅวั ๅอี่ไวส / ๅโฯวั",INQtyRClass,INQtyRn,0,modSL);	//?????????? ?????/??????????
+  Report("ยๅวั ๅอี่ไวส / แั่ิๆฯ็",IStatRClass,IStatRn,0,modSL);	//?????????? ?????/????????
+  
+  Report("สวั?ฮ?็ ๅอี่ไวส",INrsRClass,INrsRn,0,modIN); //??????? ???????
+  Report("ศวโ? ๅ? ๅวๆฯ วๆศวั",ItemStockStatRClass,ItemStockStatRn,0,modIN);//??????? ?? ???????
+  Report("ๅฬไ็ ฯัยๅฯ",PUJRClass,PUJRn,0,modIN);//?????? ???????????
+  Report("ๅโว?ำ็ ๅ่ฬ่ฯ?",STCompRClass,STCompRn,0,modIN);//????????? ??????????????
+  Report("็ๅ?ๆวๆ วๆศวั ",ItemStockStatRClass,ItemStockStatRn,0,modIN);//????????? ??????????????
+  Report("ๅฬไ็ ฬๆศิ ?วไว",StockMovJRClass,StockMovJRn,0,modIN);//?????? ??????????? ???????
+  Report("ๅฬไ็ ศวา?ิส ศ็ วๆศวั",RetJRClass,RetGoodsJRn,0,modIN);//?????? ????????? ?? ?????
+  Report("ๅฬไ็ ศ็ ๅๆศู ศวา?ิส",RetPUJRClass,RetPUJRn,0,modIN);  //?????? ????????? ???????????
+	Report("ๅฬไ็ อๅไ ่ ๆโไ",SHJRClass,ShipRn,0,modIN);//?????? ????????
+	Report("ๅฬไ็ ๆ่ิสๆ แัวา วา วๆศวั",SDJRClass,StockDepRn,0,modIN);//?????? ???????? ?? ??????
+ 	
+	Report("่ึู?ส อำวศ ๅิสั?",OrderStatusRClass,OrderStatusRn,0,modSO);//?????? ?????? ????????
+	Report("?วั?ๆวๆ ศฯ็? ็ว? ิั?ส",CustDebByCompRClass,CustDebByCompRn,0,modSL);//????????????? ??????????? ?? ?????????
+  Report("อำวศ ?วั?ๆวๆ ฯั?วแสๆ?",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);//????????????? ??????????? ?? ??????
+	
+  /*Report("?าวัิ ?? ๅวฯ็ ฬฯ?ฯ ",MatReportRClass,MatReportRn,0,modSL);
+  if(currentcompany!=9)then begin
+		Report("?าวัิ ฯั ส่วาๆ วแาว?ิ ?วแส็ วำส ",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
+  end;
+  */
+ 
+  Export("?าวัิ แั่ิ ศว ู?ำ ",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
+  Export("็ๅ?ๆวๆ สี่?ั วๆศวั",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);//??????? ???????? ? ??????????
+	  	
+	SString(1111,"สๅวๅ แว?ส่ั็ว ");
+  SString(1112,"ี่ัส อำวศ ");
+  SString(1104,"?ไ?็ ๅิสั?วๆ");
+  SString(1105,"ๅิสั?วๆ");
+  SString(1106,"็ๅ็ ๅ่วัฯ ");
+  SString(1107,"ย?สๅ ็ว");
+  SString(1108,"ำวไ ");
+  SString(1109,"ๅว็ ");
+  SString(1110,"ฯ่ั็ ");
+  SString(1135,"ๅ่ัฯ ?ั่็: ");
+  SString(1136,"็?? ??");
+  SString(1137,"สๆ็ว สว??ฯ ");
+  SString(1138,"ๆ็ สๆ็ว ๅ่ัฯ สว??ฯ ");
+  SString(1139,"็ั ฯ่ ๅ่ัฯ สว??ฯ ่ ๅ่ัฯ สว??ฯ ๆ?ำส ");
+  SString(1140,"อวไส ?ัฯวฮส: ");
+  SString(1141,"ิๅวั็ ำั?วไ: ");
+  SString(1142,"สวั?ฮ วิสศว็ ");
+  SString(1143,"ศฯ่ๆ ่ ศว ส่ฬ็ ูึ่?ส: ");
+  SString(1144,"ฯ่ั็: ");
+	SString(1163,"ๅว็ ?วๅไ ๅ่ัฯ ๆ?วา ");
+	
+	SString(2320,"ฮั?ฯ ?า?ๆ็ โ?ๅส ");
+  SString(2321,"ไ?ำส โ?ๅส ");
+  SString(2322,"แ็ัำส ศ่ัำ ");
+  SString(2323,"แ็ัำส ?ๅศ่ฯ ");
+  SString(2324,"?า?ๆ็ ");
+  SString(2325,"็?? ๅ่ัฯ? ");
+  SString(2326,"ๆวๅ");
+  SString(2327,"่วอฯ ");
+  SString(2328,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ศ็ ฬา ");
+  SString(2329,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ๆัๅ ");
+  SString(2330,"ๅ่ฬ่ฯ? ");
+  SString(2331,"็า?ๆ็ ่วอฯ");
+  SString(2332,"วัาิ ");
+  SString(2333,"ๅ่ฬ่ฯ ");
+  SString(2334,"??ิๆ็วฯวส ");
+  SString(2335,"โ?ๅส ");
+  SString(2336,"็ๅ็ ๅ่วัฯ ");
+  SString(2337,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ?ฯ ");
+  SString(2338,"?ั่็");
+  SString(2339,"อฯวโไ ");
+  SString(2340,"ๅวไ?วส ศั วัาิ วแา่ฯ็? ");
+  SString(2341,"สแว่ส ");
+  SString(2342,"ฯั วๆศวั ");
+  SString(2343,"ฯั ำแวัิ ");
+  SString(2344,"่ั่ฯ? ำ็วๅ สัวๆำ. ");
+  SString(2345,"ๆัฮ วัา ฯั ๅอี่ไวส ัำ?ฯ ");
+  SString(2346,"ๆัฮ วัา ?ๆ่ๆ? ");
+  SString(2347,"?่ั วัฯ ");
+  SString(2348,"ฮวไี ");
+  SString(2349,"??ิๆ็วฯ ฮั?ฯ ");
+  SString(2350,"B-โ?ๅส ");
+	
+	/* ShipRn */
+  SString(2581,"สอ่?ไ ๅฬไ็ ");
+  SString(2582,"ิๅวั็ สอ่?ไ");
+  SString(2583,"สวั?ฮ สอ่?ไ");
+  SString(2584,"สัส?ศ ศฯ่ๆ ");
+  SString(2585,"ิๅวั็ ๅิสั?");
+  SString(2586,"ๆวๅ");
+  SString(2587,"วีืไวอวส ");
+  SString(2588,"?ไ?็ สอ่?ไ? ็ว");
+  SString(2589,"?ไ?็ ำแวัิวส");
+  SString(2590,"ำแวัิ ฯวฯ็ ิฯ็");
+  SString(2591,"สอ่?ไ ฯวฯ็ ิฯ็");
+  SString(2592,"ๅ?วๆ??ๆ ?ำส็ว ฯั ื่ไ ๅ่ัฯ");
+  SString(2593,"?วไว ");
+  SString(2594,"ส่ี?แ");
+  SString(2595,"วัาิ สอ่?ไ ");
+  SString(2596,"แ็ัำส สอ่?ไ ");
+  SString(2597,"สไแๆ ");
+	
+	//	PUJRn
+	SString(2598,"วา ฬๅไ็ ๅอๅ่ไ็ ำ็วๅ ");
+  SString(2599,"ศ็ วำสหๆว? ๅอๅ่ไ็ ำ็วๅ ");
+  SString(2600,"ๅอๅ่ไ็ำ็วๅๅๆอีัว");
+  SString(2601,"ฯแสั ั่าๆวๅ็ ?วไว็ว? ฯั?วแส?");
+  SString(2602,"ิๅวั็ GR");
+  SString(2603,"สวั?ฮ วๆสโวไ");
+  SString(2604,"ำแวัิ ฮั?ฯ ศฯ่ๆ ");
+  SString(2605,"แั่ิๆฯ็");
+  SString(2606,"ๆวๅ");
+  SString(2607,"สแำ?ั");
+  SString(2608,"ๅอี่ไวส ัำ?ฯ ");
+  SString(2609,"ๅอี่ไวส ัำ?ฯ ");
+  SString(2610,"สๅวๅ ำแวัิวส ฮั?ฯ ");
+  SString(2611,"ำแวัิ ฮั?ฯ ");
+  SString(2612,"ิๅวั็ ำั?วไ");
+  SString(2613,"โ?ๅส ");
+  SString(2614,"ศวั?ฯ");
+  SString(2615,"?ๅั?");
+  SString(2616,"วึวแ?");
+  SString(2617,"็า?ๆ็ ศั วำวำ");
+  SString(2618,"สวๅ?ๆ ?ๆๆฯ็ / ๅ่ัฯ ยๅวั ");
+  SString(2619,"?ไ ็า?ๆ็ ");
+  SString(2620,"สูฯวฯ");
+  
+  /* StockTakeRn */
+  SString(2761,"แ็ัำส ????ั? ");
+  SString(2762,"?วไว ");
+  SString(2763,"สแำ?ั");
+  SString(2764,"่วอฯ ");
+  SString(2765,"ฯั วๆศวั ");
+  SString(2767,"โแำ็ ");
+  SString(2768,"ๅอไ ำ?่ๆส ");
+  SString(2769,"โแำ็ ?ฯ ");
+  SString(2770,"????ั? ฯั ๅโว?ำ็ ");
+  SString(2771,"สูฯวฯ ิๅวัิ ิฯ็");
+  SString(2772,"สๆุ?ๅ");
+  SString(2773,"ั่า ิๅวัิ");
+  SString(2774,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(2775,"ฬๅู");
+  SString(2776,"สูฯวฯ แัึ ิๅวัิ ีแั ศัว? ๅ่วัฯ หศส ๆิฯ็ วำส. ฯั ????ั? ");
+  SString(2777,"แัึ ?ๆ?ฯ สูฯวฯ สูฯ?ไ ีแั ศัว? ๅ่วัฯ หศส ๆิฯ็ วำส. ฯั ????ั? ");
+  SString(2778,"ย?ว ฯั ๅ่ัฯ หศส ๆิฯ็ ัว ๆิวๆ ๆๅ? ฯ็ฯ. ฯั ????ั? ");
+  SString(2779,"ๅ่โู?ส ");
+
+/* StockTakeRn */
+  SString(2901,"ๅ่โู?ส ");
+  SString(2902,"่วั?วๆำ วัาิ ");
+  
+  /* MBAList */
+  SString(3461,"สอไ?ไ? ๅ่ฬ่ฯ? ?าวัิ ");
+  SString(3462,"อำวศ");
+  SString(3463,"ศว?ฯ ?ำส็ว ฯั ื่ไ debet ");
+  SString(3464,"ๅ?วๆ??ๆ ?ำส็ว ฯั ื่ไ วูสศวั? ");
+  SString(3465,"ศว?ฯ ฯำสัำ? ศ็ ว?ๆสัๆสฌ");
+  SString(3466,"ฯำสัำ? ศ็ ว?ๆสัๆสฌ วูสศวั? ");
+  SString(3467,"ๅ่ฬ่ฯ? ");
+  SString(3468,"ศวา?ิส / ศ็ ??ิ ศวไ ");
+  SString(3469,"ศ็ ฬไ่ ๅ่ฬ่ฯ? ?วไ? ูึ่?ส ");
+  SString(3470,"?ฯ");
+  SString(3471,"ๆวๅ");
+  SString(3472,"วูสศวั? ");
+  SString(3473,"วูสศวั? ");
+  SString(3474,"ฯ่ั็ ");
+  SString(3475,"วๆศวิส็ ");
+  SString(3476,"ฮวืัวส ");//Ledger?, 
+  SString(3477,"วๆศวิส็ ");//Fisc purp
+  SString(3478,"ฬๅู ");
+
+/* ArtStatList */
+  SString(2455,"ๅ่ัฯ ?ั่็ แั่ิ ยๅวัฌ ศ็ ฺ?ั วา สฮแ?แ ");
+  SString(2456,"็า?ๆ็ ");
+  SString(2457,"ฬๅู");
+  SString(2458,"โ?ๅส ?ว?็ ");
+  SString(2459,"ศัว? ?ั่็ ็ว ");
+  SString(2460,"ยๅวั ?วไว/แั่ิๆฯ็");
+  SString(2461,"ๅ่ัฯ ยๅวั ");
+  SString(2462,"็?? ๅ่ัฯ? ");
+  SString(2463,"?วไว ");
+  SString(2464,"สูฯวฯ");
+  SString(2465,"โ?ๅส ");
+  SString(2466,"?ัฯิ ๅวไ?");
+  SString(2467,"ศฯ่ๆ ิๅวั็ ๅ่ัฯ ");
+  SString(2468,"ำ่ฯ");
+  SString(2469,"ๅ่ัฯ แั่ิ ยๅวั ");
+
+/* CustArtStatList */
+  SString(2470,"ๅิสั? / ๅ่ัฯ ยๅวั ");
+  SString(2471,"ว?ๆ ศวา็ าๅวๆ?");
+  SString(2472,"ฯ่ั็ ๅโว?ำ็");
+  SString(2473,"ศัว? ัฯ็ ๅฬๅู่ ");
+  SString(2474,"ฯำส็ ?วไว ");
+  SString(2475,"สฺ??ั ");
+  SString(2476,"?ัฯิ ๅวไ? ");
+
+/* CustStatList */
+  SString(2477,"DPT ");
+  SString(2478,"วูึว? ็?วส ");
+  SString(2479,"สูฯวฯ ๅิสั?วๆ ");
+  SString(2480,"ฯ่ั็ ศ?วๆ?็ ศว ๅิสั? ");
+  SString(2481,"ยๅวั ๅิสั?  ");
+  SString(2482,"ิๅวั็ ๅิสั?");
+  SString(2483,"ๆวๅ");
+  SString(2484,"?ัฯิ ๅวไ?");
+  SString(2485,"แว?ส่ั ");/*###*/
+  SString(2486,"ั?่ัฯ ");
+  SString(2487,"วูสศวั ");
+  SString(2488,"ๆโฯ? ");
+  SString(2489,"ๅ่ฬ่ฯ? ");
+  SString(2490,"วูสศวั? ");
+  SString(2491,"วูสศวั? ");
+  SString(2492,"ๅ่ฬ่ฯ? ศ็ ฬไ่ ");
+  SString(2493,"ำ่ฯ");
+  SString(2494,"อวิ?็ ");
+  SString(2495,"ๅ่ฬ่ฯ? ศ็ ฬไ่ ");
+  SString(2496,"สฺ??ั ฮวไี ");
+  SString(2497,"ฯั ย?ัว. ");
+  SString(2498,"อฯวโไ. ?ัฯิ ๅวไ?: ");
+  SString(2499,"อฯวโไ. ?ั่็: ");
+  SString(2500,"แั่ิ ศ็ ๅิสั? ยๅวั ");
+  SString(7025,"ิๅวั็ สไแๆ ");
+  SString(7026,"ิๅวั็ แ?ำ ");
+  
+// INQtyRn  
+  SString(8960,"ยๅวั ?วไว/สูฯวฯ"); 
+  SString(8961,"็ๅ็ ฬว ");
+  SString(8962,"วๅั่า ");   
+  SString(8963,"โศไ?. ำวไ ");
+  
+//IStatRn
+  SString(8553,"?ไ:");
+  SString(8554,"ยๅวั ?วไว/แั่ิๆฯ็");
+  SString(8555,"ยๅวั แั่ิๆฯ็ / ๅ่ัฯ");
+  
+  // StockMovList
+  SString(5239,"วา ืั?โ  ");
+  SString(5240,"ฬๆศิ ำ็วๅ ๅฬไ็ ");
+  SString(5241,"ฮ?ั");
+  SString(5242,"สวั?ฮ วๆสโวไ");
+  SString(5243,"สแำ?ั");
+  SString(5244,"วา");
+  SString(5245,"ศ็ ๅ?วๆ");
+  SString(5246,"วัา");
+  SString(5247,"ๆัฮ ");
+  SString(5248,"?วไว ");
+  SString(5249,"สูฯวฯ ฯั?วแส ิฯ็");
+  SString(5250,"ฮี่ี?วส");
+  SString(5251,"โ?ๅส ");
+  SString(5252,"ิๅวั็ ำั?วไ");
+  SString(5253,"โ?ๅส วีไ?");
+  SString(5254,"ฯั?วแส ิฯ็");
+  SString(5255,"ฯั?วแส ๆิฯ ");
+  SString(5256,"วัำวไ ิฯ็");
+  SString(5257,"วัำวไ ๆิฯ็");
+  SString(5258,"ำแวัิ ฯวฯ็ ิฯ็");
+  SString(5259,"ำแวัิ ฯวฯ็ ๆิฯ็");
+  SString(5260,"ิ? / ำแวัิ ยๅวั ");
+  SString(5261,"ฯ่ั็: ");
+  SString(5262,"?ัฯิ ๅวไ?");
+  SString(5263,"สูฯวฯ");
+  SString(5264,"ๅ?วๆ??ๆ วัาิ");
+  SString(5265,"วา ืั?โ  ");
+  SString(5266,"โ?ๅส ฬฯ?ฯ");
+  SString(5267," โฯ?ๅ? โ?ๅส ");
+  SString(5268,"โ?ๅส ฬฯ?ฯ ");
+  SString(5269,"โฯ?ๅ? โ?ๅส ");
+  SString(5270,"็า?ๆ็ วึวแ? ");
+  
+  /* StockDepRn */
+  SString(7600,"ๅฬไ็ วำส็ไว? ำ็วๅ ");
+  SString(7601,"ิๅวั็ ำั?วไ");
+  SString(7602,"สวั?ฮ วๆสโวไ");
+  SString(7603,"อำวศ");
+  SString(7604,"ๅ่โู?ส");
+  SString(7605,"?วไว็ว  ");
+  SString(7606,"สูฯวฯ");
+  SString(7607,"วัาิ ");
+
+  
+  /*RetGoodsJRn*/
+  SString(14580,"ๅอี่ไวส ศวา?ิส ศ็ ๅฬไ็ ?ๆๆฯ็ ");
+  SString(14581,"?ไ?็ ?วไว็ว? ๅัฬู่?");
+  SString(14582,"วฬๆวำ ๅัฬู่?");
+  SString(14583,"ิๅวั็");
+  SString(14584,"สวั?ฮ");
+  SString(14585,"สูฯวฯ ำแวัิ ");
+  SString(14586,"แั่ิๆฯ็");
+  SString(14587,"ๆวๅ");
+  SString(14588,"?วไว ");
+  SString(14589,"ๆวๅ");
+  SString(14590,"โ?ๅส ่วอฯ");
+  SString(14591,"็า?ๆ็ วึวแ?");
+  SString(14592,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(14593,"สูฯวฯ");
+  SString(14594,"?ไ:");
+  
+  /*RetGoodsJRn*/
+  SString(14580,"ๅอี่ไวส ศวา?ิส ศ็ ๅฬไ็ ?ๆๆฯ็ ");
+  SString(14581,"?ไ?็ ?วไว็ว? ๅัฬู่?");
+  SString(14582,"วฬๆวำ ๅัฬู่?");
+  SString(14583,"ิๅวั็");
+  SString(14584,"สวั?ฮ");
+  SString(14585,"สูฯวฯ ำแวัิ ");
+  SString(14586,"แั่ิๆฯ็");
+  SString(14587,"ๆวๅ");
+  SString(14588,"?วไว ");
+  SString(14589,"ๆวๅ");
+  SString(14590,"โ?ๅส ่วอฯ");
+  SString(14591,"็า?ๆ็ วึวแ?");
+  SString(14592,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(14593,"สูฯวฯ");
+  SString(14594,"?ไ:");
+  
+  /*INrsRn*/   
+  SString(11674,"ๅอี่ไวส. ูๅไ?วส ");
+  SString(11675,"POS แว?ส่ั");
+  SString(11676,"ำ็วๅ ?ิ?ิ ");
+    SString(11687,"ิๅว ๅ? ส่วๆ?ฯ ื?แ ่ำ?ู? วา ๅ่โู?ส ็ว ๅิฮี ๆ?ำส ");
+  SString(11688,"สวั?ฮ ็า?ๆ็ ");
+  SString(11689,"สัวๆำ ูึ่?ส ");
+  SString(11690,"แโื  วๆศวั ิฯ็  ?วไว็ว");
+  SString(11691,"สูวฯไ ศัว? ๅ่วัฯ ศฯ่ๆ สวั?ฮ ");
+  SString(11692,"ิวๅไ ั?่ัฯ็ว? ย?ๆฯ็");
+  SString(11693,"ูฯๅ ๆๅว?ิ สูฯวฯ 2");
+  SString(11694,"ๆๅว?ิ ๅโฯวั 2 ");
+  SString(11695,"ๆๅว?ิ ึั?ศ");
+  SString(11696,"??ิ แัึ  แั่ิๆฯ็ ");
+  SString(11697,"ำแวัิ ส่ไ?ฯ");
+  SString(11698,"ๅูัึ ัื่ศส โัวั ฯวฯๆ. ศ็ สวๅ?ๆ ?ๆๆฯ็ ๅอี่ไวส ");
+  SString(11699,"็ั ๅ่โู?ส ");
+  
+  /*INrsRn*/   
+  SString(11700,"ฬำสฬ่? ?ำส ");
+  SString(11701,"ศ็: "); // Selection
+  SString(11702,"วา: ");
+  SString(11703,"ศ็ ่ ?ว วา: ");
+  SString(11704,"ฬำสฬ่ ศัว?: ");
+  SString(11705,"ๅ่ึู่ ");
+  SString(11706,"ยฯัำ");
+  SString(11707,"สวั?ฮ");
+  SString(11708,"าๅวๆ");
+  SString(11709,"ศ็: "); // Part of Address
+  SString(11710,"(ศฯ่ๆ ๅ่ึู่) ");
+  SString(11711,"สูฯวฯ ศวาฯ?ฯ");
+  
+  //Our SStrings
+  
+  SString(31000,"?่ว็? ?ัฯวฮส ฮื ศว?ฯ ?? ศวิฯ");  
+  SString(31001,"IRR วำสแวฯ็ วา ?่ว็? ฯั 80");
+  SString(31002,"สู??ๆ ีฯ่ั สอ่?ไ ่ ?ว ฯั?วแส ?่ไ ๆโฯ");  
+  SString(31003,"ๅิสั? ๆฯวัฯ ?วัส สฬๅู แูวไ");
+  SString(31004,"ๅไ?ส");
+  SString(31005,"ำๆ");
+  SString(31006,"ืศโ็");
+  SString(31007,"ิ็ัำสวๆ");
+  SString(31008,"??่ๆ็ ศัว? ?วฯ??ั?");
+  SString(31009,"ๆส?ฬ็");
+  SString(31010,"แัๅส วิสศว็ วา สไแๆ. ื่ไ ศว?ฯ 10 ?วัว?สั ศวิฯ");
+  SString(31011,"ๆๅั็ ?ไ ฯั ว?ๆ ?วัส ะฮ?ั็ ำวา? ศ?ิ วา 3000 IRR");
+  SString(31012,"?วัส ะฮ?ั็ ำวา? แูวไ ศัว? ว?ๆ ๅิสั? วา โศไ ่ฬ่ฯ ฯวัฯ");
+  SString(31013,"?าวัิ ๅ่วฯ ฬฯ?ฯ");
+  SString(31014,"ิๅว วๅ?วๆ ?ะ?ั ๆ?ำส ศ็ ?าวัิ วๆศวัฌ ไืแว วๆศวั ฮ่ฯ ัว วๆสฮวศ ?ๆ?ฯ");
+  SString(31015,"ๆวๅ ๅำวแั");
+  SString(31016,"?าวัิ ๅ่วฯ");
+  SString(31017,"?ฯ ็วๆำ");
+  SString(31018,"?ฯ ๅๆศู");
+  SString(31019,"IRR สัๅ?ๆวไ (ฯั ็ั ่วอฯ)");
+  SString(31020,"ๅโฯวั IRR สัๅ?ๆวไ");
+  SString(31021,"็า?ๆ็ ็ว? วฯวั?");
+  SString(31022,"ะฮ?ั็ วๆสฮวศ ๆิฯ็");
+  SString(31023,"?าวัิ ๅ่วฯ");
+  SString(31024,"แั่ิ?ว็:");
+  SString(31025,"วส่ๅศ?ไ:");
+  SString(31026,"ศัว? สๅวๅ ๅวิ?ๆ ยไวส");
+  SString(31027,"?ฯ ๅวิ?ๆ วำส ?ๅ ิฯ็ ่ ?ว ๆๅ? ส่วๆ ?วแส");
+  SString(31028,"ืศโ็ ศๆฯ? (ๆวๅ สฬวั?)");
+  SString(31029,"ืศโ็ ศๆฯ? (ๅฯไ)");
+  SString(31030,"?ัฯวฮส ี่ัสอำวศ");
+  SString(31031,"??ิ ?ัฯวฮส สอส โัวัฯวฯ");
+  SString(31032,"ั่ิ ็ว? ?ัฯวฮส ็ว");
+  SString(31033,"?วัส วูสศวั?");
+  SString(31034,"วๅส?วา ๅ่ัฯ วำสแวฯ็");
+  SString(31035,"??ิ ?ัฯวฮส ๅ่ัฯ โศ่ไ");
+  SString(31036,"?ัฯวฮส ๅ่ฬ่ฯ วา แว?ส่ั็ว");
+  SString(31037,"สูฯวฯ ??ิ ?ัฯวฮส");
+  SString(31038,"สูฯวฯ ศไ?ื");
+  SString(31039,"?ห?ั");
+  SString(31040,"ๅฯ?ั");
+  SString(31041,"?าวัิ แั่ิ ?ำสัิ");
+  SString(31042,"ำ?ำสๅ ศัๆวๅ็ ๆ่?ำ? ศัว? ็วๆำ");
+  SString(31043,"ๅๆศู ?ิส?ศวๆ? ๅ? ?ๆฯ");
+  SString(31044,"ๆวๅ สฬวั?");
+  SString(31045,"ๅฬๅู่็");
+  SString(31046,"ศั?ิส");
+  SString(31047,"ๆู่ แไา?");
+  SString(31048,"ู?วั");
+  SString(31049,"ฯำสศๆฯ / สำๅ็");
+  SString(31050,"ิๅวั็ ??ั? ัๆ?");
+  SString(31051,"ิๅวั็ ??ว??");
+  SString(31052,"สูฯวฯ แั่ิ");
+  SString(31053,"็า?ๆ็ ็ั ่วอฯ (วัา วา ๆวๅ สฬวั?)");
+  SString(31054,"็า?ๆ็ ็ั ่วอฯ (IRR วัา)");
+  SString(31055,"็า?ๆ็ ็ั ่วอฯ (วัา)");
+  SString(31056,"?ไ ็า?ๆ็ (วัา วา ๆวๅ สฬวั?)");
+  SString(31057,"?ไ ็า?ๆ็ (วัา IRR)");
+  SString(31058,"?ไ ็า?ๆ็ (วัา)");
+  SString(31059,"โ?ๅส ่วอฯ (วัา วา ๆวๅ สฬวั?)");
+  SString(31060,"โ?ๅส ่วอฯ (IRR วัา)");
+  SString(31061,"โ?ๅส ่วอฯ (วัา)");
+  SString(31062,"ๅฬๅู่ แั่ิ (วัา วา ๆวๅ สฬวั?)");
+  SString(31063,"ๅฬๅู่ แั่ิ (IRR ๆัฮ วัา)");
+  SString(31064,"ๅฬๅู่ แั่ิ (วัา)");
+  SString(31065,"สแว่ส (วัา วา ๆวๅ สฬวั?)");
+  SString(31066,"สแว่ส (IRR ๆัฮ วัา)");
+  SString(31067,"สแว่ส (วัา)");
+  SString(31068,"วัา ศัๆฯว");
+  SString(31069,"ๅิสั? (ๆวๅ ?ว ิๅวั็ ?วัส)");
+  SString(31070,"ๆวๅ ๅิสั?");
+  SString(31071,"สฮแ?แ");
+  SString(31072,"สวั?ฮ ฮั?ฯ");
+  SString(31073,"ั่ิ ็ว? ?ัฯวฮส");
+  SString(31074,"ๅฬๅู่ ส่ำื สูฯวฯ");
+  SString(31075,"ๅฬๅู่ ็า?ๆ็");
+  SString(31076,"ๅโฯวั ?ไ");
+  SString(31077,"ๅฬๅู่ ศั สแว่ส");
+  SString(31078,"ๅส่ำื สฮแ?แ");
+  SString(31079,"สๆุ?ๅ สวั?ฮ");
+  SString(31080,"?ัฯิ ๅวไ? สัวาๆวๅ็ ส่ำื ?วไว็ว");
+  SString(31081,"สูวฯไ ศวา ?วไว");
+  SString(31082,"ัำ?ฯ็ (ฯวฮไ?)");
+  SString(31083,"ศวา?ิส วา ๅิสั?วๆ");
+  SString(31084,"ีวฯั");
+  SString(31085,"ีวฯั (ฯวฮไ?)");
+  SString(31086,"ๅวๆฯ็ ๆ็ว??");
+  SString(31087,"สๅวๅ แั่ิ?ว็");
+  SString(31088,"ฯ่ั็");
+  SString(31089,"็ๅ็");
+  SString(31090,"ิวๅไ");
+  SString(31091,"ศวา?ิส วา ฮั?ฯวัวๆ");
+  SString(31092,"ๅโฯวั (ฯวฮไ?)");
+  SString(31093,"ๅฬๅู่(ฯวฮไ?)");
+  SString(31094,"ๅโฯวั สูวฯไ");
+  SString(31095,"ๅฬๅู่ ็า?ๆ็");
+  SString(31096,"โ?ๅส ๆส?ฬ็");
+  SString(31097,"วๆศวั (แั่ิ?ว็)");
+  SString(31098,"ไวาๅ วำส ศัว? สว??ฯ วัา ๅๆุ่ั");
+  SString(31099,"วัำวไ ศ็ ็า?ๆ็ ()");
+  SString(31100,"?าวัิ ฮไวี็ ศัว? ฯ่ั็");
+  SString(31101,"ิๅว ศว?ฯ ?? ?าวัิ ๆัฮ วัา ๅิฮี");
+  SString(31102,"ฯ่ั็");
+  SString(31103,"ๅอไ");
+  SString(31104,"ิวๅไ ็ๅ็ ๅ?วๆ");
+  SString(31105,"ืศโ็ ศๆฯ?");
+  SString(31106,"ๅอี่ไ ฯั อวไ ยๅฯๆ วำส");
+  SString(31107,"ศวา?ิส ๅิสั?(โ?ๅส)");
+  SString(31108,"อๅไ(็า?ๆ็)");
+  SString(31109,"อๅไ(โ?ๅส)");
+  SString(31110,"ีฯ่ั ศฯ่ๆ วส็วๅ (ฮัฯ็ แั่ิ?)");
+  SString(31111,"ศั?ิสวั วฦ็ ฯ็ๆฯ็");
+  SString(31112,"ๅโฯวั สูวฯไ");  
+  
+ return;
+end;  event startup
+begin
+
+	SetLangMode(LangFarsi,"ENG",0);
+	
+	
+  Setting("ไ?ำส โ?ๅส ๆโื็ ",PricePointListLClass,modIN);  
+  Setting("สๆุ?ๅ ?วั?ๆวๆ สฮแ?แ ",RebTableBlockTClass,modPOS);  
+	Setting("?วัส ่แวฯวั?",LoyaltyCardLClass,modPOS);
+	
+	Report("?าวัิ ๅ่วฯ",PecuniaryRClass,PecuniaryRn,0,modSL);//???????????? ?????
+	Report("ฬำสฬ่? ??ิัแส็ ?าวัิ แั่ิ ",SalesReportExtRClass,SalesReportExtRn,0,modSL);//????? ?? ???????? ???????????
+  if(currentcompany==1 or currentcompany==11)then begin
+  	Report("สัวาๆวๅ็ ?ัฯิ ๅวไ? ?ำสัิ ส่ำื ?วไว็ว ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);//????????-????????? ????????? ?? ??????? ???????????
+  end;
+  Report("?าวัิ ?ัฯิ ๅวไ? ๅอี่ไวส สศไ?ฺวส?",RebItemSalesRClass,RebItemSalesRn,0,modSL); //????? ?? ??????? ????????? ???????
+  Report("ๅ?วๆ??ๆ ??",MiddleInvoiceRClass,MiddleInvoiceRn,0,modSL);	//??????? ???
+  Report("?าวัิ ฮไวี็ ศัว? ฯ่ั็",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL);		//????????? ????? ?? ??????
+  Report("ยๅวั ๅิสั? / ๅอี่ไ",CuArtSTRClass,CuArtSTRn,0,modSL);	//?????????? ??????/?????
+  Report("ยๅวั ฯั ๅิสั?วๆ",CustSTRClass,CustSTRn,0,modSL);	//?????????? ?? ????????
+  Report("ยๅวั แั่ิ ส่ำื ๅิสั?",CustSalesRClass,CustSalesRn,0,modSL);	//?????????? ?????? ?? ????????
+  Report("ยๅวั แั่ิ ส่ำื ?วไว็ว",ItemSalesRClass,ItemSalesRn,0,modSL);		//?????????? ?????? ?? ???????
+  Report("ยๅวั ๅอี่ไวส / ๅโฯวั",INQtyRClass,INQtyRn,0,modSL);	//?????????? ?????/??????????
+  Report("ยๅวั ๅอี่ไวส / แั่ิๆฯ็",IStatRClass,IStatRn,0,modSL);	//?????????? ?????/????????
+  Report("สวั?ฮ?็ ๅอี่ไวส",INrsRClass,INrsRn,0,modIN); //??????? ???????
+  Report("ศวโ? ๅ? ๅวๆฯ วๆศวั",ItemStockStatRClass,ItemStockStatRn,0,modIN);//??????? ?? ???????
+  Report("ๅฬไ็ ฯัยๅฯ",PUJRClass,PUJRn,0,modIN);//?????? ???????????
+  
+  Report("็ๅ?ๆวๆ วๆศวั ",ItemStockStatRClass,ItemStockStatRn,0,modIN);
+  
+  
+ 
+  Report("?าวัิ ?? ๅวฯ็ ฬฯ?ฯ ",MatReportRClass,MatReportRn,0,modSL);
+  if(currentcompany!=9)then begin
+		Report("?าวัิ ฯั ส่วาๆ วแาว?ิ ?วแส็ วำส ",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
+  end;
+  
+  Report("ๅิสั?วๆ แูวไ ฯั ฯ่ั็ ",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
+  Report("ฬำสฬ่ ศัว? สๅวำ ศว ๅว ",SearchContactRClass,SearchContactRn,0,modMYCRM);
+  Report("แูวไ?ส ?าวัิ ิๅวั็ ",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
+  Report("?าวัิ แูวไ?ส ฯัำว?ส ศ็ ศ่ส?? ",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
+  
+ 
+  Export("?าวัิ แั่ิ ศว ู?ำ ",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
+  Export("็ๅ?ๆวๆ สี่?ั วๆศวั",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
+
+  	
+	SString(1111,"สๅวๅ แว?ส่ั็ว ");
+  SString(1112,"ี่ัส อำวศ ");
+  SString(1104,"?ไ?็ ๅิสั?วๆ");
+  SString(1105,"ๅิสั?วๆ");
+  SString(1106,"็ๅ็ ๅ่วัฯ ");
+  SString(1107,"ย?สๅ ็ว");
+  SString(1108,"ำวไ ");
+  SString(1109,"ๅว็ ");
+  SString(1110,"ฯ่ั็ ");
+   SString(1135,"ๅ่ัฯ ?ั่็: ");
+  SString(1136,"็?? ??");
+  SString(1137,"สๆ็ว สว??ฯ ");
+  SString(1138,"ๆ็ สๆ็ว ๅ่ัฯ สว??ฯ ");
+  SString(1139,"็ั ฯ่ ๅ่ัฯ สว??ฯ ่ ๅ่ัฯ สว??ฯ ๆ?ำส ");
+  SString(1140,"อวไส ?ัฯวฮส: ");
+  SString(1141,"ิๅวั็ ำั?วไ: ");
+  SString(1142,"สวั?ฮ วิสศว็ ");
+  SString(1143,"ศฯ่ๆ ่ ศว ส่ฬ็ ูึ่?ส: ");
+  SString(1144,"ฯ่ั็: ");
+    SString(1163,"ๅว็ ?วๅไ ๅ่ัฯ ๆ?วา ");
+	
+	SString(2320,"ฮั?ฯ ?า?ๆ็ โ?ๅส ");
+  SString(2321,"ไ?ำส โ?ๅส ");
+  SString(2322,"แ็ัำส ศ่ัำ ");
+  SString(2323,"แ็ัำส ?ๅศ่ฯ ");
+  SString(2324,"?า?ๆ็ ");
+  SString(2325,"็?? ๅ่ัฯ? ");
+  SString(2326,"ๆวๅ");
+  SString(2327,"่วอฯ ");
+  SString(2328,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ศ็ ฬา ");
+  SString(2329,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ๆัๅ ");
+  SString(2330,"ๅ่ฬ่ฯ? ");
+  SString(2331,"็า?ๆ็ ่วอฯ");
+  SString(2332,"วัาิ ");
+  SString(2333,"ๅ่ฬ่ฯ ");
+  SString(2334,"??ิๆ็วฯวส ");
+  SString(2335,"โ?ๅส ");
+  SString(2336,"็ๅ็ ๅ่วัฯ ");
+  SString(2337,"ๅวไ?วส ศั วัาิ วแา่ฯ็ ?ฯ ");
+  SString(2338,"?ั่็");
+  SString(2339,"อฯวโไ ");
+  SString(2340,"ๅวไ?วส ศั วัาิ วแา่ฯ็? ");
+  SString(2341,"สแว่ส ");
+  SString(2342,"ฯั วๆศวั ");
+  SString(2343,"ฯั ำแวัิ ");
+  SString(2344,"่ั่ฯ? ำ็วๅ สัวๆำ. ");
+  SString(2345,"ๆัฮ วัา ฯั ๅอี่ไวส ัำ?ฯ ");
+  SString(2346,"ๆัฮ วัา ?ๆ่ๆ? ");
+  SString(2347,"?่ั วัฯ ");
+  SString(2348,"ฮวไี ");
+  SString(2349,"??ิๆ็วฯ ฮั?ฯ ");
+  SString(2350,"B-โ?ๅส ");
+	
+	/* ShipRn */
+  SString(2581,"สอ่?ไ ๅฬไ็ ");
+  SString(2582,"ิๅวั็ สอ่?ไ");
+  SString(2583,"สวั?ฮ สอ่?ไ");
+  SString(2584,"สัส?ศ ศฯ่ๆ ");
+  SString(2585,"ิๅวั็ ๅิสั?");
+  SString(2586,"ๆวๅ");
+  SString(2587,"วีืไวอวส ");
+  SString(2588,"?ไ?็ สอ่?ไ? ็ว");
+  SString(2589,"?ไ?็ ำแวัิวส");
+  SString(2590,"ำแวัิ ฯวฯ็ ิฯ็");
+  SString(2591,"สอ่?ไ ฯวฯ็ ิฯ็");
+  SString(2592,"ๅ?วๆ??ๆ ?ำส็ว ฯั ื่ไ ๅ่ัฯ");
+  SString(2593,"?วไว ");
+  SString(2594,"ส่ี?แ");
+  SString(2595,"วัาิ สอ่?ไ ");
+  SString(2596,"แ็ัำส สอ่?ไ ");
+  SString(2597,"สไแๆ ");
+	
+	//	PUJRn
+	SString(2598,"วา ฬๅไ็ ๅอๅ่ไ็ ำ็วๅ ");
+  SString(2599,"ศ็ วำสหๆว? ๅอๅ่ไ็ ำ็วๅ ");
+  SString(2600,"ๅอๅ่ไ็ำ็วๅๅๆอีัว");
+  SString(2601,"ฯแสั ั่าๆวๅ็ ?วไว็ว? ฯั?วแส?");
+  SString(2602,"ิๅวั็ GR");
+  SString(2603,"สวั?ฮ วๆสโวไ");
+  SString(2604,"ำแวัิ ฮั?ฯ ศฯ่ๆ ");
+  SString(2605,"แั่ิๆฯ็");
+  SString(2606,"ๆวๅ");
+  SString(2607,"สแำ?ั");
+  SString(2608,"ๅอี่ไวส ัำ?ฯ ");
+  SString(2609,"ๅอี่ไวส ัำ?ฯ ");
+  SString(2610,"สๅวๅ ำแวัิวส ฮั?ฯ ");
+  SString(2611,"ำแวัิ ฮั?ฯ ");
+  SString(2612,"ิๅวั็ ำั?วไ");
+  SString(2613,"โ?ๅส ");
+  SString(2614,"ศวั?ฯ");
+  SString(2615,"?ๅั?");
+  SString(2616,"วึวแ?");
+  SString(2617,"็า?ๆ็ ศั วำวำ");
+  SString(2618,"สวๅ?ๆ ?ๆๆฯ็ / ๅ่ัฯ ยๅวั ");
+  SString(2619,"?ไ ็า?ๆ็ ");
+  SString(2620,"สูฯวฯ");
+  
+  /* StockTakeRn */
+  SString(2761,"แ็ัำส ????ั? ");
+  SString(2762,"?วไว ");
+  SString(2763,"สแำ?ั");
+  SString(2764,"่วอฯ ");
+  SString(2765,"ฯั วๆศวั ");
+  SString(2767,"โแำ็ ");
+  SString(2768,"ๅอไ ำ?่ๆส ");
+  SString(2769,"โแำ็ ?ฯ ");
+  SString(2770,"????ั? ฯั ๅโว?ำ็ ");
+  SString(2771,"สูฯวฯ ิๅวัิ ิฯ็");
+  SString(2772,"สๆุ?ๅ");
+  SString(2773,"ั่า ิๅวัิ");
+  SString(2774,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(2775,"ฬๅู");
+  SString(2776,"สูฯวฯ แัึ ิๅวัิ ีแั ศัว? ๅ่วัฯ หศส ๆิฯ็ วำส. ฯั ????ั? ");
+  SString(2777,"แัึ ?ๆ?ฯ สูฯวฯ สูฯ?ไ ีแั ศัว? ๅ่วัฯ หศส ๆิฯ็ วำส. ฯั ????ั? ");
+  SString(2778,"ย?ว ฯั ๅ่ัฯ หศส ๆิฯ็ ัว ๆิวๆ ๆๅ? ฯ็ฯ. ฯั ????ั? ");
+  SString(2779,"ๅ่โู?ส ");
+
+/* StockTakeRn */
+  SString(2901,"ๅ่โู?ส ");
+  SString(2902,"่วั?วๆำ วัาิ ");
+  
+  /* MBAList */
+  SString(3461,"สอไ?ไ? ๅ่ฬ่ฯ? ?าวัิ ");
+  SString(3462,"อำวศ");
+  SString(3463,"ศว?ฯ ?ำส็ว ฯั ื่ไ debet ");
+  SString(3464,"ๅ?วๆ??ๆ ?ำส็ว ฯั ื่ไ วูสศวั? ");
+  SString(3465,"ศว?ฯ ฯำสัำ? ศ็ ว?ๆสัๆสฌ");
+  SString(3466,"ฯำสัำ? ศ็ ว?ๆสัๆสฌ วูสศวั? ");
+  SString(3467,"ๅ่ฬ่ฯ? ");
+  SString(3468,"ศวา?ิส / ศ็ ??ิ ศวไ ");
+  SString(3469,"ศ็ ฬไ่ ๅ่ฬ่ฯ? ?วไ? ูึ่?ส ");
+  SString(3470,"?ฯ");
+  SString(3471,"ๆวๅ");
+  SString(3472,"วูสศวั? ");
+  SString(3473,"วูสศวั? ");
+  SString(3474,"ฯ่ั็ ");
+  SString(3475,"วๆศวิส็ ");
+  SString(3476,"ฮวืัวส ");//Ledger?, 
+  SString(3477,"วๆศวิส็ ");//Fisc purp
+  SString(3478,"ฬๅู ");
+
+/* ArtStatList */
+  SString(2455,"ๅ่ัฯ ?ั่็ แั่ิ ยๅวัฌ ศ็ ฺ?ั วา สฮแ?แ ");
+  SString(2456,"็า?ๆ็ ");
+  SString(2457,"ฬๅู");
+  SString(2458,"โ?ๅส ?ว?็ ");
+  SString(2459,"ศัว? ?ั่็ ็ว ");
+  SString(2460,"ยๅวั ?วไว/แั่ิๆฯ็");
+  SString(2461,"ๅ่ัฯ ยๅวั ");
+  SString(2462,"็?? ๅ่ัฯ? ");
+  SString(2463,"?วไว ");
+  SString(2464,"สูฯวฯ");
+  SString(2465,"โ?ๅส ");
+  SString(2466,"?ัฯิ ๅวไ?");
+  SString(2467,"ศฯ่ๆ ิๅวั็ ๅ่ัฯ ");
+  SString(2468,"ำ่ฯ");
+  SString(2469,"ๅ่ัฯ แั่ิ ยๅวั ");
+
+/* CustArtStatList */
+  SString(2470,"ๅิสั? / ๅ่ัฯ ยๅวั ");
+  SString(2471,"ว?ๆ ศวา็ าๅวๆ?");
+  SString(2472,"ฯ่ั็ ๅโว?ำ็");
+  SString(2473,"ศัว? ัฯ็ ๅฬๅู่ ");
+  SString(2474,"ฯำส็ ?วไว ");
+  SString(2475,"สฺ??ั ");
+  SString(2476,"?ัฯิ ๅวไ? ");
+
+/* CustStatList */
+  SString(2477,"DPT ");
+  SString(2478,"วูึว? ็?วส ");
+  SString(2479,"สูฯวฯ ๅิสั?วๆ ");
+  SString(2480,"ฯ่ั็ ศ?วๆ?็ ศว ๅิสั? ");
+  SString(2481,"ยๅวั ๅิสั?  ");
+  SString(2482,"ิๅวั็ ๅิสั?");
+  SString(2483,"ๆวๅ");
+  SString(2484,"?ัฯิ ๅวไ?");
+  SString(2485,"แว?ส่ั ");/*###*/
+  SString(2486,"ั?่ัฯ ");
+  SString(2487,"วูสศวั ");
+  SString(2488,"ๆโฯ? ");
+  SString(2489,"ๅ่ฬ่ฯ? ");
+  SString(2490,"วูสศวั? ");
+  SString(2491,"วูสศวั? ");
+  SString(2492,"ๅ่ฬ่ฯ? ศ็ ฬไ่ ");
+  SString(2493,"ำ่ฯ");
+  SString(2494,"อวิ?็ ");
+  SString(2495,"ๅ่ฬ่ฯ? ศ็ ฬไ่ ");
+  SString(2496,"สฺ??ั ฮวไี ");
+  SString(2497,"ฯั ย?ัว. ");
+  SString(2498,"อฯวโไ. ?ัฯิ ๅวไ?: ");
+  SString(2499,"อฯวโไ. ?ั่็: ");
+  SString(2500,"แั่ิ ศ็ ๅิสั? ยๅวั ");
+  SString(7025,"ิๅวั็ สไแๆ ");
+  SString(7026,"ิๅวั็ แ?ำ ");
+  
+// INQtyRn  
+  SString(8960,"ยๅวั ?วไว/สูฯวฯ"); 
+  SString(8961,"็ๅ็ ฬว ");
+  SString(8962,"วๅั่า ");   
+  SString(8963,"โศไ?. ำวไ ");
+  
+//IStatRn
+  SString(8553,"?ไ:");
+  SString(8554,"ยๅวั ?วไว/แั่ิๆฯ็");
+  SString(8555,"ยๅวั แั่ิๆฯ็ / ๅ่ัฯ");
+  
+  // StockMovList
+  SString(5239,"วา ืั?โ  ");
+  SString(5240,"ฬๆศิ ำ็วๅ ๅฬไ็ ");
+  SString(5241,"ฮ?ั");
+  SString(5242,"สวั?ฮ วๆสโวไ");
+  SString(5243,"สแำ?ั");
+  SString(5244,"วา");
+  SString(5245,"ศ็ ๅ?วๆ");
+  SString(5246,"วัา");
+  SString(5247,"ๆัฮ ");
+  SString(5248,"?วไว ");
+  SString(5249,"สูฯวฯ ฯั?วแส ิฯ็");
+  SString(5250,"ฮี่ี?วส");
+  SString(5251,"โ?ๅส ");
+  SString(5252,"ิๅวั็ ำั?วไ");
+  SString(5253,"โ?ๅส วีไ?");
+  SString(5254,"ฯั?วแส ิฯ็");
+  SString(5255,"ฯั?วแส ๆิฯ ");
+  SString(5256,"วัำวไ ิฯ็");
+  SString(5257,"วัำวไ ๆิฯ็");
+  SString(5258,"ำแวัิ ฯวฯ็ ิฯ็");
+  SString(5259,"ำแวัิ ฯวฯ็ ๆิฯ็");
+  SString(5260,"ิ? / ำแวัิ ยๅวั ");
+  SString(5261,"ฯ่ั็: ");
+  SString(5262,"?ัฯิ ๅวไ?");
+  SString(5263,"สูฯวฯ");
+  SString(5264,"ๅ?วๆ??ๆ วัาิ");
+  SString(5265,"วา ืั?โ  ");
+  SString(5266,"โ?ๅส ฬฯ?ฯ");
+  SString(5267," โฯ?ๅ? โ?ๅส ");
+  SString(5268,"โ?ๅส ฬฯ?ฯ ");
+  SString(5269,"โฯ?ๅ? โ?ๅส ");
+  SString(5270,"็า?ๆ็ วึวแ? ");
+  
+  /* StockDepRn */
+  SString(7600,"ๅฬไ็ วำส็ไว? ำ็วๅ ");
+  SString(7601,"ิๅวั็ ำั?วไ");
+  SString(7602,"สวั?ฮ วๆสโวไ");
+  SString(7603,"อำวศ");
+  SString(7604,"ๅ่โู?ส");
+  SString(7605,"?วไว็ว  ");
+  SString(7606,"สูฯวฯ");
+  SString(7607,"วัาิ ");
+
+  
+  /*RetGoodsJRn*/
+  SString(14580,"ๅอี่ไวส ศวา?ิส ศ็ ๅฬไ็ ?ๆๆฯ็ ");
+  SString(14581,"?ไ?็ ?วไว็ว? ๅัฬู่?");
+  SString(14582,"วฬๆวำ ๅัฬู่?");
+  SString(14583,"ิๅวั็");
+  SString(14584,"สวั?ฮ");
+  SString(14585,"สูฯวฯ ำแวัิ ");
+  SString(14586,"แั่ิๆฯ็");
+  SString(14587,"ๆวๅ");
+  SString(14588,"?วไว ");
+  SString(14589,"ๆวๅ");
+  SString(14590,"โ?ๅส ่วอฯ");
+  SString(14591,"็า?ๆ็ วึวแ?");
+  SString(14592,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(14593,"สูฯวฯ");
+  SString(14594,"?ไ:");
+  
+  /*RetGoodsJRn*/
+  SString(14580,"ๅอี่ไวส ศวา?ิส ศ็ ๅฬไ็ ?ๆๆฯ็ ");
+  SString(14581,"?ไ?็ ?วไว็ว? ๅัฬู่?");
+  SString(14582,"วฬๆวำ ๅัฬู่?");
+  SString(14583,"ิๅวั็");
+  SString(14584,"สวั?ฮ");
+  SString(14585,"สูฯวฯ ำแวัิ ");
+  SString(14586,"แั่ิๆฯ็");
+  SString(14587,"ๆวๅ");
+  SString(14588,"?วไว ");
+  SString(14589,"ๆวๅ");
+  SString(14590,"โ?ๅส ่วอฯ");
+  SString(14591,"็า?ๆ็ วึวแ?");
+  SString(14592,"โ?ๅส สๅวๅ ิฯ็ ");
+  SString(14593,"สูฯวฯ");
+  SString(14594,"?ไ:");
+  
+  /*INrsRn*/   
+  SString(11674,"ๅอี่ไวส. ูๅไ?วส ");
+  SString(11675,"POS แว?ส่ั");
+  SString(11676,"ำ็วๅ ?ิ?ิ ");
+    SString(11687,"ิๅว ๅ? ส่วๆ?ฯ ื?แ ่ำ?ู? วา ๅ่โู?ส ็ว ๅิฮี ๆ?ำส ");
+  SString(11688,"สวั?ฮ ็า?ๆ็ ");
+  SString(11689,"สัวๆำ ูึ่?ส ");
+  SString(11690,"แโื  วๆศวั ิฯ็  ?วไว็ว");
+  SString(11691,"สูวฯไ ศัว? ๅ่วัฯ ศฯ่ๆ สวั?ฮ ");
+  SString(11692,"ิวๅไ ั?่ัฯ็ว? ย?ๆฯ็");
+  SString(11693,"ูฯๅ ๆๅว?ิ สูฯวฯ 2");
+  SString(11694,"ๆๅว?ิ ๅโฯวั 2 ");
+  SString(11695,"ๆๅว?ิ ึั?ศ");
+  SString(11696,"??ิ แัึ  แั่ิๆฯ็ ");
+  SString(11697,"ำแวัิ ส่ไ?ฯ");
+  SString(11698,"ๅูัึ ัื่ศส โัวั ฯวฯๆ. ศ็ สวๅ?ๆ ?ๆๆฯ็ ๅอี่ไวส ");
+  SString(11699,"็ั ๅ่โู?ส ");
+  
+  /*INrsRn*/   
+  SString(11700,"ฬำสฬ่? ?ำส ");
+  SString(11701,"ศ็: "); // Selection
+  SString(11702,"วา: ");
+  SString(11703,"ศ็ ่ ?ว วา: ");
+  SString(11704,"ฬำสฬ่ ศัว?: ");
+  SString(11705,"ๅ่ึู่ ");
+  SString(11706,"ยฯัำ");
+  SString(11707,"สวั?ฮ");
+  SString(11708,"าๅวๆ");
+  SString(11709,"ศ็: "); // Part of Address
+  SString(11710,"(ศฯ่ๆ ๅ่ึู่) ");
+  SString(11711,"สูฯวฯ ศวาฯ?ฯ");
+  
+ return;
+end;  
