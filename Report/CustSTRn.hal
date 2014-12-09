@@ -11,7 +11,7 @@ external function Boolean SetInSet2(string,string);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);//Edit ************************** Sasha2, Thursday, 20 June 2013
 external procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer); //Edit ************************** Sasha2, Thursday, 20 June 2013
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:12 09.12.2014
 
 function Date FindFirstMonthStart(Date td,Date ed)
 BEGIN
@@ -787,71 +787,71 @@ L99:;
 
   NEWREPORTWITHSTOCK:; //Edit ************************** Sasha2, Thursday, 20 June 2013 {
 
-  startreportnoheaderjob("Статистика продаж по клиентам");
+  startreportnoheaderjob(USetStr(31132));
   customer = RepSpec.f1;
 
   Startformat(15);
-		outstring(60,0,"Период:",true);
+		outstring(60,0,USetStr(31102),true);
 		outstring(130,0,RepSpec.sStartDate & chr(58) & RepSpec.sEndDate,true);	
 	endformat;
 
 	if (NonBlank(RepSpec.f1)) then begin
 		Startformat(15);
-			outstring(60,0,"Клиент:",true);
+			outstring(60,0,USetStr(31114),true);
 			outstring(130,0,RepSpec.f1,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Клиент:",true);
-			outstring(130,0,"По всем клиентам",true);	
+			outstring(60,0,USetStr(31114),true);
+			outstring(130,0,USetStr(31115),true);	
 		endformat;
 	end;
 
 	if (NonBlank(RepSpec.f2)) then begin
 		Startformat(15);
-			outstring(60,0,"Товар:",true);
+			outstring(60,0,USetStr(31116),true);
 			outstring(130,0,RepSpec.f2,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Товар:",true);
-			outstring(130,0,"По всем товарам",true);	
+			outstring(60,0,USetStr(31116),true);
+			outstring(130,0,USetStr(31117),true);	
 		endformat;
 	end;
 
 
 	if (NonBlank(RepSpec.FirstAcc)) then begin
 		Startformat(15);
-			outstring(60,0,"Склад:",true);
+			outstring(60,0,USetStr(31103),true);
 			outstring(130,0,RepSpec.FirstAcc,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Склад:",true);
-			outstring(130,0,"По всем складам",true);	
+			outstring(60,0,USetStr(31103),true);
+			outstring(130,0,USetStr(31104),true);	
 		endformat;
 	end;
 
 	if (NonBlank(RepSpec.AccStr)) then begin
 		Startformat(15);
-			outstring(60,0,"Продавец:",true);
+			outstring(60,0,USetStr(31133),true);
 			Userr.Code = RepSpec.AccStr;
 			ReadFirstMain(Userr,1,true);
 			outstring(130,0,Userr.Name,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Продавец:",true);
-			outstring(130,0,"Все продавцы",true);	
+			outstring(60,0,USetStr(31133),true);
+			outstring(130,0,USetStr(31134),true);	
 		endformat;
 	end;
 
 	Startformat(15);
-		outstring(40,0,"Клиент",true);
-		outstring(130,0,"Имя клиента",true);
-		outstring(200,0,"Прибыль",true);
-		outstring(270,0,"Рентабельность",true);
-		outstring(300,0,"Оборот",true);
+		outstring(40,0,USetStr(31114),true);
+		outstring(130,0,USetStr(31070),true);
+		outstring(200,0,USetStr(31135),true);
+		outstring(270,0,USetStr(31136),true);
+		outstring(300,0,USetStr(31137),true);
 	endformat;
 
 	Black_Divider(0,1); 
@@ -974,7 +974,7 @@ L99:;
 	Gray_Divider(0,1);
 		Startformat(15);
 			outstring(40,0,"",true);
-			outstring(130,0,"Итог:",true);
+			outstring(130,0,USetStr(31131),true);
 			outstring(200,0,finalProfit,true)
 
 				if (finalProfit>0) then begin

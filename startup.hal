@@ -202,7 +202,7 @@ begin
   SString(31100,"Суммарный отчет за период");
   SString(31101,"Укажите, пожалуйста, валюту в определении отчета");
   SString(31102,"Период:");
-  SString(31103,"Склад:");
+  SString(31103,"Склад");
   SString(31104,"По всем складам");
   SString(31105,"Классификация");
   SString(31106,"Товар в пути");
@@ -212,6 +212,31 @@ begin
   SString(31110,"Отгружено без оплаты (Розн.)");
   SString(31111,"Возврат поставщику");
   SString(31112,"Баланс сумма");
+  SString(31113,"Статистика клиент/товар");
+  SString(31114,"Клиент");
+  SString(31115,"По всем клиентам");
+  SString(31116,"Товар");
+  SString(31117,"По всем товарам");
+  SString(31118,"По всем класс-циям");
+  SString(31119,"Наим.товара");
+  SString(31120,"Модель");
+  SString(31121,"Количество");
+  SString(31122,"Сумма");
+  SString(31123,"Контакты");
+  SString(31124,"Адрес");
+  SString(31125,"E-mail ");
+  SString(31126,"Способ рассылки");
+  SString(31127,"Общее:");
+  SString(31128,"СМС ");
+  SString(31129,"звонок ");
+  SString(31130,"куръер ");
+  SString(31131,"Итог:");
+  SString(31132,"Статистика продаж по клиентам");
+  SString(31133,"Продавец");
+  SString(31134,"Все продавцы");
+  SString(31135,"Прибыль");
+  SString(31136,"Рентабельность");
+  SString(31137,"Оборот");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

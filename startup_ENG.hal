@@ -203,6 +203,31 @@ begin
   SString(31110,"Shipped without payment (retail)"); //Отгружено без оплаты (Розн.)
   SString(31111,"Return to supplier"); //Возврат поставщику
   SString(31112,"Balance Sum"); //Баланс сумма
+  SString(31113,"Client/good statistics"); //Статистика клиент/товар
+  SString(31114,"Client");
+  SString(31115,"Over all clients"); //По всем клиентам
+  SString(31116,"Good");
+  SString(31117,"Over all goods:"); //По всем товарам:
+  SString(31118,"Over all classifications"); //По всем класс-циям
+  SString(31119,"Good name");
+  SString(31120,"Model");
+  SString(31121,"Quantity");
+  SString(31122,"Sum");
+  SString(31123,"Contacts");
+  SString(31124,"Address");
+  SString(31125,"E-mail");
+  SString(31126,"Posting method");
+  SString(31127,"Common:");
+  SString(31128,"SMS ");
+  SString(31129,"call ");
+  SString(31130,"courier ");
+  SString(31131,"Total:");
+  SString(31132,"Sales statistics over clients"); //Статистика продаж по клиентам
+  SString(31133,"Seller");
+  SString(31134,"Over all sellers");
+  SString(31135,"Profit"); //Прибыль
+  SString(31136,"Profitability"); //Рентабельность
+  SString(31137,"Turnover"); //Оборот
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	
