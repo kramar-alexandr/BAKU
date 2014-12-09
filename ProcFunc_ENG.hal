@@ -255,6 +255,7 @@ begin
   record IPVc IPr;
   row IPVc IPrw;
   val totsumpay,fr,to1,to2,br1,br2,coef;
+  val orfr,orto1,orto2,orbr1,orbr2;
   record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
   integer ivcount,mtrw;
   record IPrsVc IPrsr; 
@@ -654,12 +655,16 @@ begin
 
 	//Edit Start --------  Dima ---------------08.12.20140-----Вывод totsumpay без ранних предоплат
 	totsumpay=0;
+	GetFullCurncyRate(acrncy[0],RepSpec.d1,orfr,orto1,orto2,orbr1,orbr2);
+	if(orfr==0 or orto1==0)then begin
+				orfr=1; orto1=1;
+			end;
 	for(i=0;i<acrncnt;i=i+1) begin
-		GetFullCurncyRate(acrncy[i],IVr.InvDate,fr,to1,to2,br1,br2);
+		GetFullCurncyRate(acrncy[i],RepSpec.d1,fr,to1,to2,br1,br2);
 			if(fr==0 or to1==0)then begin
 				fr=1; to1=1;
 			end;
-		coef = to1/fr;
+		coef = to1/fr/orto1*orfr;
 		totsumpay=totsumpay+totcash[i]*coef;
 	end;
 	for(i=0;i<totcccnt;i=i+1)begin
