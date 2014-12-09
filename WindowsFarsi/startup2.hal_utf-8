@@ -3,76 +3,76 @@ begin
 
 	SetLangMode(LangFarsi,"ENG",0);
 	
-	Module("خدمات مشتریان ","",730,modMYCRM);
+	//Module("خدمات مشتریان ","",730,modMYCRM);
 	
-	Register("ARVc","ARVc",ARVc,modDBMain);
-  Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
-	Register("لینک های ثبت ","لینک های ثبت ",RLinkVc,modDBMain);  
-	Register("محصولات جدید ","محصولات جدید ",NewINVc,modPO);
-	Register("اطلاعات تماس ","اطلاعات تماس ",CUVc,modMYCRM);
-  Register("ساختمان و ذخیره سازی بر روی سرور ","ساختمان و ذخیره سازی بر روی سرور ",GlobalLocationVc,modMYCRM);
-  Register("ساختمان و ذخیره سازی ","ساختمان و ذخیره سازی ",LocationVc,modMYCRM);
-	Register("فروشگاه خارجی ","فروشگاه خارجی ",ExternalStoreVc,modMYCRM);
-  Register("فروش خارجی ","فروش خارجی ",ExternalSalesVc,modMYCRM);
-  Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modMYCRM);
-  Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modSL);
+	//Register("ARVc","ARVc",ARVc,modDBMain);
+  //Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
+	//Register("لینک های ثبت ","لینک های ثبت ",RLinkVc,modDBMain);  
+	//Register("محصولات جدید ","محصولات جدید ",NewINVc,modPO);
+	//Register("اطلاعات تماس ","اطلاعات تماس ",CUVc,modMYCRM);
+  //Register("ساختمان و ذخیره سازی بر روی سرور ","ساختمان و ذخیره سازی بر روی سرور ",GlobalLocationVc,modMYCRM);
+  //Register("ساختمان و ذخیره سازی ","ساختمان و ذخیره سازی ",LocationVc,modMYCRM);
+	//Register("فروشگاه خارجی ","فروشگاه خارجی ",ExternalStoreVc,modMYCRM);
+  //Register("فروش خارجی ","فروش خارجی ",ExternalSalesVc,modMYCRM);
+  //Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modMYCRM);
+  //Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modSL);
 	
-	Setting("محصولات جدید ",NewINLClass,modPO);
-	Setting("واردات آیتم تصاویر ",ImportImagesTClass,modIN);  
+	//Setting("محصولات جدید ",NewINLClass,modPO);
+	//Setting("واردات آیتم تصاویر ",ImportImagesTClass,modIN);  
   Setting("لیست قیمت نقطه ",PricePointListLClass,modIN);  
   Setting("تنظیم کارکنان تخفیف ",RebTableBlockTClass,modPOS);  
 	Setting("کارت وفاداری",LoyaltyCardLClass,modPOS);
-	Setting("تاریخ تنظیمات تغییرات قیمت ",PLHistSetTClass,modDI);
-  Setting("قیمت های تاریخی ",PLHistLClass,modDI);
-	Setting("محصولات محموله ",INConsLClass,modIN);
+	//Setting("تاریخ تنظیمات تغییرات قیمت ",PLHistSetTClass,modDI);
+  //Setting("قیمت های تاریخی ",PLHistLClass,modDI);
+	//Setting("محصولات محموله ",INConsLClass,modIN);
 	
-	Maintenance("واردات آیتم تصاویر ",ImportImagesVClass,ImportImagesMn,modIN);
-	Maintenance("پاک کردن تاریخچه تغییرات قیمت ",EmptyVClass,DelPLHistMn,modDI);
-  Maintenance("حذف طبقه بندی ",EmptyVClass,DelDIVcMn,modSL);
-  Maintenance("ایجاد هشدار برای تغییرات در قیمت ها ",EmptyVClass,CreatePLActivityMn,modDI);
-	Maintenance("تغییر واحد پول لول. ",CUChangeCurVClass,CUChangeCurMn,modSL);
-  Maintenance("تعادل از سلول. ",FIXVClass,CUChangeBAlMn,modSL);
-  Maintenance("حذف هزینه به روز رسانی کالا ",INChangeCSTVClass,INChangeCSTMn,modIN);
-  Maintenance("تحویل صحیح از فاکتورها ",INChangeCSTVClass,FixIVChangeBackMn,modDBMain);
-  Maintenance("ثابت مورد خطا تاریخ ",FIXVClass,FIXIHMn,modDBMain);
-  Maintenance("سهام UnOk / اسناد باله ",FIXVClass,UNOKStockFinDockMn,modDBMain);
-	Maintenance("خالی کردن به عکسهای ضمیمه شده ",ExtractINAttachVClass,ExtractINAttachMn,modDBMain);
-	Maintenance("پر کردن سهام در بازارهای جهانی ",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
-  Maintenance("را پر کنید در مجموعه ای از کالا از مرتبه n. ",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
+	//Maintenance("واردات آیتم تصاویر ",ImportImagesVClass,ImportImagesMn,modIN);
+	//Maintenance("پاک کردن تاریخچه تغییرات قیمت ",EmptyVClass,DelPLHistMn,modDI);
+  //Maintenance("حذف طبقه بندی ",EmptyVClass,DelDIVcMn,modSL);
+  //Maintenance("ایجاد هشدار برای تغییرات در قیمت ها ",EmptyVClass,CreatePLActivityMn,modDI);
+	//Maintenance("تغییر واحد پول لول. ",CUChangeCurVClass,CUChangeCurMn,modSL);
+  //Maintenance("تعادل از سلول. ",FIXVClass,CUChangeBAlMn,modSL);
+  //Maintenance("حذف هزینه به روز رسانی کالا ",INChangeCSTVClass,INChangeCSTMn,modIN);
+  //Maintenance("تحویل صحیح از فاکتورها ",INChangeCSTVClass,FixIVChangeBackMn,modDBMain);
+  //Maintenance("ثابت مورد خطا تاریخ ",FIXVClass,FIXIHMn,modDBMain);
+  //Maintenance("سهام UnOk / اسناد باله ",FIXVClass,UNOKStockFinDockMn,modDBMain);
+	//Maintenance("خالی کردن به عکسهای ضمیمه شده ",ExtractINAttachVClass,ExtractINAttachMn,modDBMain);
+	//Maintenance("پر کردن سهام در بازارهای جهانی ",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
+  //Maintenance("را پر کنید در مجموعه ای از کالا از مرتبه n. ",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
 	  
-  if(currentcompany==1)then begin
+  if(currentcompany==1 or currentcompany==11)then begin
   	Report("ترازنامه گردش مالی گسترش توسط کالاها ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
   end;
   Report("همچنان انبار ",ItemStockStatRClass,ItemStockStatRn,0,modIN);
-  Report("در محموله محصولات ",ConsignationReportRClass,ConsignationReportRn,0,modIN);
-  Report("پرداخت به فروشنده در صورت درخواست RRP ",CalcPricesFromPORClass,CalcPricesFromPORn,0,modPO);
-  Report("گزارش به دستور لازم را برای تامین کنندگان ",POfromORRClass,POFromORRn,0,modSO);
-  Report("وضعیت محصولات سفارش داده شده ",POfromORstatusRClass,POFromORstatusRn,0,modSO);
-  Report("مشتریان حسابداری ",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
+  //Report("در محموله محصولات ",ConsignationReportRClass,ConsignationReportRn,0,modIN);
+  //Report("پرداخت به فروشنده در صورت درخواست RRP ",CalcPricesFromPORClass,CalcPricesFromPORn,0,modPO);
+  //Report("گزارش به دستور لازم را برای تامین کنندگان ",POfromORRClass,POFromORRn,0,modSO);
+  //Report("وضعیت محصولات سفارش داده شده ",POfromORstatusRClass,POFromORstatusRn,0,modSO);
+  //Report("مشتریان حسابداری ",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
   Report("جستجوی پیشرفته گزارش فروش ",SalesReportExtRClass,SalesReportExtRn,0,modSL);
-  Report("مواد گزارش فروش و مجموعه ",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
+  //Report("مواد گزارش فروش و مجموعه ",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
   Report("گزارش یک ماده جدید ",MatReportRClass,MatReportRn,0,modSL);
   if(currentcompany!=9)then begin
 		Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
   end else begin
-		Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtCreativeRn,0,modIN);
+		//Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtCreativeRn,0,modIN);
   end;
-  Report("همچنان از مدیران انبار ",ItemStockStatExtManRClass,ItemStockStatExtCreative1Rn,0,modIN);
-  Report("وضعیت حساب مشتری ",OrderStatusRClass,OrderStatusRn,0,modSO);
-  Report("وضعیت سفارشات مشتری ",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
-  Report("بدهی های کارکنان شرکت ",CustDebByCompRClass,CustDebByCompRn,0,modSL);
-  Report("حساب های دریافتنی کارکنان ",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
-  Report("اطلاعات مربوط به مشتری در ابتدا ",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
+  //Report("همچنان از مدیران انبار ",ItemStockStatExtManRClass,ItemStockStatExtCreative1Rn,0,modIN);
+  //Report("وضعیت حساب مشتری ",OrderStatusRClass,OrderStatusRn,0,modSO);
+  //Report("وضعیت سفارشات مشتری ",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
+  //Report("بدهی های کارکنان شرکت ",CustDebByCompRClass,CustDebByCompRn,0,modSL);
+  //Report("حساب های دریافتنی کارکنان ",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
+  //Report("اطلاعات مربوط به مشتری در ابتدا ",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
   Report("مشتریان فعال در دوره ",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
   Report("جستجو برای تماس با ما ",SearchContactRClass,SearchContactRn,0,modMYCRM);
   Report("فعالیت گزارش شماره ",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
   Report("گزارش فعالیت درسایت به بوتیک ",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
   
-  Report("گزارش در بازاریابی ",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
+  //Report("گزارش در بازاریابی ",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   
-  Document("در حال ارسال نامه ",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
-  Document("برچسب بر روی محصولات ",INinStockRClass,INinStockForm,INinStockFClass,modIN);
-  Document("کارت های پس انداز ",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
+  //Document("در حال ارسال نامه ",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
+  //Document("برچسب بر روی محصولات ",INinStockRClass,INinStockForm,INinStockFClass,modIN);
+  //Document("کارت های پس انداز ",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
 
   Export("گزارش فروش با عکس ",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
   Export("همچنان تصویر انبار",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);

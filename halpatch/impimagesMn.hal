@@ -586,10 +586,10 @@ begin
 
 	
 	
-	TRr.IntYc=IPYc;
+	TRr.IntYc=OPYc;
 	TrHs = true;
 	while(loopmain(TRr,1,TrHs))begin
-		if(TRr.IntYc!=IPYc)then begin TrHs = false; end;
+		if(TRr.IntYc!=OPYc)then begin TrHs = false; end;
 		
 		if(TrHs)then begin	
 			testf = false;

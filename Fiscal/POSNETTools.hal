@@ -216,9 +216,10 @@ BEGIN
     end;
   end;
   
-  fpvatcode = FPVATCODES[0];// Edit ************************** Thursday, 13 November 2014 16:06:45
-  
-LGetPOSNETVATCode:;  
+LGetPOSNETVATCode:; 
+ 
+fpvatcode = FPVATCODES[0];// Edit ************************** Thursday, 13 November 2014 16:06:45
+
   RETURN;
 END;
 
