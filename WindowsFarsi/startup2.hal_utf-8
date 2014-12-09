@@ -3,81 +3,49 @@ begin
 
 	SetLangMode(LangFarsi,"ENG",0);
 	
-	//Module("خدمات مشتریان ","",730,modMYCRM);
+	Setting("تنظیم ماشین محلی",LocalMachineTClass,modUserSet);//	Настройки локальной машины
+		
+	Report("گزارش مواد",PecuniaryRClass,PecuniaryRn,0,modSL);//Материальный отчет
+	Report("جستجوی پیشرفته گزارش فروش ",SalesReportExtRClass,SalesReportExtRn,0,modSL);//Отчет по продажам расширенный
+  /*if(currentcompany==1 or currentcompany==11)then begin
+  	Report("ترازنامه گردش مالی گسترش توسط کالاها ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);//Оборотно-сальдовая ведомость по товарам расширенная
+  end;*/
+  Report("گردش مالی ترازنامه توسط کالاها",ItemSaldoRClass,ItemSaldoRn,0,modSL);//Оборотно-сальдовая ведомость по товарам
+  Report("گزارش گردش مالی محصولات تبلیغاتی",RebItemSalesRClass,RebItemSalesRn,0,modSL); //Отчет по обороту акционных товаров
+  Report("میانگین چک",MiddleInvoiceRClass,MiddleInvoiceRn,0,modSL);	//Средний чек
+  Report("گزارش خلاصه برای دوره",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL);		//Суммарный отчет за период
+  
+  Report("آمار مشتری / محصول",CuArtSTRClass,CuArtSTRn,0,modSL);	//Статистика клиент/товар
+  Report("آمار در مشتریان",CustSTRClass,CustSTRn,0,modSL);	//Статистика по клиентам
+  Report("آمار فروش توسط مشتری",CustSalesRClass,CustSalesRn,0,modSL);	//Статистика продаж по клиентам
+  Report("آمار فروش توسط کالاها",ItemSalesRClass,ItemSalesRn,0,modSL);		//Статистика продаж по товарам
+  Report("آمار محصولات / مقدار",INQtyRClass,INQtyRn,0,modSL);	//Статистика товар/количество
+  Report("آمار محصولات / فروشنده",IStatRClass,IStatRn,0,modSL);	//Статистика товар/продавец
+  
+  Report("تاریخچه محصولات",INrsRClass,INrsRn,0,modIN); //История товаров
+  Report("باقی می ماند انبار",ItemStockStatRClass,ItemStockStatRn,0,modIN);//Остатки по складам
+  Report("مجله درآمد",PUJRClass,PUJRn,0,modIN);//Журнал поступлений
+  Report("مقایسه موجودی",STCompRClass,STCompRn,0,modIN);//Сравнение инвентаризации
+  Report("همچنان انبار ",ItemStockStatRClass,ItemStockStatRn,0,modIN);//Сравнение инвентаризации
+  Report("مجله جنبش کالا",StockMovJRClass,StockMovJRn,0,modIN);//Журнал перемещения товаров
+  Report("مجله بازگشت به انبار",RetJRClass,RetGoodsJRn,0,modIN);//Журнал возвратов на склад
+  Report("مجله به منبع بازگشت",RetPUJRClass,RetPUJRn,0,modIN);  //Журнал возвратов поставщикам
+	Report("مجله حمل و نقل",SHJRClass,ShipRn,0,modIN);//Журнал отгрузки
+	Report("مجله نوشتن فراز از انبار",SDJRClass,StockDepRn,0,modIN);//Журнал списаний со склада
+ 	
+	Report("وضعیت حساب مشتری",OrderStatusRClass,OrderStatusRn,0,modSO);//Статус счетов клиентов
+	Report("کارکنان بدهی های شرکت",CustDebByCompRClass,CustDebByCompRn,0,modSL);//Задолженности сотрудников по компаниям
+  Report("حساب کارکنان دریافتنی",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);//Задолженности сотрудников по счетам
 	
-	//Register("ARVc","ARVc",ARVc,modDBMain);
-  //Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
-	//Register("لینک های ثبت ","لینک های ثبت ",RLinkVc,modDBMain);  
-	//Register("محصولات جدید ","محصولات جدید ",NewINVc,modPO);
-	//Register("اطلاعات تماس ","اطلاعات تماس ",CUVc,modMYCRM);
-  //Register("ساختمان و ذخیره سازی بر روی سرور ","ساختمان و ذخیره سازی بر روی سرور ",GlobalLocationVc,modMYCRM);
-  //Register("ساختمان و ذخیره سازی ","ساختمان و ذخیره سازی ",LocationVc,modMYCRM);
-	//Register("فروشگاه خارجی ","فروشگاه خارجی ",ExternalStoreVc,modMYCRM);
-  //Register("فروش خارجی ","فروش خارجی ",ExternalSalesVc,modMYCRM);
-  //Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modMYCRM);
-  //Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modSL);
-	
-	//Setting("محصولات جدید ",NewINLClass,modPO);
-	//Setting("واردات آیتم تصاویر ",ImportImagesTClass,modIN);  
-  Setting("لیست قیمت نقطه ",PricePointListLClass,modIN);  
-  Setting("تنظیم کارکنان تخفیف ",RebTableBlockTClass,modPOS);  
-	Setting("کارت وفاداری",LoyaltyCardLClass,modPOS);
-	//Setting("تاریخ تنظیمات تغییرات قیمت ",PLHistSetTClass,modDI);
-  //Setting("قیمت های تاریخی ",PLHistLClass,modDI);
-	//Setting("محصولات محموله ",INConsLClass,modIN);
-	
-	//Maintenance("واردات آیتم تصاویر ",ImportImagesVClass,ImportImagesMn,modIN);
-	//Maintenance("پاک کردن تاریخچه تغییرات قیمت ",EmptyVClass,DelPLHistMn,modDI);
-  //Maintenance("حذف طبقه بندی ",EmptyVClass,DelDIVcMn,modSL);
-  //Maintenance("ایجاد هشدار برای تغییرات در قیمت ها ",EmptyVClass,CreatePLActivityMn,modDI);
-	//Maintenance("تغییر واحد پول لول. ",CUChangeCurVClass,CUChangeCurMn,modSL);
-  //Maintenance("تعادل از سلول. ",FIXVClass,CUChangeBAlMn,modSL);
-  //Maintenance("حذف هزینه به روز رسانی کالا ",INChangeCSTVClass,INChangeCSTMn,modIN);
-  //Maintenance("تحویل صحیح از فاکتورها ",INChangeCSTVClass,FixIVChangeBackMn,modDBMain);
-  //Maintenance("ثابت مورد خطا تاریخ ",FIXVClass,FIXIHMn,modDBMain);
-  //Maintenance("سهام UnOk / اسناد باله ",FIXVClass,UNOKStockFinDockMn,modDBMain);
-	//Maintenance("خالی کردن به عکسهای ضمیمه شده ",ExtractINAttachVClass,ExtractINAttachMn,modDBMain);
-	//Maintenance("پر کردن سهام در بازارهای جهانی ",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
-  //Maintenance("را پر کنید در مجموعه ای از کالا از مرتبه n. ",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
-	  
-  if(currentcompany==1 or currentcompany==11)then begin
-  	Report("ترازنامه گردش مالی گسترش توسط کالاها ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
-  end;
-  Report("همچنان انبار ",ItemStockStatRClass,ItemStockStatRn,0,modIN);
-  //Report("در محموله محصولات ",ConsignationReportRClass,ConsignationReportRn,0,modIN);
-  //Report("پرداخت به فروشنده در صورت درخواست RRP ",CalcPricesFromPORClass,CalcPricesFromPORn,0,modPO);
-  //Report("گزارش به دستور لازم را برای تامین کنندگان ",POfromORRClass,POFromORRn,0,modSO);
-  //Report("وضعیت محصولات سفارش داده شده ",POfromORstatusRClass,POFromORstatusRn,0,modSO);
-  //Report("مشتریان حسابداری ",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
-  Report("جستجوی پیشرفته گزارش فروش ",SalesReportExtRClass,SalesReportExtRn,0,modSL);
-  //Report("مواد گزارش فروش و مجموعه ",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
-  Report("گزارش یک ماده جدید ",MatReportRClass,MatReportRn,0,modSL);
+  /*Report("گزارش یک ماده جدید ",MatReportRClass,MatReportRn,0,modSL);
   if(currentcompany!=9)then begin
 		Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
-  end else begin
-		//Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtCreativeRn,0,modIN);
   end;
-  //Report("همچنان از مدیران انبار ",ItemStockStatExtManRClass,ItemStockStatExtCreative1Rn,0,modIN);
-  //Report("وضعیت حساب مشتری ",OrderStatusRClass,OrderStatusRn,0,modSO);
-  //Report("وضعیت سفارشات مشتری ",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
-  //Report("بدهی های کارکنان شرکت ",CustDebByCompRClass,CustDebByCompRn,0,modSL);
-  //Report("حساب های دریافتنی کارکنان ",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
-  //Report("اطلاعات مربوط به مشتری در ابتدا ",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
-  Report("مشتریان فعال در دوره ",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
-  Report("جستجو برای تماس با ما ",SearchContactRClass,SearchContactRn,0,modMYCRM);
-  Report("فعالیت گزارش شماره ",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
-  Report("گزارش فعالیت درسایت به بوتیک ",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
-  
-  //Report("گزارش در بازاریابی ",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
-  
-  //Document("در حال ارسال نامه ",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
-  //Document("برچسب بر روی محصولات ",INinStockRClass,INinStockForm,INinStockFClass,modIN);
-  //Document("کارت های پس انداز ",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
-
+  */
+ 
   Export("گزارش فروش با عکس ",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
-  Export("همچنان تصویر انبار",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
-
-  	
+  Export("همچنان تصویر انبار",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);//Экспорт остатков с картинками
+	  	
 	SString(1111,"تمام فاکتورها ");
   SString(1112,"صورت حساب ");
   SString(1104,"کلیه مشتریان");
@@ -87,7 +55,7 @@ begin
   SString(1108,"سال ");
   SString(1109,"ماه ");
   SString(1110,"دوره ");
-   SString(1135,"مورد گروه: ");
+  SString(1135,"مورد گروه: ");
   SString(1136,"هیچ یک");
   SString(1137,"تنها تایید ");
   SString(1138,"نه تنها مورد تایید ");
@@ -97,7 +65,7 @@ begin
   SString(1142,"تاریخ اشتباه ");
   SString(1143,"بدون و با توجه عضویت: ");
   SString(1144,"دوره: ");
-    SString(1163,"ماه کامل مورد نیاز ");
+	SString(1163,"ماه کامل مورد نیاز ");
 	
 	SString(2320,"خرید گزینه قیمت ");
   SString(2321,"لیست قیمت ");
@@ -394,6 +362,122 @@ begin
   SString(11709,"به: "); // Part of Address
   SString(11710,"(بدون موضوع) ");
   SString(11711,"تعداد بازدید");
+  
+  //Our SStrings
+  
+  SString(31000,"گواهی پرداخت خط باید یک باشد");  
+  SString(31001,"IRR استفاده از گواهی در 80");
+  SString(31002,"تعیین صدور تحویل و یا دریافت پول نقد");  
+  SString(31003,"مشتری ندارد کارت تجمع فعال");
+  SString(31004,"ملیت");
+  SString(31005,"سن");
+  SString(31006,"طبقه");
+  SString(31007,"شهرستان");
+  SString(31008,"چگونه برای یادگیری");
+  SString(31009,"نتیجه");
+  SString(31010,"فرمت اشتباه از تلفن. طول باید 10 کاراکتر باشد");
+  SString(31011,"نمره کل در این کارت ذخیره سازی بیش از 3000 IRR");
+  SString(31012,"کارت ذخیره سازی فعال برای این مشتری از قبل وجود دارد");
+  SString(31013,"گزارش مواد جدید");
+  SString(31014,"شما امکان پذیر نیست به گزارش انبار، لطفا انبار خود را انتخاب کنید");
+  SString(31015,"نام مسافر");
+  SString(31016,"گزارش مواد");
+  SString(31017,"کد هانس");
+  SString(31018,"کد منبع");
+  SString(31019,"IRR ترمینال (در هر واحد)");
+  SString(31020,"مقدار IRR ترمینال");
+  SString(31021,"هزینه های اداری");
+  SString(31022,"ذخیره انتخاب نشده");
+  SString(31023,"گزارش مواد");
+  SString(31024,"فروشگاه:");
+  SString(31025,"اتومبیل:");
+  SString(31026,"برای تمام ماشین آلات");
+  SString(31027,"کد ماشین است گم شده و یا نمی توان یافت");
+  SString(31028,"طبقه بندی (نام تجاری)");
+  SString(31029,"طبقه بندی (مدل)");
+  SString(31030,"پرداخت صورتحساب");
+  SString(31031,"پیش پرداخت تحت قرارداد");
+  SString(31032,"روش های پرداخت ها");
+  SString(31033,"کارت اعتباری");
+  SString(31034,"امتیاز مورد استفاده");
+  SString(31035,"پیش پرداخت مورد قبول");
+  SString(31036,"پرداخت موجود از فاکتورها");
+  SString(31037,"تعداد پیش پرداخت");
+  SString(31038,"تعداد بلیط");
+  SString(31039,"کثیر");
+  SString(31040,"مدیر");
+  SString(31041,"گزارش فروش گسترش");
+  SString(31042,"سیستم برنامه نویسی برای هانس");
+  SString(31043,"منبع پشتیبانی می کند");
+  SString(31044,"نام تجاری");
+  SString(31045,"مجموعه");
+  SString(31046,"برگشت");
+  SString(31047,"نوع فلزی");
+  SString(31048,"عیار");
+  SString(31049,"دستبند / تسمه");
+  SString(31050,"شماره گیری رنگ");
+  SString(31051,"شماره پیاپی");
+  SString(31052,"تعداد فروش");
+  SString(31053,"هزینه هر واحد (ارز از نام تجاری)");
+  SString(31054,"هزینه هر واحد (IRR ارز)");
+  SString(31055,"هزینه هر واحد (ارز)");
+  SString(31056,"کل هزینه (ارز از نام تجاری)");
+  SString(31057,"کل هزینه (ارز IRR)");
+  SString(31058,"کل هزینه (ارز)");
+  SString(31059,"قیمت واحد (ارز از نام تجاری)");
+  SString(31060,"قیمت واحد (IRR ارز)");
+  SString(31061,"قیمت واحد (ارز)");
+  SString(31062,"مجموع فروش (ارز از نام تجاری)");
+  SString(31063,"مجموع فروش (IRR نرخ ارز)");
+  SString(31064,"مجموع فروش (ارز)");
+  SString(31065,"تفاوت (ارز از نام تجاری)");
+  SString(31066,"تفاوت (IRR نرخ ارز)");
+  SString(31067,"تفاوت (ارز)");
+  SString(31068,"ارز برندا");
+  SString(31069,"مشتری (نام یا شماره کارت)");
+  SString(31070,"نام مشتری");
+  SString(31071,"تخفیف");
+  SString(31072,"تاریخ خرید");
+  SString(31073,"روش های پرداخت");
+  SString(31074,"مجموع توسط تعداد");
+  SString(31075,"مجموع هزینه");
+  SString(31076,"مقدار کل");
+  SString(31077,"مجموع بر تفاوت");
+  SString(31078,"متوسط تخفیف");
+  SString(31079,"تنظیم تاریخ");
+  SString(31080,"گردش مالی ترازنامه توسط کالاها");
+  SString(31081,"تعادل باز کالا");
+  SString(31082,"رسیده (داخلی)");
+  SString(31083,"بازگشت از مشتریان");
+  SString(31084,"صادر");
+  SString(31085,"صادر (داخلی)");
+  SString(31086,"مانده نهایی");
+  SString(31087,"تمام فروشگاه");
+  SString(31088,"دوره");
+  SString(31089,"همه");
+  SString(31090,"شامل");
+  SString(31091,"بازگشت از خریداران");
+  SString(31092,"مقدار (داخلی)");
+  SString(31093,"مجموع(داخلی)");
+  SString(31094,"مقدار تعادل");
+  SString(31095,"مجموع هزینه");
+  SString(31096,"قیمت نتیجه");
+  SString(31097,"انبار (فروشگاه)");
+  SString(31098,"لازم است برای تایید ارز منظور");
+  SString(31099,"ارسال به هزینه ()");
+  SString(31100,"گزارش خلاصه برای دوره");
+  SString(31101,"شما باید یک گزارش نرخ ارز مشخص");
+  SString(31102,"دوره");
+  SString(31103,"محل");
+  SString(31104,"شامل همه مکان");
+  SString(31105,"طبقه بندی");
+  SString(31106,"محصول در حال آمدن است");
+  SString(31107,"بازگشت مشتری(قیمت)");
+  SString(31108,"حمل(هزینه)");
+  SString(31109,"حمل(قیمت)");
+  SString(31110,"صدور بدون اتهام (خرده فروشی)");
+  SString(31111,"برگشتار ائه دهنده");
+  SString(31112,"مقدار تعادل");  
   
  return;
 end;  

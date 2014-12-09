@@ -4802,7 +4802,7 @@ begin
 end;
 
 window MatReportRClass:1 
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("گزارش یک ماده جدید(Pecuniary report)",MatReportRClass,CGRcW,RcType);
@@ -4817,7 +4817,7 @@ begin
 end;
 
 window PecuniaryRClass:1 
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
 WindowBegin("(Pecuniary report) گزارش مواد",PecuniaryRClass,CGRcW,RcType);
@@ -4829,410 +4829,34 @@ WindowBegin("(Pecuniary report) گزارش مواد",PecuniaryRClass,CGRcW,RcTyp
   EndWindow;
 end;
 
-window PODClass:1
+window SumCostByPeriodRClass:1 
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,h1,h2,h3,h4,v,vm,vs;
-  record CYBlock CYb;
-  string 255 label;
-  Integer tilenr,flipnr,f;
+  real h,v,vs;
+WindowBegin("گزارش خلاصه برای دوره",SumCostByPeriodRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"دوره");
+  EditFieldTL(h,v+=vs,150,"مخزن",M4Str,Normal,41,f1,false,LocationSClass);
+  if(currentcompany!=1)then begin
+    EditField(h,v+=vs,150,"در ارز در حال حاضر نرخ ارز",Normal,f2,false,CurncyCodeSClass);
+  end;
+  EndWindow;
+end;
 
+window SalesWithImagesRClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("گزارش فروش با تصاویر",SalesWithImagesRClass,CGEcW,RcType);
+  SetWRect(20,80,440,150);
   vs = 20;
-  BlockLoad(CYb);
-  WindowBegin("Purchase Order",PODClass,CGview,-);
-  SetWRect(20,80,750,460);
-  DynamicWindow;// Edit ************************** Monday, 3 November 2014 11:50:49
-  Sizeable(-1,-1,0,0);
-  UseView(POVc);
-  CommunicateButton;
-  ActiveFieldOnNew("VECode");    
-  Tile(0,74,false,"",VECode);
-  EditField(75,vm=(v=6),95,"No.",Normal,SerNr,false,TSerSClass);
-  EditField(75,v+=20,95,"#Supplier#",Normal,VECode,false,VESClass);
-  EnterSkip(PayDeal);
-  EditField(h=255,v=vm,-40,"Name",Normal,Addr0,false,0);
-  if (IsEnterprise) then begin
-		//EditField(h,vm=(v+=20),95,"Signers",Normal,OKPersons,false,UserSClass);// Edit ************************** Thursday, 12 September 2013 13:42:23
-		EditField(h,vm=(v+=20),95,"Sales Order Number",Normal,InvAddr4,false,0);// Edit ************************** Thursday, 12 September 2013 13:42:24
-		EditField(h+180,vm,95,"Order Done Date",Normal,OrderDoneDate,false,PasteCurDate);// Edit ************************** Thursday, 12 September 2013 13:42:24
-		CheckBox(h4=-100,v,0,"OK",OKFlag);
-  end else begin
-    CheckBox(h4=-100,v+=vs,0,"OK",OKFlag);
-  end;
-  tilenr = 1;
-  TileButton(tilenr,"Terms"); tilenr = tilenr + 1;
-  TileButton(tilenr,"Items"); tilenr = tilenr + 1;
-  if (HasMultiCurrency or HasBase2) then begin
-    TileButton(tilenr,"Currency"); tilenr = tilenr + 1;
-  end;
-  if (HasModIN) then begin
-    TileButton(tilenr,"Del. Terms"); tilenr = tilenr + 1;
-  end;
-  TileButton(tilenr,"Comment"); tilenr = tilenr + 1;
-  TileButton(tilenr,"Ord. Address"); tilenr = tilenr + 1;
-  TileButton(tilenr,"Del. Address"); tilenr = tilenr + 1;
-  if (IsEnterprise) then begin
-    TileButton(tilenr,"Extra Costs"); tilenr = tilenr + 1;
-  end;
-  tilenr = 1;
-  Tile(tilenr,90,false,tilenr,TransDate); tilenr = tilenr + 1;
-  vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
-  EditField(h1,vm=(v=6),82,"Date",Normal,TransDate,false,PasteCurDate);
-  EditField(h1,v+=vs,25,"Payment Terms",Normal,PayDeal,false,PDSClass);
-  if (IsEnterprise) then begin
-    EditField(h1,v+=vs,82,"Valid Until",Normal,ValidUntil,false,PasteCurDate);
-  end;
-  if (HasModIN) then begin
-    EditField(h1,v+=vs,82,"Planned Delivery",Normal,PlanShip,false,PasteCurDate);
-  end;
-  EditField(h2,v=vm,135,"Our Reference",Normal,OurContact,false,0);
-  EditField(h2,v+=vs,135,"Attention",Normal,VEContact,false,ContactSClass);
-  if (HasObjects) then begin
-    EditField(h2,v+=vs,135,"Objects",Normal,Objects,false,ObjSClass);
-  end;
-  if (HasModIN) then begin
-    EditField(h2,v+=vs,135,"Reference",Normal,Reference,false,0);
-  end;
-  EditField(h3,v=vm,80,"#Salesman#",Normal,SalesMan,false,UserSClass);
-  if (HasModTS) then begin
-    //EditField(h3,v+=vs,80,"Project",Normal,PRCode,false,PRSClass);
-    EditField(h3,v+=vs,80,"Confirmation Date",Normal,OKDate,false,PasteCurDate);// Edit ************************** Monday, 3 November 2014 11:53:05
-  end;
-  if (IsEnterprise) then begin
-    EditField(h3,v+=vs,80,"Purch. Ord. Class",Normal,POClass,false,POrderClassSClass);
-    EditField(h3,v+=vs,80,"Order Type",ViewOnly,OrderType,false,0);
-  end;
-  CheckBox(h4,v=6,0,"Closed",Closed);
-  CheckBox(h4,v+=16,0,"Price Incl. #VAT#",InclVAT);
-  EnterSkip(Math);
-  Tile(tilenr,120,true,tilenr,Math); tilenr = tilenr + 1;
-  if (HasMultiCurrency or HasBase2) then begin
-    EditField(110,-41,70,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
-  end;
-  if (IsEnterprise) then begin
-    EditField(110,-21,70,"Pallets",ViewOnly,TotPalletNr,true,0);
-    EditField(260,-41,70,"Freight",Normal,ShipCost,true,0);
-    EditField(260,-21,70,"Customs",Normal,CustomsCost,true,0);
-  end;
-  EditField(410,-41,70,"#VAT#",ViewOnly,Sum3,true,0);
-  if (IsEnterprise) then begin
-    EditField(410,-21,70,"Ext. Tax",ViewOnly,TAX1Sum,false,0);
-  end;
-  EditField(-169,-41,118,"Subtotal",ViewOnly,Sum1,true,0);
-  EditField(-169,-21,118,"TOTAL",ViewOnly,Sum4,true,0);
-//  CheckBox(20,-21,0,"OK",OKFlag);
-  v = 24;
-  if (HasModIN or HasModPL or HasObjects) then begin
-    MatrixBegin(3,v,-50,-44,-,199);
-  end else begin
-    MatrixBegin(3,v,-25,-44,-,199);
-  end;
-  MatTypedRow(stp);
-  Flip(0);
-  MatCol(1,28,"Item",0,ArtCode,false,INSClass);
-//  MatCol(1,84,"Var",0,VARList,true,VARSClass);
-//  MatCol(1,144,"Qty",0,Quant,true,0);
-  if (HasVarieties) then begin
-    MatCol(1,94,"Qty",0,Quant,true,MATVARINSClass);
-  end else begin
-    MatCol(1,94,"Qty",0,Quant,true,0);
-  end;
-  EnterSkip(ArtCode);
-//  MatCol(1,194,"Description",0,Spec,false,0);
-  flipnr = 1;
-  Flip(flipnr); flipnr = flipnr + 1;
-  MatColTL(1,164,"Unit",0,M4Code,ViewOnly,5,UnitCode,false,UnitSCLass);
-  MatCol(1,204,"Description",0,Spec,false,0);
-  if (HasJewelleryInterface) then begin
-    MatCol(1,-337,"#Stock# Type",0,StockType,false,SetSClass);
-  end;
-  MatCol(1,-237,"Unit Price",0,Price,true,0);
-  MatCol(1,-151,"%",0,vRebate,true,0);
-  MatCol(1,-116,"Sum",0,Sum,true,0);
-  if (CYb.UseTaxTemplatesforTaxCalc!=0) then begin
-    MatCol(1,-30,"T-Cd",0,TaxTemplateCode,false,TaxTemplateSClass);
-  end else begin
-    MatCol(1,-30,"#V-Cd#",0,VATCode,false,VATCodeSClass);
-  end;
-  if (HasObjects) then begin
-    Flip(flipnr); flipnr = flipnr + 1;
-    MatCol(1,164,"Description",0,Spec,false,0);
-    if (IsEnterprise) then begin
-      MatCol(1,-310,"Purch. A/C",0,CostAcc,false,AccSClass);
-    end;
-    MatCol(1,-240,"Objects",0,Objects,false,ObjSClass);
-    if (IsEnterprise) then begin
-      MatCol(1,-170,"#Supp.# Item",0,VEArtCode,false,PISClass);
-      MatColTL(1,-100,"#S.# Unit",0,M4Code,ViewOnly,5,VEUnit,false,UnitSCLass);//MatCol(1,-100,"#S.# Unit",0,VEUnit,false,UnitSCLass);
-      MatCol(1,-50,"#Supp.# Qty",0,VEQuant,true,0);
-    end;
-  end;
-  if (HasModIN) then begin
-    Flip(flipnr); flipnr = flipnr + 1;
-    MatCol(1,164,"Description",0,Spec,false,0);
-    MatCol(1,-330,"Recv. 1",0,Shipd1,true,0);
-    MatCol(1,-270,"Recv. 2",0,Shipd2,true,0);
-    if (HasModPL) then begin
-      MatCol(1,-210,"Invoiced",0,Invd,true,0);
-    end;
-    if (IsEnterprise) then begin
-      MatCol(1,-150,"Pallet No.",0,PalletNr,true,0);
-      MatCol(1,-90,"Project",0,PRCode,true,PRSClass);
-      MatCol(1,-40,"WS No.",0,WSNr,true,0);
-    end;
-  end;
-  if (IsEnterprise) then begin
-    Flip(flipnr); flipnr = flipnr + 1;
-    MatCol(1,164,"Description",0,Spec,false,0);
-    MatCol(1,-400,"#Stock# Type",0,StockType,false,SetSClass);
-    MatCol(1,-300,"TREO",0,TREO,false,SetSClass);
-    MatCol(1,-200,"Plan. Del.",0,PlanShipRow,true,PasteCurDate);
-    //MatCol(1,-100,"Comment",0,Comment,true,0);// Edit ************************** Monday, 3 November 2014 11:53:33
-    Flip(flipnr); flipnr = flipnr + 1;
-    MatCol(1,164,"Description",0,Spec,false,0);
-    MatCol(1,-420,"Fr. Cost",0,ShipCost,true,0);
-    MatCol(1,-360,"Customs",0,CustomsCost,true,0);
-    label = UserDefined("AccBlock","PUCost1");
-    if (blank(label)) then begin label = "Cost 1";end;
-    MatCol(1,-300,label,0,RowCost1,true,0);
-    label = UserDefined("AccBlock","PUCost2");
-    if (blank(label)) then begin label = "Cost 2";end;
-    MatCol(1,-240,label,0,RowCost2,true,0);
-    label = UserDefined("AccBlock","PUCost3");
-    if (blank(label)) then begin label = "Cost 3";end;
-    MatCol(1,-180,label,0,RowCost3,true,0);
-    label = UserDefined("AccBlock","PUCost4");
-    if (blank(label)) then begin label = "Cost 4";end;
-    MatCol(1,-120,label,0,RowCost4,true,0);
-    label = UserDefined("AccBlock","PUCost5");
-    if (blank(label)) then begin label = "Cost 5";end;
-    MatCol(1,-60,label,0,RowCost5,true,0);
-  end;
-  // Edit Start ---------------------------------------------- Edit Start
-	//Monday, 3 November 2014 11:54:34
-	
-  Flip(flipnr); flipnr = flipnr + 1;
-  switch(currentcompany)begin
-
-	case 10:
-			MatCol(1,194,"Name",0,Spec,false,0);
-			MatCol(1,300,"Vendor Code",0,Comment,false,0);
-			if (HasVarieties) then begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,MATVARINSClass);
-			end else begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,0); 
-			end;
-			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
-			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
-			MatCol(1,-60,"Price",0,Price,true,0);
-  end;
-      
-  switch(currentcompany)begin
-	case 10:
-				Flip(flipnr); flipnr = flipnr + 1;
-				MatCol(1,194,"Name",0,Spec,false,0);
-				MatCol(1,-350,"Collection",0,Reference,false,0);
-				MatCol(1,-300,"Bracelet/Strap",0,BrcStr,false,0);
-				MatCol(1,-240,"Colour of the dial",0,Gender,false,0);
-				MatCol(1,-180,"Weight",0,RowWeight,false,0);
-				MatCol(1,-120,"Metal",0,Metal,false,0);
-				MatCol(1,-60,"Carat",0,MajStoneDet,true,0);
-  end;
-  
-  switch(currentcompany)begin
-
-	case 11:
-			MatCol(1,194,"Name",0,Spec,false,0);
-			MatCol(1,300,"Vendor Code",0,Comment,false,0);
-			if (HasVarieties) then begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,MATVARINSClass);
-			end else begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,0); 
-			end;
-			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
-			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
-			MatCol(1,-60,"PP Num.",0,PPNum,true,0);
-  end;
-  
-  switch(currentcompany)begin
-
-	case 12:
-			MatCol(1,194,"Name",0,Spec,false,0);
-			MatCol(1,300,"Vendor Code",0,Comment,false,0);
-			if (HasVarieties) then begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,MATVARINSClass);
-			end else begin
-				MatCol(1,-300,"Qty",0,VEQuant,true,0); 
-			end;
-			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
-			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);		
-			MatCol(1,-60,"PP Num.",0,PPNum,true,0);
-  end;
-	// Edit End ---------------------------------------------- Edit End
-	
-  
-  DeleteRowTest;
-  InsertRowTest;
-  EndMatrix;
-  vs = 20;
-  v = 18; 
-  if (flipnr>2) then begin
-    for (f=1;f<flipnr;f=f+1) begin
-      VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1));
-      v = v + vs;
-    end;
-  end;
-  if (HasMultiCurrency or HasBase2) then begin
-    Tile(tilenr,70,false,tilenr,FrRate); tilenr = tilenr + 1;
-    vs = 20; h = 110; h2 = 295;
-    if (HasBase2) then begin
-      h1 = h1 + 20;
-    end;
-    EditField(h1,v=6,50,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
-    if (HasMultiCurrency) then begin
-      EditField(h2,v,50,"Rate",Normal,FrRate,true,0);
-      EditField(h2+65,v,50,":",Normal,ToRateB1,true,0);
-      if (HasBase2) then begin
-        StaticText(h2+125,v+14,"Base Currency 1",false);
-        EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
-        EditField(h2+65,v,50,":",Normal,ToRateB2,true,0);
-        StaticText(h2+125,v+14,"Base Currency 2",false);
-        EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
-      end else begin
-        StaticText(h2+125,v+14,"Base Currency",false);
-      end;
-    end else begin
-      EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
-      EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
-    end;
-  end;
-
-  if (HasModIN) then begin
-    Tile(tilenr,90,false,tilenr,ShipDeal); tilenr = tilenr + 1;
-    vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
-    EditField(h1,v=6,80,"Delivery Terms",Normal,ShipDeal,false,ShipDealSClass);
-    if (IsEnterprise) then begin
-      EditField(h1,v+=vs,80,"Delivery Mode",Normal,ShipMode,false,DMSClass);
-    end;
-    if (HasMultiLocations) then begin
-      EditField(h1,v+=vs,80,"Location",Normal,Location,false,LocationSClass);
-    end;
-    if (IsEnterprise) then begin
-      EditField(h1,v+=vs,80,"Branch",ViewOnly,BranchID,false,AllCUSClass);
-//  EditField(h2,v=vm,80,"Total Quantity",ViewOnly,TotQty,true,0);
-//  EditField(h2,v+=vs,80,"Total Weight",ViewOnly,TotWeight,true,0);
-//  EditField(h2,v+=vs,80,"Total Volume",ViewOnly,TotVolume,true,0);
-      EditField(h2,v=vm,80,"Serv. Order No.",Normal,SVONr,false,0);
-      EditField(h2,v+=vs,80,"Work Order No.",Normal,WONr,false,0);
-      EditField(h2,v+=vs,80,"P/O Process No.",Normal,POCQStatNr,true,POCQStatSClass);
-      EditField(h2,v+=vs,80,"PO Contract No.",ViewOnly,POCOSerNr,true,0);
-      CheckBox(473,v=vm,0,"Invoice Before Goods Receipt",InvBeforePU);
-    end;
-  end;
-  if (IsEnterprise) then begin
-    Tile(tilenr,90,false,tilenr,LangCode); tilenr = tilenr + 1;
-    EditField(h1,v=6,80,"Discount Matrix",Normal,RebCode,false,RebSClass);
-    EditField(h1,v+=vs,80,"Factoring",Normal,VEFactoring,false,VESClass);
-    EditField(h1,v+=vs,80,"Order No.",Normal,OrdNr,false,0);
-    EditField(h1,v+=vs,-20,"Comment",Normal,Comment,false,0);
-    EditField(h2,v=vm,80,"Sales Group",Normal,SalesGroup,false,SalesGroupSClass);
-    EditField(h2,v+=vs,80,"Invoice To",Normal,InvoiceToCode,false,VESClass);
-    EditField(h2,v+=vs,80,"Purchase Cost",Normal,CostPerUnit,true,0);
-    EditField(h3,v=vm,80,"Language",Normal,LangCode,false,LangSClass);
-  end else begin
-    Tile(tilenr,20,false,tilenr,Comment); tilenr = tilenr + 1;
-    EditField(h1,v=6,-20,"Comment",Normal,Comment,false,0);
-  end;
-  Tile(tilenr,230,false,tilenr,Addr1); tilenr = tilenr + 1;
-  label = UserDefined("CUVc","InvAddr0");
-  if (blank(label)) then begin label = "Ordering"; end;
-  EditField(h=110,v=6,-20,label,Normal,Addr1,false,0);
-  label = UserDefined("CUVc","InvAddr1");
-  if (blank(label)) then begin label = "Address"; end;
-  EditField(h,v+=vs, -20,label,Normal,Addr2,false,0);
-  label = UserDefined("CUVc","InvAddr2");
-  EditField(h,v+=vs, -20,label,Normal,Addr3,false,0);
-  label = UserDefined("CUVc","InvAddr3");
-  EditField(h,v+=vs, -20,label,Normal,InvAddr3,false,0);
-  label = UserDefined("CUVc","InvAddr4");
-  //EditField(h,vm=(v+=vs), -20,label,Normal,InvAddr4,false,0);// Edit ************************** Monday, 3 November 2014 11:57:16
-  if (HasApprovals) then begin
-    ButtonFrame(h3=h+4,v=(vm+=40),123,6,"Approval Status");
-    RadioButton(h3,v,kAcceptanceStateNotRequired,0,"Not Required",AcceptanceStatus);
-    RadioButton(h3,v+=16,kAcceptanceStateNotStarted,0,"Not Started",AcceptanceStatus);
-    RadioButton(h3,v+=16,kAcceptanceStateNotRequested,0,"Not Requested",AcceptanceStatus);
-    RadioButton(h3,v+=16,kAcceptanceStatePending,0,"Pending",AcceptanceStatus);
-    RadioButton(h3,v+=16,kAcceptanceStateApproved,0,"Approved",AcceptanceStatus);
-    RadioButton(h3,v+=16,kAcceptanceStateRejected,0,"Rejected",AcceptanceStatus);  
-  end;
-  if (IsEnterprise) then begin
-    v = VATZoneButtonsLabelsENG(h3=290,v=vm,140,16);
-    EditField(h2=-170,v=vm,150,"Region",Normal,Region,false,RegionSClass); 
-//  EditField(h2,v+=vs,150,"#VAT Reg. No.#",Normal,VATNr,false,0);
-//  EditField(h2,v+=vs,150,"Telephone",Normal,Phone,false,0);
-//  EditField(h2,v+=vs,150,"Fax",Normal,Fax,false,0);
-  end;
-  Tile(tilenr,130,false,tilenr,ShipAddr0); tilenr = tilenr + 1;
-  EditField(h,v=6,-20,"Delivery",Normal,ShipAddr0,false,0);
-  EditField(h,v+=vs,-20,"Address",Normal,ShipAddr1,false,0);
-  EditField(h,v+=vs,-20,"",Normal,ShipAddr2,false,0);
-  EditField(h,v+=vs,-20,"",Normal,ShipAddr3,false,0);
-  EditField(h,v+=vs,-20,"",Normal,DelAddr3,false,0);
-  EditField(h,v+=vs,-20,"",Normal,DelAddr4,false,0);
-  if (IsEnterprise) then begin
-    Tile(tilenr,70,false,tilenr,ShipCost); tilenr = tilenr + 1;
-    vs = 20; h2 = 290; h3 = 530;
-    label = UserDefined("AccBlock","PUCost1");
-    if (blank(label)) then begin label = "Extra Cost 1";end;
-    EditField(h1,v=6,70,label,Normal,Cost1,true,0);
-    label = UserDefined("AccBlock","PUCost2");
-    if (blank(label)) then begin label = "Extra Cost 2";end;
-    EditField(h2,v,70,label,Normal,Cost2,true,0);
-    label = UserDefined("AccBlock","PUCost3");
-    if (blank(label)) then begin label = "Extra Cost 3";end;
-    EditField(h1,v+=vs,70,label,Normal,Cost3,true,0);
-    label = UserDefined("AccBlock","PUCost4");
-    if (blank(label)) then begin label = "Extra Cost 4";end;
-    EditField(h2,v,70,label,Normal,Cost4,true,0);
-    label = UserDefined("AccBlock","PUCost5");
-    if (blank(label)) then begin label = "Extra Cost 5";end;
-    EditField(h1,v+=vs,70,label,Normal,Cost5,true,0);
-    EnterSkip(TransDate);
-    ButtonFrame(h3,v=16,130,2,"Extra Costs Calculation");
-    RadioButton(h3,v,0,0,"Value",ExtraCostsCalculation);
-    RadioButton(h3,v+=16,1,0,"Weight",ExtraCostsCalculation);
-  end;
-  if (HasModIN) then begin
-    SpecialMenu("Create Goods Receipt",'L',0,"PUFromPODsm");
-  end;
-  if (IsEnterprise) then begin
-    SpecialMenu("Create Shipment Notification",'l',0,"DropSHFromPODsm");
-  end;
-  if (HasModPL) then begin
-    SpecialMenu("Create #Purchase Invoice#",'F',1,"VIFromPODsm");
-  end;
-  if (HasApprovals) then begin
-    SpecialMenu("Send for Approval",' ',6,"POSendforAcceptancePODsm");
-    SpecialMenu("Cancel Approval Request",' ',2,"CancelApprovalRequestDsm");
-  end;
-  if (HasModIN) then begin
-    SpecialMenu("Item Status",'I',2,"ItemStatusPODsm");
-  end;
-  SpecialMenu("Item Search",'f',1,"ItemSearchDsm");
-  if (HaseMail) then begin
-    SpecialMenu("Create e-mail",'m',3,"CreateMailFromPODsm");
-  end;
-  if (IsEnterprise) then begin
-    SpecialMenu("Previous Purchase Prices",' ',4,"POLastPPrsm");
-  end;
-  SpecialMenu("Purchase Order Status",'r',5,"POStatRnPODsm");
-  if (IsEnterprise) then begin
-    SpecialMenu("Create Returned Goods",'B',6,"RetPUFromPODsm");
-    SpecialMenu("Reservations",' ',6,"POReservPODsm");
-    SpecialMenu("Open TAX Matrix",' ',25,"OpenVatMatrixPODsm"); 
-  end;
-  if(currentcompany==10)then begin
-  	SpecialMenu("View calculated prices",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
-  end;
+  h=100;
+  v = 6; vs = 20; h = 120;
+  PeriodField(h,v,"دوره");
+  EditFieldTL(h,v+=vs,150,"انبار (فروشگاه)",M4Str,Normal,41,f1,false,LocationSClass);
+  EditFieldTL(h,v+=vs,150,"طبقه بندی",M4Str,Normal,200,f2,false,DISClass);
+  EditFieldTL(h,v+=vs,150,"نام تجاری",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
+  //EditFieldTL(h,v+=vs,150,"نوع",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
   EndWindow;
 end;
