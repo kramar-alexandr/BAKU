@@ -1,6 +1,7 @@
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure GetBaseCurncy(Integer,var string);
 
+
 SetLangMode(LangRussian,"RUS",0);
 
 
@@ -29,12 +30,37 @@ begin
 	val orfr,orto1,orto2,orbr1,orbr2;
 	val ifr,ito1,ito2,ibr1,ibr2;
 	record ARPayVc ARPayr;
-	boolean TrHs1,testf1;
+	boolean TrHs1,testf1,TrHs0,foundCode,testf0;
+	val allSums; //sum of totsums
 
+	TrHs0 = true;
 	azn = "AZN";
 	CUr.Code = RepSpec.f1;
-	if(nonblank(RepSpec.f1) and readfirstmain(CUr,1,true))then begin
-		StartReportNoheaderJob("Отчет по задолженности клиентов по компаниям");
+	foundCode = readfirstmain(CUr,1,true);
+	allSums = 0;
+
+			StartReportNoheaderJob("Отчет по задолженности клиентов по счетам");
+
+	if (nonblank(RepSpec.f1) and (foundCode==false)) begin
+
+				startformat(15);
+					outstring(100,0,"Укажите корректный код клиента для отчета",false);
+				endformat;
+
+		end else begin
+
+	While(LoopMain(CUr,1,TrHs0)) begin			//Edit Dima ---------08.12.2014
+		testf0=true;
+	//if(nonblank(RepSpec.f1) and readfirstmain(CUr,1,true))then begin
+
+		//if(Left(CUr.Code,2) != "ID" or (!(IsNumeric(mid(CUr.Code,2,1)))) then begin
+		if(not((Left(CUr.Code,2) == "ID"))) then begin
+		testf0 = false;
+		end;
+		
+		if (testf0) then begin
+
+
 		curcmp = currentcompany;
 	
 	
@@ -207,16 +233,27 @@ begin
 			startformat(15);
 				outstring(0,0,"Всего",false);
 				outstring(200,0,totsum,false);
-			endformat;			
-		
-		endjob;
-	end else begin
-		StartReportNoheaderJob("Отчет по задолженности клиентов по компаниям");
-			startformat(15);
-				outstring(100,0,"Укажите корректный код клиента для отчета",false);
 			endformat;
-		endjob;
+			endformat;
+			endformat;
+			allSums = allSums+totsum;	//Edit Dima ---------------09.12.2014		
+
+		if (nonblank(RepSpec.f1)) then begin
+			TrHs0 = false;
+		end;
+	end;//testf0;
+
+	end;//while
+	if (blank(RepSpec.f1)) then begin
+		EndFormat;
+		Black_Divider(0,1);
+		outstring(0,0,"Общая сумма",false);
+		outstring(200,0,allSums,false);
 	end;
+end; 
+
+
+	endjob;
 	
 return;
 end;
