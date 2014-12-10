@@ -3259,7 +3259,7 @@ WindowBegin("گزارش فروش پیشرفته",SalesReportExtRClass,CGRcW,RcTy
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 120;
   PeriodField(h,v,"دوره ");
-  EditFieldTL(h,v+=vs,150,"Склад(магазин)",M4Str,Normal,41,f1,false,LocationSClass);
+  EditFieldTL(h,v+=vs,150,"انبار، فروشگاه",M4Str,Normal,41,f1,false,LocationSClass);
   EditFieldTL(h,v+=vs,150,"طبقه بندی",M4Str,Normal,200,f2,false,DISClass);
   EditFieldTL(h,v+=vs,150,"برند",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
   EditFieldTL(h,v+=vs,150,"مدل",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
