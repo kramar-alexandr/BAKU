@@ -1758,7 +1758,7 @@ external function string 255 GetINImageAttach();
 //##ii
 procedure dummy() //##ii
 begin //##ii
-  SetLangMode(LangRussian,"UKR",0); //##ii
+  SetLangMode(LangRussian,"RUS",0); //##ii
   return; //##ii
 end; //##ii
 
