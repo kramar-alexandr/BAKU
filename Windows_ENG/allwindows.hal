@@ -2956,7 +2956,7 @@ begin
   EndWindow;
 end;
 
-window PUDClass:1
+/*window PUDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,t,v,vm,vs;
@@ -3032,16 +3032,15 @@ begin
   Tile(tilenr,220,true,tilenr,Math); tilenr = tilenr + 1;
   v = 24;
   if (HasSerialNumbers) then begin
-    MatrixBegin(4,v,-50,-50,-,1000);
+    MatrixBegin(4,v,-50,-50,-,2000);
   end else begin
-    MatrixBegin(4,v,-25,-50,-,1000);
+    MatrixBegin(4,v,-25,-50,-,2000);
   end;
   MatTypedRow(stp);
   MatOverStrike(ovst);
   Flip(0);
   MatCol(1,28,"Item",0,ArtCode,false,INSClass);
-//  MatCol(1,84,"Var",0,VARList,true,VARSClass);
-//  MatCol(1,144,"Qty",0,Quant,true,0);
+
   if (HasVarieties) then begin
     MatCol(1,94,"Qty",0,Quant,true,MATVARINSClass);
   end else begin
@@ -3144,12 +3143,7 @@ begin
       MatCol(1,144,"Description",0,Spec,false,0);
       MatCol(1,-150,"Serial No.",0,SerialNr,false,SerialNrSClass);
     end;
-/*
-    MatCol(1,-280,"Цена ед.",0,UPrice,true,0); 
-    MatCol(1,-210,"Фрахт",0,ShipCost,true,0); 
-    MatCol(1,-140,"Доп. затраты",0,Extra,true,0); 
-    MatCol(1,-70,"Стоимость",0,CostPrice,true,0); 
-*/
+
   end;
   if (currentcompany==3) then begin
     Flip(flipnr); flipnr = flipnr + 1;
@@ -3298,7 +3292,7 @@ begin
   SpecialMenu("Pack List",' ',8,"PackListPUDsm");
   end;
   EndWindow;
-end;
+end;*/
 
 window PasteRetItemTClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
@@ -6284,7 +6278,8 @@ begin
   EnterSkip(Math);
   Tile(tilenr,120,true,tilenr,Math); tilenr = tilenr + 1;
   if (HasMultiCurrency or HasBase2) then begin
-    EditField(110,-41,70,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
+    EditField(50,-41,30,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
+    EditField(150,-41,30,"Chk. Curncy",Normal,CheckCurncyCode,false,CurncyCodeSClass);// Edit ************************** Wednesday, 10 December 2014 15:59:35
   end;
   if (IsEnterprise) then begin
     EditField(110,-21,70,"Pallets",ViewOnly,TotPalletNr,true,0);
@@ -6300,24 +6295,27 @@ begin
 //  CheckBox(20,-21,0,"OK",OKFlag);
   v = 24;
   if (HasModIN or HasModPL or HasObjects) then begin
-    MatrixBegin(3,v,-50,-44,-,199);
+    MatrixBegin(3,v,-50,-44,-,2000);
   end else begin
-    MatrixBegin(3,v,-25,-44,-,199);
+    MatrixBegin(3,v,-25,-44,-,2000);
   end;
   MatTypedRow(stp);
   Flip(0);
   MatCol(1,28,"Item",0,ArtCode,false,INSClass);
 //  MatCol(1,84,"Var",0,VARList,true,VARSClass);
 //  MatCol(1,144,"Qty",0,Quant,true,0);
+  
+  EnterSkip(ArtCode);
+//  MatCol(1,194,"Description",0,Spec,false,0);
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
   if (HasVarieties) then begin
     MatCol(1,94,"Qty",0,Quant,true,MATVARINSClass);
   end else begin
     MatCol(1,94,"Qty",0,Quant,true,0);
   end;
-  EnterSkip(ArtCode);
-//  MatCol(1,194,"Description",0,Spec,false,0);
-  flipnr = 1;
-  Flip(flipnr); flipnr = flipnr + 1;
+  
+  
   MatColTL(1,164,"Unit",0,M4Code,ViewOnly,5,UnitCode,false,UnitSCLass);
   MatCol(1,204,"Description",0,Spec,false,0);
   if (HasJewelleryInterface) then begin

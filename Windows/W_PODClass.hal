@@ -1844,7 +1844,7 @@ begin
   Tile(tilenr,120,true,tilenr,Math); tilenr = tilenr + 1;
   if (HasMultiCurrency or HasBase2) then begin
   	EditField(50,-41,30,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
-  	EditField(150,-41,30,"Пров. вал.",Normal,CheckCurncyCode,false,CurncyCodeSClass);
+  	EditField(150,-41,30,"Пров. вал.",Normal,CheckCurncyCode,false,CurncyCodeSClass);// Edit ************************** Wednesday, 10 December 2014 15:59:35
   end;
   if (IsEnterprise) then begin
   EditField(110,-21,70,"Паллеты",ViewOnly,TotPalletNr,true,0);
