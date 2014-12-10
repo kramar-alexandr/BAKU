@@ -7078,3 +7078,20 @@ begin
 
   EndWindow;
 end;
+
+window ImportPLClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real v;
+WindowBegin("Prices Import",ImportPLClass,CGIcW,RcType);
+  SetWRect(80,80,400,250);
+   StaticText(20,v=20,"Import format:",false);
+   StaticText(25,v+=20,"* Price List Code",false);
+   StaticText(25,v+=20,"* Item Code",false);
+   StaticText(25,v+=20,"* Price",false);
+   StaticText(25,v+=20,"* Curncy (if required)",false);
+	 StaticText(25,v+=20,"* Serial number (if required)",false);
+	 
+	 StaticText(20,v+=40,"Import file mast be TAB delimited text",false);
+  EndWindow;
+end;

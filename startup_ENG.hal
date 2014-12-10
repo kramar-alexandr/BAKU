@@ -5,6 +5,7 @@ begin
 	
 	Module("Work with customers","",730,modMYCRM);
 	
+	Import("Import Prices",ImportPLClass,ImportPLIn,modDI);
 	//Register("ARVc","ARVc",ARVc,modDBMain);
   //Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
   //Register("APVc","APVc",APVc,modDBMain);
