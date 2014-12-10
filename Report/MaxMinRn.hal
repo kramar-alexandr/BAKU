@@ -198,7 +198,7 @@ begin
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
 	
 	
-	startreportnoheaderjob("Статистика продаж по клиентам");
+	startreportnoheaderjob(USetStr(31132));
 	  customer = RepSpec.f1;
 	  profCheck = false;
 	  s = 1;
@@ -207,43 +207,43 @@ begin
       if (RepSpec.ArtMode==2) then begin sort = gp; profCheck = true; end;
 		
 	Startformat(15);
-		outstring(60,0,"Период:",true);
+		outstring(60,0,USetStr(31102),true);
 		outstring(130,0,RepSpec.sStartDate & chr(58) & RepSpec.sEndDate,true);	
 	endformat;
 
 	if (NonBlank(RepSpec.f1)) then begin
 		Startformat(15);
-			outstring(60,0,"Клиент:",true);
+			outstring(60,0,USetStr(31114),true);
 			outstring(130,0,RepSpec.f1,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Клиент:",true);
-			outstring(130,0,"По всем клиентам",true);	
+			outstring(60,0,USetStr(31114),true);
+			outstring(130,0,USetStr(31115),true);	
 		endformat;
 	end;
 
 	if (NonBlank(RepSpec.AccStr)) then begin
 		Startformat(15);
-			outstring(60,0,"Склад:",true);
+			outstring(60,0,USetStr(31103),true);
 			outstring(130,0,RepSpec.AccStr,true);	
 		endformat;
 	end else begin;
 		Startformat(15);
-			outstring(60,0,"Склад:",true);
-			outstring(130,0,"По всем складам",true);	
+			outstring(60,0,USetStr(31103),true);
+			outstring(130,0,USetStr(31104),true);	
 		endformat;
 	end;
 
 	Startformat(15);
-		outstring(40,0,"Клиент",true);
-		outstring(130,0,"Имя клиента",true);
-		outstring(200,0,"Прибыль",true);
-		outstring(260,0,"Сумма",true);
-		outstring(290,0,"Контакты",true);
-		outstring(320,0,"Адрес",true);
-		outstring(350,0,"E-mail",true);
-		outstring(400,0,"Способ рассылки",true);
+		outstring(40,0,USetStr(31114),true);
+		outstring(130,0,USetStr(31070),true);
+		outstring(200,0,USetStr(31135),true);
+		outstring(260,0,USetStr(31122),true);
+		outstring(290,0,USetStr(31123),true);
+		outstring(320,0,USetStr(31124),true);
+		outstring(350,0,USetStr(31125),true);
+		outstring(400,0,USetStr(31126),true);
 	endformat;
 
 	Black_Divider(0,1); 
@@ -370,16 +370,16 @@ begin
 				outstring(350,0,CUr.eMail,true);
 				tstr = "";
 				if(CUr.AllowSendSMS>0)then begin
-					tstr = tstr & "СМС ";
+					tstr = tstr & USetStr(31128);
 				end;
 				if(CUr.AllowSendeMail>0)then begin
-					tstr = tstr & "eMail ";
+					tstr = tstr & USetStr(31125);
 				end;
 				if(CUr.AllowSendCall>0)then begin
-					tstr = tstr & "звонок ";
+					tstr = tstr & USetStr(31129);
 				end;
 				if(CUr.AllowSendkMail>0)then begin
-					tstr = tstr & "куръер ";
+					tstr = tstr & USetStr(31130);
 				end;
 				
 				outstring(400,0,tstr,true);
@@ -390,7 +390,7 @@ begin
 		Gray_Divider(0,1);
 			Startformat(15);
 				outstring(40,0,"",true);
-				outstring(120,0,"Итог:",true);
+				outstring(120,0,USetStr(31131),true);
 				outstring(200,0,finalProfit,true);
 				outstring(260,0,finalSum,true);
 			endformat;

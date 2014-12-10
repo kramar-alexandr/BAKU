@@ -360,7 +360,7 @@ begin
         OutString(370,0,USetStr(31110),false);
         OutString(380,0,USetStr(31111),false);
         SPr.Code = "";
-        while(loopmain(SPr,1,true))begin
+        while(loopmain(SPr,1,true)) begin
             OutString(390,0,SPr.ShortDesc,false);
             spi=spi+1;
         end;
@@ -370,7 +370,7 @@ begin
         IN2r.DispGroups = "";
         if (ReadLastKey("MyDispGroups",IN2r,1,false)) then begin
           curgr=IN2r.DispGroups;
-          gi=0;
+          gi=0; 
           ExtractObj(IN2r.DispGroups,gi,curgr);
           if(currentcompany==9)then begin
             ExtractObj(INr.DispGroups,gi,curgr1);
@@ -459,7 +459,7 @@ begin
             
             
             totcosted = totcosted + totcostsd;
-            for(j=1;j<spi;j=j+1)begin
+            for(j=1;j<spi;j=j+1) begin
               OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
               sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
             end;
@@ -480,7 +480,7 @@ begin
             inpo = 0;
             retpu = 0;
             rownr = rownr + 1;
-            for(j=0;j<spi;j=j+1)begin
+            for(j=0;j<spi;j=j+1) begin
                 sdcost[j]=0;
             end;
             calc = true;
@@ -547,7 +547,7 @@ begin
             totals[11] = totals[11] + retpu*rate;
             
             totcosted = totcosted + totcostsd;
-            for(j=1;j<spi;j=j+1)begin
+            for(j=1;j<spi;j=j+1) begin
               OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
               sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
             end;
@@ -599,7 +599,7 @@ begin
         OutString(360,0,totals[7],false);
         OutString(370,0,totals[8],false);
         OutString(380,0,totals[11],false);
-        for(j=1;j<spi;j=j+1)begin
+        for(j=1;j<spi;j=j+1) begin
           OutString(390,0,sdtotal[j],false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
         end;
         OutString(405,0,totals[10],false);
