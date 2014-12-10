@@ -33,6 +33,7 @@ begin
 	record ARPayVc ARPayr;
 	boolean TrHs1,testf1,TrHs0,foundCode,testf0;
 	val allSums; //sum of totsums
+	boolean detailed; //Edit --------Dima-----------10.12.2014
 
 
 	TrHs0 = true;
@@ -40,6 +41,7 @@ begin
 	CUr.Code = RepSpec.f1;
 	foundCode = readfirstmain(CUr,1,true);
 	allSums = 0;
+	detailed = RepSpec.ArtMode;//Edit --------Dima-----------10.12.2014
 
 			StartReportNoheaderJob("Отчет по задолженности клиентов по счетам");
 
@@ -224,14 +226,20 @@ begin
 			resetcompany(curcmp);
 		end; 
 			totsum = 0;
-			For(i=0;i<acnt;i=i+1) begin
-				startformat(15);
-					outstring(0,0,acomp[i],false);
-					outstring(100,0,aloc[i],false);
-					outstring(200,0,sum[i],false);
-				endformat;			
+			
+			For(i=0;i<acnt;i=i+1) begin		
 				totsum = totsum + sum[i];
 			end; 
+
+			if (detailed) then begin		//Edit ------------------------Dima-------10.12.2014
+				For(i=0;i<acnt;i=i+1) begin
+					startformat(15);
+						outstring(0,0,acomp[i],false);
+						outstring(100,0,aloc[i],false);
+						outstring(200,0,sum[i],false);
+					endformat;							
+				end; 
+			end;
 			gray_divider(0,1);
 			startformat(15);
 				outstring(0,0,"Всего",false);
