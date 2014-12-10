@@ -412,17 +412,17 @@ begin
 						OutString(0,0,USetStr(31029),true);// Edit ************************** Monday, 15 April 2013 15:12:07
           end;
           OutString(20,0,USetStr(12501),false);
-          OutString(50,0,USetStr(12713),false);
-          OutString(190,0,USetStr(12751),false);
+          OutString(50,0,USetStr(8105),false);
+          OutString(190,0,USetStr(31121),false);
           OutString(220,0,USetStr(12754),false);
-          OutString(270,0,USetStr(12732),false);
+          OutString(270,0,USetStr(31122),false);
           OutString(320,0,USetStr(12007),false);
           if (UserCanAction("ViewCostPrice",true)==true) then begin
             OutString(360,0,USetStr(18240),false);
-            OutString(410,0,USetStr(12423),false);
+            OutString(410,0,USetStr(8121),false);
           end else begin
             OutString(360,0,"",false);
-            OutString(410,0,USetStr(12423),false);
+            OutString(410,0,USetStr(8121),false);
           end;
           
           EndFormat;
@@ -751,11 +751,11 @@ begin
 	  		StartFormat(15);
 					outstring(0,0,ORrw.SerialNr,false);
 					outstring(80,0,ORrw.Spec,false);
-					outstring(160,0,USetStr(12448),false);
+					outstring(160,0,USetStr(31122),false);
 					outstring(200,0,ORrw.Sum,false);
 					outstring(250,0,USetStr(16018),false);
 					outstring(280,0,ORrw.ArtCode,false);
-					outstring(310,0,USetStr(9214),false);
+					outstring(310,0,USetStr(31144),false);
 					outstring(390,0,ORrw.Objects,false);
 				endformat;
 			end; 
@@ -779,11 +779,11 @@ begin
 						outstring(70,0,USetStr(31037),false);
 					end;
 					outstring(120,0,SMrw.ChequeNr,false);
-					outstring(160,0,USetStr(12448),false);
+					outstring(160,0,USetStr(31122),false);
 					outstring(200,0,SMrw.RecVal,false);
-					outstring(250,0,USetStr(8107),false);
+					outstring(250,0,USetStr(16018),false);
 					outstring(280,0,SMrw.RecCurncy,false);
-					outstring(310,0,USetStr(12443),false);
+					outstring(310,0,USetStr(31220),false);
 					outstring(350,0,SMrw.PayDate,false);
 					outstring(380,0,SMrw.CustName,false);
 				endformat;

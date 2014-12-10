@@ -237,7 +237,13 @@ begin
   SString(31135,"Прибыль");
   SString(31136,"Рентабельность");
   SString(31137,"Оборот");
-
+  SString(31138,"USD (per unit)");
+  SString(31139,"TOTAL USD");
+  SString(31140,"AZN (per unit)");
+  SString(31141,"TOTAL AZN");
+  SString(31142,"EUR (per unit)");
+  SString(31143,"TOTAL EUR");
+  SString(31144,"№ документа");
 
 //RebItemSalesRn
   SString(31200,"Отчет по обороту акционных товаров"); //Отчет по обороту акционных товаров

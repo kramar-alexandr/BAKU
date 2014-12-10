@@ -229,6 +229,13 @@ begin
   SString(31135,"Profit"); //Прибыль
   SString(31136,"Profitability"); //Рентабельность
   SString(31137,"Turnover"); //Оборот
+  SString(31138,"USD (per unit)");
+  SString(31139,"TOTAL USD");
+  SString(31140,"AZN (per unit)");
+  SString(31141,"TOTAL AZN");
+  SString(31142,"EUR (per unit)");
+  SString(31143,"TOTAL EUR");
+  SString(31144,"Document №");
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

@@ -604,28 +604,28 @@ begin
 				EndFormat;
 						
 				StartFormat(15);
-						OutString(0,0,USetStr(13835),false);
+						OutString(0,0,USetStr(31102),false);
 						OutString(100,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
 				endformat;
 				if(nonblank(RepSpec.f1))then begin
 					StartFormat(15);
-							OutString(0,0,USetStr(12706),false);
+							OutString(0,0,USetStr(31202),false);
 							OutString(100,0,RepSpec.f1,false);
 					endformat;
 				end else begin
 						StartFormat(15);
-							OutString(0,0,USetStr(12706),false);
+							OutString(0,0,USetStr(31202),false);
 							OutString(100,0,USetStr(31089),false);
 					endformat;
 				end;
 				if(nonblank(RepSpec.f2))then begin
 					StartFormat(15);
-							OutString(0,0,USetStr(11605),false);
+							OutString(0,0,USetStr(31228),false);
 							OutString(100,0,ParseClassification(RepSpec.f2),false);
 					endformat;
 				end else begin
 						StartFormat(15);
-							OutString(0,0,USetStr(11605),false);
+							OutString(0,0,USetStr(31228),false);
 							OutString(100,0,USetStr(31089),false);
 					endformat;
 				end;
@@ -680,7 +680,7 @@ begin
                 OutString(180,0,"",false);
                 OutString(185,0,"",false);// Edit ************************** Wednesday, 12 November 2014 16:40:56
 							end;
-							OutString(190,0,USetStr(5058),false);
+							OutString(190,0,USetStr(31111),false);
 							EndFormat;
 							StartFormat(15);
 							OutString(0,0,"№",false);
@@ -688,47 +688,47 @@ begin
 							//if(currentcompany==9)then begin
 								OutString(25,0,USetStr(31018),false);
 							//end;
-							OutString(30,0,USetStr(12713),false);
+							OutString(30,0,USetStr(8105),false);
 							//OutString(35,0,"Код поставщика",false);
-							OutString(40,0,USetStr(9048),false);
+							OutString(40,0,USetStr(31105),false);
 							if(currentcompany>2)then begin
-								OutString(40,0,USetStr(8833),false);
+								OutString(40,0,USetStr(31120),false);
 							end;
 							if(RepSpec.flags[0]==0)then begin
 							  OutString(50,0,USetStr(18240),false);
 							end;
-							OutString(60,0,USetStr(12005),false);
+							OutString(60,0,USetStr(12754),false);
 							//  Состояло
-							OutString(70,0,USetStr(12004),false);
+							OutString(70,0,USetStr(31121),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(80,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:52
+                OutString(80,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:52
 							end;
 							//  Поступило
-							OutString(90,0,USetStr(12004),false);
+							OutString(90,0,USetStr(31121),false);
 							OutString(100,0,USetStr(31092),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(110,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
+                OutString(110,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
                 OutString(120,0,USetStr(31093),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:36
 							end;
 							//  Возврат покупателей
-							OutString(130,0,USetStr(12004),false);
+							OutString(130,0,USetStr(31121),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(140,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
+                OutString(140,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32
                 OutString(145,0,USetStr(18240),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:32							
 							end;
 							//  Отпущено
-							OutString(150,0,USetStr(12004),false);
+							OutString(150,0,USetStr(31121),false);
 							OutString(160,0,USetStr(31092),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(170,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
+                OutString(170,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
                 OutString(180,0,USetStr(31093),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:29
                 OutString(185,0,USetStr(31099),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:30
 							end;
 							//Возврат поставщикам
-							OutString(190,0,USetStr(12004),false);
+							OutString(190,0,USetStr(31121),false);
 							if(RepSpec.flags[0]==0)then begin
-                OutString(200,0,USetStr(12448),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:28
-                OutString(210,0,USetStr(14548),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
+                OutString(200,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:28
+                OutString(210,0,USetStr(31135),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
 							end;
 							OutString(220,0,USetStr(31094),false);
 							if(RepSpec.flags[0]==0)then begin
