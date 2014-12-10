@@ -559,6 +559,14 @@ begin
   SString(31241,"וÌוטÙ ÑÓ?Ï:"); 		//Total receipts  
   SString(31242,"זÊÇ?Ì"); 				//Overall    
 
+  SString(12594,"ÇÑÇÆח ÏחזÏח"); //Edit by Victor 10.12.14
+  SString(5051,"ÑÓ?Ïח"); 
+  SString(2625,"וÌוטÙ");
+  
+  /* PUJRn */
+  SString(27450,"ÇÒ Ìוהח Â?Êו חÇ? TREO");
+  SString(27451,"Èח ÇÓÊËזÇ? וטÇÑÏ TREO");
+  SString(27452,"Â?Êו חÇ TREO ÊזחÇ");
   
  return;
 end;  

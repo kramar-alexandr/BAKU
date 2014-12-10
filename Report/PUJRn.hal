@@ -187,8 +187,8 @@ begin
     OutString(0,0,USetStr(2602),false);
     OutString(60,0,USetStr(2603),false);
     //OutString(140,0,USetStr(2607),false); //Edit***************************Sasha2,10:58 29.07.2014
-    OutString(120,0,"Поставщик",false); //Edit***************************Sasha2,10:25 29.07.2014
-    OutString(220,0,"Поступило",false); //Edit***************************Sasha2,10:25 29.07.2014
+    OutString(120,0,USetStr(12594),false); //Edit***************************Sasha2,10:25 29.07.2014 //Edit by Victor 10.12.14 USetStr
+    OutString(220,0,USetStr(5051),false); //Edit***************************Sasha2,10:25 29.07.2014
     OutString(280,0,USetStr(2607),false); //Edit***************************Sasha2,10:58 29.07.2014
     OutStringAdjustBiDi(1,0,USetStr(2625),true,M4Val,515);
     EndFormat;

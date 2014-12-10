@@ -559,6 +559,14 @@ begin
   SString(31241,"مجموع رسید:"); 		//Total receipts  
   SString(31242,"نتایج"); 				//Overall    
 
+  SString(12594,"ارائه دهنده"); //Edit by Victor 10.12.14
+  SString(5051,"رسیده"); 
+  SString(2625,"مجموع");
+  
+  /* PUJRn */
+  SString(27450,"از جمله آیتم های TREO");
+  SString(27451,"به استثنای موارد TREO");
+  SString(27452,"آیتم ها TREO تنها");
   
  return;
 end;  
