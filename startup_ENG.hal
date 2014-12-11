@@ -26,7 +26,7 @@ begin
 	Setting("Loyalty Cards",LoyaltyCardLClass,modPOS);
 	Setting("Prices changes history setting",PLHistSetTClass,modDI);
   Setting("Prices changes history",PLHistLClass,modDI);
-	Setting("Consignation items",INConsLClass,modIN);
+	Setting("Consignment items",INConsLClass,modIN);
 	Setting("Support IVsrVc",IVrsLClass,modSL); //Edit***************************Sasha2,15:14 05.11.2014
 		
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
@@ -64,7 +64,7 @@ begin
   end;
   Report("Remains of Warehouse Managers",ItemStockStatExtManRClass,ItemStockStatExtCreative1Rn,0,modIN);
   Report("The status of customer orders",OrderStatusRClass,OrderStatusRn,0,modSO);
-  Report("Статус заказов клиентов",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
+  Report("Clients' orders status",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
   Report("Indebtedness employees by companies",CustDebByCompRClass,CustDebByCompRn,0,modSL);
   Report("Indebtedness employees by orders",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
   //Report("Информация о клиетах",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
@@ -165,11 +165,11 @@ begin
   SString(31071,"Rebate percent");
   SString(31072,"Sale date");
   SString(31073,"Payment modes"); //Способы оплаты
-  SString(31074,"Quantity total:");
-  SString(31075,"Cost total:");
-  SString(31076,"Sum total:");
-  SString(31077,"Difference total:");
-  SString(31078,"Average rebate:");
+  SString(31074,"Quantity total");
+  SString(31075,"Cost total");
+  SString(31076,"Sum total");
+  SString(31077,"Difference total");
+  SString(31078,"Average rebate");
   SString(31079,"Define dates");
   SString(31080,"Turnover ballance sheet for items"); //Оборотно-сальдовая ведомость по товарам
   SString(31081,"Opening balance"); //Начальный остаток
@@ -208,7 +208,7 @@ begin
   SString(31114,"Client");
   SString(31115,"Over all clients"); //По всем клиентам
   SString(31116,"Good");
-  SString(31117,"Over all goods:"); //По всем товарам:
+  SString(31117,"Over all goods"); //По всем товарам:
   SString(31118,"Over all classifications"); //По всем класс-циям
   SString(31119,"Good name");
   SString(31120,"Model");
@@ -236,6 +236,59 @@ begin
   SString(31142,"EUR (per unit)");
   SString(31143,"TOTAL EUR");
   SString(31144,"Document №");
+  SString(31145,"Please, define file for picture exporting"); //Укажите пожалуйста файл для выгрузки картинки
+  SString(31146,"Done");
+  SString(31147,"Overdue quantity:"); //Просроченно кол-во:
+  SString(31148,"Days");
+  SString(31149,"Debt to supplier"); //Задолженность перед поставщиком
+  SString(31150,"Remained on the location"); //Осталось на складе
+  SString(31151,"Total returned:"); //Всего возвращено:
+  SString(31152,"Total sold:") //Всего продано:
+  SString(31153,"Write off"); //Списание
+  SString(31154,"Delivery"); //Отгрузка
+  SString(31155,"Sell"); //Продажа
+  SString(31156,"Goods receipt date"); //Дата поступления
+  SString(31157,"Goods receipt");
+  SString(31158,"Days of consignment"); //Дней консигнации
+  SString(31159,"Report over goods on consignment"); //Отчет по товарам на консигнации
+  SString(31160,"Cost");
+  SString(31161,"Stock movement status"); //Статус перемещения
+  SString(31162,"In payments currency"); //В валютах платежей:
+  SString(31163,"Total in major currency"); //Всего в осовной валюте 
+  SString(31164,"In currency");
+  SString(31165,"Price");
+  SString(31166,"Retail prices in stock movement"); //Розничные цены в перемещении
+  SString(31167,"Average receipt report over clients' orders"); //Отчет по среднему чеку по счетам клиентов
+  SString(31168,"Balance report over stocks"); //Отчет остатков по складам
+  SString(31169,"Currency");
+  SString(31170,"Picture");
+  SString(31171,"Unit cost in PLN currency"); //Себестоимость за ед-цу в валюте PLN
+  SString(31172,"Cost total in PLN currency"); //Сумма по себестоимости в валюте PLN
+  SString(31173,"Unit retail in PLN currency"); //Ритейл за ед-цу в валюте PLN
+  SString(31174,"Sales total in PLN currency"); //Сумма продажи в валюте PLN
+  SString(31175,"Measurement unit");
+  SString(31176,"Income type");
+  SString(31177,"Additionally*");
+  SString(31178,"Weight");
+  SString(31179,"Extended balance report over stocks"); //Отчет остатков по складам расширенный
+  SString(31180,"Consignment");
+
+//RebItemSalesRn
+  SString(31204,"Name"); //Название
+  SString(31211,"Total:");
+  
+//MiddleInvoiceRn
+  SString(31217,"Average receipt report"); //Отчет по среднему чеку
+  SString(31218,"Store");
+  SString(31219,"Seller");
+  SString(31220,"Date");
+  SString(31221,"Receipts quantity");
+  SString(31222,"Total");
+  SString(31223,"Average receipt price");
+  SString(31224,"Items quantity for day"); //Кол-во позиций за день
+  
+// INQtyRn  
+  SString(31231,"Item code");
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

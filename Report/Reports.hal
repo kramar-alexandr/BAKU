@@ -6,7 +6,7 @@ external function longint DateDiff(date,date);
 remote procedure ItemStockStatExtWebRn(record RcVc,var area,string);
 remote procedure SalesReportExtPictRn(record RcVc,var area,string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
 /*
 ///////Перенесено в файл  MiddleInvoiceRn.hal ---------Dima  09.12.2014
@@ -178,21 +178,21 @@ end;//////////////////////////////////Перенесено в файл  MiddleInvoiceRn.hal ---
 
 global procedure MiddleInvoiceOrderRn(record RcVc RepSpec)
 begin
-	record IVVc IVr;
-	row IVVc IVrw;
-	record ORVc ORr;
-	row ORVc ORrw;
-	integer i,mtrw;
-	boolean TrHs,testf,first;
-	string 50 key;
-	integer fl;
-	record CYBlock CYb;
-	val day,total,dayqty,totalqty;
-	integer invday,invtotal;
-	date curdat;
-	val fr,to1,to2,br1,br2,ivfr,ivto;
+  record IVVc IVr;
+  row IVVc IVrw;
+  record ORVc ORr;
+  row ORVc ORrw;
+  integer i,mtrw;
+  boolean TrHs,testf,first;
+  string 50 key;
+  integer fl;
+  record CYBlock CYb;
+  val day,total,dayqty,totalqty;
+  integer invday,invtotal;
+  date curdat;
+  val fr,to1,to2,br1,br2,ivfr,ivto;
   string 20 curncy;
-	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
+  Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
   Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
   Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
   
@@ -202,11 +202,11 @@ begin
 	
 	blockload(CYb);
 	
-	startreportnoheaderjob("Отчет по среднему чеку по счетам клиентов");
+	startreportnoheaderjob(USetStr(31167));
 	
 	startformat(15);
 		outstring(0,0,"",false);
-		outstring(100,0,"Период:",false);
+		outstring(100,0,USetStr(31102),false);
 		outstring(150,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
 	endformat;
 	startformat(15);
@@ -216,21 +216,21 @@ begin
 		outstring(50,0,"",false);
 		outstring(100,0,CYb.BusinessName,false);
 		outstring(150,0,RepSpec.f1,false);
-		outstring(190,0,"магазин",false);
+		outstring(190,0,USetStr(31218),false);
 		if(nonblank(RepSpec.f2))then begin
 			outstring(240,0,RepSpec.f2,false);
-			outstring(300,0,"продавец",false);
+			outstring(300,0,USetStr(31219),false);
 		end;
 	endformat;
 	black_divider(0,1);
 	startformat(15);
 	endformat;
 	startformat(15);
-		outstring(0,0,"Дата",false);
-		outstring(50,0,"Кол-во чеков",false);
-		outstring(120,0,"Итого",false);
-		outstring(170,0,"Сред/цена чека",false);
-		outstring(240,0,"Кол-во позиций за день",false);
+		outstring(0,0,USetStr(31220),false);
+		outstring(50,0,USetStr(31221),false);
+		outstring(120,0,USetStr(31222),false);
+		outstring(170,0,USetStr(31223),false);
+		outstring(240,0,USetStr(31224),false);
 	endformat;
 	startformat(15);
 	endformat;
@@ -329,7 +329,7 @@ begin
 	startformat(15);
 	endformat;
 	startformat(15);
-		outstring(0,0,"Всего:",false);
+		outstring(0,0,USetStr(31211),false);
 		outstring(50,0,invtotal,false);
 		outstring(120,0,total,false);
 		outstring(170,0,total/invtotal,false);
@@ -358,14 +358,14 @@ begin
   
 	totqty = 0;
 	recordnew(SM2r);
-	startreportnoheaderjob("Розничные цены в перемещении");
+	startreportnoheaderjob(USetStr(31166));
 		startformat(15);
-			outstring(0,0,"Товар",false);
-			outstring(150,0,"Название",false);
-			outstring(300,0,"Цена RRP",true);
-			outstring(320,0,"Количество",false);
-			outstring(400,0,"Сумма",true);
-			outstring(1,0,"Валюта RRP",true);
+			outstring(0,0,USetStr(31231),false);
+			outstring(150,0,USetStr(31204),false);
+			outstring(300,0,USetStr(31165) & " RRP",true);
+			outstring(320,0,USetStr(31121),false);
+			outstring(400,0,USetStr(31122),true);
+			outstring(1,0,USetStr(31164) &" RRP",true);
 		endformat;
 	PLDr.Code = "RRP";
 	readfirstmain(PLDr,1,true);
@@ -431,15 +431,15 @@ begin
 	if(totqty<>0)then begin
 		Black_Divider(320,1);
 		startformat(15);
-			outstring(300,0,"Всего кол-во",true);
+			outstring(300,0,USetStr(31074),true);
 			outstring(320,0,totqty,false);
 		endformat;
 		smmtrw = matrowcnt(SM2r);
 		if(smmtrw>0)then begin
 			Gray_Divider(0,1);
 			startformat(15);
-				outstring(400,0,"Всего сумма",true);
-				outstring(1,0,"В валюте",true);
+				outstring(400,0,USetStr(31076),true);
+				outstring(1,0,USetStr(31164),true);
 			endformat;
 			For(k=0;k<smmtrw;k=k+1) begin
 				matrowget(SM2r,k,SM2rw);
@@ -452,7 +452,7 @@ begin
 		end;
 		GetBaseCurncy(1,basecur);
 		startformat(15);
-			outstring(1,0,"Всего в осовной валюте " & basecur,true);
+			outstring(1,0,USetStr(31163) & basecur,true);
 		endformat;
 		startformat(15);
 			outstring(1,0,totsumb1,true);
@@ -462,7 +462,7 @@ begin
 		if(acrncnt>1)then begin
 			Gray_Divider(300,1);
 			startformat(15);
-				outstring(1,0,"В валютах платежей:",true);
+				outstring(1,0,USetStr(31162),true);
 			endformat;
 			For(i=1;i<acrncnt;i=i+1) begin
 				GetFullCurncyRate(acrncy[i],currentdate,fr,to1,to2,br1,br2);
@@ -499,13 +499,13 @@ begin
   Integer acrncnt;
   
 	totqty = 0;
-	startreportnoheaderjob("Статус перемещения");
+	startreportnoheaderjob(USetStr(31161));
 		startformat(15);
-			outstring(0,0,"Товар",false);
-			outstring(100,0,"Название",false);
-			outstring(300,0,"Себестоимость",true);
-			outstring(320,0,"Количество",false);
-			outstring(400,0,"Сумма",true);
+			outstring(0,0,USetStr(31231),false);
+			outstring(100,0,USetStr(31204),false);
+			outstring(300,0,USetStr(31160),true);
+			outstring(320,0,USetStr(31121),false);
+			outstring(400,0,USetStr(31122),true);
 		endformat;
 	SMr.SerNr = RepSpec.long1;
 	if(readfirstmain(SMr,1,true))then begin
@@ -529,7 +529,7 @@ begin
 	if(totqty<>0)then begin
 		Black_Divider(320,1);
 		startformat(15);
-			outstring(300,0,"Всего:",true);
+			outstring(300,0,USetStr(31211),true);
 			outstring(320,0,totqty,false);
 			outstring(400,0,totsumb1,true);
 		endformat;
@@ -586,15 +586,15 @@ begin
 	boolean TrHs,testf,TrHs1,testf1;
 	val totqty,selqty,retqty,prosroch;
 	
-	startreportnoheaderjob("Отчет по товарам на консигнации");
+	startreportnoheaderjob(USetStr(31159));
 		
 		startformat(15);
-			outstring(0,0,"Код",false);
-			outstring(50,0,"Наименование",false);
-			outstring(200,0,"Бренд",false);
-			outstring(250,0,"Классификация",false);
-			outstring(320,0,"Сейчас на складах",false);
-			outstring(1,0,"Дней консигнации",true);
+			outstring(0,0,USetStr(31231),false);
+			outstring(50,0,USetStr(31204),false);
+			outstring(200,0,USetStr(31044),false);
+			outstring(250,0,USetStr(31105),false);
+			outstring(320,0,USetStr(31150),false);
+			outstring(1,0,USetStr(31158),true);
 		endformat;
 		
 		black_divider(0,1);
@@ -641,9 +641,9 @@ begin
 					endformat;
 					Gray_divider(0,1);
 					startformat(15);
-						outstring(80,0,"№ поступления",true);
-						outstring(100,0,"Дата поступления",false);
-						outstring(160,0,"Кол-во",false);
+						outstring(80,0,USetStr(31157) & " №",true);
+						outstring(100,0,USetStr(31156),false);
+						outstring(160,0,USetStr(31121),false);
 					endformat;
 					IHr.ArtCode = INr.Code;
 					IHr.FileName = "PUVc";
@@ -669,7 +669,7 @@ begin
 								if(IH2r.Source>0 and FindIHReference(IH2r.Source,IH2r.ArtCode)>0)then begin
 									if(IH2r.FileName=="IVVc")then begin
 										startformat(15);
-											outstring(250,0,"Продажа №",true);
+											outstring(250,0,USetStr(31155) & " №",true);
 											outstring(260,0,IH2r.TransNr,false);
 											outstring(290,0,IH2r.TransDate,false);
 											outstring(330,0,IH2r.Qty,false);
@@ -679,7 +679,7 @@ begin
 									end;
 									if(IH2r.FileName=="SHVc")then begin
 										startformat(15);
-											outstring(250,0,"Отгрузка №",true);
+											outstring(250,0,USetStr(31154) & " №",true);
 											outstring(260,0,IH2r.TransNr,false);
 											outstring(290,0,IH2r.TransDate,false);
 											outstring(330,0,IH2r.Qty,false);
@@ -689,7 +689,7 @@ begin
 									end;
 									if(IH2r.FileName=="SDVc")then begin
 										startformat(15);
-											outstring(250,0,"Списание №",true);
+											outstring(250,0,USetStr(31153) & " №",true);
 											outstring(260,0,IH2r.TransNr,false);
 											outstring(290,0,IH2r.TransDate,false);
 											outstring(330,0,IH2r.Qty,false);
@@ -699,7 +699,7 @@ begin
 									end;
 									if(IH2r.FileName=="RetVc")then begin
 										startformat(15);
-											outstring(250,0,"Возврат поставщику №",true);
+											outstring(250,0,USetStr(31111) & " №",true);
 											outstring(260,0,IH2r.TransNr,false);
 											outstring(290,0,IH2r.TransDate,false);
 											outstring(330,0,IH2r.Qty,false);
@@ -715,27 +715,27 @@ begin
 							end;
 							if(selqty<>0)then begin
 								startformat(15);
-									outstring(250,0,"Всего продано:",true);
+									outstring(250,0,USetStr(31152),true);
 									outstring(330,0,-selqty,false);
 								endformat;
 							end;
 							if(retqty<>0)then begin
 								startformat(15);
-									outstring(250,0,"Всего возвращено:",true);
+									outstring(250,0,USetStr(31151),true);
 									outstring(330,0,-retqty,false);
 								endformat;
 							end;
 							startformat(15);
-								outstring(250,0,"Осталось на складе",true);
+								outstring(250,0,USetStr(31150),true);
 								outstring(330,0,IHr.Qty + selqty + retqty,false);
 							endformat;
 							if((IHr.Qty + retqty)>0)then begin
 								startformat(15);
-									outstring(1,0,"Задолженность перед поставщиком",true);
+									outstring(1,0,USetStr(31149),true);
 								endformat;
 								startformat(15);
-									outstring(400,0,"Кол-во",false);
-									outstring(1,0,"Дней",true);
+									outstring(400,0,USetStr(31121),false);
+									outstring(1,0,USetStr(31148),true);
 								endformat;
 								startformat(15);
 									outstring(400,0,IHr.Qty + retqty,false);
@@ -750,9 +750,9 @@ begin
 					resetloop(IHr);
 					gray_divider(100,1);
 					startformat(15);
-						outstring(100,0,"Всего:",false);
+						outstring(100,0,USetStr(31211),false);
 						outstring(160,0,totqty,false);
-						outstring(390,0,"Просроченно кол-во:",true);
+						outstring(390,0,USetStr(31147),true);
 						outstring(400,0,prosroch,false);
 					endformat;
 					black_divider(0,1);
@@ -808,10 +808,10 @@ begin
 	userlocation = false;
   
 	if(userlocation)then begin
-		messagebox(0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад");
+		messagebox(0,USetStr(31014));
   end else begin
 		if(false)then begin
-			Messagebox(0,"Укажите пожалуйста файл для выгрузки картинки");
+			Messagebox(0,USetStr(31145));
 		end else begin
 			closewindow(wn);
 			if(right(RepSpec.ObjStr,5)==".html" or right(RepSpec.ObjStr,4)==".htm")then begin
@@ -826,7 +826,7 @@ begin
 			ItemStockStatExtWebRn(RepSpec,webpage1,serverip);
 			writeareatofile(webpage1,filename,0);
 	
-			messagebox(0,"Готово");
+			messagebox(0,USetStr(31146));
 		end;
 	end;
 end;
@@ -880,10 +880,10 @@ begin
 	//setexportcodepage("CP1251");
 	
 	if(userlocation)then begin
-		Messagebox(0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад");
+		Messagebox(0,USetStr(31014));
   end else begin
 		if(false)then begin
-			Messagebox(0,"Укажите пожалуйста файл для выгрузки картинки");
+			Messagebox(0,USetStr(31145));
 		end else begin
 			closewindow(wn);
 			if(right(RepSpec.ObjStr,5)==".html" or right(RepSpec.ObjStr,4)==".htm")then begin
@@ -898,7 +898,7 @@ begin
 			SalesReportExtPictRn(RepSpec,webpage1,serverip);
 			//writeareatofile(webpage1,filename,0);
 			//weboutarea(webpage1);
-			messagebox(0,"Готово");
+			messagebox(0,USetStr(31146));
 		end;
 	end;
 end;

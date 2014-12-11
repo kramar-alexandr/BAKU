@@ -2,7 +2,7 @@ external procedure ExtractObj(string,var Integer,var string);
 remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean SetInSet2(string,string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 function string 200 ParseClassification(string class)
 begin
@@ -411,7 +411,7 @@ begin
 		outstring(0,0,INr.EKNCode,false);
 		INCr.Code = INr.Code;
 		if(readfirstmain(INCr,1,true))then begin
-			outstring(0,0,"Консигнация",false);
+			outstring(0,0,USetStr(31180),false);
 		end else begin
 			outstring(0,0,"",false);
 		end;
@@ -755,7 +755,7 @@ begin
   	end;
   end;
   
-  startreportnoheaderjob("Отчет остатков по складам расширенный");
+  startreportnoheaderjob(USetStr(31179));
   
   total_qty = 0;
   total_cost = 0;
@@ -763,50 +763,50 @@ begin
   
   if(userlocation)then begin
   	startformat(15);
-			outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+			outstring(50,0,USetStr(31014),false);
   	endformat;
   end else begin
 		startformat(15);
-			outstring(0,0,"Кодировка для системы Ханза",false);
-			outstring(0,0,"Кодировка поставщика",false);
-			outstring(0,0,"Склад",false);
-			outstring(0,0,"Бренд",false);
-			outstring(0,0,"Модель",false);
-			outstring(0,0,"Наименование",false);
-			outstring(0,0,"Коллекция",false);
-			outstring(0,0,"Тип металла",false);
-			outstring(0,0,"Вес",false);
-			outstring(0,0,"Каратность",false);
+			outstring(0,0,USetStr(31042),false);
+			outstring(0,0,USetStr(31043),false);
+			outstring(0,0,USetStr(31103),false);
+			outstring(0,0,USetStr(31044),false);
+			outstring(0,0,USetStr(31120),false);
+			outstring(0,0,USetStr(31204),false);
+			outstring(0,0,USetStr(31045),false);
+			outstring(0,0,USetStr(31047),false);
+			outstring(0,0,USetStr(31178),false);
+			outstring(0,0,USetStr(31048),false);
 			if(currentcompany==3)then begin
-				outstring(0,0,"Браслет/ремешок",false);
-				outstring(0,0,"Цвет циферблата",false);
+				outstring(0,0,USetStr(31049),false);
+				outstring(0,0,USetStr(31050),false);
 			end;
-			outstring(0,0,"Серийный номер",false);
+			outstring(0,0,USetStr(31051),false);
 			outstring(0,0,"EAN code",false);
-			outstring(0,0,"Дополнительно*",false);
-			outstring(0,0,"Тип прихода",false);
-			outstring(0,0,"Кол-во",false);
-			outstring(0,0,"Ед.изм.",false);
+			outstring(0,0,USetStr(31177),false);
+			outstring(0,0,USetStr(31176),false);
+			outstring(0,0,USetStr(31121),false);
+			outstring(0,0,USetStr(31175),false);
 			if(currentcompany!=10)then begin
-				outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
-				outstring(0,0,"Себестоимость за ед-цу в валюте АЗН",false);
-				outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
-				outstring(0,0,"Сумма по себестоимости в валюте АЗН",false);
-				outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);
-				outstring(0,0,"Ритейл за ед-цу в валюте АЗН",false);
-				outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
-				outstring(0,0,"Сумма по ритейлу в валюте АЗН",false);
+				outstring(0,0,USetStr(31053),false);
+				outstring(0,0,USetStr(31054),false);
+				outstring(0,0,USetStr(31056),false);
+				outstring(0,0,USetStr(31057),false);
+				outstring(0,0,USetStr(31059),false);
+				outstring(0,0,USetStr(31060),false);
+				outstring(0,0,USetStr(31062),false);
+				outstring(0,0,USetStr(31063),false);
 			end else begin
-				outstring(0,0,"Себестоимость за ед-цу в валюте Бренда ",false);
-				outstring(0,0,"Себестоимость за ед-цу в валюте PLN",false);
-				outstring(0,0,"Сумма по себестоимости в валюте Бренда",false);
-				outstring(0,0,"Сумма по себестоимости в валюте PLN",false);
-				outstring(0,0,"Ритейл за ед-цу в валюте Бренда ",false);
-				outstring(0,0,"Ритейл за ед-цу в валюте PLN",false);
-				outstring(0,0,"Сумма по ритейлу в валюте Бренда ",false);
-				outstring(0,0,"Сумма по ритейлу в валюте PLN",false);
+				outstring(0,0,USetStr(31053),false);
+				outstring(0,0,USetStr(31171),false);
+				outstring(0,0,USetStr(31056),false);
+				outstring(0,0,USetStr(31172),false);
+				outstring(0,0,USetStr(31059),false);
+				outstring(0,0,USetStr(31173),false);
+				outstring(0,0,USetStr(31062),false);
+				outstring(0,0,USetStr(31174),false);
 			end;
-			outstring(0,0,"Валюта",false);
+			outstring(0,0,USetStr(31169),false);
 		endformat;
 
 		if(nonblank(item))then begin
@@ -938,16 +938,16 @@ begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,"Всего кол-во:",false);
+			outstring(0,0,USetStr(31074),false);
 			outstring(0,0,total_qty,false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,"Всего себестоимость:",false);
+			outstring(0,0,USetStr(31075),false);
 			outstring(0,0,total_cost,false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,"Всего по ритейлу в валюте АЗН",false);
+			outstring(0,0,USetStr(31063),false);
 			outstring(0,0,total_price,false);
 		endformat;
 		
@@ -1032,7 +1032,7 @@ begin
 	ExportString("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
 	ExportString("<head>");
 	ExportString("<meta http-equiv=\"content-type\" content=\"text/html\" charset=\"utf-8\"> ");
-	ExportString("<title>Отчет остатков по складам</title>");
+	ExportString("<title>" & USetStr(31168) & "</title>");
 	ExportString("</head>");
 	ExportString("<body>");
 	ExportString("<div id=\"wrapper\">");
@@ -1040,20 +1040,20 @@ begin
   
   if(userlocation)then begin
   	startformat(15);
-			messagebox(0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад");
+			messagebox(0,USetStr(31014));
   	endformat;
   end else begin
 		ExportString("<tr>");
-		ExportString("<td>Кодировка для системы Ханза</td>");
-		ExportString("<td>Кодировка поставщика</td>");
-		ExportString("<td>Склад</td>");
-		ExportString("<td>Бренд</td>");
-		ExportString("<td>Наименование</td>");
-		ExportString("<td>Серийный номер</td>");
-		ExportString("<td>Кол-во</td>");
-		ExportString("<td>Ритейл за ед-цу в валюте Бренда</td>");
-		ExportString("<td>Валюта</td>");
-		ExportString("<td>Картинка</td>");
+		ExportString("<td>" & USetStr(31042) & "</td>");
+		ExportString("<td>" & USetStr(31042) & "</td>");
+		ExportString("<td>" & USetStr(31103) & "</td>");
+		ExportString("<td>" & USetStr(31044) & "</td>");
+		ExportString("<td>" & USetStr(31204) & "</td>");
+		ExportString("<td>" & USetStr(31051) & "</td>");
+		ExportString("<td>" & USetStr(31121) & "</td>");
+		ExportString("<td>" & USetStr(31059) & "</td>");
+		ExportString("<td>" & USetStr(31169) & "</td>");
+		ExportString("<td>" & USetStr(31170) & "</td>");
 		ExportString("</tr>");
 		if(nonblank(item))then begin
 			ISr.Code = item;
