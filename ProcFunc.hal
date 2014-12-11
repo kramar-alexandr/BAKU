@@ -235,7 +235,7 @@ begin
   Date d1;
   string 60 curmachine;
   string 255 tstr;
-  val totqty,totsum,totqtyprice,totqtypricesum,totfifo,total,rate;
+  val totqty,totsum,totqtyprice,totqtypricesum,totfifo,total,rate,totgift;
   array val totcc;
   val loybals;
   array string 10 ccpaydeal;
@@ -259,8 +259,8 @@ begin
   record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
   integer ivcount,mtrw;
   record IPrsVc IPrsr; 
-  record IPVc SMr;
-  row IPVc SMrw;
+  record IPVc SMr,SMgift;
+  row IPVc SMrw,SMrw2;
   record ARPayHistVc ARPayr;
   val cost;
   boolean updst;
@@ -270,7 +270,9 @@ begin
   integer ori,ormtrw;
   record LocationVc Locr;
   integer sign;
+
   recordnew(SMr);
+  recordnew(SMgift);  //Edit -----------------Dima           11.12.2014
     
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
@@ -333,6 +335,7 @@ begin
     loybals = 0;
     totsumpay = 0;
     ivcount = 0;
+    totgift = 0;
     while (LoopKey("Location",IVr,2,TrHs)) begin
    // while (LoopKey("TransDMachineN",IVr,2,TrHs)) begin
     		for(i=0;i<acrncnt;i=i+1)begin
@@ -567,11 +570,17 @@ LogText(0,"-------stp----" & IVrw.stp);
              				 totcccnt = 6;//count of payDeals!!!
              				 payrows = false;
 
-		case kInvoiceRowTypeGiftVoucherSold :
-						LogText(0,"------");
-
+		case kInvoiceRowTypeGiftVoucherSold :	//Edit-------------------------------------------Dima----------11.12.2014
+							
+							mtrw = matrowcnt(SMgift);
+							SMrw2.ChequeNr = IVrw.GCNr;
+							SMrw2.RecVal = IVrw.Sum;
+							SMrw2.CustName = IVrw.Spec;
+							matrowput(SMgift,mtrw,SMrw2);											
+							
           end;
         end;
+
         
         if(payrows)then begin
         	switch(IVr.PayDeal)begin
@@ -769,6 +778,35 @@ LogText(0,"-------stp----" & IVrw.stp);
     StartFormat(15);
 		endformat;
     
+
+
+//Edit--------------------------Dima---------11.12.2014
+    mtrw = matrowcnt(SMgift);
+    if(mtrw>0)then begin
+			StartFormat(15);
+				outstring(0,0,USetStr(31243),false);
+			EndFormat;			
+			For(i=0; i<mtrw; i=i+1) begin
+				matrowget(SMgift,i,SMrw2);
+		  		StartFormat(15);
+				outstring(80,0,USetStr(31244),false);
+				outstring(110,0,SMrw2.ChequeNr,false);
+				outstring(160,0,USetStr(31245),false);
+				outstring(220,0,SMrw2.CustName,false);
+				outstring(310,0,USetStr(31239),false);
+				outstring(340,0,SMrw2.RecVal,false);
+				EndFormat;
+				totgift = totgift + SMrw2.RecVal;			
+			end;	
+    				Gray_Divider(0,1);
+				outstring(310,0,USetStr(31211),false);
+				outstring(340,0,totgift,false);
+				EndFormat;
+				EndFormat;
+	end;	
+//------------------------------End edit---------------
+
+
     mtrw = matrowcnt(SMr);
     if(mtrw>0)then begin
 			StartFormat(15);

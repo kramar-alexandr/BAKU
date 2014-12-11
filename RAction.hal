@@ -426,3 +426,18 @@ BEGIN
   ExternalSalesVcRecordCheck = res;
   RETURN;
 END; 
+
+
+
+
+global
+function LongInt GCVcRecordDefaults(var record GCVc GCr,record GCVc GC2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+	res = inner.GCVcRecordDefaults(GCr,GC2r,stat,long4);	
+	GCr.Comment = CurMachineName; 
+ 	GCVcRecordDefaults = res; 
+  RETURN;
+END;	
+

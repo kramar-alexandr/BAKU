@@ -299,6 +299,12 @@ begin
   SString(31241,"Всего чеков:");
   SString(31242,"Общее:");
 
+//PecuniaryRn
+  SString(31243,"Продано подарочные сертификаты:");
+  SString(31244,"Номер");
+  SString(31245,"Комментарий");
+
+
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	
