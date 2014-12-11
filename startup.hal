@@ -564,6 +564,5 @@ begin
   EndStrSet;
 	
 
-	  
  return;
 end;  

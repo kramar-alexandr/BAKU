@@ -66,7 +66,17 @@ external remote function string 255 GetClassString(string);// Edit *************
 external remote function string 255 GetPriceString(string,string,string);// Edit ************************** Thursday, 9 May 2013 16:59:59
 external remote procedure GetTwoStrings(string,string,string,var string,var string,string);// Edit ************************** Thursday, 9 May 2013 17:27:58
 remote procedure IVVc_PasteLocation(var record IVVc,Integer);// Edit ************************** Wednesday, 17 September 2014 14:55:33
+external procedure CreatePUfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
+external procedure CreateSDfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
 
+enum begin
+  kPOSButtonTypeGoodsReturn = 100,
+  kPOSButtonTypeSpecialRebate = 101,
+  kPOSButtonTypeUndeclared = 102, //?????????????????
+  kPOSButtonTypeNewCustomer = 103,
+  kPOSButtonTypeCreateShotSDVc = 104,
+  kPOSButtonTypeCreateShotPUVc = 105,
+end;
 
 function string 200 ParseClassification(string class)
 begin
@@ -557,10 +567,10 @@ begin
       case kPOSButtonTypeReprintReceipt:
         IVDClassTouchScreenReprint;
         goto LIVDClassTouchScreenPasteButtonDo;
-      case 103:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-			  CUNPTSSClassNewCustomerMy;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-			  updatebrowses(wn);
-				goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+      case kPOSButtonTypeNewCustomer:// Edit ************************** Wednesday, 5 December 2012 11:44:24
+		CUNPTSSClassNewCustomerMy;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+		updatebrowses(wn);
+		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
     end;
   end;
   switch (WindowState(wn)) begin
@@ -729,14 +739,20 @@ begin
         nwn = OpenWindow("NPTSSearchBFCURClass",0,wn,"","",RepSpec);
         WindowFieldGoto(nwn,RepSpec,-1,"f1",true);
         goto LIVDClassTouchScreenPasteButtonDo;
-			case 100:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-			  PasteRetItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-			  updatebrowses(wn);
-			goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
-    	case 101:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-			  PasteSpecialRebateItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-			  updatebrowses(wn);
-			goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+	  case kPOSButtonTypeGoodsReturn:// Edit ************************** Wednesday, 5 December 2012 11:44:24
+		PasteRetItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+	    updatebrowses(wn);
+		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+      case kPOSButtonTypeSpecialRebate:// Edit ************************** Wednesday, 5 December 2012 11:44:24
+		PasteSpecialRebateItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+		updatebrowses(wn);
+		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+	  case kPOSButtonTypeCreateShotSDVc: //Edit***************************Sasha2,10:37 11.12.2014
+        CreateSDfromIVDsm;
+        goto LIVDClassTouchScreenPasteButtonDo;
+      case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
+        CreatePUfromIVDsm;
+        goto LIVDClassTouchScreenPasteButtonDo;
     end;
   end;
 LIVDClassTouchScreenPasteButtonDo:;
