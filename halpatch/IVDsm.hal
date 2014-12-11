@@ -2596,14 +2596,11 @@ begin
 	PUr.Location = IVr.Location;
 	PUr.Comment = "Возврат от собственника. " & IVr.MachineName;
 	
-	recordStore(PUr,false);
+	//recordStore(PUr,false);
 	
 	wn = OpenWindow("PUDClass",0,0,"","",PUr);
   deselectwindow(wn,false);
 	
-	createrecordlink(PUr,CurrentCompany,IVr,CurrentCompany);
-	createrecordlink(IVr,CurrentCompany,PUr,CurrentCompany);
-
 return;
 end;
 
@@ -2635,15 +2632,12 @@ begin
 	SDr.Location = IVr.Location;
 	//messagebox(0, "IVr.MachineName = " & IVr.MachineName);
 	SDr.Comment = "Списание от собственника. " & IVr.MachineName;
-		
-	recordStore(SDr,false);
+	SDr.CostAcc = "75/02";
+	//recordStore(SDr,false);
 	
 	wn = OpenWindow("SDDClass",0,0,"","",SDr);
   deselectwindow(wn,false);
 	
-	createrecordlink(SDr,CurrentCompany,IVr,CurrentCompany);
-	createrecordlink(IVr,CurrentCompany,SDr,CurrentCompany);
-
 return;
 end;
 
