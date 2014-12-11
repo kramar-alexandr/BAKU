@@ -436,9 +436,11 @@ begin
         payrows = true;
         for (i=0;i<rwcnt;i=i+1) begin
           MatRowGet(IVr,i,IVrw);
+LogText(0,"-------stp----" & IVrw.stp);
           switch (IVrw.stp) begin
+
             case kInvoiceRowTypePrepayment:
-            	mtrw = matrowcnt(SMr);
+            				mtrw = matrowcnt(SMr);
 							ARPayr.CUPNr = IVrw.CUPNr;
 							readfirstmain(ARPayr,1,true);
 							SMrw.stp = 1;
@@ -450,14 +452,14 @@ begin
 							SMrw.CustName = IVr.InvComment;
 							matrowput(SMr,mtrw,SMrw);
 							payrows = false;    
-            case 1:
-            if(nonblank(IVrw.ArtCode))then begin
-            	
-            	if(IVr.UpdStockFlag>0 and IVr.OrderNr<0)then begin
-            		updst = true;
-            	end else begin
-            		updst = false;
-            	end;
+            case kInvoiceRowTypeNormal:
+           		 if(nonblank(IVrw.ArtCode))then begin
+           		 	
+           		 	if(IVr.UpdStockFlag>0 and IVr.OrderNr<0)then begin
+           		 		updst = true;
+           		 	end else begin
+           		 		updst = false;
+           		 	end;
             	    	
 							StartFormat(15);
 								OutString(0,0,rwnr,false);
@@ -496,10 +498,10 @@ begin
 								totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign;
 						
 							EndFormat;
-            end;
-            case 15:
-              //if(IVr.MachineName!="SW4")then begin	
-              		switch(IVrw.PayMode)begin
+           		 end;
+            case kInvoiceRowTypeCashPayment:
+              		//if(IVr.MachineName!="SW4")then begin	
+              				switch(IVrw.PayMode)begin
 									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
@@ -516,13 +518,13 @@ begin
 									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
 									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
-              		end;
-              //end;
-              totcccnt = 6;//count of payDeals!!!
-              payrows = false;         
-            case 16:
-            		//if(IVr.MachineName!="SW4")then begin
-              		switch(IVrw.PayMode)begin
+              				end;
+             		 //end;
+             		 totcccnt = 6;//count of payDeals!!!
+             		 payrows = false;         
+            case kInvoiceRowTypeCreditCardPayment:
+            				//if(IVr.MachineName!="SW4")then begin
+              				switch(IVrw.PayMode)begin
 									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 																if(acrncy[j]==IVrw.CurncyCode)then begin
 																	cashsum[j] = cashsum[j] + IVrw.Sum;
@@ -539,11 +541,11 @@ begin
 									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
 									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
-              		end;
-              		payrows = false;
-            case 29:
-            		//if(IVr.MachineName!="SW4")then begin
-              		switch(IVrw.PayMode)begin
+              				end;
+              				payrows = false;
+            case kInvoiceRowTypeLoyaltyPointsPayment:
+            				//if(IVr.MachineName!="SW4")then begin
+              				switch(IVrw.PayMode)begin
 									case "‘1":  for(j=0;j<acrncnt;j=j+1)begin
 															if(acrncy[j]==IVrw.CurncyCode)then begin
 																cashsum[j] = cashsum[j] + IVrw.Sum;
@@ -560,10 +562,14 @@ begin
 									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
 									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
-              		end;
-              //end;
-              totcccnt = 6;//count of payDeals!!!
-              payrows = false;
+             		 		end;
+             				 //end;
+             				 totcccnt = 6;//count of payDeals!!!
+             				 payrows = false;
+
+		case kInvoiceRowTypeGiftVoucherSold :
+						LogText(0,"------");
+
           end;
         end;
         
