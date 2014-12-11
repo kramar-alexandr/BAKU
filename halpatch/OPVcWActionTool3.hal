@@ -242,38 +242,55 @@ function Boolean OPVc_PasteToRateB1BankVal(var record OPVc OPp,Integer rownr)
 BEGIN
   Boolean res;
   row OPVc OPrw;
-  record BaseCurBlock bascur;
+  record BaseCurBlock BCb;
   val fr,to1,to2,br1,br2;
+  record APVc APr;
 
-  BlockLoad(bascur);  
+  BlockLoad(BCb);  
   MatRowGet(OPp,rownr,OPrw);
 //  if (nonblank(OPrw.B1BankVal)) then begin
   if (true) then begin
-    if (OPrw.BankCurncy!=bascur.BaseCur1) then begin
-      GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);// Edit ************************** Wednesday, 10 December 2014 16:22:49
-      if (blank(OPrw.FrRateBankVal)==false) then begin fr = OPrw.FrRateBankVal; end;
-      if (blank(OPrw.ToRateB1BankVal)==false) then begin to1 = OPrw.ToRateB1BankVal; end;
-      if (blank(OPrw.ToRateB2BankVal)==false) then begin to2 = OPrw.ToRateB2BankVal; end;
-      if (blank(OPrw.BaseRate1BankVal)==false) then begin br1 = OPrw.BaseRate1BankVal; end;
-      if (blank(OPrw.BaseRate2BankVal)==false) then begin br2 = OPrw.BaseRate2BankVal; end;      
+    APr.SerNr = OPrw.VISerNr; 
+    ReadFirstMain(APr,1,true);
+    if (OPrw.BankCurncy!=BCb.BaseCur1) then begin
+      if (HasLocalization("POL") or nonblank(OPrw.B1BankVal) or nonblank(OPrw.FrRateBankVal) or nonblank(OPrw.ToRateB1BankVal) or nonblank(OPrw.ToRateB2BankVal) or nonblank(OPrw.BaseRate1BankVal) or nonblank(OPrw.BaseRate2BankVal)) then begin
+        GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);
+        /*messagebox(0,fr & " " & to1);
+        if (blank(OPrw.FrRateBankVal)==false) then begin fr = OPrw.FrRateBankVal; end;
+        if (blank(OPrw.ToRateB1BankVal)==false) then begin to1 = OPrw.ToRateB1BankVal; end;
+        if (blank(OPrw.ToRateB2BankVal)==false) then begin to2 = OPrw.ToRateB2BankVal; end;
+        if (blank(OPrw.BaseRate1BankVal)==false) then begin br1 = OPrw.BaseRate1BankVal; end;
+        if (blank(OPrw.BaseRate2BankVal)==false) then begin br2 = OPrw.BaseRate2BankVal; end;      
 //      OPrw.B1BankVal = OPrw.ToRateB1BankVal*OPrw.BankVal;//must be very wrong
-//      OPrw.B1BankVal = Round(OPrw.B1BankVal,DefaultRoundMode);
-      if (blank(fr)) and ((nonblank(to1)) or (nonblank(to2))) then begin fr = 1; end;
-      OPrw.B1BankVal = MulRateToBase1(OPrw.RecCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
-      MatRowPut(OPp,rownr,OPrw);
-      res = true;
+//      OPrw.B1BankVal = Round(OPrw.B1BankVal,DefaultRoundMode);*/
+        if (blank(fr)) and ((nonblank(to1)) or (nonblank(to2))) then begin fr = 1; end;
+        OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+        MatRowPut(OPp,rownr,OPrw);
+        res = true;
+      end;
     end else begin
-      GetFullCurncyRate(OPrw.PInvCurncy,OPp.TransDate,fr,to1,to2,br1,br2);
-      if (blank(OPrw.FrRateBankVal)==false) then begin fr = OPrw.FrRateBankVal; end;
-      if (blank(OPrw.ToRateB1BankVal)==false) then begin to1 = OPrw.ToRateB1BankVal; end;
-      if (blank(OPrw.ToRateB2BankVal)==false) then begin to2 = OPrw.ToRateB2BankVal; end;
-      if (blank(OPrw.BaseRate1BankVal)==false) then begin br1 = OPrw.BaseRate1BankVal; end;
-      if (blank(OPrw.BaseRate2BankVal)==false) then begin br2 = OPrw.BaseRate2BankVal; end;      
+      if (OPrw.PInvVal==APr.RVal) then begin
+        if (HasLocalization("POL") or nonblank(OPrw.B1BankVal)) then begin
+          OPrw.B1BankVal = APr.BookRVal;
+        end;
+      end else begin
+        GetFullCurncyRate(OPrw.PInvCurncy,OPp.TransDate,fr,to1,to2,br1,br2);
+        if (blank(OPrw.FrRateBankVal)==false) then begin fr = OPrw.FrRateBankVal; end;
+        if (blank(OPrw.ToRateB1BankVal)==false) then begin to1 = OPrw.ToRateB1BankVal; end;
+        if (blank(OPrw.ToRateB2BankVal)==false) then begin to2 = OPrw.ToRateB2BankVal; end;
+        if (blank(OPrw.BaseRate1BankVal)==false) then begin br1 = OPrw.BaseRate1BankVal; end;
+        if (blank(OPrw.BaseRate2BankVal)==false) then begin br2 = OPrw.BaseRate2BankVal; end;      
 //      OPrw.B1BankVal = OPrw.ToRateB1BankVal*OPrw.PInvVal;
 //      OPrw.B1BankVal = Round(OPrw.B1BankVal,DefaultRoundMode);
-      OPrw.B1BankVal = MulRateToBase1(OPrw.PInvCurncy,OPrw.PInvVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
-      OPrw.BankVal = OPrw.B1BankVal;
-      MatRowPut(OPp,rownr,OPrw);
+        if (blank(fr)) and ((nonblank(to1)) or (nonblank(to2))) then begin fr = 1; end;
+        if (HasLocalization("POL") or nonblank(OPrw.B1BankVal) or nonblank(OPrw.FrRateBankVal) or nonblank(OPrw.ToRateB1BankVal) or nonblank(OPrw.ToRateB2BankVal) or nonblank(OPrw.BaseRate1BankVal) or nonblank(OPrw.BaseRate2BankVal)) then begin
+          OPrw.B1BankVal = MulRateToBase1(OPrw.PInvCurncy,OPrw.PInvVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+        end;
+      end;
+      if (HasLocalization("POL") or nonblank(OPrw.B1BankVal)) then begin
+        OPrw.BankVal = OPrw.B1BankVal;
+        MatRowPut(OPp,rownr,OPrw);
+      end;
       res = true;
     end;
     OPSumup(OPp,false);
