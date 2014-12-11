@@ -2580,3 +2580,82 @@ begin
   
   return;
 end;
+
+global updating procedure CreatePUfromIV(record IVVc IVr)
+begin
+	integer i,pos,rownum;
+	Record PUVc PUr;
+	record INVc INr;
+	boolean foundf;
+	record CUVc CUr;
+	Integer wn;
+				
+	recordnew(PUr);
+	
+	PUr.SerNr = NextSerNr("PUVc",PUr.TransDate,-1,false,""); 
+	PUr.Location = IVr.Location;
+	PUr.Comment = "Возврат от собственника. " & IVr.MachineName;
+	
+	recordStore(PUr,false);
+	
+	wn = OpenWindow("PUDClass",0,0,"","",PUr);
+  deselectwindow(wn,false);
+	
+	createrecordlink(PUr,CurrentCompany,IVr,CurrentCompany);
+	createrecordlink(IVr,CurrentCompany,PUr,CurrentCompany);
+
+return;
+end;
+
+global updating procedure CreatePUfromIVDsm()
+begin
+	integer wn,mtrw;
+	record IVVc IVr;
+	record PUVc PUr;
+	
+	wn = CurWindow;
+  GetWindowRecord(wn,IVr);
+  CreatePUfromIV(IVr);
+
+return;
+end;
+
+global updating procedure CreateSDfromIV(record IVVc IVr)
+begin
+	integer i,pos,rownum;
+	Record SDVc SDr;
+	record INVc INr;
+	boolean foundf;
+	record CUVc CUr;
+	Integer wn;
+				
+	recordnew(SDr);
+	
+	SDr.SerNr = NextSerNr("SDVc",SDr.TransDate,-1,false,""); 
+	SDr.Location = IVr.Location;
+	//messagebox(0, "IVr.MachineName = " & IVr.MachineName);
+	SDr.Comment = "Списание от собственника. " & IVr.MachineName;
+		
+	recordStore(SDr,false);
+	
+	wn = OpenWindow("SDDClass",0,0,"","",SDr);
+  deselectwindow(wn,false);
+	
+	createrecordlink(SDr,CurrentCompany,IVr,CurrentCompany);
+	createrecordlink(IVr,CurrentCompany,SDr,CurrentCompany);
+
+return;
+end;
+
+global updating procedure CreateSDfromIVDsm()
+begin
+	integer wn,mtrw;
+	record IVVc IVr;
+	record SDVc SDr;
+	
+	wn = CurWindow;
+  GetWindowRecord(wn,IVr);
+  CreateSDfromIV(IVr);
+
+return;
+end;

@@ -66,8 +66,8 @@ external remote function string 255 GetClassString(string);// Edit *************
 external remote function string 255 GetPriceString(string,string,string);// Edit ************************** Thursday, 9 May 2013 16:59:59
 external remote procedure GetTwoStrings(string,string,string,var string,var string,string);// Edit ************************** Thursday, 9 May 2013 17:27:58
 remote procedure IVVc_PasteLocation(var record IVVc,Integer);// Edit ************************** Wednesday, 17 September 2014 14:55:33
-external procedure CreatePUfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
-external procedure CreateSDfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
+external updating procedure CreatePUfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
+external updating procedure CreateSDfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -524,7 +524,7 @@ begin
   return;
 end;
 
-global
+global updating
 procedure IVDClassTouchScreenPasteButtonDo(integer butnr)
 begin
   Integer rwcnt,wn,matrowix;
@@ -759,7 +759,7 @@ LIVDClassTouchScreenPasteButtonDo:;
   return;
 end;
 
-global
+global updating
 procedure IVDClassTouchScreenPasteButton()
 begin
   Integer butnr;
