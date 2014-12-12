@@ -32,12 +32,23 @@ global
 updating function LongInt PUVcRecordCheck(var record PUVc PUr,record PUVc PU2r,LongInt stat,LongInt check)
 BEGIN
   LongInt res;
-  
+
   res = 0;
   if(currentuser!="SA1")then begin
-		res = inner.PUVcRecordCheck(PUr,PU2r,stat,check);
-	end;
+
+  if (blank(PUr.VECode)) then begin		//Edit-----------------------------------Dima  12.12.2014
+    if (UserCanAction("PUWithoutVE",true)==false) then begin
+	//RecordCheckError(31246,StringFromStringSet(3,"PUWithoutVE"),-1,"VECode");   
+	 RecordCheckError(31246,"",-1,"VECode");      
+      res = -1;
+	 goto LBreak;
+    end;
+  end; 	//End edit-----------------------------------------------
+
+	res = inner.PUVcRecordCheck(PUr,PU2r,stat,check);
+  end;
   
+  LBreak:; 
   PUVcRecordCheck = res;
   RETURN;
 END;
@@ -94,7 +105,7 @@ BEGIN
   LongInt res;
   
   res = 0;
-  if(currentuser!="SA1")then begin
+  if(currentuser!="SA1")then begin		
 		res = inner.IVVcRecordCheck(IVr,IV2r,stat,check);
 	end;
   
