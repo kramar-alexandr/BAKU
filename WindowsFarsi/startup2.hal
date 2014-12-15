@@ -65,7 +65,14 @@ begin
   SString(1142," «—?Œ «‘ »«Á ");
   SString(1143,"»œËÊ Ë »«  ËÃÁ Ÿ÷Ë? : ");
   SString(1144,"œË—Á: ");
-	SString(1163,"Â«Á ?«Â‰ ÂË—œ Ê?«“ ");
+  SString(1159,"»——”? «ÃÂ«‰?");					//Overview
+  SString(1160,"œ‚?‚");							//Detailed  
+  SString(1163,"Â«Á ?«Â‰ ÂË—œ Ê?«“ ");
+	
+  SString(1212,"ÁÂÁ  «Â?Ê ?ÊÊœ?«Ê");			//All suppliers
+  SString(1213,"  «Â?Ê ?ÊÊœ?«Ê ");				//Suppliers
+  SString(1271," ÁÂÁ ?—ËÁ Á« ");				//All Groups
+  SString(1319," Ë ");							// and   	
 	
 	SString(2320,"Œ—?œ ?“?ÊÁ ‚?Â  ");
   SString(2321,"‰?”  ‚?Â  ");
@@ -98,6 +105,16 @@ begin
   SString(2348,"Œ«‰’ ");
   SString(2349,"??‘ÊÁ«œ Œ—?œ ");
   SString(2350,"B-‚?Â  ");
+  
+  
+  
+  SString(2569,"·—Ë‘?«Á"); 						//In stock
+  SString(2570,"œ— ’Ë—  œ—ŒË«” "); 				//on order
+  SString(2571,"œ— ”·«—‘ Œ—?œ"); 				//In purchase order
+
+
+
+  
 	
 	/* ShipRn */
   SString(2581," ÕË?‰ ÂÃ‰Á ");
@@ -143,6 +160,9 @@ begin
   SString(2619,"?‰ Á“?ÊÁ ");
   SString(2620," Ÿœ«œ");
   
+  SString(2696,"Ë÷Ÿ?  "); 						//status    
+  SString(2722,"”«‰ ?–‘ Á"); 					//Last year  
+  
   /* StockTakeRn */
   SString(2761,"·Á—”  ????—? ");
   SString(2762,"?«‰« ");
@@ -166,6 +186,11 @@ begin
 /* StockTakeRn */
   SString(2901,"ÂË‚Ÿ?  ");
   SString(2902,"Ë«—?«Ê” «—“‘ ");
+  
+  SString(2928," ÊÁ«"); 						//Total
+  SString(2991,"Â«Á "); 						//Month
+  SString(3011,"”«‰ "); 						//Year
+  SString(3013,"œË—Á "); 						//Period    
   
   /* MBAList */
   SString(3461," Õ‰?‰? ÂËÃËœ? ?“«—‘ ");
@@ -238,6 +263,7 @@ begin
   SString(2498,"Õœ«‚‰. ?—œ‘ Â«‰?: ");
   SString(2499,"Õœ«‚‰. ?—ËÁ: ");
   SString(2500,"·—Ë‘ »Á Â‘ —? ¬Â«— ");
+  SString(4918,"ÁÂÁ ·—Ë‘Êœ?«Ê"); 				//All salesmen  
   SString(7025,"‘Â«—Á  ‰·Ê ");
   SString(7026,"‘Â«—Á ·?” ");
   
@@ -295,6 +321,23 @@ begin
   SString(7605,"?«‰«Á«  ");
   SString(7606," Ÿœ«œ");
   SString(7607,"«—“‘ ");
+  
+  /* RetGoodsJRn */
+  SString(10780,"ÂÕ’Ë‰«  »«“?‘  ÂÃ‰Á");  	//Returned Goods Journal
+  SString(10781,"ÁÂÁ ÂÕ’Ë‰«  »«“?‘ ");		//All Returned Goods
+  SString(10782,"ÂÕ’Ë‰«  »«“?‘ ");  			//Returned Goods
+  SString(10783,"—Â“ ");					//No.
+  SString(10784," «—?Œ ");					//Date
+  SString(10785,"‘Â«—Á Õ”«»");				//"Order No.
+  SString(10786,"Â‘ —?");					//Customer
+  SString(10787,"«Ë‰ Ê«Â");					//Name
+  SString(10788," ÂÕ’Ë‰« ");					//Item
+  SString(10789,"«Ë‰ Ê«Â");					//Name
+  SString(10790,"‚?Â  Ë«Õœ");				//Unit Price
+  SString(10791,"Á“?ÊÁ «÷«·?");				//Extra Cost
+  SString(10792,"Á“?ÊÁ");					//Cost Price
+  SString(10793,"Â‚œ«—");					//Qty
+  SString(10794," ÊÁ«");  					//Total  
 
   
   /*RetGoodsJRn*/
@@ -363,6 +406,12 @@ begin
   SString(11710,"(»œËÊ ÂË÷ËŸ) ");
   SString(11711," Ÿœ«œ »«“œ?œ");
   
+  SString(16395,"ÁÂÁ ◊»‚Á »Êœ? ÂË—œ");		//All Item Classifications
+  SString(16396,"◊»‚Á »Êœ? ÂË—œ");			//Item Classification
+
+  SString(22007,"ÁÂÁ œ‰«?‰");				//All Reasons
+  SString(22008,"œ‰?‰");  					//Reason  
+  
   //Our SStrings
   
 SString(31000,"?Ë«Á? ?—œ«Œ  Œ◊ »«?œ ?? »«‘œ");  
@@ -376,7 +425,7 @@ SString(31000,"?Ë«Á? ?—œ«Œ  Œ◊ »«?œ ?? »«‘œ");
   SString(31008,"??ËÊÁ »—«? ?«œ??—?");
   SString(31009,"Ê ?ÃÁ");
   SString(31010,"·—Â  «‘ »«Á «“  ‰·Ê. ◊Ë‰ »«?œ 10 ?«—«? — »«‘œ");
-  SString(31011,"ÊÂ—Á ?‰ œ— «?Ê ?«—  –Œ?—Á ”«“? »?‘ «“ 3000 IRR");
+  SString(31011,"IRR ÊÂ—Á ?‰ œ— «?Ê ?«—  –Œ?—Á ”«“? »?‘ «“ 3000");
   SString(31012,"?«—  –Œ?—Á ”«“? ·Ÿ«‰ »—«? «?Ê Â‘ —? «“ ‚»‰ ËÃËœ œ«—œ");
   SString(31013,"?“«—‘ ÂË«œ Ãœ?œ");
   SString(31014,"‘Â« «Â?«Ê ?–?— Ê?”  »Á ?“«—‘ «Ê»«—¨ ‰◊·« «Ê»«— ŒËœ —« «Ê Œ«» ?Ê?œ");
@@ -419,19 +468,19 @@ SString(31000,"?Ë«Á? ?—œ«Œ  Œ◊ »«?œ ?? »«‘œ");
   SString(31051,"‘Â«—Á ??«??");
   SString(31052," Ÿœ«œ ·—Ë‘");
   SString(31053,"Á“?ÊÁ Á— Ë«Õœ. «—“ «“ Ê«Â  Ã«—?");
-  SString(31054,"Á“?ÊÁ Á— Ë«Õœ .IRR.");
+  SString(31054,"IRR .Á“?ÊÁ Á— Ë«Õœ");
   SString(31055,"Á“?ÊÁ Á— Ë«Õœ. «—“");
   SString(31056,"?‰ Á“?ÊÁ. «—“ «“ Ê«Â  Ã«—?");
-  SString(31057,"?‰ Á“?ÊÁ .IRR.");
+  SString(31057,"IRR .?‰ Á“?ÊÁ");
   SString(31058,"?‰ Á“?ÊÁ. «—“");
   SString(31059,"‚?Â  Ë«Õœ. «—“ «“ Ê«Â  Ã«—?");
-  SString(31060,"‚?Â  Ë«Õœ .IRR.");
+  SString(31060,"IRR .‚?Â  Ë«Õœ ");
   SString(31061,"‚?Â  Ë«Õœ. «—“");
   SString(31062,"ÂÃÂËŸ ·—Ë‘. «—“ «“ Ê«Â  Ã«—?");
-  SString(31063,"ÂÃÂËŸ ·—Ë‘  .IRR. ");
+  SString(31063,"IRR .ÂÃÂËŸ ·—Ë‘ ");
   SString(31064,"ÂÃÂËŸ ·—Ë‘. «—“");
   SString(31065," ·«Ë . «—“ «“ Ê«Â  Ã«—?");
-  SString(31066," ·«Ë  .IRR. ");
+  SString(31066,"IRR . ·«Ë ");
   SString(31067," ·«Ë . «—“");
   SString(31068,"«—“ »—Êœ«");
   SString(31069,"Â‘ —?. Ê«Â ?« ‘Â«—Á ?«— ");
@@ -503,7 +552,40 @@ SString(31000,"?Ë«Á? ?—œ«Œ  Œ◊ »«?œ ?? »«‘œ");
   SString(31135,"”Ëœ");
   SString(31136,"”Ëœ»Œ‘?");
   SString(31137,"ÕÃÂ ÂŸ«Â‰« ");
-  
+SString(31138,"USD .œ— Á— Ë«Õœ");
+  SString(31139,"USD ?‰");
+  SString(31140,"IRR .œ— Á— Ë«Õœ");
+  SString(31141,"IRR ?‰");
+  SString(31142,"EUR .œ— Á— Ë«Õœ");
+  SString(31143,"EUR ?‰");
+SString(31144,"‘Â«—Á ”Êœ");
+SString(31145,"‰◊·« ?? ·«?‰ »—«? ¬?‰Ëœ  ’«Ë?— —« «Ê Œ«» ?Ê?œ");
+SString(31146,"«Â«œÁ");
+SString(31168,"ÁÂ?Ê«Ê «“ «Ê»«—Á«");
+  SString(31169,"?Ë‰");
+  SString(31170," ’Ë?—");
+
+
+
+
+
+SString(4087,"?—œ«Œ ");
+SString(5051,"—”?œÁ");
+SString(8105,"Ê«Â");
+SString(8121," Ë÷?Õ");
+SString(8330,"œ— ?‰ ");
+SString(9131,"—œÁ");
+SString(9134,"»œÁ?");
+SString(12007," Œ·?·");
+SString(12501,"—Â“");
+SString(12754,"‚?Â ");
+SString(12788,"”?«ÁÁ »«“—?«Ê?");
+SString(13563,"»« ÁÂ »—«? œË—Á");
+SString(16018,"?Ë‰");
+SString(16681,"ÂÿÊÁ¡ «—“"); 
+SString(18240,"Á“?ÊÁ");
+
+
   
   
     //RebItemSalesRn
@@ -557,7 +639,26 @@ SString(31000,"?Ë«Á? ?—œ«Œ  Œ◊ »«?œ ?? »«‘œ");
   SString(31239,"ÂÃÂËŸ"); 				//Sum
   SString(31240,"—”?œ:"); 				//receipts:
   SString(31241,"ÂÃÂËŸ —”?œ:"); 		//Total receipts  
-  SString(31242,"Ê «?Ã"); 				//Overall    
+  SString(31242,"Ê «?Ã"); 				//Overall 
+
+  //PecuniaryRn
+  SString(31243,"?Ë«Á? Á«? Áœ?Á Á«? ·—ËŒ Á ‘œÁ"); //Sold gift
+  SString(31250,"?Ë«Á? Áœ?Á œ—?«·  ‘œ"); 		//Received gift
+  SString(31244,"—Â“"); 						//Number
+  SString(31245," Ë÷?Õ"); 						//Comment
+  
+  //ItemStockStatRn
+  SString(31246,"No supplier");		 
+  SString(31247,"»«‚? Â«ÊœÁ Á«? œ— ·—Ë‘?«Á"); 	//Report of residues
+  SString(31248,"‘Â« Â?  Ë«Ê?œ «?Ê ·—Ë‘?«Á  Â«‘« Ê?” ¨ ‰◊·« «Ê»«— ŒËœ —« «Ê Œ«» ?Ê?œ"); //Please, choose other location
+  SString(31249,"?œ ÊË«—"); 					//Bar-code
+  SString(31251,"Á“?ÊÁ"); 						//Cost
+  SString(31252,"‚?Â "); 						//Price
+  SString(31253,"—Ê?"); 						//Colour
+  SString(31254,"«Êœ«“Á");						//Size
+  SString(31255,"·—Ë‘?«Á");						//Location
+						
+  SString(31256,"”«Œ Á");  						//was produced  
 
   SString(12594,"«—«∆Á œÁÊœÁ"); //Edit by Victor 10.12.14
   SString(5051,"—”?œÁ"); 
