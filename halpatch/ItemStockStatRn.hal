@@ -1,6 +1,6 @@
 external procedure ExtractObj(string,var Integer,var string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);
 
 global function string 200 ParseClassification(string class)
 begin
@@ -86,28 +86,27 @@ begin
   	end;
   end;
   
-  startreportnoheaderjob("Отчет остатков по складам");
+  startreportnoheaderjob(USetStr(31247)); //report of the residues on locations 
   
   if(userlocation)then begin
   	startformat(15);
-			outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+			outstring(50,0,USetStr(31248),false);   //You are not allowed to see report on this location, please choose your location
   	endformat;
   end else begin
 		startformat(15);
-			outstring(0,0,"Бренд",false);
+			outstring(0,0,USetStr(31226),false);
 			if(currentcompany>3)then begin
-				outstring(0,0,"Модель",false);
+				outstring(0,0,USetStr(31206),false);
 			end;
-			outstring(0,0,"Товар",false);
-			outstring(70,0,"Название",false);
-			outstring(240,0,"Штрих-код",false);
-			//outstring(200,0,"Классификация",false);
-			outstring(-160,0,"Склад",false);
-			outstring(-120,0,"Кол-во",false);
-			outstring(-80,0,"Кост",false);
-			outstring(1,0,"Цена",true);
-			outstring(1,0,"Цвет",true);
-			outstring(1,0,"Размер",true);
+			outstring(0,0,USetStr(31203),false);
+			outstring(70,0,USetStr(31204),false);
+			outstring(240,0,USetStr(31249),false);
+			outstring(-160,0,USetStr(31255),false);
+			outstring(-120,0,USetStr(31238),false);
+			outstring(-80,0,USetStr(31251),false);
+			outstring(1,0,USetStr(31252),true);
+			outstring(1,0,USetStr(31253),true);
+			outstring(1,0,USetStr(31254),true);
 		endformat;
 	
 		if(nonblank(item))then begin

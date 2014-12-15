@@ -65,7 +65,14 @@ begin
   SString(1142,"تاریخ اشتباه ");
   SString(1143,"بدون و با توجه عضویت: ");
   SString(1144,"دوره: ");
-	SString(1163,"ماه کامل مورد نیاز ");
+  SString(1159,"بررسی اجمالی");					//Overview
+  SString(1160,"دقیق");							//Detailed  
+  SString(1163,"ماه کامل مورد نیاز ");
+	
+  SString(1212,"همه تامین کنندگان");			//All suppliers
+  SString(1213," تامین کنندگان ");				//Suppliers
+  SString(1271," همه گروه ها ");				//All Groups
+  SString(1319," و ");							// and   	
 	
 	SString(2320,"خرید گزینه قیمت ");
   SString(2321,"لیست قیمت ");
@@ -98,6 +105,16 @@ begin
   SString(2348,"خالص ");
   SString(2349,"پیشنهاد خرید ");
   SString(2350,"B-قیمت ");
+  
+  
+  
+  SString(2569,"فروشگاه"); 						//In stock
+  SString(2570,"در صورت درخواست"); 				//on order
+  SString(2571,"در سفارش خرید"); 				//In purchase order
+
+
+
+  
 	
 	/* ShipRn */
   SString(2581,"تحویل مجله ");
@@ -143,6 +160,9 @@ begin
   SString(2619,"کل هزینه ");
   SString(2620,"تعداد");
   
+  SString(2696,"وضعیت "); 						//status    
+  SString(2722,"سال گذشته"); 					//Last year  
+  
   /* StockTakeRn */
   SString(2761,"فهرست پیگیری ");
   SString(2762,"کالا ");
@@ -166,6 +186,11 @@ begin
 /* StockTakeRn */
   SString(2901,"موقعیت ");
   SString(2902,"واریانس ارزش ");
+  
+  SString(2928,"تنها"); 						//Total
+  SString(2991,"ماه "); 						//Month
+  SString(3011,"سال "); 						//Year
+  SString(3013,"دوره "); 						//Period    
   
   /* MBAList */
   SString(3461,"تحلیلی موجودی گزارش ");
@@ -238,6 +263,7 @@ begin
   SString(2498,"حداقل. گردش مالی: ");
   SString(2499,"حداقل. گروه: ");
   SString(2500,"فروش به مشتری آمار ");
+  SString(4918,"همه فروشندگان"); 				//All salesmen  
   SString(7025,"شماره تلفن ");
   SString(7026,"شماره فکس ");
   
@@ -295,6 +321,23 @@ begin
   SString(7605,"کالاها  ");
   SString(7606,"تعداد");
   SString(7607,"ارزش ");
+  
+  /* RetGoodsJRn */
+  SString(10780,"محصولات بازگشت مجله");  	//Returned Goods Journal
+  SString(10781,"همه محصولات بازگشت");		//All Returned Goods
+  SString(10782,"محصولات بازگشت");  			//Returned Goods
+  SString(10783,"رمز ");					//No.
+  SString(10784,"تاریخ ");					//Date
+  SString(10785,"شماره حساب");				//"Order No.
+  SString(10786,"مشتری");					//Customer
+  SString(10787,"اول نام");					//Name
+  SString(10788," محصولات");					//Item
+  SString(10789,"اول نام");					//Name
+  SString(10790,"قیمت واحد");				//Unit Price
+  SString(10791,"هزینه اضافی");				//Extra Cost
+  SString(10792,"هزینه");					//Cost Price
+  SString(10793,"مقدار");					//Qty
+  SString(10794,"تنها");  					//Total  
 
   
   /*RetGoodsJRn*/
@@ -362,6 +405,12 @@ begin
   SString(11709,"به: "); // Part of Address
   SString(11710,"(بدون موضوع) ");
   SString(11711,"تعداد بازدید");
+  
+  SString(16395,"همه طبقه بندی مورد");		//All Item Classifications
+  SString(16396,"طبقه بندی مورد");			//Item Classification
+
+  SString(22007,"همه دلایل");				//All Reasons
+  SString(22008,"دلیل");  					//Reason  
   
   //Our SStrings
   
@@ -590,7 +639,26 @@ SString(18240,"هزینه");
   SString(31239,"مجموع"); 				//Sum
   SString(31240,"رسید:"); 				//receipts:
   SString(31241,"مجموع رسید:"); 		//Total receipts  
-  SString(31242,"نتایج"); 				//Overall    
+  SString(31242,"نتایج"); 				//Overall 
+
+  //PecuniaryRn
+  SString(31243,"گواهی های هدیه های فروخته شده"); //Sold gift
+  SString(31250,"گواهی هدیه دریافت شد"); 		//Received gift
+  SString(31244,"رمز"); 						//Number
+  SString(31245,"توضیح"); 						//Comment
+  
+  //ItemStockStatRn
+  SString(31246,"No supplier");		 
+  SString(31247,"باقی مانده های در فروشگاه"); 	//Report of residues
+  SString(31248,"شما می توانید این فروشگاه تماشا نیست، لطفا انبار خود را انتخاب کنید"); //Please, choose other location
+  SString(31249,"کد نوار"); 					//Bar-code
+  SString(31251,"هزینه"); 						//Cost
+  SString(31252,"قیمت"); 						//Price
+  SString(31253,"رنگ"); 						//Colour
+  SString(31254,"اندازه");						//Size
+  SString(31255,"فروشگاه");						//Location
+						
+  SString(31256,"ساخته");  						//was produced  
 
   SString(12594,"ارائه دهنده"); //Edit by Victor 10.12.14
   SString(5051,"رسیده"); 
