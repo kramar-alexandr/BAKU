@@ -259,7 +259,7 @@ begin
   record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
   integer ivcount,mtrw;
   record IPrsVc IPrsr; 
-  record IPVc SMr,SMgift;
+  record IPVc SMr,SMgift,SMpay;
   row IPVc SMrw,SMrw2;
   record ARPayHistVc ARPayr;
   val cost;
@@ -274,6 +274,7 @@ begin
 
   recordnew(SMr);
   recordnew(SMgift);  //Edit -----------------Dima           11.12.2014
+  recordnew(SMpay);  //Edit -----------------Dima           15.12.2014
     
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
@@ -581,7 +582,7 @@ begin
 
 		case kInvoiceRowTypeGiftVoucherPayment:
 
-							mtrw = matrowcnt(SMgift);
+							mtrw = matrowcnt(SMpay);
 							GCr.SerNr = IVrw.GCNr;
 							ReadFirstMain(GCr,1,true);
 							SMrw2.stp = 0;							 
@@ -589,7 +590,7 @@ begin
 							SMrw2.ChequeNr = IVrw.GCNr;
 							SMrw2.RecVal = IVrw.Sum;
 							SMrw2.CustName = IVrw.Spec;
-							matrowput(SMgift,mtrw,SMrw2);																		
+							matrowput(SMpay,mtrw,SMrw2);																		
 							
           end;
         end;
@@ -820,14 +821,14 @@ begin
 				EndFormat;
 	end;	
 
-
+	mtrw = matrowcnt(SMpay);
     if(mtrw>0)then begin
 			StartFormat(15);
 				outstring(0,0,USetStr(31250),false);
 			EndFormat;
 			totgift = 0;			
 			For(i=0; i<mtrw; i=i+1) begin
-				matrowget(SMgift,i,SMrw2);
+				matrowget(SMpay,i,SMrw2);
 				if(SMrw2.stp == 0) then begin  //pay by gift card
 		  			StartFormat(15);
 					outstring(80,0,USetStr(31244),false);
