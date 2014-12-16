@@ -1,6 +1,8 @@
 external inner function Boolean SetInSet2(string,string);
 external inner function roundmode SetRoundModeD(Integer);// Edit ************************** Tuesday, 1 April 2014 17:03:06
 
+
+
 global
 updating function LongInt IVVcRecordCheck(record IVVc IVp,record IVVc IV2p,LongInt stat,LongInt long4)
 BEGIN
@@ -440,4 +442,3 @@ BEGIN
  	GCVcRecordDefaults = res; 
   RETURN;
 END;	
-

@@ -3655,6 +3655,7 @@ begin
   RecordField(AcceptanceStatus,M4Int,0,0);
   RecordField(AcceptanceBy,M4List,200,UserVc);
   RecordField(AcceptanceFYI,M4List,200,UserVc);
+  RecordField(VECode,M4Str,60,0);// Edit ************************** Tuesday, 16 December 2014 13:51:24
   
   //RecordField(CurncyCode,M4Code,5,CurncyCodeVc);	//Edit by Victor 19.11.14
   

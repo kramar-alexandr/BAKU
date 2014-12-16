@@ -505,7 +505,16 @@ BEGIN
   		TRGenRec.PUGenTrans = 1; 	// allow transaction	
   	end;
   end;//End Edit-------------------
-
+	// Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 December 2014 11:10:05
+	
+	if(blank(PUp.VECode))then begin
+		TRGenRec.PUGenTrans = 1;
+	end;
+	
+	// Edit End ---------------------------------------------- Edit End
+	
+	
   if (rpt==false) then begin
     if (TRGenRec.PUGenTrans==0) then begin
       res = 0;
