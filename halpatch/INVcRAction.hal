@@ -250,6 +250,7 @@ BEGIN
   INr.LastPriceChange = CurrentDate;
   INr.LastBasePriceChange = CurrentDate;
   INr.Terminated = 0;
+  INr.SavedCount = 0; //Edit***************************Sasha2,10:27 01.12.2014
   INVcRecordDuplicate = res; 
   RETURN;
 END;
@@ -280,6 +281,8 @@ begin
   if (INr.colnr==0) then begin 
     INr.colnr = 20;
   end;
+  INr.SyncFlag = 1; //Edit***************************Sasha2,17:38 02.12.2014
+  INr.SavedCount = 1; //Edit***************************Sasha2,10:24 01.12.2014
   INVcRecordSave = res; 
   return;
 end;
@@ -288,6 +291,8 @@ global
 function LongInt INVcRecordUpdate(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
+  row INVc INrw,IN2rw; //Edit***************************Sasha2,17:54 02.12.2014
+  integer i,rwcnt,rwcnt2; //Edit***************************Sasha2,17:54 02.12.2014
 	
   if (IN2r.InPrice!=INr.InPrice) then begin
     INr.LastPriceChange = CurrentDate;
@@ -295,6 +300,32 @@ BEGIN
   if (IN2r.UPrice1!=INr.UPrice1) then begin
     INr.LastBasePriceChange = CurrentDate;
   end;
+  if (IN2r.Name!=INr.Name) then begin //Edit***************************Sasha2,17:47 02.12.2014 {
+  	INr.SyncFlag = 1;
+  	goto LINVcRecordUpdate;
+  end;
+  if (IN2r.DispGroups!=INr.DispGroups) then begin
+  	INr.SyncFlag = 1;
+  	goto LINVcRecordUpdate;
+  end;
+  rwcnt = MatRowCnt(INr);
+  rwcnt2 = MatRowCnt(IN2r);
+  if (rwcnt!=rwcnt2) then begin
+  	INr.SyncFlag = 1;
+  	goto LINVcRecordUpdate;
+  end;
+  for (i=0;i<rwcnt;i=i+1) begin
+  	MatRowGet(INr,i,INrw);
+  	MatRowGet(IN2r,i,IN2rw);
+  	if (INrw.Text!=IN2rw.Text or INrw.Description!=IN2rw.Description) then begin
+  		INr.SyncFlag = 1;
+  		i = rwcnt;
+  	end;
+  end;
+  
+LINVcRecordUpdate:; //Edit***************************Sasha2,17:47 02.12.2014 }
+
+  INr.SavedCount = IN2r.SavedCount + 1; //Edit***************************Sasha2,10:25 01.12.2014
   INVcRecordUpdate = res; 
   RETURN;
 END;

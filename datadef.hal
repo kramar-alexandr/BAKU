@@ -491,9 +491,15 @@ begin
   RecordField(SVOWarrantyCostAcc,M4Code,10,AccVc);
   RecordField(SVOContractCostAcc,M4Code,10,AccVc);
   RecordField(SVOGoodwillCostAcc,M4Code,10,AccVc);
+  RecordField(PurchAcc,M4Code,10,AccVc); //Edit***************************Sasha2,11:29 16.12.2014
+  RecordField(SyncFlag,M4Int,0,0); //Edit***************************Sasha2,16:33 28.11.2014
+  RecordField(TempFlag,M4Int,0,0); //Edit***************************Sasha2,16:34 28.11.2014
+  RecordField(SavedCount,M4Int,0,0); //Edit***************************Sasha2,10:22 01.12.2014
   ArrayBegin(Math,-,1);
   ArrayField(LangCode,M4Code,5,0);
   ArrayField(Text,M4Str,100,0);
+  ArrayField(Description,M4Str,255,0); //Edit***************************Sasha2,17:34 01.12.2014
+  ArrayField(ConsgType,M4Set,900,0); //Edit***************************Sasha2,11:32 16.12.2014
   EndArray;
   return;
 end;
@@ -593,6 +599,9 @@ begin
   KeyBegin(MyDispGroups);
   KeySegment(DispGroups);
   KeySegment(Code);
+  KeyBegin(SyncFlag); //Edit***************************Sasha2,12:10 01.12.2014 {
+  KeySegment(SyncFlag);
+  KeySegment(Code); //Edit***************************Sasha2,12:10 01.12.2014 }
   
   EndRecord;
   
@@ -777,6 +786,7 @@ begin
   ArrayField(BrcStr,M4Str,20,0);// Edit ************************** Thursday, 11 April 2013 11:42:47
   ArrayField(Gender,M4Str,20,0);// Edit ************************** Thursday, 11 April 2013 11:42:47
   ArrayField(Reference,M4Str,60,0);// Edit ************************** Thursday, 11 April 2013 11:42:47
+  ArrayField(ConsgType,M4Set,900,0); //Edit***************************Sasha2,11:31 16.12.2014
   
   EndArray;
   MainKeyBegin(SerNr,1);
@@ -2870,6 +2880,11 @@ begin
   RecordField(CType,M4Code,10,0);
   RecordField(colnr,M4Set,46,0);
   RecordField(CCat,M4Code,50,0);// Edit ************************** Tuesday, July 15, 2014 at 11:51:30
+  RecordField(Name_RU,M4Str,60,0); //Edit***************************Sasha2,16:16 28.11.2014
+  RecordField(Name_AZ,M4Str,60,0); //Edit***************************Sasha2,16:16 28.11.2014
+  RecordField(SyncFlag,M4Int,0,0); //Edit***************************Sasha2,16:33 28.11.2014
+  RecordField(TempFlag,M4Int,0,0); //Edit***************************Sasha2,16:33 28.11.2014
+  RecordField(SavedCount,M4Int,0,0); //Edit***************************Sasha2,10:22 01.12.2014
   MainKeyBegin(Code,0);
   KeySegment(Code);
   KeyBegin(Name);
@@ -2898,6 +2913,10 @@ begin
   KeyBegin(CType);
   KeySegment(CType);
   KeySegment(Code);
+  
+  KeyBegin(SyncFlag); //Edit***************************Sasha2,12:10 01.12.2014 {
+  KeySegment(SyncFlag);
+  KeySegment(Code); //Edit***************************Sasha2,12:10 01.12.2014 }
   EndRecord;
   
   BlockBegin(NPTSNewCUFieldsBlock,-,"");

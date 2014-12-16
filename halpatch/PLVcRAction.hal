@@ -354,3 +354,54 @@ begin
 	
 return;
 end;
+
+global //Edit***************************Sasha2,10:45 01.12.2014 {
+updating function LongInt PLVcRecordSave(var record PLVc PLr,record PLVc PL2r,LongInt stat,LongInt long4)
+begin
+  LongInt res;
+  record INVc INr;
+  
+  if (PLr.ExVatPrice<>0) then begin
+  	INr.Code = PLr.ArtCode;
+  	if (ReadFirstMain(INr,1,true)) then begin
+  		INr.SyncFlag = 1;
+  		RECORDSTORE(INr,true);
+  	end;
+  end;
+ 
+  PLVcRecordSave = res; 
+ return;
+end; //Edit***************************Sasha2,10:45 01.12.2014 }
+
+global //Edit***************************Sasha2,10:45 01.12.2014 {
+updating function LongInt PLVcRecordUpdate(var record PLVc PLr,record PLVc PL2r,LongInt stat,LongInt long4)
+begin
+  LongInt res;
+  record INVc INr;
+  Boolean itemnotsavedf;
+
+  itemnotsavedf = true;
+  if (PL2r.ExVatPrice!=PLr.ExVatPrice) then begin
+    INr.Code = PLr.ArtCode;
+  	if (ReadFirstMain(INr,1,true)) then begin
+  		INr.SyncFlag = 1;
+  		RECORDSTORE(INr,true);
+  		itemnotsavedf = false;
+  	end;
+  end;
+  if (PL2r.ArtCode!=PLr.ArtCode) then begin
+    INr.Code = PLr.ArtCode;
+  	if (itemnotsavedf and ReadFirstMain(INr,1,true)) then begin
+  		INr.SyncFlag = 1;
+  		RECORDSTORE(INr,true);
+  	end;
+  	INr.Code = PL2r.ArtCode;
+  	if (ReadFirstMain(INr,1,true)) then begin
+  		INr.SyncFlag = 1;
+  		RECORDSTORE(INr,true);
+  	end;
+  end;
+
+  PLVcRecordUpdate = res; 
+ return;
+end; //Edit***************************Sasha2,10:45 01.12.2014 }

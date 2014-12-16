@@ -3284,7 +3284,7 @@ begin
   v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
   EditField(h,v, 150,"Код товара",Normal,Code,false,0);
   EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
-  EditField(h,v+=vs,-40,"Наименование",Normal,Name,false,0);
+  EditField(h,v+=vs,-40,"Наименование(ENG)",Normal,Name,false,0); //Edit***************************Sasha2,13:47 15.12.2014
   tilenr = 1;
   TileButton(tilenr,"Цена"); tilenr = tilenr + 1;
   if (UserCanAction("AllowJewelleryInterface",false)) then begin
@@ -3478,7 +3478,8 @@ begin
   v = 24;
   MatrixBegin(4,v,-32,-40,-,99);
   MatCol(1,24,"Язык",0,LangCode,false,LangSClass);
-  MatCol(1,94,"Текст",0,Text,false,0);
+  MatCol(1,94,"Наименование",0,Text,false,0); //Edit***************************Sasha2,17:36 01.12.2014
+  MatCol(1,300,"Описание",0,Description,false,0); //Edit***************************Sasha2,17:36 01.12.2014
   EndMatrix;
   Tile(tilenr,220,false,tilenr,CostPerc);  tilenr = tilenr + 1;
   ButtonFrame(h=100,vm=(v=20),230,6,"Первичная модель стоимости");
@@ -6479,9 +6480,11 @@ begin
   SetWRect(64,80,540,200);
 //  Sizeable(-1,-1,0,0);
   UseView(DIVc);
-  vs = 20; h1 = 100; h2 = 260;
+  vs = 20; h1 = 120; h2 = 280; //Edit***************************Sasha2,13:47 15.12.2014
   EditField(h1,v=6,40,"Код",Normal,Code,false,0);
-  EditField(h1,v+=vs,200,"Наименование",Normal,Name,false,0);
+  EditField(h1,v+=vs,200,"Наименование(ENG)",Normal,Name,false,0); //Edit***************************Sasha2,16:16 28.11.2014
+  EditField(h1,v+=vs,200,"Наименование(RUS)",Normal,Name_RU,false,0); //Edit***************************Sasha2,16:16 28.11.2014
+  EditField(h1,v+=vs,200,"Наименование(AZE)",Normal,Name_AZ,false,0); //Edit***************************Sasha2,16:16 28.11.2014
   if (IsEnterprise) then begin
   EditField(h1,v+=vs,50,"Тип",Normal,CType,false,CTypeSClass);
   EditField(h2,v,100,"Категория",Normal,CCat,false,0);
