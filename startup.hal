@@ -102,6 +102,7 @@ begin
 	SetBegin(900);
 		SetText(0,"Обычный");
 		SetText(1,"Консигнация");
+		SetText(2,"Малоценка");
   EndSet;
 	
   SString(24193,"К оплате");
