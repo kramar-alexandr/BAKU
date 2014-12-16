@@ -326,9 +326,9 @@ begin
 			newINr.AlternativeCode = IntORrw.AlternativeCode;
 			
 			//newINr.RowWeight = IntORrw.RowWeight;
-			newINr.Size = IntORrw.Size;
+			//newINr.Size = IntORrw.Size;
 			//newINr.Metal = IntORrw.Metal;
-			newINr.Colour = IntORrw.Colour;
+			//newINr.Colour = IntORrw.Colour;
 			//newINr.MajStoneDet = IntORrw.MajStoneDet;
 			newINr.InPrice = round(IntORrw.Price/frrate*torate,SetRoundModeD(2));
 			
