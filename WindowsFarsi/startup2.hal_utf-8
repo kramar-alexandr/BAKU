@@ -659,6 +659,42 @@ SString(18240,"هزینه");
   SString(31255,"فروشگاه");						//Location
 						
   SString(31256,"ساخته");  						//was produced  
+ 
+ //CustDebByComp
+  SString(31257," بدهی مشتریان قبل از شرکت "); 					//Report on clients' debts to companies
+  SString(31258,"مشتری");										//Client
+  SString(31259,"شرکت");										//Company
+  SString(31260,"IRR بدهی");									//IRR debt
+  SString(31261,"لطفا کد مشتری معتبر وارد کنید");				//Enter a correct client code
+  SString(31262,"زمان");										//Date
+  
+  SString(31263,"حساب کارکنان دریافتنی");  						//Report on clients' debts on orders
+  SString(31264,"مقدار کل");									//Total sum
+  SString(31265,"مشخص نشده");									//Unknown
+  
+//OrderStatusRn
+  SString(31266,"شماره حساب (قرارداد)");			//invoice number		
+  SString(31267,"تخفیف");							//Discount	
+  SString(31268,"مبلغ قرارداد");					//Contract amount
+  SString(31269,"سفارش محصول");						//Ordered goods
+  SString(31270,"نام محصول و مدل");					//Product name and model		
+  SString(31271,"تعداد محصولات سفارش داده شده");		//Quantity of ordered products	
+  SString(31272,"قیمت واحد");						//Unit price
+  SString(31273,"مجموع با تخفیف");					//Sum with discount	
+  SString(31274,"پرداخت");							//payments
+  SString(31275,"پرداخت صورتحساب");					//invoice payment
+  SString(31276,"پیش پرداخت");						//Prepayment
+  SString(31277,"پرداخت نقدی");						//cash to invoice
+  SString(31278,"پرداخت نقاط جایزه");				//bonus points to invoice
+  SString(31279,"پرداخت کارت اعتباری");				//credit card payment
+  SString(31280,"از طریق یک حساب کاربری انجام");	//
+  SString(31281," حمل");							//shipped
+  SString(31282,"تعادل");							//balance
+  SString(31283,"باقیمانده های حمل و نقل");
+  SString(31284,"بدهی مشتری");						//client debt
+  SString(31285,"مقدار کالا");
+  SString(31286,"هزینه کالا");
+  SString(31287,"آمار در حساب مشتری");     
 
   SString(12594,"ارائه دهنده"); //Edit by Victor 10.12.14
   SString(5051,"رسیده"); 

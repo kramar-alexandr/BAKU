@@ -4,7 +4,7 @@ external function longint DateDiff(date,date);
 external procedure GetCurncyRoundoff(string,string,string,var roundmode,var roundmode,var roundmode);
 
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);  //Edit Dima-----------16.12.2014
 
 procedure PrintInfo(record ORVc ORr)
 begin
@@ -53,13 +53,13 @@ begin
 	ordrate = to1/fr;
 	
 	startformat(15);
-		outstring(0,0,"№ счета фактуры(договора)",false);
-		outstring(0,0,"дата",false);
-		outstring(0,0,"Клиент",false);
+		outstring(0,0,USetStr(31266),false);
+		outstring(0,0,USetStr(31220),false);
+		outstring(0,0,USetStr(31258),false);
 		outstring(0,0,"",false);
-		outstring(0,0,"Скидка",false);
+		outstring(0,0,USetStr(31267),false);
 		outstring(0,0,"",false);
-		outstring(0,0,"Комментарий",false);
+		outstring(0,0,USetStr(31245),false);
 	endformat;
 
 	startformat(15);
@@ -76,13 +76,13 @@ begin
 	endformat;
 
 	startformat(15);
-		outstring(0,0,"Сумма договора",false);
-		outstring(0,0,"дата",false);
-		outstring(0,0,"Заказан  товар",false);
-		outstring(0,0,"модель товара и наименование",false);
-		outstring(0,0,"Заказано кол-во шт",false);
-		outstring(0,0,"цена за единицу",false);
-		outstring(0,0,"сумма со скидкой ",false);
+		outstring(0,0,USetStr(31268),false);
+		outstring(0,0,USetStr(31220),false);
+		outstring(0,0,USetStr(31269),false);
+		outstring(0,0,USetStr(31270),false);
+		outstring(0,0,USetStr(31271),false);
+		outstring(0,0,USetStr(31272),false);
+		outstring(0,0,USetStr(31273),false);
 	endformat;
 	mtrw = matrowcnt(ORr);
 	For(i=0;i<mtrw;i=i+1) begin
@@ -120,7 +120,7 @@ begin
 		end;
 	end; 
 	startformat(15);
-		outstring(0,0,"Итого:",false);
+		outstring(0,0,USetStr(31222),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -133,13 +133,13 @@ begin
 	endformat;
 
 	startformat(15);
-		outstring(0,0,"Оплаты:",false);
-		outstring(0,0,"дата",false);
+		outstring(0,0,USetStr(31274),false);
+		outstring(0,0,USetStr(31220),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
-		outstring(0,0,"Сумма",false);
+		outstring(0,0,USetStr(31239),false);
 	endformat;
 	IPrsr.CustCode = ORr.CustCode;
 	TrHs1 = true;
@@ -165,7 +165,7 @@ begin
 										to1 = 1;
 									end;
 									startformat(15);
-										outstring(0,0,"Платеж по сч/ф",false);
+										outstring(0,0,USetStr(31275),false);
 										outstring(0,0,IPrw.PayDate,false);
 										outstring(0,0,"",false);
 										outstring(0,0,"",false);
@@ -192,7 +192,7 @@ begin
 									to1 = 1;
 								end;
 								startformat(15);
-									outstring(0,0,"Предоплата",false);
+									outstring(0,0,USetStr(31276),false);
 									outstring(0,0,IPrw.PayDate,false);
 									outstring(0,0,"",false);
 									outstring(0,0,"",false);
@@ -229,7 +229,7 @@ begin
 						to1 = 1;
 					end;
 					startformat(15);
-						outstring(0,0,"Наличными в сч/ф",false);
+						outstring(0,0,USetStr(31277),false);
 						outstring(0,0,IVr.InvDate,false);
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
@@ -248,7 +248,7 @@ begin
 						to1 = 1;
 					end;
 					startformat(15);
-						outstring(0,0,"Баллами в сч/ф",false);
+						outstring(0,0,USetStr(31278),false);
 						outstring(0,0,IVr.InvDate,false);
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
@@ -261,7 +261,7 @@ begin
 				
 				if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin				
 					startformat(15);
-						outstring(0,0,"Кредитной картой в сч/ф",false);
+						outstring(0,0,USetStr(31279),false);
 						outstring(0,0,IVr.InvDate,false);
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
@@ -278,7 +278,7 @@ begin
 	resetloop(IVr);
 	
 	startformat(15);
-		outstring(0,0,"Итого:",false);
+		outstring(0,0,USetStr(31222),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -290,13 +290,13 @@ begin
 	startformat(15);
 	endformat;
 	startformat(15);
-		outstring(0,0,"проведено по с/ф:",false);
-		outstring(0,0,"дата",false);
-		outstring(0,0,"товар",false);
+		outstring(0,0,USetStr(31280),false);
+		outstring(0,0,USetStr(31220),false);
+		outstring(0,0,USetStr(31203),false);
 		outstring(0,0,"",false);
-		outstring(0,0,"кол-во",false);
+		outstring(0,0,USetStr(31238),false);
 		outstring(0,0,"",false);
-		outstring(0,0,"Сумма",false);
+		outstring(0,0,USetStr(31239),false);
 	endformat;
 
 	IVr.OrderNr = ORr.SerNr;
@@ -338,7 +338,7 @@ begin
 	end;
 	resetloop(IVr);
 	startformat(15);
-		outstring(0,0,"Итого:",false);
+		outstring(0,0,USetStr(31222),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -349,11 +349,11 @@ begin
 	startformat(15);
 	endformat;
 	startformat(15);
-		outstring(0,0,"отгружено по с/ф:",false);
-		outstring(0,0,"дата",false);
-		outstring(0,0,"товар",false);
+		outstring(0,0,USetStr(31281),false);
+		outstring(0,0,USetStr(31220),false);
+		outstring(0,0,USetStr(31203),false);
 		outstring(0,0,"",false);
-		outstring(0,0,"кол-во",false);
+		outstring(0,0,USetStr(31238),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 	endformat;
@@ -406,7 +406,7 @@ begin
 	end;
 	resetloop(SHr);
 	startformat(15);
-		outstring(0,0,"Итого:",false);
+		outstring(0,0,USetStr(31222),false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
@@ -419,26 +419,26 @@ begin
 	endformat;
 
 	startformat(15);
-	outstring(0,0,"Сальдо:",false);
+	outstring(0,0,USetStr(31282),false);
 	endformat;
 
 	startformat(15);
-	outstring(0,0,"Осталось отгрузить:",false);
+	outstring(0,0,USetStr(31283),false);
 	outstring(0,0,ordqty - qtysum,false);
 	endformat;
 
 	startformat(15);
-	outstring(0,0,"Долг клиента:",false);
+	outstring(0,0,USetStr(31284),false);
 	outstring(0,0,ORr.Sum4*ordrate*rate - sumpay*rate,false);
 	endformat;
 
 	startformat(15);
-	outstring(0,0,"Непроведенный товар по кол-ву:",false);
+	outstring(0,0,USetStr(31285),false);
 	outstring(0,0,ordqty - ivqty,false);
 	endformat;
 
 	startformat(15);
-	outstring(0,0,"Непроведенный товар по сумме:",false);
+	outstring(0,0,USetStr(31286),false);
 	outstring(0,0,ORr.Sum4*ordrate*rate - ivsum*rate,false);
 	endformat;
 
@@ -494,7 +494,7 @@ begin
 		ORr.OrdDate = RepSpec.sStartDate;
 	end;
 	
-	startreportnoheaderjob("Статистика по счетам клиентов");
+	startreportnoheaderjob(USetStr(31287));
 	
 	TrHs = true;
 	while(loopkey(keystr,ORr,keyint,TrHs))begin
@@ -520,13 +520,13 @@ begin
 			
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"№ счета фактуры(договора)",false);
-					outstring(0,0,"дата",false);
-					outstring(0,0,"Клиент",false);
+					outstring(0,0,USetStr(31266),false);
+					outstring(0,0,USetStr(31220),false);
+					outstring(0,0,USetStr(31258),false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Скидка",false);
+					outstring(0,0,USetStr(31267),false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Комментарий",false);
+					outstring(0,0,USetStr(31245),false);
 				endformat;
 			
 				startformat(15);
@@ -545,13 +545,13 @@ begin
 			
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"Сумма договора",false);
-					outstring(0,0,"дата",false);
-					outstring(0,0,"Заказан  товар",false);
-					outstring(0,0,"модель товара и наименование",false);
-					outstring(0,0,"Заказано кол-во шт",false);
-					outstring(0,0,"цена за единицу",false);
-					outstring(0,0,"сумма со скидкой ",false);
+					outstring(0,0,USetStr(31268),false);
+					outstring(0,0,USetStr(31220),false);
+					outstring(0,0,USetStr(31269),false);
+					outstring(0,0,USetStr(31270),false);
+					outstring(0,0,USetStr(31271),false);
+					outstring(0,0,USetStr(31272),false);
+					outstring(0,0,USetStr(31273),false);
 				endformat;
 			end;
 			mtrw = matrowcnt(ORr);
@@ -594,7 +594,7 @@ begin
 			end; 
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"Итого:",false);
+					outstring(0,0,USetStr(31222),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
@@ -607,13 +607,13 @@ begin
 				endformat;
 			
 				startformat(15);
-					outstring(0,0,"Оплаты:",false);
-					outstring(0,0,"дата",false);
+					outstring(0,0,USetStr(31274),false);
+					outstring(0,0,USetStr(31220),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Сумма",false);
+					outstring(0,0,USetStr(31239),false);
 				endformat;
 			end;
 			IPrsr.CustCode = ORr.CustCode;
@@ -641,7 +641,7 @@ begin
 											end;
 											if(RepSpec.flags[0]==0)then begin
 												startformat(15);
-													outstring(0,0,"Платеж по сч/ф",false);
+													outstring(0,0,USetStr(31275),false);
 													outstring(0,0,IPrw.PayDate,false);
 													outstring(0,0,"",false);
 													outstring(0,0,"",false);
@@ -670,7 +670,7 @@ begin
 										end;
 										if(RepSpec.flags[0]==0)then begin
 										startformat(15);
-											outstring(0,0,"Предоплата",false);
+											outstring(0,0,USetStr(31276),false);
 											outstring(0,0,IPrw.PayDate,false);
 											outstring(0,0,"",false);
 											outstring(0,0,"",false);
@@ -710,7 +710,7 @@ begin
 							
 							if(RepSpec.flags[0]==0)then begin
 								startformat(15);
-									outstring(0,0,"Наличными в сч/ф",false);
+									outstring(0,0,USetStr(31277),false);
 									outstring(0,0,IVr.InvDate,false);
 									outstring(0,0,"",false);
 									outstring(0,0,"",false);
@@ -732,7 +732,7 @@ begin
 							
 							if(RepSpec.flags[0]==0)then begin
 								startformat(15);
-									outstring(0,0,"Баллами в сч/ф",false);
+									outstring(0,0,USetStr(31278),false);
 									outstring(0,0,IVr.InvDate,false);
 									outstring(0,0,"",false);
 									outstring(0,0,"",false);
@@ -747,7 +747,7 @@ begin
 	  				if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin				
 							if(RepSpec.flags[0]==0)then begin
 								startformat(15);
-									outstring(0,0,"Кредитной картой в сч/ф",false);
+									outstring(0,0,USetStr(31279),false);
 									outstring(0,0,IVr.InvDate,false);
 									outstring(0,0,"",false);
 									outstring(0,0,"",false);
@@ -766,7 +766,7 @@ begin
 			
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"Итого:",false);
+					outstring(0,0,USetStr(31222),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
@@ -778,13 +778,13 @@ begin
 				startformat(15);
 				endformat;
 				startformat(15);
-					outstring(0,0,"проведено по с/ф:",false);
-					outstring(0,0,"дата",false);
-					outstring(0,0,"товар",false);
+					outstring(0,0,USetStr(31280),false);
+					outstring(0,0,USetStr(31220),false);
+					outstring(0,0,USetStr(31203),false);
 					outstring(0,0,"",false);
-					outstring(0,0,"кол-во",false);
+					outstring(0,0,USetStr(31238),false);
 					outstring(0,0,"",false);
-					outstring(0,0,"Сумма",false);
+					outstring(0,0,USetStr(31239),false);
 				endformat;
 			end;
 
@@ -830,7 +830,7 @@ begin
 			resetloop(IVr);
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"Итого:",false);
+					outstring(0,0,USetStr(31222),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
@@ -841,11 +841,11 @@ begin
 				startformat(15);
 				endformat;
 				startformat(15);
-					outstring(0,0,"отгружено по с/ф:",false);
-					outstring(0,0,"дата",false);
-					outstring(0,0,"товар",false);
+					outstring(0,0,USetStr(31281),false);
+					outstring(0,0,USetStr(31220),false);
+					outstring(0,0,USetStr(31203),false);
 					outstring(0,0,"",false);
-					outstring(0,0,"кол-во",false);
+					outstring(0,0,USetStr(31238),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 				endformat;
@@ -903,7 +903,7 @@ begin
 			
 			if(RepSpec.flags[0]==0)then begin
 				startformat(15);
-					outstring(0,0,"Итого:",false);
+					outstring(0,0,USetStr(31222),false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
@@ -916,26 +916,26 @@ begin
 				endformat;
 			
 				startformat(15);
-				outstring(0,0,"Сальдо:",false);
+				outstring(0,0,USetStr(31282),false);
 				endformat;
 			
 				startformat(15);
-				outstring(0,0,"Осталось отгрузить:",false);
+				outstring(0,0,USetStr(31283),false);
 				outstring(0,0,ordqty - qtysum,false);
 				endformat;
 			
 				startformat(15);
-				outstring(0,0,"Долг клиента:",false);
+				outstring(0,0,USetStr(31284),false);
 				outstring(0,0,ORr.Sum4*ordrate*rate - sumpay*rate,false);
 				endformat;
 			
 				startformat(15);
-				outstring(0,0,"Непроведенный товар по кол-ву:",false);
+				outstring(0,0,USetStr(31285),false);
 				outstring(0,0,ordqty - ivqty,false);
 				endformat;
 			
 				startformat(15);
-				outstring(0,0,"Непроведенный товар по сумме:",false);
+				outstring(0,0,USetStr(31286),false);
 				outstring(0,0,ORr.Sum4*ordrate*rate - ivsum*rate,false);
 				endformat;
 			
@@ -1009,7 +1009,7 @@ begin
 		ORr.OrdDate = RepSpec.sStartDate;
 	end;
 	
-	startreportnoheaderjob("Статистика по счетам клиентов");
+	startreportnoheaderjob(USetStr(31287));
 	
 	TrHs = true;
 	while(loopkey(keystr,ORr,keyint,TrHs))begin
@@ -1035,23 +1035,23 @@ begin
 			ordrate = to1/fr;
 			
 			startformat(15);
-				outstring(0,0,"№ заказа",false);
-				outstring(20,0,"Фабрика",false);
-				outstring(40,0,"Дизайнер",false);
-				outstring(60,0,"Покупатель",false);
-				outstring(80,0,"Примечание",false);
-				outstring(100,0,"Дата заказа",false);
-				outstring(120,0,"Дата прибытия на склад",false);
-				outstring(140,0,"Дата прибытия на склад",false);
-				outstring(160,0,"Маржа",false);
-				outstring(180,0,"Оформление дизайнерами(менеджерами)заказа со дня получения номера заказа",false);
-				outstring(200,0,"Размещение заказа и подтверждение (отдел закупок . Брендменеджер)",false);
-				outstring(220,0,"Предоплата согласно условиям работы с брэндом",false);
-				outstring(240,0,"Производство (изготовление) товара на фабрике",false);
-				outstring(260,0,"Балансовая оплата согласно условиям работы с брэндом",false);
-				outstring(280,0,"Забор товара",false);
-				outstring(300,0,"Доставка товара",false);
-				outstring(320,0,"Не просрочено всего",false);
+				outstring(0,0,USetStr(31288),false);
+				outstring(20,0,USetStr(31289),false);
+				outstring(40,0,USetStr(31290),false);
+				outstring(60,0,USetStr(31291),false);
+				outstring(80,0,USetStr(31292),false);
+				outstring(100,0,USetStr(31293),false);
+				outstring(120,0,USetStr(31294),false);
+				outstring(140,0,USetStr(31294),false);
+				outstring(160,0,USetStr(31295),false);
+				outstring(180,0,USetStr(31296),false);
+				outstring(200,0,USetStr(31297),false);
+				outstring(220,0,USetStr(31298),false);
+				outstring(240,0,USetStr(31299),false);
+				outstring(260,0,USetStr(31300),false);
+				outstring(280,0,USetStr(31301),false);
+				outstring(300,0,USetStr(31302),false);
+				outstring(320,0,USetStr(31303),false);
 			endformat;
 			startformat(15);
 				outstring(0,0,"",false);
@@ -1060,8 +1060,8 @@ begin
 				outstring(60,0,"",false);
 				outstring(80,0,"",false);
 				outstring(100,0,"",false);
-				outstring(120,0,"Согласно контракту",false);
-				outstring(140,0,"Реальн.",false);
+				outstring(120,0,USetStr(31304),false);
+				outstring(140,0,USetStr(31305),false);
 				outstring(160,0,"",false);
 				outstring(180,0,"+",false);
 				outstring(200,0,"",false);
@@ -1125,7 +1125,7 @@ begin
 						if(readfirstkey("Name",CUr,1,true))then begin
 							avendor[acnt] = CUr.Code;
 						end else begin
-							avendor[acnt] = "Не указан";
+							avendor[acnt] = USetStr(31365);
 						end;
 						acnt = acnt + 1;
 					end;

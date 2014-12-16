@@ -289,6 +289,19 @@ begin
   
 // INQtyRn  
   SString(31231,"Item code");
+
+ //CustDebByComp
+  SString(31257,"Report on clients' debts to companies"); 			//Отчет по задолженности клиентов по компаниям 
+  SString(31258,"Client: ");									
+  SString(31259,"Company");									
+  SString(31260,"Debt PLN");									
+  SString(31261,"Please enter a valid customer code");				
+  SString(31262,"Date: ");									
+  
+  SString(31263,"Report on clients' debts on orders");  			//Отчет по задолженности клиентов по счетам
+  SString(31264,"Total sum");									
+  SString(31265,"Unknown");									
+
 	
   /*StrSetBegin(3);
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE	

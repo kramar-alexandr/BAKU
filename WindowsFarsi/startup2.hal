@@ -659,6 +659,44 @@ SString(18240,"Á“?ÊÁ");
   SString(31255,"·—Ë‘?«Á");						//Location
 						
   SString(31256,"”«Œ Á");  						//was produced  
+  
+ //CustDebByComp
+  SString(31257," »œÁ? Â‘ —?«Ê ‚»‰ «“ ‘—?  "); 					//Report on clients' debts to companies
+  SString(31258,"Â‘ —?");										//Client
+  SString(31259,"‘—? ");										//Company
+  SString(31260,"IRR »œÁ?");									//IRR debt
+  SString(31261,"‰◊·« ?œ Â‘ —? ÂŸ »— Ë«—œ ?Ê?œ");				//Enter a correct client code
+  SString(31262,"“Â«Ê");										//Date
+  
+  SString(31263,"Õ”«» ?«—?Ê«Ê œ—?«· Ê?");  						//Report on clients' debts on orders
+  SString(31264,"Â‚œ«— ?‰");									//Total sum
+  SString(31265,"Â‘Œ’ Ê‘œÁ");									//Unknown
+  
+//OrderStatusRn
+  SString(31266,"‘Â«—Á Õ”«» (‚—«—œ«œ)");			//invoice number		
+  SString(31267," Œ·?·");							//Discount	
+  SString(31268,"Â»‰⁄ ‚—«—œ«œ");					//Contract amount
+  SString(31269,"”·«—‘ ÂÕ’Ë‰");						//Ordered goods
+  SString(31270,"Ê«Â ÂÕ’Ë‰ Ë Âœ‰");					//Product name and model		
+  SString(31271," Ÿœ«œ ÂÕ’Ë‰«  ”·«—‘ œ«œÁ ‘œÁ");		//Quantity of ordered products	
+  SString(31272,"‚?Â  Ë«Õœ");						//Unit price
+  SString(31273,"ÂÃÂËŸ »«  Œ·?·");					//Sum with discount	
+  SString(31274,"?—œ«Œ ");							//payments
+  SString(31275,"?—œ«Œ  ’Ë— Õ”«»");					//invoice payment
+  SString(31276,"??‘ ?—œ«Œ ");						//Prepayment
+  SString(31277,"?—œ«Œ  Ê‚œ?");						//cash to invoice
+  SString(31278,"?—œ«Œ  Ê‚«◊ Ã«?“Á");				//bonus points to invoice
+  SString(31279,"?—œ«Œ  ?«—  «Ÿ »«—?");				//credit card payment
+  SString(31280,"«“ ◊—?‚ ?? Õ”«» ?«—»—? «ÊÃ«Â");	//
+  SString(31281," ÕÂ‰");							//shipped
+  SString(31282," Ÿ«œ‰");							//balance
+  SString(31283,"»«‚?Â«ÊœÁ Á«? ÕÂ‰ Ë Ê‚‰");
+  SString(31284,"»œÁ? Â‘ —?");						//client debt
+  SString(31285,"Â‚œ«— ?«‰«");
+  SString(31286,"Á“?ÊÁ ?«‰«");
+  SString(31287,"¬Â«— œ— Õ”«» Â‘ —?");   
+  
+  
 
   SString(12594,"«—«∆Á œÁÊœÁ"); //Edit by Victor 10.12.14
   SString(5051,"—”?œÁ"); 

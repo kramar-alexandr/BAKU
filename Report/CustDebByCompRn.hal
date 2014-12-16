@@ -1,7 +1,7 @@
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure GetBaseCurncy(Integer,var string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);//Edit ------Dima------16.12.2014
 
 
 global procedure CustDebByCompRn(record RcVc RepSpec)
@@ -23,26 +23,33 @@ begin
 	val t,fr,to1,to2,br1,br2;
 
 	azn = "AZN";
+	if(currentcompany==10)THEN BEGIN
+		azn = "PLN";
+	end;
+	if(currentcompany==11 or currentcompany==12)THEN BEGIN
+		azn = "IRR";
+	end;
+
 	CUr.Code = RepSpec.f1;
 	if(nonblank(RepSpec.f1) and readfirstmain(CUr,1,true))then begin
-		StartReportNoheaderJob("Отчет по задолженности клиентов по компаниям");
+		StartReportNoheaderJob(USetStr(31257));
 		curcmp = currentcompany;
 	
 	
 		blockload(CBb);
 		
 		startformat(15);
-			outstring(0,0,"Клиент:",false);
+			outstring(0,0,USetStr(31258),false);
 			outstring(70,0,CUr.Code,false);
 			outstring(140,0,CUr.Name,false);
-			outstring(250,0,"Дата:",false);
+			outstring(250,0,USetStr(31262),false);
 			outstring(300,0,currentdate,false);
 		endformat;
 		
 		startformat(15);
-			outstring(0,0,"Компания",false);
-			outstring(100,0,"Магазин",false);
-			outstring(200,0,"Задолженность AZN",false);
+			outstring(0,0,USetStr(31259),false);
+			outstring(100,0,USetStr(31218),false);
+			outstring(200,0,USetStr(31260),false);
 		endformat;
 		
 		mtrw = matrowcnt(CBb);
@@ -104,15 +111,15 @@ begin
 			end; 
 			gray_divider(0,1);
 			startformat(15);
-				outstring(0,0,"Всего",false);
+				outstring(0,0,USetStr(31211),false);
 				outstring(200,0,totsum,false);
 			endformat;			
 		
 		endjob;
 	end else begin
-		StartReportNoheaderJob("Отчет по задолженности клиентов по компаниям");
+		StartReportNoheaderJob(USetStr(31257));
 			startformat(15);
-				outstring(100,0,"Укажите корректный код клиента для отчета",false);
+				outstring(100,0,USetStr(31261),false);
 			endformat;
 		endjob;
 	end;
