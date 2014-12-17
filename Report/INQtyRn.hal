@@ -375,6 +375,31 @@ BEGIN
   FindFiscalYear(curdate,fsd,fed);
   ltd = AddYear(curdate,-1);    
   FindFiscalYear(ltd,lfsd,lfed);
+
+
+  if (RepSpec.Media == mtExcel) then begin	//Edit ---------------------Dima 17.12.2014
+  		OutString(0,0,USetStr(8960),true);
+  		EndFormat;
+  		
+  		OutString(0,0,USetStr(1413),false);	//Enterprise by Hansa, Print Date
+  		OutString(40,0,"",false);
+  		OutString(140,0,"",false);
+  		OutString(200,0,CurrentDate,false);
+  		OutString(250,0,CurrentTime,false);
+  		EndFormat;
+  		
+  		HTArts(frin,toin,tstr);
+  		OutString(0,0,tstr,false);
+  		EndFormat;
+  		HTLocations(frloc,toloc,tstr);
+  		OutString(0,0,tstr,false);
+  		EndFormat;
+  		EndFormat;
+  		EndFormat;
+  end;//------------------------------
+
+
+
   //PrintHeaderIQ; // Edit ***** 18 june 2013 14:16:00 Larisa
   StartFormat(15); // Edit ***** 18 june 2013 14:16:00 Larisa
    OutString(0,0,USetStr(31231),false);
