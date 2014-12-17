@@ -3326,6 +3326,16 @@ begin
   RadioButton(h1,v+=16,kItemTypeStocked,0,"Складируемый",ItemType);
   RadioButton(h1,v+=16,kItemTypeStructured,0,"Структурированный",ItemType);
   RadioButton(h1,v+=16,kItemTypeService,0,"Работа",ItemType);
+ // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 17 December 2014 12:44:51
+	 
+  ButtonFrame(h1+150,v=24,130,3,"Тип товара");
+  RadioButton(h1+150,v,0,0,"Обычный",ConsgType);
+  RadioButton(h1+150,v+=16,1,0,"Консигнация",ConsgType);
+  RadioButton(h1+150,v+=16,2,0,"Малоценка",ConsgType);
+  EditField(h1+150,v+56 ,50,"Счет оприходования",Normal,PurchAcc,false,AccSClass);
+	// Edit End ---------------------------------------------- Edit End
+	
   Pict_Field(-205,8,-35,178,"");
   if (GuiType==kGuiCocoa) then begin
     PushButton(-190,182,-50,202,ToolImagePicker,"Добавить картинку");//##cc  

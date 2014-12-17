@@ -2674,6 +2674,17 @@ begin
   RadioButton(h1,v+=16,kItemTypeStocked,0,"#Stocked# Item",ItemType);
   RadioButton(h1,v+=16,kItemTypeStructured,0,"Structured Item",ItemType);
   RadioButton(h1,v+=16,kItemTypeService,0,"Service",ItemType);
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 17 December 2014 12:44:51
+	 
+  ButtonFrame(h1+150,v=24,130,3,"Item Type");
+  RadioButton(h1+150,v,0,0,"Common",ConsgType);
+  RadioButton(h1+150,v+=16,1,0,"Consigment",ConsgType);
+  RadioButton(h1+150,v+=16,2,0,"LowCost",ConsgType);
+  EditField(h1+150,v+56 ,50,"Purch Acc",Normal,PurchAcc,false,AccSClass);
+	// Edit End ---------------------------------------------- Edit End
+  
   Pict_Field(-205,8,-35,178,"");
   if (GuiType==kGuiCocoa) then begin
     PushButton(-190,182,-50,202,ToolImagePicker,"Add picture");//##cc  
@@ -6321,9 +6332,9 @@ begin
   
   MatColTL(1,164,"Unit",0,M4Code,ViewOnly,5,UnitCode,false,UnitSCLass);
   MatCol(1,204,"Description",0,Spec,false,0);
-  if (HasJewelleryInterface) then begin
-    MatCol(1,-337,"#Stock# Type",0,StockType,false,SetSClass);
-  end;
+  //if (HasJewelleryInterface) then begin
+    MatCol(1,-337,"Item Type",0,ConsgType,false,SetSClass);// Edit ************************** Wednesday, 17 December 2014 12:37:08
+  //end;
   MatCol(1,-237,"Unit Price",0,Price,true,0);
   MatCol(1,-151,"%",0,vRebate,true,0);
   MatCol(1,-116,"Sum",0,Sum,true,0);

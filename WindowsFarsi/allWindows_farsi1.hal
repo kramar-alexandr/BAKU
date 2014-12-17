@@ -1875,9 +1875,9 @@ begin
     MatCol(1,94,"Qty",0,Quant,true,0);
   end;// Edit ************************** Monday, 8 December 2014 19:18:28
   MatCol(1,204,"Description",0,Spec,false,0);
-  if (HasJewelleryInterface) then begin
-    MatCol(1,-337,"#Stock# Type",0,StockType,false,SetSClass);
-  end;
+  //if (HasJewelleryInterface) then begin
+    MatCol(1,-337,"Item Type",0,ConsgType,false,SetSClass);// Edit ************************** Wednesday, 17 December 2014 12:37:43
+  //end;
   MatCol(1,-237,"Unit Price",0,Price,true,0);
   MatCol(1,-151,"%",0,vRebate,true,0);
   MatCol(1,-116,"Sum",0,Sum,true,0);

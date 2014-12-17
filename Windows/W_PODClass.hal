@@ -1882,9 +1882,9 @@ begin
   MatColTL(1,195,"Ед.",0,M4Code,ViewOnly,5,UnitCode,false,UnitSCLass);
   
   MatCol(1,244,"Наименование",0,Spec,false,0);
-  if (HasJewelleryInterface) then begin
-    MatCol(1,-337,"Тип товара",0,ConsgType,false,SetSClass); 
-  end;
+  //if (HasJewelleryInterface) then begin
+    MatCol(1,-337,"Тип товара",0,ConsgType,false,SetSClass); // Edit ************************** Wednesday, 17 December 2014 12:36:49
+  //end;
   MatCol(1,-197,"Цена",0,Price,true,0);
   MatCol(1,-131,"%",0,vRebate,true,0);
   MatCol(1,-96,"Сумма",0,Sum,true,0);
