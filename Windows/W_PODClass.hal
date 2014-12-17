@@ -1883,7 +1883,7 @@ begin
   
   MatCol(1,244,"Наименование",0,Spec,false,0);
   if (HasJewelleryInterface) then begin
-    MatCol(1,-337,"Тип склада",0,StockType,false,SetSClass); 
+    MatCol(1,-337,"Тип товара",0,ConsgType,false,SetSClass); 
   end;
   MatCol(1,-197,"Цена",0,Price,true,0);
   MatCol(1,-131,"%",0,vRebate,true,0);

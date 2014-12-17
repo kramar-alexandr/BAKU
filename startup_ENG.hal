@@ -89,7 +89,13 @@ begin
 
   Export("Sales report with Images",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
   Export("Stock report by locations with images",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
-
+	
+	SetBegin(900);
+		SetText(0,"Common");
+		SetText(1,"Consigment");
+		SetText(2,"LowCost");
+  EndSet;
+	
   SString(24193,"For payment");
   SString(31000,"Payment row by the certificate should be one");  
   SString(31001,"Used certificate for 80 AZN");

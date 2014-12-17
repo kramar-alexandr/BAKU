@@ -796,7 +796,8 @@ begin
 			newINr.Unittext = "˜’";
 			newINr.VATCode = "0%I";
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
-newINr.LastPurchPrice2 = POrw.Price;
+			newINr.LastPurchPrice2 = POrw.Price;
+			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
 			if(nonblank(POrw.xClassification))then begin
 				newINr.DispGroups = POrw.xClassification;
 			end else begin
@@ -911,6 +912,11 @@ newINr.LastPurchPrice2 = POrw.Price;
 			changef = true;
 			INr.MajStoneDet = POrw.MajStoneDet;
 		end;
+		
+		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
+			changef = true;
+			INr.ConsgType = POrw.ConsgType;
+		end;
 
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
@@ -1006,7 +1012,7 @@ begin
 			newINr.BrcStr = POrw.BrcStr;
 			newINr.Gender = POrw.Gender;
 			newINr.Reference = POrw.Reference;
-			
+			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
 			newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 			recordStore(newINr,true);
 			
@@ -1089,6 +1095,10 @@ begin
 			changef = true;
 			INr.Reference = POrw.Reference;
 		end;
+		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
+			changef = true;
+			INr.ConsgType = POrw.ConsgType;
+		end;
 		
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
@@ -1139,6 +1149,7 @@ begin
 			newINr.VATCode = "0%I";
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
 			newINr.LastPurchPrice2 = POrw.Price;
+			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
 			if(nonblank(POrw.xClassification))then begin
 				newINr.DispGroups = POrw.xClassification;
 			end else begin
@@ -1227,6 +1238,10 @@ begin
 			INr.LastPurchPrice2 = POrw.Price;
 			INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 		end;
+		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
+			changef = true;
+			INr.ConsgType = POrw.ConsgType;
+		end;
 		
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 			recordupdate(IN2r,INr,true);
@@ -1270,6 +1285,7 @@ newINr.LastPurchPrice2 = POrw.Price;
 			newINr.DispGroups = POrw.xClassification;
 			newINr.AlternativeCode = POrw.EAN13Code;
 			newINr.CPSCode = POrw.PPNum;
+			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
 			recordStore(newINr,true);
 			
 			recordNew(PLr);
@@ -1331,6 +1347,10 @@ newINr.LastPurchPrice2 = POrw.Price;
 		if(POrw.PPNum>0 and stringtoint(INr.CPSCode)!=POrw.PPNum)then begin
 			changef = true;
 			INr.CPSCode = POrw.PPNum;
+		end;
+		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
+			changef = true;
+			INr.ConsgType = POrw.ConsgType;
 		end;
 	
 		if(changef)then begin
