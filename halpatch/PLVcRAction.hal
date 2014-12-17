@@ -365,6 +365,7 @@ begin
   	INr.Code = PLr.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
   		INr.SyncFlag = 1;
+  		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
   end;
@@ -385,6 +386,7 @@ begin
     INr.Code = PLr.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
   		INr.SyncFlag = 1;
+  		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   		itemnotsavedf = false;
   	end;
@@ -393,11 +395,13 @@ begin
     INr.Code = PLr.ArtCode;
   	if (itemnotsavedf and ReadFirstMain(INr,1,true)) then begin
   		INr.SyncFlag = 1;
+  		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
   	INr.Code = PL2r.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
   		INr.SyncFlag = 1;
+  		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
   end;
