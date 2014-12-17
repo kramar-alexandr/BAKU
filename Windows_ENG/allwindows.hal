@@ -6568,7 +6568,8 @@ begin
   if (HasModIN) then begin
     SpecialMenu("Item Status",'I',2,"ItemStatusPODsm");
   end;
-  SpecialMenu("Item Search",'f',1,"ItemSearchDsm");
+  SpecialMenu("Item Search",'',1,"ItemSearchDsm");
+  SpecialMenu("Table Search",'f',1,"TableSearchDsm");
   if (HaseMail) then begin
     SpecialMenu("Create e-mail",'m',3,"CreateMailFromPODsm");
   end;
@@ -7094,5 +7095,260 @@ WindowBegin("Prices Import",ImportPLClass,CGIcW,RcType);
 	 StaticText(25,v+=20,"* Serial number (if required)",false);
 	 
 	 StaticText(20,v+=40,"Import file mast be TAB delimited text",false);
+  EndWindow;
+end;
+
+
+window RetDClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,v,vm,vs;
+  WindowBegin("Returned Goods",RetDClass,CGview,-);
+  SetWRect(20,80,750,460);
+  Sizeable(-1,-1,0,0);
+  UseView(RetVc);
+  ActiveFieldOnNew("CustCode");    
+  Tile(0,74,false,"",TransDate);
+  v = 6; vs = 20;
+  EditField(75,vm=(v=6),95,"No.",Normal,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Customer",Normal,CustCode,false,CUSClass);
+  EditField(h=275,v=vm,-40,"Name",Normal,CustName,false,0);
+  if (IsEnterprise or HasLocalization("PRT")) then begin
+    EditField(h,vm=(v+=20),135,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  end;  
+//  EditField(h+210,v,82, "Employee",Normal,EMCode,false,UserSClass);
+  CheckBox(h4=-100,v,0,"OK",OKFlag);
+  TileButton(1,"Terms");
+  TileButton(2,"Items");
+  TileButton(3,"Currency");
+  TileButton(4,"Comment");
+  Tile(1,90,false,"1",Location);
+  vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -110;
+  EditField(h1,vm=(v=6),82,"Date",Normal,TransDate,false,PasteCurDate);
+  if (HasMultiLocations) then begin 
+    EditField(h1,v+=vs,82,"Location",Normal,Location,false,LocationSClass);
+  end;
+  EditField(h1,v+=vs,82,"Reason",Normal,Reason,false,StandProblemsSClass); 
+  if (HasObjects) then begin 
+    EditField(h1,v+=vs,82,"Objects",Normal,Objects,false,ObjSClass);  
+  end; 
+  EditField(h2,v=vm,135,"Order No.",ViewOnly,OrdNr,false,0);
+  EditField(h2,v+=vs,135,"Delivery No.",ViewOnly,SHNr,false,0);  
+  EditField(h2,v+=vs,135,"Serv. Order No.",ViewOnly,SVONr,false,0);
+  EditField(h2,v+=vs,135,"Work Sheet No.",ViewOnly,WSNr,false,0);
+  EnterSkip(Math);
+  ButtonFrame(h3=h3-70,v=vm+10,140,2,"Reduce Quantities");
+  RadioButton(h3,v,0,0,"Delivered Only",Type);
+  RadioButton(h3,v+=16,1,0,"O_rdered and Delivered",Type);
+  CheckBox(h4,v=vm+10,0,"Update #Stock#",UpdStockFlag);
+  CheckBox(h4,v+=16,0,"Price Incl.#VAT#",InclVAT);
+  CheckBox(h4,v+=16,0,"No #Credit Notes#",Closed);
+  Tile(2,79,true,"2",Math);
+  v = 24;
+  MatrixBegin(4,v,-50,-22,-,199);
+  Flip(0);
+  MatCol(1,24,"Item",0,ArtCode,false,INSClass);
+//  MatCol(1,84,"Var",0,VARList,true,VARSClass);
+//  MatCol(1,144,"Qty",0,Quant,true,0);
+  MatCol(1,94,"Qty",0,Quant,true,0);
+  Flip(1);
+//  MatCol(1,194,"Description",0,Spec,false,0);
+  MatCol(1,144,"Description",0,Spec,false,0);
+  MatCol(1,-228,"Item Cost",0,UPrice,true,0);
+  MatCol(1,-160,"Extra Cost",0,Extra,true,0);
+  MatCol(1,-80,"Unit Cost",0,CostPrice,true,0);
+  Flip(2);
+  MatCol(1,134,"Objects",0,Objects,false,ObjSClass);
+  if (HasMultiLocations) then begin 
+    MatCol(1,264,"Invoiced",0,Invd,false,0);
+    MatColTL(1,-300,"Location",0,M4UStr,ViewOnly,0,Location,false,0);
+  end else begin
+    MatCol(1,-300,"Invoiced",0,Invd,false,0);
+  end;
+  MatColTL(1,-240,"Cost A/C",0,M4UStr,ViewOnly,0,CostAcc,false,AccSClass);
+  MatCol(1,-180,"Serial No.",0,SerialNr,false,SerialNrSClass);
+  MatCol(1,-80,"Best Before",0,BestBefore,false,0);
+  Flip(3);
+  if (HasObjects) then begin 
+    MatCol(1,144,"Objects",0,Objects,false,ObjSClass);
+  end;
+  MatCol(1,-380,"BuyBack Pr.",0,BBCostPrice,false,0);
+  MatCol(1,-300,"Position",0,PosCode,false,FreePosSClass);
+  MatColTL(1,-240,"Recipe",0,M4Ustr,ViewOnly,0,Recepy,false,0);
+  MatCol(1,-180,"Width",0,UnitXval,true,0);
+  MatCol(1,-120,"Height",0,UnitYval,true,0);
+  MatCol(1,-60,"Depth",0,UnitZval,true,0);
+  Flip(4);
+  MatCol(1,144,"Description",0,Spec,false,0);
+  MatCol(1,-225,"Item Type",0,WSIVType,false,SetSClass);
+  if (HasSerialNumbers) then begin 
+    MatCol(1,-150,"Main Serial No.",0,MotherNr,false,SerialNrSClass);
+  end;
+  InsertRowTest;
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
+  v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
+  v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
+  v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,4,"D");
+//  CheckBox(20,-20,0,"OK",OKFlag);
+  EditField(110,-20,50,"Total Qty",ViewOnly,SumQuant,true,0);
+  Tile(3,70,false,"3",FrRate);
+  vs = 20;
+  EditField(h1,v=6,50,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
+  if (HasMultiCurrency) then begin
+    EditField(h2,v,50,"Rate",Normal,FrRate,true,0);
+    EditField(h2+65,v,50,":",Normal,ToRateB1,true,0);
+    if (HasBase2) then begin
+      StaticText(h2+125,v+12,"Base Currency 1",false);
+      EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
+      EditField(h2+65,v,50,":",Normal,ToRateB2,true,0);
+      StaticText(h2+125,v+12,"Base Currency 2",false);
+      EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
+    end else begin
+      StaticText(h2+125,v+14,"Base Currency",false);
+    end;
+  end else begin
+    EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
+    EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
+  end;
+  Tile(4,30,false,"4",Comment);
+  EditField(h1,v=6,-20,"Comment",Normal,Comment,false,0);
+  SpecialMenu("Item Search",'',1,"ItemSearchDsm");
+  SpecialMenu("Table Search",'f',1,"TableSearchDsm"); //Edit----------------Dima  17.12.2014
+  if (HasModNL) then begin 
+    SpecialMenu("Open #NL# Transaction",'t',0,"OpenTRFromRet");
+  end;
+  SpecialMenu("Create #Credit Note#",'F',1,"CreditIVFromRetsm");
+  if (IsEnterprise) then begin
+    SpecialMenu("Quality Control",'u',10,"QualConFromRetDsm");
+  end;
+  EndWindow;
+end;
+
+
+
+window IntORDClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,t,v,vm,vs;
+  WindowBegin("Internal Order",IntORDClass,CGview,-);
+  SetWRect(20,80,615,350);
+  Sizeable(-1,-1,0,0);
+  UseView(IntORVc);
+  FormName(IntORForm);
+  ActiveFieldOnNew("OurUser");      
+  h = 100; h2 = 230; h3 = 450; vs = 20;
+  Tile(0,50+24,false,"",OurUser);
+  EditField(75,vm=(v=6),95,"No.",Normal,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Person",ViewOnly,OurUser,false,UserSClass);
+  EnterSkip(PlanShip);
+  EditField(h2=250,v=vm,-40,"Name",Normal,Name,false,0);
+  EditField(h2,vm=(v+=20),95,"Department",Normal,Department,false,DepSClass);
+  CheckBox(h2+120,vm,0,"Closed",Closed);
+  TileButton(1,"Terms");
+  TileButton(2,"Items");
+  TileButton(3,"Del. Address");
+  TileButton(4,"Comments");
+  Tile(1,70,false,"1",PlanShip);
+  vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = 600;
+  EditField(h1,v=6,82,"Date",Normal,TransDate,false,PasteCurDate);
+  EditField(h1,v+=vs,82,"Planned Delivery",Normal,PlanShip,false,PasteCurDate);
+  EditField(h1,v+=vs,82,"From Location",Normal,FrLocation,false,LocationSClass);
+  EditField(h2,v=6,82,"Delivery Terms",Normal,ShipDeal,false,ShipDealSClass);
+  EditField(h2,v+=vs,82,"Delivery Mode",Normal,ShipMode,false,DMSClass);
+  EditField(h2,v+=vs,82,"To Location",Normal,Location,false,LocationSClass);
+  EditField(h3,v=6,82,"Internal Order Class",Normal,IntORClass,false,IntORClassSClass);
+  EditField(h3,v+=vs,82,"Language",Normal,LangCode,false,LangSClass);
+  EditField(h3,v+=vs,135,"Reference",Normal,Reference,false,0);
+//  EditField(h,v+=vs,280,"#Authorised# By",ViewOnly,OKPersons,false,UserSClass);// funcionality removed, no operations menu
+  EnterSkip(Math2);
+  Tile(2,120,true,"2",Math2);
+  EditField(-144,-21,90,"TOTAL",ViewOnly,Total,true,0);
+  v = 24;
+  MatrixBegin(3,v,-50,-27,-,99);
+  MatOverStrike(ovst);
+  Flip(0);
+  MatCol(1,24,"Item",0,ArtCode,false,INSClass);
+  if (HasVarieties) then begin
+    MatCol(1,94,"Qty",0,Quant,true,MATVARINSClass);
+  end else begin
+    MatCol(1,94,"Qty",0,Quant,true,0);
+  end;
+  MatCol(1,144,"Treated",0,Shipd1,true,0);
+  MatCol(1,194,"Deliv.",0,Shipd2,true,0);
+  EnterSkip(ArtCode);
+  Flip(1);
+  MatCol(1,244,"Description",0,Spec,false,0);
+  MatCol(1,-180,"Cost Price",0,Price,true,0);
+  MatCol(1,-90,"Total Cost",0,Sum,true,0);
+  Flip(2);
+  MatCol(t=1,144,"Description",0,Spec,false,0);
+  MatCol(t,-304,"Serial No.",0,SerialNr,false,SerialNrSClass);
+  MatCol(t,-204,"Cost A/C",0,CostAcc,false,AccSClass);
+  MatCol(t,-124,"Objects",0,Objects,false,ObjSClass);
+  MatCol(1,-70,"Recipe",0,Recepy,false,RecSClass);
+  Flip(3);
+  MatCol(t=1,144,"Desc.",0,Spec,false,0);
+  MatCol(1,-280,"Treated",0,Shipd1,false,0);
+  MatCol(1,-210,"Deliv.",0,Shipd2,false,0);
+  MatCol(t,-140,"Sent",0,Sent,true,0);
+  MatCol(t,-70,"P/Ord.",0,POOrd,true,0);
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18; VTab(-35,v,-16,v+vs,ToolFlip,1,"A");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
+  v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
+  Tile(3,170,false,"3",ShipDeal);
+  EditField(h,v=6,-20,"Delivery",Normal,ShipAddr0,false,0);
+  EditField(h,v+=vs,-20,"Address",Normal,ShipAddr1,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr2,false,0);
+  EditField(h,v+=vs,-20,"",Normal,ShipAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr3,false,0);
+  EditField(h,v+=vs,-20,"",Normal,DelAddr4,false,0);
+  EditField(h2=-170,v+=vs,150,"Telephone",Normal,Phone,false,0);
+  EditField(h2,v+=vs,150,"Fax",Normal,Fax,false,0);
+  Tile(4,120,false,"4",Math); vs = 20;
+  StaticText(h-6,v=20,"Comments",true);
+  TextField(h,v-5,-170,-10,Math,0);
+  ButtonFrame(h3=-150,v=16,123,6,"Approval Status");
+  RadioButton(h3,v,kAcceptanceStateNotRequired,0,"Not Required",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateNotStarted,0,"Not Started",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateNotRequested,0,"Not Requested",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStatePending,0,"Pending",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateApproved,0,"Approved",AcceptanceStatus);
+  RadioButton(h3,v+=16,kAcceptanceStateRejected,0,"Rejected",AcceptanceStatus);  
+  SpecialMenu("Create #Stock# Movement",' ',0,"StockMovFromIntORDsm");
+  SpecialMenu("Create #Stock Depreciation#",' ',1,"SDFromIntORDsm");
+  SpecialMenu("Create Purchase Order",' ',2,"POFromIntORDsm");
+//  SpecialMenu("#Authorise#",' ',3,"AuthorizeIntORDsm");changed to below
+  SpecialMenu("Send for Approval",' ',6,"IntORSendforAcceptanceIntORDsm");
+  SpecialMenu("Cancel Approval Request",' ',2,"CancelApprovalRequestDsm");
+  SpecialMenu("Internal Order Status",'r',5,"IntORStatIntORDsm");
+  SpecialMenu("Item Search",'',1,"ItemSearchDsm");
+  SpecialMenu("Table Search",'f',1,"TableSearchDsm");  //Edit----------------Dima  17.12.2014
+  SpecialMenu("Reservations",' ',15,"IntORReservIntORDsm");
+  EndWindow;
+end;
+
+
+
+window TableSearchIClass:1  // added ************ Dima, 16.12.2014
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i,mwn;
+  WindowBegin("Table search",TableSearchIClass,CGother,RcType);
+  SetWRect(3,140,400,250);
+  UseView(RcVc);
+  Modality(2);
+  v=30;
+  h=20;
+  EditFieldTL(h+30,v-10 ,150,"Search",M4Str,Normal,20,f1,true,0); // new search field
+  ColourPushButton(h+=200,v-10,h+58,v+26,"GoPreviousItem","Prev.",20);
+  ColourPushButton(h+=75,v-10,h+58,v+26,"GoNextItem","Next.",2);
+
   EndWindow;
 end;

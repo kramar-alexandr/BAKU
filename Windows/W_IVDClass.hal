@@ -3921,7 +3921,8 @@ begin
     EditField(h1,v=6,-20,"Коммент.",Normal,Comment,false,0); 
   end;
   if (IsEnterprise) then begin
-  SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");
+  SpecialMenu("Поиск товара",'',1,"ItemSearchDsm");
+  SpecialMenu("Поиск в текущей таблице",'f',1,"TableSearchDsm");
   SpecialMenu("Статус поступления",'r',4,"PUStatusDsm"); 
   SpecialMenu("Генерировать серийные номера",' ',2,"GenSerialNosPUDsm");
   SpecialMenu("Открыть спецификацию партии",' ',5,"OpenBatchPUDsm");

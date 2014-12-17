@@ -2208,7 +2208,8 @@ begin
   if (HasModIN) then begin
   SpecialMenu("Статус товара",'I',2,"ItemStatusPODsm");
   end;
-  SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");
+  SpecialMenu("Поиск товара",'',1,"ItemSearchDsm");
+  SpecialMenu("Поиск в текущей таблице",'f',1,"TableSearchDsm");
   if (HaseMail) then begin
   SpecialMenu("Создать e-mail",'m',3,"CreateMailFromPODsm");
   end;
@@ -3323,7 +3324,8 @@ begin
   SpecialMenu("Отправить для утверждения",' ',6,"IntORSendforAcceptanceIntORDsm");
   SpecialMenu("Отменить запрос на утверждение",' ',2,"CancelApprovalRequestDsm"); 
   SpecialMenu("Статус внутреннего заказа",'r',5,"IntORStatIntORDsm");
-  SpecialMenu("Поиск товара",'f',1,"ItemSearchDsm");
+  SpecialMenu("Поиск товара",'',1,"ItemSearchDsm");
+  SpecialMenu("Поиск в текущей таблице",'f',1,"TableSearchDsm");
   SpecialMenu("Резервирования",' ',15,"IntORReservIntORDsm");
   EndWindow;
 end;
