@@ -1,5 +1,5 @@
 //remote function Boolean FindSubString( string , string );
-  SetLangMode(LangRussian,"RUS",0); 
+  //SetLangMode(LangRussian,"RUS",0); 
 
 function Boolean FindSubString( string Search, string Source )
 begin
@@ -113,9 +113,7 @@ begin
 	end;
 
   if ((field =="") ) then begin
-  //MessageBox(0,  search);
-  //MessageBox(0, USetStr(31306) & search);
-MessageBox(31306,search);
+	MessageBox(31306,search);
   end;
 
   LBreak:;	
@@ -285,7 +283,7 @@ begin
 	end;
 
   if ((field =="") ) then begin
-  MessageBox(0,"Не найдено результатов для " & search);
+ 	MessageBox(31306,search);
   end;
 
   LBreak:;	
@@ -371,7 +369,7 @@ begin
 	end;
 
   if ((field =="") ) then begin
-  MessageBox(0,"Не найдено результатов для " & search);
+  	MessageBox(31306,search);
   end;
 
   LBreak:;	

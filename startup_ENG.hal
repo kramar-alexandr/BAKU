@@ -306,7 +306,9 @@ begin
   
   SString(31263,"Report on clients' debts on orders");  			//Отчет по задолженности клиентов по счетам
   SString(31264,"Total sum");									
-  SString(31265,"Unknown");									
+  SString(31265,"Unknown");
+
+  SString(31306,"Not found ");									
 
 	
   /*StrSetBegin(3);
