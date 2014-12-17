@@ -105,6 +105,7 @@ begin
   SString(2348,"خالص ");
   SString(2349,"پیشنهاد خرید ");
   SString(2350,"B-قیمت ");
+  SString(2354,"مشتری");						//Customer
   
   
   
@@ -266,6 +267,8 @@ begin
   SString(4918,"همه فروشندگان"); 				//All salesmen  
   SString(7025,"شماره تلفن ");
   SString(7026,"شماره فکس ");
+  SString(8317,"همه طبقات"); 					//All Classes	
+  SString(8771,"کلاس"); 							//Class	
   
 // INQtyRn  
   SString(8960,"آمار کالا/تعداد"); 
@@ -408,6 +411,9 @@ begin
   
   SString(16395,"همه طبقه بندی مورد");		//All Item Classifications
   SString(16396,"طبقه بندی مورد");			//Item Classification
+  SString(19603,"همه فعالیت");					//All Branches
+  SString(19604,"فعالیت");						//Branches
+  SString(19612,"نوع فعالیت");					//Branch
 
   SString(22007,"همه دلایل");				//All Reasons
   SString(22008,"دلیل");  					//Reason  

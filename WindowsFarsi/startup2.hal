@@ -105,6 +105,7 @@ begin
   SString(2348,"ÎÇäÕ ");
   SString(2349,"??ÔæçÇÏ ÎÑ?Ï ");
   SString(2350,"B-â?åÊ ");
+  SString(2354,"åÔÊÑ?");						//Customer
   
   
   
@@ -266,6 +267,8 @@ begin
   SString(4918,"çåç áÑèÔæÏ?Çæ"); 				//All salesmen  
   SString(7025,"ÔåÇÑç Êäáæ ");
   SString(7026,"ÔåÇÑç á?Ó ");
+  SString(8317,"çåç ×ÈâÇÊ"); 					//All Classes	
+  SString(8771,"?äÇÓ"); 							//Class	
   
 // INQtyRn  
   SString(8960,"ÂåÇÑ ?ÇäÇ/ÊÙÏÇÏ"); 
@@ -408,6 +411,9 @@ begin
   
   SString(16395,"çåç ×Èâç ÈæÏ? åèÑÏ");		//All Item Classifications
   SString(16396,"×Èâç ÈæÏ? åèÑÏ");			//Item Classification
+  SString(19603,"çåç áÙÇä?Ê");					//All Branches
+  SString(19604,"áÙÇä?Ê");						//Branches
+  SString(19612,"æèÙ áÙÇä?Ê");					//Branch
 
   SString(22007,"çåç ÏäÇ?ä");				//All Reasons
   SString(22008,"Ïä?ä");  					//Reason  
@@ -659,7 +665,7 @@ SString(18240,"çÒ?æç");
   SString(31255,"áÑèÔ?Çç");						//Location
 						
   SString(31256,"ÓÇÎÊç");  						//was produced  
-  
+ 
  //CustDebByComp
   SString(31257," ÈÏç? åÔÊÑ?Çæ âÈä ÇÒ ÔÑ?Ê "); 					//Report on clients' debts to companies
   SString(31258,"åÔÊÑ?");										//Client
@@ -694,9 +700,7 @@ SString(18240,"çÒ?æç");
   SString(31284,"ÈÏç? åÔÊÑ?");						//client debt
   SString(31285,"åâÏÇÑ ?ÇäÇ");
   SString(31286,"çÒ?æç ?ÇäÇ");
-  SString(31287,"ÂåÇÑ ÏÑ ÍÓÇÈ åÔÊÑ?");   
-  
-  
+  SString(31287,"ÂåÇÑ ÏÑ ÍÓÇÈ åÔÊÑ?");     
 
   SString(12594,"ÇÑÇÆç ÏçæÏç"); //Edit by Victor 10.12.14
   SString(5051,"ÑÓ?Ïç"); 
