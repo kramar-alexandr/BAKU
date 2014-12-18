@@ -655,6 +655,7 @@ begin
   boolean TrHs,next,type1,type2;
   string 30 code,class;
   integer pos;
+  boolean changef;
 
 	TrHs = true;
 	type1 = false;
@@ -672,7 +673,7 @@ begin
 
 
 	while (LoopMain(INr,1,TrHs)) begin
-
+		changef = false;
 		next = true;
 
 		code = INr.Code;
@@ -680,7 +681,7 @@ begin
 			if (Right(code,2)=="VR") then begin 	//first type
 				INr.ConsgType = 1;
 				INr.PurchAcc = "41/02";
-				RecordStore(INr,true);
+				changef = true;
 				next = false;
 			end;	
 		end;
@@ -695,12 +696,15 @@ begin
 				if(FindSubString("POS",DIr.Code) or FindSubString("POS",DIr.Name))then begin
 					INr.ConsgType = 2;
 					INr.PurchAcc = "12";
-					RecordStore(INr,true);			
+					changef = true;
 				end;
 				ExtractObj(INr.DispGroups,pos,class);
 			end;
 		end;
-                            
+		
+		if(changef)then begin
+      RecordStore(INr,true);           
+    end;          
 	end;
 
 

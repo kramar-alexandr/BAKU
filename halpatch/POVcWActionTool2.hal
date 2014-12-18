@@ -355,50 +355,13 @@ BEGIN
 
   BlockLoad(CAb);
   BlockLoad(ARb);
-
-  GetPUPControlAcc(location,vecode,CAb.ItemGroupAccounts,purchacc,INp.Group,ARb,stocktype,purchacc,purchaccname,true);
-/*
-  record AccBlock ARAccb;
-  record CostAccBlock CostAccRec;
-  record CUVc VEp;
-  integer ctype;
+	
+	if(nonblank(INp.PurchAcc))then begin// Edit ************************** Thursday, 18 December 2014 09:50:53
+		purchacc = INp.PurchAcc;// Edit ************************** Thursday, 18 December 2014 09:50:53
+	end else begin// Edit ************************** Thursday, 18 December 2014 09:50:54
+		GetPUPControlAcc(location,vecode,CAb.ItemGroupAccounts,purchacc,INp.Group,ARb,stocktype,purchacc,purchaccname,true);
+  end;// Edit ************************** Thursday, 18 December 2014 09:50:56
   
-  BlockLoad(ARAccb);
-  BlockLoad(CostAccRec);
-    
-  switch (stocktype) begin
-    case kStockTypePurchased:
-      VEp.Code = vendor;
-      if ReadFirstMain(VEp,1,true) then begin
-        if (VEp.ExportFlag == 0) then begin
-          ctype = 0;
-        end;
-        if ((VEp.ExportFlag == 1) or (VEp.ExportFlag == 3)) then begin
-          ctype = 1;
-        end;
-        if (VEp.ExportFlag == 2) or (VEp.ExportFlag == 4) then begin
-          ctype = 2;
-        end;  
-      end;
-      if (CostAccRec.ItemGroupAccounts!=0) then begin
-        GetITPurchAcc(INp.Group,purchacc,ctype);
-        if (nonblank(purchacc)) then begin
-          goto LGetINPurchaseControlAcc;
-        end;
-      end;
-      if (ctype <= 0) then begin
-        purchacc = ARAccb.PurchAcc;
-      end;
-      if (ctype == 1) then begin
-        purchacc = ARAccb.EUPurchAcc;
-      end;
-      if (ctype == 2) then begin
-       purchacc = ARAccb.ExpPurchAcc;
-      end;
-    case kStockTypeConsignment:
-      purchacc = ARAccb.ConsigPurchAcc;
-  end;
-*/  
  LGetINPurchaseControlAcc:; 
   RETURN;
 END;
