@@ -611,3 +611,99 @@ begin
 	
 return;
 end;
+
+
+
+
+function Boolean FindSubString( string Search, string Source )
+begin
+	integer i,length,lengthSource,diff;
+	string 150 temp,str,inStr;
+	boolean res;
+	
+	res=false;
+	length=len(Search);
+	lengthSource=len(Source);
+	diff=lengthSource-length;
+
+	str=UpperCase(Search);   
+	inStr=UpperCase(Source);		
+	if (diff<0) then begin
+	goto	breakFunction;
+	end;
+	
+	for(i=0;i<=diff;i=i+1) begin
+	 temp=mid(inStr,i,length);
+	 if(temp==str) then begin
+	 	res = true;
+	 	goto breakFunction;
+	 end;	
+	end;
+
+	breakFunction:; // goto
+	FindSubString=res;
+return;  
+end;
+
+
+global
+updating procedure  ConsignmentTypeMn(record RcVc RepSpec)	//Edit----------------------Dima 17.12.2014
+begin
+  record INVc INr;
+  record DIVc DIr;
+  record AccVc Accr;
+  boolean TrHs,next,type1,type2;
+  string 30 code,class;
+  integer pos;
+
+	TrHs = true;
+	type1 = false;
+	type2 = false;
+
+	Accr.AccNumber = "41/02";
+	if (ReadFirstMain(Accr,1,true)) then begin
+	type1 = true;
+	end;
+
+	Accr.AccNumber = "12";
+	if (ReadFirstMain(Accr,1,true)) then begin
+	type2 = true;
+	end;
+
+
+	while (LoopMain(INr,1,TrHs)) begin
+
+		next = true;
+
+		code = INr.Code;
+		if (type1 == true) then begin
+			if (Right(code,2)=="VR") then begin 	//first type
+				INr.ConsgType = 1;
+				INr.PurchAcc = "41/02";
+				RecordStore(INr,true);
+				next = false;
+			end;	
+		end;
+		
+		if((next == true) and (type2 == true)) then begin			//second type
+			class = "";
+			pos = 0;
+			ExtractObj(INr.DispGroups,pos,class);
+			while(nonblank(class))begin
+				DIr.Code = class;
+				readfirstmain(DIr,1,true);
+				if(FindSubString("POS",DIr.Code) or FindSubString("POS",DIr.Name))then begin
+					INr.ConsgType = 2;
+					INr.PurchAcc = "12";
+					RecordStore(INr,true);			
+				end;
+				ExtractObj(INr.DispGroups,pos,class);
+			end;
+		end;
+                            
+	end;
+
+
+
+  return;
+end;
