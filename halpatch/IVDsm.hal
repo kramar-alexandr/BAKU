@@ -2632,7 +2632,8 @@ begin
 	SDr.Location = IVr.Location;
 	//messagebox(0, "IVr.MachineName = " & IVr.MachineName);
 	SDr.Comment = buttonName & " " & IVr.MachineName;
-	SDr.CostAcc = param;
+	SDr.CostAcc = FirstInRange(param,10);
+	SDr.Objects = LastInRange(param,10);
 	//recordStore(SDr,false);
 	
 	wn = OpenWindow("SDDClass",0,0,"","",SDr);
