@@ -798,6 +798,10 @@ begin
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
 			newINr.LastPurchPrice2 = POrw.Price;
 			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
+			switch(newINr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 			if(nonblank(POrw.xClassification))then begin
 				newINr.DispGroups = POrw.xClassification;
 			end else begin
@@ -916,6 +920,10 @@ begin
 		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
 			changef = true;
 			INr.ConsgType = POrw.ConsgType;
+			switch(INr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 		end;
 
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
@@ -1013,6 +1021,10 @@ begin
 			newINr.Gender = POrw.Gender;
 			newINr.Reference = POrw.Reference;
 			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
+			switch(newINr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 			newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 			recordStore(newINr,true);
 			
@@ -1098,6 +1110,10 @@ begin
 		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
 			changef = true;
 			INr.ConsgType = POrw.ConsgType;
+			switch(INr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 		end;
 		
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
@@ -1150,6 +1166,10 @@ begin
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
 			newINr.LastPurchPrice2 = POrw.Price;
 			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
+			switch(newINr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 			if(nonblank(POrw.xClassification))then begin
 				newINr.DispGroups = POrw.xClassification;
 			end else begin
@@ -1241,6 +1261,10 @@ begin
 		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
 			changef = true;
 			INr.ConsgType = POrw.ConsgType;
+			switch(INr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 		end;
 		
 		if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
@@ -1286,6 +1310,10 @@ newINr.LastPurchPrice2 = POrw.Price;
 			newINr.AlternativeCode = POrw.EAN13Code;
 			newINr.CPSCode = POrw.PPNum;
 			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
+			switch(newINr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 			recordStore(newINr,true);
 			
 			recordNew(PLr);
@@ -1351,6 +1379,10 @@ newINr.LastPurchPrice2 = POrw.Price;
 		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
 			changef = true;
 			INr.ConsgType = POrw.ConsgType;
+			switch(INr.ConsgType)begin
+				case 1:newINr.PurchAcc = "41/02";
+				case 2:newINr.PurchAcc = "12";
+			end;
 		end;
 	
 		if(changef)then begin

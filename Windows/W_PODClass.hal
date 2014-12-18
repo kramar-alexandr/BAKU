@@ -2209,7 +2209,7 @@ begin
   SpecialMenu("Статус товара",'I',2,"ItemStatusPODsm");
   end;
   SpecialMenu("Поиск товара",'',1,"ItemSearchDsm");
-  SpecialMenu("Поиск в текущей таблице",'f',1,"TableSearchDsm");
+  SpecialMenu("Поиск в текущей таблице",'f',1,"TableSearchDsm");// Edit ************************** Thursday, 18 December 2014 11:54:59
   if (HaseMail) then begin
   SpecialMenu("Создать e-mail",'m',3,"CreateMailFromPODsm");
   end;
