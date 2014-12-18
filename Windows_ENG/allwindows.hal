@@ -7352,6 +7352,7 @@ begin
 real h,v,vs;
 Integer i,mwn;
   WindowBegin("Table search",TableSearchIClass,CGother,RcType);
+  DynamicWindow;
   SetWRect(3,140,400,250);
   UseView(RcVc);
   Modality(2);
