@@ -7353,13 +7353,12 @@ begin
 real h,v,vs;
 Integer i,mwn;
   WindowBegin("Table search",TableSearchIClass,CGother,RcType);
-  //DynamicWindow;
   SetWRect(3,140,400,250);
   UseView(RcVc);
-  Modality(2);
+  Modality(1);
   v=30;
   h=20;
-  EditField(h+30,v-10 ,150,"Поиск",Normal,f1,true,0);// new search field
+  EditField(h+30,v-10 ,150,"Search",Normal,f1,true,0);// new search field
   ColourPushButton(h+=200,v-10,h+58,v+26,"GoPreviousItem","Prev.",20);
   ColourPushButton(h+=75,v-10,h+58,v+26,"GoNextItem","Next.",2);
 

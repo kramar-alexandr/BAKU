@@ -31,7 +31,7 @@ begin
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,USetStr(31201),false);
-		outstring(150,0,RepSpec.sStartDate & USetStr(31216) & RepSpec.sEndDate,false);
+		outstring(150,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 	endformat;
 	startformat(15);
 	endformat;

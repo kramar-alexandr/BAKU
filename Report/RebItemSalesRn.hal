@@ -79,7 +79,7 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 	
 	StartFormat(15);
 		outstring(0,0,USetStr(31201),false);
-		outstring(0,0,RepSpec.sStartDate & USetStr(31216) & RepSpec.sEndDate,false);
+		outstring(0,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 	endformat;
 	StartFormat(15);
 		outstring(0,0,USetStr(31202),false);

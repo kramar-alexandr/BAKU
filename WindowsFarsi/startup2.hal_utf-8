@@ -106,6 +106,7 @@ begin
   SString(2349,"پیشنهاد خرید ");
   SString(2350,"B-قیمت ");
   SString(2354,"مشتری");						//Customer
+  SString(2448,"اول نام");  					//Name
   
   
   

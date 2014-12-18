@@ -106,6 +106,7 @@ begin
   SString(2349,"??‘ÊÁ«œ Œ—?œ ");
   SString(2350,"B-‚?Â  ");
   SString(2354,"Â‘ —?");						//Customer
+  SString(2448,"«Ë‰ Ê«Â");  					//Name
   
   
   
