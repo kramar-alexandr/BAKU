@@ -2617,7 +2617,7 @@ begin
 return;
 end;
 
-global updating procedure CreateSDfromIV(record IVVc IVr, String param)
+global updating procedure CreateSDfromIV(record IVVc IVr, String param, String buttonName)
 begin
 	integer i,pos,rownum;
 	Record SDVc SDr;
@@ -2631,7 +2631,7 @@ begin
 	SDr.SerNr = NextSerNr("SDVc",SDr.TransDate,-1,false,""); 
 	SDr.Location = IVr.Location;
 	//messagebox(0, "IVr.MachineName = " & IVr.MachineName);
-	SDr.Comment = "‘писание от собственника. " & IVr.MachineName;
+	SDr.Comment = buttonName & " " & IVr.MachineName;
 	SDr.CostAcc = param;
 	//recordStore(SDr,false);
 	
@@ -2641,7 +2641,7 @@ begin
 return;
 end;
 
-global updating procedure CreateSDfromIVDsm(String param)
+global updating procedure CreateSDfromIVDsm(String param, String buttonName)
 begin
 	integer wn,mtrw;
 	record IVVc IVr;
@@ -2649,7 +2649,7 @@ begin
 	
 	wn = CurWindow;
   GetWindowRecord(wn,IVr);
-  CreateSDfromIV(IVr, param);
+  CreateSDfromIV(IVr, param, buttonName);
 
 return;
 end;
