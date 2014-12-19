@@ -2625,15 +2625,29 @@ begin
 	boolean foundf;
 	record CUVc CUr;
 	Integer wn;
-				
+	record LocationVc Locationr;
+	
 	recordnew(SDr);
 	
 	SDr.SerNr = NextSerNr("SDVc",SDr.TransDate,-1,false,""); 
 	SDr.Location = IVr.Location;
+	
+
+	
 	//messagebox(0, "IVr.MachineName = " & IVr.MachineName);
 	SDr.Comment = buttonName & " " & IVr.MachineName;
 	SDr.CostAcc = FirstInRange(param,10);
-	SDr.Objects = LastInRange(param,10);
+	Locationr.Code = SDr.Location;
+	if(readfirstmain(Locationr,1,true))then begin
+		if(nonblank(Locationr.Objects))then begin
+			SDr.Objects = Locationr.Objects;
+		end;
+	end;
+	if(blank(SDr.Objects))then begin
+		SDr.Objects = LastInRange(param,10);
+	end else begin
+		SDr.Objects = SDr.Objects & "," & LastInRange(param,10);
+	end;
 	//recordStore(SDr,false);
 	
 	wn = OpenWindow("SDDClass",0,0,"","",SDr);
