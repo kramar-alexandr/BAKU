@@ -633,6 +633,15 @@ begin
        goto LkInvoiceRowTypeNormal2;
      case kInvoiceRowTypeNormal:
 LkInvoiceRowTypeNormal2:;
+
+       if (IVp.OrderNr>0) then begin			//Edit----------------Dima----18.12.2014
+			RecordCheckError(1067,"",-1,"OrderNr");
+               res = -1;
+               goto L99;
+		end;//Edit  End---------------------------
+
+
+
        if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) then begin
           if (IVp.UpdStockFlag!=0) then begin
             if (IVp.OrderNr>0) then begin
