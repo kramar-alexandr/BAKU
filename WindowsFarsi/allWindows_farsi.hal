@@ -3259,7 +3259,7 @@ WindowBegin("?“«—‘ ·—Ë‘ ??‘—· Á",SalesReportExtRClass,CGRcW,RcType);
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 120;
   PeriodField(h,v,"œË—Á ");
-  EditFieldTL(h,v+=vs,150,"?????(???????)",M4Str,Normal,41,f1,false,LocationSClass);
+  EditFieldTL(h,v+=vs,150,"«Ê»«—. ·—Ë‘?«Á",M4Str,Normal,41,f1,false,LocationSClass);
   EditFieldTL(h,v+=vs,150,"◊»‚Á »Êœ?",M4Str,Normal,200,f2,false,DISClass);
   EditFieldTL(h,v+=vs,150,"»—Êœ",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
   EditFieldTL(h,v+=vs,150,"Âœ‰",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
