@@ -636,7 +636,7 @@ LkInvoiceRowTypeNormal2:;
 
        if (IVp.OrderNr>0) then begin			//Edit----------------Dima----18.12.2014
 		if (IVrw.OrdRow < 0) then begin	//incorrect addition
-			RecordCheckError(1067,"",-1,"OrderNr");
+			RecordCheckError(31310,"",-1,"OrderNr");
                res = -1;
                goto L99;
 		end;
