@@ -635,12 +635,12 @@ begin
 LkInvoiceRowTypeNormal2:;
 
        if (IVp.OrderNr>0) then begin			//Edit----------------Dima----18.12.2014
+		if (IVrw.OrdRow < 0) then begin	//incorrect addition
 			RecordCheckError(1067,"",-1,"OrderNr");
                res = -1;
                goto L99;
-		end;//Edit  End---------------------------
-
-
+		end;
+	  end;//Edit  End---------------------------
 
        if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) then begin
           if (IVp.UpdStockFlag!=0) then begin
