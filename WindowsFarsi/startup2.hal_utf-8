@@ -65,6 +65,7 @@ begin
   SString(1142,"تاریخ اشتباه ");
   SString(1143,"بدون و با توجه عضویت: ");
   SString(1144,"دوره: ");
+  SString(1156,"همه گروه ها");					//Department
   SString(1159,"بررسی اجمالی");					//Overview
   SString(1160,"دقیق");							//Detailed  
   SString(1163,"ماه کامل مورد نیاز ");
@@ -72,7 +73,15 @@ begin
   SString(1212,"همه تامین کنندگان");			//All suppliers
   SString(1213," تامین کنندگان ");				//Suppliers
   SString(1271," همه گروه ها ");				//All Groups
-  SString(1319," و ");							// and   	
+  SString(1319," و ");							// and   
+  SString(1330,"پرداخت صورتحساب");			//Invoices
+  SString(1334,"تحویل");				//Deliveries
+  SString(1335,"از خرید");				//Goods Receipts
+  SString(1336,"جنبش کالا");				//Stock Movements
+  SString(1338,"تولید");				//Productions
+  SString(1792,"کاربرگ");				//Work Sheet
+  SString(1828,"از خرید");				//Goods Receipts
+  SString(2057,"بازگشت کالا");			//Return Goods  
 	
 	SString(2320,"خرید گزینه قیمت ");
   SString(2321,"لیست قیمت ");
@@ -193,6 +202,8 @@ begin
   SString(2991,"ماه "); 						//Month
   SString(3011,"سال "); 						//Year
   SString(3013,"دوره "); 						//Period    
+  SString(3080,"ارجاع");				//Reference  
+  
   
   /* MBAList */
   SString(3461,"تحلیلی موجودی گزارش ");
@@ -281,6 +292,8 @@ begin
   SString(8553,"کل:");
   SString(8554,"آمار کالا/فروشنده");
   SString(8555,"آمار فروشنده / مورد");
+ 
+  SString(4999,"حرکت در سهام");			//Stock Transfers 
   
   // StockMovList
   SString(5239,"از طریق  ");
@@ -315,6 +328,9 @@ begin
   SString(5268,"قیمت جدید ");
   SString(5269,"قدیمی قیمت ");
   SString(5270,"هزینه اضافی ");
+
+  SString(6655,"شامل مقدار");			//With Values
+  SString(6656,"بدون ارزش");			//Without Values
   
   /* StockDepRn */
   SString(7600,"مجله استهلاک سهام ");
@@ -325,6 +341,12 @@ begin
   SString(7605,"کالاها  ");
   SString(7606,"تعداد");
   SString(7607,"ارزش ");
+  SString(7607,"ارزش ");					//All Departments
+  
+  SString(8833,"مدل");						//Model  
+  SString(9269,"شرایط پرداخت");				//Payment Terms
+  SString(9660,"مشتری");					//Customer  
+  SString(10476,"ارائه دهنده");				//Supp.  
   
   /* RetGoodsJRn */
   SString(10780,"محصولات بازگشت مجله");  	//Returned Goods Journal
@@ -377,7 +399,8 @@ begin
   SString(14592,"قیمت تمام شده ");
   SString(14593,"تعداد");
   SString(14594,"کل:");
-  
+  SString(11605,"دوره");				//Classification:  
+	
   /*INrsRn*/   
   SString(11674,"محصولات. عملیات ");
   SString(11675,"POS فاکتور");
@@ -408,16 +431,28 @@ begin
   SString(11708,"زمان");
   SString(11709,"به: "); // Part of Address
   SString(11710,"(بدون موضوع) ");
-  SString(11711,"تعداد بازدید");
+  SString(11711,"تعداد بازدید");  
+
+  SString(12713,"اول نام");				//Name
+  SString(12727,"همه");					//All
+  SString(12815,"فروشگاه");				//Location  
+  SString(13199,"اضافی");				//Additional
+  SString(13835,"دوره");				//Period:
+  SString(14533,"وزن");					//Weight
   
   SString(16395,"همه طبقه بندی مورد");		//All Item Classifications
   SString(16396,"طبقه بندی مورد");			//Item Classification
-  SString(19603,"همه فعالیت");					//All Branches
-  SString(19604,"فعالیت");						//Branches
-  SString(19612,"نوع فعالیت");					//Branch
+  SString(16574,"توضیح");					//Comment
+  SString(16709,"فروشنده");					//Salesman
+  SString(17167,"استهلاک");					//Stock Depreciations
+  SString(19357,"دوره");					//Classification  
+  SString(19603,"همه فعالیت");				//All Branches
+  SString(19604,"فعالیت");					//Branches
+  SString(19612,"نوع فعالیت");				//Branch
 
   SString(22007,"همه دلایل");				//All Reasons
   SString(22008,"دلیل");  					//Reason  
+  SString(23659,"تنها");  					//Total  
   
   //Our SStrings
   
@@ -701,7 +736,8 @@ SString(18240,"هزینه");
   SString(31284,"بدهی مشتری");						//client debt
   SString(31285,"مقدار کالا");
   SString(31286,"هزینه کالا");
-  SString(31287,"آمار در حساب مشتری");     
+  SString(31287,"آمار در حساب مشتری"); 
+  SString(31287,"شماره حساب "); 				//Invoice No.  
 
   SString(12594,"ارائه دهنده"); //Edit by Victor 10.12.14
   SString(5051,"رسیده"); 

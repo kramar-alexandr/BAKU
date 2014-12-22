@@ -309,6 +309,7 @@ begin
   SString(31265,"Unknown");
 
   SString(31306,"Not found ");	
+  SString(31307,"Inv. No");
 
 //Error messages
   SString(31310,"You can not add an item if the invoice has been created from Order.")								

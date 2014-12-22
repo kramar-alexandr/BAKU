@@ -65,6 +65,7 @@ begin
   SString(1142,"ÊÇÑ?Î ÇÔÊÈÇç ");
   SString(1143,"ÈÏèæ è ÈÇ ÊèÌç ÙÖè?Ê: ");
   SString(1144,"ÏèÑç: ");
+  SString(1156,"çåç ?Ñèç çÇ");					//Department
   SString(1159,"ÈÑÑÓ? ÇÌåÇä?");					//Overview
   SString(1160,"Ïâ?â");							//Detailed  
   SString(1163,"åÇç ?Çåä åèÑÏ æ?ÇÒ ");
@@ -72,7 +73,15 @@ begin
   SString(1212,"çåç ÊÇå?æ ?ææÏ?Çæ");			//All suppliers
   SString(1213," ÊÇå?æ ?ææÏ?Çæ ");				//Suppliers
   SString(1271," çåç ?Ñèç çÇ ");				//All Groups
-  SString(1319," è ");							// and   	
+  SString(1319," è ");							// and   
+  SString(1330,"?ÑÏÇÎÊ ÕèÑÊÍÓÇÈ");			//Invoices
+  SString(1334,"ÊÍè?ä");				//Deliveries
+  SString(1335,"ÇÒ ÎÑ?Ï");				//Goods Receipts
+  SString(1336,"ÌæÈÔ ?ÇäÇ");				//Stock Movements
+  SString(1338,"Êèä?Ï");				//Productions
+  SString(1792,"?ÇÑÈÑ?");				//Work Sheet
+  SString(1828,"ÇÒ ÎÑ?Ï");				//Goods Receipts
+  SString(2057,"ÈÇÒ?ÔÊ ?ÇäÇ");			//Return Goods  
 	
 	SString(2320,"ÎÑ?Ï ?Ò?æç â?åÊ ");
   SString(2321,"ä?ÓÊ â?åÊ ");
@@ -193,6 +202,8 @@ begin
   SString(2991,"åÇç "); 						//Month
   SString(3011,"ÓÇä "); 						//Year
   SString(3013,"ÏèÑç "); 						//Period    
+  SString(3080,"ÇÑÌÇÙ");				//Reference  
+  
   
   /* MBAList */
   SString(3461,"ÊÍä?ä? åèÌèÏ? ?ÒÇÑÔ ");
@@ -281,6 +292,8 @@ begin
   SString(8553,"?ä:");
   SString(8554,"ÂåÇÑ ?ÇäÇ/áÑèÔæÏç");
   SString(8555,"ÂåÇÑ áÑèÔæÏç / åèÑÏ");
+ 
+  SString(4999,"ÍÑ?Ê ÏÑ ÓçÇå");			//Stock Transfers 
   
   // StockMovList
   SString(5239,"ÇÒ ×Ñ?â  ");
@@ -315,6 +328,9 @@ begin
   SString(5268,"â?åÊ ÌÏ?Ï ");
   SString(5269,"âÏ?å? â?åÊ ");
   SString(5270,"çÒ?æç ÇÖÇá? ");
+
+  SString(6655,"ÔÇåä åâÏÇÑ");			//With Values
+  SString(6656,"ÈÏèæ ÇÑÒÔ");			//Without Values
   
   /* StockDepRn */
   SString(7600,"åÌäç ÇÓÊçäÇ? ÓçÇå ");
@@ -325,6 +341,12 @@ begin
   SString(7605,"?ÇäÇçÇ  ");
   SString(7606,"ÊÙÏÇÏ");
   SString(7607,"ÇÑÒÔ ");
+  SString(7607,"ÇÑÒÔ ");					//All Departments
+  
+  SString(8833,"åÏä");						//Model  
+  SString(9269,"ÔÑÇ?× ?ÑÏÇÎÊ");				//Payment Terms
+  SString(9660,"åÔÊÑ?");					//Customer  
+  SString(10476,"ÇÑÇÆç ÏçæÏç");				//Supp.  
   
   /* RetGoodsJRn */
   SString(10780,"åÍÕèäÇÊ ÈÇÒ?ÔÊ åÌäç");  	//Returned Goods Journal
@@ -377,7 +399,8 @@ begin
   SString(14592,"â?åÊ ÊåÇå ÔÏç ");
   SString(14593,"ÊÙÏÇÏ");
   SString(14594,"?ä:");
-  
+  SString(11605,"ÏèÑç");				//Classification:  
+	
   /*INrsRn*/   
   SString(11674,"åÍÕèäÇÊ. Ùåä?ÇÊ ");
   SString(11675,"POS áÇ?ÊèÑ");
@@ -408,16 +431,28 @@ begin
   SString(11708,"ÒåÇæ");
   SString(11709,"Èç: "); // Part of Address
   SString(11710,"(ÈÏèæ åèÖèÙ) ");
-  SString(11711,"ÊÙÏÇÏ ÈÇÒÏ?Ï");
+  SString(11711,"ÊÙÏÇÏ ÈÇÒÏ?Ï");  
+
+  SString(12713,"Çèä æÇå");				//Name
+  SString(12727,"çåç");					//All
+  SString(12815,"áÑèÔ?Çç");				//Location  
+  SString(13199,"ÇÖÇá?");				//Additional
+  SString(13835,"ÏèÑç");				//Period:
+  SString(14533,"èÒæ");					//Weight
   
   SString(16395,"çåç ×Èâç ÈæÏ? åèÑÏ");		//All Item Classifications
   SString(16396,"×Èâç ÈæÏ? åèÑÏ");			//Item Classification
-  SString(19603,"çåç áÙÇä?Ê");					//All Branches
-  SString(19604,"áÙÇä?Ê");						//Branches
-  SString(19612,"æèÙ áÙÇä?Ê");					//Branch
+  SString(16574,"ÊèÖ?Í");					//Comment
+  SString(16709,"áÑèÔæÏç");					//Salesman
+  SString(17167,"ÇÓÊçäÇ?");					//Stock Depreciations
+  SString(19357,"ÏèÑç");					//Classification  
+  SString(19603,"çåç áÙÇä?Ê");				//All Branches
+  SString(19604,"áÙÇä?Ê");					//Branches
+  SString(19612,"æèÙ áÙÇä?Ê");				//Branch
 
   SString(22007,"çåç ÏäÇ?ä");				//All Reasons
   SString(22008,"Ïä?ä");  					//Reason  
+  SString(23659,"ÊæçÇ");  					//Total  
   
   //Our SStrings
   
@@ -701,7 +736,8 @@ SString(18240,"çÒ?æç");
   SString(31284,"ÈÏç? åÔÊÑ?");						//client debt
   SString(31285,"åâÏÇÑ ?ÇäÇ");
   SString(31286,"çÒ?æç ?ÇäÇ");
-  SString(31287,"ÂåÇÑ ÏÑ ÍÓÇÈ åÔÊÑ?");     
+  SString(31287,"ÂåÇÑ ÏÑ ÍÓÇÈ åÔÊÑ?");   
+  SString(31307,"ÔåÇÑç ÍÓÇÈ");  					//Inv.No
 
   SString(12594,"ÇÑÇÆç ÏçæÏç"); //Edit by Victor 10.12.14
   SString(5051,"ÑÓ?Ïç"); 

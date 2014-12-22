@@ -585,12 +585,13 @@ begin
 							mtrw = matrowcnt(SMpay);
 							GCr.SerNr = IVrw.GCNr;
 							ReadFirstMain(GCr,1,true);
-							SMrw2.stp = 0;							 
+							SMrw2.stp = 0;		
+							SMrw2.InvoiceNr = IVr.SerNr;					 
 							SMrw2.PayDate = GCr.TransDate;
 							SMrw2.ChequeNr = IVrw.GCNr;
 							SMrw2.RecVal = IVrw.Sum;
 							SMrw2.CustName = IVrw.Spec;
-							matrowput(SMpay,mtrw,SMrw2);																		
+							matrowput(SMpay,mtrw,SMrw2);																						payrows = false;
 							
           end;
         end;
@@ -804,7 +805,7 @@ begin
 				matrowget(SMgift,i,SMrw2);
 				if(SMrw2.stp == 1) then begin  //sold gift card
 		  			StartFormat(15);
-					outstring(80,0,USetStr(31244),false);
+					outstring(90,0,USetStr(31244),false);
 					outstring(110,0,SMrw2.ChequeNr,false);
 					outstring(160,0,USetStr(31245),false);
 					outstring(220,0,SMrw2.CustName,false);
@@ -831,7 +832,9 @@ begin
 				matrowget(SMpay,i,SMrw2);
 				if(SMrw2.stp == 0) then begin  //pay by gift card
 		  			StartFormat(15);
-					outstring(80,0,USetStr(31244),false);
+					outstring(15,0,USetStr(31307),false);
+					outstring(45,0,SMrw2.InvoiceNr,false);
+					outstring(90,0,USetStr(31244),false);
 					outstring(110,0,SMrw2.ChequeNr,false);
 					outstring(160,0,USetStr(31245),false);
 					outstring(220,0,SMrw2.CustName,false);
