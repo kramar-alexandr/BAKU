@@ -394,7 +394,7 @@ BEGIN
         GCSr.SerNr = -1;
         if (ReadFirstKey("BarCode",GCSr,1,true)) then begin found = true; end;
       end;
-      if (IVr.InvDate>GCSr.ExpiryDate) then begin
+      if (NonBlankDate(GCSr.ExpiryDate) and (IVr.InvDate>GCSr.ExpiryDate)) then begin
         res = 2185;
         goto LIVVc_PasteGiftCertificate;
       end;

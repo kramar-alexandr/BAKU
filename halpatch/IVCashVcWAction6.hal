@@ -610,7 +610,7 @@ begin
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherTouchScreenDClass;
     end;
-    if (GCSr.ExpiryDate<CurrentDate) then begin 
+    if (NonBlankDate(GCSr.ExpiryDate) and (GCSr.ExpiryDate<CurrentDate)) then begin 
       MessageBox(2185,"");
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherTouchScreenDClass;
@@ -790,7 +790,7 @@ begin
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherSalesTouchScreenDClass;
     end;
-    if (GCr.ExpiryDate<CurrentDate) then begin 
+    if (NonBlankDate(GCr.ExpiryDate) and (GCr.ExpiryDate<CurrentDate)) then begin 
       MessageBox(2185,"");
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherSalesTouchScreenDClass;

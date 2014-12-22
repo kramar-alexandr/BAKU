@@ -27,9 +27,16 @@ BEGIN
       GCr.SerNr = IVrw.GCNr;
       if (ReadFirstMain(GCr,1,true)) then begin
         RecordNew(GCSr);
+
+
 //        GCSr.TransDate = GCr.TransDate;
         GCSr.TransDate = IVp.TransDate;
-        GCSr.ExpiryDate = GCr.ExpiryDate;
+		if (BlankDate(GCr.ExpiryDate)) then begin		//Edit----------------------Dima 22.12.2014
+			GCSr.ExpiryDate = AddMonth(GCSr.TransDate,6);
+		end else begin
+			GCSr.ExpiryDate = GCr.ExpiryDate;
+		end;
+        //GCSr.ExpiryDate = GCr.ExpiryDate;
         GCSr.Comment = GCr.Comment;
         GCSr.Amount = GCr.Amount;
         GCSr.Balance = GCr.Amount;
@@ -77,3 +84,72 @@ BEGIN
   end;
   RETURN;
 END;
+
+
+
+global
+function Boolean IVVcGiftCertificateCheck(record IVVc IVr,Integer rownr,row IVVc IVrw,Integer stp,var val gcval)
+BEGIN
+  Boolean res;
+  record GCVc GCr;
+  record GCSVc GCSr;
+  record GCRVc GCRr;
+  
+  res = true;
+  switch (stp) begin
+    case kInvoiceRowTypeGiftVoucherSold:
+      GCr.SerNr = IVrw.GCNr;
+      if (ReadFirstMain(GCr,1,true)) then begin
+        if (GCr.OKFlag==0) then begin
+          RecordCheckError(2187,"",rownr,"GCNr");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+        if (NonBlankDate(GCr.ExpiryDate) and (IVr.InvDate>GCr.ExpiryDate)) then begin
+          RecordCheckError(2185,"",rownr,"GCNr");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+        GCSr.SerNr = IVrw.GCNr;
+        if (ReadFirstMain(GCSr,1,true)) then begin
+          RecordCheckError(2186,"",rownr,"GCNr");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+        if (IVrw.Sum!=GCr.Amount) then begin
+          RecordCheckError(1210,"",rownr,"Sum");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+      end else begin
+        RecordCheckError(2184,"",rownr,"GCNr");      
+        res = false;
+        goto LIVVcGiftCertificateCheck;
+      end;
+      gcval = gcval + IVrw.Sum;
+    case kInvoiceRowTypeGiftVoucherPayment:
+      GCSr.SerNr = IVrw.GCNr;
+      if (ReadFirstMain(GCSr,1,true)) then begin
+        if (GCSr.Closed!=0) or (GCSr.Balance<=0) then begin
+          RecordCheckError(2189,"",rownr,"GCNr");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+        if (IVrw.Sum>GCSr.Balance) then begin
+          RecordCheckError(1210,"",rownr,"Sum");      
+          res = false;
+          goto LIVVcGiftCertificateCheck;
+        end;
+      end else begin
+        RecordCheckError(2188,"",rownr,"GCNr");      
+        res = false;
+        goto LIVVcGiftCertificateCheck;
+      end;
+      gcval = gcval + IVrw.Sum;
+  end;
+LIVVcGiftCertificateCheck:;
+  IVVcGiftCertificateCheck = res;
+  RETURN;
+END;
+
+
