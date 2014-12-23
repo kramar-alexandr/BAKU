@@ -6905,7 +6905,7 @@ begin
   RecordList(4,17,-21,-39);
   RlColKey(4,4,  "Код",Code,false,Code);
   RlColKey(141,141,"Комментарий",Comment,false,Comment);
-  RlCol(300,300,"Объекты",Objects,false);// Edit ************************** Thursday, 30 October 2014 09:50:54
+  RlCol(-100,-100,"Объекты",Objects,false);// Edit ************************** Thursday, 30 October 2014 09:50:54
   SearchField("Найти");
   EndWindow;
 end;
