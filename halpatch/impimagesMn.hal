@@ -713,7 +713,7 @@ begin
 end;
 
 global
-updating procedure ChangeSalesAccInORRowsMn(record RcVc RepSpec) //Edit***************************Sasha2,12:02 23.12.2014
+updating procedure ChangeSalesAccInORRowsMn(record RcVc RepSpec) //Edit***************************Sasha2,12:02 23.12.2014 {
 begin
   record ORVc ORr;
   row ORVc ORrw;
@@ -739,4 +739,26 @@ begin
   	end;
 
   return;
-end;
+end; //Edit***************************Sasha2,14:09 23.12.2014 }
+
+global
+updating procedure AnnulateVATDupontMn(record RcVc RepSpec) //Edit***************************Sasha2,12:02 23.12.2014 {
+begin
+  record INVc INr;
+  Boolean found;
+  	
+  	if (currentcompany==10) then begin
+  		while (LoopMain(INr,1,true)) begin
+	  		found = false;
+	  		if (NonBlank(INr.VATCode)) then begin
+	  			INr.VATCode = "";
+	  			found = true;
+	  		end;
+	  		if (found) then begin
+	  			RECORDSTORE(INr,true);
+	  		end;
+  		end;
+  	end;
+
+  return;
+end; //Edit***************************Sasha2,14:09 23.12.2014 }

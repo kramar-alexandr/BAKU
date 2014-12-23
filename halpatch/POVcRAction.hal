@@ -978,7 +978,7 @@ begin
 			newINr.VATCode = "0%I";
 			if(currentcompany==10)then begin
 				newINr.Unittext = "EACH";
-				newINr.VATCode = "0";
+				newINr.VATCode = ""; //Edit***************************Sasha2,13:04 23.12.2014
 			end;
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
 			newINr.LastPurchPrice2 = POrw.Price;
