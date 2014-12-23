@@ -711,3 +711,32 @@ begin
 
   return;
 end;
+
+global
+updating procedure ChangeSalesAccInORRowsMn(record RcVc RepSpec) //Edit***************************Sasha2,12:02 23.12.2014
+begin
+  record ORVc ORr;
+  row ORVc ORrw;
+  integer rwcnt,i;
+  Boolean found;
+  string 10 acc;
+  	
+  	acc = "" & 46;
+  	while (LoopMain(ORr,1,true)) begin
+  		found = false;
+  		rwcnt = MatRowCnt(ORr);
+  		for (i=0;i<rwcnt;i=i+1) begin
+  			MatRowGet(ORr,i,ORrw);
+  			if (ORrw.stp==1 and NonBlank(ORrw.ArtCode)) then begin
+	  			ORrw.SalesAcc = acc;
+	  			found = true;
+	  			MatRowPut(ORr,i,ORrw);
+	  		end;	
+  		end;
+  		if (found) then begin
+  			RECORDSTORE(ORr,true);
+  		end;
+  	end;
+
+  return;
+end;
