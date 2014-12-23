@@ -591,7 +591,8 @@ begin
 							SMrw2.ChequeNr = IVrw.GCNr;
 							SMrw2.RecVal = IVrw.Sum;
 							SMrw2.CustName = IVrw.Spec;
-							matrowput(SMpay,mtrw,SMrw2);																						payrows = false;
+							matrowput(SMpay,mtrw,SMrw2);																						
+							payrows = false;
 							
           end;
         end;

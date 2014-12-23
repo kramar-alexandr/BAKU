@@ -259,7 +259,7 @@ begin
   record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
   integer ivcount,mtrw;
   record IPrsVc IPrsr; 
-  record IPVc SMr,SMgift;
+  record IPVc SMr,SMgift,SMpay;
   row IPVc SMrw,SMrw2;
   record ARPayHistVc ARPayr;
   val cost;
@@ -269,9 +269,11 @@ begin
   row ORVc ORrw;
   integer ori,ormtrw;
   record LocationVc Locr;
+  record GCVc GCr;
   integer sign;
   recordnew(SMr);
   recordnew(SMgift);  //Edit -----------------Dima           11.12.2014
+  recordnew(SMpay);  //Edit -----------------Dima           15.12.2014
     
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
@@ -439,6 +441,7 @@ begin
         for (i=0;i<rwcnt;i=i+1) begin
           MatRowGet(IVr,i,IVrw);
           switch (IVrw.stp) begin
+
             case kInvoiceRowTypePrepayment:
             	mtrw = matrowcnt(SMr);
 							ARPayr.CUPNr = IVrw.CUPNr;
@@ -558,10 +561,25 @@ begin
 		case kInvoiceRowTypeGiftVoucherSold :	//Edit-------------------------------------------Dima----------11.12.2014
 							
 							mtrw = matrowcnt(SMgift);
+							SMrw2.stp = 1;
 							SMrw2.ChequeNr = IVrw.GCNr;
 							SMrw2.RecVal = IVrw.Sum;
 							SMrw2.CustName = IVrw.Spec;
-							matrowput(SMgift,mtrw,SMrw2);											
+							matrowput(SMgift,mtrw,SMrw2);
+
+		case kInvoiceRowTypeGiftVoucherPayment:
+
+							mtrw = matrowcnt(SMpay);
+							GCr.SerNr = IVrw.GCNr;
+							ReadFirstMain(GCr,1,true);
+							SMrw2.stp = 0;		
+							SMrw2.InvoiceNr = IVr.SerNr;					 
+							SMrw2.PayDate = GCr.TransDate;
+							SMrw2.ChequeNr = IVrw.GCNr;
+							SMrw2.RecVal = IVrw.Sum;
+							SMrw2.CustName = IVrw.Spec;
+							matrowput(SMpay,mtrw,SMrw2);																						
+							payrows = false;
 							
           end;
         end;
@@ -766,15 +784,48 @@ begin
 			EndFormat;			
 			For(i=0; i<mtrw; i=i+1) begin
 				matrowget(SMgift,i,SMrw2);
-		  		StartFormat(15);
-				outstring(80,0,USetStr(31244),false);
-				outstring(110,0,SMrw2.ChequeNr,false);
-				outstring(160,0,USetStr(31245),false);
-				outstring(220,0,SMrw2.CustName,false);
-				outstring(310,0,USetStr(31239),false);
-				outstring(340,0,SMrw2.RecVal,false);
+				if(SMrw2.stp == 1) then begin  //sold gift card
+		  			StartFormat(15);
+					outstring(90,0,USetStr(31244),false);
+					outstring(110,0,SMrw2.ChequeNr,false);
+					outstring(160,0,USetStr(31245),false);
+					outstring(220,0,SMrw2.CustName,false);
+					outstring(310,0,USetStr(31239),false);
+					outstring(340,0,SMrw2.RecVal,false);
+					EndFormat;
+					totgift = totgift + SMrw2.RecVal;
+				end;			
+			end;	
+    				Gray_Divider(0,1);
+				outstring(310,0,USetStr(31211),false);
+				outstring(340,0,totgift,false);
 				EndFormat;
-				totgift = totgift + SMrw2.RecVal;			
+				EndFormat;
+	end;	
+
+	mtrw = matrowcnt(SMpay);
+    if(mtrw>0)then begin
+			StartFormat(15);
+				outstring(0,0,USetStr(31250),false);
+			EndFormat;
+			totgift = 0;			
+			For(i=0; i<mtrw; i=i+1) begin
+				matrowget(SMpay,i,SMrw2);
+				if(SMrw2.stp == 0) then begin  //pay by gift card
+		  			StartFormat(15);
+					outstring(15,0,USetStr(31307),false);
+					outstring(45,0,SMrw2.InvoiceNr,false);
+					outstring(90,0,USetStr(31244),false);
+					outstring(110,0,SMrw2.ChequeNr,false);
+					outstring(160,0,USetStr(31245),false);
+					outstring(220,0,SMrw2.CustName,false);
+					outstring(310,0,USetStr(31239),false);
+					outstring(340,0,SMrw2.RecVal,false);
+					outstring(380,0,USetStr(31256),false);
+					outstring(420,0,SMrw2.PayDate,false);
+					EndFormat;
+					totgift = totgift + SMrw2.RecVal;
+				end;			
 			end;	
     				Gray_Divider(0,1);
 				outstring(310,0,USetStr(31211),false);
