@@ -76,6 +76,7 @@ enum begin
   kPOSButtonTypeNewCustomer = 103,
   kPOSButtonTypeCreateShotSDVc = 104,
   kPOSButtonTypeCreateShotPUVc = 105,
+  kPOSButtonTypeOpenCustomAllInvoices = 106,
 end;
 
 function string 200 ParseClassification(string class)
@@ -524,6 +525,42 @@ begin
   return;
 end;
 
+global //Edit***************************Sasha2,16:23 23.12.2014 {
+function Boolean IV1LClassOnOKWindow(Integer wn)
+begin
+  Integer nwn,mwn; 
+  record IVVc IVr;
+
+  mwn = MotherWindow(wn);
+  if (ReadMarkedRecord(wn,IVr)) then begin
+  	 CloseWindow(wn);
+  	nwn = OpenWindow("IV1DClass",0,mwn,"","",IVr);
+  	UpdateBrowses("IVVc");
+  end;
+
+  IV1LClassOnOKWindow = false;
+  return;
+end; //Edit***************************Sasha2,16:23 23.12.2014 }
+
+global  //Edit***************************Sasha2,15:45 23.12.2014 {
+procedure OpenCustomAllInvoices()
+begin
+  Integer wn,nwn;
+  record IVVc IVr;
+  record UserVc Userr;
+  string 255 subset;
+
+  Userr.Code = CurrentUser;
+  ReadFirstMain(Userr,1,true);
+  switch (Userr.limitedAccess) begin
+    case 1: subset = Userr.Code;
+    case 2: subset = Userr.SalesGroup;
+  end;
+  wn = CurWindow;
+  nwn = OpenWindow("IV1LClass",1,wn,subset,"",IVr);  
+  return;
+end; //Edit***************************Sasha2,15:45 23.12.2014 }
+
 global updating
 procedure IVDClassTouchScreenPasteButtonDo(integer butnr)
 begin
@@ -752,6 +789,9 @@ begin
         goto LIVDClassTouchScreenPasteButtonDo;
       case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
         CreatePUfromIVDsm;
+        goto LIVDClassTouchScreenPasteButtonDo;
+      case kPOSButtonTypeOpenCustomAllInvoices: //Edit***************************Sasha2,10:37 11.12.2014
+        OpenCustomAllInvoices;
         goto LIVDClassTouchScreenPasteButtonDo;
     end;
   end;

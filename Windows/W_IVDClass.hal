@@ -1762,6 +1762,42 @@ begin //##ii
   return; //##ii
 end; //##ii
 
+window IV1DClass:2
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,hm,hs,t,v,v2,v3,vm,vs;
+  string 255 label,tstr;// Edit ************************** Tuesday, 4 December 2012 10:28:40
+  WindowBegin("Счет-фактура клиенту",IVDClass,CGview,-);
+  //Sizeable(-1,-1,0,0);
+  UseView(IVVc);
+
+  ActiveFieldOnNew("OfficialSerNr");  
+  SetWRect(20,80,750,500);
+  //CommunicateButton;
+
+  EditField(75,vm=(v=6),95,"Номер",ViewOnly,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Клиент",ViewOnly,CustCode,false,CUSClass);
+  EnterSkip(PayDeal);
+  EditField(h=255,v=vm,-40,"Наим.",ViewOnly,Addr0,false,0);
+  EditField(h,vm=(v+=20),135,"Оф.номер",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  //CheckBox(h4=-100,v,0,"OK",OKFlag);
+  vs = 20;
+  label = UserDefined("CUVc","InvAddr0");
+  if (blank(label)) then begin label = "Сч/ф"; end;
+  EditField(h=75,v=90,-40,label,Normal,Addr1,false,0);
+  label = UserDefined("CUVc","InvAddr1");
+  if (blank(label)) then begin label = "адрес"; end;
+  EditField(h,v+=vs, -40,label,Normal,Addr2,false,0);
+  label = UserDefined("CUVc","InvAddr2");
+  EditField(h,v+=vs, -40,label,Normal,Addr3,false,0);
+  label = UserDefined("CUVc","InvAddr3");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr3,false,0);
+  label = UserDefined("CUVc","InvAddr4");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr4,false,0);
+  EditField(h,vm=(v+=vs),80,"ИНН",Normal,VATNr,false,0);
+
+  EndWindow;
+end;
 
 window IVDClass:2
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
@@ -5382,6 +5418,37 @@ begin
 ////  SpecialMenu("Test Mex E-Invoices",'1',0,"TestMexEInvoices");
   EndWindow;
 end;
+
+window IV1LClass:8 //Edit***************************Sasha2,15:52 23.12.2014 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Счета-фактуры",IV1LClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    Sizeable(-1,-1,0,0);
+    SpawnClass(IV1DClass);
+    UseView(IVVc);
+    FormName(PrintIVL);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"Но.",SerNr,false,SerNr);
+    RlColKey(79,79,"ОК",OKFlag,false,OKFlag);
+    RlColKey(111,111,"Дата сч/ф",InvDate,false,InvDate);
+    RlColKey(191,191,"Склад",Location,false,Location);    
+  RlColKey(301,301,"Счет Но.",OrderNr,false,OrderNr);
+  RlColKey(381,381,"Клиент",CustCode,false,CustCode); 
+  RlColKey(441,441,"Наим.",Addr0,false,Name); 
+    RlColKey(-110,-110,"Итого",Sum4,true,Sum4);
+    RlCol(-39,-39,"",CredMark,true);
+    RlCol(-30,-30,"Вал.",CurncyCode,true);
+    RlCol(-1,-1,"",Invalid,true);
+    SearchField("Найти");
+  if (HasLimitedAccess) then begin 
+    BrowseSubsetButton(-40,-15);
+  end;
+    SpecialMenu("OK",'G',0,"OKIVLsm");
+    SpecialMenu("Печатать проформу cчета-фактуры",' ',1,"PrintIVLsm");
+    SpecialMenu("Статус сч/ф",'r',2,"IVInfoIVLsm");
+    EndWindow;
+end; //Edit***************************Sasha2,15:52 23.12.2014 }
 
 window IVLClass:8
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")

@@ -778,6 +778,12 @@ begin
       case 105:
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
         procstr = "";
+      case 106:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
+      case 107:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
     end;
     
     if (procstr<>"") then begin

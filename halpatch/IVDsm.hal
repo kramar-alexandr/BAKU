@@ -750,6 +750,15 @@ LIVDClassPrint:;
   RETURN;
 END;
 
+global //Edit***************************Sasha2,18:12 23.12.2014 {
+function Boolean IV1DClassPrint(Integer wn,Boolean previewf)
+BEGIN
+
+  IV1DClassPrint = IVDClassPrint(wn,previewf);
+  
+  RETURN;
+END; //Edit***************************Sasha2,18:12 23.12.2014 }
+
 global
 procedure IVInfoIVDsm()
 BEGIN
