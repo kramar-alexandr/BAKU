@@ -1196,7 +1196,8 @@ L12:;
       end; 
       if (nonblank(CLOutrw.CorspCode)) then begin
         GetCorspAccNumber(CLOutrw.CorspCode,tstr);        
-        cashres = CheckObjs(tstr,CLOutrw.Objects,errstr);
+        cashres = CheckObjs(tstr,objtstr,errstr);
+        //cashres = CheckObjs(tstr,CLOutrw.Objects,errstr);
         if (cashres!=0) then begin
           RecordCheckError(cashres,errstr,i,"Objects");      
           res = -1;

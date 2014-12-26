@@ -64,7 +64,7 @@ end;
 
 procedure ItemStockIHSerch(record RcVc RepSpec,string item,string location,date sd,date ed,var val qty_start,var val cost_start,var val pu_qty,var val pu_cost,
                            var val sm_poz_qty,var val sm_neg_qty,var val sm_poz_cost,var val sm_neg_cost,var val iv_poz_qty,
-                           var val iv_neg_qty,var val iv_poz_sum,var val iv_poz_cost,var val iv_neg_sum,var val gp,var val iv_neg_cost,var val sd_qty,var val sd_cost,var val cost_end,var val qty_end)
+                           var val iv_neg_qty,var val iv_poz_sum,var val iv_poz_cost,var val iv_neg_sum,var val gp,var val iv_neg_cost,var val sd_qty,var val sd_cost,var val cost_end,var val qty_end,var val srval)
 begin
   record ItemHistVc IHr,IHrinvr;
   record StockMovVc SMr;
@@ -249,6 +249,22 @@ begin
 						cost_end = cost_end + IHr.TotCostPrice;
 						qty_end = qty_end + IHr.Qty;
 					end;
+				case "SRVc":
+					if(IHr.TransDate<sd)then begin
+						if(IHr.Qty>0)then begin
+							cost_start = cost_start + IHr.TotCostPrice;
+						end else begin
+							cost_start = cost_start - IHr.TotCostPrice;
+						end;
+					end else begin
+						if(IHr.Qty>0)then begin
+							cost_end = cost_end + IHr.TotCostPrice;
+							srval = srval + IHr.TotCostPrice;
+						end else begin
+							cost_end = cost_end - IHr.TotCostPrice;
+							srval = srval - IHr.TotCostPrice;
+						end;
+					end;
 				case "SHVc":
 					if(IHr.TransDate<sd)then begin
 						qty_start = qty_start + IHr.Qty;
@@ -337,7 +353,7 @@ begin
   record INVc INr;
   Boolean TrHs,testf;
   integer i,reprownr,mark,gi;
-  val rate,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end;
+  val rate,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval;
   array val totals;
   record PLVc PLr;
   val price;
@@ -384,7 +400,7 @@ begin
       cost_end = 0;
       qty_end = 0;
       gp = 0;
-      ItemStockIHSerch(RepSpec,INr.Code,location,sd,ed,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end);
+      ItemStockIHSerch(RepSpec,INr.Code,location,sd,ed,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval);
       if (qty_start==0 and pu_qty==0 and sd_qty==0 and sm_poz_qty==0 and sm_neg_qty==0 and iv_poz_qty==0 and iv_neg_qty==0 and cost_start==0 and cost_end==0) then begin
         reprownr = reprownr - 1;
       end else begin
@@ -480,6 +496,9 @@ begin
             OutVal(230,0,(cost_start+cost_end),M4Val,false);//сумма себестоимости
             totals[16] = totals[16] + (cost_start+cost_end);
           end;
+          //переоценка
+          OutVal(235,0,srval,M4Val,false);//переоценка
+          totals[20] = totals[20] + srval;// Edit ************************** Friday, 26 December 2014 13:40:11;
           
           OutVal(240,0,(qty_start+pu_qty+sm_poz_qty+iv_poz_qty-iv_neg_qty-sm_neg_qty-sd_qty)*price,M4Val,false);//сумма цена
           totals[17] = totals[17] + (qty_start+pu_qty+sm_poz_qty+iv_poz_qty-iv_neg_qty-sm_neg_qty-sd_qty)*price;
@@ -542,6 +561,7 @@ begin
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutVal(230,0,totals[16],m4val,false);
 		end;
+		OutVal(235,0,totals[20],m4val,false);// Edit ************************** Friday, 26 December 2014 13:40:51
 		OutVal(240,0,totals[17],m4val,false);
   EndFormat;
   return;
@@ -734,6 +754,7 @@ begin
 							if(RepSpec.flags[0]==0)then begin
                 OutString(230,0,USetStr(31095),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:25
 							end;
+							OutString(235,0,USetStr(9651),false);// Edit ************************** Friday, 26 December 2014 13:41:40
 							OutString(240,0,USetStr(31096),false);
 							EndFormat;
 							ItemStockCombination(RepSpec,group,sd,ed,Locr.Code);

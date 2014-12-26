@@ -6,7 +6,7 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 
 procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,
                            var val ivshtotsum,var val ivshpricesum,var val putotsum,var val sdtotsum,var val smpozitivtotsum,
-                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu)
+                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu,var val srval)
 begin
   record ItemHistVc IHr;
   record SHVc SHr;
@@ -122,6 +122,12 @@ begin
             totcostsd = totcostsd + ihcost;
           case "RetPUVc":
             totcostsd = totcostsd + (-ihcost);
+          case "SRVc":
+          	if IHr.Qty>=0 then begin
+							totcostsd = totcostsd + ihcost;
+						end else begin
+							totcostsd = totcostsd + (-ihcost);
+						end;
         end;
       end else begin
         switch (IHr.FileName) begin
@@ -180,6 +186,14 @@ begin
           case "PUVc":
             putotsum = putotsum + ihcost;
             totcosted = totcosted + ihcost;
+          case "SRVc":
+          	if IHr.Qty>=0 then begin
+          		srval = srval + ihcost;
+							totcosted = totcosted + ihcost;
+						end else begin
+							srval = srval + (-ihcost);
+							totcosted = totcosted + (-ihcost);
+						end;
           case "SHVc":
             ivshtotsum = ivshtotsum + ihcost;
             totcosted = totcosted + (-ihcost);
@@ -292,7 +306,7 @@ begin
   integer spi,j;
   val inpo,totalinpo;
   integer gi;
-  val rate,fr,to1,to2,br1,br2;
+  val rate,fr,to1,to2,br1,br2,srval,srvalsum;
   
   spi = 1;
    
@@ -359,6 +373,7 @@ begin
         OutString(360,0,USetStr(17167),false);
         OutString(370,0,USetStr(31110),false);
         OutString(380,0,USetStr(31111),false);
+        OutString(385,0,USetStr(9651),false);// Edit ************************** Friday, 26 December 2014 13:34:10
         SPr.Code = "";
         while(loopmain(SPr,1,true)) begin
             OutString(390,0,SPr.ShortDesc,false);
@@ -397,6 +412,7 @@ begin
         qtynotpay = 0;
         retpu = 0;
         inpo = 0;
+        srval = 0;
         INr.DispGroups = "";
         calc = true;
         while (LoopKey("MyDispGroups",INr,1,true)) begin
@@ -456,7 +472,8 @@ begin
             totals[8] = totals[8] + qtynotpay*rate;
             OutString(380,0,retpu*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
             totals[11] = totals[11] + retpu*rate;
-            
+            OutString(385,0,srval*rate,false); // Edit ************************** Friday, 26 December 2014 13:31:59
+            totals[12] = totals[12] + srval*rate;
             
             totcosted = totcosted + totcostsd;
             for(j=1;j<spi;j=j+1) begin
@@ -479,6 +496,7 @@ begin
             retsum = 0;
             inpo = 0;
             retpu = 0;
+            srval = 0;
             rownr = rownr + 1;
             for(j=0;j<spi;j=j+1) begin
                 sdcost[j]=0;
@@ -499,7 +517,7 @@ begin
           end;
           if(calc)then begin
           
-            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu);
+            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval);
             if(blank(INr.DispGroups))then begin
               //messagebox(0,INr.Code & "  2  " & ivshpricesum);
             end;
@@ -545,6 +563,8 @@ begin
             totals[8] = totals[8] + qtynotpay*rate;
             OutString(380,0,retpu*rate,false);
             totals[11] = totals[11] + retpu*rate;
+            OutString(385,0,srval*rate,false);
+            totals[12] = totals[12] + srval*rate;
             
             totcosted = totcosted + totcostsd;
             for(j=1;j<spi;j=j+1) begin
@@ -599,6 +619,7 @@ begin
         OutString(360,0,totals[7],false);
         OutString(370,0,totals[8],false);
         OutString(380,0,totals[11],false);
+        OutString(385,0,totals[12],false);
         for(j=1;j<spi;j=j+1) begin
           OutString(390,0,sdtotal[j],false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
         end;
@@ -619,6 +640,7 @@ begin
         OutString(360,0,"",false);
         OutString(370,0,"",false);
         OutString(380,0,"",false);
+        OutString(385,0,"",false);
         OutString(405,0,"",false);
         EndFormat;
       

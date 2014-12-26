@@ -1249,6 +1249,15 @@ what about dont post cost on deliveries ?
             locobjstr = LocRec.Objects;
           end;
         end;
+        // Edit Start ---------------------------------------------- Edit Start
+	//Friday, 26 December 2014 15:19:24
+	
+        if(nonblank(INr.PurchAcc))then begin
+        	rowstockacc = INr.PurchAcc;        	
+        end;
+        
+	// Edit End ---------------------------------------------- Edit End
+	
         switch (ordertype) begin
           case kOrderTypeDropShip:
           otherwise
