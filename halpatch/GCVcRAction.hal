@@ -61,7 +61,6 @@ begin
 
 
 LGCVcRecordCheck:;
-LogText(0,"1.GCVcRecordCheck res = " & res);  
   GCVcRecordCheck = res;
   return;
 end;

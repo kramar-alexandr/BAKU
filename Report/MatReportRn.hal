@@ -435,6 +435,7 @@ begin
                                   totccUSD = totccUSD + IPrw.BankVal;
                         case"AZN":ccAZN = IPrw.BankVal;
                                   totccAZN = totccAZN + IPrw.BankVal;
+                                  totpayTRM = totpayTRM + IPrw.BankVal;
                         case"EUR":ccEUR = IPrw.BankVal;
                                   totccEUR = totccEUR + IPrw.BankVal;
                       end;
@@ -480,6 +481,7 @@ begin
                                   totccUSD = totccUSD + ccUSD;
                         case"AZN":ccAZN = IPrw.BankVal;
                                   totccAZN = totccAZN + ccAZN;
+                                  totpayTRM = totpayTRM + ccAZN;
                         case"EUR":ccEUR = IPrw.BankVal;
                                   totccEUR = totccEUR + ccEUR;
                       end;
@@ -499,7 +501,7 @@ begin
                       outstring(600,0,payEUR,false);
                       outstring(650,0,"",false);
                       outstring(700,0,"",false);
-                      outstring(700,0,ccAZN,false);
+                      outstring(700,0,ccAZN+totccAZN,false);
                       //outstring(700,0,ccEUR,false);
                       //outstring(700,0,ccUSD,false);
                       outstring(700,0,IPr.Comment,false);
