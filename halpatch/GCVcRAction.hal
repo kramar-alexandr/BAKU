@@ -59,6 +59,12 @@ begin
     goto LGCVcRecordCheck;
   end;
 
+  if (GCr.ExpiryDate==GCr.TransDate) then begin		//Edit--------Dima-------30.12.2014
+    RecordCheckError(1142," " & GCr.ExpiryDate,-1,"ExpiryDate");
+    res = -1;
+    goto LGCVcRecordCheck;
+  end;
+
 
 LGCVcRecordCheck:;
   GCVcRecordCheck = res;

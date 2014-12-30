@@ -442,3 +442,19 @@ BEGIN
  	GCVcRecordDefaults = res; 
   RETURN;
 END;	
+
+
+global
+function LongInt GCSVcRecordCheck(var record GCSVc GCSr,record GCSVc GCS2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+	res = inner.GCSVcRecordCheck(GCSr,GCS2r,stat,long4);	
+	if (GCSr.ExpiryDate<=GCSr.TransDate) then begin				//Edit--------Dima-------30.12.2014
+    		RecordCheckError(1142," " & GCSr.ExpiryDate,-1,"ExpiryDate");
+    		res = -1;
+  	end;
+
+ 	GCSVcRecordCheck = res; 
+  RETURN;
+END;	
