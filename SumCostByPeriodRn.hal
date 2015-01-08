@@ -277,7 +277,7 @@ begin
 								qtynotpay = qtynotpay - (ORrw.Shipd2-ORrw.Invd)*(IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
 							end;
 						end;
-						ivshtotsum = ivshtotsum + ihcost;
+						ivshtotsum = ivshtotsum - ihcost;
             totcosted = totcosted + ihcost;
           case "RetPUVc":
           	retpu = retpu + ihcost;
@@ -556,7 +556,6 @@ begin
             totals[5] = totals[5] + ivshpricesum*rate;
             OutString(315,0,smnegativtotsum*rate,false);
             totals[6] = totals[6] + smnegativtotsum*rate;
-          
             OutString(360,0,sdcost[0]*rate,false);
             totals[7] = totals[7] + sdcost[0]*rate;
             OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
@@ -565,7 +564,6 @@ begin
             totals[11] = totals[11] + retpu*rate;
             OutString(385,0,srval*rate,false);
             totals[12] = totals[12] + srval*rate;
-            
             totcosted = totcosted + totcostsd;
             for(j=1;j<spi;j=j+1) begin
               OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
