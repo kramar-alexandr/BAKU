@@ -40,7 +40,7 @@ begin
   	if (ReadLastKey("SyncFlag",DI3r,1,false)) then begin
 		  foundflag = DI3r.SyncFlag;
 	  end;
-  	DIr.SyncFlag = foundflag + 1;;
+  	DIr.SyncFlag = foundflag + 1;
   end;
   DIr.SavedCount = 1; 
   
@@ -67,7 +67,7 @@ begin
     if (ReadLastKey("SyncFlag",DI3r,1,false)) then begin
   		foundflag = DI3r.SyncFlag;
   	end;
-  	DIr.SyncFlag = foundflag + 1;;
+  	DIr.SyncFlag = foundflag + 1;
   	goto LDIVcRecordUpdate;
   end;
   if (DI2r.Name_RU!=DIr.Name_RU) then begin
