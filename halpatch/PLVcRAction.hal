@@ -359,12 +359,17 @@ global //Edit***************************Sasha2,10:45 01.12.2014 {
 updating function LongInt PLVcRecordSave(var record PLVc PLr,record PLVc PL2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
-  record INVc INr;
+  record INVc INr,IN2r;
+  LongInt foundflag;
   
   if (PLr.ExVatPrice<>0) then begin
   	INr.Code = PLr.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
-  		INr.SyncFlag = 1;
+  		IN2r.SyncFlag = 9999999999;
+  		if (ReadLastKey("SyncFlag",IN2r,1,false)) then begin
+  			foundflag = IN2r.SyncFlag;
+  		end;
+  		INr.SyncFlag = foundflag + 1;
   		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
@@ -378,14 +383,19 @@ global //Edit***************************Sasha2,10:45 01.12.2014 {
 updating function LongInt PLVcRecordUpdate(var record PLVc PLr,record PLVc PL2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
-  record INVc INr;
+  record INVc INr,IN2r;
   Boolean itemnotsavedf;
+  LongInt foundflag;
 
   itemnotsavedf = true;
   if (PL2r.ExVatPrice!=PLr.ExVatPrice) then begin
     INr.Code = PLr.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
-  		INr.SyncFlag = 1;
+  		IN2r.SyncFlag = 9999999999;
+  		if (ReadLastKey("SyncFlag",IN2r,1,false)) then begin
+  			foundflag = IN2r.SyncFlag;
+  		end;
+  		INr.SyncFlag = foundflag + 1;
   		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   		itemnotsavedf = false;
@@ -394,13 +404,21 @@ begin
   if (PL2r.ArtCode!=PLr.ArtCode) then begin
     INr.Code = PLr.ArtCode;
   	if (itemnotsavedf and ReadFirstMain(INr,1,true)) then begin
-  		INr.SyncFlag = 1;
+  		IN2r.SyncFlag = 9999999999;
+  		if (ReadLastKey("SyncFlag",IN2r,1,false)) then begin
+  			foundflag = IN2r.SyncFlag;
+  		end;
+  		INr.SyncFlag = foundflag + 1;
   		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
   	INr.Code = PL2r.ArtCode;
   	if (ReadFirstMain(INr,1,true)) then begin
-  		INr.SyncFlag = 1;
+  		IN2r.SyncFlag = 9999999999;
+  		if (ReadLastKey("SyncFlag",IN2r,1,false)) then begin
+  			foundflag = IN2r.SyncFlag;
+  		end;
+  		INr.SyncFlag = foundflag + 1;
   		INr.SavedCount = INr.SavedCount + 1;
   		RECORDSTORE(INr,true);
   	end;
