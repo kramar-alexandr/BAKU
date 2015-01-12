@@ -105,7 +105,7 @@ BEGIN
           res = false;
           goto LIVVcGiftCertificateCheck;
         end;
-        if (NonBlankDate(GCr.ExpiryDate) and (IVr.InvDate>GCr.ExpiryDate)) then begin
+        if (NonBlankDate(GCr.ExpiryDate) and (IVr.InvDate>GCr.ExpiryDate)) then begin// Edit ************************** Thursday, 8 January 2015 12:29:52
           RecordCheckError(2185,"",rownr,"GCNr");      
           res = false;
           goto LIVVcGiftCertificateCheck;

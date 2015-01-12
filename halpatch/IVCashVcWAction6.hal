@@ -790,7 +790,7 @@ begin
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherSalesTouchScreenDClass;
     end;
-    if (NonBlankDate(GCr.ExpiryDate) and (GCr.ExpiryDate<CurrentDate)) then begin 
+    if (NonBlankDate(GCr.ExpiryDate) and (GCr.ExpiryDate<CurrentDate)) then begin // Edit ************************** Thursday, 8 January 2015 12:38:41
       MessageBox(2185,"");
       WindowFieldGoto(wn,RepSpec,-1,"f1",true);
       goto LProceedGiftVoucherSalesTouchScreenDClass;
