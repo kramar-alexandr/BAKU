@@ -4286,6 +4286,7 @@ begin
   end;
   if (IsEnterprise) then begin
     RlColKey(-150,-150,"Альт. код",AlternativeCode,false,AlternativeCode); 
+    RlColKey(-70,-70,"Группа",Group,false,Group); //!!PRODTRANSLATE// Edit ************************** Monday, 12 January 2015 14:59:54
   end;
   /*if (IsEnterprise) or (HasModIN) then begin// Edit ************************** Thursday, 24 July 2014 10:29:18
     RlCol(-70,-70,"Баз. цена",UPrice1,true); 
