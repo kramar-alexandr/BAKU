@@ -285,7 +285,7 @@ begin
   end;
   IN3r.SyncFlag = 9999999999;  //Edit***************************Sasha2,17:38 02.12.2014 {
   if (ReadLastKey("SyncFlag",IN3r,1,false)) then begin
-	foundflag = IN3r.SyncFlag;
+	  foundflag = IN3r.SyncFlag;
   end;
   INr.SyncFlag = foundflag + 1;
   INr.SavedCount = 1; //Edit***************************Sasha2,10:24 01.12.2014 }
@@ -337,7 +337,7 @@ BEGIN
   	MatRowGet(IN2r,i,IN2rw);
   	if (INrw.Text!=IN2rw.Text or INrw.Description!=IN2rw.Description) then begin
   		if (ReadLastKey("SyncFlag",IN3r,1,false)) then begin
-			foundflag = IN3r.SyncFlag;
+			  foundflag = IN3r.SyncFlag;
 	  	end;
 	  	INr.SyncFlag = foundflag + 1;
   		i = rwcnt;
