@@ -3277,19 +3277,34 @@ begin
   MatCol(t,-140,"Отправ.",0,Sent,true,0);
   MatCol(t,-70,"Заказ/П.",0,POOrd,true,0);
   Flip(4);//	Edit by Victor 19.11.14
-  MatCol(1,194,"Наименование",0,Spec,false,0);//	Edit by Victor 19.11.14
-	if (HasVarieties) then begin
-		MatCol(1,-200,"Кол-во",0,VEQuant,true,MATVARINSClass);
+  MatCol(1,144,"Наименование",0,Spec,false,0);//	Edit by Victor 19.11.14
+  /*if (HasVarieties) then begin //Edit***************************Sasha2,16:37 14.01.2015 {
+		MatCol(1,-110,"Кол-во",0,VEQuant,true,MATVARINSClass);
 	end else begin
-		MatCol(1,-200,"Кол-во",0,VEQuant,true,0); 
-	end;
-	//MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);// Edit ************************** Tuesday, 16 December 2014 13:56:02
-	//MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);// Edit ************************** Tuesday, 16 December 2014 13:56:03
+		MatCol(1,-110,"Кол-во",0,VEQuant,true,0); 
+	end;*/ //Edit***************************Sasha2,16:38 14.01.2015 }
+	if (currentcompany==1) then begin //Edit***************************Sasha2,16:38 14.01.2015 {
+    if (HasVarieties) then begin
+  		MatCol(1,-110,"Кол-во",0,VEQuant,true,MATVARINSClass);
+  	end else begin
+  		MatCol(1,-110,"Кол-во",0,VEQuant,true,0); 
+  	end;
+	end else begin
+    if (HasVarieties) then begin
+  		MatCol(1,-310,"Кол-во",0,VEQuant,true,MATVARINSClass);
+  	end else begin
+  		MatCol(1,-310,"Кол-во",0,VEQuant,true,0); 
+  	end;
+	  MatCol(1,-260,"EAN Код",0,EAN13Code,false,0);// Edit ************************** Tuesday, 16 December 2014 13:56:02
+    MatCol(1,-170,"Модель",0,xClassification,false,DISClass);// Edit ************************** Tuesday, 16 December 2014 13:56:03
+	end; //Edit***************************Sasha2,16:38 14.01.2015 }
 	MatCol(1,-60,"Цена",0,Price,true,0);
-	/*Flip(5);	//	Edit by Victor 19.11.14
-	MatCol(1,194,"Наименование",0,Spec,false,0);
-	MatCol(1,-160,"Размер",0,Size,false,0);
-	MatCol(1,-100,"Цвет",0,Colour,false,0);//	end Edit by Victor 19.11.14 */// Edit ************************** Tuesday, 16 December 2014 13:56:49
+	if (currentcompany==8) then begin
+	 Flip(5);	//	Edit by Victor 19.11.14
+	 MatCol(1,194,"Наименование",0,Spec,false,0);
+	 MatCol(1,-160,"Размер",0,Size,false,0);
+	 MatCol(1,-100,"Цвет",0,Colour,false,0);//	end Edit by Victor 19.11.14 // Edit ************************** Tuesday, 16 December 2014 13:56:49
+  end;
   DeleteRowTest;
   EndMatrix;
   vs = 20;
@@ -3297,7 +3312,9 @@ begin
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,2,"B");
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,3,"C");
   v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,4,"D");
-  //v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,5,"E");
+  if (currentcompany==8) then begin //Edit***************************Sasha2,17:53 14.01.2015
+    v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,5,"E");
+  end;
   Tile(3,170,false,"3",ShipDeal);
   EditField(h,v=6,-20,"Отгрузка",Normal,ShipAddr0,false,0);
   EditField(h,v+=vs,-20,"Адрес",Normal,ShipAddr1,false,0);
