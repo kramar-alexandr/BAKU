@@ -55,10 +55,18 @@ begin
     MatRowGet(IntORp,i,IntORrw);
       StartFormat(15);
       OutString(20,0,IntORrw.ArtCode,false); 
-      OutString(70,0,IntORrw.xClassification,false); //Edit***************************Sasha2,17:48 14.01.2015
+      if (currentcompany!=1) then begin
+        OutString(70,0,IntORrw.xClassification,false); //Edit***************************Sasha2,17:48 14.01.2015
+      end;
+      if (currentcompany==8) then begin
+        OutString(80,0,IntORrw.Size,false); //Edit***************************Sasha2,17:48 14.01.2015
+        OutString(90,0,IntORrw.Colour,false); //Edit***************************Sasha2,17:48 14.01.2015
+      end;
       OutVal(124,0,IntORrw.Quant,M4UVal,true);
       OutString(130,0,IntORrw.Spec,false);
-      OutString(270,0,IntORrw.EAN13Code,false); //Edit***************************Sasha2,17:49 14.01.2015
+      if (currentcompany!=1) then begin
+        OutString(270,0,IntORrw.EAN13Code,false); //Edit***************************Sasha2,17:49 14.01.2015
+      end;
       OutValBiDi(340,0,IntORrw.Price,M423Val,true,396);
       OutVal(460,0,IntORrw.Sum,M4Val,true);
       EndFormat;
