@@ -103,7 +103,9 @@ begin
 			outstring(240,0,USetStr(31249),false);
 			outstring(-160,0,USetStr(31255),false);
 			outstring(-120,0,USetStr(31238),false);
-			outstring(-80,0,USetStr(31251),false);
+			if(usercanaction("ViewCostPrice",true))then begin
+				outstring(-80,0,USetStr(31251),false);
+			end;
 			outstring(1,0,USetStr(31252),true);
 			outstring(1,0,USetStr(31253),true);
 			outstring(1,0,USetStr(31254),true);
@@ -131,7 +133,9 @@ begin
 						//outstring(200,0,Dir.Name,false);
 						outstring(-160,0,ISr.Location,false);
 						outstring(-120,0,ISr.Instock,false);
-						outstring(-80,0,INr.InPrice,false);
+						if(usercanaction("ViewCostPrice",true))then begin
+							outstring(-80,0,INr.InPrice,false);
+						end;
 						price = 0;
 						PLr.ArtCode = ISr.Code;
 						PLr.PLCode = "RRP";

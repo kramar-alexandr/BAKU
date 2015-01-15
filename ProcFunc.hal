@@ -562,7 +562,8 @@ begin
 										case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 										end;
               		end;
-              				payrows = false;
+              		payrows = false;
+              		totcccnt = 6;//count of payDeals!!!
             case kInvoiceRowTypeLoyaltyPointsPayment:
             				//if(IVr.MachineName!="SW4")then begin
               		if(left(IVrw.PayMode,1)=="‘" or left(IVrw.PayMode,1)=="C")then begin
@@ -591,8 +592,8 @@ begin
 											case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 										end;
              			end;
-             				 totcccnt = 6;//count of payDeals!!!
-             				 payrows = false;
+								 totcccnt = 6;//count of payDeals!!!
+								 payrows = false;
 
 		case kInvoiceRowTypeGiftVoucherSold :	//Edit-------------------------------------------Dima----------11.12.2014
 							
@@ -634,7 +635,6 @@ begin
 						case "T4":  totcc[3] = totcc[3] + IVr.Sum4; ccpaydeal[3] = "T4"; termsum = termsum + IVr.Sum4;
 						case "T5":  totcc[4] = totcc[4] + IVr.Sum4; ccpaydeal[4] = "T5"; termsum = termsum + IVr.Sum4;
 						case "L1":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "L1"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
-
         	end;
         	if(IVr.CurncyCode==acrncy[0])then begin
         		totsumpay = totsumpay  + IVr.Sum4;
@@ -782,7 +782,6 @@ begin
     EndFormat;
     
     OutCashRows(totcash,acrncy,acrncnt);
-  
     for(i=0;i<totcccnt;i=i+1)begin
       if(totcc[i]!=0)then begin
         PDr.Code = ccpaydeal[i];       

@@ -377,7 +377,7 @@ begin
 			testf = false;
     end;
     
-    if(INr.NotForSales>0)then begin testf=false; end;
+    //if(INr.NotForSales>0)then begin testf=false; end;
     
     if(testf)then begin
       reprownr = reprownr + 1;

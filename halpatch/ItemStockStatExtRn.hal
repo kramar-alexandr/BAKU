@@ -449,11 +449,12 @@ begin
 				awercostcur = IVrw.Sum;
 			end;
 		end;
-		outstring(0,0,awercostcur,false);
-		outstring(0,0,awercost,false);
-		//outstring(0,0,INr.WeighedAvPrice/fr*to1*instock,false);
-		outstring(0,0,awercostcur*instock,false);
-		outstring(0,0,awercost*instock,false);
+		if(usercanaction("ViewCostPrice",true))then begin
+			outstring(0,0,awercostcur,false);
+			outstring(0,0,awercost,false);
+			outstring(0,0,awercostcur*instock,false);
+			outstring(0,0,awercost*instock,false);
+		end;
 		total_cost = total_cost + awercost*instock;
 		
 		baseprice = 0;
@@ -788,10 +789,12 @@ begin
 			outstring(0,0,USetStr(31121),false);
 			outstring(0,0,USetStr(31175),false);
 			if(currentcompany!=10)then begin
-				outstring(0,0,USetStr(31053),false);
-				outstring(0,0,USetStr(31054),false);
-				outstring(0,0,USetStr(31056),false);
-				outstring(0,0,USetStr(31057),false);
+				if(usercanaction("ViewCostPrice",true))then begin
+					outstring(0,0,USetStr(31053),false);
+					outstring(0,0,USetStr(31054),false);
+					outstring(0,0,USetStr(31056),false);
+					outstring(0,0,USetStr(31057),false);
+				end;
 				outstring(0,0,USetStr(31059),false);
 				outstring(0,0,USetStr(31060),false);
 				outstring(0,0,USetStr(31062),false);
@@ -941,10 +944,12 @@ begin
 			outstring(0,0,USetStr(31074),false);
 			outstring(0,0,total_qty,false);
 			outstring(0,0,"",false);
-			outstring(0,0,"",false);
-			outstring(0,0,"",false);
-			outstring(0,0,USetStr(31075),false);
-			outstring(0,0,total_cost,false);
+			if(usercanaction("ViewCostPrice",true))then begin
+				outstring(0,0,"",false);
+				outstring(0,0,"",false);
+				outstring(0,0,USetStr(31075),false);
+				outstring(0,0,total_cost,false);
+			end;
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,USetStr(31063),false);
