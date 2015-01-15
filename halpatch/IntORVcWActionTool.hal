@@ -407,7 +407,7 @@ BEGIN
 				DIr.Code = classfound;
 				readfirstmain(DIr,1,true);
 				if(DIr.CType=="MODEL")then begin
-					model = DIr.Code;
+					model = DIr.Name;
 					pos = 255;
 				end;
 				ExtractObj(INr.DispGroups,pos,classfound);
