@@ -3246,7 +3246,7 @@ begin
   //EditField(110,-21,70,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);	// new field	Edit by Victor 19.11.14
   EditField(-144,-21,90,"ИТОГО",ViewOnly,Total,true,0);
   v = 24;
-  MatrixBegin(3,v,-50,-27,-,99);
+  MatrixBegin(3,v,-50,-27,-,1000);
   MatOverStrike(ovst);
   Flip(0);
   MatCol(1,24,"Товар",0,ArtCode,false,INSClass);
@@ -3279,21 +3279,21 @@ begin
   Flip(4);//	Edit by Victor 19.11.14
   MatCol(1,144,"Наименование",0,Spec,false,0);//	Edit by Victor 19.11.14
   /*if (HasVarieties) then begin //Edit***************************Sasha2,16:37 14.01.2015 {
-		MatCol(1,-110,"Кол-во",0,VEQuant,true,MATVARINSClass);
+		MatCol(1,-110,"Кол-во",0,Quant,true,MATVARINSClass);
 	end else begin
-		MatCol(1,-110,"Кол-во",0,VEQuant,true,0); 
+		MatCol(1,-110,"Кол-во",0,Quant,true,0); 
 	end;*/ //Edit***************************Sasha2,16:38 14.01.2015 }
 	if (currentcompany==1) then begin //Edit***************************Sasha2,16:38 14.01.2015 {
     if (HasVarieties) then begin
-  		MatCol(1,-110,"Кол-во",0,VEQuant,true,MATVARINSClass);
+  		MatCol(1,-110,"Кол-во",0,Quant,true,MATVARINSClass);
   	end else begin
-  		MatCol(1,-110,"Кол-во",0,VEQuant,true,0); 
+  		MatCol(1,-110,"Кол-во",0,Quant,true,0); 
   	end;
 	end else begin
     if (HasVarieties) then begin
-  		MatCol(1,-310,"Кол-во",0,VEQuant,true,MATVARINSClass);
+  		MatCol(1,-310,"Кол-во",0,Quant,true,MATVARINSClass);
   	end else begin
-  		MatCol(1,-310,"Кол-во",0,VEQuant,true,0); 
+  		MatCol(1,-310,"Кол-во",0,Quant,true,0); 
   	end;
 	  MatCol(1,-260,"EAN Код",0,EAN13Code,false,0);// Edit ************************** Tuesday, 16 December 2014 13:56:02
     MatCol(1,-170,"Модель",0,xClassification,false,DISClass);// Edit ************************** Tuesday, 16 December 2014 13:56:03

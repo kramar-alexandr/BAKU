@@ -7279,7 +7279,7 @@ begin
   Tile(2,120,true,"2",Math2);
   EditField(-144,-21,90,"TOTAL",ViewOnly,Total,true,0);
   v = 24;
-  MatrixBegin(3,v,-50,-27,-,99);
+  MatrixBegin(3,v,-50,-27,-,1000);
   MatOverStrike(ovst);
   Flip(0);
   MatCol(1,24,"Item",0,ArtCode,false,INSClass);
