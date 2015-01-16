@@ -9,7 +9,7 @@ external procedure HTLocations(string, string, var string);
 
 procedure RepIntOR( record IntORVc IntORp)
 begin
-  Integer i,rwcnt,pos;
+  Integer i,rwcnt,pos,totqty;
   row IntORVc IntORrw;
 
   StartFormat(15);
@@ -22,7 +22,7 @@ begin
   OutString(180,0,IntORp.Name,false);
   OutString(400,0,IntORp.Department,false);
   EndFormat;
-  StartFormat(15);
+  /*StartFormat(15);
   OutString(200,0,IntORp.ShipAddr0,false);
   EndFormat;
   if nonblank(IntORp.ShipAddr1) then begin
@@ -49,63 +49,49 @@ begin
     StartFormat(15);
     OutString(200,0,IntORp.DelAddr4,false);
     EndFormat;
-  end;
+  end;*/
+  totqty = 0;
   StartFormat(15); //Edit***************************Sasha2,14:34 15.01.2015 {
     pos = 0; 
     OutString(pos+=20,0,"Item code",false); 
-    if (currentcompany!=1) then begin
-      OutString(pos+=50,0,"Model",false);
-    end else begin
-      pos = pos + 50; 
-    end;
-    if (currentcompany==8) then begin
-      OutString(pos+=10,0,"Size",false); 
-      OutString(pos+=10,0,"Colour",false);
-    end else begin
-      pos = pos + 20; 
-    end;
-    OutString(pos+=34,0,"Qty",true);
+    OutString(pos+=50,0,"Model",false);
+    OutString(pos+=10,0,"Size",false); 
+    OutString(pos+=10,0,"Colour",false);
     OutString(pos+=6,0,"Specification",false);
-    if (currentcompany!=1) then begin
-      OutString(pos+=140,0,"Barcode",false);
-    end else begin
-      pos = pos + 140; 
-    end;
+    OutString(pos+=140,0,"Barcode",false);
+    OutString(pos+=34,0,"Qty",true);
     OutString(pos+=70,0,"FOB price",true);
     OutString(pos+=120,0,"FOB sum",true);
   EndFormat; //Edit***************************Sasha2,14:35 15.01.2015 }
   rwcnt = MatRowCnt(IntORp);
   for (i = 0;i<rwcnt;i=i+1) begin
     MatRowGet(IntORp,i,IntORrw);
-      StartFormat(15);
+    StartFormat(15);
       pos = 0; //Edit***************************Sasha2,14:34 15.01.2015
       OutString(pos+=20,0,IntORrw.ArtCode,false); 
-      if (currentcompany!=1) then begin
-        OutString(pos+=50,0,IntORrw.xClassification,false); //Edit***************************Sasha2,17:48 14.01.2015
-      end else begin
-        pos = pos + 50;
-      end;
-      if (currentcompany==8) then begin
-        OutString(pos+=10,0,IntORrw.Size,false); //Edit***************************Sasha2,17:48 14.01.2015
-        OutString(pos+=10,0,IntORrw.Colour,false); //Edit***************************Sasha2,17:48 14.01.2015
-      end else begin
-        pos = pos + 20;
-      end;
-      OutVal(pos+=34,0,IntORrw.Quant,M4UVal,true);
+      OutString(pos+=50,0,IntORrw.xClassification,false); //Edit***************************Sasha2,17:48 14.01.2015
+      OutString(pos+=10,0,IntORrw.Size,false); //Edit***************************Sasha2,17:48 14.01.2015
+      OutString(pos+=10,0,IntORrw.Colour,false); //Edit***************************Sasha2,17:48 14.01.2015
       OutString(pos+=6,0,IntORrw.Spec,false);
-      if (currentcompany!=1) then begin
-        OutString(pos+=140,0,IntORrw.EAN13Code,false); //Edit***************************Sasha2,17:49 14.01.2015
-      end else begin
-        pos = pos + 140; 
-      end;
+      OutString(pos+=140,0,IntORrw.EAN13Code,false); //Edit***************************Sasha2,17:49 14.01.2015
+      OutVal(pos+=34,0,IntORrw.Quant,M4UVal,true);
+      totqty = totqty + IntORrw.Quant; //Edit***************************Sasha2,10:53 16.01.2015
       OutValBiDi(pos+=70,0,IntORrw.Price,M423Val,true,396);
       OutVal(pos+=120,0,IntORrw.Sum,M4Val,true);
-      EndFormat;
+    EndFormat;
   end;
   Black_Divider(380,460);
   StartFormat(15);
-  OutString(340,0,USetStr(4957),true);
-  OutVal(460,0,IntORp.Total,M4Val,true);
+    pos = 0;
+    OutString(pos+=20,0,"",false); 
+    OutString(pos+=50,0,"",false);
+    OutString(pos+=10,0,"",false); 
+    OutString(pos+=10,0,"",false);
+    OutString(pos+=6,0,"",false);
+    OutString(pos+=140,0,"",false);
+    OutString(pos+=34,0,totqty,true);
+    OutString(pos+=70,0,""/*USetStr(4957)*/,true);
+    OutVal(460,0,IntORp.Total,M4Val,true);
   EndFormat;
 return;
 end;

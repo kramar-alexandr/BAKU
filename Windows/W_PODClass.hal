@@ -3315,7 +3315,7 @@ begin
   if (currentcompany==8) then begin //Edit***************************Sasha2,17:53 14.01.2015
     v=v+vs;  VTab(-35,v,-16,v+vs,ToolFlip,5,"E");
   end;
-  Tile(3,170,false,"3",ShipDeal);
+  Tile(3,170,false,"3",ShipAddr0);
   EditField(h,v=6,-20,"Отгрузка",Normal,ShipAddr0,false,0);
   EditField(h,v+=vs,-20,"Адрес",Normal,ShipAddr1,false,0);
   EditField(h,v+=vs,-20,"",Normal,ShipAddr2,false,0);
