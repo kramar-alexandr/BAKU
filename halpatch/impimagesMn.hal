@@ -762,3 +762,25 @@ begin
 
   return;
 end; //Edit***************************Sasha2,14:09 23.12.2014 }
+
+
+
+global
+updating procedure  AccCostFrom411To4101Mn(record RcVc RepSpec)	//Edit----------------------Dima 17.12.2014
+begin
+	record CUVc CUr;
+	boolean TrHs;
+
+	TrHs = true;
+
+	while (LoopMain(CUr,1,TrHs)) begin
+		
+		if ((CUr.AccCost == "41/1") and (CUr.VEType==1)) then begin
+				CUr.AccCost = "41/01";
+				RecordStore(CUr,true); 
+		end;
+        
+	end;
+
+  return;
+end;
