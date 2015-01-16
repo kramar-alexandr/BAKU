@@ -88,7 +88,7 @@ begin
   Report("Накопленные баллы клиента",LoyaltyCardCounterRClass,LoyaltyCardCounterRn,0,modMYCRM);
   Report("Оборотно-сальдовая ведомость (изм.)",MBARClass,MBA2Rn,0,modNL);
   Report("Оборот по объектам",ObjMainRClass,ObjMainRn,0,modNL);
-  
+  Report("Журнал сравнения товаров внутр.заказов и зак.пост.",ComparePOwithIntORClass,ComparePOwithIntORRn,0,modPO);
   
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
   
@@ -294,6 +294,7 @@ begin
   SString(31178,"Вес");
   SString(31179,"Отчет остатков по складам расширенный");
   SString(31180,"Консигнация");
+  SString(31181,"Сравнить товары внутр.заказов и заказов пост.");
 
 //RebItemSalesRn
   SString(31200,"Отчет по обороту акционных товаров"); //Отчет по обороту акционных товаров

@@ -278,6 +278,7 @@ begin
   SString(31178,"Weight");
   SString(31179,"Extended balance report over stocks"); //Отчет остатков по складам расширенный
   SString(31180,"Consignment");
+  SString(31181,"Compare goods between Inner Orders and Purchase Orders");
 
 //RebItemSalesRn
   SString(31204,"Name"); //Название
