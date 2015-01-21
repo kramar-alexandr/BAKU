@@ -3526,6 +3526,7 @@ begin
   MatCol(1,24,"Язык",0,LangCode,false,LangSClass);
   MatCol(1,94,"Наименование",0,Text,false,0); //Edit***************************Sasha2,17:36 01.12.2014
   MatCol(1,300,"Описание",0,Description,false,0); //Edit***************************Sasha2,17:36 01.12.2014
+  MatCol(1,-200,"Техн.параметры",0,Technical,false,0); //Edit***************************Sasha2,17:36 01.12.2014
   EndMatrix;
   Tile(tilenr,220,false,tilenr,CostPerc);  tilenr = tilenr + 1;
   ButtonFrame(h=100,vm=(v=20),230,6,"Первичная модель стоимости");
