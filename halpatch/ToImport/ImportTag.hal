@@ -1,0 +1,38 @@
+/*
+
+
+
+global
+updating procedure ReadImportConvMasterBlock(string thetag)
+begin
+  record ConvMasterBlock CMBlock;
+  
+  if(currentcompany==1)then begin
+		CMBlock.DualBaseCurrencyFlag = 1;
+		//CMBlock.Base1ToBase2Flag = 1;
+		blockstore(CMBlock);
+  end;
+  
+  return;
+end;
+
+
+global
+updating procedure ReadImportBaseCurBlock(string thetag)
+begin
+  record BaseCurBlock BCBlock;
+  record BaseERVc BERr;
+  
+  recordnew(BERr);
+  	BERr.Date = stringtodate("1/1/2010");
+  	BERr.Rate1 = 1;
+  	BERr.Rate2 = 1.1;
+  recordstore(BERr,true);
+  if(currentcompany==1)then begin
+		BCBlock.BaseCur1 = "EUR";
+		BCBlock.BaseCur2 = "AZN";
+		blockstore(BCBlock);
+  end;
+  
+  return;
+end;*/

@@ -508,6 +508,7 @@ begin
 		if(keystr=="OrdDate" and ORr.OrdDate>RepSpec.sEndDate)then begin testf = false; TrHs = false; end;
 		if(nonblank(RepSpec.f1) and ORr.OrderClass!=RepSpec.f1)then begin testf = false; end;
 		if(nonblank(RepSpec.f2) and ORr.Location!=RepSpec.f2)then begin testf = false; end;
+		if(ORr.Closed==1)then begin testf = false; end;// Edit ************************** Monday, 19 January 2015 11:17:22
 		
 		if(testf)then begin
 			fr = ORr.FrRate;
