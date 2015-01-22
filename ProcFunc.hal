@@ -233,7 +233,7 @@ begin
 	ARr.InvoiceNr = SerNr;
 
 	if (ReadFirstKey("InvoiceNr",ARr,1,true)) then begin
-		res = ARr.RVal;
+		res = ARr.BookRVal;
 	end;
 	
 GetDebtFromARVc = res;
@@ -756,7 +756,7 @@ begin
     resetloop(IPr);
     Gray_Divider(0,1);
 
-	//Edit Start --------  Dima ---------------08.12.20140-----Вывод totsumpay без ранних предоплат
+	//Edit Start --------  Dima ---------------08.12.2014-----Вывод totsumpay без ранних предоплат
 	totsumpay=0;
 	GetFullCurncyRate(acrncy[0],RepSpec.d1,orfr,orto1,orto2,orbr1,orbr2);
 	if(orfr==0 or orto1==0)then begin
@@ -772,11 +772,7 @@ begin
 	end;
 	for(i=0;i<totcccnt;i=i+1)begin
 		totsumpay=totsumpay+totcc[i];
-	end;//Edit  End---------------------------------------------
-
-				
-
-
+	end;//Edit  End---------------------------------------------				
 
     StartFormat(15);
     OutString(0,0,USetStr(8330),false);
