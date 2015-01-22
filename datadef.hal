@@ -3761,6 +3761,10 @@ begin
   RecordField(BrandsTemp2,M4Long,0,0);
   RecordField(Types2,M4Long,0,0);
   RecordField(TypesTemp2,M4Long,0,0);
+  RecordField(Collections1,M4Long,0,0);
+  RecordField(CollectionsTemp1,M4Long,0,0);
+  RecordField(Collections2,M4Long,0,0);
+  RecordField(CollectionsTemp2,M4Long,0,0);
   EndBlock; //Edit***************************Sasha2,10:35 09.01.2015 }
 			  
   return;  
