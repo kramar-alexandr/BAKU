@@ -28,6 +28,7 @@ begin
 	Setting("Товар консигнации",INConsLClass,modIN);
 	Setting("Саппорт IVsrVc",IVrsLClass,modSL); //Edit***************************Sasha2,15:14 05.11.2014
 	Setting("Порядок WEB синхронизации ",WebSyncTClass,modSY);	//Edit***************************Sasha2,13:27 12.01.2015
+	Setting("Порядок WEB синхронизации Mobile",WebSyncMobileTClass,modSL);	//Edit***************************Sasha2,13:27 12.01.2015
 	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
