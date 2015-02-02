@@ -627,6 +627,7 @@ BEGIN
   switch (IVrw.stp) begin
     case kInvoiceRowTypeGiftVoucherPayment: errstrno = IVVc_GiftCertificateReceive(gTRp,ARAccRec,IVp,IVrw,cuobj,baserate1,baserate2,dc1,dc2,TotSum);
     case kInvoiceRowTypeCashPayment: errstrno = IVVc_CASHRow(gTRp,ARAccRec,IVp,IVrw,cuobj,dc1,dc2,TotSum);
+    case kInvoiceRowTypeLoyaltyPointsPayment: errstrno = IVVc_CASHRow(gTRp,ARAccRec,IVp,IVrw,cuobj,dc1,dc2,TotSum);// Edit ************************** Thursday, 22 January 2015 15:53:42
     case kInvoiceRowTypeCreditCardPayment: errstrno = IVVc_CASHRow(gTRp,ARAccRec,IVp,IVrw,cuobj,dc1,dc2,TotSum);
     case kInvoiceRowTypeChequePayment: errstrno = IVVc_CASHRow(gTRp,ARAccRec,IVp,IVrw,cuobj,dc1,dc2,TotSum);
   end;

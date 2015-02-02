@@ -248,6 +248,7 @@ BEGIN
     if (tstr=="#") or (tstr=="!") then begin
       TRrw.Curncy = OrgRow.Curncy;      
     end;
+    TRrw.Curncy = OrgRow.Curncy; // Edit ************************** Monday, 2 February 2015 10:18:58
     if (blank(TRrw.Curncy)) then begin
 //        curncy = Accr.Curncy;
       GetFullCurncyRate(curncy,TRp.TransDate,from,to1,to2,bas1,bas2);
@@ -332,6 +333,7 @@ BEGIN
           dval = bv;
         end;
       end else begin    
+      	messagebox(0,2);
         ATransVal(OrgRow.DebVal,OrgRow.CredVal,Autrw.dstr,Autrw.cstr,dval,acval,Autr.DontSwap!=0);
       end;
       TRrw.FrRate = frrate;

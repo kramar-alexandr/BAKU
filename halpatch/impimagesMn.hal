@@ -122,7 +122,7 @@ begin
 	record ItemHistVc IHr,IH2r;
 	boolean TrHs,testf;
 	
-	
+	/*
 	IVr.SerNr = 2976;
 	readfirstmain(IVr,1,true);
 		matrowdelete(IVr,2);
@@ -131,13 +131,13 @@ begin
 			IVrw.Points = 63;
 		matrowPUt(IVr,1,IVrw);
 	
-	recordstore(IVr,true);
+	recordstore(IVr,true);*/
 	
-	/*rate = 0.82;
+	rate = 1.1;
 	
-	fd = stringtodate("29/11/2013");
+	fd = stringtodate("29/11/2011");
 	
-	IHr.TransDate = fd;
+	/*IHr.TransDate = fd;
 	IHr.FileName = "StockMovVc";
 	TrHs = true;
 	while(loopkey("FNTransDate",IHr,2,TrHs))begin
@@ -167,7 +167,7 @@ begin
 			end;
 		end;
 	end;
-	resetloop(IHr);
+	resetloop(IHr);*/
 	
 	
 	IHr.TransDate = fd;
@@ -199,12 +199,12 @@ begin
 	end;
 	resetloop(IHr);
 	
-	PUr.TransDate = fd;
+	/*PUr.TransDate = fd;
 	TrHs = true;
 	while(loopkey("TransDate",PUr,1,TrHs))begin
 		testf = true;
 		if(PUr.TransDate<fd)then begin testf = false; TrHs = false; end;
-		if(PUr.CurncyCode=="USD")then begin testf = false; end;
+		if(PUr.CurncyCode=="EUR")then begin testf = false; end;
 		
 		if(testf)then begin
 			mtrw = matrowcnt(PUr);
@@ -215,8 +215,8 @@ begin
 	  			PUrw.Sum = round(PUrw.Sum*rate,defaultcurroundoff);
 	  		matrowput(PUr,i,PUrw);
 			end; 
-			PUr.CurncyCode = "USD";
-			PUr.Comment = "AZN -> USD";
+			PUr.CurncyCode = "EUR";
+			PUr.Comment = "AZN -> EUR";
 			recordstore(PUr,true);
 		end;
 		

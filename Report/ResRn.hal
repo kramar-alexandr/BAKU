@@ -732,7 +732,6 @@ end;
         
 //this is not working like IVr.Sum4 passed to procedure
 //        AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,S3ba[aid],Pba[aid],Eba[aid],S4ba[aid],S5ba[aid],S6ba[aid],negf,Goms,resUseAccum);
-
         AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,true);
         S3ba[aid] = tmpS3ba;
         S4ba[aid] = tmpS4ba;
@@ -826,9 +825,16 @@ begin
 										if(RepSpec.sEndDate<stringtodate("1/7/" & getYear(temped)))then begin
 											dateflag = false;
 										end;
+
 					end;
 					
 	// Edit End ---------------------------------------------- Edit End
+					tmpS3ba = 0;
+					tmpPba = 0;
+					tmpEba = 0;
+					tmpS4ba = 0;
+					tmpS5ba = 0;
+					tmpS6ba = 0;
 					if(dateflag)then begin
 						AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,false);
           end;
@@ -1134,7 +1140,7 @@ end;
 										end;
 									
 						case 3:	tempsd = RepSpec.sStartDate;
-										
+
 										if(RepSpec.sStartDate<stringtodate("1/7/" & getYear(RepSpec.sStartDate)))then begin
 											RepSpec.sStartDate = stringtodate("1/7/" & getYear(RepSpec.sStartDate));
 										end;
@@ -1144,6 +1150,7 @@ end;
 										if(RepSpec.sEndDate<stringtodate("1/7/" & getYear(temped)))then begin
 											dateflag = false;
 										end;
+										//messagebox(0,"2 " & dateflag);
         	
         	/*case 1:	tempsd = RepSpec.sStartDate;
         					RepSpec.sStartDate = stringtodate("1/1/2000");
@@ -1166,10 +1173,18 @@ end;
         end;
         
 	// Edit End ---------------------------------------------- Edit End
+				tmpS3ba = 0;
+				tmpPba = 0;
+				tmpEba = 0;
+				tmpS4ba = 0;
+				tmpS5ba = 0;
+				tmpS6ba = 0;
 				if(dateflag)then begin
 					AccListPerBalResGr(RepSpec,PLf,UserDefRepLinesr,tmpS3ba,tmpPba,tmpEba,tmpS4ba,tmpS5ba,tmpS6ba,negf,Goms,resUseAccum,AccumStartDate,true);
         end;
-        //messagebox(0," tmpS3ba " & tmpS3ba & " tmpPba " & tmpPba & " tmpEba " & tmpEba & " tmpS4ba " & tmpS4ba & " tmpS5ba " & tmpS5ba & " tmpS6ba " & tmpS6ba);
+        /*if(UserDefRepLinesr.CustType==3)then begin
+        messagebox(0," tmpS3ba " & tmpS3ba & " tmpPba " & tmpPba & " tmpEba " & tmpEba & " tmpS4ba " & tmpS4ba & " tmpS5ba " & tmpS5ba & " tmpS6ba " & tmpS6ba);
+        end;*/
         // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 21 October 2014 12:23:57
 	

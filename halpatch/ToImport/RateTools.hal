@@ -27,7 +27,7 @@ BEGIN
   /*DivM4OneRate(br2p,br1p,baserate);
   DivM4OneRate(from,baserate,to);
   to = Round(to,DefaultRoundMode);*/
-  to = Round(from*0.82,DefaultRoundMode);
+  to = Round(from*1.1,DefaultRoundMode);
   RETURN;
 END;
 

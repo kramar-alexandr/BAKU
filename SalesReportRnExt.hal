@@ -366,6 +366,75 @@ begin
   return;
 end; //Edit***************************Sasha2,17:32 19.11.2014 }
 
+
+procedure PrintGftSertSold(record IVVc IVr,integer rownr,var val total_price,string bcur,string azn)
+begin
+	row IVVc IVrw;
+
+	matrowget(IVr,rownr,IVrw);
+	total_price = total_price + IVrw.Sum;
+	
+	startformat(15);
+		outstring(0,0,USetStr(2186),false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);//Reference
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		if(currentcompany==3)then begin
+			outstring(0,0,"",false);
+			outstring(0,0,"",false);
+		end;
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);//EKNCode
+		outstring(0,0,"",false);
+		outstring(100,0,"",false);
+		outstring(101,0,"",false);
+		if(bcur!=azn)then begin
+			outstring(102,0,"",false);
+		end;
+		outstring(110,0,"",false);
+		outstring(111,0,"",false);
+		if(bcur!=azn)then begin
+			outstring(112,0,"",false);
+		end;
+		outstring(120,0,"",false);
+		outstring(121,0,"",false);
+		if(bcur!=azn)then begin
+			outstring(122,0,"",false);
+		end;
+		outstring(130,0,"",false);
+		outstring(131,0,IVrw.Sum,false);
+		if(bcur!=azn)then begin
+			outstring(132,0,"",false);
+		end;
+		outstring(140,0,"",false);
+		outstring(141,0,"",false);
+		if(bcur!=azn)then begin
+			outstring(142,0,"",false);
+		end;
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		if(currentcompany==9)then begin
+			outstring(0,0,"",false);
+		end;
+		outstring(0,0,"",false);
+	endformat;
+return;
+end;
+
+
 global
 procedure SalesReportExtRn(record RcVc RepSpec)
 begin
@@ -594,6 +663,9 @@ begin
 						
 						For(i=0;i<mtrw;i=i+1) begin
 							matrowget(IVr,i,IVrw);
+							if(IVrw.stp==kInvoiceRowTypeGiftVoucherSold)then begin
+								PrintGftSertSold(IVr,i,total_price,bcur,azn);
+							end;
 							if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin
 								INr.Code = IVrw.ArtCode;
 								readfirstmain(INr,1,true);
