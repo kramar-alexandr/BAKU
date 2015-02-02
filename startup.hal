@@ -58,6 +58,7 @@ begin
   Maintenance("Активировать флаги сихронизации",SetSyncFlagsVClass,SetSyncFlagsMn,modSY); //Edit***************************Sasha2,14:25 16.12.2014  
   Maintenance("ConsignmentType",FIXVClass,ConsignmentTypeMn,modDBMain);  //Edit--------------------------------------Dima 17.12.2014
   Maintenance("Cost A/C from 41/1 to 41/01",FIXVClass,AccCostFrom411To4101Mn,modDBMain);  //Edit--------------------------------------Dima 17.12.2014
+	Maintenance("Remove all Purchase Invoices from Transactions",FIXVClass,RemoveVIVcInTRVcMn,modNL);  //Edit-----------------Dima 02.02.2015
 	  
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
