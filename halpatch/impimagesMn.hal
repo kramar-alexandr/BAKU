@@ -829,3 +829,75 @@ begin
 	
 return;
 end;
+
+
+
+
+global updating procedure TransferingCurValueBetweenFieldsMn()	//Edit-------------------------Dima 03.03.2015
+begin
+	record PUVc PUr;
+	record POVc POr;
+	record ORVc ORr;
+	record IVVc IVr;
+	record VIVc VIr;
+	record StockMovVc	SMr;
+	boolean TrHs;
+
+
+	TrHs = true;
+	While(LoopMain(PUr,1,TrHs)) begin
+		if ((PUr.CurncyCode == "EUR") and blank(PUr.ToRateB1)) then begin
+				PUr.ToRateB1 = PUr.ToRateB2;
+				PUr.ToRateB2 = blankval;
+				RecordStore(PUr,true);
+		end;
+	end;
+
+	TrHs = true;
+	While(LoopMain(POr,1,TrHs)) begin
+		if ((POr.CurncyCode == "EUR") and blank(POr.ToRateB1)) then begin
+				POr.ToRateB1 = POr.ToRateB2;
+				POr.ToRateB2 = blankval;
+				RecordStore(POr,true);
+		end;
+	end;
+
+	TrHs = true;
+	While(LoopMain(ORr,1,TrHs)) begin
+		if ((ORr.CurncyCode == "EUR") and blank(ORr.ToRateB1)) then begin
+				ORr.ToRateB1 = ORr.ToRateB2;
+				ORr.ToRateB2 = blankval;
+				RecordStore(ORr,true);
+		end;
+	end;
+
+	TrHs = true;
+	While(LoopMain(SMr,1,TrHs)) begin
+		if ((SMr.CurncyCode == "EUR") and blank(SMr.ToRateB1)) then begin
+				SMr.ToRateB1 = SMr.ToRateB2;
+				SMr.ToRateB2 = blankval;
+				RecordStore(SMr,true);
+		end;
+	end;
+
+	TrHs = true;
+	While(LoopMain(IVr,1,TrHs)) begin
+		if ((IVr.CurncyCode == "EUR") and blank(IVr.ToRateB1)) then begin
+				IVr.ToRateB1 = IVr.ToRateB2;
+				IVr.ToRateB2 = blankval;
+				RecordStore(IVr,true);
+		end;
+	end;
+
+	TrHs = true;
+	While(LoopMain(VIr,1,TrHs)) begin
+		if ((VIr.CurncyCode == "EUR") and blank(VIr.ToRateB1)) then begin
+				VIr.ToRateB1 = VIr.ToRateB2;
+				VIr.ToRateB2 = blankval;
+				RecordStore(VIr,true);
+		end;
+	end;
+
+	
+return;
+end;
