@@ -787,12 +787,10 @@ end;
 
 
 
-global updating procedure RemoveVIVcInTRVcMn()
+global updating procedure RemoveVIVcInTRVcMn()	//Edit-------------------------Dima 02.03.2015
 begin
 	record TRVc TRr;
-	boolean TrHs, testf;
-	integer mtrw,i;
-	
+	boolean TrHs;	
 	
 	TRr.IntYc=VIYc;
 	TrHs = true;
@@ -801,6 +799,28 @@ begin
 		if(TRr.IntYc!=VIYc)then begin TrHs = false; end;		
 		
 		if(TrHs)then begin	
+    	RecordDelete(TRr);
+    	StepBack(TRr);
+		end;
+
+	end;
+	
+return;
+end;
+
+
+
+
+global updating procedure RemoveOldTRVcRecordsMn()	//Edit-------------------------Dima 03.03.2015
+begin
+	record TRVc TRr;
+	boolean TrHs;
+
+
+	TrHs = true;
+	while(loopmain(TRr,1,TrHs))begin
+		
+		if(blank(TRr.DSum))then begin	
     	RecordDelete(TRr);
     	StepBack(TRr);
 		end;
