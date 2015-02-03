@@ -333,7 +333,6 @@ BEGIN
           dval = bv;
         end;
       end else begin    
-      	messagebox(0,2);
         ATransVal(OrgRow.DebVal,OrgRow.CredVal,Autrw.dstr,Autrw.cstr,dval,acval,Autr.DontSwap!=0);
       end;
       TRrw.FrRate = frrate;
@@ -348,13 +347,22 @@ BEGIN
         b2val = Round(b2val,DefaultRoundMode);
         TRrw.DebVal2 = b2val;
       end;
-
+			
+			
+			
       TRrw.CredVal = acval;
       if (nonblank(acval)) then begin
         temp = TRrw.BaseRate1/TRrw.BaseRate2;
         b2val = acval/temp;
         b2val = Round(b2val,DefaultRoundMode);
         TRrw.CredVal2 = b2val;
+      end;
+      
+      if(TRrw.DebVal!=0)then begin
+				TRrw.CurDebVal = round((TRrw.DebVal * TRrw.FrRate / TRrw.ToRateB1),defaultcurroundoff);// Edit ************************** Tuesday, 3 February 2015 16:13:21
+			end;
+			if(TRrw.CredVal!=0)then begin
+				TRrw.CurCredVal = round((TRrw.CredVal * TRrw.FrRate / TRrw.ToRateB1),defaultcurroundoff);// Edit ************************** Tuesday, 3 February 2015 16:13:21
       end;
     end; 
     if (OrgRow.Typ==kTransactionRowTypeStock) then begin
