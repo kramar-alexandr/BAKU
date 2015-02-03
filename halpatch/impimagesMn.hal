@@ -901,3 +901,31 @@ begin
 	
 return;
 end;
+
+global //Edit***************************Sasha2,13:58 03.02.2015 {
+updating procedure SetBrandSwarowskiMn()
+begin
+	record INVc INr;
+	boolean TrHs;
+	integer oldcompany;
+	
+	oldcompany = CurrentCompany;
+	if (SetCompanyCode(1,false)) then begin
+	   INr.Code = "";
+	   TrHs = true;
+	   while(loopmain(INr,1,TrHs)) begin
+  		if(TrHs)then begin
+  		  if (Blank(INr.DispGroups)) then begin
+  		    INr.DispGroups = "SW";
+  		  end else begin
+  		    INr.DispGroups = "SW," & INr.DispGroups;
+  		  end;	
+      	RECORDSTORE(INr,true);
+  		end;
+	   end;
+	end;
+	
+	ResetCompany(oldcompany);
+	
+return;
+end; //Edit***************************Sasha2,14:51 03.02.2015 }
