@@ -214,7 +214,8 @@ BEGIN
         if (TRrw.AccNumber==CorAccp.AccNumber) then begin  
         	testf = true;// Edit ************************** Monday, 22 December 2014 13:30:13
         	if(nonblank(object) and !setinset(object,TRrw.Objects))then begin testf = false; end;
-        	
+        	if(TRrw.ovst>0)then begin testf = false; end;															//Edit----------------------Dima 10.02.2015
+					
           if (CorspTRTest(TRp,MainAccp,i,TRrw.DebVal,TRrw.CredVal) and testf) then begin// Edit ************************** Monday, 22 December 2014 13:30:12
             SumDebet = SumDebet + TRrw.DebVal;
             SumCredit = SumCredit + TRrw.CredVal;                    

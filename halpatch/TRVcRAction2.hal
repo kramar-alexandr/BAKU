@@ -122,13 +122,13 @@ BEGIN
     res = -1; 
     goto LTRVcRecordCheck;
   end;
-  if (DateLocked(TRp.TransDate,"TRVc") and (CurrentUser !="SA")) then begin	//Edit----------------------Dima  09.02.2015
+  if (DateLocked(TRp.TransDate,"TRVc") and (CurrentUser !="SA") and (CurrentUser !="DINARA")) then begin	//Edit----------------------Dima  09.02.2015
     RecordCheckError(1046,"",-1,"TransDate");      
     res = -1; 
     goto LTRVcRecordCheck;
   end;
   if (stat==updatemode) then begin  
-    if (DateLocked(TR2p.TransDate,"TRVc") and (CurrentUser !="SA")) then begin	//Edit----------------------Dima  09.02.2015
+    if (DateLocked(TR2p.TransDate,"TRVc") and (CurrentUser !="SA")and (CurrentUser !="DINARA")) then begin	//Edit----------------------Dima  09.02.2015
       RecordCheckError(1046,"",-1,"TransDate");      
       res = -1; 
       goto LTRVcRecordCheck;
