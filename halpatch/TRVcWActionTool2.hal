@@ -335,12 +335,25 @@ BEGIN
       end else begin    
         ATransVal(OrgRow.DebVal,OrgRow.CredVal,Autrw.dstr,Autrw.cstr,dval,acval,Autr.DontSwap!=0);
       end;
-      TRrw.FrRate = frrate;
+      /*TRrw.FrRate = frrate;
       TRrw.ToRateB1 = torate1;
       TRrw.ToRateB2 = torate2;
       TRrw.BaseRate1 = baserate1;
       TRrw.BaseRate2 = baserate2;
-      TRrw.DebVal = dval;
+      TRrw.DebVal = dval;*/
+      
+       // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 10 February 2015 14:07:45
+	     
+      TRrw.Curncy = OrgRow.Curncy;
+      TRrw.FrRate = OrgRow.FrRate;
+      TRrw.ToRateB1 = OrgRow.ToRateB1;
+      TRrw.ToRateB2 = OrgRow.ToRateB2;
+      TRrw.BaseRate1 = OrgRow.BaseRate1;
+      TRrw.BaseRate2 = OrgRow.BaseRate2;
+      
+	// Edit End ---------------------------------------------- Edit End
+	
       if (nonblank(dval)) then begin
         temp = TRrw.BaseRate1/TRrw.BaseRate2;
         b2val = dval/temp;
