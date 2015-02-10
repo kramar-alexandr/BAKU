@@ -331,3 +331,15 @@ begin
 
 return;
 end;
+
+
+global
+updating procedure ImpCLOut()
+BEGIN
+
+
+    RegisterImport("CLOutVc");
+
+  RETURN;
+END;
+
