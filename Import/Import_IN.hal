@@ -1,0 +1,56 @@
+
+
+global
+updating procedure INImportIn()		//Edit----------------------Dima  10.02.2015
+begin
+  record INVc INr,INr2;
+	record ITVc ITr;
+	record DIVc DIr,DIr2;
+  string 70 code,wholeCode,type,group;
+  string 200 name;
+
+
+	while (TestEOF()==false) begin
+			wholeCode = ImportField;
+			name = ImportField;
+			group = ImportField;
+			type = ImportField;
+	
+			if(nonblank(wholeCode) and nonblank(name) and nonblank(group) and nonblank(type)) then begin
+
+				code = Right(wholeCode,Len(wholeCode)-2);
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)) then begin
+					INr.Code = code;
+					INr.Name = name;
+					RecordStore(INr,true);
+				end else begin	
+					RecordNew(INr);
+					INr.Code = wholeCode;
+					INr.Name = name;
+					RecordStore(INr,true);
+				end;	
+			
+					ReadFirstMain(INr,1,true);
+
+					ITr.Comment = group;
+					if (ReadFirstKey("Comment",ITr,1,true)) then begin
+							INr.Group = ITr.Code;
+							RecordStore(INr,true);
+					end;
+
+					DIr.Name = group;
+					if (ReadFirstKey("Name",DIr,1,true)  and (DIr.CType =="BRAND")) then begin
+							DIr2.Name = type;
+							if (ReadFirstKey("Name",DIr2,1,true) and (DIr2.CType=="TYPE")) then begin
+									INr.DispGroups = DIr.Code & "," & DIr2.Code;
+									RecordStore(INr,true);									
+							end;							
+					end;
+				end;
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+
