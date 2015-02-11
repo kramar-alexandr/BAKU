@@ -529,6 +529,7 @@ begin
         case kPOSButtonTypeLevelUp:
         procstr = procstr & "LevelUp";
         */
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeGotoPage:
         procstr = procstr & "TouchScreenPasteButton";
         //procstr = procstr & i+1;
@@ -571,76 +572,112 @@ begin
         tagstr = i + 1;
       case kPOSButtonTypeFinish:  
         procstr = procstr & "TouchScreenFinishButton";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
         case kPOSButtonTypeVoidRow:  
         procstr = procstr & "TouchScreenVoidRow";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAmendLine:  
         procstr = procstr & "TouchScreenAmendLine";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAddOrderDiscount:  
         procstr = procstr & "TouchScreenAddOrderDiscount";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeKitchenOrder:  
         procstr = procstr & "TouchScreenKitchenOrder";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeLoyaltyCard:  
         procstr = procstr & "TouchScreenLoyaltyCard";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeSeniorCitizenDiscount:  
         procstr = procstr & "TouchScreenSeniorCitizenCard";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeSplitItem:  
         procstr = procstr & "TouchScreenSplitItem";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeTransfertoSL:  
         procstr = procstr & "TouchScreenTransfertoSL";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeTransfertoInvoice:  
         procstr = procstr & "TouchScreenTransfertoInvoice";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeTransfertoOrder:  
         procstr = procstr & "TouchScreenTransfertoOrder";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeInvalidateInvoice:  
         procstr = procstr & "TouchScreenInvalidateInvoice";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAddHeaderLine:  
         procstr = procstr & "TouchScreenHeaderLine"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAddHiddenLine:  
         procstr = procstr & "TouchScreenHiddenLine"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAddSubtotalLine:  
         procstr = procstr & "TouchScreenSubtotalLine"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeInvoiceStatus:  
         procstr = procstr & "TouchScreenInvoiceStatus"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeOpenNLTransaction:  
         procstr = procstr & "TouchScreenOpenNLTransaction"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeSendToFiscalDevice:  
         procstr = procstr & "TouchScreenSendToFiscalDevice"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePrintProformaInvoice:  
         procstr = procstr & "TouchScreenProformaInvoice"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeConnectToPrepayment:  
         procstr = procstr & "TouchScreenConnectToPrepayment"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCreateCashOut:  
         procstr = procstr & "TouchScreenCreateCashout"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCreateCashin:  
         procstr = procstr & "TouchScreenCreateCashin"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCreateCreditNote:  
         procstr = procstr & "TouchScreenCreateCreditNote"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCreateCreditEMail:  
         procstr = procstr & "TouchScreenCreateCreditEMail"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCreateActivity:  
         procstr = procstr & "TouchScreenCreateActivity"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeOpenCalendar:  
         procstr = procstr & "TouchScreenOpenCalendar"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeChangeTerms:  
         procstr = procstr & "TouchScreenChangeTerms"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeChangeAddress:  
         procstr = procstr & "TouchScreenChangeAddress"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCashupReport:  
         procstr = procstr & "TouchScreenCashupReport"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeOpenSession:  
         procstr = procstr & "TouchScreenOpenSession"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCloseSession:  
         procstr = procstr & "TouchScreenCloseSession"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePutCashFloat:  
         procstr = procstr & "TouchScreenPutCashFloat"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeGetCashFloat:  
         procstr = procstr & "TouchScreenGetCashFloat"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeManagerDiscountOverride:  
         procstr = procstr & "TouchScreenManagerDiscountOverride"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeOpenTaxMatrix:  
         procstr = procstr & "TouchScreenOpenTaxMatrix"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeReturn:  
         procstr = procstr & "TouchScreenReturn";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeReturnReason:  
         procstr = procstr & "TouchScreenReturnReason"; 
         tagstr = POSBrw.Code;
@@ -649,22 +686,31 @@ begin
         tagstr = POSBrw.Code;
       case kPOSButtonTypeLookupSerialNr:  
         procstr = procstr & "TouchScreenLookupSerialNr";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeMainSerialNr:  
         procstr = procstr & "TouchScreenMainSerialNr";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAppleWarrantyStatusCheck:  
         procstr = procstr & "TouchScreenAppleWarrantyStatusCheck";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAppleCreateAEOrder:  
         procstr = procstr & "TouchScreenAppleCreateAEOrder"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAppleCancelAEOrder:  
         procstr = procstr & "TouchScreenAppleCancelAEOrder"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeLogin:  
         procstr = procstr & "TouchScreenButtonLogin";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeDeleteItem:
         procstr = procstr & "TouchScreenDeleteItem";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeLoyaltyPointsPayment:
         procstr = procstr & "TouchScreenLoyaltyPointsPayment";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeLoyaltyPointsBonus:
         procstr = procstr & "TouchScreenLoyaltyPointsBonus";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeGiftVoucherSales:
         procstr = procstr & "TouchScreenPasteButton";
         tagstr = i + 1;
@@ -705,29 +751,39 @@ begin
         procstr = "";
       case kPOSButtonTypOpenInvoices:  
         procstr = procstr & "TouchScreenOpenInvoices";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypSaveInvoice:  
         procstr = procstr & "TouchScreenSaveInvoice";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeBookings:  
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);
         procstr = "";
       case kPOSButtonTypePrintInvoice:  
         procstr = procstr & "TouchScreenPrint"; 
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePrintOrder:  
         procstr = "RestAccPrint";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePrintFireOrder:  
         procstr = "RestAccPrintFireOrder";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePrintCancellation:  
         procstr = "RestAccPrintCancel";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypePrintOrderToKitchen:  
         procstr = "RestAccPrintToKitchen";
 //      case kPOSButtonTypeOpenCashDrawer:  //already above
 //        procstr = "OpenCashDrawer";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeCalculateTip:  
         procstr = "RestAccTip";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeServiceCharge:  
         procstr = "RestAccServiceCharge";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeHotelGuests:  
         procstr = "StayingTool";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeSetTable:  
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);
         procstr = "";
@@ -751,28 +807,33 @@ begin
         procstr = "";
       case kPOSButtonTypeXReading:
         procstr = procstr & "TouchScreenXReading";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeYReading:
         procstr = procstr & "TouchScreenYReading";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeAllInvoices:
         procstr = procstr & "TouchScreenAllInvoices";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeSyncNow:
         procstr = procstr & "TouchScreenSyncNow";
+        tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
       case kPOSButtonTypeRunReportOnServer:
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);
         procstr = "";
-	  case 100:
-        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
-        procstr = "";
-      case 101:
-        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
-        procstr = "";
-      case 102:
-        procstr = procstr & "TouchScreenDeleteAll";// Edit ************************** Thursday, 16 May 2013 11:54:41
-	  case 103:
-        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
-		//CUNPTSSClassNewCustomer;
-		procstr = "";
-	  case 104:
+  	  case 100:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+          procstr = "";
+        case 101:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+          procstr = "";
+        case 102:
+          procstr = procstr & "TouchScreenDeleteAll";// Edit ************************** Thursday, 16 May 2013 11:54:41
+          tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
+  	  case 103:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+  		//CUNPTSSClassNewCustomer;
+  		procstr = "";
+  	  case 104:
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
         procstr = "";
       case 105:

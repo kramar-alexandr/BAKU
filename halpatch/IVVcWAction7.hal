@@ -1130,7 +1130,7 @@ LIVDClassTouchScreenLoyaltyPointsBonusExecute:;
 end;
 
 global
-updating procedure IVDClassTouchScreenLoyaltyPointsPaymentExecute(string paymode)
+updating procedure IVDClassTouchScreenLoyaltyPointsPaymentExecute(string paymode_amount)
 begin
   Integer wn,mwn,line,rownr;
   record RcVc RepSpec;
@@ -1142,11 +1142,16 @@ begin
   val PointsBalance,totsumb1;
   Integer err;
   val points;
+  string 10 paymode; //Edit***************************Sasha2,16:54 11.02.2015
+  val amount; //Edit***************************Sasha2,16:52 11.02.2015
 		
   mwn = CurWindow;
   GetWindowRecord(mwn,IVr);
   
-   rwcnt = matrowcnt(IVr);
+  paymode = FirstInRange(paymode_amount,10); //Edit***************************Sasha2,16:55 11.02.2015
+  amount = StringToVal(LastInRange(paymode_amount,10),M4Val); //Edit***************************Sasha2,16:55 11.02.2015
+  
+  rwcnt = matrowcnt(IVr);
   For(i=0;i<rwcnt;i=i+1) begin
 	  matrowget(IVr,i,IVrw);
 	  if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
@@ -1156,10 +1161,10 @@ begin
 	end; 
   if (blank(IVr.LoyaltyCardNr)) then begin
     //MessageBox(26439,"");
-    MessageBox(31001,"");
+    MessageBox(0,USetStr(31001) & amount & " AZN"); //Edit***************************Sasha2,17:09 11.02.2015
 		ClearRow(IVr,IVrw,kInvoiceRowTypeLoyaltyPointsPayment);    
-		points = 80;
-		if(IVr.Sum4<80)then begin
+		points = amount; 
+		if(IVr.Sum4<amount)then begin
 			points = IVr.Sum4;
 		end;    
 		IVrw.Points = points;// Edit ************************** Wednesday, 6 March 2013 12:08:33
@@ -1215,20 +1220,22 @@ begin
   Boolean found;
   record POSButtonsVc POSBr;
   row POSButtonsVc POSBrw;
+  Integer butnr; //Edit***************************Sasha2,17:20 11.02.2015
 
-  wn = CurWindow;
+  wn = CurWindow; 
+  butnr = StringToInt(PushButtonTag); //Edit***************************Sasha2,17:21 11.02.2015
   found = POSButtonsForWindow(wn,POSBr);
 
   if (found) then begin
-    rwcnt = MatRowCnt(POSBr);
-    for (i = 0; i<rwcnt; i = i + 1) begin
-      MatRowGet(POSBr,i,POSBrw);
+    //rwcnt = MatRowCnt(POSBr); //Edit***************************Sasha2,18:08 11.02.2015
+    //for (i = 0; i<rwcnt; i = i + 1) begin //Edit***************************Sasha2,17:22 11.02.2015
+      MatRowGet(POSBr,butnr-1,POSBrw);
       switch (POSBrw.ButtonType) begin
         case kPOSButtonTypeLoyaltyPointsPayment:
           IVDClassTouchScreenLoyaltyPointsPaymentExecute(POSBrw.Code);
-          i = rwcnt;
+          //i = rwcnt; //Edit***************************Sasha2,17:22 11.02.2015
       end;
-    end;
+    //end; //Edit***************************Sasha2,17:22 11.02.2015
   end;
   return;
 end;
