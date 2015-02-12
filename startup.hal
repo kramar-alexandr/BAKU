@@ -61,6 +61,7 @@ begin
 	Maintenance("Remove all Purchase Invoices from Transactions",FIXVClass,RemoveVIVcInTRVcMn,modNL);  //Edit-----------------Dima 02.02.2015
 	Maintenance("Удалить все старые операции",FIXVClass,RemoveOldTRVcRecordsMn,modNL);  							//Edit-----------------Dima 03.02.2015
 	Maintenance("Переместить коеф. курса EUR в документах",FIXVClass,TransferingCurValueBetweenFieldsMn,modDBMain);  				//Edit-----------------Dima 03.02.2015
+	Maintenance("Удалить ненужные товары в CreativeSystem",FIXVClass,RemoveNotValidItemsFromCreativeMn,modDBMain); //Edit***************************Sasha2,16:33 12.02.2015
 
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
