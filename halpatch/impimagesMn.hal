@@ -930,26 +930,25 @@ begin
 return;
 end; //Edit***************************Sasha2,14:51 03.02.2015 }
 
-global 
-updating procedure RemoveNotValidItemsFromCreativeMn()	//Edit***************************Sasha2,16:29 12.02.2015 {
+global updating procedure RemoveNotValidItemsFromCreativeMn()	//Edit***************************Sasha2,16:29 12.02.2015 {
 begin
 	record INVc INr;
 	boolean TrHs;
-  integer oldcompany;
+  integer oldcompany,cnt;
 
 	oldcompany = CurrentCompany;
 	if (SetCompanyCode(9,false)) then begin
-  	TrHs = true;
+  	TrHs = true;cnt = 0;
   	INr.Code = "";
   	while(loopmain(INr,1,TrHs))begin
   		if(INr.SyncFlags<1)then begin	
       	RecordDelete(INr);
-      	StepBack(INr);
+      	StepBack(INr);cnt = cnt + 1;
   		end;
   	end;
   end;
   
-  ResetCompany(oldcompany);
+  ResetCompany(oldcompany);LogText(0,"cnt " & cnt);
 	
 return;
 end; //Edit***************************Sasha2,16:29 12.02.2015 }
