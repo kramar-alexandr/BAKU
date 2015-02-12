@@ -792,12 +792,12 @@ BEGIN
           case "TAccNumber":
             if (changed!=0) then begin MessageBox(1512,""); end;
             goto LTRDClassActiveEditField;
-   /*     case "DebVal":
+   /* */     case "DebVal":
             if (changed!=0) then begin MessageBox(1512,""); end;
             goto LTRDClassActiveEditField;
           case "CredVal":
             if (changed!=0) then begin MessageBox(1512,""); end;
-            goto LTRDClassActiveEditField;		 */
+            goto LTRDClassActiveEditField;		/* */
           case "Curncy":
             if (changed!=0) then begin MessageBox(1512,""); end;
             goto LTRDClassActiveEditField;
