@@ -54,3 +54,59 @@ begin
 return;
 end;
 
+
+
+
+
+global
+updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
+begin
+  record INVc INr;
+	record ITVc ITr,ITr2;
+  string 70 code,discount;
+  string 3 ending;
+	boolean TrHs;
+
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			discount = ImportField;
+
+			if (discount=="50%") then begin
+					ending = "5%";
+			end  else begin
+					ending = "3%";
+			end;		
+
+	
+			if(nonblank(code) and nonblank(discount)) then begin
+
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)) then begin
+
+						ITr.Code = INr.Group;
+						if (ReadFirstMain(ITr,1,true)) then begin
+									ITr2.Comment = ITr.Comment;
+									TrHs= true;
+									while (LoopKey("Comment",ITr2,1,TrHs) ) begin	
+											if (ITr2.Comment!=ITr.Comment) then begin	
+												TrHs = false;
+											end;	
+
+											if (TrHs and (Right(ITr2.Code,2)==ending) ) then begin
+												INr.Group = ITr2.Code;
+												RecordStore(INr,true);
+												TrHs = false;
+											end;
+									end;
+									RESETLOOP(ITr2);
+						end;
+
+				end;
+			end;
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+
