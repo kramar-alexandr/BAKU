@@ -3524,9 +3524,9 @@ begin
   v = 24;
   MatrixBegin(4,v,-32,-40,-,99);
   MatCol(1,24,"Язык",0,LangCode,false,LangSClass);
-  MatCol(1,94,"Наименование",0,Text,false,0); //Edit***************************Sasha2,17:36 01.12.2014
-  MatCol(1,300,"Описание",0,Description,false,0); //Edit***************************Sasha2,17:36 01.12.2014
-  MatCol(1,-200,"Техн.параметры",0,Technical,false,0); //Edit***************************Sasha2,17:36 01.12.2014
+  //MatCol(1,94,"Наименование",0,Text,false,0); //Edit***************************Sasha2,17:36 01.12.2014
+  //MatCol(1,300,"Описание",0,Description,false,0); //Edit***************************Sasha2,17:36 01.12.2014
+  //MatCol(1,-200,"Техн.параметры",0,Technical,false,0); //Edit***************************Sasha2,17:36 01.12.2014
   EndMatrix;
   Tile(tilenr,220,false,tilenr,CostPerc);  tilenr = tilenr + 1;
   ButtonFrame(h=100,vm=(v=20),230,6,"Первичная модель стоимости");
@@ -4820,7 +4820,7 @@ begin
   StaticText(h+=69,v,"На кол.",false);
   StaticText(248,v,"Колонка",false);
   h = 10; v=v+20; l = 30;
-  MatrixBegin(h,v,h+240+11*l,-10,-,1999);
+  MatrixBegin(h,v,h+240+11*l,-10,-,4999);
   MatCol(1,h=30,"Код",0,CodeType,false,SetSClass);
   MatCol(1,h=94,"Группа",0,ITCode,false,ITSClass);
   MatCol(1,h+=70,"Скидка",0,StaffCode,false,StaffSClass);

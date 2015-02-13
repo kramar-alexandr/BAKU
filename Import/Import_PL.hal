@@ -338,7 +338,7 @@ updating procedure ImpCLOut()
 BEGIN
 
 
-    RegisterImport("CLOutVc");
+    RegisterImport("ITVc2");
 
   RETURN;
 END;
