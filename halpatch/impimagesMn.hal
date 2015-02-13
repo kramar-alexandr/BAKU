@@ -952,3 +952,31 @@ begin
 	
 return;
 end; //Edit***************************Sasha2,16:29 12.02.2015 }
+
+
+
+global updating procedure RevertINGroups3050Mn()	//Edit----------------------Dima  13.02.2015
+begin
+  record INVc INr;
+	record ITVc ITr,ITr2;
+
+	while (LoopMain(INr,1,true)) begin
+
+			if((Right(INr.Group,2) == "3%")  or (Right(INr.Group,2) =="5%")) then begin
+
+						ITr.Code = INr.Group;
+						if (ReadFirstMain(ITr,1,true)) then begin
+									ITr2.Comment = ITr.Comment;
+									if(ReadLastKey("Comment",ITr2,1,true) and (Right(ITr2.Code,2) != "3%") and (Right(ITr2.Code,2) != "5%")) then begin
+
+												INr.Group = ITr2.Code;
+												RecordStore(INr,true);
+									end;
+						end;
+
+			end;
+		
+	end;
+	
+return;
+end;
