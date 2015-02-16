@@ -54,10 +54,6 @@ begin
 return;
 end;
 
-
-
-
-
 global
 updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
 begin

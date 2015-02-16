@@ -113,6 +113,7 @@ begin
 
 	Import("Обновление названий и классификаций товаров",INUpdatingIClass,INImportIn,modIN);
 	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);
+	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 
 	SetBegin(900);
 		SetText(0,"Обычный");
