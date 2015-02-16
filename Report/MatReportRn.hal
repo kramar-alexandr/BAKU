@@ -245,6 +245,7 @@ begin
                               dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
                     case"USD":payUSD = payUSD + IVrw.Sum;
                               totpayUSD = totpayUSD + IVrw.Sum;
+                              messagebox(0,payUSD & " " & IVr.SerNr);
                               curcode = "USD";
                               GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
                               dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
@@ -280,6 +281,9 @@ begin
               end;
               
               dolg = dolg - IVr.Sum4;
+              if(IVr.SerNr==3650)then begin
+              	messagebox(0,dolg);
+              end;
               For(i=0;i<mtrw;i=i+1) begin
                 matrowget(IVr,i,IVrw);
                 INr.Code = IVrw.ArtCode;
