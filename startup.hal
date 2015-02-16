@@ -111,8 +111,9 @@ begin
   Export("Отчет по продажам с картинками",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
   Export("Остатки по складам с картинками",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
 
-	Import("Обновление названий и классификаций товаров",INUpdatingIClass,INImportIn,modIN);
-	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);
+	Import("Обновление названий и классификаций товаров",INUpdatingIClass,INImportIn,modIN);	//Edit----------------------Dima  16.02.2015
+	Import("2_Обновление названий и классификаций товаров",INUpdatingIClass,INImport2In,modIN);//Edit----------------------Dima  16.02.2015
+	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);//Edit----------------------Dima  16.02.2015
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 
 	SetBegin(900);

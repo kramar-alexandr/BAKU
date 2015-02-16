@@ -54,6 +54,59 @@ begin
 return;
 end;
 
+
+
+global
+updating procedure INImport2In()		//Edit----------------------Dima  10.02.2015
+begin
+  record INVc INr,INr2;
+	record ITVc ITr;
+	record DIVc DIr,DIr2,DIr3;
+  string 70 code,type,group,collection;
+  string 200 name;
+
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			name = ImportField;
+			group = ImportField;
+			type = ImportField;
+			collection = ImportField;
+	
+			if(nonblank(code) and nonblank(name)) then begin
+
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)==false) then begin
+					RecordNew(INr);
+				end;
+					INr.Code = code;
+					INr.Name = name;
+					RecordStore(INr,true);
+
+					ITr.Comment = group;
+					if (ReadFirstKey("Comment",ITr,1,true)) then begin
+							INr.Group = ITr.Code;
+							RecordStore(INr,true);
+					end;
+
+					DIr.Name = group;
+					if (ReadFirstKey("Name",DIr,1,true)  and (DIr.CType =="BRAND")) then begin
+							DIr2.Name = type;
+							if (ReadFirstKey("Name",DIr2,1,true) and (DIr2.CType=="ACTIVITY")) then begin
+									DIr3.Name = collection;
+									if (ReadFirstKey("Name",DIr3,1,true) and (DIr3.CType=="LINE")) then begin
+											INr.DispGroups = DIr.Code & "," & DIr2.Code  & "," & DIr3.Code;
+											RecordStore(INr,true);	
+									end;								
+							end;							
+					end;
+				end;
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+
 global
 updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
 begin
