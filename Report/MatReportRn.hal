@@ -242,13 +242,12 @@ begin
                               totpayEUR = totpayEUR + IVrw.Sum;
                               curcode = "EUR";
                               GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
-                              dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
+                              dolg = dolg + round(IVrw.Sum/fr*to1,rnd);
                     case"USD":payUSD = payUSD + IVrw.Sum;
                               totpayUSD = totpayUSD + IVrw.Sum;
-                              messagebox(0,payUSD & " " & IVr.SerNr);
                               curcode = "USD";
                               GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
-                              dolg = dolg + round(IVrw.Sum*fr/to1,rnd);
+                              dolg = dolg + round(IVrw.Sum/fr*to1,rnd);
                   end;
                 end;
                 if(IVrw.stp==kInvoiceRowTypeCreditCardPayment)then begin
@@ -281,8 +280,8 @@ begin
               end;
               
               dolg = dolg - IVr.Sum4;
-              if(IVr.SerNr==3650)then begin
-              	messagebox(0,dolg);
+              if(dolg>0)then begin
+              	dolg = 0;
               end;
               For(i=0;i<mtrw;i=i+1) begin
                 matrowget(IVr,i,IVrw);
@@ -322,7 +321,9 @@ begin
                       outstring(300,0,"",false);
                     end;
                     //outstring(250,0,IVrw.Quant,false);
-                    if(ivsum==payUSD or ivsum-payUSD<1)then begin
+                    curcode = "USD";
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
                       ivsum = 1;
                       payUSD = 1;
                     end;
@@ -330,14 +331,16 @@ begin
                       ivsum = 1;
                       payAZN = 1;
                     end;
-                    if(ivsum==payEUR or ivsum-payEUR<1)then begin
+                    curcode = "EUR";
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
                       ivsum = 1;
                       payEUR = 1;
                     end;
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
-                    end;
+                    end;                  
                     outstring(300,0,round(IVrw.Sum/ivsum/IVrw.Quant*payUSD,rnd),false);
                     outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
                     outstring(400,0,round(IVrw.Sum/ivsum/IVrw.Quant*payAZN,rnd),false);
