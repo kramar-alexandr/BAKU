@@ -393,7 +393,7 @@ begin
   
   totresqty = 0;
   totresqty = ISr.RsrvQty;
-  if(ISr.Location=="MAIN" or ISr.Location=="CS1")then begin
+  if(ISr.Location=="MAIN" or ISr.Location=="CS1" or ISr.Location=="OUTLET_14")then begin
 		totresqty = 0;
 		IS1r.Code = ISr.Code;
 		IS1r.Location = "MAIN";
@@ -402,6 +402,11 @@ begin
 	
 		IS1r.Code = ISr.Code;
 		IS1r.Location = "CS1";
+		readfirstmain(IS1r,2,true);
+		totresqty  = totresqty + IS1r.RsrvQty;
+		
+		IS1r.Code = ISr.Code;
+		IS1r.Location = "OUTLET_14";// Edit ************************** Tuesday, 17 February 2015 15:23:19
 		readfirstmain(IS1r,2,true);
 		totresqty  = totresqty + IS1r.RsrvQty;
   end;

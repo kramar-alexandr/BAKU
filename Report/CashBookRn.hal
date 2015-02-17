@@ -112,6 +112,8 @@ begin
 		case"RCOL2":			paymodes = "B5,K5,L5,T5,S5";
 		case"RC_DG":			paymodes = "B3,K3,L3,T3,S3";
 		case"TIMEPIECES":	paymodes = "B6,K6,L6,T6,S6";
+		case"GRAFF":	paymodes = "B7,K7,L7,T7,S7";
+		case"ELLUX":	paymodes = "B8,K8,L8,T8,S8";
 	end;
 	
 	sd = RepSpec.sStartDate;

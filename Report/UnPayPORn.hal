@@ -4,15 +4,37 @@ SetLangMode(LangRussian,"RUS",0);
 global procedure UnPayPORn(record RcVc RepSpec)
 begin
 Record CUVc CUr;
-boolean TrHs,testf,cutestf;
+boolean TrHs,testf,cutestf,cuheader;
+boolean viTrHs,ViTestf;
 record POVc POr;
+record VIVc VIr;
+row VIVc VIrw;
+record APVc APr;
+val podolg;
+record OPrsVc OPrsr;
+boolean opTrHs,optestf;
+record OPVc OPr;
+row OPVc OPrw;
+integer mtrw,i;
 		
 		
 	startreportnoheaderjob("отчет по неоплаченным заказам поставщика");
 	
+	
+	startFormat(15);
+		outstring(0,0,"Поставщик",false);
+		outstring(100,0,"Наименование",false);
+		outstring(170,0,"№ зак. пост.",false);
+		outstring(240,0,"Усл. опл.",false);
+		outstring(300,0,"Запл. Дата отгр.",false);
+		outstring(450,0,"",true);
+		outstring(1,0,"Сумма",true);
+	endformat;
+	
 	cutestf = true;
 	CUr.Code = RepSpec.f1;
 	while(loopkey("VEActCode",CUr,1,cutestf))begin
+		cuheader = false;
 		if(nonblank(RepSpec.f1) and RepSpec.f1!=CUr.Code)then begin cutestf=false; end;
 		
 		if(cutestf)then begin
@@ -21,15 +43,82 @@ record POVc POr;
 			TrHs = true;
 			While(loopkey("VECode",POr,1,TrHs))begin
 				if(POr.VECode!=CUr.Code)then begin TrHs = false; end;
+				podolg = 0;
 				
+				podolg = podolg + POr.Sum4;
 				if(TrHs)then begin
 					
+					VIr.POSerNr = POr.SerNr;
+					viTrHs = true;
+					while (LoopKey("POSerNr",VIr,1,viTrHs)) begin
+						if(VIr.POSerNr!=POr.SerNr)then begin viTrHs=false; end;
+						
+						if(viTrHs and VIr.OKFlag==1)then begin
+							podolg = podolg - VIr.PayVal;
+							mtrw = matrowcnt(VIr);
+							For(i=0;i<mtrw;i=i+1) begin
+	  						matrowget(VIr,i,VIrw);
+	  						if(VIrw.stp==kInvoiceRowTypePrepayment)then begin
+	  							podolg = podolg + VIrw.PrepayAmount;
+	  						end;
+							end; 
+							APr.SerNr = VIr.SerNr;
+							if(readfirstkey("SerNr",APr,1,true))then begin
+								podolg = podolg + APr.RVal;
+							end;
+						end;
+					end;
+					resetloop(VIr);
+					
+					OPrsr.VECode = CUr.Code;
+					opTrHs = true;
+					while(loopmain(OPrsr,1,opTrHs))begin
+						optestf = true;
+						if(OPrsr.VECode!=CUr.Code)then begin opTrHs=false; optestf = false; end;
+						if(OPrsr.TransType!=1)then begin optestf = false; end;
+						
+						if(optestf)then begin
+							OPr.SerNr = OPrsr.TransNr;
+							if(readfirstmain(OPr,1,true))then begin
+								mtrw = matrowcnt(OPr);
+								For(i=0;i<mtrw;i=i+1) begin
+	  							matrowget(OPr,i,OPrw);
+	  							if(OPrw.VECode==CUr.Code and OPrw.OrderNr==POr.SerNr)then begin
+	  								podolg = podolg - OPrw.RecVal;
+	  							end;
+								end; 
+							end;
+						end;
+					end;
+					resetloop(OPrsr);
+					
+					if(podolg>0)then begin
+						if(cuheader==false)then begin
+							gray_divider(0,1);
+							startformat(15);
+								outstring(0,"DblCUVc",CUr.Code,false);
+								outstring(100,0,CUr.Name,false);
+							endformat;
+							startformat(15);
+								outstring(0,0,"Вид-номер счета",false);
+								//outstring(100,0,CUr.Name,false);
+							endformat;
+							cuheader = true;
+						end;
+						startFormat(15);
+							outstring(0,0,POr.InvAddr4,false);
+							outstring(100,0,"",false);
+							outstring(170,"DblPOVc",POr.SerNr,false);
+							outstring(240,0,POr.PayDeal,false);
+							outstring(300,0,POr.PlanShip,false);
+							outstring(450,0,POr.CurncyCode,true);
+							outstring(1,0,podolg,true);
+						endformat;
+					end;
 				end;
 			end;
 			resetloop(POr);
-			startformat(15);
-				outstring(0,0,CUr.Code,false);
-			endformat;
+			
 			
 		end;
 		
