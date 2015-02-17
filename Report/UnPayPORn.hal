@@ -1,0 +1,37 @@
+SetLangMode(LangRussian,"RUS",0);
+
+
+global procedure UnPayPORn(record RcVc RepSpec)
+begin
+Record CUVc CUr;
+boolean TrHs,testf,cutestf;
+record POVc POr;
+		
+		
+	startreportnoheaderjob("отчет по неоплаченным заказам поставщика");
+	
+	cutestf = true;
+	CUr.Code = RepSpec.f1;
+	while(loopkey("VEActCode",CUr,1,cutestf))begin
+		if(nonblank(RepSpec.f1) and RepSpec.f1!=CUr.Code)then begin cutestf=false; end;
+		
+		if(cutestf)then begin
+		
+			OPr.VECode = CUr.Code;
+			TrHs = true;
+			While(loopkey("VECode",POr,1TrHs))begin
+			
+			
+			end;
+			resetloop(POr);
+			startformat(15);
+				outstring(0,0,CUr.Code,false);
+			endformat;
+			
+		end;
+		
+	end;
+
+	endjob;
+return;
+end;

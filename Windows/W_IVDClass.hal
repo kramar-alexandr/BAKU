@@ -7021,3 +7021,20 @@ begin
   
   EndWindow;
 end;
+
+
+window UnPayPORClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,hacc,v,vm,vs;
+  Integer tilenr;
+
+  WindowBegin("Определите отчет по неоплаченным заказам поставщика",UnPayPORClass,CGRcW,RcType);
+  UseView(RcVc);
+  SetWRect(20,80,600,380);
+	h = 100;
+  vs = 20;
+  hacc = 342;
+  EditFieldTL(h,v+=vs,150,"Поставщик",M4UStr,Normal,60,f1,false,VESClass); 
+  EndWindow;
+end;
