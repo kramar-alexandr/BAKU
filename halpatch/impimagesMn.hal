@@ -1000,7 +1000,6 @@ begin
 		if (TRr.TransDate >= dateFrom) then begin testf = true; end;
 		
 			if(TrHs and testf) then begin	
-LogText(0,TRr.Number & "  " & TRr.IntYc);
 				mtrw = matrowcnt(TRr);
 				For(i=0;i<mtrw;i=i+1) begin
 						matrowget(TRr,i,TRrw);	  
@@ -1027,7 +1026,6 @@ LogText(0,TRr.Number & "  " & TRr.IntYc);
 		if (TRr.TransDate >= dateFrom) then begin testf = true; end;
 		
 		if(TrHs and testf)then begin	
-LogText(0,TRr.Number & " -------- " & TRr.IntYc);
 			mtrw = matrowcnt(TRr);
 			For(i=0;i<mtrw;i=i+1) begin
 					matrowget(TRr,i,TRrw);	  
