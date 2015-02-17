@@ -62,7 +62,8 @@ begin
 	Maintenance("Удалить все старые операции",FIXVClass,RemoveOldTRVcRecordsMn,modNL);  							//Edit-----------------Dima 03.02.2015
 	Maintenance("Переместить коеф. курса EUR в документах",FIXVClass,TransferingCurValueBetweenFieldsMn,modDBMain);  				//Edit-----------------Dima 03.02.2015
 	Maintenance("Удалить ненужные товары в CreativeSystem",FIXVClass,RemoveNotValidItemsFromCreativeMn,modDBMain); //Edit***************************Sasha2,16:33 12.02.2015
-	Maintenance("Вернуть код группы товаров с 30%50% ",FIXVClass,RevertINGroups3050Mn,modDBMain);
+	Maintenance("Вернуть код группы товаров с 30%50% ",FIXVClass,RevertINGroups3050Mn,modDBMain);				//Edit----------------------Dima  13.02.2015
+	Maintenance("Заменить 84 счет в операциях на 84/01, 84/02",ReplaceAccount84VClass,Change84to8401and8402TRVcMn,modDBMain);//Edit----------------------Dima  17.02.2015
 
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
