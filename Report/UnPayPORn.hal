@@ -17,11 +17,14 @@ record POVc POr;
 		
 		if(cutestf)then begin
 		
-			OPr.VECode = CUr.Code;
+			POr.VECode = CUr.Code;
 			TrHs = true;
-			While(loopkey("VECode",POr,1TrHs))begin
-			
-			
+			While(loopkey("VECode",POr,1,TrHs))begin
+				if(POr.VECode!=CUr.Code)then begin TrHs = false; end;
+				
+				if(TrHs)then begin
+					
+				end;
 			end;
 			resetloop(POr);
 			startformat(15);
