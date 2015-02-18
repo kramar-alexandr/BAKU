@@ -153,8 +153,10 @@ begin
     if(readfirstmain(DIr,1,true))then begin
     	tstr = DIr.Name;
     end;
-    OutString(55,0,tstr,false);// Edit ************************** Friday, 4 April 2014 13:14:06
+    OutString(45,0,tstr,false);// Edit ************************** Friday, 4 April 2014 13:14:06
     OutString(2,0,locINr.Name,false);
+		OutString(140,0,locINr.Colour,false);	//Edit----------------------Dima  18.02.2015
+		OutString(190,0,locINr.Size,false);		//Edit----------------------Dima  18.02.2015
     switch (RepSpec.flags[1]) begin
       case 0:    
         OutDate(3,0,dat1,true);
@@ -585,7 +587,7 @@ BEGIN
      rw = rw + 1;
    end;
   EndHeader;
-  SetRepCol(2,105);// Edit ************************** Friday, 4 April 2014 13:10:50   >>75
+  SetRepCol(2,95);// Edit ************************** Friday, 4 April 2014 13:10:50   >>75
   SetRepCol(3,270);
   SetRepCol(4,380);
   SetRepCol(5,430);
@@ -593,8 +595,11 @@ BEGIN
 
   if ((RepSpec.ArtMode==0) or (RepSpec.ArtMode==2)) then begin
     OutString(0,0,USetStr(2325),false);
-    OutString(55,0,USetStr(8833),false);// Edit ************************** Friday, 4 April 2014 13:11:52
+    OutString(45,0,USetStr(8833),false);// Edit ************************** Friday, 4 April 2014 13:11:52
     OutString(2,0,USetStr(2326),false);
+    OutString(140,0,USetStr(31320),false);	//Edit----------------------Dima  18.02.2015
+    OutString(190,0,USetStr(31321),false); //Edit----------------------Dima  18.02.2015
+
     switch (RepSpec.flags[1]) begin
       case 0:
         OutString(3,0,USetStr(2773),true);
