@@ -1066,3 +1066,167 @@ begin
 	
 return;
 end;
+
+
+global
+procedure DblSDVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  24.02.2015
+begin
+  Integer wn;
+  record SDVc SDr;
+  
+  SDr.SerNr = StringToLongInt(dblstr);
+  
+  if (ReadFirstMain(SDr,1,true)) then begin  
+    wn = OpenWindow("SDDClass",1,0,"","",SDr);
+  end; 
+  return;
+end;
+
+
+
+procedure ExtractClassificationsFromINVc(string artcode,var string type, var string brand)	//Edit----------------------Dima  23.02.2015
+begin
+	record INVc INr;
+	record DIVc DIr;
+	integer pos;
+	string 15 classification;
+	
+	INr.Code = artcode;
+	if (ReadFirstMain(INr,1,true)) then begin
+
+		pos = 0;
+  	ExtractObj(INr.DispGroups,pos,classification);
+  	while(nonblank(classification)) begin
+  		DIr.Code = classification;
+			if(ReadFirstMain(DIr,1,true) and (DIr.CType=="BRAND")) then begin 
+						brand = DIr.Name;
+			end else begin
+					if(ReadFirstMain(DIr,1,true) and (DIr.CType=="TYPE")) then begin 
+						type = DIr.Name;
+					end;
+			end;	
+  		ExtractObj(INr.DispGroups,pos,classification);
+  	end;
+	end;	
+
+return;
+end;
+
+procedure HeaderLocations(string a,  var string res)	//Edit----------------------Dima  23.02.2015
+begin
+  if (blank(a)) then begin
+     res = USetStr(8961);
+  end else begin
+     res = USetStr(2768);
+     res = res &": " & a;
+  end;
+return;
+end;
+
+
+
+global
+procedure FoundersRn(record RcVc RepSpec)  					//Edit----------------------Dima  23.02.2015
+begin
+  record SDVc SDr;
+  row SDVc SDrw;
+  record ObjVc Objr;
+  record PLVc PLr;
+  integer rw,rwcnt,i,pos;
+  string 200 tstr;
+  string 30 objct,type,brand,founder;
+  boolean testf,TrHs;
+  val sum;  
+  
+  
+  StartReportJob(USetStr(31322));
+  rw=1;
+  Header(rw,USetStr(31102) & RepSpec.sStartDate & "-" & RepSpec.sEndDate,1);
+  rw = rw + 1;
+  HeaderLocations(RepSpec.f1,tstr);	
+  Header(rw,tstr,1);
+  rw = rw + 1;	
+	EndHeader;
+	
+	StartFormat(15);
+		OutString(0,0,USetStr(31203),false);		//ArtCode
+		OutString(90,0,USetStr(12003),false);		//Type
+		OutString(140,0,USetStr(31205),false);	//Brand
+		OutString(200,0,USetStr(31169),false);	//Currency
+		OutString(240,0,USetStr(12004),false);	//Quantity
+		OutString(280,0,USetStr(31122),false);	//Sum
+		OutString(320,0,USetStr(35001),false);	//Founder
+		OutString(390,0,USetStr(12001),false);	//Date
+		OutString(440,0,USetStr(13214),false);	//Document
+
+	EndFormat;
+	
+	TrHs = true;
+	SDr.TransDate = RepSpec.sStartDate;
+	
+	While(LoopKey("TransDate",SDr,1,TrHs))begin
+		testf = true;
+
+		if (SDr.TransDate > RepSpec.sEndDate) then begin
+			testf = false;
+			TrHs = false;
+		end;
+		
+		if (nonblank(RepSpec.f1) and (RepSpec.f1 != SDr.Location)) then begin
+			testf = false;
+		end;	
+	
+		if (testf) then begin	
+			pos = 0;
+  		ExtractObj(SDr.Objects,pos,objct);
+  		testf = false;
+  		while(nonblank(objct)) begin
+  			Objr.Code = objct;  			 
+				if(ReadFirstMain(Objr,1,true) and (Objr.OTCode=="FOUND")) then begin 
+						testf = true;
+						founder = Objr.Comment;
+						goto LBreakObjSearch4;
+				end;
+  			ExtractObj(SDr.Objects,pos,objct);
+  		end;
+			LBreakObjSearch4:;
+		end;
+	
+			
+		if(testf)  then begin
+		
+				rwcnt = MatRowCnt(SDr);
+				
+				for(i=0; i<rwcnt; i=i+1) begin
+					MatRowGet(SDr,i,SDrw);					
+					ExtractClassificationsFromINVc(SDrw.ArtCode,type,brand);
+					
+					PLr.PLCode = "FOB17";	
+					PLr.ArtCode = SDrw.ArtCode;
+					ReadFirstMain(PLr,2,true);
+					sum = PLr.ExVatPrice * SDrw.Qty;
+				
+					StartFormat(15);
+						OutString(0,0,SDrw.ArtCode,false);
+						OutString(90,0,type,false);
+						OutString(140,0,brand,false);
+						OutString(200,0,PLr.CurncyCode,false);
+						OutString(240,0,SDrw.Qty,false);
+						OutVal(280,0,sum,M4Val,false);
+						OutString(320,0,founder,false);
+						OutString(390,0,SDr.TransDate,false);
+						OutStringID(440,"DblSDVcOpen",SDr.SerNr,false,SDr.SerNr);
+						        	
+					EndFormat;				
+				
+				end;				
+		end;
+			
+	end;	
+	
+	
+	EndJob;
+
+return;
+end;
+
