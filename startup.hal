@@ -64,7 +64,10 @@ begin
 	Maintenance("Удалить ненужные товары в CreativeSystem",FIXVClass,RemoveNotValidItemsFromCreativeMn,modDBMain); //Edit***************************Sasha2,16:33 12.02.2015
 	Maintenance("Вернуть код группы товаров с 30%50% ",FIXVClass,RevertINGroups3050Mn,modDBMain);				//Edit----------------------Dima  13.02.2015
 	Maintenance("Заменить 84 счет в операциях на 84/01, 84/02",ReplaceAccount84VClass,Change84to8401and8402TRVcMn,modDBMain);//Edit----------------------Dima  17.02.2015
+	Maintenance("Проставить счет аванса клиентам и поставщикам",FIXVClass,CUADDCredOnACCMn,modDBMain);				//Edit----------------------Dima  13.02.2015
 
+	
+	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
   end;

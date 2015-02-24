@@ -99,7 +99,7 @@ BEGIN
   switch (stp) begin
     case kInvoiceRowTypeGiftVoucherSold:
       GCr.SerNr = IVrw.GCNr;
-      if (ReadFirstMain(GCr,1,true)) then begin
+      if (ReadFirstMain(GCr,1,true) and IVrw.Sum>=0) then begin// Edit ************************** Monday, 23 February 2015 11:43:55
         if (GCr.OKFlag==0) then begin
           RecordCheckError(2187,"",rownr,"GCNr");      
           res = false;
@@ -122,9 +122,11 @@ BEGIN
           goto LIVVcGiftCertificateCheck;
         end;
       end else begin
-        RecordCheckError(2184,"",rownr,"GCNr");      
-        res = false;
-        goto LIVVcGiftCertificateCheck;
+      	if(IVrw.Sum>=0)then begin// Edit ************************** Monday, 23 February 2015 11:48:01
+					RecordCheckError(2184,"",rownr,"GCNr");      
+					res = false;
+					goto LIVVcGiftCertificateCheck;
+        end;
       end;
       gcval = gcval + IVrw.Sum;
     case kInvoiceRowTypeGiftVoucherPayment:
