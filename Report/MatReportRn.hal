@@ -1,6 +1,8 @@
 external procedure ExtractObj(string,var Integer,var string);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure ExtractObj(string,var Integer,var string);
+external function roundmode SetRoundModeD(Integer);
+
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -306,7 +308,50 @@ begin
                 if(setinset("33",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("34",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("35",INr.DispGroups))then begin posmat = false; end;
-              
+              	
+              	if(IVrw.stp==kInvoiceRowTypeGiftVoucherSold)then begin
+                  startformat(15);
+                    outstring(0,0,"Gift Voucher Sold",false);
+                    outstring(50,0,"",false);
+                    outstring(150,0,"",false);
+                    outstring(200,0,"",false);
+                    outstring(250,0,"",false);
+                    if(PDIsCash(IVr.PayDeal)==false and IVr.RetValue<0)then begin
+                      outstring(300,0,USetStr(9134),false);
+                    end else begin
+                      outstring(300,0,"",false);
+                    end;
+                    curcode = "USD";
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                    end;
+                    if(ivsum==payAZN or ivsum-payAZN<1)then begin
+                      ivsum = 1;
+                      payAZN = 1;
+                    end;
+                    curcode = "EUR";
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                    end;
+                    if(ivsum==payTRM or ivsum-payTRM<1)then begin
+                      ivsum = 1;
+                      payTRM = 1;
+                    end;       
+                    outstring(300,0,round(IVrw.Sum/ivsum/1*payUSD,SetRoundModeD(0)),false);
+                    outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
+                    outstring(400,0,round(IVrw.Sum/ivsum/1*payAZN,SetRoundModeD(0)),false);
+                    outstring(450,0,round(IVrw.Sum/ivsum*payAZN,rnd),false);
+                    outstring(500,0,round(IVrw.Sum/ivsum/1*payEUR,SetRoundModeD(0)),false);
+                    outstring(550,0,round(IVrw.Sum/ivsum*payEUR,rnd),false);
+                    outstring(600,0,round(IVrw.Sum/ivsum/1*payTRM,SetRoundModeD(0)),false);
+                    outstring(650,0,round(IVrw.Sum/ivsum*payTRM,rnd),false);
+                    outstring(700,0,IVr.InvComment,false);
+                  endformat;
+                end;
+              	
+              	
                 if(IVrw.stp==kInvoiceRowTypeNormal and posmat)then begin
                   if(IVrw.Quant>0 and IVr.CustCode!="FOB")then begin
                   startformat(15);
@@ -324,8 +369,8 @@ begin
                     curcode = "USD";
                     GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
                     if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
-                      ivsum = 1;
-                      payUSD = 1;
+                      ivsum = IVr.Sum4;
+                      //payUSD = 1/to1*fr;
                     end;
                     if(ivsum==payAZN or ivsum-payAZN<1)then begin
                       ivsum = 1;
@@ -334,20 +379,21 @@ begin
                     curcode = "EUR";
                     GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
                     if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
-                      ivsum = 1;
-                      payEUR = 1;
+                      ivsum = IVr.Sum4;
+                      //ivsum = 1;
+                      //payEUR = 1/to1*fr;
                     end;
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
-                    end;                  
-                    outstring(300,0,round(IVrw.Sum/ivsum/IVrw.Quant*payUSD,rnd),false);
+                    end;       
+                    outstring(300,0,round(IVrw.Sum/ivsum/IVrw.Quant*payUSD,SetRoundModeD(0)),false);
                     outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
-                    outstring(400,0,round(IVrw.Sum/ivsum/IVrw.Quant*payAZN,rnd),false);
+                    outstring(400,0,round(IVrw.Sum/ivsum/IVrw.Quant*payAZN,SetRoundModeD(0)),false);
                     outstring(450,0,round(IVrw.Sum/ivsum*payAZN,rnd),false);
-                    outstring(500,0,round(IVrw.Sum/ivsum/IVrw.Quant*payEUR,rnd),false);
+                    outstring(500,0,round(IVrw.Sum/ivsum/IVrw.Quant*payEUR,SetRoundModeD(0)),false);
                     outstring(550,0,round(IVrw.Sum/ivsum*payEUR,rnd),false);
-                    outstring(600,0,round(IVrw.Sum/ivsum/IVrw.Quant*payTRM,rnd),false);
+                    outstring(600,0,round(IVrw.Sum/ivsum/IVrw.Quant*payTRM,SetRoundModeD(0)),false);
                     outstring(650,0,round(IVrw.Sum/ivsum*payTRM,rnd),false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);
