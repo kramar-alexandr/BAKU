@@ -1,6 +1,7 @@
 //remote function Boolean FindSubString( string , string );
   //SetLangMode(LangRussian,"RUS",0); 
-
+  
+global
 function Boolean FindSubString( string Search, string Source )
 begin
 	integer i,length,lengthSource,diff;
