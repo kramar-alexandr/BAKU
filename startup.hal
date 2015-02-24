@@ -105,6 +105,7 @@ begin
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Суммарный отчет за период",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
+  Report("Отчет по учредителям",FoundersRClass,FoundersRn,0,modIN);//Edit----------------------Dima  23.02.2015
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -448,6 +449,9 @@ begin
 
 	SString(31320,"Цвет");
 	SString(31321,"Размер");
+	SString(31322,"Отчет по учредителям");
+	//s5rus.hal .....34546
+	SString(35001,"Учредитель");
 
 
 
