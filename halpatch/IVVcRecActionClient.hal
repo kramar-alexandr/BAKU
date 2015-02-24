@@ -260,18 +260,21 @@ begin
 	end;
 
 	//Edit----------LOTTERY------------Dima  24.02.2015
-	if ( stat==Rs_update ) then begin	 
-		if (IVr.OKFlag==1 and IV2r.OKFlag==0) then begin
-				if (GetLotteryTicket(IVr)) then begin
-						MessageBox(35002,"");
-				end;
-		end;
-				
-	end else begin	
-		if (stat==Rs_insert and IVr.OKFlag==1)  then begin 
+	
+	if (CurrentCompany == 4) then begin	//for Villeroy&Boch  only
+		if ( stat==Rs_update ) then begin	 
+			if (IVr.OKFlag==1 and IV2r.OKFlag==0) then begin
 					if (GetLotteryTicket(IVr)) then begin
 							MessageBox(35002,"");
 					end;
+			end;
+					
+		end else begin	
+			if (stat==Rs_insert and IVr.OKFlag==1)  then begin 
+						if (GetLotteryTicket(IVr)) then begin
+								MessageBox(35002,"");
+						end;
+			end;
 		end;
 	end;
 	//END----------------------------------------------	
