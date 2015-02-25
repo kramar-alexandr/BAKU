@@ -1058,11 +1058,13 @@ begin
 	while (LoopMain(CUr,1,TrHs)) begin
 		
 		if (CUr.VEType==1) then begin
-			CUr.AccCost = "64";
+			CUr.OnAccAccAP = "64";
+			CUr.AccCost = "41/01";
 			RecordStore(CUr,true); 
 		end;
 		if (CUr.CUType==1) then begin
-			CUr.AccCost = "63";
+			CUr.OnAccAccAP = "63";
+			CUr.AccCost = "";
 			RecordStore(CUr,true); 
 		end;
         
