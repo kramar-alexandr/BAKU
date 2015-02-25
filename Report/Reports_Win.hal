@@ -564,3 +564,19 @@ begin
   EndWindow;
 end;
 
+
+window PUInvoicingRClass:1 	//Edit----------------------Dima  24.02.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите фактурирование поступлений",PUInvoicingRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+
+  PeriodField(h,v=6,"Период");
+  EditFieldTL(h,v+=vs, 150,"Поставщик", M4UStr,Normal,30,f1,false,VESClass);
+ 	
+  EndWindow;
+end;
+
