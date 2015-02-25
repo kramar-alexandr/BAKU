@@ -2394,7 +2394,7 @@ end;
 end;
 
 window ImportImagesVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Import Images To IN",ImportImagesVClass,CGMnt,RcType);
@@ -2405,7 +2405,7 @@ begin
 end;
 
 window ImportImagesTClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Import Images To IN",ImportImagesVClass,CGMnt,RcType);
@@ -2582,7 +2582,7 @@ begin
 end;
 
 window PricePointListDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,t,v,vs;
   WindowBegin("Price Point Sheet",PricePointListDClass,CGview,AT2RevView);
@@ -2603,7 +2603,7 @@ begin
 end;
 
 window PricePointListLClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Price Point Sheet",PricePointListLClass,CGmlist,RcType);
   SetWRect(20,80,509,298);
@@ -2885,7 +2885,7 @@ RadioButton(h5,v,0,0,"No",SRUpdateCost);
 end;
 
 window cutINDClass:8
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   integer tilenr;
   real h,h1,h2,h3,h4,h5,v,vm,vs;
@@ -2953,7 +2953,7 @@ EditField(h,v+=vs  ,100,"Department",Normal,Department,false,DepSClass);
 end;
 
 window INImageIClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   integer wn;
   WindowBegin("Item picture",INImageIClass,CGother,-); 
@@ -2970,7 +2970,7 @@ begin
 end;
 
 /*window PUDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,t,v,vm,vs;
   string 255 label;
@@ -3309,7 +3309,7 @@ begin
 end;*/
 
 window PasteRetItemTClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 	real h,v;
   WindowBegin("Insert items to return",PasteRetItemTClass,CGother,RcType); 
@@ -3346,7 +3346,7 @@ begin
 end;
 
 window ItemStockStatRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v;
   WindowBegin("Store balances Report",ItemStockStatRClass,CGRcW,RcType);
@@ -3361,7 +3361,7 @@ begin
 end;
 
 window ItemStockStatExtRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v;
   WindowBegin("Store balances Report",ItemStockStatExtRClass,CGRcW,RcType);
@@ -3377,7 +3377,7 @@ begin
 end;
 
 window ItemStockStatExtManRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v;
   WindowBegin("Store balances Report for Managers ",ItemStockStatExtManRClass,CGRcW,RcType);
@@ -3393,7 +3393,7 @@ begin
 end;
 
 window CUChangeCurVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Change currency to all users ",CUChangeCurVClass,CGMnt,RcType);
@@ -3405,7 +3405,7 @@ begin
 end;
 
 window INChangeCSTVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Undo changes to the cost on the item card ",INChangeCSTVClass,CGMnt,RcType);
@@ -3415,7 +3415,7 @@ begin
 end;
 
 window FIXVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("FIXVClass",FIXVClass,CGMnt,RcType);
@@ -3425,7 +3425,7 @@ begin
 end;
 
 window EmptyVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("update ",EmptyVClass,CGMnt,RcType);
@@ -3435,7 +3435,7 @@ begin
 end;
 
 window ARDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,t,v,vs;
   WindowBegin("Price Point Sheet ",ARDClass,CGview,-);
@@ -3457,7 +3457,7 @@ begin
 end;
 
 window ARLClass:10
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","iPad") 
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","iPad") 
 begin
   WindowBegin("ARVc",ARLClass,CGmlist,-); 
   SetWRect(20,80,800,298);
@@ -3474,7 +3474,7 @@ begin
 end;
 
 window ARPayDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,t,v,vs;
   WindowBegin("ARPayVc",ARPayDClass,CGview,-);
@@ -3487,7 +3487,7 @@ begin
 end;
 
 window ARPayLClass:10
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","iPad") 
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","iPad") 
 begin
   WindowBegin("ARPayVc",ARPayLClass,CGmlist,-); 
   SetWRect(20,80,800,298);
@@ -3505,7 +3505,7 @@ end;
 
   
   window IVrsLClass:1
-    wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+    wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
   begin
     integer h,v;
       WindowBegin("Invoices",IVrsLClass,CGmlist,-);
@@ -3701,7 +3701,7 @@ begin
 end;
 
 window RebTableBlockTClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real v;
   WindowBegin("Configuring discounts to employees ",RebTableBlockTClass,CGHbl,-);
@@ -3716,7 +3716,7 @@ begin
 end;
 
 window CUDClass:14
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,h5,l,v,vm,vs;
   string 255 label;
@@ -4509,7 +4509,7 @@ begin
 end;
 
 window BackStockMovVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   string 255 label;
@@ -4718,7 +4718,7 @@ begin
 end;
 
 window IPDClass:2
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,h3,h4,t,v,vm,vs;
   record CYBlock CYb;
@@ -4758,7 +4758,7 @@ begin
   end;
   EditField(-142,-21,-40,"Deposited",Normal,CurPayVal,true,0);
   h=4; v=81;
-  if (IsEnterprise or HasMultiCurrency or (HasLocalization("RUS") and HasModSL)) then begin //!!TRANSLATE
+  if (IsEnterprise or HasMultiCurrency or (HasLocalization("ENG") and HasModSL)) then begin //!!TRANSLATE
   MatrixBegin(h,v,-50,-24,-,299);
   end else begin
     MatrixBegin(h,v,-30,-24,-,99);
@@ -4964,7 +4964,7 @@ begin
     MatCol(t,-10,"Received Value",0,RecVal,true,0);
   end else begin
     if (BuildProductCode=="StandardAccounts") then begin //!!TRANSLATE
-      if (HasLocalization("RUS")) and (HasModSL) then begin //!!TRANSLATE
+      if (HasLocalization("ENG")) and (HasModSL) then begin //!!TRANSLATE
         Flip(flipnr); flipnr = flipnr + 1;
         MatCol(t=kReceiptRowTypeNormal,190,"Text",0,CustName,false,0); //!!TRANSLATE
         if (HasModSO) then begin
@@ -5013,7 +5013,7 @@ begin
       SpecialMenu("Create First Event",' ',12,"FirstEventIPDsm");
     end;
   end;
-  if (IsEnterprise) or ((HasLocalization("RUS")) and (HasModSO)) then begin
+  if (IsEnterprise) or ((HasLocalization("ENG")) and (HasModSO)) then begin
     SpecialMenu("Create Prepayment Invoice",' ',10,"IVFromPrepIPDsm");
   end;
   if (IsEnterprise) then begin
@@ -5026,7 +5026,7 @@ begin
 end;
 
 window PUtoIVVClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v;
   WindowBegin("Specify the number of moving",PUtoIVVClass,CGMnt,RcType);
@@ -5078,7 +5078,7 @@ begin
 end;
 
 window ItemStockStatExtWebRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Store balances Report",ItemStockStatExtWebRClass,CGEcW,RcType);
@@ -5097,7 +5097,7 @@ begin
 end;
 
 window SalesWithImagesRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
   WindowBegin("Sales Report with pictures",SalesWithImagesRClass,CGEcW,RcType);
@@ -5155,7 +5155,7 @@ begin
 end;
 
 window RebLClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Discount Matrices",RebLClass,CGmlist,RebView);
   SpawnClass(RebDClass);
@@ -5173,7 +5173,7 @@ begin
 end;
 
 window CUNPTDSClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   integer i,rwcnt;
   real h,h1,h2,h3,h4,h5,l,v,vs;
@@ -5205,7 +5205,7 @@ begin
 end;
 
 window SHDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,t,v,vm,vs;
   Integer tilenr,f,flipnr;
@@ -5494,7 +5494,7 @@ begin
 end;
 
 window CLInDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,h3,l,t,v,vs;
   WindowBegin("Cash In",CLInDClass,CGview,-);
@@ -5587,7 +5587,7 @@ begin
 end;
 
 window CLOutDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,h3,l,t,v,vs;
   WindowBegin("Cash Out",CLOutDClass,CGview,-);
@@ -5681,7 +5681,7 @@ begin
 end;
 
 window PULabMyRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,l,v,vm;
   WindowBegin("Define label receipts",PULabMyRClass,CGRcW,RcType);
@@ -5696,7 +5696,7 @@ end;
 end;
 
 window ItemHistDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,v;
   WindowBegin("Item History",ItemHistDClass,CGview,-);
@@ -5804,7 +5804,7 @@ begin
 end;
 
 window MarketingDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h1,h2,v,vs,l;
   WindowBegin("Committing visit",MarketingDClass,CGview,-);
@@ -5912,7 +5912,7 @@ end;
 
 
 window MarketingLClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Customer Registration",MarketingLClass,CGmlist,-);
   SpawnClass(MarketingDClass);
@@ -5931,7 +5931,7 @@ begin
 end;
 
 window LocationDClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,l,v,vm,vs;
   Integer tilenr;
@@ -6012,7 +6012,7 @@ begin
 end;
 
 window ResRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vm;
   WindowBegin("Specify Profit & Loss",ResRClass,CGRcW,RcType);
@@ -6094,7 +6094,7 @@ begin
 end;
 
 window UserDefRepLinesDClass:2
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,v;
   WindowBegin("Line Definition",UserDefRepLinesDClass,CGview,-);
