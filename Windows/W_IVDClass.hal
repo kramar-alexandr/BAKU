@@ -7038,3 +7038,24 @@ begin
   EditFieldTL(h,v+=vs,150,"Поставщик",M4UStr,Normal,60,f1,false,VESClass); 
   EndWindow;
 end;
+
+
+window GCDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,v,vm,vs;
+  WindowBegin("Выпущенный подарочный сертификат",GCDClass,CGview,-);
+  SetWRect(64,80,550,200);
+  UseView(GCVc);
+  FormName(GCForm);
+  v = 6; vs = 20; h = 80; h2 = 240;
+  EditField(h,vm=v, 55,"Номер",Normal,SerNr,false,TSerSClass);
+  EditField(h2,v, 70,"Сумма",Normal,Amount,true,0);
+  CheckBox(-90,v,0,"OK",OKFlag);
+  EditField(h,v+=vs, 70,"Дата опер.",Normal,TransDate,false,PasteCurDate);
+  EditField(h2,v, 70,"Действ. до",Normal,ExpiryDate,false,PasteCurDate);
+  EditField(h,v+=vs, -20,"Коммент.",Normal,Comment,false,0);
+  EditField(h,v+=vs, 100,"Штрих-код",Normal,BarCode,false,0);
+  CheckBox(-90,v,0,"Закрыт",Closed);
+  EndWindow;
+end;
