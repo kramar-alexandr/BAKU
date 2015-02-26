@@ -1,5 +1,6 @@
 external function Boolean GetObjBal(string,string,var record ObjBalVc);
 external procedure ExtractObj(string,var Integer,var string);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
@@ -1072,4 +1073,31 @@ begin
 
   return;
 end;
+
+
+
+global updating procedure RecalculateINVcCosts_EURMn(record RcVc RepSpec)	//Edit----------------------Dima  26.02.2015
+begin
+	record INVc INr;
+	record BaseCurBlock BCb;
+	val newCost,rate;
+	string 5 cur;
+
+	BlockLoad(BCb);
+	cur = BCb.BaseCur1;	//default "AZN"
+	CurValToOtherCur(CurrentDate,"EUR",1.0,cur,rate,DefaultCurRoundOff);    
+
+  While(loopmain(INr,1,true))	begin
+    if((INr.LastPurchCurncyCode=="EUR") and nonblank(INr.LastPurchPrice2))then begin    
+   				INr.InPrice = INr.LastPurchPrice2 * rate;
+		      recordStore(INr,true);
+    end else begin
+   				INr.InPrice = INr.InPrice*rate;
+		      recordStore(INr,true);					
+		end;
+  end;
+  
+return;
+end;
+
 
