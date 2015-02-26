@@ -92,7 +92,7 @@ begin
 					DIr.Name = group;
 					if (ReadFirstKey("Name",DIr,1,true)  and (DIr.CType =="BRAND")) then begin
 							DIr2.Name = type;
-							if (ReadFirstKey("Name",DIr2,1,true) and (DIr2.CType=="ACTIVITY")) then begin
+							if (ReadFirstKey("Name",DIr2,1,true) and (DIr2.CType=="TYPE")) then begin
 									DIr3.Name = collection;
 									if (ReadFirstKey("Name",DIr3,1,true) and (DIr3.CType=="LINE")) then begin
 											INr.DispGroups = DIr.Code & "," & DIr2.Code  & "," & DIr3.Code;
