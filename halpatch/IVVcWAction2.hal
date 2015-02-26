@@ -622,6 +622,7 @@ BEGIN
         case "IntCode": res = true;
         case "BankCode": res = true;
         case "Status": res = true;
+        case "OfficialSerNr": res = true;
       end;
     end else begin
       GetWindowRecord(wn,IVr);
