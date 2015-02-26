@@ -343,3 +343,36 @@ BEGIN
   RETURN;
 END;
 
+
+
+
+
+global
+updating procedure INImportCostsIn()		//Edit----------------------Dima  10.02.2015
+begin
+  record INVc INr;
+  string 70 code;
+  string 15 cost;
+
+
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			cost = ImportField;
+	
+			if(nonblank(code) and nonblank(cost)) then begin
+
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)) then begin
+					INr.InPrice = StringToVal(cost,M4Val);
+					RecordStore(INr,true);
+				end;
+			end;								
+				
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+
+

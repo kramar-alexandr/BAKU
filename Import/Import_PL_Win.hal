@@ -56,5 +56,19 @@ begin
 	 StaticText(20,v+=40,"Поля в файле разделяются знаком TAB",false);
   EndWindow;
   
+  
+  
+  
+  WindowBegin("Изменение себестоимости товаров",INUpdatingCostsIClass,CGIcW,-);	//Edit----------------------Dima  26.02.2015
+  SetWRect(80,80,400,250);
+   
+   StaticText(20,v=20,"Формат импорта:",false);
+   StaticText(25,v+=20,"* Код товара",false);
+   StaticText(25,v+=20,"* Новая себестоимость",false);
+	 
+	 StaticText(20,v+=40,"Поля в файле разделяются знаком TAB",false);
+  EndWindow;
+  
+  
   return;
   end;

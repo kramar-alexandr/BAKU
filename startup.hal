@@ -65,7 +65,7 @@ begin
 	Maintenance("Вернуть код группы товаров с 30%50% ",FIXVClass,RevertINGroups3050Mn,modDBMain);				//Edit----------------------Dima  13.02.2015
 	Maintenance("Заменить 84 счет в операциях на 84/01, 84/02",ReplaceAccount84VClass,Change84to8401and8402TRVcMn,modDBMain);//Edit----------------------Dima  17.02.2015
 	Maintenance("Проставить счет аванса клиентам и поставщикам",FIXVClass,CUADDCredOnACCMn,modDBMain);				//Edit----------------------Dima  13.02.2015
-
+	Maintenance("Пересчет себестоимости по курсу EUR для всех товаров",FIXVClass,RecalculateINVcCosts_EURMn,modDBMain);				//Edit----------------------Dima  26.02.2015
 	
 	
   if(currentcompany==1)then begin
@@ -122,6 +122,7 @@ begin
 	Import("2_Обновление названий и классификаций товаров",INUpdatingIClass,INImport2In,modIN);//Edit----------------------Dima  16.02.2015
 	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);//Edit----------------------Dima  16.02.2015
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
+	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 
 	SetBegin(900);
 		SetText(0,"Обычный");
