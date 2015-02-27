@@ -124,8 +124,6 @@ begin
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 	
-	Import("Проверка лишних товаров",INUpdatingIClass,CheckImportForErasingIn,modIN);//Temporary
-	Import("Удаление лишних товаров",INUpdatingIClass,EraseMistakeImportIn,modIN);//Temporary
 
 	SetBegin(900);
 		SetText(0,"Обычный");
