@@ -123,6 +123,9 @@ begin
 	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);//Edit----------------------Dima  16.02.2015
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
+	
+	Import("Проверка лишних товаров",INUpdatingIClass,CheckImportForErasingIn,modIN);//Temporary
+	Import("Удаление лишних товаров",INUpdatingIClass,EraseMistakeImportIn,modIN);//Temporary
 
 	SetBegin(900);
 		SetText(0,"Обычный");
