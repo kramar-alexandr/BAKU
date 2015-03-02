@@ -82,6 +82,8 @@ external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external procedure RecalcIVSubtotal(var record IVVc);
 external function string 255 SAFTHashControl(string);
 external function string 255 CreateInternationalCreditorReference(string);
+external function string 255 InsertSubStringInString(string, string, integer);//Edit----------------------Dima  02.03.2015
+external function Integer FindFirstPosStringInString( string, string); //Edit----------------------Dima  02.03.2015
 
 procedure RebVal(record IVVc ivrp,record RoundBlock RoundRec,Integer base,var string res)
 BEGIN
@@ -754,7 +756,7 @@ BEGIN
   record AccBlock ARAccRec;
   Boolean negamountf,found,limitdaysf;
   record IVVc orgIVr;
-  Integer pages;
+  Integer pages,pos_;
   record OffSerNrIVVc OffSNIVr;  
   record BankVc Bankr;
   row LegalInvNrBlock LINrbrw;
@@ -766,6 +768,7 @@ BEGIN
   boolean findpayrow;// Edit ************************** Tuesday, 4 June 2013 14:48:42
   val norebval,fullreb;
   val realDisc, one; //Edit by Victor 05.12.14
+  string 5 month;
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -1126,9 +1129,27 @@ BEGIN
   OUTFORMFIELD("F_ARGINVNUMBER",CreateInvoiceNumber(IVr.SerNr,IVr.OfficialSerNr));  
   if (nonblank(IVr.OfficialSerNr2)) then begin
     OUTFORMFIELD("F_OFFICIALSERNO",IVr.OfficialSerNr2);
-  end else begin
-    OUTFORMFIELD("F_OFFICIALSERNO",IVr.OfficialSerNr);
+  end else begin																									//Edit----------------------Dima  02.03.2015
+    GetFieldArgument(Docr,F_OFFICIALSERNO,tstr1);
+		if (GetMonth(IVr.InvDate)<10) then begin
+				month = "0" & GetMonth(IVr.InvDate) & "/";
+		end else begin
+				month = GetMonth(IVr.InvDate) & "/";
+		end;
+		pos_ = FindFirstPosStringInString("_",IVr.OfficialSerNr);
+		if (pos_>-1) then begin
+				tstr1 = Right(IVr.OfficialSerNr,Len(IVr.OfficialSerNr) - pos_ - 1);
+				IVr.OfficialSerNr = tstr1;
+		end;				
+		if (Left(IVr.OfficialSerNr,3)=="WDT") then begin
+			tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,9);		//   WDT/2015/03/XXXX
+		end else begin 
+			tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,5);		//		2015/02/XXXX
+		end; 
+
+    OUTFORMFIELD("F_OFFICIALSERNO",tstr1);
   end;
+  
   OUTFORMFIELD("F_OFFICIALSERNO2",IVr.OfficialSerNr2);
 
   found = true;

@@ -1293,6 +1293,10 @@ begin
 			testf = false;
 		end;
 		
+		if (nonblank(RepSpec.f2) and (RepSpec.f2 != PUr.Location)) then begin
+			testf = false;
+		end;
+		
 		
 		if (testf) then begin
 				PUSum = 0;
@@ -1327,7 +1331,9 @@ begin
 									rwcnt = MatRowCnt(VIr);	
 									for(i=0;i<rwcnt;i=i+1) begin
 										MatRowGet(VIr,i,VIrw);
-										VISum = VISum + VIrw.Sum;
+										if (VIrw.stp != kInvoiceRowTypePrepayment) then begin
+											VISum = VISum + VIrw.Sum;
+										end;
 									end;
 							end;					
 					end;
@@ -1348,9 +1354,7 @@ begin
 		end;
 
 			
-	end;		
-	
-	
+	end;			
 
 	
 	EndJob;
