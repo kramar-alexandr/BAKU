@@ -1131,6 +1131,7 @@ BEGIN
     OUTFORMFIELD("F_OFFICIALSERNO",IVr.OfficialSerNr2);
   end else begin																									//Edit----------------------Dima  02.03.2015
     GetFieldArgument(Docr,F_OFFICIALSERNO,tstr1);
+    tstr1 = IVr.OfficialSerNr;
 		if (GetMonth(IVr.InvDate)<10) then begin
 				month = "0" & GetMonth(IVr.InvDate) & "/";
 		end else begin
@@ -1141,11 +1142,15 @@ BEGIN
 				tstr1 = Right(IVr.OfficialSerNr,Len(IVr.OfficialSerNr) - pos_ - 1);
 				IVr.OfficialSerNr = tstr1;
 		end;				
-		if (Left(IVr.OfficialSerNr,3)=="WDT") then begin
-			tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,9);		//   WDT/2015/03/XXXX
-		end else begin 
-			tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,5);		//		2015/02/XXXX
-		end; 
+		if (Left(IVr.OfficialSerNr,3)=="WDT" ) then begin
+			if (Len(tstr1)<14) then begin		//for old invoices
+				tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,9);		//   WDT/2015/03/XXXX
+			end;	
+		end else begin
+			if (Len(tstr1)<10) then begin 		//for old invoices
+				tstr1 = InsertSubStringInString(IVr.OfficialSerNr,month,5);		//		2015/02/XXXX
+			end;
+		end; 																									//Edit----end------------------Dima  02.03.2015
 
     OUTFORMFIELD("F_OFFICIALSERNO",tstr1);
   end;
