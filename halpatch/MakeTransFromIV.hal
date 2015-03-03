@@ -1136,7 +1136,7 @@ retention change
   end;
   rwcnt = MatRowCnt(IVp);
   for (i=0; i<rwcnt; i=i+1) begin
-    errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,true,tstr,TotSum);
+    errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,false,tstr,TotSum);//Edit----------------------Dima  03.03.2015
     if (errstrno!=0) then begin goto LMakeTransFromIV; end;
   end;
   for (i=0; i<rwcnt; i=i+1) begin
