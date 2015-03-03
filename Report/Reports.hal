@@ -1257,7 +1257,7 @@ begin
 	row VIVc VIrw;
 	
   integer rw,rwcnt,i,pos;
-  boolean testf,TrHs,testf3,TrHs3;
+  boolean testf,TrHs,testf3,testf4,TrHs3;
   val PUSum,POSum,VISum;
 	
 	
@@ -1303,7 +1303,7 @@ begin
 				rwcnt = MatRowCnt(PUr);	
 				for(i=0;i<rwcnt;i=i+1) begin
 					MatRowGet(PUr,i,PUrw);
-					PUSum = PUSum + PUrw.UPrice * PUrw.Quant;
+					PUSum = PUSum + PUrw.UPrice * PUrw.Quant;					
 				end;
 				
 /*
@@ -1325,15 +1325,19 @@ begin
 							if (VIr.POSerNr != PUr.PONr  or VIr.POSerNr<0) then begin
 								TrHs3 = false;
 								testf3 = false;
-							end;
-						
+							end;						
+							
 							if (testf3) then begin
 									rwcnt = MatRowCnt(VIr);	
 									for(i=0;i<rwcnt;i=i+1) begin
-										MatRowGet(VIr,i,VIrw);
-										if (VIrw.stp != kInvoiceRowTypePrepayment) then begin
-											VISum = VISum + VIrw.Sum;
-										end;
+										MatRowGet(VIr,i,VIrw);	
+											testf4 = true;
+											if (VIrw.stp == kInvoiceRowTypePrepayment) then begin testf4 = false; end;
+											if (VIrw.PUNr > 0  and VIrw.PUNr!=PUr.SerNr)	then begin testf4 = false; end;
+											
+											if(testf4) then begin
+												VISum = VISum + VIrw.Sum;
+											end;
 									end;
 							end;					
 					end;
