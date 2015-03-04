@@ -5,6 +5,7 @@ external procedure ExtractObj(string,var Integer,var string);
 external function longint DateDiff(date,date);
 remote procedure ItemStockStatExtWebRn(record RcVc,var area,string);
 remote procedure SalesReportExtPictRn(record RcVc,var area,string);
+external procedure GetUserName(string,var string);
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
@@ -1410,4 +1411,125 @@ begin
 
 return;
 end;
+
+
+
+
+
+global
+procedure ExportInvoiceToExcelRn(record RcVc RepSpec)  					//Edit----------------------Dima  04.03.2015
+begin
+  record IVVc IVr;
+  row	IVVc IVrw;
+  record LocationVc Locr;
+  Integer rwcnt,i,wn;
+  string 255 tstr;
+  val noRebSum;
+  
+  noRebSum=0;
+  IVr.SerNr = RepSpec.long1;
+  if (ReadFirstMain(IVr,1,true)) then begin	 
+  
+  Locr.Code = IVr.Location;
+  ReadFirstMain(Locr,1,true);
+   
+
+	StartReportNoHeaderJob("ExportToExcel");
+	
+		StartFormat(15);
+		OutString(0,0,USetStr(31024),false);
+		OutString(2,0,IVr.Location,true);
+		OutString(3,0,"",false);
+		OutString(4,0,"",false);
+		OutString(3,0,USetStr(31133),false);
+		GetUserName(IVr.SalesMan,tstr);
+		OutString(4,0,tstr,false);
+		EndFormat;
+		OutString(1,0,Locr.Addr0,true);
+		EndFormat;
+		OutString(1,0,Locr.Phone,true);
+		EndFormat;
+		OutString(0,0,USetStr(2562),false);
+		OutString(1,0,IVr.SerNr,true);
+		OutString(1,0,"",false);
+		OutString(1,0,"",false);
+		OutString(0,0,USetStr(35005),false);
+		OutString(1,0,"",false);	
+		OutString(1,0,IVr.CustCode,true);
+		if(NonBlank(IVr.RebCode)) then begin
+			OutString(1,0,"",false);
+			OutString(1,0,"",false);
+			OutString(1,0,USetStr(31267),false);
+			OutString(1,0,IVr.RebCode,true);
+		end;
+		EndFormat;
+		OutString(1,0,USetStr(31262),false);
+		OutString(1,0,IVr.InvDate,true);	
+		EndFormat;
+		
+		OutString(1,0,"__________________________________________________________________________________________________________________________________",false);
+		EndFormat;
+	  OutString(1,0,USetStr(31231),false);
+	  OutString(1,0,"",false);
+	  OutString(1,0,USetStr(12003),false);
+	  OutString(1,0,"",false);
+	  OutString(1,0,"",false);
+	  OutString(1,0,"",false);
+	  OutString(1,0,USetStr(12004),false);
+	  OutString(1,0,"",false);
+	  OutString(1,0,USetStr(12005),false);
+	  OutString(1,0,USetStr(12006),false);
+	  OutString(1,0,USetStr(12448),false);
+	  EndFormat;
+  	rwcnt=MatRowCnt(IVr); 
+  	
+  	for(i=0;i<rwcnt;i=i+1) begin
+			MatRowGet(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal) then begin
+				OutString(1,0,IVrw.ArtCode,true);
+				OutString(1,0,"",false);
+				OutString(1,0,IVrw.Spec,true);
+				OutString(1,0,"",false);
+				OutString(1,0,"",false);
+				OutString(1,0,"",false);
+				OutString(1,0,IVrw.Quant,true);
+				OutString(1,0,"",false);
+				OutString(1,0,IVrw.Price,true);
+				OutString(1,0,IVrw.vRebate,true);
+				OutString(1,0,IVrw.Sum,true);
+				EndFormat;
+				noRebSum = noRebSum + IVrw.Price*IVrw.Quant;
+			end;	
+		end;
+		OutString(1,0,"__________________________________________________________________________________________________________________________________",false);
+		EndFormat;
+		OutString(1,0,"",false);	
+		OutString(1,0,USetStr(12867),false);
+		OutString(1,0,noRebSum,true);
+	  OutString(1,0,"",false);
+	  
+	  if (NonBlank(IVr.RebCode)) then begin
+	  	OutString(1,0,USetStr(31267),false);
+			OutString(1,0,IVr.RebCode,true);
+	  	OutString(1,0,"",false);
+	  	OutString(1,0,"",false);
+		end else begin
+			OutString(1,0,"",false);
+			OutString(1,0,"",false);
+			OutString(1,0,"",false);
+			OutString(1,0,"",false);
+		end;
+ 	  OutString(1,0,USetStr(24193) & ":",false);
+		OutString(1,0,IVr.Sum4,true);
+	  OutString(1,0,"",false);	
+	
+	EndJob;
+	end;
+
+return;
+end;
+
+
+
+
 

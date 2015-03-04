@@ -2677,3 +2677,23 @@ begin
 
 return;
 end;
+
+global
+procedure ExportInvoiceToExcelDsm()	//Edit----------------------Dima  04.03.2015
+begin
+  record IVVc IVr;
+  record RcVc RepSpec;
+  integer wn;
+
+  wn = CurWindow;
+  GetWindowRecord(wn,IVr);
+  RepSpec.Media = mtExcel;
+  RepSpec.repname = "ExportInvoiceToExcelRn";
+  RepSpec.flags[0] = wn;
+  RepSpec.long1 = IVr.SerNr;
+  RunReport(RepSpec,0);
+
+  
+return;
+end;
+
