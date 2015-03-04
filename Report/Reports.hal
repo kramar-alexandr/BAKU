@@ -27,15 +27,15 @@ begin
 	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
   Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
   Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
-  
+
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
-  
-	
+
+
 	blockload(CYb);
-	
+
 	startreportnoheaderjob(USetStr(31117));
-	
+
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,USetStr(31101),false);
@@ -62,11 +62,11 @@ begin
 		outstring(50,0,USetStr(31121),false);	//quantity of receipts
 		outstring(120,0,USetStr(31122),false);	//in total
 		outstring(170,0,USetStr(31123),false);	//check's average cost
-		outstring(240,0,USetStr(31124),false);	//total quantity per day 
+		outstring(240,0,USetStr(31124),false);	//total quantity per day
 	endformat;
 	startformat(15);
 	endformat;
-	
+
 	key = "TransDate";
 	fl = 1;
 	if(nonblank(RepSpec.f1))then begin
@@ -74,7 +74,7 @@ begin
 		IVr.MachineName = RepSpec.f1;
 		fl = 2;
 	end;
-	
+
 	IVr.TransDate = RepSpec.sStartDate;
 	TrHs = true;
 	curdat = stringtodate("1/1/2000");
@@ -105,7 +105,7 @@ begin
 		end;
 		testf = true;
 		if(IVr.TransDate<RepSpec.sStartDate or IVr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
-		if(nonblank(RepSpec.f1) and IVr.MachineName!=RepSpec.f1)then begin 
+		if(nonblank(RepSpec.f1) and IVr.MachineName!=RepSpec.f1)then begin
 			testf = false;
 			if(key=="MachineName")then begin
 				TrHs = false;
@@ -115,7 +115,7 @@ begin
 		if(IVr.OKFlag==0)then begin testf = false; end;
 		if(IVr.Invalid==1)then begin testf = false; end;
 		//if(IVr.Sum4<0)then begin testf = false; end;
-		
+
 		if(testf)then begin
 			ivfr = 1; ivto = 1;
 			fr = 1; to1 = 1;
@@ -133,16 +133,16 @@ begin
 			invday = invday + 1;
 			invtotal = invtotal + 1;
 			day = day + IVr.Sum4/ivfr*ivto*fr/to1;
-			
-			mtrw = matrowcnt(IVr);			
+
+			mtrw = matrowcnt(IVr);
 			For(i=0;i<mtrw;i=i+1) begin
 	  		matrowget(IVr,i,IVrw);
 	  		if(IVrw.stp==kInvoiceRowTypeNormal and IVrw.Quant!=0)then begin
 	  			dayqty = dayqty + 1;
 	  			totalqty = totalqty + 1;
 	  		end;
-			end; 
-			
+			end;
+
 			total = total + IVr.Sum4/ivfr*ivto*fr/to1;
 		end;
 	end;
@@ -169,7 +169,7 @@ begin
 		outstring(170,0,total/invtotal,false);
 		outstring(240,0,totalqty,false);
 	endformat;
-	
+
 	endjob;
 
 return;
@@ -195,15 +195,15 @@ begin
   Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
   Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
   Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
-  
+
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
-  
-	
+
+
 	blockload(CYb);
-	
+
 	startreportnoheaderjob(USetStr(31167));
-	
+
 	startformat(15);
 		outstring(0,0,"",false);
 		outstring(100,0,USetStr(31102),false);
@@ -234,7 +234,7 @@ begin
 	endformat;
 	startformat(15);
 	endformat;
-	
+
 	key = "OrdDate";
 	fl = 1;
 	/*
@@ -244,8 +244,8 @@ begin
 		fl = 2;
 	end;
 	*/
-	
-	
+
+
 	ORr.OrdDate = RepSpec.sStartDate;
 	TrHs = true;
 	curdat = stringtodate("1/1/2000");
@@ -280,7 +280,7 @@ begin
 		if(nonblank(RepSpec.f3) and ORr.Location!=RepSpec.f3)then begin testf = false; end;
 		if(nonblank(RepSpec.f2) and RepSpec.f2!=ORr.SalesMan)then begin testf = false; end;
 		if(ORr.OKFlag==0)then begin testf = false; end;
-		
+
 		if(testf)then begin
 			ivfr = 1; ivto = 1;
 			fr = 1; to1 = 1;
@@ -298,8 +298,8 @@ begin
 			invday = invday + 1;
 			invtotal = invtotal + 1;
 			day = day + ORr.Sum4/ivfr*ivto*fr/to1;
-			
-			mtrw = matrowcnt(ORr);			
+
+			mtrw = matrowcnt(ORr);
 			For(i=0;i<mtrw;i=i+1) begin
 	  		matrowget(ORr,i,ORrw);
 	  		//if(IVrw.stp==kInvoiceRowTypeNormal and IVrw.Quant!=0)then begin
@@ -307,8 +307,8 @@ begin
 	  			dayqty = dayqty + ORrw.Quant;
 	  			totalqty = totalqty + ORrw.Quant;
 	  		end;
-			end; 
-			
+			end;
+
 			total = total + ORr.Sum4/ivfr*ivto*fr/to1;
 		end;
 	end;
@@ -335,7 +335,7 @@ begin
 		outstring(170,0,total/invtotal,false);
 		outstring(240,0,totalqty,false);
 	endformat;
-	
+
 	endjob;
 
 return;
@@ -355,7 +355,7 @@ begin
 	Array string 50 acrncy;
   Array Boolean achangecrncyf;
   Integer acrncnt;
-  
+
 	totqty = 0;
 	recordnew(SM2r);
 	startreportnoheaderjob(USetStr(31166));
@@ -410,14 +410,14 @@ begin
 	  					curfoundf = true;
 	  					matrowput(SM2r,k,SM2rw);
 	  				end;
-					end; 
+					end;
 					if(curfoundf==false)then begin
 	  				SM2rw.ArtCode = curcode;
 						SM2rw.OldPrice = SMrw.OrdQuant*PLr.ExVatPrice;
 						SM2rw.NewPrice = SMrw.OrdQuant*PLr.ExVatPrice/fr*to1;
 						matrowput(SM2r,smmtrw,SM2rw);
 					end;
-					
+
 				end else begin
 					SM2rw.ArtCode = curcode;
 					SM2rw.OldPrice = SMrw.OrdQuant*PLr.ExVatPrice;
@@ -427,7 +427,7 @@ begin
 			end;
 		end;
 	end;
-	
+
 	if(totqty<>0)then begin
 		Black_Divider(320,1);
 		startformat(15);
@@ -447,8 +447,8 @@ begin
 					outstring(400,0,SM2rw.OldPrice,true);
 					outstring(1,0,SM2rw.ArtCode,true);
 				endformat;
-			end; 
-			
+			end;
+
 		end;
 		GetBaseCurncy(1,basecur);
 		startformat(15);
@@ -457,7 +457,7 @@ begin
 		startformat(15);
 			outstring(1,0,totsumb1,true);
 		endformat;
-		
+
 		CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 		if(acrncnt>1)then begin
 			Gray_Divider(300,1);
@@ -473,12 +473,12 @@ begin
 					outstring(400,0,totsumb1*fr/to1,true);
 					outstring(1,0,acrncy[i],true);
 				endformat;
-			end; 
+			end;
 		end;
 	end;
-	
+
 	endjob;
-	
+
 return;
 end;
 
@@ -497,7 +497,7 @@ begin
 	Array string 50 acrncy;
   Array Boolean achangecrncyf;
   Integer acrncnt;
-  
+
 	totqty = 0;
 	startreportnoheaderjob(USetStr(31161));
 		startformat(15);
@@ -525,7 +525,7 @@ begin
 			end;
 		end;
 	end;
-	
+
 	if(totqty<>0)then begin
 		Black_Divider(320,1);
 		startformat(15);
@@ -534,9 +534,9 @@ begin
 			outstring(400,0,totsumb1,true);
 		endformat;
 	end;
-	
+
 	endjob;
-	
+
 return;
 end;
 
@@ -547,7 +547,7 @@ begin
 	boolean testf;
 	longint res;
 	integer counter;
-	
+
 	res = -1;
 	counter = 0;
 	testf = true;
@@ -585,9 +585,9 @@ begin
 	record INVc INr;
 	boolean TrHs,testf,TrHs1,testf1;
 	val totqty,selqty,retqty,prosroch;
-	
+
 	startreportnoheaderjob(USetStr(31159));
-		
+
 		startformat(15);
 			outstring(0,0,USetStr(31231),false);
 			outstring(50,0,USetStr(31204),false);
@@ -596,7 +596,7 @@ begin
 			outstring(320,0,USetStr(31150),false);
 			outstring(1,0,USetStr(31158),true);
 		endformat;
-		
+
 		black_divider(0,1);
 		if(nonblank(RepSpec.f1))then begin
 			INCr.Code = RepSpec.f1;
@@ -606,16 +606,16 @@ begin
 		TrHs = true;
 		While(loopmain(INCr,1,TrHs)) begin
 			testf = true;
-			
+
 			if(nonblank(RepSpec.f1) and INCr.Code!=RepSpec.f1)then begin TrHs=false; testf = false; end;
-			
-			if(nonblank(RepSpec.f2))then begin 
+
+			if(nonblank(RepSpec.f2))then begin
 				INr.Code = INCr.Code;
 				readfirstmain(INr,1,true);
 				pos = 0;
 				ExtractObj(INr.DispGroups,pos,class);
 				if(class!=RepSpec.f2)then begin
-					testf = false; 
+					testf = false;
 				end;
 			end;
 			if(testf)then begin
@@ -654,7 +654,7 @@ begin
 						testf1 = true;
 						if(IHr.ArtCode!=INr.Code or IHr.FileName!="PUVc")then begin testf1=false; TrHs1 = false; end;
 						if(IHr.Invalid>0)then begin testf=false; end;
-					
+
 						if(testf1)then begin
 							startformat(15);
 								outstring(80,0,IHr.TransNr,true);
@@ -708,7 +708,7 @@ begin
 										retqty = retqty + IH2r.Qty;
 									end;
 								end;
-							end; 
+							end;
 							resetloop(IH2r);
 							if(selqty<>0 or retqty<>0)then begin
 								gray_divider(250,350);
@@ -758,10 +758,10 @@ begin
 					black_divider(0,1);
 				end;
 			end;
-		end; 
+		end;
 
 	endjob;
-	
+
 return;
 end;
 
@@ -791,10 +791,10 @@ begin
 	integer pos;
 	string 50 uloc,location,compfolder;
 	record ProgramStatusBlock PSb;
-	
+
 	/*blockload(PSb);
 	blockload(Cb);
-	
+
 	compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;*/
@@ -803,10 +803,10 @@ begin
 	/*wn = curwindow;
 	deselectwindow(wn,true);
 	getwindowrecord(wn,RepSpec);*/
-	
+
 	location = RepSpec.f2;
 	userlocation = false;
-  
+
 	if(userlocation)then begin
 		messagebox(0,USetStr(31014));
   end else begin
@@ -821,11 +821,11 @@ begin
 			end;
 			//createfile(filename);
 			//closefile;
-	
+
 			setareazerosize(webpage1);
 			ItemStockStatExtWebRn(RepSpec,webpage1,serverip);
 			writeareatofile(webpage1,filename,0);
-	
+
 			messagebox(0,USetStr(31146));
 		end;
 	end;
@@ -858,10 +858,10 @@ begin
 	record ProgramStatusBlock PSb;
 	longint alenth;
 	string 255 res1;
-	
+
 	blockload(PSb);
 	blockload(Cb);
-	
+
 	/*compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;*/
@@ -873,12 +873,12 @@ begin
 	deselectwindow(wn,true);
 	selectwindow(wn);
 	getwindowrecord(wn,RepSpec);*/
-		
+
 	location = RepSpec.f2;
 	userlocation = false;
-	
+
 	//setexportcodepage("CP1251");
-	
+
 	if(userlocation)then begin
 		Messagebox(0,USetStr(31014));
   end else begin
@@ -893,7 +893,7 @@ begin
 			end;
 			//createfile(filename);
 			//closefile;
-	
+
 			//setareazerosize(webpage1);
 			SalesReportExtPictRn(RepSpec,webpage1,serverip);
 			//writeareatofile(webpage1,filename,0);
@@ -908,9 +908,9 @@ function string 60 SalesWithImagesRClassDefaultFileName(record RcVc RepSpec)
 begin
 	string 60 res,serverip;
 	record ProgramStatusBlock PSb;
-	
+
   res = "SalesWithImages.html";
-  SalesWithImagesRClassDefaultFileName = res;  
+  SalesWithImagesRClassDefaultFileName = res;
   return;
 end;
 
@@ -923,18 +923,18 @@ begin
 	record CompaniesBlock Cb;
 	row CompaniesBlock Cbrw;
 	record RcVc RepSpec;
-	
+
 	blockload(PSb);
 	blockload(Cb);
-	
+
 	getwindowrecord(wn,RepSpec);
-	
+
 	compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
   RepSpec.f6 = serverip;
   putwindowrecord(wn,RepSpec);
-  
+
   return;
 end;
 
@@ -947,19 +947,19 @@ begin
 	record CompaniesBlock Cb;
 	row CompaniesBlock Cbrw;
 	record RcVc RepSpec;
-	
+
 	blockload(PSb);
 	blockload(Cb);
-	
+
 	getwindowrecord(wn,RepSpec);
 	reportdefaults(RepSpec,"SalesWithImagesRClass");
 	compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
   RepSpec.f6 = serverip;
-  
+
   putwindowrecord(wn,RepSpec);
-  
+
   return;
 end;
 
@@ -967,9 +967,9 @@ global
 function string 60 ItemStockStatExtWebRClassDefaultFileName(record RcVc RepSpec)
 begin
 	string 60 res;
-	
+
   res = "OstatkiWithImages.html";;
-  ItemStockStatExtWebRClassDefaultFileName = res;  
+  ItemStockStatExtWebRClassDefaultFileName = res;
   return;
 end;
 
@@ -983,18 +983,18 @@ begin
 	record CompaniesBlock Cb;
 	row CompaniesBlock Cbrw;
 	record RcVc RepSpec;
-	
+
 	blockload(PSb);
 	blockload(Cb);
-	
+
 	getwindowrecord(wn,RepSpec);
-	
+
 	compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
   RepSpec.f6 = serverip;
   putwindowrecord(wn,RepSpec);
-  
+
   return;
 end;
 
@@ -1007,19 +1007,19 @@ begin
 	record CompaniesBlock Cb;
 	row CompaniesBlock Cbrw;
 	record RcVc RepSpec;
-	
+
 	blockload(PSb);
 	blockload(Cb);
-	
+
 	getwindowrecord(wn,RepSpec);
 	reportdefaults(RepSpec,"ItemStockStatExtWebRClass");
 	compnr = currentcompany;
 	matrowget(Cb,compnr-1,Cbrw);
 	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;
   RepSpec.f6 = serverip;
-  
+
   putwindowrecord(wn,RepSpec);
-  
+
   return;
 end;
 
@@ -1030,10 +1030,10 @@ begin
 	row POVc POrw;
 	integer i,mtrw;
 	record INVc INr;
-	
-	
+
+
 	startreportnoheaderjob("test");
-	
+
 	startformat(15);
 		outstring(0,0,"PO",false);
 		outstring(50,0,"rw",false);
@@ -1041,7 +1041,7 @@ begin
 		outstring(150,0,"Unit1",false);
 		outstring(200,0,"Unit2",false);
 	endformat;
-	
+
 	POr.SerNr = "";
 	while(loopmain(POr,1,true))begin
 		mtrw = matrowcnt(POr);
@@ -1058,12 +1058,12 @@ begin
 					outstring(200,0,INr.Unittext,false);
 				endformat;
 			end;
-		end; 
-		
+		end;
+
 	end;
-	
+
 	endjob;
-	
+
 return;
 end;
 
@@ -1073,12 +1073,12 @@ procedure DblSDVcOpen(string dblstr,string l,Integer currepwn)	//Edit-----------
 begin
   Integer wn;
   record SDVc SDr;
-  
+
   SDr.SerNr = StringToLongInt(dblstr);
-  
-  if (ReadFirstMain(SDr,1,true)) then begin  
+
+  if (ReadFirstMain(SDr,1,true)) then begin
     wn = OpenWindow("SDDClass",1,0,"","",SDr);
-  end; 
+  end;
   return;
 end;
 
@@ -1087,12 +1087,12 @@ procedure DblPUVcOpen(string dblstr,string l,Integer currepwn)	//Edit-----------
 begin
   Integer wn;
   record PUVc PUr;
-  
+
   PUr.SerNr = StringToLongInt(dblstr);
-  
-  if (ReadFirstMain(PUr,1,true)) then begin  
+
+  if (ReadFirstMain(PUr,1,true)) then begin
     wn = OpenWindow("PUDClass",1,0,"","",PUr);
-  end; 
+  end;
   return;
 end;
 
@@ -1104,7 +1104,7 @@ begin
 	record DIVc DIr;
 	integer pos;
 	string 15 classification;
-	
+
 	INr.Code = artcode;
 	if (ReadFirstMain(INr,1,true)) then begin
 
@@ -1112,16 +1112,16 @@ begin
   	ExtractObj(INr.DispGroups,pos,classification);
   	while(nonblank(classification)) begin
   		DIr.Code = classification;
-			if(ReadFirstMain(DIr,1,true) and (DIr.CType=="BRAND")) then begin 
+			if(ReadFirstMain(DIr,1,true) and (DIr.CType=="BRAND")) then begin
 						brand = DIr.Name;
 			end else begin
-					if(ReadFirstMain(DIr,1,true) and (DIr.CType=="TYPE")) then begin 
+					if(ReadFirstMain(DIr,1,true) and (DIr.CType=="TYPE")) then begin
 						type = DIr.Name;
 					end;
-			end;	
+			end;
   		ExtractObj(INr.DispGroups,pos,classification);
   	end;
-	end;	
+	end;
 
 return;
 end;
@@ -1150,18 +1150,18 @@ begin
   string 200 tstr;
   string 30 objct,type,brand,founder;
   boolean testf,TrHs;
-  val sum;  
-  
-  
+  val sum;
+
+
   StartReportJob(USetStr(31322));
   rw=1;
   Header(rw,USetStr(31102) & RepSpec.sStartDate & "-" & RepSpec.sEndDate,1);
   rw = rw + 1;
-  HeaderLocations(RepSpec.f1,tstr);	
+  HeaderLocations(RepSpec.f1,tstr);
   Header(rw,tstr,1);
-  rw = rw + 1;	
+  rw = rw + 1;
 	EndHeader;
-	
+
 	StartFormat(15);
 		OutString(0,0,USetStr(31203),false);		//ArtCode
 		OutString(90,0,USetStr(12003),false);		//Type
@@ -1174,10 +1174,10 @@ begin
 		OutString(440,0,USetStr(13214),false);	//Document
 
 	EndFormat;
-	
+
 	TrHs = true;
 	SDr.TransDate = RepSpec.sStartDate;
-	
+
 	While(LoopKey("TransDate",SDr,1,TrHs))begin
 		testf = true;
 
@@ -1185,18 +1185,18 @@ begin
 			testf = false;
 			TrHs = false;
 		end;
-		
+
 		if (nonblank(RepSpec.f1) and (RepSpec.f1 != SDr.Location)) then begin
 			testf = false;
-		end;	
-	
-		if (testf) then begin	
+		end;
+
+		if (testf) then begin
 			pos = 0;
   		ExtractObj(SDr.Objects,pos,objct);
   		testf = false;
   		while(nonblank(objct)) begin
-  			Objr.Code = objct;  			 
-				if(ReadFirstMain(Objr,1,true) and (Objr.OTCode=="FOUND")) then begin 
+  			Objr.Code = objct;
+				if(ReadFirstMain(Objr,1,true) and (Objr.OTCode=="FOUND")) then begin
 						testf = true;
 						founder = Objr.Comment;
 						goto LBreakObjSearch4;
@@ -1205,21 +1205,21 @@ begin
   		end;
 			LBreakObjSearch4:;
 		end;
-	
-			
+
+
 		if(testf)  then begin
-		
+
 				rwcnt = MatRowCnt(SDr);
-				
+
 				for(i=0; i<rwcnt; i=i+1) begin
-					MatRowGet(SDr,i,SDrw);					
+					MatRowGet(SDr,i,SDrw);
 					ExtractClassificationsFromINVc(SDrw.ArtCode,type,brand);
-					
-					PLr.PLCode = "FOB17";	
+
+					PLr.PLCode = "FOB17";
 					PLr.ArtCode = SDrw.ArtCode;
 					ReadFirstMain(PLr,2,true);
 					sum = PLr.ExVatPrice * SDrw.Qty;
-				
+
 					StartFormat(15);
 						OutString(0,0,SDrw.ArtCode,false);
 						OutString(90,0,type,false);
@@ -1230,15 +1230,15 @@ begin
 						OutString(320,0,founder,false);
 						OutString(390,0,SDr.TransDate,false);
 						OutStringID(440,"DblSDVcOpen",SDr.SerNr,false,SDr.SerNr);
-						        	
-					EndFormat;				
-				
-				end;				
+
+					EndFormat;
+
+				end;
 		end;
-			
-	end;	
-	
-	
+
+	end;
+
+
 	EndJob;
 
 return;
@@ -1247,26 +1247,28 @@ end;
 
 
 global
-procedure PUInvoicingRn(record RcVc RepSpec)  					//Edit----------------------Dima  24.02.2015	
+procedure PUInvoicingRn(record RcVc RepSpec)  					//Edit----------------------------------Dima  24.02.2015
 begin
 	record PUVc PUr;
-	row PUVc PUrw;	
+	row PUVc PUrw;
 	record POVc POr;
-	row POVc POrw;	
+	row POVc POrw;
 	record VIVc VIr;
 	row VIVc VIrw;
-	
+
   integer rw,rwcnt,i,pos;
   boolean testf,TrHs,testf3,testf4,TrHs3;
   val PUSum,POSum,VISum;
-	
-	
+  boolean withoutPO,foundVI;
+
+	withoutPO=!RepSpec.flags[1];
+
 	StartReportJob(USetStr(35003));
   rw=1;
   Header(rw,USetStr(31102) & RepSpec.sStartDate & "-" & RepSpec.sEndDate,1);
-  rw = rw + 1;	
+  rw = rw + 1;
 	EndHeader;
-	
+
 	StartFormat(15);
 		OutString(0,0,USetStr(22421),false);		//Vendor
 		OutString(90,0,USetStr(22419),false);		//PU Number
@@ -1278,8 +1280,8 @@ begin
 	EndFormat;
 
 
-	
 	TrHs = true;
+	
 	PUr.TransDate = RepSpec.sStartDate;
 	While(LoopKey("TransDate",PUr,1,TrHs))begin
 		testf = true;
@@ -1288,62 +1290,105 @@ begin
 			testf = false;
 			TrHs = false;
 		end;
-		
+
 		if (nonblank(RepSpec.f1) and (RepSpec.f1 != PUr.VECode)) then begin
 			testf = false;
 		end;
-		
+
 		if (nonblank(RepSpec.f2) and (RepSpec.f2 != PUr.Location)) then begin
 			testf = false;
 		end;
-		
-		
+
+
 		if (testf) then begin
 				PUSum = 0;
-				rwcnt = MatRowCnt(PUr);	
+				rwcnt = MatRowCnt(PUr);
 				for(i=0;i<rwcnt;i=i+1) begin
 					MatRowGet(PUr,i,PUrw);
-					PUSum = PUSum + PUrw.UPrice * PUrw.Quant;					
+					PUSum = PUSum + PUrw.UPrice * PUrw.Quant;
 				end;
-				
-/*
-					POr.SerNr = PUr.PONr;
-					if (ReadFirstMain(POr,1,true)) then begin
-					end;
-*/					
+
 					VIr.POSerNr = PUr.PONr;
 					VISum = 0;
 					TrHs3 = true;
 
 					While(LoopKey("POSerNr",VIr,1,TrHs3)) begin
 							testf3 = true;
-							
+
 							if (VIr.TransDate > RepSpec.sEndDate  or VIr.TransDate < RepSpec.sStartDate) then begin
 								testf3 = false;
 							end;
-							
-							if (VIr.POSerNr != PUr.PONr  or VIr.POSerNr<0) then begin
+
+				 			if (VIr.POSerNr != PUr.PONr  or VIr.POSerNr<0) then begin
 								TrHs3 = false;
 								testf3 = false;
-							end;						
-							
+							end;
+
 							if (testf3) then begin
-									rwcnt = MatRowCnt(VIr);	
+									foundVI = true;
+									rwcnt = MatRowCnt(VIr);
 									for(i=0;i<rwcnt;i=i+1) begin
-										MatRowGet(VIr,i,VIrw);	
+										MatRowGet(VIr,i,VIrw);
 											testf4 = true;
+
+											if (VIrw.PUNr > 0  and VIrw.PUNr!=PUr.SerNr)	then begin
+													goto LBreakInvLoop1;
+											end;
+
 											if (VIrw.stp == kInvoiceRowTypePrepayment) then begin testf4 = false; end;
-											if (VIrw.PUNr > 0  and VIrw.PUNr!=PUr.SerNr)	then begin testf4 = false; end;
-											
+
 											if(testf4) then begin
 												VISum = VISum + VIrw.Sum;
 											end;
 									end;
-							end;					
+							end;
+
+							LBreakInvLoop1:;
 					end;
 					ResetLoop(VIr);
-				
+
+
+					//if exist PU and VI only. without PO record--------------------------------------------------------------
+					//and invoices(VI) were not found previously
 					
+					if (withoutPO and (foundVI==false)) then begin
+
+						VISum = 0;
+						TrHs3 = true;
+						VIr.TransDate = RepSpec.sStartDate;
+						While(LoopKey("TransDate",VIr,1,TrHs3)) begin
+								testf3 = true;
+
+								if (VIr.TransDate > RepSpec.sEndDate) then begin
+									testf3 = false;
+									TrHs3 = false;
+								end;
+
+								if (testf3) then begin
+									rwcnt = MatRowCnt(VIr);
+									for(i=0;i<rwcnt;i=i+1) begin
+										MatRowGet(VIr,i,VIrw);
+											testf4 = true;
+
+											if ((VIrw.PUNr > 0  and VIrw.PUNr!=PUr.SerNr)  or (VIrw.PUNr < 0))	then begin
+													goto LBreakInvLoop2;
+											end;
+
+											if (VIrw.stp == kInvoiceRowTypePrepayment) then begin testf4 = false; end;
+
+											if(testf4) then begin
+												VISum = VISum + VIrw.Sum;
+											end;
+									end;
+									LBreakInvLoop2:;
+								end;
+
+						end;
+						ResetLoop(VIr);
+
+					end;
+					foundVI = false;
+
 					StartFormat(15);
 						OutString(0,0,PUr.VEName,false);
 						OutStringID(90,"DblPUVcOpen",PUr.SerNr,false,PUr.SerNr);
@@ -1351,16 +1396,16 @@ begin
 						OutVal(220,0,PUSum,M4Val,false);
 						OutVal(300,0,VISum,M4Val,false);
 						OutVal(400,0,PUSum-VISum,M4Val,false);
-						        	
-					EndFormat;					
-				
+
+					EndFormat;
+
 
 		end;
 
-			
-	end;			
 
-	
+	end;
+
+
 	EndJob;
 
 return;
