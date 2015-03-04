@@ -963,12 +963,12 @@ begin
 
 	while (LoopMain(INr,1,true)) begin
 
-			if((Right(INr.Group,2) == "3%")  or (Right(INr.Group,2) =="5%")) then begin
+			if((Right(INr.Group,2) == "3%")  or (Right(INr.Group,2) =="5%") or (Right(INr.Group,2) =="7%")) then begin
 
 						ITr.Code = INr.Group;
 						if (ReadFirstMain(ITr,1,true)) then begin
 									ITr2.Comment = ITr.Comment;
-									if(ReadLastKey("Comment",ITr2,1,true) and (Right(ITr2.Code,2) != "3%") and (Right(ITr2.Code,2) != "5%")) then begin
+									if(ReadLastKey("Comment",ITr2,1,true) and (Right(ITr2.Code,2) != "3%") and (Right(ITr2.Code,2) != "5%") and (Right(ITr2.Code,2) != "7%")) then begin
 
 												INr.Group = ITr2.Code;
 												RecordStore(INr,true);

@@ -1177,7 +1177,7 @@ LkInvoiceTypeCredit:;
 			PDr.Code = IVp.PayDeal;// Edit ************************** Wednesday, 18 February 2015 16:29:21
 			if (ReadFirstMain(PDr,1,true)) then begin
 				if (PDr.PDType==0) then begin
-					testf = true;       
+					testf = false;       
 				end;  
 			end;// Edit ************************** Wednesday, 18 February 2015 16:29:28
       if (testf) then begin

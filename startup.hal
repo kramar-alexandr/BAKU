@@ -100,6 +100,8 @@ begin
   Report("Оборот по объектам",ObjMainRClass,ObjMainRn,0,modNL);
   Report("Журнал сравнения товаров внутр.заказов и зак.пост.",ComparePOwithIntORClass,ComparePOwithIntORRn,0,modPO);
   Report("Журнал неоплаченных заказов поставщику",UnPayPORClass,UnPayPORn,0,modPO);
+  
+  Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
 
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
 

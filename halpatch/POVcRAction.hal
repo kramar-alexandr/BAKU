@@ -877,7 +877,7 @@ begin
 				DIr.Code = INr.DispGroups;
 				readfirstmain(DIr,1,true);
 				ITr.Comment = DIr.Name;
-				if(readfirstkey("Comment",ITr,1,true))then begin
+				if(readlastkey("Comment",ITr,1,true))then begin
 					INr.Group = ITr.Code;
 				end;
 			end;
@@ -1064,7 +1064,7 @@ begin
 				DIr.Code = INr.DispGroups;
 				readfirstmain(DIr,1,true);
 				ITr.Comment = DIr.Name;
-				if(readfirstkey("Comment",ITr,1,true))then begin
+				if(readlastkey("Comment",ITr,1,true))then begin
 					INr.Group = ITr.Code;
 				end;
 			end;
@@ -1243,7 +1243,7 @@ begin
 				DIr.Code = INr.DispGroups;
 				readfirstmain(DIr,1,true);
 				ITr.Comment = DIr.Name;
-				if(readfirstkey("Comment",ITr,1,true))then begin
+				if(readlastkey("Comment",ITr,1,true))then begin
 					INr.Group = ITr.Code;
 				end;
 			end;

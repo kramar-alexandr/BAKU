@@ -121,10 +121,14 @@ begin
 			code = ImportField;
 			discount = ImportField;
 
-			if (discount=="50%") then begin
-					ending = "5%";
+			if (discount=="70%") then begin
+					ending = "7%";
 			end  else begin
+				if (discount=="50%") then begin
+					ending = "5%";
+				end  else begin
 					ending = "3%";
+				end;
 			end;		
 
 	
