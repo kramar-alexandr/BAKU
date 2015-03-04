@@ -552,6 +552,7 @@ begin
 											case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 											case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 											case "LC":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+											case "L‘":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L‘"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 										end;
              		  end;
              		 totcccnt = 6;//count of payDeals!!!
@@ -584,6 +585,7 @@ begin
 										case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 										case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 										case "LC":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+										case "L‘":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L‘"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
 										end;
               		end;
               		payrows = false;
@@ -605,6 +607,7 @@ begin
 											case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
 											case "L1":  totcc[5] = totcc[5] + IVrw.Sum*cred; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum*cred; loybals = loybals + IVrw.Points*cred;
 											case "LC":  totcc[5] = totcc[5] + IVrw.Sum*cred; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum*cred; loybals = loybals + IVrw.Points*cred;
+											case "L‘":  totcc[5] = totcc[5] + IVrw.Sum*cred; ccpaydeal[5] = "L‘"; termsum = termsum + IVrw.Sum*cred; loybals = loybals + IVrw.Points*cred;
 										end;
              			end;
 								 totcccnt = 6;//count of payDeals!!!
@@ -690,6 +693,7 @@ begin
 						case "T5":  totcc[4] = totcc[4] + IVr.Sum4; ccpaydeal[4] = "T5"; termsum = termsum + IVr.Sum4;
 						case "L1":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "L1"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
 						case "LC":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "LC"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
+						case "L‘":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "L‘"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
         	end;
         	if(IVr.CurncyCode==acrncy[0])then begin
         		totsumpay = totsumpay  + IVr.Sum4;
@@ -778,6 +782,7 @@ begin
 							case "T5":  totcc[4] = totcc[4] + IPrw.BankVal; ccpaydeal[4] = "T5"; termsum = termsum + IPrw.BankVal;
 							case "L1":  totcc[5] = totcc[5] + IPrw.BankVal; ccpaydeal[5] = "L1"; termsum = termsum + IPrw.BankVal; loybals = loybals + IPrw.BankVal;
 							case "LC":  totcc[5] = totcc[5] + IPrw.BankVal; ccpaydeal[5] = "LC"; termsum = termsum + IPrw.BankVal; loybals = loybals + IPrw.BankVal;
+							case "L‘":  totcc[5] = totcc[5] + IPrw.BankVal; ccpaydeal[5] = "LC"; termsum = termsum + IPrw.BankVal; loybals = loybals + IPrw.BankVal;
 						end;
         	end;
         	totcccnt = 6;
