@@ -6905,6 +6905,7 @@ begin
   EditField(h,90,300,"",Normal,Desc3,false,AccSClass);
   if (IsEnterprise) then begin
   EditField(h,110,80,"Кор. счет",Normal,CorspAcc,false,AccSClass);
+  EditField(h+150,110,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);// Edit ************************** Thursday, 5 March 2015 14:49:32
   end;
   ButtonFrame(h=15,v=150,100,4,"Тип");
   RadioButton(h,v    ,kRsTypeAccounts,0,"счета",RsType);
