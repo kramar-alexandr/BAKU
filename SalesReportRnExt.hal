@@ -663,7 +663,7 @@ begin
 						
 						For(i=0;i<mtrw;i=i+1) begin
 							matrowget(IVr,i,IVrw);
-							if(IVrw.stp==kInvoiceRowTypeGiftVoucherSold)then begin
+							if(IVrw.stp==kInvoiceRowTypeGiftVoucherSold and blank(RepSpec.f4) and blank(RepSpec.f5) and blank(RepSpec.f2))then begin
 								PrintGftSertSold(IVr,i,total_price,bcur,azn);
 							end;
 							if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin

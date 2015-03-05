@@ -1089,11 +1089,11 @@ begin
 
   While(loopmain(INr,1,true))	begin
     if((INr.LastPurchCurncyCode=="EUR") and nonblank(INr.LastPurchPrice2))then begin    
-   				INr.InPrice = INr.LastPurchPrice2 * rate;
-		      recordStore(INr,true);
+			INr.InPrice = INr.LastPurchPrice2 * rate;
+			recordStore(INr,true);
     end else begin
-   				INr.InPrice = INr.InPrice*rate;
-		      recordStore(INr,true);					
+			INr.InPrice = INr.InPrice*rate;
+			recordStore(INr,true);					
 		end;
   end;
   
@@ -1101,3 +1101,38 @@ return;
 end;
 
 
+global updating procedure PasteItemGroupByClassMn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	record ITVc ITr;
+	record DIVc DIr;
+	boolean testf,findf,changef;
+	integer pos;
+	string 20 class;
+	
+	INr.Code = "";
+	while(loopmain(INr,1,true))begin
+		class = "";
+		pos = 0;
+		changef = false;
+		ExtractObj(INr.DispGroups,pos,class);
+		while(nonblank(class))begin
+			DIr.Code = class;
+			if(readfirstmain(DIr,1,true))then begin
+				if(DIr.CType=="BRAND")then begin
+					ITr.Comment = DIr.Name;
+					if(readlastkey("Comment",ITr,1,true))then begin
+						INr.Group = ITr.Code;
+					end;
+					changef = true;
+				end;
+			end;
+			ExtractObj(INr.DispGroups,pos,class);
+		end;
+		if(changef)then begin
+			recordstore(INr,true);
+		end;
+	end;
+	
+return;
+end;
