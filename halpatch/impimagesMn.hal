@@ -1178,7 +1178,7 @@ begin
     end;
     //if (changef) then begin
       RECORDSTORE(INr,true);
-    //Send;
+    //end;
 	end;
 	
 return;
