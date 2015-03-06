@@ -44,6 +44,7 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external procedure StockMovSumUp(var record StockMovVc);
 external function LongInt GetCurUserLastNr(string);
 external procedure IVVc_PasteLoyaltyCardNr(var record IVVc);// Edit ************************** Thursday, 20 March 2014 13:07:07
+external procedure VIVc_PastePrepayNr(var record VIVc,Integer);//Edit----------------------Dima  06.03.2015
 
 global
 procedure GetItemSalesAccFromOR(record ORVc ORr,var string salesacc)
@@ -1795,3 +1796,61 @@ LRecordAction_raPasteOrdInInv:;
   RecordAction_raPasteOrdInInv = res;
   RETURN;
 END;
+
+
+global
+procedure AddPrepaymentPORows(var record VIVc VIp,LongInt OrderNr)		//Edit----------------------Dima  05.03.2015
+BEGIN
+  Integer rwcnt,i;
+  record OPPVc OPPr;
+  row VIVc VIrw;
+  boolean TrHs;
+  
+  Boolean found,testf;
+  row IVVc IVrw;
+  string 20 curcode;
+  val v,totprepv,viTotalSum;
+  
+  
+  viTotalSum=0;
+  rwcnt = MatRowCnt(VIp);
+  for(i=0;i<rwcnt;i=i+1) begin
+  MatRowGet(VIp,i,VIrw);
+  	if(Virw.stp==kInvoiceRowTypeNormal) then begin
+			viTotalSum = viTotalSum + VIrw.Sum;
+		end;
+  end;
+  
+  OPPr.OrderNr = OrderNr;
+	found = true;
+	while (LoopKey("OrderNr",OPPr,1,found)) begin
+    if (OPPr.OrderNr!=OrderNr) then begin found = false; end;
+    if (totprepv>=viTotalSum) then begin found = false; end;
+    if (found) then begin
+      testf = true;
+      if (OPPr.CurncyCode!=VIp.CurncyCode) then begin
+        if ((blank(OPPr.CurncyCode)) or (blank(VIp.CurncyCode))) then begin
+          GetBaseCurncy(1,curcode);    
+          if (OPPr.CurncyCode!=curcode) then begin    
+            if (VIp.CurncyCode!=curcode) then begin    
+              testf = false;
+            end;  
+          end;
+        end;  
+      end;  
+      
+      if (testf) then begin
+        ClearRow(VIp,VIrw,kInvoiceRowTypePrepayment);
+        VIrw.Comment = USetStr(1288);
+        VIrw.PrepayNr = OPPr.SerNr;
+        MatRowInsert(VIp,0,VIrw);
+        VIVc_PastePrepayNr(VIp ,0);
+        MatRowGet(VIp,0,VIrw);
+        totprepv = totprepv + VIrw.Sum;
+        
+      end;
+    end;
+  end;  
+  
+  return;
+end;

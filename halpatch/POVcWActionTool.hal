@@ -61,6 +61,7 @@ external procedure PUSumUp(var record PUVc);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure POSumup(var record POVc );
 external function Boolean VIVc_PasteVECode(var record VIVc,Integer,Boolean,var string);
+remote procedure AddPrepaymentPORows(var record VIVc,LongInt);//Edit----------------------Dima  05.03.2015
 
 procedure CreateNewPUFromPO(record PUVc PUp,record POVc POp,LongInt ponr)
 BEGIN
@@ -1584,6 +1585,9 @@ L44PastePOInVI:;
     MatRowPut(VIp,line,VIrw);
   end;
 LPastePOInVI:;
+
+AddPrepaymentPORows(VIp,POp.SerNr);	//Edit----------------------Dima  05.03.2015
+
   if (res==0) then begin
     if (MatRowCnt(VIp)==0) then begin
       for (i=0;i<rwcnt;i=i+1) begin
@@ -2219,3 +2223,6 @@ L88POSetShipCost:;
 LPOSetShipCost:;
   RETURN;
 END;
+
+
+
