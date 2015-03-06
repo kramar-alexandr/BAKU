@@ -1168,7 +1168,7 @@ begin
         end;
       end;
       if (from!=0 and to1!=0) then begin
-        INr.LastPurchCurncyCode = eurcurncy;
+        //INr.LastPurchCurncyCode = eurcurncy;
         INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
         changef = true;
       end;
