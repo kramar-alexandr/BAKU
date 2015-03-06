@@ -68,7 +68,7 @@ begin
 	Maintenance("Пересчет себестоимости по курсу EUR для всех товаров",FIXVClass,RecalculateINVcCosts_EURMn,modDBMain);				//Edit----------------------Dima  26.02.2015
 	
 	Maintenance("Проставить группы товаров по классификации",FIXVClass,PasteItemGroupByClassMn,modDBMain);				//Edit----------------------Dima  26.02.2015
-	
+	Maintenance("Проставить цену посл.(EUR) покупки в товарах",FIXVClass,CalcINVcLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,12:17 23.12.2014
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);

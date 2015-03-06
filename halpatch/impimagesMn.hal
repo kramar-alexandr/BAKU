@@ -1,7 +1,7 @@
 external function Boolean GetObjBal(string,string,var record ObjBalVc);
 external procedure ExtractObj(string,var Integer,var string);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
-
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val); //Edit***************************Sasha2,11:28 06.03.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1136,3 +1136,51 @@ begin
 	
 return;
 end;
+
+global //Edit***************************Sasha2,11:22 06.03.2015 {
+updating procedure CalcINVcLastPurchPriceMn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	record ItemHistVc IHr;
+  val from,to1,to2,base1,base2,cost;
+  date td;
+  boolean changef;
+  string 20 eurcurncy;
+	
+	eurcurncy = "EUR";
+	if (blankdate(td)) then begin td = CurrentDate; end;
+	GetFullCurncyRate(eurcurncy,td,from,to1,to2,base1,base2);
+	
+	INr.Code = "";
+	while (loopmain(INr,1,true)) begin
+	  changef = false;
+    if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
+      IHr.ArtCode = INr.Code;
+      IHr.FileName = "PUVc";
+      if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code) then begin
+        cost = IHr.TotCostPrice/IHr.Qty;
+        if (cost<0) then begin
+          cost = cost * (-1);
+        end;
+        if (cost!=0) then begin
+          INr.InPrice = cost;
+          INr.LastPriceChange = CurrentDate;
+        end;
+      end;
+      if (from!=0 and to1!=0) then begin
+        INr.LastPurchCurncyCode = eurcurncy;
+        INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
+        changef = true;
+      end;
+    end;
+    if (INr.LastPurchCurncyCode=="AZN") then begin
+      INr.LastPurchCurncyCode = eurcurncy;
+      changef = true;
+    end;
+    if (changef) then begin
+      RECORDSTORE(INr,true);
+    end;
+	end;
+	
+return;
+end; //Edit***************************Sasha2,11:22 06.03.2015 }
