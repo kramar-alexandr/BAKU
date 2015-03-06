@@ -70,6 +70,7 @@ begin
 	Maintenance("Проставить группы товаров по классификации",FIXVClass,PasteItemGroupByClassMn,modDBMain);				//Edit----------------------Dima  26.02.2015
 	Maintenance("Проставить цену посл.(EUR) покупки в товарах",FIXVClass,CalcINVcLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,12:17 23.12.2014
 	Maintenance("Проставить цену посл.(EUR) покупки в товарах",FIXVClass,CalcINVcLastPurchPriceMn,modSY); //Edit***************************Sasha2,12:17 23.12.2014
+	Maintenance("Копировать Деб/Кред из осн. валюты в поле Деб/Кред в валюте. Операции",FIXVClass,CopyDebCredToCurrencyDebCred_TRVcMn,modDBMain);
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
