@@ -1164,11 +1164,11 @@ begin
         end;
         if (cost!=0) then begin
           INr.InPrice = cost;
-          INr.LastPriceChange = CurrentDate;
+          //INr.LastPriceChange = CurrentDate;
         end;
       end;
       if (from!=0 and to1!=0) then begin
-        //INr.LastPurchCurncyCode = eurcurncy;
+        INr.LastPurchCurncyCode = eurcurncy;
         INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
         changef = true;
       end;
