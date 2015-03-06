@@ -1172,6 +1172,13 @@ begin
         //changef = true;
       end;
     end;
+    if (nonblank(INr.LastPurchCurncyCode) and INr.InPrice!=0 and INr.LastPurchPrice2==0) then begin
+    	td = CurrentDate;
+			GetFullCurncyRate(INr.LastPurchCurncyCode,td,from,to1,to2,base1,base2);
+      if (from!=0 and to1!=0) then begin
+        INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
+      end;
+    end;
     if (INr.LastPurchCurncyCode=="AZN") then begin
       INr.LastPurchCurncyCode = eurcurncy;
       //changef = true;
