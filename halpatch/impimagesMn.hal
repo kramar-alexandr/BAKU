@@ -1153,33 +1153,32 @@ begin
 	
 	INr.Code = "";
 	while (loopmain(INr,1,true)) begin
-	  changef = false;
-    if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
-      IHr.ArtCode = INr.Code;
-      IHr.FileName = "PUVc";
-      if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code) then begin
-        cost = IHr.TotCostPrice/IHr.Qty;
-        if (cost<0) then begin
-          cost = cost * (-1);
-        end;
-        if (cost!=0) then begin
-          INr.InPrice = cost;
-          //INr.LastPriceChange = CurrentDate;
-        end;
+	  //changef = false;
+    IHr.ArtCode = INr.Code;
+    IHr.FileName = "PUVc";
+    if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code) then begin
+      cost = IHr.TotCostPrice/IHr.Qty;
+      if (cost<0) then begin
+        cost = cost * (-1);
       end;
+      if (cost!=0) then begin
+        INr.InPrice = cost;
+      end;
+    end;
+    if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
       if (from!=0 and to1!=0) then begin
         INr.LastPurchCurncyCode = eurcurncy;
         INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
-        changef = true;
+        //changef = true;
       end;
     end;
     if (INr.LastPurchCurncyCode=="AZN") then begin
       INr.LastPurchCurncyCode = eurcurncy;
-      changef = true;
+      //changef = true;
     end;
-    if (changef) then begin
+    //if (changef) then begin
       RECORDSTORE(INr,true);
-    end;
+    //Send;
 	end;
 	
 return;
