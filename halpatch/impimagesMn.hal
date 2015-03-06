@@ -1148,7 +1148,7 @@ begin
   string 20 eurcurncy;
 	
 	eurcurncy = "EUR";
-	if (blankdate(td)) then begin td = CurrentDate; end;
+	td = CurrentDate;
 	GetFullCurncyRate(eurcurncy,td,from,to1,to2,base1,base2);
 	
 	INr.Code = "";
