@@ -17,6 +17,8 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external procedure ExtractObj(string,var Integer,var string);
 external procedure CutObjectCode(string,var string ,string,Boolean);
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);// Edit ************************** Tuesday, 10 March 2015 14:51:00
+remote function string 100 FindIVLocation(string ); //Edit----------------------Dima  10.03.2015
+remote function string 100 FindVILocation(string ); //Edit----------------------Dima  10.03.2015
 
 global
 procedure SplitRiigiObjVN(string objstr,var string obj1,var string  obj2)
@@ -1032,3 +1034,23 @@ BEGIN
   MatRowPut(OPp,rownr,OPrw);
   RETURN;
 END;
+
+
+
+
+global
+function string 100 InvoiceFromLocation_AP (var record APVC APr)	//Edit----------------------Dima  10.03.2015
+begin
+
+	InvoiceFromLocation_AP = FindIVLocation(APr.SerNr);
+return;
+end;
+
+
+global
+function string 100 InvoiceFromLocation_AR (var record ARVC ARr)//Edit----------------------Dima  10.03.2015
+begin
+
+	InvoiceFromLocation_AR = FindIVLocation(ARr.InvoiceNr);
+return;
+end;

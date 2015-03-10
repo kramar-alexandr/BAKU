@@ -1131,3 +1131,37 @@ LIsUnOKAllowed_ORVc:;
   IsUnOKAllowed_ORVc = res;
   return;
 end;
+
+
+global
+function string 100 FindIVLocation(string code)		//Edit----------------------Dima  10.03.2015
+begin
+	string 100 res;
+	record IVVc IVr;
+	
+	res="";
+	IVr.SerNr = code;	
+	if(ReadFirstMain(IVr,1,true)) then begin
+		res = IVr.Location;
+	end;
+	
+	FindIVLocation = res;
+return;
+end;
+
+
+global
+function string 100 FindVILocation(string code)		//Edit----------------------Dima  10.03.2015
+begin
+	string 100 res;
+	record VIVc VIr;
+	
+	res="";
+	VIr.SerNr = code;	
+	if(ReadFirstMain(VIr,1,true)) then begin
+			res = VIr.Objects;
+	end;
+	
+	FindVILocation = res;
+return;
+end;

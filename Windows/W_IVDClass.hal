@@ -7081,3 +7081,73 @@ begin
   CheckBox(-90,v+=vs,0,"Закрыт",Closed);	//Edit----------------------Dima  25.02.2015
   EndWindow;
 end;
+
+
+window ARSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  Boolean testf;
+
+  WindowBegin("Выберите неоплаченные сч/ф",ARSClass,CGslist,-);
+  SetWRect(64,80,710,298);
+  Sizeable(150,150,0,0);
+  UseView(ARVc);
+  RecordList(4,17,-21,-39);
+  testf = true;
+  if (Left(BuildProductCode,8)=="Standard") then begin 
+    if (HasLocalization("POL")) then begin 
+      RlColKey(4,4,"Счет фактура",OfficialSerNr,false,OfficialSerNr); 
+      RlColKey(114,114,"Срок оплаты",DueDate,false,DueDate); 
+      testf = false;
+    end;
+  end;
+  if (testf) then begin
+  RlColKey(4,4,    "№ сч/ф",InvoiceNr,false,InvoiceNr);
+  RlColKey(70,70,  "Дата опл.",DueDate,false,DueDate);
+  end;
+  if (IsEnterprise) then begin
+    RlColKey(151,151,"Оф. номер",OfficialSerNr,false,OfficialSerNr);
+    RlColKey(260,260,"Клиент",CustCode,false,CustCode); 
+    RlColKey(340,340,"Наим.",CustName,false,CustName); 
+  end else begin
+    testf = true;
+    if (Left(BuildProductCode,8)=="Standard") then begin 
+      if (HasLocalization("POL")) then begin
+        RlColKey(194,194,"Клиент",CustCode,false,CustCode); 
+        RlColKey(274,274,"Наименование",CustName,false,CustName); 
+        testf = false;
+      end;
+    end;
+    if (testf) then begin
+  RlColKey(141,141,"Клиент",CustCode,false,CustCode);   
+  RlColKey(220,220,"Наименование",CustName,false,CustName); 
+    end;
+  end;
+  RlColKey(-120,-120, "Сумма",RVal,true,RVal);
+  CalculatedColumn(-60,-60,"Магазин","InvoiceFromLocation_AR",true);
+  SearchField("Поиск");
+  EndWindow;
+end;
+
+
+
+window APSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выберите неоплаченный сч/ф поставщика",APSClass,CGslist,-);
+  SetWRect(20,80,800,420);
+  Sizeable(-1,-1,0,0);
+  UseView(APVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,1,    "Номер",SerNr,false,SerNr);
+  RlColKey(71,71,  "№ сч/ф поставщ.",InvoiceNr,false,InvoiceNr);
+  RlCol   (196,196,"Сотр.",RefStr,false);
+  RlColKey(280,280,"Срок оплаты",DueDate,false,DueDate);
+  RlCol   (355,355,"Дата скидки",RebDate,false); 
+  RlColKey(430,430,"Поставщик",VECode,false,VECode); 
+  RlColKey(500,500,"Наимен.",VEName,false,VEName); 
+  RlColKey(-130,-130,"Остаток",RVal,true,RVal);
+  CalculatedColumn(-60,-60,"Объект","InvoiceFromLocation_AP",true);
+  SearchField("Найти");
+  EndWindow;
+end;
