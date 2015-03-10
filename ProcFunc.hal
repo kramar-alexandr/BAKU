@@ -625,7 +625,7 @@ begin
 							matrowput(SMgift,mtrw,SMrw2);
 							
 							
-							StartFormat(15);
+							/*StartFormat(15);
 								OutString(0,0,rwnr,false);
 								if(currentcompany>3)then begin
 									OutString(10,0,"",false);
@@ -653,11 +653,11 @@ begin
 									OutString(410,0,IVr.InvComment,false);
 								end;
 
-							EndFormat;
+							EndFormat;*/
 							
 							//totqty = totqty+IVrw.Quant;
-							totsum = totsum+IVrw.Sum*cred;
-							totqtyprice = totqtyprice+IVrw.Sum*cred;
+							//totsum = totsum+IVrw.Sum*cred;
+							//totqtyprice = totqtyprice+IVrw.Sum*cred;
 							//totqtypricesum =IVrw.vRebate;//totqtypricesum+IVrw.Price*IVrw.Quant-IVrw.Sum;
 							//totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign;
 
