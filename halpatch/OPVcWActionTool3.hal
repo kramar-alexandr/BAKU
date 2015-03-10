@@ -39,11 +39,13 @@ end;
 
 procedure ChangeOPRecVal(Integer rownr,row OPVc oprp,Date tdp)
 BEGIN
-  val t;
+  val t,fr,to1,to2,br1,br2;// Edit ************************** Tuesday, 10 March 2015 12:17:26
   
   ChangeOPInvVal(oprp,tdp);
   if (oprp.BankCurncy==oprp.PInvCurncy) then begin
     oprp.BankVal = oprp.PInvVal;
+    GetFullCurncyRate(oprp.BankCurncy,tdp,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 12:17:27
+    oprp.B1BankVal = MulRateToBase1(oprp.BankCurncy,oprp.BankVal,fr,to1,to2,br1,br2,defaultcurroundoff);
   end else begin
     if (oprp.BankCurncy==oprp.RecCurncy) then begin
       oprp.BankVal = oprp.RecVal;
@@ -53,7 +55,6 @@ BEGIN
     end;
   end;
   if (oprp.PInvVal<0) then begin
-  messagebox(0,1);
     oprp.B1BankVal = -oprp.B1BankVal;
     oprp.B2BankVal = -oprp.B2BankVal;
   end;

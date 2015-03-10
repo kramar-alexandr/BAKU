@@ -258,14 +258,25 @@ BEGIN
         case 1:
           bookedwithcurrate = MulWithRateToBase1(OPrw.PInvCurncy,OPp.TransDate,OPrw.PInvVal,DefaultCurRoundOff);
           bookedwithcurrate2 = MulWithRateToBase2(OPrw.PInvCurncy,OPp.TransDate,OPrw.PInvVal,DefaultCurRoundOff);
-          if (nonblank(OPrw.B1BankVal)) then begin
+          /*if (nonblank(OPrw.B1BankVal)) then begin// Edit ************************** Friday, 6 March 2015 17:44:01
             bookedwithcurrate = OPrw.B1BankVal;
           end;
           if (nonblank(OPrw.B2BankVal)) then begin
             bookedwithcurrate2 = OPrw.B2BankVal;
           end;
           bookedwithcurrate = bookedwithcurrate;
-          bookedwithcurrate2 = bookedwithcurrate2;
+          bookedwithcurrate2 = bookedwithcurrate2;*/// Edit ************************** Friday, 6 March 2015 17:44:02
+          
+          if (OPrw.B1BankVal<0) and (OPrw.PrepayNr>0) then begin// Edit ************************** Friday, 6 March 2015 17:44:13
+          end else begin
+            if (nonblank(OPrw.B1BankVal)) then begin
+              bookedwithcurrate = OPrw.B1BankVal;
+            end;
+            if (nonblank(OPrw.B2BankVal)) then begin
+              bookedwithcurrate2 = OPrw.B2BankVal;
+            end;
+          end;// Edit ************************** Friday, 6 March 2015 17:44:14
+          
           rgdc1 = true;
           rgdc2 = false;
           
