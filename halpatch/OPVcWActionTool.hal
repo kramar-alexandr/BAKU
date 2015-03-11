@@ -826,15 +826,13 @@ BEGIN
   MatRowGet(OPp,rownr,OPrw);
   if (OPrw.PInvCurncy==OPrw.BankCurncy) then begin
     OPrw.BankVal = OPrw.PInvVal;
-    GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 12:17:27
-    OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,defaultcurroundoff);
+    //GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 12:17:27
+    //OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,defaultcurroundoff);
   end else begin
     CurValToOtherCur(OPp.TransDate,OPrw.PInvCurncy,OPrw.PInvVal,OPrw.BankCurncy,v,DefaultCurRoundOff);
-    
-    
     OPrw.BankVal = v;
-    GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 12:17:27
-    OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,defaultcurroundoff);
+    //GetFullCurncyRate(OPrw.BankCurncy,OPp.TransDate,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 12:17:27
+    //OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,defaultcurroundoff);
   end;
   MatRowPut(OPp,rownr,OPrw);
   OPSumup(OPp,true);

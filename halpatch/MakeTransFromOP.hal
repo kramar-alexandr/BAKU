@@ -154,7 +154,7 @@ BEGIN
       br2 = OPrw.Coef;
     end else begin
       if (OPrw.OrderNr>0) then begin
-        GetPORate(OPrw.OrderNr,fr,to1,to2,br1,br2);
+        //GetPORate(OPrw.OrderNr,fr,to1,to2,br1,br2);// Edit ************************** Tuesday, 10 March 2015 17:44:33
       end;
     end;
     if (vendinfof) then begin
