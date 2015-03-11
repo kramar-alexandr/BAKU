@@ -266,7 +266,10 @@ BEGIN
 //      OPrw.B1BankVal = OPrw.ToRateB1BankVal*OPrw.BankVal;//must be very wrong
 //      OPrw.B1BankVal = Round(OPrw.B1BankVal,DefaultRoundMode);*/
         if (blank(fr)) and ((nonblank(to1)) or (nonblank(to2))) then begin fr = 1; end;
+        //OPrw.FrRateBankVal = fr;
+        //OPrw.ToRateB1BankVal = to1;
         //OPrw.B1BankVal = MulRateToBase1(OPrw.BankCurncy,OPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+        //messagebox(0,OPrw.B1BankVal);
         MatRowPut(OPp,rownr,OPrw);
         res = true;
       end;
