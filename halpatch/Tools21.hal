@@ -361,6 +361,7 @@ BEGIN
       TRr.Number = OPrsr.TransNr;
       TRr.IntYc = OPrsr.IntYc;
       if (ReadFirstMain(TRr,2,true)) then begin
+      	logtext(0,TRr.Number & " " & TRr.IntYc & " " & "TRVc");// Edit ************************** Wednesday, 11 March 2015 13:42:46
         res = 22058;
         goto LIsUnOKAllowed_VIVc;
       end;
@@ -368,18 +369,21 @@ BEGIN
     OPrsr.VINr = VIp.SerNr;
     OPrsr.TransType = kOPrsTransTypeCashOut;
     if (ReadFirstKey("VIKey",OPrsr,2,true)) then begin
+    	logtext(0,OPrsr.VINr & " " & OPrsr.TransType & " " & "OPrsr kOPrsTransTypeCashOut");// Edit ************************** Wednesday, 11 March 2015 13:42:46
       res = 22058;
       goto LIsUnOKAllowed_VIVc;
     end;
     OPrsr.VINr = VIp.SerNr;
     OPrsr.TransType = kOPrsTransTypeCashIn;
     if (ReadFirstKey("VIKey",OPrsr,2,true)) then begin
+    	logtext(0,OPrsr.VINr & " " & OPrsr.TransType & " " & "OPrsr kOPrsTransTypeCashIn");// Edit ************************** Wednesday, 11 March 2015 13:42:46
       res = 22058;
       goto LIsUnOKAllowed_VIVc;
     end;
     OPrsr.VINr = VIp.SerNr;
     OPrsr.TransType = kOPrsTransTypeReverseSupplierPrepayment;
     if (ReadFirstKey("VIKey",OPrsr,2,true)) then begin
+    	logtext(0,OPrsr.VINr & " " & OPrsr.TransType & " " & "OPrsr kOPrsTransTypeReverseSupplierPrepayment");// Edit ************************** Wednesday, 11 March 2015 13:42:46
       res = 22058;
       goto LIsUnOKAllowed_VIVc;
     end;
