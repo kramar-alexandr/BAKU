@@ -413,7 +413,7 @@ BEGIN
 				ExtractObj(INr.DispGroups,pos,classfound);
 			end; //Edit***************************Sasha2,16:56 14.01.2015
       IntORrw.xClassification = model;	//Edit by Victor 20.11.14
-      IntORrw.Colour = INr.colnr;	//Edit by Victor 20.11.14
+      IntORrw.Colour = INr.Colour;	//Edit by Victor 11.03.15	//colnr -> Colour
             
       MatRowPut(IntORp,rownr,IntORrw);    
       IntORMultiLineText(IntORp,INr,IntORp.LangCode,rownr);
