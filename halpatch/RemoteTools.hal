@@ -1804,12 +1804,10 @@ BEGIN
   Integer rwcnt,i;
   record OPPVc OPPr;
   row VIVc VIrw;
-  boolean TrHs;
-  
+  boolean TrHs;  
   Boolean found,testf;
-  row IVVc IVrw;
   string 20 curcode;
-  val v,totprepv,viTotalSum;
+  val totprepv,viTotalSum;
   
   
   viTotalSum=0;
@@ -1854,3 +1852,4 @@ BEGIN
   
   return;
 end;
+

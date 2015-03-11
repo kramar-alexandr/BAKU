@@ -1584,9 +1584,10 @@ L44PastePOInVI:;
     VIrw.VATCode = "";
     MatRowPut(VIp,line,VIrw);
   end;
+  
+  AddPrepaymentPORows(VIp,POp.SerNr);	//Edit----------------------Dima  05.03.2015
+  
 LPastePOInVI:;
-
-AddPrepaymentPORows(VIp,POp.SerNr);	//Edit----------------------Dima  05.03.2015
 
   if (res==0) then begin
     if (MatRowCnt(VIp)==0) then begin

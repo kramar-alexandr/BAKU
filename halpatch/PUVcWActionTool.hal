@@ -51,6 +51,7 @@ external procedure VICalcVals(var record VIVc);
 external procedure VICalcEReb(record VIVc);
 external procedure AddExtraCostRow(record AccBlock,record BaseCurBlock,record VIVc,string,val,Integer,Integer,Integer,string,var record SMVc,Integer);
 external function Boolean VIVc_PasteVECode(var record VIVc,Integer,Boolean,var string);
+remote procedure AddPrepaymentPORows(var record VIVc,LongInt);	//Edit----------------------Dima  11.03.2015
 
 global
 procedure NextNumber(string code,var string next)
@@ -846,6 +847,9 @@ LSKIPROW:;
   if (nonblank(VEr.VEWarnText1)) then begin 
     MessageBox(0,VEr.VEWarnText1);
   end;
+  
+  AddPrepaymentPORows(VIp,PUp.PONr);	//Edit----------------------Dima  11.03.2015
+  
 LPastePUInVI:;
   PastePUInVI = res;
   RETURN;
