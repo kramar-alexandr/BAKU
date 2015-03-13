@@ -1235,3 +1235,69 @@ Begin
 
 
 end;
+
+global
+updating procedure DebtDistribMn(record RcVc RepSpec)
+Begin
+	integer rwcnt,i;
+	boolean TrHs,testf;
+	record CUVc CUr;
+	String 100 message;
+	record LoyaltyCardVc LCr;
+	record ARVc ARr;
+	val sum;
+	integer serNr;
+	
+	message = "Message!";
+	
+	if(blank(RepSpec.d1Code)) then begin 
+		message = "Empty Customer field";
+		goto LDebtDistribMn;
+	end;
+	
+	if(RepSpec.long1 == -1) then begin 
+		message = "Empty Points field";
+		goto LDebtDistribMn;
+	end;
+	
+	CUr.Code = RepSpec.d1Code;
+	if(readFirstMain(CUr, 1, true) == false)then begin
+		message = "Client code not found";
+		goto LDebtDistribMn;
+	end;
+	
+	LCr.CustCode = RepSpec.d1Code;
+	if (ReadFirstKey("ActCustCode",LCr,1,true)) then begin
+		
+		if(LCr.Closed != 0) then begin
+			message = "Loyalty card is closed " & LCr.Closed ;
+			goto LDebtDistribMn;
+		end;
+		
+		if((LCr.PointsBalance < RepSpec.long1) or (LCr.PointsBalance==0))then begin
+			message = "There are less points in the Loyalty card then written.";
+		end;
+		
+			//ARr.InvoiceNr = 0;
+		message = "";
+		ARr.CustCode = RepSpec.d1Code;
+		TrHs = true;
+		while (LoopKey("CustCode",ARr,1,TrHs)) begin
+			testf = true;
+			if (CUr.Code!=ARr.CustCode) then begin TrHs = false; testf= false; end;
+			if (ARr.RVal < 0) then begin TrHs = false; testf= false; end;
+			 
+			if (testf) then begin   
+				sum = ARr.RVal + sum;
+			end;
+		end; 
+		message = sum;	
+	end else begin
+		message = "Loyalty Card not found or not exist.";
+		goto LDebtDistribMn;
+	end;
+	
+	LDebtDistribMn:;
+	Messagebox(0,message);
+	
+end;

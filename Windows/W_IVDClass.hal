@@ -4139,7 +4139,7 @@ begin
   SetWRect(20,80,512,639);
   UseView(ARVc);
   vs = 20; h=50; h1=100; h2=220;
-  EditField(h=30,v=10, 70, "InvoiceNr",Normal,InvoiceNr,false,0);
+  EditField(h,v=10, 70, "InvoiceNr",Normal,InvoiceNr,false,0);
   EditField(h,v+=20, 82, "Date",Normal,DueDate,false,0);
   EditField(h,v+=20, 82, "RVal",Normal,RVal,false,0);
   EditField(h,v+=20, 82, "CustCode",Normal,CustCode,false,0);
