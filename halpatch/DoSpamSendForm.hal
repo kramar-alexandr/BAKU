@@ -113,6 +113,7 @@ begin
       case 5: ystep = 113; //3*7
       case 6: ystep = 116; //4*13  // Edit ************************** Monday, 31 March 2014 14:16:33
       case 7: ystep = 120; //3*7 без полей // Edit ************************** Wednesday, 13 August 2014 11:30:25
+      case 8: ystep = 107; //3*7 new // Edit ************************** Wednesday, 13 August 2014 11:30:25
       
     end;
   end;
@@ -127,6 +128,7 @@ begin
     case 5: x = 185; 	xcnt = 3; ycnt = 7;  	lbls = 21; //3*7 last 112??
     case 6: x = 150; 	xcnt = 4; ycnt = 7;  	lbls = 28; // 4*13 // Edit ************************** Monday, 31 March 2014 14:15:54
     case 7: x = 198; 	xcnt = 3; ycnt = 7;  	lbls = 21; //3*7 без полей // Edit ************************** Wednesday, 13 August 2014 11:30:25
+    case 8: x = 198; 	xcnt = 3; ycnt = 7;  	lbls = 21; //3*7 без полей // Edit ************************** Wednesday, 13 August 2014 11:30:25
   end;
   FormLabelGrid(xcnt,x,ycnt,ystep);
 
@@ -192,30 +194,9 @@ BEGIN
 		readfirstmain(Docr,1,true);
 		curapp = Docr.UUID;
 	end;
-	
-	
-	/*
-	RadioButton(h,v,0,0,"Ambiance",flags[2]);
-  RadioButton(h,v+=16,1,0,"Baccarat",flags[2]);
-  RadioButton(h,v+=16,2,0,"Carpets",flags[2]);
-  RadioButton(h,v+=16,3,0,"Cartier",flags[2]);
-  RadioButton(h,v+=16,4,0,"Chopard",flags[2]);
-  RadioButton(h,v+=16,5,0,"Creative",flags[2]);
-  RadioButton(h,v+=16,6,0,"Glampire-Jewellery",flags[2]);
-  RadioButton(h,v+=16,7,0,"Glampire-TimePieces",flags[2]);
-  RadioButton(h,v+=16,8,0,"Idea",flags[2]);
-  RadioButton(h,v+=16,9,0,"Italdizain",flags[2]);
-  RadioButton(h,v+=16,10,0,"Lladro",flags[2]);
-  RadioButton(h,v+=16,11,0,"Museum",flags[2]);
-  RadioButton(h,v+=16,12,0,"Rosenthal",flags[2]);
-  RadioButton(h,v+=16,13,0,"Royal-Collection",flags[2]);
-  RadioButton(h,v+=16,14,0,"Swarovski",flags[2]);
-  RadioButton(h,v+=16,15,0,"Villeroy&Boch",flags[2]);
-	RadioButton(h,v+=16,16,0,"Yves-Delorme",flags[2]);
-	*/
-	
+		
 	doccode = "";
-	if(RepSpec.flags[1]==5 or RepSpec.flags[1]==7)then begin
+	if(RepSpec.flags[1]==5 or RepSpec.flags[1]==7 or RepSpec.flags[1]==8)then begin
 		switch(RepSpec.flags[2])begin
 			case 0: doccode = "BLANK_3X7";
 			case 1: doccode = "AMBIANCE_3X7";
@@ -237,6 +218,7 @@ BEGIN
 			case 17: doccode = "SWARIVSKI_3X7";
 			case 18: doccode = "VILLEROY&BOCH_3X7";
 			case 19: doccode = "YVES-DELORME_3X7";
+			case 20: doccode = "ELLUXUS_3X7";
 		end;
 	end;
 	if(RepSpec.flags[1]==6)then begin
@@ -261,6 +243,7 @@ BEGIN
 			case 17: doccode = "SWARIVSKI_4X7";
 			case 18: doccode = "VILLEROY&BOCH_4X7";
 			case 19: doccode = "YVES-DELORME_4X7";
+			case 20: doccode = "ELLUXUS_4X7";
 		end;
 	end;
 	RepSpec.f3 = doccode;
@@ -285,6 +268,18 @@ BEGIN
 					matrowput(Docr,i,Docrw);
 				end;
 			end;
+			if(RepSpec.flags[1]==8)then begin  //правка на новый тип размера стикера
+				rwcnt = matrowcnt(Docr);
+				For(i=0;i<rwcnt;i=i+1) begin
+					matrowget(Docr,i,Docrw);
+						Docrw.xpos = Docrw.xpos + -5;
+						Docrw.ypos = Docrw.ypos + 15;
+						Docrw.unitWidth = Docrw.unitWidth + -5;
+						Docrw.unitHeight = Docrw.unitHeight + 15;
+					matrowput(Docr,i,Docrw);
+				end;
+			end;
+			
   		lbs = LabelSetup(labelnum,0,x,y,xcnt,ycnt);
   		rwcnt = matrowcnt(Docr);
   		newrow = rwcnt;
@@ -455,7 +450,7 @@ begin
   h = 120;vs = 20;                                                             
   //PeriodField(h,v=6,"Период");
   //EditFieldTL(h,v+=vs,100,"От имени бутика:",M4UStr,Normal,200,f3,false,DocSClass);
-  ButtonFrame(h-20,v+=vs,l=200,20,"От имени бутика:");
+  ButtonFrame(h-20,v+=vs,l=200,21,"От имени бутика:");
   RadioButton(h-20,v,0,0,"Без отправителя",flags[2]);
   RadioButton(h-20,v+=16,1,0,"Ambiance",flags[2]);
   RadioButton(h-20,v+=16,2,0,"Baccarat",flags[2]);
@@ -476,6 +471,7 @@ begin
   RadioButton(h-20,v+=16,17,0,"Swarovski",flags[2]);
   RadioButton(h-20,v+=16,18,0,"Villeroy&Boch",flags[2]);
 	RadioButton(h-20,v+=16,19,0,"Yves-Delorme",flags[2]);
+	RadioButton(h-20,v+=16,20,0,"Elluxus",flags[2]);
   
   v=v+vs;
   EditFieldTL(h,v+=vs,160,"Клиенты",M4Str,Normal,41,f1,false,AllCUSClass);
@@ -485,10 +481,11 @@ begin
   RadioButton(h,v+=16,1,0,"Всем",flags[0]);
   
   v=v-56;
-  ButtonFrame(h+200,v+=40,l=160,3,"Формат наклеек");
+  ButtonFrame(h+200,v+=40,l=160,4,"Формат наклеек");
   RadioButton(h+200,v,5,0,"3x7",flags[1]);
   RadioButton(h+200,v+=16,6,0,"4x7",flags[1]);
   RadioButton(h+200,v+=16,7,0,"3x7 без полей",flags[1]);
+  RadioButton(h+200,v+=16,8,0,"3x7 70*38",flags[1]);
   v=v+vs;
   EditFieldTL(h,v+=vs,100,"Таблица скидок",M4UStr,Normal,11,f2,false,RebSClass);
   
