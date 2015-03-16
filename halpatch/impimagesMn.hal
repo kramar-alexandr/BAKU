@@ -5,6 +5,9 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external function roundmode DefaultRoundMode();
 external function Boolean PasteInvIn2IPr(var record IPVc,Integer,Date,var val,Boolean,var Boolean);
 external procedure IPVc_PasteRecVal(var record IPVc,Integer);
+external function roundmode SetRoundModeD(Integer);
+external function LongInt IPVcRecordCheck(var record IPVc,record IPVc,LongInt,LongInt);// Edit ************************** Friday, 13 March 2015 18:18:29
+
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1241,23 +1244,43 @@ end;
 
 
 updating
-function boolean CreateIPVcFromLoyaltyPoints(longint invoiceNr, val payment)
+function boolean CreateIPVcFromLoyaltyPoints(longint invoiceNr, val payment,string machine)
 begin
-	record IPVc IPr;
+	record IPVc IPr,IP2r;
 	row IPVc IPrw;
 	val chk;
-  Boolean installmentf;
+  Boolean installmentf,boolres;
+  val fr,to1,to2,b;
+  string 20 cur;
+  longint res;
 	
 	RecordNew(IPr);
+	
 	IPrw.InvoiceNr = invoiceNr;
 	MatRowPut(IPr,0,IPrw);
 	PasteInvIn2IPr(IPr,0,IPr.TransDate,chk,false,installmentf);
 	MatRowGet(IPr,0,IPrw);
+	cur = IPrw.RecCurncy;
+	GetFullCurncyRate(cur,currentdate,fr,to1,to2,b,b);
+	if(fr==0 or to1==0)then begin
+		fr = 1;
+		to1 = 1;
+	end;
+	
+	
+	IPrw.RecVal = payment*fr/to1;
+	matrowput(IPr,0,IPrw);
 	IPVc_PasteRecVal(IPr,0);
 	IPr.PayMode = "LC";
 	IPr.OKFlag = 1;
 	
-CreateIPVcFromLoyaltyPoints = RecordInsert(IPr,true);
+	res = -1;
+	res = IPVcRecordCheck(IPr,IP2r,1,1);
+	IPr.MachineName = machine;
+	if(res==0)then begin
+		boolres = RecordInsert(IPr,true);
+	end;
+CreateIPVcFromLoyaltyPoints = boolres;
 return;
 end;
 
@@ -1265,17 +1288,18 @@ global
 updating procedure DebtDistribMn(record RcVc RepSpec)
 Begin
 	integer rwcnt,i;
-	boolean TrHs,testf;
+	boolean TrHs,testf,testf2;
 	record CUVc CUr;
 	String 100 message;
 	record LoyaltyCardVc LCr;
-	record ARVc ARr;
+	record ARVc ARr,AR2r;
 	record IVVc IVr;
 	row IVVc IVrw;
 	val sum,totalPrice,coefDiscount,points,restPoints,payment;
 	integer serNr;
+	longint invnr;
 	
-	//message = "Message!";
+	invnr = RepSpec.long2;
 	
 	if(blank(RepSpec.d1Code)) then begin 
 		message = "Empty Customer field";
@@ -1305,50 +1329,62 @@ Begin
 			message = "There are less points in the Loyalty card then written.";
 		end;
 		
-			//ARr.InvoiceNr = 0;
 		restPoints = RepSpec.long1;
-		//message = "";
 		ARr.CustCode = RepSpec.d1Code;
 		TrHs = true;
 		while (LoopKey("CustCode",ARr,1,TrHs)) begin
 			testf = true;
-			if (CUr.Code!=ARr.CustCode) then begin TrHs = false; testf= false; end;
-			if (restPoints == 0) then begin TrHs = false; testf= false; end;
-			if (ARr.BookRVal < 0) then begin  testf= false; end;
+			if (CUr.Code!=ARr.CustCode) then begin TrHs = false; testf = false; end;
+			if (restPoints<=0) then begin TrHs = false; testf = false; end;
+			if (ARr.BookRVal<=0) then begin  testf = false; end;
 			 
-			if (testf) then begin   
-				//sum = ARr.RVal + sum;
-				IVr.SerNr = ARr.InvoiceNr;
-				if(ReadFirstMain(IVr,1,true)) then begin
+			if (testf) then begin 
+				testf2 = true;
+				if(invnr>-1 and ARr.InvoiceNr!=invnr)then begin testf2 = false; end;
+				
+				
+				if(testf2)then begin  
+					IVr.SerNr = ARr.InvoiceNr;
+					if(ReadFirstMain(IVr,1,true)) then begin
 						rwcnt = MatRowCnt(IVr);
 						totalPrice = 0;
 						for(i=0;i<rwcnt;i=i+1) begin
 							MatRowGet(IVr,i,IVrw);
 							if(IVrw.stp==kInvoiceRowTypeNormal) then begin
-								totalPrice = totalPrice + IVrw.Price;
+								totalPrice = totalPrice + IVrw.Price*IVrw.Quant;
 							end;
 						end;
 						coefDiscount = IVr.Sum4/totalPrice;
-						points = coefDiscount * ARr.BookRVal;
-						
-						if (points > restPoints) then begin
-								points = restPoints;
-								payment = Round(points*coefDiscount,DefaultRoundMode);								
+						points = round(ARr.BookRVal/coefDiscount,SetRoundModeD(0));
+					
+						if (points>restPoints) then begin
+							points = restPoints;
+							payment = Round(points*coefDiscount,SetRoundModeD(0));	
+							if (CreateIPVcFromLoyaltyPoints(IVr.SerNr,payment,IVr.MachineName)) then begin
+								LCr.PointsBalance = LCr.PointsBalance - points;
+								RecordStore(LCr,true);
+								restPoints = 0;
+								AR2r.InvoiceNr=IVr.SerNr;
+								if(!readfirstmain(AR2r,1,true))then begin
+									stepback(ARr);
+								end;
+							end;	
 						end else begin	
-								payment = ARr.BookRVal;	
+							payment = ARr.BookRVal;	
+							if (CreateIPVcFromLoyaltyPoints(IVr.SerNr,payment,IVr.MachineName)) then begin
+								LCr.PointsBalance = LCr.PointsBalance - points;
+								RecordStore(LCr,true);
+								restPoints = restPoints - points;
+								AR2r.InvoiceNr=IVr.SerNr;
+								if(!readfirstmain(AR2r,1,true))then begin
+									stepback(ARr);
+								end;
+							end;	
 						end;
-						
-						if (CreateIPVcFromLoyaltyPoints(IVr.SerNr,payment)) then begin
-									LCr.PointsBalance = LCr.PointsBalance - Round(points,DefaultRoundMode);
-									RecordStore(LCr,true);
-									restPoints = restPoints - points;
-						end;						
-								
-
+					end;
 				end;				
 			end;
 		end; 
-		//message = sum;	
 	end else begin
 		message = "Loyalty Card not found or not exist.";
 		goto LDebtDistribMn;

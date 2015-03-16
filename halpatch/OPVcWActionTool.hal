@@ -1044,7 +1044,7 @@ global
 function string 100 InvoiceFromLocation_AP (var record APVC APr)	//Edit----------------------Dima  10.03.2015
 begin
 
-	InvoiceFromLocation_AP = FindIVLocation(APr.SerNr);
+	InvoiceFromLocation_AP = FindVILocation(APr.SerNr);
 return;
 end;
 
