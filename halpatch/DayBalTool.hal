@@ -23,13 +23,24 @@ BEGIN
   val temp,base2val;
   val localcurval,blankv;
   record CYBlock TrTRec;
+  record BaseCurBlock BCb; //Edit***************************Sasha2,12:01 16.03.2015
 
   BlockLoad(TrTRec);
   curflag = false;
+  blockload(BCb); //Edit***************************Sasha2,12:02 16.03.2015 
   if (curncy<>"") then begin
     localcurncy = curncy;
+    curflag = true; //Edit***************************Sasha2,12:22 16.03.2015
+    if (curncy==BCb.BaseCur1 and curval==-1) then begin
+      localcurval = valv; //Edit***************************Sasha2,12:17 16.03.2015
+    end;
   end else begin
-  end;  
+    localcurncy = BCb.BaseCur1; //Edit***************************Sasha2,12:11 16.03.2015
+    curflag = true; //Edit***************************Sasha2,12:22 16.03.2015
+    if (curval==-1) then begin
+      localcurval = valv; //Edit***************************Sasha2,12:17 16.03.2015
+    end;
+  end;    
   if (curval<>-1) then begin//NIL
     localcurval = curval;
   end else begin
@@ -139,6 +150,9 @@ L15:;
   if (curncy<>"") then begin
     TRrw.Curncy = localcurncy;
   end else begin
+    if (nonblank(localcurncy)) then begin
+      TRrw.Curncy = localcurncy; //Edit***************************Sasha2,12:32 16.03.2015
+    end;
   end;  
   if ((baserate1==-1) or (baserate2==-1)) then begin//NIL
     tstr = TRrw.Curncy;
@@ -180,7 +194,7 @@ L22TR:;
     b1sv = b1sv - valv;
     b2sv = b2sv - base2val;
     csv = csv - localcurval;
-  end;  
+  end;   
   if (b1sv<>0) then begin
     if (TrTRec.NegativeAmounts!=0) and (negamf) then begin
       if (b1sv>0) then begin
