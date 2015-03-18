@@ -242,8 +242,11 @@ procedure PrintGROrder(string formcode,record RcVc RepSpec,record PUVc PUr,recor
 BEGIN
   record CUVc VEr;
   record LocationVc Locr;
+  record CYBlock CYb;
   string 255 tstr;
   val sumprice,totgp;
+  
+  BlockLoad(CYb);
 
   sumprice = BlankVal;
   CommonDocumentFields(RepSpec);    
@@ -299,6 +302,14 @@ BEGIN
 
   PrintValue("F_MOMS",PUr.VATVal,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTSUM",PUr.PayVal,M4Val,LangNrr,SysFormatRec,false);
+  
+  
+  //OUTFORMFIELD("F_EGETNAMN",CYb.CompName);	//Edit start----------------------Dima  18.03.2015
+  //OUTFORMFIELD("F_EGENADRESS2",CYb.Addr0);
+  //OUTFORMFIELD("F_EGENADRESS2",CYb.Addr1);
+  OUTFORMFIELD("F_EGETMOMSNR",CYb.VATNr);
+  OUTFORMFIELD("F_LEVVATNR",VEr.VATNr);
+  OUTFORMFIELD("F_LEVNAMN",VEr.Name);			//Edit end----------------------Dima  18.03.2015
 
 
   PUSetFax(VEr,PUr);
