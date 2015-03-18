@@ -21,6 +21,7 @@ external procedure CommonDocumentFields(record RcVc);
 external function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string);
 external function Integer NumberofDocumentPages(string,Integer);
 external procedure GetLangNr(string,var record LangNrVc);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 
 function
 Integer CountPURows(record PUVc PUr)
@@ -68,7 +69,7 @@ BEGIN
   row PUVc PUrw;
   Integer i,rwcnt,rownr;
   string 255 tstr;
-  val t,t2;
+  val t,t2,cost,sum;
   record AccBlock ARRec;
   record MainStockBlock MSb;
   record MinPerLocVc MinPerLocr;
@@ -146,8 +147,7 @@ BEGIN
       PrintValue("F_ANTAL2",PUrw.Quant/PUrw.Coefficient,M4UVal,LangNrr,SysFormatRec,false);
     end;
     OUTFORMFIELD("F_BESTBEFORE",PUrw.BestBefore);
-
-    PrintValue("F_PRIS",PUrw.UPrice,M45Val,LangNrr,SysFormatRec,false);
+   // PrintValue("F_PRIS",PUrw.UPrice,M45Val,LangNrr,SysFormatRec,false);	
     PrintValue("F_KOSTPRIS",PUrw.CostPrice,M45Val,LangNrr,SysFormatRec,false);
     OUTFORMFIELD("F_EXTRA",PUrw.Extra);
     if (INr.SerNrf==1) and (PUrw.Quant>1) then begin
@@ -163,8 +163,18 @@ BEGIN
     OUTFORMFIELD("F_TRANSPURTCOST",PUrw.ShipCost);
     OUTFORMFIELD("F_CUSTOMCOST",PUrw.CustomsCost);
     PrintValue("F_BELOPP",PUrw.Quant*PUrw.BasePrice,M4Val,LangNrr,SysFormatRec,false);
-    PrintValue("F_ROWPRICE",PUrw.BasePrice,M4Val,LangNrr,SysFormatRec,false);
-    PrintValue("F_ROWSUMTOTAL",PUrw.Sum,M4Val,LangNrr,SysFormatRec,false);		//Edit----------------------Dima 18.03.2015
+    PrintValue("F_ROWPRICE",PUrw.BasePrice,M4Val,LangNrr,SysFormatRec,false);    
+  
+  	sum = PUrw.Sum;
+  	cost = sum/PUrw.Quant;
+  	if (PUr.CurncyCode != "PLN") then begin							//Edit----------------------Dima  18.03.2015
+    	CurValToOtherCur(PUr.TransDate,PUr.CurncyCode,PUrw.Sum,"PLN",sum,SetRoundModeD(2));
+ 			cost = sum/PUrw.Quant;
+ 		end;
+ 		PUr.PayVal = PUr.PayVal + sum;
+		OUTFORMFIELD("F_PRIS",cost);
+    
+    PrintValue("F_ROWSUMTOTAL",sum,M4Val,LangNrr,SysFormatRec,false);		//Edit----------------------Dima 18.03.2015
     PrintValue("F_OLDKOSTPRIS",INr.InPrice,M45Val,LangNrr,SysFormatRec,false);
     OUTFORMFIELD("F_OBJECT",PUrw.Objects);
     GetObjectText(PUrw.Objects,tstr);
@@ -210,7 +220,7 @@ BEGIN
     end;      
     MulVATIV(PUrw.VATCode,PUrw.CostPrice,t,t2,0,0);
     PrintValue("F_ROWVATVAL",t,M4Val,LangNrr,SysFormatRec,false);
-    PrintValue("F_ROWSUMWITHVAT",PUrw.CostPrice+t,M4Val,LangNrr,SysFormatRec,false);
+    PrintValue("F_ROWSUMWITHVAT",PUrw.CostPrice+t,M45Val,LangNrr,SysFormatRec,false);
     GetVATproc(PUrw.VATCode,0,t);
     PrintValue("F_VATPRC",t,M4Val,LangNrr,SysFormatRec,false);
     t = PUrw.Quant*PUrw.CostPrice - PUrw.Quant*INr.UPrice1;
@@ -280,6 +290,7 @@ BEGIN
   PrintValue("F_TOTANTAL",PUr.SumQuant,M4Qty,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTTRANSPORT",PUr.ShipCost,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTCUSTOM",PUr.CustomsCost,M4Val,LangNrr,SysFormatRec,false);
+  PUr.PayVal = 0;	//Edit----------------------Dima  18.03.2015
   PrintGRRows(RepSpec,VEr,PUr,LangNrr,SysFormatRec,sumprice,totgp);
 
   PrintValue("F_TOTCUSTOM",PUr.CustomsCost,M4Val,LangNrr,SysFormatRec,false);
@@ -288,6 +299,7 @@ BEGIN
 
   PrintValue("F_MOMS",PUr.VATVal,M4Val,LangNrr,SysFormatRec,false);
   PrintValue("F_TOTSUM",PUr.PayVal,M4Val,LangNrr,SysFormatRec,false);
+
 
   PUSetFax(VEr,PUr);
   RETURN;
