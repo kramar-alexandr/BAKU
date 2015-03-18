@@ -84,6 +84,7 @@ external function string 255 SAFTHashControl(string);
 external function string 255 CreateInternationalCreditorReference(string);
 external function string 255 InsertSubStringInString(string, string, integer);//Edit----------------------Dima  02.03.2015
 external function Integer FindFirstPosStringInString( string, string); //Edit----------------------Dima  02.03.2015
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 
 procedure RebVal(record IVVc ivrp,record RoundBlock RoundRec,Integer base,var string res)
 BEGIN
@@ -769,6 +770,7 @@ BEGIN
   val norebval,fullreb;
   val realDisc, one; //Edit by Victor 05.12.14
   string 5 month;
+  val fr,to1,to2,br1,br2,fifoTotSum;	//Edit by Victor 18.03.15
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -1546,6 +1548,15 @@ BEGIN
   PrintValue("F_DISCSUM",IVr.DiscSum,M4Val,LangNrr,SysFormatRec,negamountf);
   PrintValue("F_COMBASE2SUM",totcombase2sum,M4Val,LangNrr,SysFormatRec,negamountf);
   PrintValue("F_TOTFIFO",totfifo,M4Val,LangNrr,SysFormatRec,negamountf);
+  
+  GetFullCurncyRate(IVr.CurncyCode,IVr.TransDate,fr,to1,to2,br1,br2);
+  
+  fifoTotSum = totfifo * fr/to1;
+  
+    if (FIELDINFORM("F_MYFIFOTOTSUM")) then begin
+			OUTFORMFIELD("F_MYFIFOTOTSUM",fifoTotSum);
+		end;
+  
   if (FIELDINFORM("F_VATINTEXT")) then begin
     Val2ToText("",IVr.Sum3,M4Val,IVr.CurncyCode,IVr.LangCode,tstr);
     OUTFORMFIELD("F_VATINTEXT",tstr);

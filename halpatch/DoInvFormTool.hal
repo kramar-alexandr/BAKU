@@ -1256,6 +1256,8 @@ BEGIN
   record ARPayHistVc ARHistr;
   record RegionVc Regionr;
   Boolean hiddenrowf,testf,endformrowf;
+  val fr,to1,to2,br1,br2,fifoRowSum;
+  String 5 PLN;
 
   BlockLoad(MSb);
   totinprice = blankval;
@@ -1339,7 +1341,7 @@ done using ovst
           totqty2 = totqty2 - IVrw.Quant/IVrw.Coefficient;
         end;
     end;
-    totfifo = totfifo + IVrw.FIFORowVal;
+    totfifo = totfifo + IVrw.FIFORowVal;   
     InvVat(1,IVr.InclVAT,IVr.NoTAXonVAT,IVr.ExportFlag,IVrw.VATCode,IVrw.Sum,vatprc,vatval,vatexclprc,vatinclprc,rowtax);
     switch (IVrw.stp) begin
       case kInvoiceRowTypeStructuredItemComponent:
@@ -1471,6 +1473,15 @@ LkInvoiceRowTypeNormal2:;
         PrintValue("F_BELOPP",IVrw.Sum,M4Val,LangNrr,SysFormatRec,negamountf);        
         totwithh = totwithh + IVrw.Sum;
     end;
+    
+    PLN = "PLN";
+    GetFullCurncyRate(PLN,IVr.TransDate,fr,to1,to2,br1,br2);
+		fifoRowSum = IVrw.FIFORowVal * fr/to1;
+		if (FIELDINFORM("F_MYFIFOSUM")) then begin
+			OUTFORMFIELD("F_MYFIFOSUM",fifoRowSum);
+		end; 
+
+	
 //    if (nonblank(INr.Code)) then begin
       OutFormImage(INr);
 //    end;
