@@ -71,6 +71,7 @@ begin
 	Maintenance("Проставить цену посл.(EUR) покупки в товарах",FIXVClass,CalcINVcLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,12:17 23.12.2014
 	Maintenance("Проставить цену посл.(EUR) покупки в товарах",FIXVClass,CalcINVcLastPurchPriceMn,modSY); //Edit***************************Sasha2,12:17 23.12.2014
 	Maintenance("Копировать Деб/Кред из осн. валюты в поле Деб/Кред в валюте. Операции",FIXVClass,CopyDebCredToCurrencyDebCred_TRVcMn,modDBMain);
+	Maintenance("Все операции:Копировать Деб/Кред из осн. валюты в поле Деб/Кред в валюте.",FIXVClass,AllAcc_CopyDebCredToCurrencyDebCred_TRVcMn,modDBMain);	//Edit----------------------Dima  18.03.2015
 	
 	Maintenance("Распределить долг с карт лояльности",DebtDistribVClass,DebtDistribMn,modSO);
 	

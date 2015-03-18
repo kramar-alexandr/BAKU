@@ -1394,3 +1394,50 @@ Begin
 	if (nonblank(message)) then begin Messagebox(0,message); end;
 	
 end;
+
+
+global
+updating procedure AllAcc_CopyDebCredToCurrencyDebCred_TRVcMn()
+Begin
+	record TRVc TRr;
+	row TRVc TRrw;
+	record BaseCurBlock BCb;
+	record CompaniesBlock CBb;
+	row CompaniesBlock CBrw;
+	integer rwcnt,i,j,mtrw;
+	boolean TrHs,rec;
+	integer CurCompany;
+	
+
+	  
+	  		BlockLoad(BCb);
+				TrHs = true;	
+				While(LoopMain(TRr,1,TrHs)) begin
+					
+					if (TrHs) then begin
+  			
+								rwcnt = MatRowCnt(TRr);
+								rec = false;
+								for(i=0; i<rwcnt; i=i+1) begin
+									MatRowGet(TRr,i,TRrw);
+									if ((blank(TRrw.CurDebVal) and blank(TRrw.CurCredVal)) and (TRrw.Curncy==BCb.BaseCur1 or blank(TRrw.Curncy))) then begin
+											TRrw.CurDebVal = TRrw.DebVal;
+											TRrw.CurCredVal = TRrw.CredVal;
+											rec = true;
+											if (blank(TRrw.Curncy)) then begin
+													TRrw.Curncy = BCb.BaseCur1;
+											end;
+											MatRowPut(TRr,i,TRrw);
+									end;	
+									if (rec) then begin
+											RecordStore(TRr,true);
+									end;		
+								end;					
+					end;		
+					
+				end;			
+
+
+end;
+
+
