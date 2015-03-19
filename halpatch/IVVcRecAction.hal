@@ -41,7 +41,7 @@ external function Boolean CLInforIVRecordExists(LongInt,string,var LongInt);
 external updating function Boolean SaveSim(record SMVc);
 external function string 255 CheckTrans(var record TRVc,Integer,Boolean);
 external updating procedure SaveTrans(record TRVc);
-external function Integer MakeTransFromIV(var record TRVc,var record SMVc,record IVVc,Boolean,Boolean);
+external function Integer MakeTransFromIV(var record TRVc,var record SMVc,record IVVc,Boolean,Boolean,record IVVc); //Edit***************************Sasha2,15:46 18.03.2015
 external function Boolean GetCustAndBal(var record CUVc,var val,var val,Integer,Integer,Integer,Integer,Integer,Integer,var Boolean);
 external function Boolean SerNrTestIVVc(LongInt,Date,var Boolean);
 external function Integer CheckObjs(string,string,var string);
@@ -53,7 +53,7 @@ external function Boolean CurncyCodeRegistered(string);
 external function Boolean IsControlAccount(string,Boolean,Boolean);
 external function Integer CashSerNumberTest(string,val,string,LongInt,var Boolean);
 external function Boolean ExistStockTrans(string,Date,var Integer,var string,string,LongInt,record MainStockBlock);
-external procedure IVUpdateFIFO(record IVVc,Boolean);
+external procedure IVUpdateFIFO(record IVVc,Boolean,var record IVVc); //Edit***************************Sasha2,11:53 18.03.2015
 external function Integer GetCreditedInvoiceType(record IVVc);
 external function Boolean IsSessionOpen(string,string,Date,Time);
 external function boolean ShouldSendArgEinvoice(record IVVc);
@@ -233,6 +233,7 @@ BEGIN
   record Uservc USr;// Edit ************************** Friday, 12 October 2012 11:47:58
   roundmode rnd;// Edit ************************** Friday, 15 March 2013 11:35:23
   record LocationVc Locationr;
+  record IVVc fifocurIVr; //Edit***************************Sasha2,11:34 18.03.2015
   
   
   Locationr.Code = IVp.Location;
@@ -247,6 +248,7 @@ BEGIN
 	end;
     
   res = 0;
+  RECORDNEW(fifocurIVr); //Edit***************************Sasha2,11:49 18.03.2015
   curcomp = CurrentCompany;    
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update
@@ -1274,7 +1276,7 @@ LkInvoiceTypeCredit:;
   end;  
   if (check==true) then begin
     if (IVp.UpdStockFlag!=0) then begin
-      IVUpdateFIFO(IVp,true);
+      IVUpdateFIFO(IVp,true,fifocurIVr); //Edit***************************Sasha2,11:53 18.03.2015
       if (blank(IVp.CAE)) then begin
         if (DisallowPriceLowerCost_IVVc(IVp)) then begin
           RecordCheckError(20767,"",i,"Price");      
@@ -1291,7 +1293,7 @@ LIVVcRecordCheck_GenTrans:;
     transf = HasModNL;
   end;
   if (transf) then begin
-    errcode = MakeTransFromIV(gTRp,gSMp,IVp,false,false);
+    errcode = MakeTransFromIV(gTRp,gSMp,IVp,false,false,fifocurIVr); //Edit***************************Sasha2,15:47 18.03.2015
     if (errcode==0) then begin
       if (MatRowCnt(gSMp)>0) then begin
         if (gSMp.SerNr<=0) then begin

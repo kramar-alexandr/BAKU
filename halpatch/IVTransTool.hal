@@ -34,6 +34,7 @@ external procedure GetVATCodeSalesVatAcc(string,var string);
 external function Boolean GetAccName(string,var string,Integer);
 external procedure ConvertSalesAcc(var string,Integer);
 external procedure GetItemSalesAcc(string,Integer,var string);
+external procedure AddEuroCurncyNomTrRow(record TRVc,string,string,string,string,val,Boolean,Boolean,var val,string,val,val,val,val,val,val,val,val,LongInt,Boolean,string,string,string,Integer); //Edit***************************Sasha2,11:44 17.03.2015
 
 global
 procedure GetConsigmentStockAcc(string artcode,string serialnr,var string res)
@@ -1124,7 +1125,7 @@ END;
 global
 function Integer AddIVCostRow(var record TRVc gTRp,record IVVc IVp,Integer ordertype,Integer rownr,string object,
                               val frrate,val torate1,val torate2,val baserate1,val baserate2,
-                              Boolean dc1,Boolean dc2,Boolean accf,var string tstr,var val TotSum)
+                              Boolean dc1,Boolean dc2,Boolean accf,var string tstr,var val TotSum,record IVVc fifocurIVr) //Edit***************************Sasha2,15:49 18.03.2015
 BEGIN
   record TRGenBlock TRGenRec;
   record AccBlock ARAccb;
@@ -1149,8 +1150,10 @@ BEGIN
   string 255 location,pbbvaracc;
   record PLVc PLr;
   record ORVc ORr;
-
-
+  record ItemHistVc IHr; //Edit***************************Sasha2,10:44 17.03.2015
+  val t1_curr,histfrrate; //Edit***************************Sasha2,10:46 17.03.2015
+	string 20 currstr; //Edit***************************Sasha2,11:13 17.03.2015
+	row IVVc fifocurIVrw; //Edit***************************Sasha2,15:50 18.03.2015
 	
   lbaserate2 = baserate2;
   CostModel = 0;
@@ -1438,6 +1441,15 @@ L22AddIVCostRow:;
                 end;
                 
                 t1 = Round(IVrw.FIFORowVal,DefaultRoundMode);
+                MatRowGet(fifocurIVr,rownr,fifocurIVrw); //Edit***************************Sasha2,11:25 17.03.2015 {
+                t1_curr = fifocurIVrw.FIFO; 
+                currstr = fifocurIVrw.Spec;
+                if (fifocurIVrw.FrRate!=0) then begin
+                  histfrrate = fifocurIVrw.FrRate;
+                end else begin
+                  histfrrate = Round(fifocurIVrw.FIFO/IVrw.FIFORowVal,DefaultCurRoundOff);
+                end; //Edit***************************Sasha2,11:25 17.03.2015 }
+                
                 if (CAb.NoNLCostOnShip==2) then begin
                   if ((IVrw.OrdRow!=-1) and (IVp.OrderNr!=-1)) or
                      (IVp.SVONr!=-1) then begin
@@ -1476,7 +1488,8 @@ L22AddIVCostRow:;
                   if(IVrw.Quant<0)then begin// Edit ************************** Tuesday, 25 November 2014 14:37:52
 										t1 = -t1;// Edit ************************** Tuesday, 25 November 2014 14:37:52
 									end;// Edit ************************** Tuesday, 25 November 2014 14:37:53
-/*--------------*/AddEuroTrRowType(gTRp,rowstockacc,lobjstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc2,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock);
+/*--------------*///AddEuroTrRowType(gTRp,rowstockacc,lobjstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc2,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock); //Edit***************************Sasha2,12:15 17.03.2015
+                  AddEuroCurncyNomTrRow(gTRp,rowstockacc,lobjstr,"",tstr,t1,laccf,ldc2,TotSum,currstr,histfrrate,1,-1,baserate1,lbaserate2,t1_curr,-1,-1,-1,negamf,taccnumber,"","",kTransactionRowTypeStock); //Edit***************************Sasha2,12:15 17.03.2015
                 end;
               end;
              end;

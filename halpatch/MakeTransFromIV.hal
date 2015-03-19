@@ -17,7 +17,7 @@ external procedure ConvertSalesAcc(var string,Integer);
 external procedure GetItemSalesAcc(string,Integer,var string);
 external procedure RoundVATSum(string,string,string,var val);
 external function Integer AddIVCostRow(var record TRVc,record IVVc,Integer,Integer,string,val,val,val,val,val,
-                                       Boolean,Boolean,Boolean,var string,var val);
+                                       Boolean,Boolean,Boolean,var string,var val,record IVVc); //Edit***************************Sasha2,15:48 18.03.2015
 external function Integer PrepareAddIVTransRowNew(record IVVc,Integer,string,
                                       var array string,var array string,var array val,var array val,var array val,
                                       var array string,var array string,var array string,var array Integer,var array val,var array val,
@@ -269,7 +269,7 @@ begin
 end;
 
 global
-function Integer MakeTransFromIV(var record TRVc gTRp,var record SMVc gSMp,record IVVc IVp,Boolean rpt,Boolean inclqty)
+function Integer MakeTransFromIV(var record TRVc gTRp,var record SMVc gSMp,record IVVc IVp,Boolean rpt,Boolean inclqty,record IVVc fifocurIVr) //Edit***************************Sasha2,15:47 18.03.2015
 BEGIN
   record TRGenBlock TRGenRec;
   record AccBlock ARb;
@@ -483,7 +483,7 @@ BEGIN
     case "RecalcStockMn":
       rwcnt = MatRowCnt(IVp);
       for (i=0; i<rwcnt; i=i+1) begin
-        errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,true,tstr,TotSum);
+        errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,true,tstr,TotSum,fifocurIVr); //Edit***************************Sasha2,15:49 18.03.2015
         if (errstrno!=0) then begin goto LMakeTransFromIV; end;
       end;
       goto LMakeTransFromIV;
@@ -1136,7 +1136,7 @@ retention change
   end;
   rwcnt = MatRowCnt(IVp);
   for (i=0; i<rwcnt; i=i+1) begin
-    errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,false,tstr,TotSum);//Edit----------------------Dima  03.03.2015
+    errstrno = AddIVCostRow(gTRp,IVp,ORr.OrderType,i,cuobj,frrate,torate1,torate2,baserate1,baserate2,dc1,dc2,false,tstr,TotSum,fifocurIVr);//Edit----------------------Dima  03.03.2015 //Edit***************************Sasha2,16:18 18.03.2015
     if (errstrno!=0) then begin goto LMakeTransFromIV; end;
   end;
   for (i=0; i<rwcnt; i=i+1) begin
