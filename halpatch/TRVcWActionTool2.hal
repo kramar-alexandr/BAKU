@@ -339,8 +339,8 @@ BEGIN
       TRrw.ToRateB1 = torate1;
       TRrw.ToRateB2 = torate2;
       TRrw.BaseRate1 = baserate1;
-      TRrw.BaseRate2 = baserate2;
-      TRrw.DebVal = dval;*/
+      TRrw.BaseRate2 = baserate2;*/
+      TRrw.DebVal = dval;
       
        // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 10 February 2015 14:07:45
@@ -368,9 +368,9 @@ BEGIN
         temp = TRrw.BaseRate1/TRrw.BaseRate2;
         b2val = acval/temp;
         b2val = Round(b2val,DefaultRoundMode);
-        TRrw.CredVal2 = b2val;
+        TRrw.CredVal2 = acval;
       end;
-      
+            
       if(TRrw.DebVal!=0)then begin
 				TRrw.CurDebVal = round((TRrw.DebVal * TRrw.FrRate / TRrw.ToRateB1),defaultcurroundoff);// Edit ************************** Tuesday, 3 February 2015 16:13:21
 			end;
