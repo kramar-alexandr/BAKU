@@ -56,7 +56,7 @@ external function Boolean ExpandStructItem(string,string,val,var record SHVc);
 external procedure Mul2VAT(string,val,var val,var val,Integer);
 external procedure GetShipValue(record SHVc,record ORVc,var val,var val);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Monday, 21 October 2013 11:50:21
-
+external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val); //Edit***************************Sasha2,14:34 19.03.2015
 
 
 global
@@ -270,7 +270,7 @@ end;
 procedure PrintSHRows(record RcVc RepSpec,record SHVc SHr,record SysFormatBlock SysFormatRec,
                       record ORVc ORr,var val totqty,var val totprice,var val totvolume,var val totweight,var val totfifo,var val totvat,
                       var Array string hazlevcode,var Array string hazlevcomment,var Array val hazlevweight,var Array val hazlevolume,var Integer hazlevcnt,
-                      record LangNrVc LangNrr,var val tots,var val totwovat)
+                      record LangNrVc LangNrr,var val tots,var val totwovat,val fr,val to1,var val TotfifoRowSum) //Edit***************************Sasha2,14:39 19.03.2015
 BEGIN
   Integer i,rwcnt,rownr;
   row SHVc SHrw;
@@ -292,6 +292,7 @@ BEGIN
   integer pos;
   Record DIVc DIr;
   string 255 myname;
+  val fifoRowSum; //Edit***************************Sasha2,14:38 19.03.2015
 
   SetupVATBase(VATr,vatcnt);
   BlockLoad(MSb);  
@@ -423,6 +424,11 @@ BEGIN
       OUTFORMFIELD("F_FIFO",tstr);
       OUTFORMFIELD("F_SUMFIFO",SHrw.FIFORowVal);
       totfifo = totfifo + SHrw.FIFORowVal;
+  		fifoRowSum = SHrw.FIFORowVal * fr/to1; //Edit***************************Sasha2,14:42 19.03.2015 {
+  		if (FIELDINFORM("F_MYFIFOSUM")) then begin
+  			OUTFORMFIELD("F_MYFIFOSUM",fifoRowSum);
+  		end;
+      TotfifoRowSum = TotfifoRowSum + fifoRowSum; //Edit***************************Sasha2,14:42 19.03.2015 }
       OUTFORMFIELD("F_BESTBEFORE",SHrw.BestBefore);
       OUTFORMFIELD("F_ROWOBJECT",SHrw.Objects);
       OUTFORMFIELD("F_SERIENR",SHrw.SerialNr);
@@ -604,7 +610,11 @@ BEGIN
   Array val hazlevolume;
   Integer hazlevcnt;
   record LangNrVc LangNrr;
+  val fr,to1,to2,br1,br2,TotfifoRowSum; //Edit***************************Sasha2,14:32 19.03.2015
+  String 5 PLN; //Edit***************************Sasha2,14:45 19.03.2015
   
+  PLN = "PLN"; //Edit***************************Sasha2,14:45 19.03.2015
+  GetFullCurncyRate(PLN,SHr.ShipDate,fr,to1,to2,br1,br2); //Edit***************************Sasha2,14:46 19.03.2015
   GetLangNr(SHr.LangCode,LangNrr);
   BlockLoad(SysFormatRec);
   CommonDocumentFields(RepSpec);
@@ -931,11 +941,14 @@ BEGIN
   OUTFORMFIELD("F_LEVADR234",SHr.DelAddr3);
   OUTFORMFIELD("F_LEVADR234",SHr.DelAddr4);
   OUTFORMFIELD("F_OBJECT",SHr.Objects);
-  PrintSHRows(RepSpec,SHr,SysFormatRec,ORr,totqty,totprice,totvolume,totweight,totfifo,totvat,hazlevcode,hazlevcomment,hazlevweight,hazlevolume,hazlevcnt,LangNrr,tots,totwovat);
+  PrintSHRows(RepSpec,SHr,SysFormatRec,ORr,totqty,totprice,totvolume,totweight,totfifo,totvat,hazlevcode,hazlevcomment,hazlevweight,hazlevolume,hazlevcnt,LangNrr,tots,totwovat,fr,to1,TotfifoRowSum); //Edit***************************Sasha2,14:41 19.03.2015
   OUTFORMFIELD("F_TOTPRICE",totprice);
   OUTFORMFIELD("F_TOTWEIGHT",SHr.TotWeight);
   OUTFORMFIELD("F_TOTVOLUME",SHr.TotVolume);
-  OUTFORMFIELD("F_TOTFIFO",totfifo);
+  OUTFORMFIELD("F_TOTFIFO",totfifo); 
+  if (FIELDINFORM("F_MYFIFOTOTSUM")) then begin //Edit***************************Sasha2,14:42 19.03.2015 {
+		OUTFORMFIELD("F_MYFIFOTOTSUM",TotfifoRowSum);
+	end; //Edit***************************Sasha2,14:42 19.03.2015 }
   OUTFORMFIELD("F_MOMS",totvat);
   if (FIELDINFORM("F_VATINTEXT")) then begin
     ValToText(totvat,M4Val,ORr.CurncyCode,SHr.LangCode,tstr);
