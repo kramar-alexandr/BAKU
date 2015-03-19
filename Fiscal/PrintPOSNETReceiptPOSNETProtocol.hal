@@ -655,6 +655,7 @@ begin
   Integer i,rwcnt;
   val t;
   
+  vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] = 0.00;// Edit ************************** Thursday, 19 March 2015 17:47:22
   vpaymodesums[kInvoiceRowTypeCreditCardPayment] = 0.00;
   vpaymodesums[kInvoiceRowTypeCashPayment] = 0.00;
 //  vpaymodesums[100] = IVr.Sum4;//on account
@@ -662,12 +663,15 @@ begin
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(IVr,i,IVrw);
     switch (IVrw.stp) begin
-//      case kInvoiceRowTypeGiftVoucherPayment:
       case kInvoiceRowTypeCreditCardPayment:
         vpaymodesums[kInvoiceRowTypeCreditCardPayment] = vpaymodesums[kInvoiceRowTypeCreditCardPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);// Edit ************************** Friday, 10 October 2014 10:25:16
 //      case kInvoiceRowTypeLoyaltyPointsPayment:
       case kInvoiceRowTypeCashPayment:
-        vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+      	if(IVrw.PayMode=="GS")then begin
+					vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] = vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+      	end else begin
+					vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+				end;
 //      case kInvoiceRowTypeChequePayment:
     end;
   end;
@@ -721,6 +725,25 @@ begin
       goto LPaymentModes_POSNETProtocol;
     end;
   end;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 19 March 2015 17:49:24
+	
+  if (vpaymodesums[kInvoiceRowTypeGiftVoucherPayment]>0) then begin
+    CtrlSeq = "trpayment" & chr(POSNET_FS);
+    CtrlSeq = CtrlSeq & "ty" & "4" & chr(POSNET_FS);
+    tstr = ValToString(vpaymodesums[kInvoiceRowTypeGiftVoucherPayment]*100,M40Val,"",",",1);
+    CtrlSeq = CtrlSeq & "wa" & tstr & chr(POSNET_FS);
+    CtrlSeq = CtrlSeq & "na" & "" & chr(POSNET_FS);
+    CtrlSeq = CtrlSeq & "re" & "0" & chr(POSNET_FS);
+    res = POSNETWrite(CtrlSeq,POSNETPROTOCOL_DELAY);
+    if (res!=0) then begin
+      goto LPaymentModes_POSNETProtocol;
+    end;
+  end;
+  
+  
+	// Edit End ---------------------------------------------- Edit End
+	
   if (vpaymodesums[100]>0) then begin
     CtrlSeq = "trpayment" & chr(POSNET_FS);
     CtrlSeq = CtrlSeq & "ty" & "8" & chr(POSNET_FS);

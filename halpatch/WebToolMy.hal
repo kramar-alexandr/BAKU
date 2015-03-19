@@ -102,6 +102,16 @@ begin
 							logtext(0,filename);
 						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
+						
+		case 8: if(fileexists("webcust/Carpets/" & imname & ".jpg"))then begin
+							filename = "Carpets/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/Carpets/" & imname & ".png"))then begin
+							filename = "Carpets/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+						
 		otherwise
 						WebSetContentType("image/jpeg");
 						WebOutAttachment(stringtoint(imname));
