@@ -344,6 +344,16 @@ BEGIN
 END;
 
 
+global
+updating procedure ImpDocVc()
+BEGIN
+
+    RegisterImport("doc3");
+
+  RETURN;
+END;
+
+
 
 
 
