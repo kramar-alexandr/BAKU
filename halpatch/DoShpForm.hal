@@ -647,7 +647,7 @@ BEGIN
   end;  
   
   OUTFORMFIELD("F_MYORNUM",ORr.OrderClass & ORr.SerNr);// Edit ************************** Monday, 21 October 2013 11:34:06
-  
+  OUTFORMFIELD("F_VALUTA",PLN); //Edit***************************Sasha2,15:43 19.03.2015
   
   OUTFORMFIELD("F_REGNUMBER1",CUr.RegNr1);
   OUTFORMFIELD("F_REGNUMBER2",CUr.RegNr2);
