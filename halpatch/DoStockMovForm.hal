@@ -19,6 +19,7 @@ external function Integer NumberofDocumentPages(string,Integer);
 external procedure GetLangNr(string,var record LangNrVc);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Monday, 21 October 2013 11:50:21
 external procedure GetLocationName(string,var string);// Edit ************************** Monday, 21 October 2013 13:21:43
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);	//Edit by Victor 19.13.15
 
 procedure StockMovPrintNote(record StockMovVc StockMovr,string argumentstr)
 begin
@@ -50,6 +51,8 @@ BEGIN
   string 255 myname;// Edit ************************** Monday, 21 October 2013 13:08:45
   integer pos;// Edit ************************** Monday, 21 October 2013 13:08:43
   record DIVc DIr;
+  val fr,to1,to2,br1,br2,fifoRowSum;	//Edit by Victor 19.13.15
+  String 5 PLN;												//Edit by Victor 19.13.15
   
   totbasprice = blankval;
   totinprice = blankval;
@@ -115,6 +118,15 @@ BEGIN
     PrintValue("F_SUMBASPRIS",StockMovrw.Quant*INr.UPrice1,M4Val,LangNrr,SysFormatRec,false);
     PrintValue("F_SUMFIFO",StockMovrw.FIFORowVal,M45Val,LangNrr,SysFormatRec,false);
     totbasprice = totbasprice + StockMovrw.Quant*INr.UPrice1;
+    
+    //Edit by Victor 19.13.15 {
+    PLN = "PLN";
+    GetFullCurncyRate(PLN,StockMovr.TransDate,fr,to1,to2,br1,br2);
+		fifoRowSum = StockMovrw.FIFORowVal * fr/to1;
+		if (FIELDINFORM("F_MYFIFOSUM")) then begin
+			OUTFORMFIELD("F_MYFIFOSUM",fifoRowSum);
+		end; 
+		//Edit by Victor 19.13.15 }
     
     if (FIELDINFORM("F_ARTNRBC39")) then begin
       ItemBC39(StockMovrw.ArtCode,tstr);
