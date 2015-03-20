@@ -463,7 +463,7 @@ begin
 	val total_rebate,total_rebate_qty;//Edit***********************Vitalii 14:28 26.08.2014
   val total_qty;
   val total_cost,total_price,total_gp;
-  string 200 classfind,model,brand;
+  string 200 classfind,model,brand,category;
   record ORVc ORr;
   record BaseCurBlock BCb;
   string 5 bcur,azn;
@@ -564,6 +564,7 @@ begin
 					outstring(0,0,USetStr(12815),false);
 					outstring(0,0,USetStr(31044),false);
 					outstring(0,0,USetStr(19357),false);
+					outstring(0,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015
 					outstring(0,0,USetStr(12713),false);
 					outstring(0,0,USetStr(31045),false);//Reference
 					outstring(0,0,USetStr(31047),false);
@@ -678,6 +679,7 @@ begin
 									if(nonblank(RepSpec.f4) or nonblank(RepSpec.f5))then begin
 										brand = "";
 										model = "";
+										category = "";
 										pos = 0;
 										classfind = "";
 										ExtractObj(INr.DispGroups,pos,classfind);
@@ -721,7 +723,9 @@ begin
 											DIr.Code = classcode;
 											readfirstmain(DIr,1,true);
 											classname2 = DIr.Name;
+											category = DIr.CCat;
 											outstring(0,0,classname2,false);
+											outstring(0,0,category,false);
 											outstring(0,0,prepareStr(IVrw.Spec),false);
 											outstring(0,0,INr.Reference,false);
 											outstring(0,0,INr.Metal,false);

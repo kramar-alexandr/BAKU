@@ -658,7 +658,7 @@ begin
   Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
   Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
   integer pos;// Edit ************************** Monday, 18 November 2013 11:21:46
-  string 100 class,brand,loc;// Edit ************************** Monday, 18 November 2013 11:21:45
+  string 100 class,brand,loc,category;// Edit ************************** Monday, 18 November 2013 11:21:45
   record DIVc DIr;// Edit ************************** Monday, 18 November 2013 11:21:45
   val itemqty;
   date toDate; //Edit----------Dima 03.12.2014
@@ -717,8 +717,9 @@ begin
 	// Edit ************************** Monday, 18 November 2013 10:59:03
 	StartFormat(15);
 		OutString(0,0,USetStr(2462),false);
-		OutString(100,0,USetStr(2448),false);
-		OutString(160,0,USetStr(31226),false);// Edit ************************** Monday, 18 November 2013 11:02:23
+		OutString(70,0,USetStr(2448),false);
+		OutString(130,0,USetStr(9131),false);	//Edit----------------------Dima  20.03.2015
+		OutString(180,0,USetStr(31226),false);// Edit ************************** Monday, 18 November 2013 11:02:23
 		if(nonblank(RepSpec.AccStr))then begin // Edit ***** 19 June 2013 09:32:00 Larisa
 			OutString(250,0,USetStr(5010),false);
 		end; // Edit ***** 19 June 2013 09:32:00 Larisa
@@ -764,7 +765,7 @@ begin
 				readfirstmain(DIr,1,true);
 				if(DIr.CType=="BRAND")then begin
 					brand = DIr.Code;
-				end;
+				end;			
 				ExtractObj(INr.DispGroups,pos,class);
 			end;
 			if(RepSpec.f5!=brand)then begin testf = false; end;
@@ -844,10 +845,27 @@ begin
 
 	for (i=0;i<rwcnt;i=i+1) begin
 		MatRowGet(SMr,i,SMrw);
+		
+			pos = 0;
+			class = "";
+			category = "";
+			INr.Code = SMrw.Objects;
+			ReadFirstMain(INr,1,true);
+			ExtractObj(INr.DispGroups,pos,class);
+			while(nonblank(class))begin
+				DIr.Code = class;
+				readfirstmain(DIr,1,true);
+				if (DIr.CType=="TYPE") then begin				//Edit----------------------Dima  20.03.2015
+					category = DIr.CCat;	
+				end;				
+				ExtractObj(INr.DispGroups,pos,class);
+			end;
+		
 		StartFormat(15);
 			OutString(0,"DblINVc",SMrw.Objects,false);
-			OutString(100,0,SMrw.Comment,false);
-			OutString(160,0,SMrw.ExtraComment,false);// Edit ************************** Monday, 18 November 2013 11:03:48
+			OutString(70,0,SMrw.Comment,false);
+			OutString(130,0,category,false);
+			OutString(180,0,SMrw.ExtraComment,false);// Edit ************************** Monday, 18 November 2013 11:03:48
 			if(nonblank(RepSpec.AccStr))then begin // Edit ***** 19 June 2013 09:32:00 Larisa
 				OutString(250,0,RepSpec.AccStr,false); // Edit ***** 18 June 2013 17:19:00 Larisa
 			end; // Edit ***** 19 June 2013 09:32:00 Larisa

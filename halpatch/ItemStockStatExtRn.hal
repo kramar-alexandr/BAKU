@@ -348,7 +348,7 @@ begin
 	record DIVc DIr;
 	record PLVc PLr;
 	integer pos,cnt;
-  string 50 uloc,pricecur;
+  string 50 uloc,pricecur,category;
   val fr,to1,to2,br1,br2;
   val baseprice,cur,price;
   record INConsVc INCr;
@@ -395,8 +395,9 @@ begin
 		ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
 		readfirstmain(DIr,1,true);
+		category = DIr.CCat;   							//Edit----------------------Dima  20.03.2015
 		outstring(0,0,DIr.Name,false);
-		
+		outstring(0,0,category,false);			//Edit----------------------Dima  20.03.2015	
 		outstring(0,0,INr.Name,false);
 		outstring(0,0,INr.Reference,false);
 		outstring(0,0,INr.Metal,false);
@@ -773,6 +774,7 @@ begin
 			outstring(0,0,USetStr(31103),false);
 			outstring(0,0,USetStr(31044),false);
 			outstring(0,0,USetStr(31120),false);
+			outstring(0,0,USetStr(9131),false);			//Edit----------------------Dima  20.03.2015
 			outstring(0,0,USetStr(31204),false);
 			outstring(0,0,USetStr(31045),false);
 			outstring(0,0,USetStr(31047),false);
@@ -815,7 +817,7 @@ begin
 		if(nonblank(item))then begin
 			ISr.Code = item;
 			TrHs = true;
-			while(loopmain(ISr,1,TrHs))begin
+			while(loopmain(ISr,1,TrHs)) begin
 				testf = true;
 				if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
 				if(ISr.Location==";;;")then begin testf = false; end;
@@ -850,7 +852,7 @@ begin
 			INr.DispGroups = "";//= RepSpec.f3;
 			class = RepSpec.f3;
 			TrHs1 = true;
-			while(loopkey("MyDispGroups",INr,1,TrHs1))begin
+			while(loopkey("MyDispGroups",INr,1,TrHs1)) begin
 			
 				testf1 = true;
 				if(nonblank(RepSpec.f3))then begin

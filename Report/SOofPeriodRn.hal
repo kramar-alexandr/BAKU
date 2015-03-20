@@ -41,6 +41,7 @@ begin
 	Integer rwcnt,rwcnt1,i,j,pos;
 	string 10 classtr,brandstr;
 	val price,sum,stoim,quant,razn;
+	string 50 category;
 
 	fromdate = RepSpec.sStartDate;
 	todate = RepSpec.sEndDate;
@@ -55,6 +56,7 @@ begin
 	outstring(1,0,"№ Счета",false);
 	outstring(2,0,"Дата покупки",false);
 	outstring(3,0,"Ханза",false);
+	outstring(3,0,"Категория",false);
 	outstring(4,0,"Код поставщика",false);
 	outstring(5,0,"Склад",false);
 	outstring(6,0,"Бренд",false);
@@ -89,14 +91,10 @@ begin
 				outstring(3,0,ORrw.ArtCode,false);
 				INr.Code = ORrw.ArtCode;
 				ReadFirstKey("Code",INr,1,true);
-				outstring(4,0,INr.AlternativeCode,false);
-				if NonBlank(ORrw.Location) then begin
-					outstring(5,0,ORrw.Location,false);
-				end else begin
-					outstring(5,0,ORr.Location,false);
-				end;
+				
 				pos = 0;
 				brandstr = "";
+				category = "";
 				ExtractObj(INr.DispGroups,pos,classtr);
 				while (nonblank(classtr)) begin
 					DIr.Code = classtr;
@@ -108,8 +106,21 @@ begin
 							brandstr = brandstr & ", " & DIr.Name;
 						end;
 					end;
+					if (DIr.CType=="TYPE") then begin				//Edit----------------------Dima  20.03.2015
+						category = DIr.CCat;	
+					end;
 	  			ExtractObj(INr.DispGroups,pos,classtr);
 	  		end;
+	  		
+				outstring(3,0,category,false);
+
+				outstring(4,0,INr.AlternativeCode,false);
+				if NonBlank(ORrw.Location) then begin
+					outstring(5,0,ORrw.Location,false);
+				end else begin
+					outstring(5,0,ORr.Location,false);
+				end;
+
 				outstring(6,0,brandstr,false);
 				outstring(7,0,INr.Name,false);
 				outstring(8,0,ORrw.Quant,false);
