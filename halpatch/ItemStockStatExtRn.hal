@@ -693,6 +693,13 @@ begin
 								filename = "http://" & serverip & "/" & urlencode(INr.AlternativeCode) & ".png";
 							end;
 							
+			case 13: if(fileexists("webcust/Carpets/" & INr.Code & ".jpg"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+							end;
+							if(fileexists("webcust/Carpets/" & INr.Code & ".png"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".png";
+							end;
+							
 			otherwise
 				if(ReadRecordLink(INr,1,Attachr,RLr))then begin
 					res = Attachr.SerNr;
