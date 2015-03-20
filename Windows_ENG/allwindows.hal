@@ -1752,6 +1752,51 @@ external function Boolean HasModSL();
 external function Boolean HasModSVO();
 external function Boolean HasModTS();
 
+external function string 255 GetTextForPrint(integer,string); //Edit***************************Sasha2,10:51 20.03.2015
+remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string); //Edit***************************Sasha2,10:51 20.03.2015
+
+window IV1DClass:2 //Edit***************************Sasha2,11:13 20.03.2015 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,hm,hs,t,v,v2,v3,vm,vs;
+  string 255 label,tstr;// Edit ************************** Tuesday, 4 December 2012 10:28:40
+  WindowBegin("Invoice",IVDClass,CGview,-);
+  //Sizeable(-1,-1,0,0);
+  UseView(IVVc);
+  if (CurrentCompany==10) then begin //Edit***************************Sasha2,11:19 20.03.2015 {
+    ToolBar; 
+      HalPushButton(230,5,290,25,"PrintDoInvFormButton","Print");
+    EndToolBar; 
+  end; //Edit***************************Sasha2,11:19 20.03.2015 }
+
+  ActiveFieldOnNew("OfficialSerNr");  
+  SetWRect(20,80,750,500);
+  //CommunicateButton;
+
+  EditField(75,vm=(v=6),95,"No.",ViewOnly,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Customer",ViewOnly,CustCode,false,CUSClass);
+  EnterSkip(PayDeal);
+  EditField(h=255,v=vm,-40,"Name.",ViewOnly,Addr0,false,0);
+  EditField(h,vm=(v+=20),135,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  //CheckBox(h4=-100,v,0,"OK",OKFlag);
+  vs = 20;
+  label = UserDefined("CUVc","InvAddr0");
+  if (blank(label)) then begin label = "Invoice"; end;
+  EditField(h=75,v=90,-40,label,Normal,Addr1,false,0);
+  label = UserDefined("CUVc","InvAddr1");
+  if (blank(label)) then begin label = "Address"; end;
+  EditField(h,v+=vs, -40,label,Normal,Addr2,false,0);
+  label = UserDefined("CUVc","InvAddr2");
+  EditField(h,v+=vs, -40,label,Normal,Addr3,false,0);
+  label = UserDefined("CUVc","InvAddr3");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr3,false,0);
+  label = UserDefined("CUVc","InvAddr4");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr4,false,0);
+  EditField(h,vm=(v+=vs),80,"#VAT Reg. No.#",Normal,VATNr,false,0);
+
+  EndWindow;
+end; //Edit***************************Sasha2,11:13 20.03.2015 }
+
 window IVDClass:2
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -1761,6 +1806,11 @@ begin
   Sizeable(-1,-1,0,0);
   UseView(IVVc);
 if (HasTouchScreenLook==false) then begin
+  if (CurrentCompany==10) then begin //Edit***************************Sasha2,11:19 20.03.2015 {
+    ToolBar; 
+      HalPushButton(230,5,290,25,"PrintDoInvFormButton","Print");
+    EndToolBar; 
+  end; //Edit***************************Sasha2,11:19 20.03.2015 }
   ActiveFieldOnNew("CustCode");  
   SetWRect(20,80,750,460);
   CommunicateButton;
@@ -2230,7 +2280,7 @@ if (HasTouchScreenLook==false) then begin
   EditField(h2,v+=vs,150,"Fax",Normal,Fax,false,0);
   Tile(8,170,false,"8",ShipAddr0); vs = 20;
   EditField(h1,v=6,80,"Address Code",Normal,DelAddrCode,false,DelAddr3SClass);
-  EditField(h1,v+=vs,-20,"–û—Ç–≥—Ä—É–∑–∫–∞",Normal,ShipAddr0,false,0);
+  EditField(h1,v+=vs,-20,"éÚ„ÛÁÍ‡",Normal,ShipAddr0,false,0);
   EditField(h1,v+=vs,-20,"Address",Normal,ShipAddr1,false,0);
   EditField(h1,v+=vs,-20,"",Normal,ShipAddr2,false,0);
   EditField(h1,v+=vs,-20,"",Normal,ShipAddr3,false,0);
@@ -4684,6 +4734,37 @@ begin
 ////  SpecialMenu("Test Mex E-Invoices",'1',0,"TestMexEInvoices");
   EndWindow;
 end;
+
+window IV1LClass:8 //Edit***************************Sasha2,15:52 23.12.2014 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Invoices",IV1LClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    Sizeable(-1,-1,0,0);
+    SpawnClass(IV1DClass);
+    UseView(IVVc);
+    FormName(PrintIVL);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"çÓ.",SerNr,false,SerNr);
+    RlColKey(79,79,"éä",OKFlag,false,OKFlag);
+    RlColKey(111,111,"Invoice Date",InvDate,false,InvDate);
+    RlColKey(191,191,"Location",Location,false,Location);    
+  RlColKey(301,301,"Order No.",OrderNr,false,OrderNr);
+  RlColKey(381,381,"Customer",CustCode,false,CustCode); 
+  RlColKey(441,441,"Name",Addr0,false,Name); 
+    RlColKey(-110,-110,"Total",Sum4,true,Sum4);
+    RlCol(-39,-39,"",CredMark,true);
+    RlCol(-30,-30,"Cur.",CurncyCode,true);
+    RlCol(-1,-1,"",Invalid,true);
+    SearchField("Search");
+  if (HasLimitedAccess) then begin 
+    BrowseSubsetButton(-40,-15);
+  end;
+    SpecialMenu("OK",'G',0,"OKIVLsm");
+    SpecialMenu("Print Proforma Invoices",' ',1,"PrintIVLsm");
+    SpecialMenu("Invoice Status",'r',2,"IVInfoIVLsm");
+    EndWindow;
+end; //Edit***************************Sasha2,15:52 23.12.2014 }
 
 window IVLClass:8
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
@@ -7365,3 +7446,69 @@ Integer i,mwn;
 
   EndWindow;
 end;
+
+//Edit***************************Sasha2,10:55 20.03.2015 {
+window MyPrintTClass:1
+  wtag("language","UKR"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+string 255 tstr;
+integer v,i,mtrw,h,vm,heiz;
+integer mwn,wn; 
+record FormDefVc FDr;
+row FormDefVc FDrw;
+string 200 formcode;
+string 20 winclass,recname,printfunc; 
+
+  WindowBegin("Print",MyPrintTClass,CGother,RcType);
+	UseView(RcVc);
+	DynamicWindow;
+	wn = curwindow;
+	mwn = MotherWindow(wn);
+	winclass = GetWindowClass(mwn);
+	if (blank(winclass)) then begin goto L99; end;
+	
+	switch (winclass) begin 
+	 /*case "ORDClass": 
+	       FDr.repname = "OrdForm";
+	       recname  = "ORVc";
+	       printfunc = "PrintDoOrdForm";
+	 case "StockMovDClass": 
+	       FDr.repname = "StockMovForm";
+	       recname  = "StockMovVc";
+	       printfunc = "PrintDoStockMovForm";
+	 case "SVODClass": 
+	       FDr.repname = "SVOForm";
+	       recname  = "SVOVc";			
+	       printfunc = "PrintDoSVOForm";*/
+	 case "IVDClass": 
+	       FDr.repname = "InvForm";
+	       recname  = "IVVc";
+	       printfunc = "PrintDoIVForm";
+	 otherwise 
+	       MessageBox(0,"Undefined window class");
+	       goto L99;
+	end; 
+	
+	if (ReadFirstMain(FDr,1,true)==false) then begin
+		MessageBox(1624, " " & USetStr(1623));
+		goto L99;
+	end;
+	mtrw = matrowcnt(FDr);
+	heiz = 80 + 20 + 18 + mtrw*18;
+	SetWRect(90,80,500,heiz);
+	v=10;
+	ButtonFrame(20,20,350,mtrw,"Documents forms");
+	h=20;v=20;
+	for(i=0;i<mtrw;i=i+1)begin
+		matrowget(FDr,i,FDrw);
+		formcode = "";
+		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
+			RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]);
+			v=v+16;
+		end;
+	end;
+	v=v+16;
+	HalPushButton(h,v,h+100,v+50,printfunc,"Print"); 
+L99:;
+  EndWindow;
+end; //Edit***************************Sasha2,10:55 20.03.2015 }

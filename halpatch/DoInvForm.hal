@@ -85,6 +85,8 @@ external function string 255 CreateInternationalCreditorReference(string);
 external function string 255 InsertSubStringInString(string, string, integer);//Edit----------------------Dima  02.03.2015
 external function Integer FindFirstPosStringInString( string, string); //Edit----------------------Dima  02.03.2015
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+remote procedure RowCalculateTaxMatrix_IVVc(var record IVVc,Integer,row IVVc); //Edit***************************Sasha2,15:48 20.03.2015
+remote procedure IVSumup(var record IVVc,Boolean); //Edit***************************Sasha2,15:50 20.03.2015
 
 procedure RebVal(record IVVc ivrp,record RoundBlock RoundRec,Integer base,var string res)
 BEGIN
@@ -779,6 +781,28 @@ BEGIN
       end;
     end;
   end;
+  
+  if (IVr.InvType==kInvoiceTypeNormal and IVr.Sum4<0) then begin //Edit***************************Sasha2,15:45 20.03.2015 {
+    rwcnt = MatRowCnt(IVr);
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(IVr,i,IVrw);
+      if (IVrw.Quant<0) then begin
+        if (IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin
+          IVrw.Quant = -IVrw.Quant;
+          IVrw.Sum = -IVrw.Sum;
+          IVrw.rowGP = -IVrw.rowGP;
+          RowCalculateTaxMatrix_IVVc(IVr,i,IVrw);
+          MatRowPut(IVr,i,IVrw);
+        end;
+        if (IVrw.stp==kInvoiceRowTypeCreditCardPayment) then begin
+          IVrw.Sum = -IVrw.Sum;
+          MatRowPut(IVr,i,IVrw);
+        end;
+      end;
+    end;
+    IVSumup(IVr,true);
+  end; //Edit***************************Sasha2,15:45 20.03.2015 }
+  
   BlockLoad(RoundRec);
   BlockLoad(SysFormatRec);  
   BlockLoad(ARAccRec);

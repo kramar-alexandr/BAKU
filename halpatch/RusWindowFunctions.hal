@@ -823,10 +823,10 @@ begin
   	  case 100:
           AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
           procstr = "";
-        case 101:
+      case 101:
           AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
           procstr = "";
-        case 102:
+      case 102:
           procstr = procstr & "TouchScreenDeleteAll";// Edit ************************** Thursday, 16 May 2013 11:54:41
           tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
   	  case 103:

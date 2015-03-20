@@ -761,6 +761,31 @@ begin
       case kPOSButtonTypeRunReportOnServer:
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);
         procstr = "";
+      case 100:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+          procstr = "";
+      case 101:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+          procstr = "";
+      case 102:
+          procstr = procstr & "TouchScreenDeleteAll";// Edit ************************** Thursday, 16 May 2013 11:54:41
+          tagstr = i + 1; //Edit***************************Sasha2,18:01 11.02.2015
+  	  case 103:
+          AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr);// Edit ************************** Wednesday, 5 December 2012 11:43:59
+  		//CUNPTSSClassNewCustomer;
+  		procstr = "";
+  	  case 104:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
+      case 105:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
+      case 106:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
+      case 107:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
+        procstr = "";
     end;
     
     if (procstr<>"") then begin
