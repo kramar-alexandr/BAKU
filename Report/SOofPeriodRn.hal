@@ -56,7 +56,9 @@ begin
 	outstring(1,0,"№ Счета",false);
 	outstring(2,0,"Дата покупки",false);
 	outstring(3,0,"Ханза",false);
-	outstring(3,0,"Категория",false);
+	if(currentcompany==9)then begin
+		outstring(3,0,"Категория",false);		//Edit----------------------Dima  20.03.2015
+	end;
 	outstring(4,0,"Код поставщика",false);
 	outstring(5,0,"Склад",false);
 	outstring(6,0,"Бренд",false);
@@ -105,15 +107,15 @@ begin
 						end else begin
 							brandstr = brandstr & ", " & DIr.Name;
 						end;
-					end;
-					if (DIr.CType=="TYPE") then begin				//Edit----------------------Dima  20.03.2015
-						category = DIr.CCat;	
+						if(currentcompany==9)then begin
+								category = DIr.CCat;			//Edit----------------------Dima  20.03.2015
+						end;		
 					end;
 	  			ExtractObj(INr.DispGroups,pos,classtr);
 	  		end;
-	  		
-				outstring(3,0,category,false);
-
+	  		if(currentcompany==9)then begin
+						outstring(3,0,category,false);//Edit----------------------Dima  20.03.2015
+				end;
 				outstring(4,0,INr.AlternativeCode,false);
 				if NonBlank(ORrw.Location) then begin
 					outstring(5,0,ORrw.Location,false);

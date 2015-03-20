@@ -564,7 +564,9 @@ begin
 					outstring(0,0,USetStr(12815),false);
 					outstring(0,0,USetStr(31044),false);
 					outstring(0,0,USetStr(19357),false);
-					outstring(0,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015
+					if(currentcompany==9)then begin
+						outstring(0,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015
+					end;
 					outstring(0,0,USetStr(12713),false);
 					outstring(0,0,USetStr(31045),false);//Reference
 					outstring(0,0,USetStr(31047),false);
@@ -723,9 +725,13 @@ begin
 											DIr.Code = classcode;
 											readfirstmain(DIr,1,true);
 											classname2 = DIr.Name;
-											category = DIr.CCat;
+											if(currentcompany==9) then begin
+												category = DIr.CCat;	//Edit----------------------Dima  20.03.2015
+											end;											
 											outstring(0,0,classname2,false);
-											outstring(0,0,category,false);
+											if(currentcompany==9) then begin
+												outstring(0,0,category,false);
+											end;
 											outstring(0,0,prepareStr(IVrw.Spec),false);
 											outstring(0,0,INr.Reference,false);
 											outstring(0,0,INr.Metal,false);

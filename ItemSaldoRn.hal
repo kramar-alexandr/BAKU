@@ -27,7 +27,7 @@ begin
 				readfirstmain(DIr,1,true);
 				dicnt[acnt] = DIr.Name;
 				acnt = acnt + 1;
-				if (DIr.CType=="TYPE") then begin				//Edit----------------------Dima  20.03.2015
+				if ((currentcompany==9) and (DIr.CType=="BRAND")) then begin				//Edit----------------------Dima  20.03.2015
 						category = DIr.CCat;	
 				end;
 			end;
@@ -41,23 +41,17 @@ begin
 			case 1:outstring(0,0,dicnt[0],false);				 			
 			case 2:	outstring(0,0,dicnt[0],false);						
 			case 3: outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);							
+							outstring(0,0,dicnt[1],false);													
 			case 4:	outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);
+							outstring(0,0,dicnt[1],false);							
 			case 5:	outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);
+							outstring(0,0,dicnt[1],false);							
 			case 6:	outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);
+							outstring(0,0,dicnt[1],false);							
 			case 7:	outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);
+							outstring(0,0,dicnt[1],false);							
 			case 8:	outstring(0,0,dicnt[0],false);
-							outstring(0,0,dicnt[1],false);
-							outstring(0,0,category,false);
+							outstring(0,0,dicnt[1],false);							
 			case 9:	outstring(0,0,dicnt[1],false);
 							outstring(0,0,dicnt[2],false);
 							outstring(0,0,category,false);
@@ -65,8 +59,10 @@ begin
 	end else begin
 		outstring(0,0,"",false);		
 		if(currentcompany>2)then begin
-			outstring(0,0,"",false);
-			outstring(0,0,"",false);
+			outstring(0,0,"",false);			
+		end;
+		if(currentcompany==9)then begin
+			outstring(0,0,"",false);			
 		end;
 	end;
 	
@@ -724,7 +720,9 @@ begin
 							//OutString(35,0,"Код поставщика",false);
 							OutString(40,0,USetStr(31105),false);							
 							if(currentcompany>2)then begin
-								OutString(40,0,USetStr(31120),false);
+								OutString(40,0,USetStr(31120),false);	
+							end;
+							if(currentcompany==9)then begin
 								OutString(40,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015
 							end;								 
 							if(RepSpec.flags[0]==0)then begin
