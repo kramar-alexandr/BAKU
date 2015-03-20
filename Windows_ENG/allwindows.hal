@@ -1756,7 +1756,7 @@ external function string 255 GetTextForPrint(integer,string); //Edit************
 remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string); //Edit***************************Sasha2,10:51 20.03.2015
 
 window IV1DClass:2 //Edit***************************Sasha2,11:13 20.03.2015 {
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,hm,hs,t,v,v2,v3,vm,vs;
   string 255 label,tstr;// Edit ************************** Tuesday, 4 December 2012 10:28:40
@@ -4736,7 +4736,7 @@ begin
 end;
 
 window IV1LClass:8 //Edit***************************Sasha2,15:52 23.12.2014 {
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Invoices",IV1LClass,CGmlist,-);
     SetWRect(20,80,800,298);
