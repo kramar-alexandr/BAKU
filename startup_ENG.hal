@@ -78,7 +78,7 @@ begin
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
   
   Report("Marketing report",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
-  Report("Material report",PecuniaryRClass,PecuniaryRn,0,modSL); //Материальный отчет
+  Report("Material report",PecuniaryRClass,PecuniaryRn_ENG,0,modSL); //Материальный отчет
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Turnover balance sheet for items",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Оборотно-сальдовая ведомость по товарам
   Report("Summary report for period",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Сумарный отчет за период
