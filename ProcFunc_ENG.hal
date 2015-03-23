@@ -224,6 +224,24 @@ Boolean TrHs;
 RETURN;
 END;
 
+
+function val GetDebtFromARVc(longint SerNr)
+begin
+	record ARVc ARr;
+	val res;
+
+	ARr.InvoiceNr = SerNr;
+
+	if (ReadFirstKey("InvoiceNr",ARr,1,true)) then begin
+		res = ARr.BookRVal;
+	end;
+	
+GetDebtFromARVc = res;
+ return; 
+end;
+
+
+
 global
 procedure PecuniaryRn_ENG(record RcVc RepSpec)
 begin
@@ -271,6 +289,9 @@ begin
   record LocationVc Locr;
   record GCVc GCr;
   integer sign;
+	val debt;
+	integer cred;
+	
   recordnew(SMr);
   recordnew(SMgift);  //Edit -----------------Dima           11.12.2014
   recordnew(SMpay);  //Edit -----------------Dima           15.12.2014
@@ -337,6 +358,7 @@ begin
     totsumpay = 0;
     ivcount = 0;
     totgift = 0;
+		debt = 0;
     while (LoopKey("Location",IVr,2,TrHs)) begin
    // while (LoopKey("TransDMachineN",IVr,2,TrHs)) begin
     		for(i=0;i<acrncnt;i=i+1)begin
@@ -364,7 +386,8 @@ begin
       end;
       
       if testf then begin
-      	
+      	cred = 1;
+      	if(IVr.InvType==kInvoiceTypeCredit)then begin cred=-1; end;
       	IPrsr.IVNr = IVr.SerNr;
       	IPrsr.TransType = 1;
       	TrHs1 = true;
@@ -502,58 +525,64 @@ begin
 						
 							EndFormat;
             end;
-            case 15:
-              //if(IVr.MachineName!="SW4")then begin	
-              		switch(IVrw.PayMode)begin
-
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
-																if(acrncy[j]==IVrw.CurncyCode)then begin
-																	cashsum[j] = cashsum[j] + IVrw.Sum;
-																end;
-															end;
-									case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
-									case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
-									case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
-									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
-									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
-									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+            case kInvoiceRowTypeCashPayment:
+              //if(IVr.MachineName!="SW4")then begin
+             			if(left(IVrw.PayMode,1)=="C")then begin
+              			for(j=0;j<acrncnt;j=j+1)begin
+											if(acrncy[j]==IVrw.CurncyCode)then begin
+												cashsum[j] = cashsum[j] + IVrw.Sum;
+											end;
+										end;
+              		end else begin	
+										switch(IVrw.PayMode)begin
+										case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
+										case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
+										case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
+										case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
+										case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
+										case "LC":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+										end;
               		end;
               //end;
               totcccnt = 6;//count of payDeals!!!
               payrows = false;         
-            case 16:
+            case kInvoiceRowTypeCreditCardPayment:
             		//if(IVr.MachineName!="SW4")then begin
-              		switch(IVrw.PayMode)begin
-
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
-																if(acrncy[j]==IVrw.CurncyCode)then begin
-																	cashsum[j] = cashsum[j] + IVrw.Sum;
-																end;
-															end;
-									case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
-									case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
-									case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
-									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
-									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
-									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+            			if(left(IVrw.PayMode,1)=="C")then begin
+              			for(j=0;j<acrncnt;j=j+1)begin
+											if(acrncy[j]==IVrw.CurncyCode)then begin
+												cashsum[j] = cashsum[j] + IVrw.Sum;
+											end;
+										end;
+              		end else begin
+										switch(IVrw.PayMode)begin
+										case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
+										case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
+										case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
+										case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
+										case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
+										case "LC":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+										end;
               		end;
               		payrows = false;
             case 29:
             		//if(IVr.MachineName!="SW4")then begin
-              		switch(IVrw.PayMode)begin
-
-									case "C1":  for(j=0;j<acrncnt;j=j+1)begin
-																if(acrncy[j]==IVrw.CurncyCode)then begin
-																	cashsum[j] = cashsum[j] + IVrw.Sum;
-																end;
-															end;
-									case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
-									case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
-									case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
-									case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
-									case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
-									case "L1":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "L1"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
-             		 		end;
+            			if(left(IVrw.PayMode,1)=="C")then begin
+              			for(j=0;j<acrncnt;j=j+1)begin
+											if(acrncy[j]==IVrw.CurncyCode)then begin
+												cashsum[j] = cashsum[j] + IVrw.Sum;
+											end;
+										end;
+              		end else begin
+										switch(IVrw.PayMode)begin
+										case "T1":  totcc[0] = totcc[0] + IVrw.Sum; ccpaydeal[0] = "T1"; termsum = termsum + IVrw.Sum;
+										case "T2":  totcc[1] = totcc[1] + IVrw.Sum; ccpaydeal[1] = "T2"; termsum = termsum + IVrw.Sum;
+										case "T3":  totcc[2] = totcc[2] + IVrw.Sum; ccpaydeal[2] = "T3"; termsum = termsum + IVrw.Sum;
+										case "T4":  totcc[3] = totcc[3] + IVrw.Sum; ccpaydeal[3] = "T4"; termsum = termsum + IVrw.Sum;
+										case "T5":  totcc[4] = totcc[4] + IVrw.Sum; ccpaydeal[4] = "T5"; termsum = termsum + IVrw.Sum;
+										case "LC":  totcc[5] = totcc[5] + IVrw.Sum; ccpaydeal[5] = "LC"; termsum = termsum + IVrw.Sum; loybals = loybals + IVrw.Points;
+										end;
+             		 	end;
              				 //end;
              				 totcccnt = 6;//count of payDeals!!!
              				 payrows = false;
@@ -563,7 +592,7 @@ begin
 							mtrw = matrowcnt(SMgift);
 							SMrw2.stp = 1;
 							SMrw2.ChequeNr = IVrw.GCNr;
-							SMrw2.RecVal = IVrw.Sum;
+							SMrw2.RecVal = IVrw.Sum*cred;
 							SMrw2.CustName = IVrw.Spec;
 							matrowput(SMgift,mtrw,SMrw2);
 
@@ -597,7 +626,7 @@ begin
 						case "T4":  totcc[3] = totcc[3] + IVr.Sum4; ccpaydeal[3] = "T4"; termsum = termsum + IVr.Sum4;
 						case "T5":  totcc[4] = totcc[4] + IVr.Sum4; ccpaydeal[4] = "T5"; termsum = termsum + IVr.Sum4;
 						case "L1":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "L1"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
-
+						case "LC":  totcc[5] = totcc[5] + IVr.Sum4; ccpaydeal[5] = "LC"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
         	end;
         	if(IVr.CurncyCode==acrncy[0])then begin
         		totsumpay = totsumpay  + IVr.Sum4;
@@ -615,6 +644,17 @@ begin
         for(j=0;j<acrncnt;j=j+1)begin
 					totcash[j] = totcash[j] + cashsum[j];
         end;
+				
+				if(IVr.CurncyCode==acrncy[0])then begin
+					debt = debt + GetDebtFromARVc(IVr.SerNr);		//Edit --------------Dima 22.01.2015
+				end else begin
+					GetFullCurncyRate(acrncy[0],IVr.InvDate,fr,to1,to2,br1,br2);
+					if(fr==0 or to1==0)then begin
+						fr=1; to1=1;
+					end;
+					debt = debt + GetDebtFromARVc(IVr.SerNr)*fr/to1;
+				end;
+
       end; // testf
     end; //while 
     
@@ -659,21 +699,22 @@ begin
 					
 					Matrowput(ORr,ori,ORrw);
 					ori = ori + 1;
-	  			switch(IPr.PayMode)begin
-
-												
-						case "C1":  for(j=0;j<acrncnt;j=j+1)begin
-													if(acrncy[j]==IPrw.BankCurncy)then begin
-														//cashsum[j] = cashsum[j] + IPrw.BankVal;
-														totcash[j] = totcash[j] + IPrw.BankVal;
-													end;
-												end;
-						case "T1":  totcc[0] = totcc[0] + IPrw.BankVal; ccpaydeal[0] = "T1"; termsum = termsum + IPrw.BankVal;
-						case "T2":  totcc[1] = totcc[1] + IPrw.BankVal; ccpaydeal[1] = "T2"; termsum = termsum + IPrw.BankVal;
-						case "T3":  totcc[2] = totcc[2] + IPrw.BankVal; ccpaydeal[2] = "T3"; termsum = termsum + IPrw.BankVal;
-						case "T4":  totcc[3] = totcc[3] + IPrw.BankVal; ccpaydeal[3] = "T4"; termsum = termsum + IPrw.BankVal;
-						case "T5":  totcc[4] = totcc[4] + IPrw.BankVal; ccpaydeal[4] = "T5"; termsum = termsum + IPrw.BankVal;
-						case "L1":  totcc[5] = totcc[5] + IPrw.BankVal; ccpaydeal[5] = "L1"; termsum = termsum + IPrw.BankVal; loybals = loybals + IPrw.BankVal;
+					if(left(IPr.PayMode,1)=="C")then begin
+						for(j=0;j<acrncnt;j=j+1)begin
+							if(acrncy[j]==IPrw.BankCurncy)then begin
+								//cashsum[j] = cashsum[j] + IPrw.BankVal;
+								totcash[j] = totcash[j] + IPrw.BankVal;
+							end;
+						end;
+					end else begin
+						switch(IPr.PayMode)begin
+							case "T1":  totcc[0] = totcc[0] + IPrw.BankVal; ccpaydeal[0] = "T1"; termsum = termsum + IPrw.BankVal;
+							case "T2":  totcc[1] = totcc[1] + IPrw.BankVal; ccpaydeal[1] = "T2"; termsum = termsum + IPrw.BankVal;
+							case "T3":  totcc[2] = totcc[2] + IPrw.BankVal; ccpaydeal[2] = "T3"; termsum = termsum + IPrw.BankVal;
+							case "T4":  totcc[3] = totcc[3] + IPrw.BankVal; ccpaydeal[3] = "T4"; termsum = termsum + IPrw.BankVal;
+							case "T5":  totcc[4] = totcc[4] + IPrw.BankVal; ccpaydeal[4] = "T5"; termsum = termsum + IPrw.BankVal;
+							case "LC":  totcc[5] = totcc[5] + IPrw.BankVal; ccpaydeal[5] = "LC"; termsum = termsum + IPrw.BankVal; loybals = loybals + IPrw.BankVal;
+						end;
         	end;
         	totcccnt = 6;
 				end; 
@@ -864,6 +905,14 @@ begin
 		end;
     StartFormat(15);
 		endformat;
+
+		if (debt>0) then begin		//Edit------------Dima 22.01.2015
+			outstring(0,0,USetStr(31308),false);
+    	outstring(220,0,debt,false);
+			endformat;
+			endformat;
+		end;
+
     StartFormat(15);
     	outstring(0,0,USetStr(31038),false);
     	outstring(220,0,ivcount,false);
