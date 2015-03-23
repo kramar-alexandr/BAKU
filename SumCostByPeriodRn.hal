@@ -299,7 +299,7 @@ begin
   val totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,retsum,qtynotpay,retpu;
   array val totals;
   record DIVc DIr;
-  string 100 tstr,location;
+  string 100 tstr,location,category;
   boolean calc;
   array val sdcost,sdtotal;
   record StandProblemVc SPr; 
@@ -386,6 +386,9 @@ begin
       
         StartFormat(15);
         OutString(0,0,USetStr(31105),false);
+        if(currentcompany==9)then begin
+					outstring(0,0,USetStr(9131),false);					//Edit----------------------Dima  20.03.2015
+				end;
         OutString(45,0,USetStr(31081),false);
         OutString(70,0,USetStr(31106),false);
         OutString(90,0,USetStr(1828),false);
@@ -417,7 +420,7 @@ begin
             DIr.Code = curgr1;
             if(readfirstmain(DIr,1,true))then begin
               if(DIr.CType!="BRAND")then begin
-                curgr1 = "";
+                curgr1 = "";                
               end;
             end;
           end;
@@ -448,7 +451,7 @@ begin
             DIr.Code = curgr1;
             if(readfirstmain(DIr,1,true))then begin
               if(DIr.CType!="BRAND")then begin
-                curgr1 = "";
+                curgr1 = "";                
               end;
             end;
           end;
@@ -473,7 +476,10 @@ begin
             end;
             //OutString(15,0,curgr,false);
             OutString(0,0,tstr,false);
-            OutString(45,0,totcostsd*rate,false);
+						if ((currentcompany==9) and (DIr.CType=="BRAND")) then begin				//Edit----------------------Dima  20.03.2015
+								OutString(40,0,DIr.CCat,false);	
+						end;	          
+            OutString(45,0,totcostsd*rate,false);           
             OutString(70,0,inpo,false);
             totalinpo = totalinpo + inpo;
             totals[0] = totals[0] + totcostsd*rate;
@@ -535,7 +541,7 @@ begin
             DIr.Code = curgr1;
             if(readfirstmain(DIr,1,true))then begin
               if(DIr.CType!="BRAND")then begin
-                curgr1 = "";
+                curgr1 = "";                 
               end;
             end;
           end;
@@ -563,6 +569,9 @@ begin
             end;
             //OutString(15,0,curgr,false);
             OutString(0,0,tstr,false);
+						if ((currentcompany==9) and (DIr.CType=="BRAND")) then begin				//Edit----------------------Dima  20.03.2015
+								OutString(40,0,DIr.CCat,false);	
+						end;						
             OutString(45,0,totcostsd*rate,false);
             OutString(70,0,inpo,false);
             totalinpo = totalinpo + inpo;
@@ -619,7 +628,7 @@ begin
               DIr.Code = curgr1;
               if(readfirstmain(DIr,1,true))then begin
                 if(DIr.CType!="BRAND")then begin
-                  curgr1 = "";
+                  curgr1 = "";                  
                 end;
               end;
             end;
@@ -629,6 +638,9 @@ begin
       
         StartFormat(15);
         OutString(0,0,USetStr(23659),false);
+        if(currentcompany==9)then begin
+						outstring(40,0,"",false);					//Edit----------------------Dima  20.03.2015
+				end;        
         //OutString(15,0,"",false);
         OutString(45,0,totals[0],false);
         OutString(70,0,totalinpo,false);
@@ -651,6 +663,9 @@ begin
       
         StartFormat(15);
         OutString(0,0,USetStr(31112),false);
+        if(currentcompany==9)then begin
+						outstring(40,0,"",false);					//Edit----------------------Dima  20.03.2015
+				end;  
         OutString(15,0,"",false);
         OutString(45,0,"",false);
         OutString(90,0,"",false);
