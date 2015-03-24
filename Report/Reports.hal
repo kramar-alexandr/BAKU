@@ -1097,6 +1097,75 @@ begin
   return;
 end;
 
+global
+procedure DblSHVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  23.03.2015
+begin
+  Integer wn;
+  record SHVc SHr;
+
+  SHr.SerNr = StringToLongInt(dblstr);
+
+  if (ReadFirstMain(SHr,1,true)) then begin
+    wn = OpenWindow("SHDClass",1,0,"","",SHr);
+  end;
+  return;
+end;
+
+global
+procedure DblStockMovVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  23.03.2015
+begin
+  Integer wn;
+  record StockMovVc SMr;
+
+  SMr.SerNr = StringToLongInt(dblstr);
+
+  if (ReadFirstMain(SMr,1,true)) then begin
+    wn = OpenWindow("StockMovDClass",1,0,"","",SMr);
+  end;
+  return;
+end;
+
+global
+procedure DblRetVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  23.03.2015
+begin
+  Integer wn;
+  record RetVc Retr;
+
+  Retr.SerNr = StringToLongInt(dblstr);
+
+  if (ReadFirstMain(Retr,1,true)) then begin
+    wn = OpenWindow("RetDClass",1,0,"","",Retr);
+  end;
+  return;
+end;
+
+global
+procedure DblRetPUVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  23.03.2015
+begin
+  Integer wn;
+  record RetPUVc Retr;
+
+  Retr.SerNr = StringToLongInt(dblstr);
+
+  if (ReadFirstMain(Retr,1,true)) then begin
+    wn = OpenWindow("RetPUDClass",1,0,"","",Retr);
+  end;
+  return;
+end;
+
+global
+procedure DblIVVcOpen(string dblstr,string l,Integer currepwn)	//Edit----------------------Dima  23.03.2015
+begin
+  Integer wn;
+  record IVVc IVr;
+
+  IVr.SerNr = StringToLongInt(l);
+
+  if (ReadFirstMain(IVr,1,true)) then begin
+    wn = OpenWindow("IVDClass",1,0,"","",IVr);
+  end;
+  return;
+end;
 
 
 procedure ExtractClassificationsFromINVc(string artcode,var string type, var string brand)	//Edit----------------------Dima  23.02.2015
@@ -1349,7 +1418,7 @@ begin
 					ResetLoop(VIr);
 
 
-					//if exist PU and VI only. without PO record--------------------------------------------------------------
+					//if exist PU and VI only, without PO record--------------------------------------------------------------
 					//and invoices(VI) were not found previously
 					
 					if (withoutPO and (foundVI==false)) then begin

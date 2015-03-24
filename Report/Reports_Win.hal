@@ -581,3 +581,17 @@ begin
   EndWindow;
 end;
 
+
+
+window StockDocsJournalRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Stock documents journal",StockDocsJournalRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+  PeriodField(h=100,v=6,"Period");
+  EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
+  EndWindow;
+end;
+
