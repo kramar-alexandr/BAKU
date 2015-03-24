@@ -605,9 +605,12 @@ begin
         IVDClassTouchScreenReprint;
         goto LIVDClassTouchScreenPasteButtonDo;
       case kPOSButtonTypeNewCustomer:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-		CUNPTSSClassNewCustomerMy;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-		updatebrowses(wn);
-		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+  		  CUNPTSSClassNewCustomerMy;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+  		  updatebrowses(wn);
+  		  goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+  		case kPOSButtonTypeOpenCustomAllInvoices: //Edit***************************Sasha2,10:37 11.12.2014
+        OpenCustomAllInvoices;
+        goto LIVDClassTouchScreenPasteButtonDo;
     end;
   end;
   switch (WindowState(wn)) begin
@@ -785,14 +788,11 @@ begin
 		updatebrowses(wn);
 		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
 	  case kPOSButtonTypeCreateShotSDVc: //Edit***************************Sasha2,10:37 11.12.2014
-        CreateSDfromIVDsm(POSBrw.Code,POSBrw.Label);
-        goto LIVDClassTouchScreenPasteButtonDo;
-      case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
-        CreatePUfromIVDsm;
-        goto LIVDClassTouchScreenPasteButtonDo;
-      case kPOSButtonTypeOpenCustomAllInvoices: //Edit***************************Sasha2,10:37 11.12.2014
-        OpenCustomAllInvoices;
-        goto LIVDClassTouchScreenPasteButtonDo;
+       CreateSDfromIVDsm(POSBrw.Code,POSBrw.Label);
+      goto LIVDClassTouchScreenPasteButtonDo;
+    case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
+      CreatePUfromIVDsm;
+      goto LIVDClassTouchScreenPasteButtonDo;
     end;
   end;
 LIVDClassTouchScreenPasteButtonDo:;
