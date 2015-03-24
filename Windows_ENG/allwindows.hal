@@ -7484,6 +7484,10 @@ string 20 winclass,recname,printfunc;
 	       FDr.repname = "InvForm";
 	       recname  = "IVVc";
 	       printfunc = "PrintDoIVForm";
+	 case "IV1DClass": 
+	       FDr.repname = "InvForm";
+	       recname  = "IVVc";
+	       printfunc = "PrintDoIVForm";
 	 otherwise 
 	       MessageBox(0,"Undefined window class");
 	       goto L99;
