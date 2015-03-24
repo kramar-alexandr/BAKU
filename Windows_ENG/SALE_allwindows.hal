@@ -1752,6 +1752,79 @@ external function Boolean HasModSL();
 external function Boolean HasModSVO();
 external function Boolean HasModTS();
 
+window IV1DClass:2 //Edit***************************Sasha2,11:13 20.03.2015 {
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,hm,hs,t,v,v2,v3,vm,vs;
+  string 255 label,tstr;// Edit ************************** Tuesday, 4 December 2012 10:28:40
+  WindowBegin("Invoice",IVDClass,CGview,-);
+  //Sizeable(-1,-1,0,0);
+  UseView(IVVc);
+  if (CurrentCompany==10) then begin //Edit***************************Sasha2,11:19 20.03.2015 {
+    ToolBar; 
+      HalPushButton(230,5,290,25,"PrintDoInvFormButton","Print");
+    EndToolBar; 
+  end; //Edit***************************Sasha2,11:19 20.03.2015 }
+
+  ActiveFieldOnNew("OfficialSerNr");  
+  SetWRect(20,80,750,500);
+  //CommunicateButton;
+
+  EditField(75,vm=(v=6),95,"No.",ViewOnly,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"Customer",ViewOnly,CustCode,false,CUSClass);
+  EnterSkip(PayDeal);
+  EditField(h=255,v=vm,-40,"Name.",ViewOnly,Addr0,false,0);
+  EditField(h,vm=(v+=20),135,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  //CheckBox(h4=-100,v,0,"OK",OKFlag);
+  vs = 20;
+  label = UserDefined("CUVc","InvAddr0");
+  if (blank(label)) then begin label = "Invoice"; end;
+  EditField(h=75,v=90,-40,label,Normal,Addr1,false,0);
+  label = UserDefined("CUVc","InvAddr1");
+  if (blank(label)) then begin label = "Address"; end;
+  EditField(h,v+=vs, -40,label,Normal,Addr2,false,0);
+  label = UserDefined("CUVc","InvAddr2");
+  EditField(h,v+=vs, -40,label,Normal,Addr3,false,0);
+  label = UserDefined("CUVc","InvAddr3");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr3,false,0);
+  label = UserDefined("CUVc","InvAddr4");
+  EditField(h,v+=vs, -40,label,Normal,InvAddr4,false,0);
+  EditField(h,vm=(v+=vs),80,"#VAT Reg. No.#",Normal,VATNr,false,0);
+
+  EndWindow;
+end; //Edit***************************Sasha2,11:13 20.03.2015 }
+
+window IV1LClass:8 //Edit***************************Sasha2,15:52 23.12.2014 {
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Invoices",IV1LClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    Sizeable(-1,-1,0,0);
+    SpawnClass(IV1DClass);
+    UseView(IVVc);
+    FormName(PrintIVL);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"No.",SerNr,false,SerNr);
+    RlColKey(79,79,"OK",OKFlag,false,OKFlag);
+    RlColKey(111,111,"Invoice Date",InvDate,false,InvDate);
+    RlColKey(191,191,"Location",Location,false,Location);    
+  RlColKey(301,301,"Order No.",OrderNr,false,OrderNr);
+  RlColKey(381,381,"Customer",CustCode,false,CustCode); 
+  RlColKey(441,441,"Name",Addr0,false,Name); 
+    RlColKey(-110,-110,"Total",Sum4,true,Sum4);
+    RlCol(-39,-39,"",CredMark,true);
+    RlCol(-30,-30,"Cur.",CurncyCode,true);
+    RlCol(-1,-1,"",Invalid,true);
+    SearchField("Search");
+  if (HasLimitedAccess) then begin 
+    BrowseSubsetButton(-40,-15);
+  end;
+    SpecialMenu("OK",'G',0,"OKIVLsm");
+    SpecialMenu("Print Proforma Invoices",' ',1,"PrintIVLsm");
+    SpecialMenu("Invoice Status",'r',2,"IVInfoIVLsm");
+    EndWindow;
+end; //Edit***************************Sasha2,15:52 23.12.2014 }
+
 window ImportImagesVClass:1
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
