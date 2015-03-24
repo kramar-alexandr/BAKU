@@ -668,10 +668,10 @@ begin
 //      case kInvoiceRowTypeLoyaltyPointsPayment:
       case kInvoiceRowTypeCashPayment:
       	if(IVrw.PayMode=="GS")then begin
-					vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] = vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+			vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] = vpaymodesums[kInvoiceRowTypeGiftVoucherPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
       	end else begin
-					vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
-				end;
+			vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + IVrw.Sum;//MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+		end;
 //      case kInvoiceRowTypeChequePayment:
     end;
   end;
@@ -680,12 +680,12 @@ begin
       goto LkInvoiceTypeCredit;
     case kInvoiceTypeCredit:
 LkInvoiceTypeCredit:;
-      t = IVr.BaseSum4 - vpaymodesums[kInvoiceRowTypeCashPayment] - vpaymodesums[kInvoiceRowTypeCreditCardPayment];
+      t = IVr.Sum4 - vpaymodesums[kInvoiceRowTypeCashPayment] - vpaymodesums[kInvoiceRowTypeCreditCardPayment];
       if (t>0) then begin
         vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + t;  
       end;
     otherwise
-      t = IVr.BaseSum4 - vpaymodesums[kInvoiceRowTypeCashPayment] - vpaymodesums[kInvoiceRowTypeCreditCardPayment];
+      t = IVr.Sum4 - vpaymodesums[kInvoiceRowTypeCashPayment] - vpaymodesums[kInvoiceRowTypeCreditCardPayment] - vpaymodesums[kInvoiceRowTypeGiftVoucherPayment];
       if (t>0) then begin
         vpaymodesums[kInvoiceRowTypeCashPayment] = vpaymodesums[kInvoiceRowTypeCashPayment] + t;  
       end;
@@ -792,7 +792,7 @@ begin
   CtrlSeq = "trend" & chr(POSNET_FS);
   tstr = ValToString(IVr.Sum4*100,M40Val,"",",",1);
   CtrlSeq = CtrlSeq & "to" & tstr & chr(POSNET_FS);
-  tstr = ValToString((vpaymodesums[kInvoiceRowTypeCashPayment]+vpaymodesums[kInvoiceRowTypeCreditCardPayment])*100,M40Val,"",",",1);
+  tstr = ValToString((vpaymodesums[kInvoiceRowTypeCashPayment]+vpaymodesums[kInvoiceRowTypeCreditCardPayment]+vpaymodesums[kInvoiceRowTypeGiftVoucherPayment])*100,M40Val,"",",",1);
   CtrlSeq = CtrlSeq & "fp" & tstr & chr(POSNET_FS);
   CtrlSeq = CtrlSeq & "fe" & "0" & chr(POSNET_FS);
   if (IVr.RetnValue>0) then begin
