@@ -2839,3 +2839,69 @@ begin
   end;
   EndWindow;
 end;
+
+//Edit***************************Sasha2,10:55 20.03.2015 {
+window MyPrintTClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+string 255 tstr;
+integer v,i,mtrw,h,vm,heiz;
+integer mwn,wn; 
+record FormDefVc FDr;
+row FormDefVc FDrw;
+string 200 formcode;
+string 20 winclass,recname,printfunc; 
+
+  WindowBegin("Print",MyPrintTClass,CGother,RcType);
+	UseView(RcVc);
+	DynamicWindow;
+	wn = curwindow;
+	mwn = MotherWindow(wn);
+	winclass = GetWindowClass(mwn);
+	if (blank(winclass)) then begin goto L99; end;
+	
+	switch (winclass) begin 
+	 /*case "ORDClass": 
+	       FDr.repname = "OrdForm";
+	       recname  = "ORVc";
+	       printfunc = "PrintDoOrdForm";
+	 case "StockMovDClass": 
+	       FDr.repname = "StockMovForm";
+	       recname  = "StockMovVc";
+	       printfunc = "PrintDoStockMovForm";
+	 case "SVODClass": 
+	       FDr.repname = "SVOForm";
+	       recname  = "SVOVc";			
+	       printfunc = "PrintDoSVOForm";*/
+	 case "IVDClass": 
+	       FDr.repname = "InvForm";
+	       recname  = "IVVc";
+	       printfunc = "PrintDoIVForm";
+	 otherwise 
+	       MessageBox(0,"Undefined window class");
+	       goto L99;
+	end; 
+	
+	if (ReadFirstMain(FDr,1,true)==false) then begin
+		MessageBox(1624, " " & USetStr(1623));
+		goto L99;
+	end;
+	mtrw = matrowcnt(FDr);
+	heiz = 80 + 20 + 18 + mtrw*18;
+	SetWRect(90,80,500,heiz);
+	v=10;
+	ButtonFrame(20,20,350,mtrw,"Documents forms");
+	h=20;v=20;
+	for(i=0;i<mtrw;i=i+1)begin
+		matrowget(FDr,i,FDrw);
+		formcode = "";
+		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recname,formcode))then begin
+			RadioButton(h,v,FDrw.intdocnr,0,GetTextForPrint(i,recname),flags[0]);
+			v=v+16;
+		end;
+	end;
+	v=v+16;
+	HalPushButton(h,v,h+100,v+50,printfunc,"Print"); 
+L99:;
+  EndWindow;
+end; //Edit***************************Sasha2,10:55 20.03.2015 }

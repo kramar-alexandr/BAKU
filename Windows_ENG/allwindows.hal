@@ -7449,7 +7449,7 @@ end;
 
 //Edit***************************Sasha2,10:55 20.03.2015 {
 window MyPrintTClass:1
-  wtag("language","UKR"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 string 255 tstr;
 integer v,i,mtrw,h,vm,heiz;
