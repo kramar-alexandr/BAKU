@@ -4745,8 +4745,8 @@ begin
     UseView(IVVc);
     FormName(PrintIVL);
     RecordList(4,17,-21,-39);
-    RlColKey(4,4,"çÓ.",SerNr,false,SerNr);
-    RlColKey(79,79,"éä",OKFlag,false,OKFlag);
+    RlColKey(4,4,"No.",SerNr,false,SerNr);
+    RlColKey(79,79,"OK",OKFlag,false,OKFlag);
     RlColKey(111,111,"Invoice Date",InvDate,false,InvDate);
     RlColKey(191,191,"Location",Location,false,Location);    
   RlColKey(301,301,"Order No.",OrderNr,false,OrderNr);
