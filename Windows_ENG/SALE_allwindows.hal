@@ -1752,6 +1752,9 @@ external function Boolean HasModSL();
 external function Boolean HasModSVO();
 external function Boolean HasModTS();
 
+external function string 255 GetTextForPrint(integer,string); //Edit***************************Sasha2,10:51 20.03.2015
+remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string); //Edit***************************Sasha2,10:51 20.03.2015
+
 window IV1DClass:2 //Edit***************************Sasha2,11:13 20.03.2015 {
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
