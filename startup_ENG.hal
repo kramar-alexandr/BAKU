@@ -82,6 +82,7 @@ begin
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Turnover balance sheet for items",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Оборотно-сальдовая ведомость по товарам
   Report("Summary report for period",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Сумарный отчет за период
+  Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
   
   Document("Mails",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Item Labels",INinStockRClass,INinStockForm,INinStockFClass,modIN);
