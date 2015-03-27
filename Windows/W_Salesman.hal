@@ -2448,9 +2448,9 @@ begin
   if (UserCanReport("INrsRn","INrsRClass",true)) then begin 
   SpecialMenu("История товара",'h',3,"INHistINDsm");
   end;
-  SpecialMenu("Статус товара по складу",' ',4,"LocItemStatDsm");
+  SpecialMenu("Статус товара по складу",' ',4,"LocItemStatDsm");*/
   SpecialMenu("Напечатать ценник",' ',5,"DoPrintLablDsm");// Edit ************************** Tuesday, 27 May 2014 10:45:03
-  if (HasJewelleryInterface) and (UserCanReport("INInfoRn","",true)) then begin 
+  /*if (HasJewelleryInterface) and (UserCanReport("INInfoRn","",true)) then begin 
     SpecialMenu("Статус товара по альт. коду",'S',5,"ItemStatusAltINDsm");
   end;*/
   EndWindow;
