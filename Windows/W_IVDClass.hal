@@ -5516,7 +5516,7 @@ begin
   if (IsEnterprise) then begin
   EditField(h,v+=20,80,"Љод авториз.",ViewOnly,AuthorizationCode,false,0);
   EditField(h+150,v,80,"‹ок. маш.",Normal,MachineName,false,LocalMachineSClass);
-    CheckBox(-300,v,0,"€нф. о клиенте в записи операций",ARonTR); 
+    CheckBox(-350,v,0,"€нф. о клиенте в записи операций",ARonTR); 
     CheckBox(h4=-100,v,0,"OK",OKFlag); 
   end;
   EnterSkip(Math);

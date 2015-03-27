@@ -43,6 +43,7 @@ external procedure POVc_PastePrice(var record POVc,Integer);// Edit ************
 external function roundmode SetRoundModeD(Integer);
 remote updating procedure CheckAndCreateClassification(var string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
 external function LongInt TimeDiffInSeconds(Time,Time);
+external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Friday, 27 March 2015 10:53:32
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1767,63 +1768,87 @@ begin
           end;
           found = ReadFirstItem(POrw.ArtCode,INr,true,false);
           
-          fullclass = POrw.xClassification;
-					fullclass = uppercase(fullclass);
-          POrw.xClassification = "";
-          lenth = len(fullclass);
-          for(k=0;k<lenth;k=k+1)begin
-          	if(mid(fullclass,k,1)==",")then begin
-          		tclass = mid(fullclass,0,k);
-          		CheckAndCreateClassification(tclass);
-          		findclass = true;
-          		DIr.Code = tclass;
-          		if(readfirstmain(DIr,1,findclass)) begin
-								if(DIr.Code==tclass and findclass)then begin
-									POrw.xClassification = POrw.xClassification & DIr.Code & ",";
-									findclass = false;
-								end;
-							end;
-							if(findclass)then begin
-								DIr.Name = tclass;
-								if(readfirstkey("Name",DIr,1,findclass))then begin
-									if(uppercase(DIr.Name)==tclass and findclass)then begin
+          if(currentcompany!=13)then begin
+						fullclass = POrw.xClassification;
+						fullclass = uppercase(fullclass);
+						POrw.xClassification = "";
+						lenth = len(fullclass);
+						for(k=0;k<lenth;k=k+1)begin
+							if(mid(fullclass,k,1)==",")then begin
+								tclass = mid(fullclass,0,k);
+								CheckAndCreateClassification(tclass);
+								findclass = true;
+								DIr.Code = tclass;
+								if(readfirstmain(DIr,1,findclass)) begin
+									if(DIr.Code==tclass and findclass)then begin
 										POrw.xClassification = POrw.xClassification & DIr.Code & ",";
 										findclass = false;
 									end;
 								end;
+								if(findclass)then begin
+									DIr.Name = tclass;
+									if(readfirstkey("Name",DIr,1,findclass))then begin
+										if(uppercase(DIr.Name)==tclass and findclass)then begin
+											POrw.xClassification = POrw.xClassification & DIr.Code & ",";
+											findclass = false;
+										end;
+									end;
+								end;
+								fullclass = mid(fullclass,k+1,lenth-k-1);
+								k=0;
+								lenth = len(fullclass);
 							end;
-          		fullclass = mid(fullclass,k+1,lenth-k-1);
-          		k=0;
-          		lenth = len(fullclass);
-          	end;
-          end;
-					tclass = fullclass;
-					CheckAndCreateClassification(tclass);
-					findclass = true;
-					DIr.Code = tclass;
-					if(readfirstmain(DIr,1,findclass)) begin
-						if(DIr.Code==tclass and findclass)then begin
-							POrw.xClassification = POrw.xClassification & DIr.Code & ",";
-							findclass = false;
 						end;
-					end;
-					if(findclass)then begin
-						DIr.Name = tclass;
-						if(readfirstkey("Name",DIr,1,findclass))then begin
-							if(uppercase(DIr.Name)==tclass and findclass)then begin
+						tclass = fullclass;
+						CheckAndCreateClassification(tclass);
+						findclass = true;
+						DIr.Code = tclass;
+						if(readfirstmain(DIr,1,findclass)) begin
+							if(DIr.Code==tclass and findclass)then begin
 								POrw.xClassification = POrw.xClassification & DIr.Code & ",";
 								findclass = false;
 							end;
 						end;
-					end;
-          lenth = len(POrw.xClassification);
-					if(mid(POrw.xClassification,lenth-1,1)==",")then begin
-						POrw.xClassification = mid(POrw.xClassification,0,lenth-1);
-					end;
+						if(findclass)then begin
+							DIr.Name = tclass;
+							if(readfirstkey("Name",DIr,1,findclass))then begin
+								if(uppercase(DIr.Name)==tclass and findclass)then begin
+									POrw.xClassification = POrw.xClassification & DIr.Code & ",";
+									findclass = false;
+								end;
+							end;
+						end;
+						lenth = len(POrw.xClassification);
+						if(mid(POrw.xClassification,lenth-1,1)==",")then begin
+							POrw.xClassification = mid(POrw.xClassification,0,lenth-1);
+						end;
 
-					matrowput(POr,i,POrw);
-					matrowget(POr,i,POrw);
-          
+						matrowput(POr,i,POrw);
+						matrowget(POr,i,POrw);
+          end else begin
+          	if(blank(POrw.xClassification))then begin
+          		RecordCheckError(2214,"",i,"xClassification");      
+							res = 2214; 
+							goto LPOVcRecordCheck;
+          	end;
+          	
+          	k = 0;
+						ExtractObj(POrw.xClassification,k,tclass);
+						while (nonblank(tclass)) begin
+							if(nonblank(tclass))then begin
+								DIr.Code = tclass;
+								if(!readfirstmain(DIr,1,true))then begin
+									RecordCheckError(2214,"",i,"xClassification");      
+									res = 2214; 
+									goto LPOVcRecordCheck;
+								end;
+							end;
+							ExtractObj(POrw.xClassification,k,tclass);
+						end;
+						
+						
+          	
+          end;
           
           if ((POrw.Quant>0) and (POr.Closed==0)) then begin
 						switch(currentcompany)begin
@@ -1838,6 +1863,7 @@ begin
 							case 10:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 11:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
 							case 12:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
+							case 13:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit ************************** Wednesday, 25 March 2015 15:46:51
 							
 						end;
 						matrowget(POr,i,POrw);
