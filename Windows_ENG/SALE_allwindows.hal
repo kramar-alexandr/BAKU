@@ -2213,6 +2213,7 @@ begin
   if (HasJewelleryInterface) and (UserCanReport("INInfoRn","",true)) then begin
     SpecialMenu("Item Status per Alternative Code",'S',5,"ItemStatusAltINDsm");
   end;*/
+  SpecialMenu("Print sticker",' ',5,"DoPrintLablDsm");// Edit ************************** Tuesday, 27 May 2014 10:45:08
   EndWindow;
 end;
 
