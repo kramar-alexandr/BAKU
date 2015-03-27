@@ -1633,7 +1633,7 @@ BEGIN
   if (WindowState(wn)==0) then begin//Rs_normal
     GetWindowRecord(wn,IVr);
     if (UserCanAction("PrintToFiscPrnt",true)) then begin
-      if (IVr.FiscalFlag!=0) then begin
+      if (/*IVr.FiscalFlag!=0*/true) then begin
 /*      
         if (IVr.Prntdf!=0) then begin
           RecordCopy(oldIVr,IVr);
