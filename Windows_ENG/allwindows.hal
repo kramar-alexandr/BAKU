@@ -1805,12 +1805,12 @@ begin
   WindowBegin("Invoice",IVDClass,CGview,-);
   Sizeable(-1,-1,0,0);
   UseView(IVVc);
-if (HasTouchScreenLook==false) then begin
   if (CurrentCompany==10) then begin //Edit***************************Sasha2,11:19 20.03.2015 {
     ToolBar; 
       HalPushButton(230,5,290,25,"PrintDoInvFormButton","Print");
     EndToolBar; 
   end; //Edit***************************Sasha2,11:19 20.03.2015 }
+if (HasTouchScreenLook==false) then begin
   ActiveFieldOnNew("CustCode");  
   SetWRect(20,80,750,460);
   CommunicateButton;

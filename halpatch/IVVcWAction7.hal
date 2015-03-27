@@ -1367,18 +1367,23 @@ begin
   IVr.OKFlag = 1;
 
   SetRecordCheckVc("IVVc");
-
-  if (err==0) then begin
+ 
+  if (err==0 and CurrentCompany!=10) then begin  //Edit***************************Sasha2,10:12 27.03.2015
     if (!IVPrintReceipt(wn,IVr,prevIVr,-1,true,true,LMb.IncrementalReceiptPrinting,wnst)) then begin
       err = 1;
       new_recordf = false;
     end;
   end;
- 
+  
   if (err==0) then begin
     PutWindowRecord(wn,IVr);
-    save_recordf = true;      
-    new_recordf = newf;
+    save_recordf = true;
+    if (CurrentCompany==10) then begin
+      new_recordf = false; //Edit***************************Sasha2,10:13 27.03.2015
+    end else begin
+      new_recordf = newf;
+    end;      
+
     if (save_recordf) then begin
       if (WindowDoOK(wn,0)==false) then begin 
         IVr.OKFlag = 0;
