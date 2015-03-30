@@ -6548,6 +6548,8 @@ begin
   RlCol(1000,1000, "RemCurPrice",RemCostPriceCurncy,false);
   RlCol(1100,1100, "TotCurPrice",TotCostPriceCurncy,false);
   RlCol(1200,1200, "Curncy",CurncyCode,false);
+  RlCol(1250,1250, "InFile",InFileName,false);
+  RlCol(1300,1300, "InDate",InDate,false);
   RlCol(-1,-1,"",Invalid,true);
   SearchField("Search");
   EndWindow;

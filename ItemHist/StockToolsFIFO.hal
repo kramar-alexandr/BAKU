@@ -1535,8 +1535,8 @@ begin
       destinationIHr.RemQty = -(destinationIHr.RemQty - useqty);
       
       destinationIHr.CurncyCode = inIHr.CurncyCode;// Edit ************************** Monday, 12 May 2014 14:07:04
-      destinationIHr.InDate = inIHr.InDate;
-      destinationIHr.InFileName = inIHr.InFileName;
+      destinationIHr.InDate = inIHr.InDate;// Edit ************************** Monday, 30 March 2015 10:33:38
+      destinationIHr.InFileName = inIHr.InFileName;// Edit ************************** Monday, 30 March 2015 10:33:39
       destinationIHr.RemCostPriceCurncy = inIHr.TotCostPriceCurncy/inIHr.Qty*-destinationIHr.RemQty;// Edit ************************** Monday, 12 May 2014 10:32:08    
 			destinationIHr.TotCostPriceCurncy = inIHr.TotCostPriceCurncy/inIHr.Qty*-destinationIHr.Qty;// Edit ************************** Monday, 12 May 2014 10:32:08  
 			  
@@ -1642,7 +1642,7 @@ begin
   IHr.RemCostPrice = totalcost; 
   // Edit Start ---------------------------------------------- Edit Start
 	//Monday, 12 May 2014 10:01:51
-	filename = "";
+	infile = "";
 	indate = IHr.TransDate;
   switch(filename)begin
   	case "PUVc":	PUr.SerNr = transnr;
