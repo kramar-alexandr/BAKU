@@ -1,6 +1,7 @@
 //SetLangMode(LangRussian,"ENG",0);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function roundmode DefaultRoundMode();
+external procedure ExtractObj(string,var Integer,var string);
 
 procedure HeaderLocations(string a,  var string res)	//Edit----------------------Dima  23.02.2015
 begin
@@ -18,6 +19,7 @@ global
 procedure StockDocsJournalRn(record RcVc RepSpec)
 begin
 record PUVc PUr;
+row PUVc PUrw;
 record StockMovVc SMr;
 row StockMovVc SMrw;
 record SDVc SDr;
@@ -37,6 +39,11 @@ integer rw,rwcnt,i;
 boolean TrHs,testf;
 val subTotalCost, TotalCost,cost,cost2,costPLN;
 integer sign;
+record DIVc DIr;
+string 20 class;
+integer pos;
+record INVc INr;
+
 
 	BlockLoad(BCb);
 	baseCur = BCb.BaseCur1;	
@@ -57,18 +64,19 @@ integer sign;
 	EndHeader;
 
 	StartFormat(15);
-		OutString(0,0,"Location",false);				
-		OutString(90,0,"Document type",false);	
-		OutString(180,0,"Number",false);					
-		OutString(250,0,"Date",false);	
-		OutString(300,0,"Cost",false);
+		OutString(0,0,"Location",false);		
+		OutString(80,0,"Brand",false);			
+		OutString(150,0,"Document type",false);	
+		OutString(220,0,"Number",false);					
+		OutString(300,0,"Date",false);	
+		OutString(350,0,"Cost",false);
 
 	EndFormat;
 
 //-------------------------------------------------------PUVc------------------------------------------------	
 	TrHs = true;
 	PUr.TransDate = RepSpec.sStartDate;
-	docType = "Goods Receipts";
+	docType = "PZ";
 
 	While(LoopKey("TransDate",PUr,1,TrHs)) begin
 		testf = true;
@@ -77,21 +85,43 @@ integer sign;
 		if (nonblank(location) and (location!=PUr.Location)) then begin testf = false; end;
 		
 		if (testf) then begin
+			
 			costPLN = PUr.SumCostPrice;
+			if(nonblank(RepSpec.f2))then begin
+				costPLN = 0;
+				rwcnt = matrowcnt(PUr);
+				For(i=0;i<rwcnt;i=i+1) begin
+	  			matrowget(PUr,i,PUrw);
+	  			INr.Code = PUrw.ArtCode;
+	  			if(readfirstmain(INr,1,true))then begin
+	  				class = "";
+	  				pos = 0;
+	  				ExtractObj(INr.DispGroups,pos,class);
+	  				if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+	  					costPLN = costPLN + PUrw.Sum;
+	  				end;
+	  			end;
+				end; 
+			end;
+			
 			if (PUr.CurncyCode != "PLN") then begin
-				CurValToOtherCur(PUr.TransDate,PUr.CurncyCode,PUr.SumCostPrice,"PLN",costPLN,DefaultCurRoundOff); 
+				CurValToOtherCur(PUr.TransDate,PUr.CurncyCode,costPLN,"PLN",costPLN,DefaultCurRoundOff); 
 			end;	
-			OutString(0,0,PUr.Location,false);				
-			OutString(90,0,docType,false);	
-			OutStringID(180,"DblPUVcOpen",PUr.SerNr,false,PUr.SerNr);					
-			OutString(250,0,PUr.TransDate,false);	
-			OutString(300,0,costPLN,false);			
+			
+			if(costPLN!=0)then begin
+				OutString(0,0,PUr.Location,false);	
+				OutString(80,0,PUr.VECode,false);			
+				OutString(150,0,docType,false);	
+				OutStringID(220,"DblPUVcOpen",PUr.SerNr,false,PUr.SerNr);					
+				OutString(300,0,PUr.TransDate,false);	
+				OutString(350,0,costPLN,false);	
+			end;		
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
 	Gray_Divider(0,1);
-	OutString(300,0,subTotalCost,false);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;		
 	EndFormat;	
@@ -113,22 +143,39 @@ integer sign;
 			cost = 0;
 			for(i=0;i<rwcnt;i=i+1) begin
 				MatRowGet(SDr,i,SDrw);
-				cost = cost - SDrw.FIFORowVal;
+				
+				if(nonblank(RepSpec.f2))then begin
+					INr.Code = SDrw.ArtCode;
+					if(readfirstmain(INr,1,true))then begin
+						class = "";
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,class);
+						if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+							cost = cost + SDrw.FIFORowVal;
+						end;
+					end;
+				end else begin
+					cost = cost + SDrw.FIFORowVal;
+				end;
+				
 			end;
 			CurValToOtherCur(SDr.TransDate,baseCur,cost,"PLN",costPLN,DefaultCurRoundOff);		
 			OutString(0,0,SDr.Location,false);				
-			OutString(90,0,docType,false);	
-			OutStringID(180,"DblSDVcOpen",SDr.SerNr,false,SDr.SerNr);					
-			OutString(250,0,SDr.TransDate,false);	
-			OutString(300,0,costPLN,false);
+			OutString(150,0,docType,false);	
+			OutStringID(220,"DblSDVcOpen",SDr.SerNr,false,SDr.SerNr);					
+			OutString(300,0,SDr.TransDate,false);	
+			OutString(350,0,costPLN,false);
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
+	if(subTotalCost!=0)then begin
 	Gray_Divider(0,1);	
-	OutString(300,0,subTotalCost,false);
+	startformat(15);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;
+	end;
 	EndFormat;
 	
 	
@@ -151,35 +198,51 @@ integer sign;
 			cost2= 0;
 			for(i=0;i<rwcnt;i=i+1) begin
 				MatRowGet(SMr,i,SMrw);
-				cost = cost - SMrw.OldPrice;
-				cost2 = cost2 +	SMrw.NewPrice;	
+				if(nonblank(RepSpec.f2))then begin
+					INr.Code = SMrw.ArtCode;
+					if(readfirstmain(INr,1,true))then begin
+						class = "";
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,class);
+						if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+							cost = cost - SMrw.OldPrice;
+							cost2 = cost2 +	SMrw.NewPrice;
+						end;
+					end;
+				end else begin
+					cost = cost - SMrw.OldPrice;
+					cost2 = cost2 +	SMrw.NewPrice;
+				end;
+
 			end;
-			if (location==SMr.FrLocation or blank(location)) then begin
+			if (location==SMr.FrLocation or blank(location) and cost!=0) then begin
 				CurValToOtherCur(SMr.TransDate,SMr.CurncyCode,cost,"PLN",costPLN,DefaultCurRoundOff); 			
 				OutString(0,0,SMr.FrLocation,false);				
-				OutString(90,0,docType,false);	
-				OutStringID(180,"DblStockMovVcOpen",SMr.SerNr,false,SMr.SerNr);			
-				OutString(250,0,SMr.TransDate,false);	
-				OutString(300,0,costPLN,false);
+				OutString(150,0,docType,false);	
+				OutStringID(220,"DblStockMovVcOpen",SMr.SerNr,false,SMr.SerNr);			
+				OutString(300,0,SMr.TransDate,false);	
+				OutString(350,0,costPLN,false);
 				subTotalCost = subTotalCost + costPLN;
 				if (blank(location)) then begin EndFormat; end;
 			end;
-			if (location==SMr.ToLocation or blank(location)) then begin	
+			if (location==SMr.ToLocation or blank(location) and cost2!=0) then begin	
 				CurValToOtherCur(SMr.TransDate,SMr.CurncyCode,cost2,"PLN",costPLN,DefaultCurRoundOff); 			
 				OutString(0,0,SMr.ToLocation,false);				
-				OutString(90,0,docType,false);	
-				OutStringID(180,"DblStockMovVcOpen",SMr.SerNr,false,SMr.SerNr);	
-				OutString(250,0,SMr.TransDate,false);	
-				OutString(300,0,costPLN,false);
+				OutString(150,0,docType,false);	
+				OutStringID(220,"DblStockMovVcOpen",SMr.SerNr,false,SMr.SerNr);	
+				OutString(300,0,SMr.TransDate,false);	
+				OutString(350,0,costPLN,false);
 				subTotalCost = subTotalCost + costPLN;
 			end;			
 			
 		end;		
 	end;
 	EndFormat;	
-	Gray_Divider(0,1);	
-	OutString(300,0,subTotalCost,false);
-	TotalCost = TotalCost + subTotalCost;
+	if(subTotalCost!=0)then begin
+		Gray_Divider(0,1);	
+		OutString(350,0,subTotalCost,false);
+		TotalCost = TotalCost + subTotalCost;
+	end;
 	EndFormat;
 	EndFormat;
 	
@@ -201,24 +264,38 @@ integer sign;
 			cost = 0;
 			for(i=0;i<rwcnt;i=i+1) begin
 				MatRowGet(SHr,i,SHrw);
-				cost = cost - SHrw.BasePrice*SHrw.Ship;
+				if(nonblank(RepSpec.f2))then begin
+					INr.Code = SHrw.ArtCode;
+					if(readfirstmain(INr,1,true))then begin
+						class = "";
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,class);
+						if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+							cost = cost + SHrw.FIFORowVal;
+						end;
+					end;
+				end else begin
+					cost = cost - SHrw.FIFORowVal;
+				end;
 			end;
 			costPLN = cost;
 			if (SHr.CurncyCode != "PLN") then begin
 				CurValToOtherCur(SHr.ShipDate,SHr.CurncyCode,cost,"PLN",costPLN,DefaultCurRoundOff); 
-			end;						
-			OutString(0,0,SHr.Location,false);				
-			OutString(90,0,docType,false);	
-			//OutString(180,0,SHr.SerNr,false);
-			OutStringID(180,"DblSHVcOpen",SHr.SerNr,false,SHr.SerNr);					
-			OutString(250,0,SHr.ShipDate,false);	
-			OutString(300,0,costPLN,false);
+			end;	
+			if(costPLN!=0)then begin					
+				OutString(0,0,SHr.Location,false);				
+				OutString(150,0,docType,false);	
+				//OutString(220,0,SHr.SerNr,false);
+				OutStringID(220,"DblSHVcOpen",SHr.SerNr,false,SHr.SerNr);					
+				OutString(300,0,SHr.ShipDate,false);	
+				OutString(350,0,costPLN,false);
+			end;
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
 	Gray_Divider(0,1);	
-	OutString(300,0,subTotalCost,false);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;
 	EndFormat;
@@ -241,24 +318,38 @@ integer sign;
 			cost = 0;
 			for(i=0;i<rwcnt;i=i+1) begin
 				MatRowGet(Retr,i,Retrw);
-				cost = cost + Retrw.CostPrice*Retrw.Quant;
+				if(nonblank(RepSpec.f2))then begin
+					INr.Code = SHrw.ArtCode;
+					if(readfirstmain(INr,1,true))then begin
+						class = "";
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,class);
+						if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+							cost = cost + Retrw.CostPrice*Retrw.Quant;
+						end;
+					end;
+				end else begin
+					cost = cost + Retrw.CostPrice*Retrw.Quant;
+				end;
 			end;
 			costPLN = cost;
 			if (Retr.CurncyCode != "PLN") then begin
 				CurValToOtherCur(Retr.TransDate,Retr.CurncyCode,cost,"PLN",costPLN,DefaultCurRoundOff); 
-			end;					
-			OutString(0,0,Retr.Location,false);				
-			OutString(90,0,docType,false);	
-			//OutString(180,0,Retr.SerNr,false);
-			OutStringID(180,"DblRetVcOpen",Retr.SerNr,false,Retr.SerNr);					
-			OutString(250,0,Retr.TransDate,false);	
-			OutString(300,0,costPLN,false);
+			end;		
+			if(costPLN!=0)then begin			
+				OutString(0,0,Retr.Location,false);				
+				OutString(150,0,docType,false);	
+				//OutString(220,0,Retr.SerNr,false);
+				OutStringID(220,"DblRetVcOpen",Retr.SerNr,false,Retr.SerNr);					
+				OutString(300,0,Retr.TransDate,false);	
+				OutString(350,0,costPLN,false);
+			end;
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
 	Gray_Divider(0,1);	
-	OutString(300,0,subTotalCost,false);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;
 	EndFormat;			
@@ -280,18 +371,20 @@ integer sign;
 			if (RetPUr.CurncyCode != "PLN") then begin
 				CurValToOtherCur(RetPUr.TransDate,RetPUr.CurncyCode,RetPUr.SumCostPrice,"PLN",costPLN,DefaultCurRoundOff); 
 			end;		
-			OutString(0,0,RetPUr.Location,false);				
-			OutString(90,0,docType,false);	
-			//OutString(180,0,RetPUr.SerNr,false);
-			OutStringID(180,"DblRetPUVcOpen",RetPUr.SerNr,false,RetPUr.SerNr);					
-			OutString(250,0,RetPUr.TransDate,false);	
-			OutString(300,0,costPLN,false);			
+			if(costPLN!=0)then begin
+				OutString(0,0,RetPUr.Location,false);				
+				OutString(150,0,docType,false);	
+				//OutString(220,0,RetPUr.SerNr,false);
+				OutStringID(220,"DblRetPUVcOpen",RetPUr.SerNr,false,RetPUr.SerNr);					
+				OutString(300,0,RetPUr.TransDate,false);	
+				OutString(350,0,costPLN,false);			
+			end;
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
 	Gray_Divider(0,1);
-	OutString(300,0,subTotalCost,false);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;		
 	EndFormat;
@@ -313,31 +406,33 @@ integer sign;
 			cost = 0;
 			for(i=0;i<rwcnt;i=i+1) begin
 				MatRowGet(IVr,i,IVrw);
-				cost = cost - IVrw.BasePrice*IVrw.Quant;
+				cost = cost + IVrw.FIFIRowVal;
 			end;
 			costPLN = cost;
 			if (IVr.CurncyCode != "PLN") then begin
 				CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,cost,"PLN",costPLN,DefaultCurRoundOff); 
-			end;						
-			OutString(0,0,IVr.Location,false);				
-			OutString(90,0,docType,false);	
-			//OutString(180,0,IVr.SerNr,false);
-			OutStringID(180,"DblIVVcOpen",IVr.OfficialSerNr,false,IVr.SerNr);					
-			OutString(250,0,IVr.TransDate,false);	
-			OutString(300,0,costPLN,false);			
+			end;			
+			if(costPLN!=0)then begin			
+				OutString(0,0,IVr.Location,false);				
+				OutString(150,0,docType,false);	
+				OutString(180,"DblIVVc",IVr.SerNr,false);
+				OutStringID(220,"DblIVVcOpen",IVr.OfficialSerNr,false,IVr.SerNr);					
+				OutString(300,0,IVr.TransDate,false);	
+				OutString(350,0,costPLN,false);		
+			end;	
 			subTotalCost = subTotalCost + costPLN;
 		end;		
 	end;
 	EndFormat;	
 	Gray_Divider(0,1);
-	OutString(300,0,subTotalCost,false);
+	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;		
 	EndFormat;
 	
 	Black_Divider(0,1);
-	OutString(2500,0,"Total cost: ",false);	
-	OutString(300,0,TotalCost,false);			
+	OutString(3000,0,"Total cost: ",false);	
+	OutString(350,0,TotalCost,false);			
 	EndFormat;				
 	
 	
