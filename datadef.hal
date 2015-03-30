@@ -3397,6 +3397,8 @@ begin
   RecordField(CurncyCode,M4Str,20,0);// Edit ************************** Monday, 12 May 2014 09:53:21
   RecordField(TotCostPriceCurncy,M45Val,0,0);// Edit ************************** Monday, 12 May 2014 09:54:32
   RecordField(RemCostPriceCurncy,M45Val,0,0);// Edit ************************** Monday, 12 May 2014 09:54:45
+  RecordField(InDate,M4Date,0,0);// Edit ************************** Monday, 30 March 2015 10:15:05
+  RecordField(InFileName,M4Str,20,0);// Edit ************************** Monday, 30 March 2015 10:15:05
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
   KeyBegin(ActiveQty);

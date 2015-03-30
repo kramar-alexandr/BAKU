@@ -76,6 +76,8 @@ begin
   sourceIH.SerNr = source;
   readfirstmain(sourceIH,1,true);
   IHr.CurncyCode = sourceIH.CurncyCode;
+  IHr.InDate = sourceIHr.InDate;// Edit ************************** Monday, 30 March 2015 10:22:16
+	IHr.InFileName = sourceIHr.InFileName;// Edit ************************** Monday, 30 March 2015 10:22:17
   IHr.TotCostPriceCurncy = sourceIH.TotCostPriceCurncy / sourceIH.Qty * IHr.Qty;
   IHr.RemCostPriceCurncy = BlankVal;
 	// Edit End ---------------------------------------------- Edit End

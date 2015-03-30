@@ -1535,8 +1535,11 @@ begin
       destinationIHr.RemQty = -(destinationIHr.RemQty - useqty);
       
       destinationIHr.CurncyCode = inIHr.CurncyCode;// Edit ************************** Monday, 12 May 2014 14:07:04
+      destinationIHr.InDate = inIHr.InDate;
+      destinationIHr.InFileName = inIHr.InFileName;
       destinationIHr.RemCostPriceCurncy = inIHr.TotCostPriceCurncy/inIHr.Qty*-destinationIHr.RemQty;// Edit ************************** Monday, 12 May 2014 10:32:08    
-			destinationIHr.TotCostPriceCurncy = inIHr.TotCostPriceCurncy/inIHr.Qty*-destinationIHr.Qty;// Edit ************************** Monday, 12 May 2014 10:32:08    
+			destinationIHr.TotCostPriceCurncy = inIHr.TotCostPriceCurncy/inIHr.Qty*-destinationIHr.Qty;// Edit ************************** Monday, 12 May 2014 10:32:08  
+			  
       if (RecordUpdate(oldIHr,destinationIHr,false)==0) then begin end;
       totuseqty = totuseqty + useqty;
     end;
@@ -1575,6 +1578,8 @@ begin
 	record BaseCurBlock BCb;// Edit ************************** Thursday, 15 May 2014 11:40:51
 	record RetVc Retr;// Edit ************************** Thursday, 15 May 2014 11:40:45
 	row RetVc Retrw;// Edit ************************** Thursday, 15 May 2014 11:40:43
+	date indate;
+	string 20 infile;
 	
 	blockload(BCb);
 	
@@ -1637,12 +1642,15 @@ begin
   IHr.RemCostPrice = totalcost; 
   // Edit Start ---------------------------------------------- Edit Start
 	//Monday, 12 May 2014 10:01:51
-	
+	filename = "";
+	indate = IHr.TransDate;
   switch(filename)begin
   	case "PUVc":	PUr.SerNr = transnr;
   								readfirstmain(PUr,1,true);
   								matrowget(PUr,IHr.Row,PUrw);
   								curncy = PUr.CurncyCode;
+  								infile = filename;
+  								indate = IHr.TransDate;
   								if(blank(curncy))then begin
   									curncy = BCb.BaseCur1;
   								end;
@@ -1652,12 +1660,16 @@ begin
   								matrowget(IVr,IHr.Row,IVrw);
 									curncy = INr.LastPurchCurncyCode;
   								totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
+  								infile = filename;
+  								indate = IHr.TransDate;
   	case	"StockMovVc":	if(IHr.Qty>=0)then begin
   												sourceIHr.FileName = "StockMovVc";
   												sourceIHr.TransNr = IHr.TransNr;
   												sourceIHr.Row = IHr.Row;
   												readlastkey("FNTransNr",sourceIHr,3,false);
 													curncy = sourceIHr.CurncyCode;
+													infile = sourceIHr.InDate;
+  												indate = sourceIHr.InFileName;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
   											end;
   	case	"RetVc":	if(IHr.Qty>=0)then begin
@@ -1670,11 +1682,15 @@ begin
 													sourceIHr.TransNr = Retr.SHNr;
 													readfirstkey("FNTransNr",sourceIHr,3,true);
 													curncy = sourceIHr.CurncyCode;
+													infile = sourceIHr.InDate;
+  												indate = sourceIHr.InFileName;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy/-sourceIHr.Qty*IHr.Qty;
 													//logtext(0,sourceIHr.SerNr & " " & curncy & " " & totcostpricecurncy);
   											end;
   end;
   IHr.CurncyCode = curncy;
+  IHr.InDate = indate;// Edit ************************** Monday, 30 March 2015 10:21:18
+	IHr.InFileName = infile;// Edit ************************** Monday, 30 March 2015 10:21:17
   IHr.TotCostPriceCurncy = totcostpricecurncy;
   IHr.RemCostPriceCurncy = totcostpricecurncy; 
 	// Edit End ---------------------------------------------- Edit End
