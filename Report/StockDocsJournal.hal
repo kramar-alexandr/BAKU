@@ -2,6 +2,18 @@
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function roundmode DefaultRoundMode();
 external procedure ExtractObj(string,var Integer,var string);
+external procedure HTItemClass(string,var string); //Edit***************************Sasha2,10:16 30.03.2015
+
+
+procedure CleanUpVector(var vector longint docslist,integer docslistcnt)
+begin
+  integer i;
+  
+    for (i=0;i<docslistcnt;i=i+1) begin
+      docslist[i] = -1;
+    end;
+  return;
+end;
 
 procedure HeaderLocations(string a,  var string res)	//Edit----------------------Dima  23.02.2015
 begin
@@ -14,6 +26,94 @@ begin
 return;
 end;
 
+function string 20 GetDocName(string filename)	//Edit***************************Sasha2,11:56 30.03.2015 {
+begin
+  string 20 res;
+    switch (filename) begin
+      case "PUVc": res = "PZ";
+      case "RetVc": res = "Returned Goods";
+      case "IVVc": res = "Invoices";
+      case "RetPUVc": res = "Returned Goods to Supp.";
+      case "StockMovVc": res = "Stock Movements";
+      case "SDVc": res = "Stock Depreciations";
+      case "SHVc": res = "Deliveries";
+    end;
+    GetDocName = res;
+  return;
+end; //Edit***************************Sasha2,11:56 30.03.2015 }
+
+function string 20 GetDbl(string filename)	//Edit***************************Sasha2,11:56 30.03.2015 {
+begin
+  string 20 res;
+    switch (filename) begin
+      case "PUVc": res = "DblPUVcOpen";
+      case "RetVc": res = "DblRetVcOpen";
+      case "IVVc": res = "Invoices";
+      case "RetPUVc": res = "DblRetPUVcOpen";
+      case "StockMovVc": res = "DblStockMovVcOpen";
+      case "SDVc": res = "DblSDVcOpen";
+      case "SHVc": res = "DblSHVcOpen";
+    end;
+    GetDbl = res;
+  return;
+end; //Edit***************************Sasha2,11:56 30.03.2015 }
+
+procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt)
+begin
+  row TBBUVc TBBUrw;
+  LongInt doc;
+  val costsum;
+  date costdate;
+    
+    doc = docslist[IHr.TransNr];
+    if (doc>-1) then begin
+      MatRowGet(TBBUr,doc,TBBUrw);
+      if (IHr.Invalid!=0) then begin
+        TBBUrw.ItemType = 1; //invali record
+        goto LInvalid;
+      end;
+      if (NonBlankDate(IHr.InDate)) then begin
+        costdate = IHr.InDate;
+      end else begin
+        costdate = IHr.TransDate;
+      end;
+      if (IHr.CurncyCode!="PLN") then begin
+        CurValToOtherCur(costdate,IHr.CurncyCode,IHr.TotCostPriceCurncy,"PLN",costsum,DefaultCurRoundOff);
+      end else begin
+        costsum = IHr.TotCostPriceCurncy;
+      end;
+      if (IHr.Qty<0) then begin
+        TBBUrw.Sum = TBBUrw.Sum - costsum;
+      end else begin
+        TBBUrw.Sum = TBBUrw.Sum + costsum;
+      end;
+    LInvalid:;
+      MatRowPut(TBBUr,doc,TBBUrw);
+    end else begin
+      TBBUrw.Invoiced = IHr.TransNr; //doc SerNr
+      TBBUrw.InvDate = IHr.TransDate; //TransDate
+      if (NonBlankDate(IHr.InDate)) then begin
+        costdate = IHr.InDate;
+      end else begin
+        costdate = IHr.TransDate;
+      end;
+      if (IHr.CurncyCode!="PLN") then begin
+        CurValToOtherCur(costdate,IHr.CurncyCode,IHr.TotCostPriceCurncy,"PLN",costsum,DefaultCurRoundOff);
+      end else begin
+        costsum = IHr.TotCostPriceCurncy;
+      end;
+      if (IHr.Qty<0) then begin
+        TBBUrw.Sum = TBBUrw.Sum - costsum;
+      end else begin
+        TBBUrw.Sum = TBBUrw.Sum + costsum;
+      end;
+      docslist[IHr.TransNr] = docslistcnt;
+      MatRowPut(TBBUr,docslistcnt,TBBUrw);
+      docslistcnt = docslistcnt + 1;
+    end;
+  
+  return;
+end;
 
 global
 procedure StockDocsJournalRn(record RcVc RepSpec)
@@ -43,7 +143,13 @@ record DIVc DIr;
 string 20 class;
 integer pos;
 record INVc INr;
-
+array string 20 filenames; //Edit***************************Sasha2,11:17 30.03.2015
+integer fncnt,docslistcnt,j; //Edit***************************Sasha2,11:17 30.03.2015
+record ItemHistVc IHr; //Edit***************************Sasha2,11:53 30.03.2015
+record TBBUVc TBBUr; //Edit***************************Sasha2,14:11 30.03.2015
+row TBBUVc TBBUrw; //Edit***************************Sasha2,14:11 30.03.2015
+vector longint docslist; //Edit***************************Sasha2,14:16 30.03.2015
+string 30 curitem; //Edit***************************Sasha2,16:02 30.03.2015
 
 	BlockLoad(BCb);
 	baseCur = BCb.BaseCur1;	
@@ -59,7 +165,12 @@ record INVc INr;
   HeaderLocations(RepSpec.f1,tstr);
   Header(rw,tstr,1);
   rw = rw + 1;
-  Header(rw,"All values in PLN",1);
+  HTItemClass(RepSpec.f2,tstr);
+  if (nonblank(tstr)) then begin //Edit***************************Sasha2,10:17 30.03.2015 {
+    Header(rw,tstr,1);
+    rw = rw + 1;
+  end; //Edit***************************Sasha2,10:17 30.03.2015 }
+  Header(rw,"All data in PLN",1);
   rw = rw + 1;  
 	EndHeader;
 
@@ -72,9 +183,94 @@ record INVc INr;
 		OutString(350,0,"Cost",false);
 
 	EndFormat;
+	
+	fncnt = 0; //Edit***************************Sasha2,16:35 30.03.2015 {
+	switch (RepSpec.ArtMode) begin
+	 case 0:
+	    filenames[fncnt] = "PUVc"; fncnt = fncnt + 1;
+	    filenames[fncnt] = "RetVc"; fncnt = fncnt + 1;
+	 case 1:
+	    filenames[fncnt] = "IVVc"; fncnt = fncnt + 1;
+	    filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
+	 case 2:
+	    filenames[fncnt] = "StockMovVc"; fncnt = fncnt + 1;
+	end;
+
+  for (j=0;j<filenames.length;j=j+1) begin
+    IHr.FileName = filenames[j];
+    IHr.TransDate = RepSpec.sStartDate;
+    TrHs = true;
+    RECORDNEW(TBBUr);
+    docslistcnt = 0;
+    subTotalCost = 0;
+    while (Loopkey("FNTransDate",IHr,2,TrHs)) begin
+      testf = true;
+      if (IHr.FileName!=filenames[j]) then begin TrHs = false; testf = false; end;
+      if (IHr.TransDate > RepSpec.sEndDate) then begin TrHs = false; testf = false; end;
+      if (IHr.StockAffectf!=1) then begin testf = false; end;
+      if (nonblank(location) and (location!=IHr.Location)) then begin testf = false; end;
+      if(testf and nonblank(RepSpec.f2))then begin
+        if (NonBlank(curitem) and curitem==IHr.ArtCode) then begin
+          goto Lcuritem;
+        end;
+        INr.Code = IHr.ArtCode;
+        testf = false;
+  			if(readfirstmain(INr,1,true))then begin
+  				class = "";
+  				pos = 0;
+  				ExtractObj(INr.DispGroups,pos,class);
+  				while (nonblank(class)) begin
+    				if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+    					testf = true;
+    					pos = 255;
+    					curitem = IHr.ArtCode;
+    				end;
+    				ExtractObj(INr.DispGroups,pos,class);
+  				end;
+  			end;
+  	Lcuritem:;
+      end;
+      if (testf) then begin
+        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt);
+      end;
+    end;  RESETLOOP(IHr);
+    rwcnt = MatRowCnt(TBBUr);
+    
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(TBBUr,i,TBBUrw);
+      if (TBBUrw.Sum!=0) then begin
+        StartFormat(15);
+          OutString(0,0,location,false);
+          if (filenames[j]=="PUVc") then begin
+            PUr.SerNr = TBBUrw.Invoiced;
+  				  ReadFirstMain(PUr,1,true);
+  				  OutString(80,0,PUr.VECode,false);
+          end;				
+  				OutString(150,0,GetDocName(filenames[j]),false);
+  				if (filenames[j]=="IVVc") then begin
+  				  OutString(180,"DblIVVc",TBBUrw.Invoiced,false);
+  				  IVr.SerNr = TBBUrw.Invoiced;
+  				  ReadFirstMain(IVr,1,true);
+  				  OutStringID(220,"DblIVVcOpen",IVr.OfficialSerNr,false,IVr.SerNr);
+  				end else begin	
+  				  OutStringID(220,GetDbl(filenames[j]),TBBUrw.Invoiced,false,TBBUrw.Invoiced);
+  				end;					
+  				OutString(300,0,TBBUrw.InvDate,false);	
+  				OutString(350,0,TBBUrw.Sum,false);
+        EndFormat;
+        subTotalCost = subTotalCost + TBBUrw.Sum;
+      end;
+    end;
+    Gray_Divider(0,1);
+    StartFormat(15);	
+    	OutString(350,0,subTotalCost,false);
+    	TotalCost = TotalCost + subTotalCost;
+  	EndFormat;
+  	CleanUpVector(docslist,docslistcnt);
+  end; //Edit***************************Sasha2,16:35 30.03.2015 }
 
 //-------------------------------------------------------PUVc------------------------------------------------	
-	TrHs = true;
+	/*TrHs = true;
 	PUr.TransDate = RepSpec.sStartDate;
 	docType = "PZ";
 
@@ -428,11 +624,12 @@ record INVc INr;
 	OutString(350,0,subTotalCost,false);
 	TotalCost = TotalCost + subTotalCost;
 	EndFormat;		
-	EndFormat;
+	EndFormat;*/
 	
 	Black_Divider(0,1);
-	OutString(3000,0,"Total cost: ",false);	
-	OutString(350,0,TotalCost,false);			
+	StartFormat(15);	
+	 OutString(300,0,"Total cost: ",false);	
+	 OutString(350,0,TotalCost,false);			
 	EndFormat;				
 	
 	
