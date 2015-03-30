@@ -1036,7 +1036,7 @@ begin
     end;
   end;
   if (ihf==false) and (ISMAINTENANCE) then begin
-    StoreItemHistory_In(MSb,artcode,serialnr,location,"StockMovVc",td,td,qty,coeff,qty*unitcost,transnr,rownr,stockaffectf,topos,"");
+    StoreItemHistory_In(MSb,artcode,serialnr,location,"StockMovVc",td,td,qty,coeff,qty*unitcost,transnr,rownr,stockaffectf,topos,"");    
   end;
   return;
 end;
