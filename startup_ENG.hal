@@ -294,6 +294,10 @@ begin
   SString(31222,"Total");
   SString(31223,"Average receipt price");
   SString(31224,"Items quantity for day"); //Кол-во позиций за день
+
+//ItemSalesRn
+
+  SString(31227,"All brands");
   
 // INQtyRn  
   SString(31231,"Item code");
