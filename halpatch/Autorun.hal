@@ -189,7 +189,7 @@ begin
 		ResetCompany(LLADRO);  
   end;
   if (SetCompany(Jewelry,false)) then begin
-		AutoUnGroupIV;
+		//AutoUnGroupIV;
 		CreatePLActivityMn(RepSpec);
 		ResetCompany(Jewelry);  
   end;

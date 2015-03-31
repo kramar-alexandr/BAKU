@@ -1441,3 +1441,26 @@ Begin
 end;
 
 
+global updating procedure SetBackSalesGroupVcMn(record RcVc RepSpec)
+begin
+	record IVVc IVr;
+	
+	
+	while(loopmain(IVr,1,true))begin
+		if(blank(IVr.SalesGroup))then begin
+			switch(IVr.MachineName)begin
+				case"JW1":IVr.SalesGroup = "GJW1";recordstore(IVr,true);
+				case"JW2":IVr.SalesGroup = "GJW2";recordstore(IVr,true);
+				case"JW3":IVr.SalesGroup = "GJW3";recordstore(IVr,true);
+				case"JW4":IVr.SalesGroup = "GJW4";recordstore(IVr,true);
+				case"JW5":IVr.SalesGroup = "GJW5";recordstore(IVr,true);
+				case"JW6":IVr.SalesGroup = "GJW6";recordstore(IVr,true);
+				case"JW7":IVr.SalesGroup = "GJW7";recordstore(IVr,true);
+				case"JW8":IVr.SalesGroup = "GJW8";recordstore(IVr,true);
+			end;
+		end;
+	end;
+	
+
+return;
+end;
