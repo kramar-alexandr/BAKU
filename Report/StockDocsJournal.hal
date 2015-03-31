@@ -71,7 +71,7 @@ begin
   return;
 end; //Edit***************************Sasha2,11:56 30.03.2015 }
 
-procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf)
+procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf,string baseCur)
 begin
   row TBBUVc TBBUrw;
   LongInt doc;
@@ -98,7 +98,7 @@ begin
       costdate = IHr.TransDate;
     end;
     //if (IHr.CurncyCode!="PLN") then begin
-      CurValToOtherCur(costdate,"EUR",IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+      CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
     //end else begin
       //costsum = IHr.TotCostPriceCurncy;
     //end;
@@ -299,7 +299,7 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
   	Lcuritem:;
       end;
       if (testf) then begin
-        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf);
+        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf,baseCur);
         if (errorf) then begin
           goto LStockDocsJournal;
         end;
