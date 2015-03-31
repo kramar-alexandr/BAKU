@@ -227,6 +227,7 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
 	 case 1:
 	    filenames[fncnt] = "IVVc"; fncnt = fncnt + 1;
 	    filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
+	    filenames[fncnt] = "SHVc"; fncnt = fncnt + 1;
 	 case 2:
 	    filenames[fncnt] = "StockMovVc"; fncnt = fncnt + 1; stmovf = true;
 	end;
