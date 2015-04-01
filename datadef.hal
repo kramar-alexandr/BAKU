@@ -229,6 +229,7 @@ begin
   RecordField(TaxAdminServSeal,M4Str,255,0);
   RecordField(CredOfficialSerNr,M4UStr,100,0);
   RecordField(AcceptanceFYI,M4List,200,UserVc);
+  RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
   return;
 end; 
 

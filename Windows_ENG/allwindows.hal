@@ -1820,6 +1820,7 @@ if (HasTouchScreenLook==false) then begin
   EnterSkip(PayDeal);
   EditField(h=255,v=vm,-40,"Name",Normal,Addr0,false,0);
   EditField(h,vm=(v+=20),135,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  CheckBox(h+200,v,0,"Not for reports",NotForReport);		//Edit----------------------Dima  01.04.2015
   CheckBox(h4=-100,v,0,"OK",OKFlag);
   TileButton(1,"Terms");
   TileButton(2,"Items");
