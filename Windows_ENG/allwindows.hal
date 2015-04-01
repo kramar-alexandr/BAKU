@@ -3045,6 +3045,7 @@ begin
   EnterSkip(TransDate);
   EditField(h=255,v=vm,-40,"Name",Normal,VEName,false,0);
   EditField(h=300,v+20,100,"Official Ser.Nr",Normal,OfficialSerNr,false,0);	//Edit----------------------Dima  31.03.2015
+  CheckBox(h=500,v+20,0,"Not for reports",NotForReport);							//Edit----------------------Dima  01.04.2015
   CheckBox(h4=-100,v+=20,0,"OK",OKFlag);
   CheckBox(h4,v+=16,0,"Price Incl. #VAT#",InclVAT);
   tilenr = 1;
@@ -4369,7 +4370,8 @@ begin
   EditField(h3,v,80,"Received Date",Normal,TransDate,false,PasteCurDate);
     EditField(h,v+=vs,80, "From Location",Normal,FrLocation,false,LocationSClass);
     EditField(h2,v,80,"Via Location",Normal,ThrouLocation,false,LocationSClass);
-    EditField(h3,v,80,"To Location",Normal,ToLocation,false,LocationSClass);
+    EditField(h3,v,80,"AAA Location",Normal,ToLocation,false,LocationSClass);
+  CheckBox(h4,v,0,"Not for reports",NotForReport);  	//Edit----------------------Dima  01.04.2015
   tilenr = 1;
   if (IsEnterprise) or (HasATOL==false) then begin 
     TileButton(tilenr,"Positions"); tilenr = tilenr + 1;

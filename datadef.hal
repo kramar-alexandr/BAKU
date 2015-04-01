@@ -2726,6 +2726,7 @@ begin
   RecordField(HashKeyVersion,M4Int,0,0);
   RecordField(RegTime,M4Time,0,0);
   RecordField(LocalMachineCode,M4Code,5,0);
+  RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
   ArrayField(Quant,M4UVal,0,0);
@@ -3847,7 +3848,9 @@ begin
   RecordField(AcceptanceBy,M4List,200,UserVc);
   RecordField(ExtraCostsCalculation,M4Int,0,0);
   RecordField(AcceptanceFYI,M4List,200,UserVc);
-  RecordField(OfficialSerNr,M4Str,40,0);//Edit----------------------Dima  31.03.2015  
+  RecordField(OfficialSerNr,M4Str,40,0);//Edit----------------------Dima  31.03.2015 
+  RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
+   
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
   ArrayField(Quant,M4UVal,0,0);
