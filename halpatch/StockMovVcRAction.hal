@@ -1576,7 +1576,9 @@ BEGIN
   LongInt res;
 
 	res = inner.StockMovVcRecordSave(StockMovr,StockMov2r,stat,long4);
-	StockMovr.OfficialSerNr = GetNextOfficialSerNr("StockMovVc",StockMovr.TransDate);  
+	if (CurrentCompany==10)	then begin //Dupont
+		StockMovr.OfficialSerNr = GetNextOfficialSerNr("StockMovVc",StockMovr.TransDate);
+	end;	  
 
   StockMovVcRecordSave = res;
   RETURN;

@@ -5568,12 +5568,12 @@ begin
 	RlColKey(295,295,"Fr. Location",FrLocation,false,FrLocOK);
 	RlColKey(370,370,"Via Location",ThrouLocation,false,ToThrouLocOK);
 	RlColKey(450,450,"To Location",ToLocation,false,ToLocOK);
-	RlCol(530,530,"Official Ser.Nr.",OfficialSerNr,false);				//Edit----------------------Dima  31.03.2015
+	RlCol(540,540,"Official Ser.Nr.",OfficialSerNr,false);				//Edit----------------------Dima  31.03.2015
   if (IsEnterprise) then begin 
-    RlColKey(610,610, "Prod.",ProdSerNr,false,ProdSerNr);
-    RlColKey(680,680, "Comment",Comment,false,Comment);
+    //RlColKey(610,610, "Prod.",ProdSerNr,false,ProdSerNr);
+    RlColKey(660,660, "Comment",Comment,false,Comment);
   end else begin
-    RlColKey(610,610, "Comment",Comment,false,Comment);
+    RlColKey(640,640, "Comment",Comment,false,Comment);
   end;
   SpecialMenu("Receive",'G',0,"OKStockMovLsm");
   SearchField("Search");
@@ -7616,7 +7616,7 @@ begin
 
   WindowBegin("Goods Receipts",PULClass,CGmlist,PUView);
   SpawnClass(PUDClass);
-  SetWRect(20,80,880,298);
+  SetWRect(20,80,810,298);
   Sizeable(-1,-1,0,0);
   UseView(PUVc);
   FormName(PrintPUL);
@@ -7636,7 +7636,7 @@ begin
   RlColKey(pos,pos,"#Supplier#",VECode,false,VECode);
   RlColKey(391,391,"Name",VEName,false,VEName);
   RlCol(530,530,"Official Ser.Nr.",OfficialSerNr,false);	//Edit----------------------Dima  31.03.2015
-  RlColKey(610,610,"Comment",Comment,false,Comment);
+  RlColKey(620,620,"Comment",Comment,false,Comment);
   if (IsEnterprise) then begin
     RlCol(-1,-1,"",Invalid,true);
   end;

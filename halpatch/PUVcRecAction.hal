@@ -50,8 +50,10 @@ BEGIN
   LongInt res;
 
 	res = inner.PUVcRecordSave(PUr,PU2r,stat,long4);
-	PUr.OfficialSerNr = GetNextOfficialSerNr("PUVc",PUr.TransDate);		//Edit----------------------Dima  01.04.2015
-
+	if (CurrentCompany==10) then begin //Dupont
+		PUr.OfficialSerNr = GetNextOfficialSerNr("PUVc",PUr.TransDate);		//Edit----------------------Dima  01.04.2015
+	end;
+	
   PUVcRecordSave = res;
   RETURN;
 END;
