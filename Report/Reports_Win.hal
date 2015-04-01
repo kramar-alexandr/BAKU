@@ -594,8 +594,8 @@ begin
   EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
   EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);
   ButtonFrame(h,vm=(v+=41),123,3,"Movement");
-  RadioButton(h,v,0,0,"In",ArtMode);
-  RadioButton(h,v+=16,1,0,"Out",ArtMode);
+  RadioButton(h,v,0,0,"PZ",ArtMode);
+  RadioButton(h,v+=16,1,0,"WZ",ArtMode);
   RadioButton(h,v+=16,2,0,"MMR/MMP",ArtMode);
   EndWindow;
 end;
