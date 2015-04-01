@@ -368,6 +368,9 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
 	   OutString(0,0,"STAN NA DZIEN: " & CurrentDate,false);
 	  EndFormat;
 	  StartFormat(15);
+	   OutString(0,0,"Okres: " & RepSpec.sStartDate & "-" & RepSpec.sEndDate,false);
+	  EndFormat;
+	  StartFormat(15);
 	   OutString(0,0,"",false);
 	  EndFormat;
 	end;
