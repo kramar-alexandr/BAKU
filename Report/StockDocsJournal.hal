@@ -41,7 +41,7 @@ begin
 return;
 end;
 
-function string 20 GetDocName(string filename,val qty)	//Edit***************************Sasha2,11:56 30.03.2015 {
+function string 20 GetDocName(string filename,integer type)	//Edit***************************Sasha2,11:56 30.03.2015 {
 begin
   string 20 res;
     switch (filename) begin
@@ -50,7 +50,7 @@ begin
       case "IVVc": res = "Invoice";
       case "RetPUVc": res = "Returned Goods to Supp.";
       case "StockMovVc": 
-            if (qty<0) then begin
+            if (type<0) then begin
               res = "MMR"; //Stock Movements
             end else begin
               res = "MMP";
@@ -175,7 +175,7 @@ begin
   val costsum;
   date costdate;
   record ItemHistVc IH2r;
-  boolean signf,TrHs;
+  boolean TrHs;
     
     doc = docslist[IHr.TransNr];
     if (doc>-1) then begin
@@ -186,7 +186,7 @@ begin
     end;
     
     if (IHr.Invalid!=0) then begin
-      TBBUrw.ItemType = 1; //invali record
+      TBBUrw.ItemType = 1; //invalid record
       goto LInvalid;
     end;
     if (NonBlankDate(IHr.InDate)) then begin
@@ -211,24 +211,15 @@ begin
       if (IH2r.FileName!=IHr.FileName or IH2r.TransNr!=IHr.TransNr or IH2r.Row!=IHr.Row) then begin
         errorf = true;
       end;
-    
-      if (IHr.Qty<0) then begin
-        signf = true;
-      end else begin
-        signf = false;
-      end;
       
-      if (signf) then begin
-        TBBUrw.Price = TBBUrw.Price - costsum; 
-        TBBUrw.GP = TBBUrw.GP + costsum; 
-        if (doc==-1) then begin
+      TBBUrw.Price = TBBUrw.Price - costsum; 
+      TBBUrw.GP = TBBUrw.GP + costsum;
+      
+      if (doc==-1) then begin
+        if (IHr.Qty<0) then begin
           TBBUrw.Spec = IHr.Location; //from soure
           TBBUrw.Comment = IH2r.Location; //to soure
-        end;
-      end else begin
-        TBBUrw.Price = TBBUrw.Price - costsum;
-        TBBUrw.GP = TBBUrw.GP + costsum;
-        if (doc==-1) then begin
+        end else begin
           TBBUrw.Spec = IH2r.Location; //from soure
           TBBUrw.Comment = IHr.Location; //to soure
         end;
@@ -379,20 +370,22 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
 	outstrpos[1] = 60;
 	outstrpos[2] = 120;
 	outstrpos[3] = 190;
-	outstrpos[4] = 270;
-	outstrpos[5] = 320;
-	outstrpos[6] = 380;
-	outstrpos[7] = 450;
+	outstrpos[4] = 250;
+	outstrpos[5] = 300;
+	outstrpos[6] = 360;
+	outstrpos[7] = 430;
 	
 	StartFormat(15);
 	  OutString(outstrpos[0],0,"Nazwa magazynu",false);			
 		OutString(outstrpos[1],0,"Typ dokumentu",false);
 		OutString(outstrpos[2],0,"Numer dokumentu",false);			
-		OutString(outstrpos[3],0,"Data wyst.dokumentu",false);	
+		OutString(outstrpos[3],0,"Data wyst.dok.",false);	
 		OutString(outstrpos[4],0,"Wartosc dok.",false);
 		OutString(outstrpos[5],0,"Zmiana wartosci",false);
-    OutString(outstrpos[6],0,"Nazwa kontr.",false);
-    OutString(outstrpos[7],0,"Kod kontr.",false);
+		if (RepSpec.ArtMode!=2) then begin
+		  OutString(outstrpos[6],0,"Nazwa kontr.",false);
+      OutString(outstrpos[7],0,"Kod kontr.",false);
+		end;
 	EndFormat;
 
   for (j=0;j<fncnt;j=j+1) begin
@@ -447,7 +440,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
             costv = AbsoluteVal(TBBUrw.Price);
             StartFormat(15);
               OutString(outstrpos[0],0,TBBUrw.Spec,false);	
-      				OutString(outstrpos[1],0,GetDocName(filenames[j],TBBUrw.Price),false);
+      				OutString(outstrpos[1],0,GetDocName(filenames[j],-1),false);
       				OutStringID(outstrpos[2],GetDbl(filenames[j]),offnumber,false,TBBUrw.Invoiced);	
       				OutString(outstrpos[3],0,TBBUrw.InvDate,false);	
       				OutString(outstrpos[4],0,costv,false);
@@ -460,7 +453,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
             costv = AbsoluteVal(TBBUrw.GP);
             StartFormat(15);
               OutString(outstrpos[0],0,TBBUrw.Comment,false);			
-      				OutString(outstrpos[1],0,GetDocName(filenames[j],TBBUrw.GP),false);
+      				OutString(outstrpos[1],0,GetDocName(filenames[j],1),false);
       				OutStringID(outstrpos[2],GetDbl(filenames[j]),offnumber,false,TBBUrw.Invoiced);					
       				OutString(outstrpos[3],0,TBBUrw.InvDate,false);	
       				OutString(outstrpos[4],0,costv,false);
@@ -886,9 +879,6 @@ LStockDocsJournal:;
 	 OutString(300,0,"Total cost: ",false);	
 	 OutString(350,0,TotalCost,false);			
 	EndFormat;	*/			
-	
-	
-	
 	
 	EndJob;
 
