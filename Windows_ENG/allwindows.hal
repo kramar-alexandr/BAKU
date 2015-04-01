@@ -5380,7 +5380,8 @@ begin
   flipnr = 1;
   Flip(flipnr); flipnr = flipnr + 1;
   if (IsEnterprise) then begin
-    MatCol(1,-230,"Номер товара клиента",0,CustArtCode,false,CUINSClass); 
+//    MatCol(1,-230,"Номер товара клиента",0,CustArtCode,false,CUINSClass); 
+    MatCol(1,-230,"Cust.Item No.",0,CustArtCode,false,CUINSClass); 
   end;
   MatCol(1,-150,"Ordered",0,Ordered,true,0);
   MatCol(1,-98,"Avail.",0,InStock,true,0);

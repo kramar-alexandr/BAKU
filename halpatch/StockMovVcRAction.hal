@@ -709,7 +709,8 @@ BEGIN
     goto LCheckStockMovRecord;
   end;          
 
-  BlockLoad(LINrb);  
+  BlockLoad(LINrb); 
+  /* 				//Commented by--------------------------------------------------------------------Dima  01.04.2015
   if (nonblank(SMp.OfficialSerNr)) then begin
     GetLegalInvNrRow(SMp.OfficialSerNr,LINrbrw);
     switch (LINrbrw.SelectionType) begin
@@ -727,6 +728,7 @@ BEGIN
         end;
     end;
   end;
+  
   if (blank(SMp.OfficialSerNr)) then begin
     FindNextStockMovVcOfficialSerialNr(SMp);
   end;
@@ -776,7 +778,7 @@ BEGIN
       goto LCheckStockMovRecord;
     end;
   end;
-  
+ */ //Commented by--------------------------------------------------------------------Dima  01.04.2015
   rwcnt = MatRowCnt(SMp);
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(SMp,i,StockMovrw);    
