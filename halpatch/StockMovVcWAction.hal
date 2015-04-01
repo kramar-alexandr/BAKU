@@ -262,6 +262,7 @@ BEGIN
       if (StockMovr.OrdFlag!=0) then begin res = false; end;
     case "OrdTransDate": 
       if (StockMovr.OrdFlag!=0) then begin res = false; end;
+    case "OfficialSerNr": res = true;		//Edit----------------------Dima  01.04.2015  
     otherwise
       switch (wnst) begin
         case Rs_update:
