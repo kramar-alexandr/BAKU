@@ -46,6 +46,7 @@ external function Boolean SerialNrAvail(string,string,string,val);
 external procedure FindStockValue(string,string,var record ItemStatusVc);
 external function Boolean Date2Test(string,Date,string,Integer);
 external function Boolean SerNrTestStockMovVc(LongInt,Date,var Boolean);
+external function string 20 GetNextOfficialSerNr(string, date);	//Edit----------------------Dima  01.04.2015
 
 function Integer CheckStockMovRowToPosition(record StockMovVc SMp,row StockMovVc StockMovrw,record LocationVc LocToRec,record INVc INr,
                                             Integer rownr,Boolean disperrf)
@@ -1565,3 +1566,19 @@ begin
 
 return;
 end;
+
+
+
+
+global		//Edit----------------------Dima  01.04.2015
+updating function LongInt StockMovVcRecordSave(var record StockMovVc StockMovr,record StockMovVc StockMov2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+	res = inner.StockMovVcRecordSave(StockMovr,StockMov2r,stat,long4);
+	StockMovr.OfficialSerNr = GetNextOfficialSerNr("StockMovVc",StockMovr.TransDate);  
+
+  StockMovVcRecordSave = res;
+  RETURN;
+END;
+

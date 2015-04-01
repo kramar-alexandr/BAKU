@@ -1,0 +1,58 @@
+
+global
+function string 20 GetNextOfficialSerNr(string RegisterName, date TransDate)		//Edit----------------------Dima  01.04.2015
+begin
+// This function returns OfficialSerNr in the format:   yyyy/mm/nnnnn   (2015/04/00102)
+
+	string 20 OfficialSerNr,lastOffSerNr,lastDate;
+	string 10 month, SerNumber;
+	integer year;
+	longint lastNumber;
+	record StockMovVc SMr;
+	record PUVc PUr;
+	
+	OfficialSerNr = "";
+	year = GetYear(TransDate);
+	lastDate = "31/12/" & year;		
+	
+	switch(RegisterName) begin
+	
+		case "PUVc":	
+						PUr.TransDate = StringToDate(lastDate);
+						if (ReadLastKey("TransDate",PUr,1,false)) then begin
+							lastOffSerNr = PUr.OfficialSerNr;
+						end;
+						
+		case "StockMovVc":	
+						SMr.TransDate = StringToDate(lastDate);
+						if (ReadLastKey("TransDate",SMr,1,false)) then begin
+							lastOffSerNr = SMr.OfficialSerNr;
+						end;	
+	end;
+		
+
+	lastNumber = StringToInt(Right(lastOffSerNr,5)) + 1;
+	SerNumber = Right("00000" & lastNumber,5);
+	month = Right("0" & GetMonth(TransDate),2);
+	
+	OfficialSerNr = year & "/" & month & "/" & SerNumber;
+	
+	//LogText(0, lastDate & " + " & PUr.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber);
+
+GetNextOfficialSerNr = OfficialSerNr;
+return;
+end;
+
+
+global
+updating function LongInt PUVcRecordSave(var record PUVc PUr,record PUVc PU2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+
+	res = inner.PUVcRecordSave(PUr,PU2r,stat,long4);
+	PUr.OfficialSerNr = GetNextOfficialSerNr("PUVc",PUr.TransDate);		//Edit----------------------Dima  01.04.2015
+
+  PUVcRecordSave = res;
+  RETURN;
+END;
+
