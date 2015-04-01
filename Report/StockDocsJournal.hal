@@ -4,16 +4,18 @@ external function roundmode DefaultRoundMode();
 external procedure ExtractObj(string,var Integer,var string);
 external function val AbsoluteVal(val); //Edit***************************Sasha2,9:41 31.03.2015
 
+//SetLangMode(LangPolish,"POL",0);
+
 //Edit***************************Sasha2,8:31 31.03.2015 {
 procedure HTItemClass(string a,var string res)
 begin
   res = "";
   
   if (nonblank(a)) then begin
-    res = USetStr(31044);
+    res = /*USetStr(31044)*/"Marka";
     res = res & ": " & a;
   end else begin
-    res = USetStr(31227);
+    res = /*USetStr(31227)*/"Wszystkie marki";
   end;
   return;
 end; //Edit***************************Sasha2,8:31 31.03.2015 }
@@ -39,15 +41,20 @@ begin
 return;
 end;
 
-function string 20 GetDocName(string filename)	//Edit***************************Sasha2,11:56 30.03.2015 {
+function string 20 GetDocName(string filename,val qty)	//Edit***************************Sasha2,11:56 30.03.2015 {
 begin
   string 20 res;
     switch (filename) begin
       case "PUVc": res = "PZ";
       case "RetVc": res = "Returned Goods";
-      case "IVVc": res = "Invoices";
+      case "IVVc": res = "Invoice";
       case "RetPUVc": res = "Returned Goods to Supp.";
-      case "StockMovVc": res = "Stock Movements";
+      case "StockMovVc": 
+            if (qty<0) then begin
+              res = "MMR"; //Stock Movements
+            end else begin
+              res = "MMP";
+            end;
       case "SDVc": res = "Stock Depreciations";
       case "SHVc": res = "Deliveries";
     end;
@@ -59,19 +66,109 @@ function string 20 GetDbl(string filename)	//Edit***************************Sash
 begin
   string 20 res;
     switch (filename) begin
-      case "PUVc": res = "DblPUVcOpen";
-      case "RetVc": res = "DblRetVcOpen";
-      case "IVVc": res = "Invoices";
-      case "RetPUVc": res = "DblRetPUVcOpen";
-      case "StockMovVc": res = "DblStockMovVcOpen";
-      case "SDVc": res = "DblSDVcOpen";
-      case "SHVc": res = "DblSHVcOpen";
+      case "PUVc": res = "DblPUVc";
+      case "RetVc": res = "DblRetVc";
+      case "IVVc": res = "DblIVVc";
+      case "RetPUVc": res = "DblRetPUVc";
+      case "StockMovVc": res = "DblStockMovVc";
+      case "SDVc": res = "DblSDVc";
+      case "SHVc": res = "DblSHVc";
     end;
     GetDbl = res;
   return;
 end; //Edit***************************Sasha2,11:56 30.03.2015 }
 
-procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf,string baseCur)
+function boolean CheckRegister(string filename,LongInt DocNumber,var string offnumber,array string params)	//Edit***************************Sasha2,11:56 30.03.2015 {
+begin
+  record PUVc PUr;
+  record StockMovVc SMr;
+  record SDVc SDr;
+  record SHVc SHr;
+  record RetVc Retr;
+  record RetPUVc RetPUr;
+  record IVVc IVr;
+  boolean res;
+  
+    res = true;
+    params[0] = "";
+    params[1] = "";
+    switch (filename) begin
+      case "PUVc":
+        PUr.SerNr = DocNumber;
+        ReadFirstMain(PUr,1,true);
+        params[0] = PUr.VEName;
+        params[1] = PUr.VECode;
+        if (PUr.NotForReport==1) then begin
+          res = false;
+        end;
+        if (NonBlank(PUr.OfficialSerNr)) then begin
+          offnumber = PUr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+      case "RetVc":
+        Retr.SerNr = DocNumber;
+        ReadFirstMain(Retr,1,true);
+        if (NonBlank(Retr.OfficialSerNr)) then begin
+          offnumber = Retr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+      case "IVVc":
+        IVr.SerNr = DocNumber;
+        ReadFirstMain(IVr,1,true);
+        if (IVr.NotForReport==1) then begin
+          res = false;
+        end;
+        params[0] = IVr.Addr0;
+        params[1] = IVr.CustCode;
+        if (NonBlank(IVr.OfficialSerNr)) then begin
+          offnumber = IVr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+      case "RetPUVc":
+        RetPUr.SerNr = DocNumber;
+        ReadFirstMain(RetPUr,1,true);
+        if (NonBlank(RetPUr.OfficialSerNr)) then begin
+          offnumber = RetPUr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+      case "StockMovVc":
+        SMr.SerNr = DocNumber;
+        ReadFirstMain(SMr,1,true);
+        if (SMr.NotForReport==1) then begin
+          res = false;
+        end;
+        if (NonBlank(SMr.OfficialSerNr)) then begin
+          offnumber = SMr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+      case "SDVc":
+        SDr.SerNr = DocNumber;
+        ReadFirstMain(SDr,1,true);
+        /*if (NonBlank(SDr.OfficialSerNr)) then begin
+          offnumber = SDr.OfficialSerNr;
+        end else begin*/
+          offnumber = DocNumber;
+        //end;
+      case "SHVc":
+        SHr.SerNr = DocNumber;
+        ReadFirstMain(SHr,1,true);
+        if (NonBlank(SHr.OfficialSerNr)) then begin
+          offnumber = SHr.OfficialSerNr;
+        end else begin
+          offnumber = DocNumber;
+        end;
+    end;
+     
+    CheckRegister = res;
+  return;
+end; //Edit***************************Sasha2,11:56 30.03.2015 }
+
+procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf,string baseCur,string location)
 begin
   row TBBUVc TBBUrw;
   LongInt doc;
@@ -102,23 +199,23 @@ begin
     //end else begin
       //costsum = IHr.TotCostPriceCurncy;
     //end;
-    if (smf) then begin
+    if (smf and NonBlank(location)) then begin
       IH2r.FileName = IHr.FileName;
       IH2r.TransNr = IHr.TransNr;
       IH2r.Row = IHr.Row;
+      
       TrHs = true;
       while (LoopKey("FNTransNr",IH2r,3,TrHs)) begin
         if (IH2r.FileName!=IHr.FileName or IH2r.TransNr!=IHr.TransNr or IH2r.Row!=IHr.Row or IH2r.SerNr!=IHr.SerNr) then begin TrHs = false; end;
       end;
-      
       if (IH2r.FileName!=IHr.FileName or IH2r.TransNr!=IHr.TransNr or IH2r.Row!=IHr.Row) then begin
         errorf = true;
       end;
-      
-      if (IHr.Qty>0) then begin
-        signf = false;
-      end else begin
+    
+      if (IHr.Qty<0) then begin
         signf = true;
+      end else begin
+        signf = false;
       end;
       
       if (signf) then begin
@@ -129,20 +226,36 @@ begin
           TBBUrw.Comment = IH2r.Location; //to soure
         end;
       end else begin
-        TBBUrw.Price = TBBUrw.Price + costsum;
-        TBBUrw.GP = TBBUrw.GP - costsum;
+        TBBUrw.Price = TBBUrw.Price - costsum;
+        TBBUrw.GP = TBBUrw.GP + costsum;
         if (doc==-1) then begin
           TBBUrw.Spec = IH2r.Location; //from soure
           TBBUrw.Comment = IHr.Location; //to soure
         end;
       end;
     end;
-    if (IHr.Qty<0) then begin
-      TBBUrw.Cost = TBBUrw.Cost - costsum;
-    end else begin
-      TBBUrw.Cost = TBBUrw.Cost + costsum;
-    end;
     
+    if (IHr.Qty<0) then begin
+      if (smf) then begin
+        if (Blank(location)) then begin
+          TBBUrw.Spec = IHr.Location;
+          TBBUrw.Price = TBBUrw.Price - costsum;
+        end;
+      end else begin
+        TBBUrw.Spec = IHr.Location;
+        TBBUrw.Cost = TBBUrw.Cost - costsum;
+      end;
+    end else begin
+      if (smf) then begin
+        if (Blank(location)) then begin
+          TBBUrw.Comment = IHr.Location;
+          TBBUrw.GP = TBBUrw.GP + costsum;
+        end;
+      end else begin
+        TBBUrw.Spec = IHr.Location;
+        TBBUrw.Cost = TBBUrw.Cost + costsum;
+      end;
+    end;
     
   LInvalid:;
   
@@ -154,7 +267,6 @@ begin
       docslistcnt = docslistcnt + 1;
     end;
     
-  
   return;
 end;
 
@@ -180,14 +292,14 @@ string 50 docType,location;
 string 5 baseCur;
 integer rw,rwcnt,i;
 boolean TrHs,testf;
-val subTotalCost, TotalCost,cost,cost2,costPLN;
+val subTotalCost, subTotalCostAbs,TotalCost, TotalCostAbs,cost,cost2,costPLN; //Edit***************************Sasha2,11:28 01.04.2015
 integer sign;
 record DIVc DIr;
 string 20 class;
 integer pos;
 record INVc INr;
 array string 20 filenames; //Edit***************************Sasha2,11:17 30.03.2015
-integer fncnt,docslistcnt,j,poscoef; //Edit***************************Sasha2,11:17 30.03.2015
+integer fncnt,docslistcnt,j; //Edit***************************Sasha2,11:17 30.03.2015
 record ItemHistVc IHr; //Edit***************************Sasha2,11:53 30.03.2015
 record TBBUVc TBBUr; //Edit***************************Sasha2,14:11 30.03.2015
 row TBBUVc TBBUrw; //Edit***************************Sasha2,14:11 30.03.2015
@@ -195,12 +307,18 @@ vector longint docslist; //Edit***************************Sasha2,14:16 30.03.201
 string 30 curitem; //Edit***************************Sasha2,16:02 30.03.2015
 Boolean stmovf,errorf; //Edit***************************Sasha2,18:32 30.03.2015
 array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
+val costv; //Edit***************************Sasha2,11:34 01.04.2015
+string 100 offnumber; //Edit***************************Sasha2,12:30 01.04.2015
+record CYBlock CYB; //Edit***************************Sasha2,14:01 01.04.2015
+array string 100 params; //Edit***************************Sasha2,14:02 01.04.2015
 
 	BlockLoad(BCb);
 	baseCur = BCb.BaseCur1;	
 
 	subTotalCost = 0;
+	subTotalCostAbs = 0;
 	TotalCost = 0;
+	TotalCostAbs = 0;
 	location = RepSpec.f1;
 
   StartReportJob("Stock documents journal");
@@ -210,7 +328,7 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
   HeaderLocations(RepSpec.f1,tstr);
   Header(rw,tstr,1);
   rw = rw + 1;
-  Header(rw,"All data in PLN",1);
+  Header(rw,"Wartosci w PLN",1);
   rw = rw + 1; 
   HTItemClass(RepSpec.f2,tstr);
   if (nonblank(tstr)) then begin //Edit***************************Sasha2,10:17 30.03.2015 {
@@ -226,42 +344,43 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
 	    filenames[fncnt] = "RetVc"; fncnt = fncnt + 1;
 	 case 1:
 	    filenames[fncnt] = "IVVc"; fncnt = fncnt + 1;
-	    filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
+	    //filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
 	    filenames[fncnt] = "SHVc"; fncnt = fncnt + 1;
 	 case 2:
 	    filenames[fncnt] = "StockMovVc"; fncnt = fncnt + 1; stmovf = true;
 	end;
 	
-	if (stmovf) then begin
-	 poscoef = 40;
-	end else begin
-	 poscoef = 0;
+	if (RepSpec.Media==mtExcel) then begin
+	  BlockLoad(CYB);
+	  StartFormat(15);
+	   OutString(0,0,CYB.BusinessName,false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,"ul.Prusa 2, 00-493 Warszawa",false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,"NIP: 107-002-17-75",false);
+	  EndFormat;
 	end;
 	
 	outstrpos[0] = 0;
-	outstrpos[1] = 50;
-	outstrpos[2] = 80 + poscoef;
-	outstrpos[3] = 140 + poscoef;
-	outstrpos[4] = 190 + poscoef;
-	outstrpos[5] = 280 + poscoef;
-	outstrpos[6] = 370 + poscoef;
+	outstrpos[1] = 60;
+	outstrpos[2] = 120;
+	outstrpos[3] = 190;
+	outstrpos[4] = 270;
+	outstrpos[5] = 320;
+	outstrpos[6] = 380;
+	outstrpos[7] = 450;
 	
 	StartFormat(15);
-	  if (stmovf) then begin
-	    OutString(outstrpos[0],0,"From Loc.",false);		
-		  OutString(outstrpos[1],0,"To Loc.",false);	
-	  end else begin
-	    OutString(outstrpos[0],0,"Location",false);	
-	  end;			
-		OutString(outstrpos[2],0,"Document type",false);
-		if (RepSpec.ArtMode==1) then begin
-		  OutString(outstrpos[3],0,"Number",false);
-		  OutString(outstrpos[4],0,"Off.Number",false);
-		end else begin
-		  OutString(outstrpos[4],0,"Number",false);
-		end;					
-		OutString(outstrpos[5],0,"Date",false);	
-		OutString(outstrpos[6],0,"Cost",false);
+	  OutString(outstrpos[0],0,"Nazwa magazynu",false);			
+		OutString(outstrpos[1],0,"Typ dokumentu",false);
+		OutString(outstrpos[2],0,"Numer dokumentu",false);			
+		OutString(outstrpos[3],0,"Data wyst.dokumentu",false);	
+		OutString(outstrpos[4],0,"Wartosc dok.",false);
+		OutString(outstrpos[5],0,"Zmiana wartosci",false);
+    OutString(outstrpos[6],0,"Nazwa kontr.",false);
+    OutString(outstrpos[7],0,"Kod kontr.",false);
 	EndFormat;
 
   for (j=0;j<fncnt;j=j+1) begin
@@ -271,6 +390,7 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
     RECORDNEW(TBBUr);
     docslistcnt = 0;
     subTotalCost = 0;
+    subTotalCostAbs = 0;
     while (Loopkey("FNTransDate",IHr,2,TrHs)) begin
       testf = true;
       if (IHr.FileName!=filenames[j]) then begin TrHs = false; testf = false; end;
@@ -299,7 +419,7 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
   	Lcuritem:;
       end;
       if (testf) then begin
-        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf,baseCur);
+        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf,baseCur,location,);
         if (errorf) then begin
           goto LStockDocsJournal;
         end;
@@ -309,50 +429,63 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
     rwcnt = MatRowCnt(TBBUr);
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(TBBUr,i,TBBUrw);
-      if (/*TBBUrw.Cost!=0 and */TBBUrw.ItemType!=1) then begin
+      if (/*TBBUrw.Cost!=0 and */TBBUrw.ItemType!=1 and CheckRegister(filenames[j],TBBUrw.Invoiced,offnumber,params)) then begin
         if (stmovf) then begin
-          TBBUrw.Cost = AbsoluteVal(TBBUrw.Cost);
-          StartFormat(15);
-            OutString(outstrpos[0],0,TBBUrw.Spec,false);	
-            OutString(outstrpos[1],0,TBBUrw.Comment,false);		
-    				OutString(outstrpos[2],0,GetDocName(filenames[j]),false);
-    				OutStringID(outstrpos[4],GetDbl(filenames[j]),TBBUrw.Invoiced,false,TBBUrw.Invoiced);				
-    				OutString(outstrpos[5],0,TBBUrw.InvDate,false);	
-    				OutString(outstrpos[6],0,TBBUrw.Cost,false);
-          EndFormat;
-          /*StartFormat(15);
-            OutString(outstrpos[0],0,TBBUrw.Comment,false);			
-    				OutString(outstrpos[2],0,GetDocName(filenames[j]),false);
-    				OutStringID(outstrpos[4],GetDbl(filenames[j]),TBBUrw.Invoiced,false,TBBUrw.Invoiced);				
-    				OutString(outstrpos[5],0,TBBUrw.InvDate,false);	
-    				OutString(outstrpos[6],0,TBBUrw.GP,false);
-          EndFormat;*/
-          subTotalCost = subTotalCost + TBBUrw.Cost;
+          if ((Blank(location) and NonBlank(TBBUrw.Spec)) or (NonBlank(location) and location==TBBUrw.Spec)) then begin
+            costv = AbsoluteVal(TBBUrw.Price);
+            StartFormat(15);
+              OutString(outstrpos[0],0,TBBUrw.Spec,false);	
+      				OutString(outstrpos[1],0,GetDocName(filenames[j],TBBUrw.Price),false);
+      				OutStringID(outstrpos[2],GetDbl(filenames[j]),offnumber,false,TBBUrw.Invoiced);	
+      				OutString(outstrpos[3],0,TBBUrw.InvDate,false);	
+      				OutString(outstrpos[4],0,costv,false);
+      				OutString(outstrpos[5],0,TBBUrw.Price,false);
+            EndFormat;
+            subTotalCost = subTotalCost + TBBUrw.Price;
+            subTotalCostAbs = subTotalCostAbs + costv;
+          end;
+          if ((Blank(location) and NonBlank(TBBUrw.Comment)) or (NonBlank(location) and location==TBBUrw.Comment)) then begin
+            costv = AbsoluteVal(TBBUrw.GP);
+            StartFormat(15);
+              OutString(outstrpos[0],0,TBBUrw.Comment,false);			
+      				OutString(outstrpos[1],0,GetDocName(filenames[j],TBBUrw.GP),false);
+      				OutStringID(outstrpos[2],GetDbl(filenames[j]),offnumber,false,TBBUrw.Invoiced);					
+      				OutString(outstrpos[3],0,TBBUrw.InvDate,false);	
+      				OutString(outstrpos[4],0,costv,false);
+      				OutString(outstrpos[5],0,TBBUrw.GP,false);
+            EndFormat;
+            subTotalCost = subTotalCost + TBBUrw.GP;
+            subTotalCostAbs = subTotalCostAbs + costv;
+          end;
         end else begin
+          costv = AbsoluteVal(TBBUrw.Cost);
           StartFormat(15);
-          OutString(outstrpos[0],0,location,false);			
-  				OutString(outstrpos[2],0,GetDocName(filenames[j]),false);
-  				if (filenames[j]=="IVVc") then begin
-  				  OutString(outstrpos[3],"DblIVVc",TBBUrw.Invoiced,false);
-  				  IVr.SerNr = TBBUrw.Invoiced;
-  				  ReadFirstMain(IVr,1,true);
-  				  OutStringID(outstrpos[4],"DblIVVcOpen",IVr.OfficialSerNr,false,IVr.SerNr);
-  				end else begin	
-  				  OutStringID(outstrpos[4],GetDbl(filenames[j]),TBBUrw.Invoiced,false,TBBUrw.Invoiced);
-  				end;					
-  				OutString(outstrpos[5],0,TBBUrw.InvDate,false);	
-  				OutString(outstrpos[6],0,TBBUrw.Cost,false);
-        EndFormat;
+            OutString(outstrpos[0],0,TBBUrw.Spec,false);			
+    				OutString(outstrpos[1],0,GetDocName(filenames[j],0),false);
+    				OutStringID(outstrpos[2],GetDbl(filenames[j]),offnumber,false,TBBUrw.Invoiced);				
+    				OutString(outstrpos[3],0,TBBUrw.InvDate,false);	
+    				OutString(outstrpos[4],0,costv,false);
+    				OutString(outstrpos[5],0,TBBUrw.Cost,false);
+    				OutString(outstrpos[6],0,params[0],false);
+    				OutString(outstrpos[7],0,params[1],false);
+          EndFormat;
         subTotalCost = subTotalCost + TBBUrw.Cost;
+        subTotalCostAbs = subTotalCostAbs + costv;
         end;
       end;
     end;
-    if (subTotalCost!=0) then begin
+
+    if (subTotalCost!=0 or subTotalCostAbs!=0) then begin
       Gray_Divider(0,1);
       StartFormat(15);
-      OutString(outstrpos[5],0,"SubTotal on " & Location & ": ",false);	
-    	OutString(outstrpos[6],0,subTotalCost,false);
-    	TotalCost = TotalCost + subTotalCost;
+        OutString(outstrpos[0],0,"",false);
+        OutString(outstrpos[1],0,"",false);
+        OutString(outstrpos[2],0,"",false);
+        OutString(outstrpos[3],0,"SubTotal on " & Location & ": ",false);	
+      	OutString(outstrpos[4],0,subTotalCostAbs,false);
+      	OutString(outstrpos[5],0,subTotalCost,false);
+      	TotalCost = TotalCost + subTotalCost;
+      	TotalCostAbs = TotalCostAbs + subTotalCostAbs;
   	  EndFormat;
   	  Gray_Divider(0,1);
     end;
@@ -360,9 +493,13 @@ array integer outstrpos; //Edit***************************Sasha2,8:36 31.03.2015
   end; 
   
   Black_Divider(0,1);
-	StartFormat(15);	
-	 OutString(outstrpos[5],0,"Total cost on " & location & ": ",false);	
-	 OutString(outstrpos[6],0,TotalCost,false);			
+	StartFormat(15);
+	  OutString(outstrpos[0],0,"",false);
+    OutString(outstrpos[1],0,"",false);
+    OutString(outstrpos[2],0,"",false);	
+	  OutString(outstrpos[3],0,"Total cost on " & location & ": ",false);	
+	  OutString(outstrpos[4],0,TotalCostAbs,false);	
+	  OutString(outstrpos[5],0,TotalCost,false);			
 	EndFormat;
 	
 LStockDocsJournal:;

@@ -596,7 +596,7 @@ begin
   ButtonFrame(h,vm=(v+=41),123,3,"Movement");
   RadioButton(h,v,0,0,"In",ArtMode);
   RadioButton(h,v+=16,1,0,"Out",ArtMode);
-  RadioButton(h,v+=16,2,0,"Stock Movements",ArtMode);
+  RadioButton(h,v+=16,2,0,"MMR/MMP",ArtMode);
   EndWindow;
 end;
 
