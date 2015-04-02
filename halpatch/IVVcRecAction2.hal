@@ -91,6 +91,7 @@ external updating procedure AddToTheCustomerAccount(string,date,string,LongInt,v
 external procedure InvVat(Integer,Integer,Integer,Integer,string,val,var val,var val,var val,var val,var val);
 external function Boolean EInvoiceWithPDFFileTest(string,string,var record EInvCUVc);
 external updating procedure RoyaltyIVRemoved(record IVVc);
+external function Boolean FindSubString( string, string); //Edit----------------------Dima  27.02.2015
 
 procedure SetIVAcceptanceFlag(var record IVVc IVr,record IVVc prevIVr,LongInt stat)
 begin
@@ -302,6 +303,80 @@ begin
   RETURN;
 END;
 
+
+
+
+global
+function string 20 GetNextOfficialSerNr_IV(record IVVc IVr)		//Edit----------------------Dima  01.04.2015
+begin
+// This function returns OfficialSerNr in the format:   yyyy/mm/nnnnn   (2015/04/00102)
+
+	string 20 OfficialSerNr,lastOffSerNr,lastDate;
+	string 10 month, SerNumber;
+	integer year;
+	longint lastNumber;
+
+	record PDVc PDr;
+	record IVVc IVloop;
+	string 200 normalPayments;
+	boolean TrHs;
+	
+	normalPayments = "";
+	
+	While(LoopMain(PDr,1,true)) begin
+		if (PDr.PDType == kInvoiceTypeNormal) then begin
+				normalPayments = normalPayments & PDr.Code & ",";
+		end;
+	end;
+	
+	OfficialSerNr = "";
+	year = GetYear(IVr.TransDate);
+	lastDate = "31/12/" & year;
+			
+	IVloop.TransDate = StringToDate(lastDate);
+	TrHs = true;
+	
+	While(LoopBackKey("TransDate",IVloop,1,TrHs)) begin	
+	
+	
+	if (IVr.CurncyCode != "EUR") then begin
+		if (IVloop.CurncyCode != "EUR" and SetInSet(IVloop.PayDeal,normalPayments)) then begin
+			lastOffSerNr = IVloop.OfficialSerNr;
+			TrHs = false;
+		end;
+	end;
+	
+	if (IVr.CurncyCode == "EUR") then begin
+		if (IVloop.CurncyCode == "EUR" and SetInSet(IVloop.PayDeal,normalPayments)) then begin
+			lastOffSerNr = IVloop.OfficialSerNr;
+			TrHs = false;
+		end;
+
+	end;
+				
+	end;
+	
+		
+
+	lastNumber = StringToInt(Right(lastOffSerNr,5)) + 1;
+	SerNumber = Right("00000" & lastNumber,5);
+	month = Right("0" & GetMonth(IVr.TransDate),2);
+	
+	if (IVr.CurncyCode != "EUR") then begin 
+		OfficialSerNr = year & "/" & month & "/" & SerNumber;
+	end else begin	
+		OfficialSerNr = "WDT/" & year & "/" & month & "/" & SerNumber;
+	end;
+	
+	
+	//LogText(0, lastDate & " + " & IVloop.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber & " % " & normalPayments);
+
+GetNextOfficialSerNr_IV = OfficialSerNr;
+return;
+end;
+
+
+
 global
 updating function LongInt IVVcRecordSave(var record IVVc IVr,record IVVc IV2r,LongInt stat,LongInt long4)
 BEGIN
@@ -391,12 +466,17 @@ BEGIN
               end;
           end;
       end;
-    end;
+    end;    
+    
   end;
+  
+	IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
+  
 LIVVcRecordSave:;
   IVVcRecordSave = res; 
   RETURN;
 END;
+
 
 global
 updating function LongInt IVVcRecordSaveAfter(var record IVVc IVr,record IVVc IV2r,LongInt long3,LongInt long4)
