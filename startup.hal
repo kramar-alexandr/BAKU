@@ -111,6 +111,7 @@ begin
   Report("Журнал сравнения товаров внутр.заказов и зак.пост.",ComparePOwithIntORClass,ComparePOwithIntORRn,0,modPO);
   Report("Журнал неоплаченных заказов поставщику",UnPayPORClass,UnPayPORn,0,modPO);
   Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
+  Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
   
   Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
 

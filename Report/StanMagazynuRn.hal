@@ -1,0 +1,231 @@
+//SetLangMode(LangRussian,"ENG",0);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function roundmode DefaultRoundMode();
+external procedure ExtractObj(string,var Integer,var string);
+external function val AbsoluteVal(val); //Edit***************************Sasha2,9:41 31.03.2015
+
+//SetLangMode(LangPolish,"POL",0);
+
+//Edit***************************Sasha2,8:31 31.03.2015 {
+procedure HTItemClass(string a,var string res)
+begin
+  res = "";
+  
+  if (nonblank(a)) then begin
+    res = /*USetStr(31044)*/"Marka";
+    res = res & ": " & a;
+  end else begin
+    res = /*USetStr(31227)*/"Wszystkie marki";
+  end;
+  return;
+end; //Edit***************************Sasha2,8:31 31.03.2015 }
+
+procedure CleanUpVector(var vector longint docslist,integer docslistcnt)
+begin
+  integer i;
+  
+    for (i=0;i<docslistcnt;i=i+1) begin
+      docslist[i] = -1;
+    end;
+  return;
+end;
+
+procedure HeaderLocations(string a,  var string res)	//Edit----------------------Dima  23.02.2015
+begin
+  if (blank(a)) then begin
+     res = USetStr(8961);
+  end else begin
+     res = USetStr(2768);
+     res = res &": " & a;
+  end;
+return;
+end;
+
+function val CheckSign(val qty)
+begin
+  val res;
+    if (qty<0) then begin
+      res = -1;
+    end else begin
+      res = 1;
+    end;
+   CheckSign = res;
+  return;
+end;
+
+global
+procedure StanMagazynuRn(record RcVc RepSpec)
+begin
+  record INVc INr;
+  record ItemHistVc IHr;
+  record BaseCurBlock BCb;
+  record CYBlock CYB;
+  string 250 tstr;
+  string 50 location,brand,key,baseCur,itemtyp;
+  integer rw,rwcnt,i,pos;
+  val TotalCost,TotalQty,SubTotalCost,SubTotalQty,costsum;
+	Boolean testf,TrHs2,testf2,curdatef;
+	array integer outstrpos;
+	date costdate;
+
+  StartReportJob("Stan magazynu");
+  rw=1;
+  Header(rw,"Stan na Dzien: " & RepSpec.d1,1);
+  rw = rw + 1;
+  HeaderLocations(RepSpec.f1,tstr);
+  Header(rw,tstr,1);
+  rw = rw + 1;
+  Header(rw,"Wartosci w PLN",1);
+  rw = rw + 1; 
+  HTItemClass(RepSpec.f2,tstr);
+  if (nonblank(tstr)) then begin //Edit***************************Sasha2,10:17 30.03.2015 {
+    Header(rw,tstr,0);
+    rw = rw + 1;
+  end; //Edit***************************Sasha2,10:17 30.03.2015 } 
+	EndHeader;
+	
+	if (BlankDate(RepSpec.d1)) then begin
+	 RepSpec.d1 = CurrentDate;
+	end;
+	if (RepSpec.d1==CurrentDate) then begin
+	 curdatef = true;
+	end;
+	if (Blank(RepSpec.f1)) then begin
+	 goto LStanMagazynuRn;
+	end;
+	
+	BlockLoad(BCb);
+	baseCur = BCb.BaseCur1;	
+	
+	TotalQty = 0;
+	TotalCost = 0;
+	location = RepSpec.f1;
+	
+	if (RepSpec.Media==mtExcel) then begin
+	  BlockLoad(CYB);
+	  StartFormat(15);
+	   OutString(0,0,"STAN NA DZIEN",false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,CurrentDate,false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,"",false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,"ZESTAWIENIE WYKONANE DLA MAGAZYNOW",false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,location & "     " & CYB.BusinessName,false);
+	  EndFormat;
+	  StartFormat(15);
+	   OutString(0,0,"",false);
+	  EndFormat;
+	end;
+	
+	outstrpos[0] = 0;
+	outstrpos[1] = 150;
+	outstrpos[2] = 210;
+	outstrpos[3] = 260;
+	outstrpos[4] = 310;
+	outstrpos[5] = 360;
+	
+	StartFormat(15);
+	  OutString(outstrpos[0],0,"NAZWA TOWARU",false);			
+		OutString(outstrpos[1],0,"INDEKS",false);
+		OutString(outstrpos[2],0,"TYP",false);			
+		OutString(outstrpos[3],0,"STAN",false);	
+		OutString(outstrpos[4],0,"J.M.",false);
+		OutString(outstrpos[5],0,"WARTOSC ZAKUPU",false);
+	EndFormat;
+	Black_Divider(0,1);
+	
+	INr.Code = "";
+	while (LoopMain(INr,1,true)) begin
+	  testf = true;
+    if(nonblank(RepSpec.f2))then begin
+      testf = false;
+			brand = "";
+			pos = 0;
+			ExtractObj(INr.DispGroups,pos,brand);
+			while (nonblank(brand)) begin
+				if(nonblank(brand) and setinset(brand,RepSpec.f2))then begin
+					testf = true;
+					pos = 255;
+				end;
+				ExtractObj(INr.DispGroups,pos,brand);
+			end;
+    end;
+    if (testf) then begin
+      switch (INr.ConsgType) begin
+        case 0:
+          itemtyp = "Towar";
+        case 1:
+          itemtyp = "Consigment";
+        case 2:
+          itemtyp = "LowCost";
+      end;
+      SubTotalCost = 0;
+	    SubTotalQty = 0;
+      IHr.ArtCode = INr.Code;
+      IHr.Location = location;
+      if (curdatef) then begin
+        key = "ActiveLocQty";
+      end else begin
+        key = "ArtCodeLoc";
+      end;
+      TrHs2 = true;
+      while (Loopkey(key,IHr,2,TrHs2)) begin
+        testf2 = true;
+        if (IHr.ArtCode!=INr.Code or location!=IHr.Location) then begin TrHs2 = false; testf2 = false; end;
+        if (IHr.TransDate>RepSpec.d1 or IHr.StockAffectf!=1) then begin testf2 = false; end;
+        if (testf2) then begin
+          if (NonBlankDate(IHr.InDate)) then begin
+            costdate = IHr.InDate;
+          end else begin
+            costdate = IHr.TransDate;
+          end;
+          if (curdatef) then begin
+            CurValToOtherCur(costdate,baseCur,IHr.RemCostPrice,"PLN",costsum,DefaultCurRoundOff);
+	          SubTotalQty = SubTotalQty + IHr.RemQty;
+	          SubTotalCost = SubTotalCost + costsum;
+          end else begin
+            CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+            SubTotalQty = SubTotalQty + IHr.Qty;
+            SubTotalCost = SubTotalCost + costsum * CheckSign(IHr.Qty);
+          end;
+        end;
+      end; RESETLOOP(IHr);
+      if (SubTotalQty!=0 or SubTotalCost!=0) then begin     
+        StartFormat(15);
+      	  OutString(outstrpos[0],0,INr.Name,false);			
+      		OutString(outstrpos[1],0,INr.Code,false);
+      		OutString(outstrpos[2],0,itemtyp,false);			
+      		OutString(outstrpos[3],0,SubTotalQty,false);	
+      		OutString(outstrpos[4],0,INr.Unittext,false);
+      		OutString(outstrpos[5],0,SubTotalCost,false);
+      	EndFormat;
+      	TotalQty = TotalQty + SubTotalQty;
+        TotalCost = TotalCost + SubTotalCost;
+      end;
+    end;
+	end;
+	
+	if (TotalQty!=0 or TotalCost!=0) then begin
+  	Black_Divider(0,1);
+  	StartFormat(15);
+  	  OutString(outstrpos[0],0,"",false);
+      OutString(outstrpos[1],0,"",false);
+      OutString(outstrpos[2],0,"Totals:",false);	
+  	  OutString(outstrpos[3],0,TotalQty,false);	
+  	  OutString(outstrpos[4],0,"",false);	
+  	  OutString(outstrpos[5],0,TotalCost,false);			
+  	EndFormat;
+	end;
+	
+LStanMagazynuRn:;
+	
+	EndJob;
+
+return;
+end;
