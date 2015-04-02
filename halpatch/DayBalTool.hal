@@ -258,7 +258,7 @@ L22TR:;
 // Special rounding when a Currency value is there, NONE of the basecurrencies CAN be zero 
         if (oldstyle==0) then begin
           if (TRrw.CredVal==0) then begin TRrw.CredVal = -0.01; end;;
-          if (TRrw.CredVal==0) then begin TRrw.CredVal2 = -0.01; end;
+         // if (TRrw.CredVal==0) then begin TRrw.CredVal2 = -0.01; end;			//Edit----------------------Dima  02.04.2015
         end;
       end;
       if (csv<0) then begin
@@ -268,8 +268,8 @@ L22TR:;
         TRrw.CurDebVal = csv;
         if (oldstyle==0) then begin
           if (TRrw.DebVal==0) then begin TRrw.DebVal = -0.01; end;
-          if (TRrw.DebVal2==0) then begin TRrw.DebVal2 = -0.01; end;
-        end;
+	          //if (TRrw.DebVal2==0) then begin TRrw.DebVal2 = -0.01; end;		//Edit----------------------Dima  02.04.2015
+	        end;
       end;
       if (csv==0) then begin
         if (TRrw.DebVal>0) then begin
@@ -288,7 +288,7 @@ L22TR:;
 // Special rounding when a Currency value is there, NONE of the basecurrencies CAN be zero 
         if (oldstyle==0) then begin
           if (TRrw.DebVal==0) then begin TRrw.DebVal = 0.01; end;;
-          if (TRrw.DebVal2==0) then begin TRrw.DebVal2 = 0.01; end;
+          //if (TRrw.DebVal2==0) then begin TRrw.DebVal2 = 0.01; end;			//Edit----------------------Dima  02.04.2015
         end;
       end;
       if (csv<0) then begin
@@ -298,7 +298,7 @@ L22TR:;
         TRrw.CurCredVal = -csv;
         if (oldstyle==0) then begin
           if (TRrw.CredVal==0) then begin TRrw.CredVal = 0.01; end;
-          if (TRrw.CredVal2==0) then begin TRrw.CredVal2 = 0.01; end;
+          //if (TRrw.CredVal2==0) then begin TRrw.CredVal2 = 0.01; end;		//Edit----------------------Dima  02.04.2015
         end;
       end;
       if (csv==0) then begin
