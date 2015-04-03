@@ -772,6 +772,40 @@ LPostBaseCur1RemainingBalance:;
   return;
 end;
 
+//Edit***************************Sasha2,13:18 03.04.2015 {
+procedure HandleAPAccBlock(record APAccBlock APAccb,var array string SameAccNames,var vector integer SameAccCases,var integer SameAccCnt)
+begin
+  if (NonBlank(APAccb.RateGainAcc)) then begin
+    if (SameAccCases[APAccb.RateGainAcc]==0) then begin
+      SameAccNames[SameAccCnt] = APAccb.RateGainAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[APAccb.RateGainAcc] = SameAccCases[APAccb.RateGainAcc] + 1;
+  end;
+  if (NonBlank(APAccb.RateLossAcc)) then begin
+    if (SameAccCases[APAccb.RateLossAcc]==0) then begin
+      SameAccNames[SameAccCnt] = APAccb.RateLossAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[APAccb.RateLossAcc] = SameAccCases[APAccb.RateLossAcc] + 1;
+  end;
+  if (NonBlank(APAccb.BankRateGainAcc)) then begin
+    if (SameAccCases[APAccb.BankRateGainAcc]==0) then begin
+      SameAccNames[SameAccCnt] = APAccb.BankRateGainAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[APAccb.BankRateGainAcc] = SameAccCases[APAccb.BankRateGainAcc] + 1;
+  end;
+  if (NonBlank(APAccb.BankRateLossAcc)) then begin
+    if (SameAccCases[APAccb.BankRateLossAcc]==0) then begin
+      SameAccNames[SameAccCnt] = APAccb.BankRateLossAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[APAccb.BankRateLossAcc] = SameAccCases[APAccb.BankRateLossAcc] + 1;
+  end;
+  return;
+end; //Edit***************************Sasha2,13:18 03.04.2015 }
+
 function Integer MakeTransFromOP2(record TRVc gTRp,record OPVc OPp,Boolean rpt,Integer transtocreate)
 BEGIN
   Integer res;
@@ -816,6 +850,10 @@ BEGIN
   Boolean onaccdc1,onaccdc2;
   record AccVc Accr;
   string 255 mypayobjs; //Edit***************************Sasha2,10:50 10.02.2015
+  vector Integer SameAccCases; //Edit***************************Sasha2,12:34 03.04.2015
+  array string 60 SameAccNames; //Edit***************************Sasha2,13:24 03.04.2015
+  vector val SameAccVal; //Edit***************************Sasha2,12:34 03.04.2015
+  integer SameAccCnt,k;
 
   if ((ProgramType==typFirstOffice) or 
       (ProgramType==typFirstOfficeSmall) or 
@@ -843,6 +881,8 @@ BEGIN
     end;
   end;    
   res = 1085;
+  SameAccCnt = 0;
+  HandleAPAccBlock(APAccb,SameAccNames,SameAccCases,SameAccCnt); //Edit***************************Sasha2,13:19 03.04.2015
   RecordNew(gTRp);
   switch (transtocreate) begin
     case 1: gTRp.IntYc = OPYc;
@@ -1228,19 +1268,24 @@ BEGIN
                 res = 1917;
                 goto LMakeTransFromOP2;
               end;
-              if (APAccb.BookRateGainPerOPRow!=0) then begin
-                if (nonblank(tstr)) then begin
-                  tstr = tstr & ", ";
+              
+              if (SameAccCases[APAccb.RateGainAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+                SameAccVal[APAccb.RateGainAcc] = SameAccVal[APAccb.RateGainAcc] + rd;
+              end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+                if (APAccb.BookRateGainPerOPRow!=0) then begin
+                  if (nonblank(tstr)) then begin
+                    tstr = tstr & ", ";
+                  end;
+                  tstr = tstr & OPrw.VISerNr;
                 end;
-                tstr = tstr & OPrw.VISerNr;
-              end;
-              if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //LogText(0,"Acc 7 " & APAccb.RateGainAcc); 
-                AddEuroCurncyNomARTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
-                                        OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
-                                        blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
-//                AddEuroTrRow(gTRp,APAccb.RateGainAcc,"","",tstr,rd,1,0,true,dc2,totsum,false,"","","");
-              end else begin //LogText(0,"Acc 8 " & APAccb.RateGainAcc); 
-                AddEuroTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
+                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //LogText(0,"Acc 7 " & APAccb.RateGainAcc); 
+                  AddEuroCurncyNomARTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
+                                          OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
+                                          blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
+  //                AddEuroTrRow(gTRp,APAccb.RateGainAcc,"","",tstr,rd,1,0,true,dc2,totsum,false,"","","");
+                end else begin //LogText(0,"Acc 8 " & APAccb.RateGainAcc); 
+                  AddEuroTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
+                end;
               end;
               t2 = tstr;
             end;
@@ -1250,21 +1295,25 @@ BEGIN
                 res = 1918;
                 goto LMakeTransFromOP2;
               end;
-              if (APAccb.BookRateGainPerOPRow!=0) then begin
-                if (nonblank(tstr)) then begin
-                  tstr = tstr & ", ";
+              
+              if (SameAccCases[APAccb.RateLossAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+                SameAccVal[APAccb.RateLossAcc] = SameAccVal[APAccb.RateLossAcc] + rd;
+              end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+                if (APAccb.BookRateGainPerOPRow!=0) then begin
+                  if (nonblank(tstr)) then begin
+                    tstr = tstr & ", ";
+                  end;
+                  tstr = tstr & OPrw.VISerNr;
                 end;
-                tstr = tstr & OPrw.VISerNr;
+                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //LogText(0,"Acc 9 " & APAccb.RateLossAcc); 
+                  AddEuroCurncyNomARTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
+                                          OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
+                                          blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
+  //              AddEuroTrRow(gTRp,APAccb.RateLossAcc,"","",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","","");
+                end else begin //LogText(0,"Acc 10 " & APAccb.RateLossAcc); 
+                  AddEuroTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
+                end;
               end;
-              if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //LogText(0,"Acc 9 " & APAccb.RateLossAcc); 
-                AddEuroCurncyNomARTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
-                                        OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
-                                        blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
-//              AddEuroTrRow(gTRp,APAccb.RateLossAcc,"","",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","","");
-              end else begin //LogText(0,"Acc 10 " & APAccb.RateLossAcc); 
-                AddEuroTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
-              end;
-
               t2 = tstr;
             end;
             if (brd>0) then begin
@@ -1272,30 +1321,51 @@ BEGIN
                 res = 24220;
                 goto LMakeTransFromOP2;
               end;
-              if (APAccb.BookRateGainPerOPRow!=0) then begin
-                if (nonblank(tstr)) then begin
-                  tstr = tstr & ", ";
-                end;
-                tstr = tstr & OPrw.VISerNr;
-              end; //LogText(0,"Acc 11 " & APAccb.BankRateGainAcc);
-              AddEuroCurncyTrRow(gTRp,APAccb.BankRateGainAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
+              
+              if (SameAccCases[APAccb.BankRateGainAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+                SameAccVal[APAccb.BankRateGainAcc] = SameAccVal[APAccb.BankRateGainAcc] + brd;
+              end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+                if (APAccb.BookRateGainPerOPRow!=0) then begin
+                  if (nonblank(tstr)) then begin
+                    tstr = tstr & ", ";
+                  end;
+                  tstr = tstr & OPrw.VISerNr;
+                end; //LogText(0,"Acc 11 " & APAccb.BankRateGainAcc);
+                AddEuroCurncyTrRow(gTRp,APAccb.BankRateGainAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                  bcur.BaseCur2,blankval,blankval,blankval,baserate1,baserate2,brd2,blankval,-1,false,""); //trrwcnt-2);
-
+              end;
             end;
             if (brd<0) then begin
               if (GetAccName(APAccb.BankRateLossAcc,tstr,60)==false) then begin
                 res = 24221;
                 goto LMakeTransFromOP2;
               end;
-              if (APAccb.BookRateGainPerOPRow!=0) then begin
-                if (nonblank(tstr)) then begin
-                  tstr = tstr & ", ";
-                end;
-                tstr = tstr & OPrw.VISerNr;
-              end; //LogText(0,"Acc 12 " & APAccb.BankRateLossAcc);
-              AddEuroCurncyTrRow(gTRp,APAccb.BankRateLossAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
+              if (SameAccCases[APAccb.BankRateLossAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+                SameAccVal[APAccb.BankRateLossAcc] = SameAccVal[APAccb.BankRateLossAcc] + brd;
+              end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+                if (APAccb.BookRateGainPerOPRow!=0) then begin
+                  if (nonblank(tstr)) then begin
+                    tstr = tstr & ", ";
+                  end;
+                  tstr = tstr & OPrw.VISerNr;
+                end; //LogText(0,"Acc 12 " & APAccb.BankRateLossAcc);
+                AddEuroCurncyTrRow(gTRp,APAccb.BankRateLossAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                  bcur.BaseCur2,blankval,blankval,blankval,baserate1,baserate2,brd2,blankval,-1,false,""); //trrwcnt-2); 
-            end;            
+              end;
+            end;
+            //Edit***************************Sasha2,13:29 03.04.2015 {  
+            if (APAccb.BookRateGainPerOPRow!=0) then begin
+              if (nonblank(tstr)) then begin
+                tstr = tstr & ", ";
+              end;
+              tstr = tstr & OPrw.VISerNr;
+            end;
+            for (k=0;k<SameAccCnt;k=k+1) begin
+              if (SameAccCases[SameAccNames[k]]>1) then begin
+                AddEuroTrRow(gTRp,SameAccNames[k],OPrw.Objects,"",tstr,SameAccVal[SameAccNames[k]],baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","","");
+                SameAccVal[SameAccNames[k]] = 0;
+              end;
+            end; //Edit***************************Sasha2,13:29 03.04.2015 }         
             PostBaseCur1RemainingBalance(gTRp,VIr,OPrw,APAccb,baserate1,baserate2,dc1,dc2,totsum);
           end else begin
             rs = MulRateToBase1(OPrw.PInvCurncy,v,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
