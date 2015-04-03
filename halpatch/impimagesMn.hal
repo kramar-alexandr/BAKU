@@ -7,6 +7,7 @@ external function Boolean PasteInvIn2IPr(var record IPVc,Integer,Date,var val,Bo
 external procedure IPVc_PasteRecVal(var record IPVc,Integer);
 external function roundmode SetRoundModeD(Integer);
 external function LongInt IPVcRecordCheck(var record IPVc,record IPVc,LongInt,LongInt);// Edit ************************** Friday, 13 March 2015 18:18:29
+external function Boolean TRVc_PasteObjects(var record TRVc,Integer);
 
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
@@ -1253,6 +1254,10 @@ begin
   val fr,to1,to2,b;
   string 20 cur;
   longint res;
+  integer rwcnt,i;
+  string 100 objects; 
+  record TRVc TRr,oldTRr;
+  row TRVc TRrw; 
 	
 	RecordNew(IPr);
 	
@@ -1280,6 +1285,35 @@ begin
 	if(res==0)then begin
 		boolres = RecordInsert(IPr,true);
 	end;
+	
+	
+	if (boolres!=false) then begin				//Edit----------------------Dima  02.04.2015
+			objects = "";
+			TRr.Number = IPr.SerNr;
+			TRr.IntYc = IPYc;
+			if (ReadFirstMain(TRr,2,true)) then begin
+				RecordCopy(oldTRr,TRr);
+				rwcnt = MatRowCnt(TRr);
+				for(i=0;i<rwcnt;i=i+1) begin
+						MatRowGet(TRr,i,TRrw);
+						if (nonblank(TRrw.Objects)) then begin
+							objects = objects & TRrw.Objects & ",";
+						end;	
+				end;
+				
+				for(i=0;i<rwcnt;i=i+1) begin
+						MatRowGet(TRr,i,TRrw);
+						if (blank(TRrw.Objects)) then begin
+							 TRrw.Objects = objects;
+							 MatRowPut(TRr,i,TRrw);
+							 TRVc_PasteObjects(TRr,i);
+						end;
+				end;
+				RecordUpdate(oldTRr,TRr,true);
+			end;
+	end;
+	
+	
 CreateIPVcFromLoyaltyPoints = boolres;
 return;
 end;
