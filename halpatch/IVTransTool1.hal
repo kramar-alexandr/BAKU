@@ -577,7 +577,7 @@ BEGIN
         errstrno = 1917;
         goto LIVVc_CASHRow;
       end;
-      AddEuroCurncyTrRow(gTRp,ARAccRec.RateGainAcc,"","",tstr,rategain,true,dc1,TotSum,
+      AddEuroCurncyTrRow(gTRp,ARAccRec.RateGainAcc,lcuobj,"",tstr,rategain,true,dc1,TotSum,
                          bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,rategain2,blankval,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");
     end;
     if (rateloss>0) then begin
@@ -585,7 +585,7 @@ BEGIN
         errstrno = 1918;
         goto LIVVc_CASHRow;
       end;
-      AddEuroCurncyTrRow(gTRp,ARAccRec.RateLossAcc,"","",tstr,rateloss,true,dc2,TotSum,
+      AddEuroCurncyTrRow(gTRp,ARAccRec.RateLossAcc,lcuobj,"",tstr,rateloss,true,dc2,TotSum,
                            bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,rateloss2,blankval,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");
     end;
 /*

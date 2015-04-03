@@ -799,6 +799,40 @@ BEGIN
   RETURN;
 END;
 
+//Edit***************************Sasha2,13:18 03.04.2015 {
+procedure HandleAccBlock(record AccBlock ARAccb,var array string SameAccNames,var vector integer SameAccCases,var integer SameAccCnt)
+begin
+  if (NonBlank(ARAccb.RateGainAcc)) then begin
+    if (SameAccCases[ARAccb.RateGainAcc]==0) then begin
+      SameAccNames[SameAccCnt] = ARAccb.RateGainAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[ARAccb.RateGainAcc] = SameAccCases[ARAccb.RateGainAcc] + 1;
+  end;
+  if (NonBlank(ARAccb.RateLossAcc)) then begin
+    if (SameAccCases[ARAccb.RateLossAcc]==0) then begin
+      SameAccNames[SameAccCnt] = ARAccb.RateLossAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[ARAccb.RateLossAcc] = SameAccCases[ARAccb.RateLossAcc] + 1;
+  end;
+  if (NonBlank(ARAccb.BankRateGainAcc)) then begin
+    if (SameAccCases[ARAccb.BankRateGainAcc]==0) then begin
+      SameAccNames[SameAccCnt] = ARAccb.BankRateGainAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[ARAccb.BankRateGainAcc] = SameAccCases[ARAccb.BankRateGainAcc] + 1;
+  end;
+  if (NonBlank(ARAccb.BankRateLossAcc)) then begin
+    if (SameAccCases[ARAccb.BankRateLossAcc]==0) then begin
+      SameAccNames[SameAccCnt] = ARAccb.BankRateLossAcc;
+      SameAccCnt = SameAccCnt + 1;
+    end;
+    SameAccCases[ARAccb.BankRateLossAcc] = SameAccCases[ARAccb.BankRateLossAcc] + 1;
+  end;
+  return;
+end; //Edit***************************Sasha2,13:18 03.04.2015 }
+
 function
 Integer MakeTransFromIP2(var record TRVc gTRp,var record IPVc IPp,Boolean rpt,Integer transtocreate,var Integer errrownr,var string errfield)
 BEGIN
@@ -837,6 +871,11 @@ BEGIN
   Boolean NegativeAmountsf,invfound;
   record AccVc Accr;
   string 255 mypayobjs; //Edit***************************Sasha2,10:50 10.02.2015
+  vector Integer SameAccCases; //Edit***************************Sasha2,12:34 03.04.2015
+  array string 60 SameAccNames; //Edit***************************Sasha2,13:24 03.04.2015
+  vector val SameAccVal; //Edit***************************Sasha2,12:34 03.04.2015
+  integer SameAccCnt,k;
+
 
   res = 1085;
   errfield = "SerNr";
@@ -860,7 +899,8 @@ BEGIN
       goto LMakeTransFromIP2;
     end;
   end;    
-  
+  SameAccCnt = 0;
+  HandleAccBlock(ARAccb,SameAccNames,SameAccCases,SameAccCnt); //Edit***************************Sasha2,13:19 03.04.2015
   RecordNew(gTRp);
   switch (transtocreate) begin
     case 1: gTRp.IntYc = IPYc;
@@ -1222,28 +1262,36 @@ BEGIN
               res = 1917;
               goto LMakeTransFromIP2;
             end;
-            if (ARAccb.BookRateGainPerIPRow!=0) then begin
-              if (nonblank(tstr)) then begin
-                tstr = tstr & ", ";
+            if (SameAccCases[ARAccb.RateGainAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+              SameAccVal[ARAccb.RateGainAcc] = SameAccVal[ARAccb.RateGainAcc] + rd;
+            end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+              if (ARAccb.BookRateGainPerIPRow!=0) then begin
+                if (nonblank(tstr)) then begin
+                  tstr = tstr & ", ";
+                end;
+                tstr = tstr & IPrw.InvoiceNr;
               end;
-              tstr = tstr & IPrw.InvoiceNr;
+              AddEuroCurncyTrRow(gTRp,ARAccb.RateGainAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
-            AddEuroCurncyTrRow(gTRp,ARAccb.RateGainAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                               bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,rd2,blankval,-1,false,""); //trrwcnt-2);
           end;
           if (rd>0) then begin
             if (GetAccName(ARAccb.RateLossAcc,tstr,60)==false) then begin
               res = 1918;
               goto LMakeTransFromIP2;
             end;
-            if (ARAccb.BookRateGainPerIPRow!=0) then begin
-              if (nonblank(tstr)) then begin
-                tstr = tstr & ", ";
+            if (SameAccCases[ARAccb.RateLossAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+              SameAccVal[ARAccb.RateLossAcc] = SameAccVal[ARAccb.RateLossAcc] + rd;
+            end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+              if (ARAccb.BookRateGainPerIPRow!=0) then begin
+                if (nonblank(tstr)) then begin
+                  tstr = tstr & ", ";
+                end;
+                tstr = tstr & IPrw.InvoiceNr;
               end;
-              tstr = tstr & IPrw.InvoiceNr;
+              AddEuroCurncyTrRow(gTRp,ARAccb.RateLossAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
-            AddEuroCurncyTrRow(gTRp,ARAccb.RateLossAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                               bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,rd2,blankval,-1,false,""); //trrwcnt-2);
           end;          
 
           if (brd<0) then begin
@@ -1251,29 +1299,51 @@ BEGIN
               res = 24220;
               goto LMakeTransFromIP2;
             end;
-            if (ARAccb.BookRateGainPerIPRow!=0) then begin
-              if (nonblank(tstr)) then begin
-                tstr = tstr & ", ";
+            if (SameAccCases[ARAccb.BankRateGainAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+              SameAccVal[ARAccb.BankRateGainAcc] = SameAccVal[ARAccb.BankRateGainAcc] + brd;
+            end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+              if (ARAccb.BookRateGainPerIPRow!=0) then begin
+                if (nonblank(tstr)) then begin
+                  tstr = tstr & ", ";
+                end;
+                tstr = tstr & IPrw.InvoiceNr;
               end;
-              tstr = tstr & IPrw.InvoiceNr;
+              AddEuroCurncyTrRow(gTRp,ARAccb.BankRateGainAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
-            AddEuroCurncyTrRow(gTRp,ARAccb.BankRateGainAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                               bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,brd2,blankval,-1,false,""); //trrwcnt-2);
           end;
           if (brd>0) then begin
             if (GetAccName(ARAccb.BankRateLossAcc,tstr,60)==false) then begin
               res = 24221;
               goto LMakeTransFromIP2;
             end;
-            if (ARAccb.BookRateGainPerIPRow!=0) then begin
-              if (nonblank(tstr)) then begin
-                tstr = tstr & ", ";
+            if (SameAccCases[ARAccb.BankRateLossAcc]>1) then begin //Edit***************************Sasha2,13:32 03.04.2015 {
+              SameAccVal[ARAccb.BankRateLossAcc] = SameAccVal[ARAccb.BankRateLossAcc] + brd;
+            end else begin //Edit***************************Sasha2,13:32 03.04.2015 }
+              if (ARAccb.BookRateGainPerIPRow!=0) then begin
+                if (nonblank(tstr)) then begin
+                  tstr = tstr & ", ";
+                end;
+                tstr = tstr & IPrw.InvoiceNr;
               end;
-              tstr = tstr & IPrw.InvoiceNr;
+              AddEuroCurncyTrRow(gTRp,ARAccb.BankRateLossAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
-            AddEuroCurncyTrRow(gTRp,ARAccb.BankRateLossAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                               bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,brd2,blankval,-1,false,""); //trrwcnt-2);
-          end;          
+          end;
+          //Edit***************************Sasha2,13:29 03.04.2015 {  
+          if (ARAccb.BookRateGainPerIPRow!=0) then begin
+            if (nonblank(tstr)) then begin
+              tstr = tstr & ", ";
+            end;
+            tstr = tstr & IPrw.InvoiceNr;
+          end;
+          for (k=0;k<SameAccCnt;k=k+1) begin
+            if (SameAccCases[SameAccNames[k]]>1) then begin
+              AddEuroCurncyTrRow(gTRp,SameAccNames[k],IPrw.Objects,"",tstr,SameAccVal[SameAccNames[k]],ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
+                             bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2);
+              SameAccVal[SameAccNames[k]] = 0;
+            end;
+          end; //Edit***************************Sasha2,13:29 03.04.2015 }              
         end;
         if (IPrw.stp==kReceiptRowTypeSettlementDiscount) then begin
         if (IPrw.BankVal!=0) then begin
