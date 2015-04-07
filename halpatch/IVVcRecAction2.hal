@@ -470,7 +470,9 @@ BEGIN
     
   end;
   
-	IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
+  if (CurrentCompany==10) then begin //Dupont
+		IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
+	end;	
   
 LIVVcRecordSave:;
   IVVcRecordSave = res; 
