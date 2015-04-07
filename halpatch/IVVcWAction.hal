@@ -61,6 +61,55 @@ external function Boolean SetUnitFactor(string,var val,val,val,val,var val,var v
 external function val CalculateSerialNrQuantity(string,string,string,Boolean,val,val,val,val);
 external procedure DisplayIVItem(record IVVc,Integer);
 remote procedure PastePDInInv(var record IVVc,string,Boolean);
+remote procedure CreatePufromIVforPLHandle(record RcVc,integer); //Edit***************************Sasha2,11:26 07.04.2015
+
+global  //Edit***************************Sasha2,17:59 06.04.2015 {
+procedure YesCreatePufromIVforPLButton()
+BEGIN
+  Integer wn;
+  record RcVc RepSpec;
+  
+    wn = CurWindow;
+    DeselectWindow(wn,false);
+    GetWindowRecord(wn,RepSpec);
+    CloseWindow(wn);
+    queued.CreatePufromIVforPLHandle(RepSpec,CurrentCompany);
+
+  RETURN;
+END;
+
+global 
+updating procedure NoCreatePufromIVforPLButton()
+BEGIN
+  Integer wn;
+
+    wn = CurWindow;
+    CloseWindow(wn);
+  
+  RETURN;  
+END; 
+
+global
+procedure CreatePufromIVforPLDsm()
+BEGIN
+  Integer wn;
+  record RcVc RepSpec;
+  record IVVc IVr;
+  
+    wn = CurWindow;
+    DeselectWindow(wn,false);
+    GetWindowRecord(wn,IVr);
+    if (WindowState(wn)==0 and (IVr.OKFlag==1)) then begin 
+      if (IVr.PriceList=="FOB17" and IVr.UpdStockFlag!=0) then begin
+        RECORDNEW(RepSpec);
+        RepSpec.long1 = IVr.SerNr;
+        RepSpec.flags[0] = CurrentCompany;
+        OpenWindow("CreationPUForIVTClass",1,0,"","",RepSpec);
+      end;
+    end; 
+
+  RETURN;
+END;//Edit***************************Sasha2,17:59 06.04.2015 }
 
 procedure ChangeIVSerialNr(Integer wnst,var record IVVc IVp)
 BEGIN

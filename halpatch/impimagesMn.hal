@@ -8,7 +8,9 @@ external procedure IPVc_PasteRecVal(var record IPVc,Integer);
 external function roundmode SetRoundModeD(Integer);
 external function LongInt IPVcRecordCheck(var record IPVc,record IPVc,LongInt,LongInt);// Edit ************************** Friday, 13 March 2015 18:18:29
 external function Boolean TRVc_PasteObjects(var record TRVc,Integer);
-
+external procedure PUVc_PasteLocation(var record PUVc,Integer); //Edit***************************Sasha2,11:37 07.04.2015
+external function Boolean PUVc_PasteArtCode(var record PUVc,Integer,var string,var string); //Edit***************************Sasha2,12:10 07.04.2015
+external function Integer PUVc_PasteQuant(var record PUVc,Integer); //Edit***************************Sasha2,12:13 07.04.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1498,3 +1500,54 @@ begin
 
 return;
 end;
+
+global //Edit***************************Sasha2,11:25 07.04.2015 {
+updating procedure CreatePufromIVforPLHandle(record RcVc RepSpec,integer curcomp)
+begin
+  record IVVc IVr;
+  row IVVc IVrw;
+  record PUVc PUr;
+  row PUVc PUrw;
+  integer i,rwcnt;
+  string 255 warning,inwarn,compname;
+  record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
+  
+    IVr.SerNr = RepSpec.long1;
+    ReadFirstMain(IVr,1,true);
+    BlockLoad(Compb);
+    rwcnt = matrowcnt(Compb);
+    for(i=0;i<rwcnt;i=i+1)begin
+  		matrowget(Compb,i,Comprw);
+  		if(RepSpec.flags[0]==(i+1))then begin
+        compname = Comprw.CompName;
+        i = rwcnt;
+  		end;
+  	end;
+    if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+      RECORDNEW(PUr);
+      PUr.Location = RepSpec.f1;
+      PUVc_PasteLocation(PUr,-1);
+      PUr.VEName = "Invoice # " & IVr.SerNr & " from company " & compname;
+      if (PUr.SerNr<=0) then begin
+         PUr.SerNr = NextSerNr("PUVc",PUr.TransDate,-1,false,"");
+      end;
+      rwcnt = MatRowCnt(IVr);
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVr,i,IVrw);
+        if (NonBlank(IVrw.ArtCode)) then begin
+          ClearRow(PUr,PUrw,1);
+          PUrw.ArtCode = IVrw.ArtCode;
+          MatRowPut(PUr,i,PUrw);
+          PUVc_PasteArtCode(PUr,i,warning,inwarn);
+          MatRowGet(PUr,i,PUrw);
+          PUrw.Quant = IVrw.Quant;
+          MatRowPut(PUr,i,PUrw);
+          PUVc_PasteQuant(PUr,i);
+        end;
+      end;
+      RECORDSTORE(PUr,false);
+      RESETCOMPANY(curcomp);
+    end;
+  return;
+end; //Edit***************************Sasha2,11:25 07.04.2015 }

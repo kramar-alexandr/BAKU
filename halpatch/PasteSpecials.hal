@@ -137,7 +137,7 @@ external procedure CourtesyTitlesSClassArrayOnOpen(var Array string,var Integer)
 external procedure PLVc_SerialNrSClass(Integer,Integer,Integer,var Array string,var Integer);
 external procedure PasteFromSysList(Integer,Integer);// Edit ************************** Wednesday, 26 June 2013 17:23:07
 remote   procedure CLCorspVc_TRObjSClass(record CLCorspVc,var record RcVc);// Edit ************************** Thursday, 30 October 2014 10:24:27
-
+remote procedure CompLocationSClassArrayOnOpen(var Array string,var Integer,integer); //Edit***************************Sasha2,10:51 07.04.2015
 
 global
 Function Boolean OcupResSClassOnOpenWindow(Integer wn)
@@ -1273,3 +1273,28 @@ begin
   CourtesyTitlesSClassOnOpenWindow = false;
   return;
 end;
+
+global //Edit***************************Sasha2,11:07 07.04.2015 {
+function Boolean CompLocationSClassOnOKWindow(Integer wn)
+begin
+  PasteFromSysList(wn,-2);
+  CompLocationSClassOnOKWindow = false;
+  return;
+end; //Edit***************************Sasha2,11:07 07.04.2015 }
+
+global //Edit***************************Sasha2,10:50 07.04.2015 {
+function Boolean CompLocationSClassOnOpenWindow(Integer wn)
+begin
+  Array string 255 astr;
+  Integer i,acnt,mwn;
+  record RcVc RepSpec;
+  
+  mwn = MotherWindow(wn);
+  GetWindowRecord(mwn,RepSpec); 
+  CompLocationSClassArrayOnOpen(astr,acnt,RepSpec.flags[0]);
+  for (i=0;i<acnt;i=i+1) begin
+    SetListString(wn,len(astr[i]),astr[i],false);    
+  end;
+  CompLocationSClassOnOpenWindow = false;
+  return;
+end; //Edit***************************Sasha2,10:50 07.04.2015 }

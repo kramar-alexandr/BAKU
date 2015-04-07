@@ -268,3 +268,22 @@ begin
   end;
   return;
 end;
+
+global
+procedure CompLocationSClassArrayOnOpen(var Array string astr,var Integer acnt,integer curcomp)
+BEGIN
+  record LocationVc Locationr;
+  Integer i,rwcnt;
+  
+  if (SetCompanyCode("" & curcomp,false)) then begin
+    Locationr.Code = "";
+    while (LoopMain(Locationr,1,true)) begin
+      astr[acnt] = Left(Locationr.Code & "    ",14);
+      astr[acnt] = astr[acnt] & Locationr.Name;
+      acnt = acnt + 1;
+    end;
+    RESETCOMPANY(curcomp);
+  end;
+  
+  RETURN;
+END;
