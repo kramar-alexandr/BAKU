@@ -357,15 +357,20 @@ begin
 	end;
 	
 		
-
-	lastNumber = StringToInt(Right(lastOffSerNr,5)) + 1;
-	SerNumber = Right("00000" & lastNumber,5);
+	if (IVr.CurncyCode != "EUR") then begin
+		lastNumber = StringToInt(Right(lastOffSerNr,5)) + 1;
+		SerNumber = Right("00000" & lastNumber,5);
+	end else begin
+		lastNumber = StringToInt(Right(lastOffSerNr,3)) + 1;
+		SerNumber = Right("000" & lastNumber,3);
+	end;	
+	
 	month = Right("0" & GetMonth(IVr.TransDate),2);
 	
 	if (IVr.CurncyCode != "EUR") then begin 
 		OfficialSerNr = year & "/" & month & "/" & SerNumber;
 	end else begin	
-		OfficialSerNr = "WDT/" & year & "/" & month & "/" & SerNumber;
+		OfficialSerNr = "WDT/" & year & "/" & month & "/M1/" & SerNumber;
 	end;
 	
 	
