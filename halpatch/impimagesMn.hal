@@ -11,6 +11,11 @@ external function Boolean TRVc_PasteObjects(var record TRVc,Integer);
 external procedure PUVc_PasteLocation(var record PUVc,Integer); //Edit***************************Sasha2,11:37 07.04.2015
 external function Boolean PUVc_PasteArtCode(var record PUVc,Integer,var string,var string); //Edit***************************Sasha2,12:10 07.04.2015
 external function Integer PUVc_PasteQuant(var record PUVc,Integer); //Edit***************************Sasha2,12:13 07.04.2015
+external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
+                                   val,val,val,val,val,
+                                   val,val,val,val,val,val,
+                                   string,var val,val,var val,string,Integer); //Edit***************************Sasha2,13:04 08.04.2015
+external procedure PUSumUp(var record PUVc); //Edit***************************Sasha2,13:09 08.04.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1516,6 +1521,8 @@ begin
   string 255 warning,inwarn,compname;
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
+  val p,s;
+  Boolean chsum
   
     IVr.SerNr = RepSpec.long1;
     ReadFirstMain(IVr,1,true);
@@ -1548,7 +1555,20 @@ begin
           PUrw.Quant = IVrw.Quant;
           MatRowPut(PUr,i,PUrw);
           PUVc_PasteQuant(PUr,i);
+          MatRowGet(PUr,i,PUrw);
+          PUrw.UPrice = IVrw.FIFORowVal;
+          PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUr.InclVAT,PUr.NoTAXonVAT,PUrw.Extra,PUr.CurncyCode,
+                  PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2,
+                  PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
+                  PUrw.CustomsCost,p,PUrw.Quant,s,PUrw.VATCode,PUr.ExportFlag);
+          PUrw.CostPrice = p;
+          PUrw.Sum = s;
+          chsum = true;
+          MatRowPut(PUr,i,PUrw);
         end;
+      end;
+      if (chsum) then begin
+        PUSumUp(PUr);
       end;
       RECORDSTORE(PUr,false);
       RESETCOMPANY(curcomp);
