@@ -958,17 +958,20 @@ BEGIN
   
   // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 18 December 2014 16:33:05
-	
-  if(readfirstmain(CUr,1,true))then begin
-  	if(CUr.CustType==1)then begin
-  		purchacc = CUr.AccAP;
-  	end else begin
+	if(INr.ConsgType>0)then begin
+		purchacc = INr.PurchAcc;
+		stockacc = INr.PurchAcc;
+	end else begin
+		if(readfirstmain(CUr,1,true))then begin
+			if(CUr.CustType==1)then begin
+				purchacc = CUr.AccAP;
+			end else begin
+				if (GetPUPControlAcc(loccode,vecode,CostAccRec.ItemGroupAccounts,rowcontrolacc,INr.Group,ARb,stocktype,purchacc,tstr,findnewf)==0) then begin end;
+			end;
+		end else begin
 			if (GetPUPControlAcc(loccode,vecode,CostAccRec.ItemGroupAccounts,rowcontrolacc,INr.Group,ARb,stocktype,purchacc,tstr,findnewf)==0) then begin end;
-  	end;
-  end else begin
-		if (GetPUPControlAcc(loccode,vecode,CostAccRec.ItemGroupAccounts,rowcontrolacc,INr.Group,ARb,stocktype,purchacc,tstr,findnewf)==0) then begin end;
+		end;
   end;
-  
   
 	// Edit End ---------------------------------------------- Edit End
 	
