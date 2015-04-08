@@ -1183,6 +1183,7 @@ LkInvoiceTypeCredit:;
 				end;  
 			end;// Edit ************************** Wednesday, 18 February 2015 16:29:28
       if (testf) then begin
+      logtext(0,cash & " " & IVp.Sum4);
         RecordCheckError(24177,"",MatRowCnt(IVp),"Sum");      
         res = -1; 
         goto L99;

@@ -530,6 +530,7 @@ begin
 		if(currentcompany>2)then begin
 			OutString(40,0,"",false);
 			OutString(40,0,"",false);
+			//OutString(40,0,"",false);
 		end else begin
 			OutString(40,0,"",false);
 		end;
