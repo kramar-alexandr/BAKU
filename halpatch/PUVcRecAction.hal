@@ -10,24 +10,35 @@ begin
 	longint lastNumber;
 	record StockMovVc SMr;
 	record PUVc PUr;
+	boolean TrHs;
 	
 	OfficialSerNr = "";
+	lastOffSerNr = "00000";
 	year = GetYear(TransDate);
-	lastDate = "31/12/" & year;		
+	lastDate = "31/12/" & year;
+	TrHs = true;		
 	
 	switch(RegisterName) begin
 	
 		case "PUVc":	
-						PUr.TransDate = StringToDate(lastDate);
-						if (ReadLastKey("TransDate",PUr,1,false)) then begin
-							lastOffSerNr = PUr.OfficialSerNr;
-						end;
+						PUr.TransDate = StringToDate(lastDate);						
+						While(LoopBackKey("TransDate",PUr,2,TrHs)) begin
+							if (GetYear(PUr.TransDate)!=year) then begin TrHs = false; end;
+							if (TrHs and nonblank(PUr.OfficialSerNr)) then begin
+								lastOffSerNr = PUr.OfficialSerNr;
+								TrHs = false;
+							end;
+						end;	
 						
 		case "StockMovVc":	
 						SMr.TransDate = StringToDate(lastDate);
-						if (ReadLastKey("TransDate",SMr,1,false)) then begin
-							lastOffSerNr = SMr.OfficialSerNr;
-						end;	
+						While(LoopBackKey("TransDate",SMr,2,TrHs)) begin
+							if (GetYear(SMr.TransDate)!=year) then begin TrHs = false; end;
+							if (TrHs and nonblank(SMr.OfficialSerNr)) then begin
+								lastOffSerNr = SMr.OfficialSerNr;
+								TrHs = false;
+							end;
+						end;							
 	end;
 		
 
