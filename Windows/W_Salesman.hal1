@@ -1758,7 +1758,7 @@ external function string 255 GetINImageAttach();
 //##ii
 procedure dummy() //##ii
 begin //##ii
-  SetLangMode(LangUkrainian,"UKR",0); //##ii
+  SetLangMode(LangUkrainian,"RUS",0); //##ii
   return; //##ii
 end; //##ii
 
@@ -2076,6 +2076,7 @@ end else begin
     SpecialMenu("Вставить товары из перемещения",'B',6,"PasteStoclMovToIVsm");
 end;
 	SpecialMenu("Экспорт счет-фактуры в Excel",' ',0,"ExportInvoiceToExcelDsm");	//Edit----------------------Dima  04.03.2015
+	SpecialMenu("Сделать поступление для FOB17",' ',0,"CreatePufromIVforPLDsm"); //Edit***************************Sasha2,14:35 07.04.2015
   EndWindow;
 end;
 

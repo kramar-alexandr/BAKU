@@ -445,17 +445,17 @@ BEGIN
                 res = 1917;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateGainAcc,"","",tstr,brd,brd2,true,rgdc1,totsum,
+              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
             end else begin
               if (GetAccName(ARAccb.RateLossAcc,tstr,60)==false) then begin
                 res = 1918;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateLossAcc,"","",tstr,brd,brd2,true,rgdc2,totsum,
+              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
             end;
           end;
           rgdc1 = true;
@@ -477,18 +477,18 @@ strango
                 res = 24221;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateGainAcc,"","",tstr,brd,brd2,true,rgdc1,totsum,
+              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
             end else begin
               if (GetAccName(ARAccb.BankRateLossAcc,tstr,60)==false) then begin
                 res = 24221;
                 goto LAddIPRowPayMode;
               end;
 
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateLossAcc,"","",tstr,brd,brd2,true,rgdc2,totsum,
+              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
             end;
           end;
       end;    
