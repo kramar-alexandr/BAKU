@@ -685,7 +685,13 @@ begin
 	while (LoopMain(INr,1,TrHs)) begin
 		changef = false;
 		next = true;
-
+		
+		/*if(setinset("30",INr.DispGroups) or setinset("31",INr.DispGroups) or setinset("32",INr.DispGroups) or setinset("33",INr.DispGroups) or setinset("34",INr.DispGroups) or setinset("35",INr.DispGroups))then begin
+			INr.ConsgType = 2;
+			INr.PurchAcc = "12";
+			changef = true;
+			RecordStore(INr,true);  
+		end;*/
 		code = INr.Code;
 		if (type1 == true) then begin
 			if (Right(code,2)=="VR") then begin 	//first type
@@ -714,10 +720,8 @@ begin
 		
 		if(changef)then begin
       RecordStore(INr,true);           
-    end;          
+    end;      
 	end;
-
-
 
   return;
 end;
