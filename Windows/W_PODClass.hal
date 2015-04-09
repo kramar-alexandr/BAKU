@@ -2228,6 +2228,9 @@ begin
   if(currentcompany==10)then begin
   	SpecialMenu("Џросмотреть расчитанные розничные цены",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
   end;
+  if(currentcompany==13)then begin
+  	SpecialMenu("Џросмотреть расчитанные розничные цены",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
+  end;
   
   EndWindow;
 end;
