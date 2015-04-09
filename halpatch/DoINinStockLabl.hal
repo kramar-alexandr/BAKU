@@ -272,35 +272,6 @@ begin
 return;
 end;
 
-//##ii
-procedure dummy() //##ii
-begin //##ii
-  SetLangMode(LangRussian,"RUS",0); //##ii
-  return; //##ii
-end; //##ii
-
-window INinStockRClass:1
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
-begin
-  real h,v,vs,l;
-  WindowBegin("Определите печать стикеров по остаткам",INinStockRClass,CGRcW,RcType);
-  SetWRect(20,80,500,250);
-  Sizeable(0,150,0,0);                                                     
-  h = 120;vs = 20;                                                             
-  
-  v=v+vs;
-  EditFieldTL(h,v+=vs,160,"Товар",M4Str,Normal,41,f1,false,INSClass);
-  EditFieldTL(h,v+=vs,160,"Склад",M4Code,Normal,41,f2,false,LocationSClass);
-  EditFieldTL(h,v+=vs,160,"Классификация",M4Code,Normal,41,f3,false,DISClass);
-  EditFieldTL(h,v+=vs,160,"Кол-во",M4Long,Normal,41,long1,false,0);
-  
-  ButtonFrame(h+200,v+=40,l=160,2,"Формат наклеек");
-  RadioButton(h+200,v,6,0,"4x13",flags[1]);
-  RadioButton(h+200,v+=16,7,0,"4x14",flags[1]);
-  
-  EndWindow;
-end;
-
 
 global procedure DoPrintLablDsm()
 begin
