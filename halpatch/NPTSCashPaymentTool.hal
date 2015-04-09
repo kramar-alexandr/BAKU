@@ -111,7 +111,7 @@ begin
 		
   end;
 
-  due = RepSpec.vals0/invfr*invto1;
+  due = Round(RepSpec.vals0/invfr*invto1,DefaultCurRoundOff);
   for (i=0;i<acrncnt;i=i+1) begin
   		if (GetFullCurncyPurchaseRate(acrncy[i],CurrentDate,fr,to1,to2,br1,br2)==false) then begin
       GetFullCurncyRate(acrncy[i],CurrentDate,fr,to1,to2,br1,br2);
