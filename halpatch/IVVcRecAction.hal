@@ -1277,7 +1277,7 @@ LkInvoiceTypeCredit:;
   end;  
   if (check==true) then begin
     if (IVp.UpdStockFlag!=0) then begin
-      IVUpdateFIFO(IVp,true,fifocurIVr,1); //Edit***************************Sasha2,11:53 18.03.2015
+      IVUpdateFIFO(IVp,true,fifocurIVr,1); //Edit***************************Sasha2,11:53 18.03.2015   1 - IVVc, 2 - StockMovVc
       if (blank(IVp.CAE)) then begin
         if (DisallowPriceLowerCost_IVVc(IVp)) then begin
           RecordCheckError(20767,"",i,"Price");      
