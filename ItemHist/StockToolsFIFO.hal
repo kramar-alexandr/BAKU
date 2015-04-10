@@ -43,13 +43,14 @@ begin
 end;
 
 //Edit***************************Sasha2,13:25 18.03.2015 {
-function val ForIV_CalculateCosts(record ItemHistVc IHr,val qty,var val adjv,var val skippedqty,var val takenqty,Boolean costfrrecf,Boolean printf,Boolean todaysratef,Integer OverwriteCostModel,Integer PerLocation,record INVc INr,integer rownr,var record IVVc fifocurIVr)
+function val AddCurValToTrans_CalculateCosts(record ItemHistVc IHr,val qty,var val adjv,var val skippedqty,var val takenqty,Boolean costfrrecf,Boolean printf,Boolean todaysratef,Integer OverwriteCostModel,Integer PerLocation,record INVc INr,integer rownr,var record IVVc fifocurIVr,var record StockMovVc fifocurSMr,integer recordtype)
 begin
   val res;
   val remcost,t;
   val remcostprice,totcostprice;
   record ItemHistVc printIHr,CurrIHr; //Edit***************************Sasha2,15:09 18.03.2015
   row IVVc fifocurIVrw; //Edit***************************Sasha2,13:29 18.03.2015
+  row StockMovVc fifocurSMrw; //Edit***************************Sasha2,13:29 18.03.2015
   val remcost_curr,currcost,convertedsum; //Edit***************************Sasha2,13:37 18.03.2015
   
   res = blankval;
@@ -112,32 +113,63 @@ begin
       t = qty - takenqty;
     end;
     if (t!=0) then begin
-      if (MatRowCnt(fifocurIVr)>rownr) then begin //Edit***************************Sasha2,14:43 18.03.2015 {
-        MatRowGet(fifocurIVr,rownr,fifocurIVrw);
-        if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IHr.CurncyCode) then begin
-          if (fifocurIVrw.Quant!=1) then begin
-            CurrIHr.ArtCode = IHr.ArtCode;
-            CurrIHr.FileName = "PUVc";
-            if (ReadLastKey("FNArtCode",CurrIHr,2,false) and CurrIHr.ArtCode==IHr.ArtCode) then begin
-              if (CurrIHr.CurncyCode!=fifocurIVrw.Spec) then begin
-                CurValToOtherCur(IHr.TransDate,fifocurIVrw.Spec,fifocurIVrw.FIFO,CurrIHr.CurncyCode,convertedsum,DefaultCurRoundOff);
-                fifocurIVrw.FIFO = convertedsum;
-                fifocurIVrw.FrRate = round(CurrIHr.TotCostPriceCurncy/CurrIHr.TotCostPrice,DefaultCurRoundOff);
-                fifocurIVrw.BaseRate1 = 1;
-                fifocurIVrw.Spec = CurrIHr.CurncyCode;
-                fifocurIVrw.Quant = 1;
-              end else begin
-                fifocurIVrw.Quant = 1;
+    
+      switch (recordtype) begin //Edit***************************Sasha2,14:43 18.03.2015 {
+        case 1:
+          if (MatRowCnt(fifocurIVr)>rownr) then begin 
+            MatRowGet(fifocurIVr,rownr,fifocurIVrw);
+            if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IHr.CurncyCode) then begin
+              if (fifocurIVrw.Quant!=1) then begin
+                CurrIHr.ArtCode = IHr.ArtCode;
+                CurrIHr.FileName = "PUVc";
+                if (ReadLastKey("FNArtCode",CurrIHr,2,false) and CurrIHr.ArtCode==IHr.ArtCode) then begin
+                  if (CurrIHr.CurncyCode!=fifocurIVrw.Spec) then begin
+                    CurValToOtherCur(IHr.TransDate,fifocurIVrw.Spec,fifocurIVrw.FIFO,CurrIHr.CurncyCode,convertedsum,DefaultCurRoundOff);
+                    fifocurIVrw.FIFO = convertedsum;
+                    fifocurIVrw.FrRate = round(CurrIHr.TotCostPriceCurncy/CurrIHr.TotCostPrice,DefaultCurRoundOff);
+                    fifocurIVrw.BaseRate1 = 1;
+                    fifocurIVrw.Spec = CurrIHr.CurncyCode;
+                    fifocurIVrw.Quant = 1;
+                  end else begin
+                    fifocurIVrw.Quant = 1;
+                  end;
+                end else begin
+                  goto LAddCurValToTrans_CalculateCosts;
+                end;
               end;
-            end else begin
-              goto LForIV_CalculateCosts;
             end;
-          end;
-        end;
-      end else begin
-        ClearRow(fifocurIVr,fifocurIVrw,1);
-        fifocurIVrw.Spec = IHr.CurncyCode;
-      end; //Edit***************************Sasha2,14:44 18.03.2015 }
+          end else begin
+            ClearRow(fifocurIVr,fifocurIVrw,1);
+            fifocurIVrw.Spec = IHr.CurncyCode;
+          end; 
+        case 2:
+          if (MatRowCnt(fifocurSMr)>rownr) then begin 
+            MatRowGet(fifocurSMr,rownr,fifocurSMrw);
+            if (nonblank(fifocurSMrw.Spec) and fifocurSMrw.Spec!=IHr.CurncyCode) then begin
+              if (fifocurSMrw.Quant!=1) then begin
+                CurrIHr.ArtCode = IHr.ArtCode;
+                CurrIHr.FileName = "PUVc";
+                if (ReadLastKey("FNArtCode",CurrIHr,2,false) and CurrIHr.ArtCode==IHr.ArtCode) then begin
+                  if (CurrIHr.CurncyCode!=fifocurSMrw.Spec) then begin
+                    CurValToOtherCur(IHr.TransDate,fifocurSMrw.Spec,fifocurSMrw.SentFIFORowVal,CurrIHr.CurncyCode,convertedsum,DefaultCurRoundOff);
+                    fifocurSMrw.SentFIFORowVal = convertedsum;
+                    fifocurSMrw.NewPrice = round(CurrIHr.TotCostPriceCurncy/CurrIHr.TotCostPrice,DefaultCurRoundOff); //from rate
+                    fifocurSMrw.OldPrice = 1; //to rate
+                    fifocurSMrw.Spec = CurrIHr.CurncyCode;
+                    fifocurSMrw.Quant = 1;
+                  end else begin
+                    fifocurSMrw.Quant = 1;
+                  end;
+                end else begin
+                  goto LAddCurValToTrans_CalculateCosts;
+                end;
+              end;
+            end;
+          end else begin
+            ClearRow(fifocurSMr,fifocurSMrw,1);
+            fifocurSMrw.Spec = IHr.CurncyCode;
+          end; 
+      end;//Edit***************************Sasha2,14:44 18.03.2015 }
       if (IHr.RemQty==t) then begin
         res = res + remcostprice;
         currcost = IHr.RemCostPriceCurncy; //Edit***************************Sasha2,14:42 18.03.2015
@@ -150,19 +182,29 @@ begin
           currcost = round(IHr.TotCostPriceCurncy/IHr.Qty,CostPriceDecimals) * t; //Edit***************************Sasha2,14:42 18.03.2015
         end;
       end;
-      if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IHr.CurncyCode) then begin
-        CurValToOtherCur(IHr.TransDate,IHr.CurncyCode,currcost,fifocurIVrw.Spec,convertedsum,DefaultCurRoundOff);
-        currcost = convertedsum;
-      end;
-      fifocurIVrw.FIFO = fifocurIVrw.FIFO + currcost; //Edit***************************Sasha2,14:48 18.03.2015
-      MatRowPut(fifocurIVr,rownr,fifocurIVrw); //Edit***************************Sasha2,14:43 18.03.2015
+      switch (recordtype) begin //Edit***************************Sasha2,14:43 18.03.2015 {
+        case 1:
+          if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IHr.CurncyCode) then begin
+            CurValToOtherCur(IHr.TransDate,IHr.CurncyCode,currcost,fifocurIVrw.Spec,convertedsum,DefaultCurRoundOff);
+            currcost = convertedsum;
+          end;
+          fifocurIVrw.FIFO = fifocurIVrw.FIFO + currcost; 
+          MatRowPut(fifocurIVr,rownr,fifocurIVrw); 
+        case 2:
+          if (nonblank(fifocurSMrw.Spec) and fifocurSMrw.Spec!=IHr.CurncyCode) then begin
+            CurValToOtherCur(IHr.TransDate,IHr.CurncyCode,currcost,fifocurSMrw.Spec,convertedsum,DefaultCurRoundOff);
+            currcost = convertedsum;
+          end;
+          fifocurSMrw.SentFIFORowVal = fifocurSMrw.SentFIFORowVal + currcost; 
+          MatRowPut(fifocurSMr,rownr,fifocurSMrw); 
+      end;//Edit***************************Sasha2,14:44 18.03.2015 }
       takenqty = takenqty + t;
     end;
   end;
   
- LForIV_CalculateCosts:; //Edit***************************Sasha2,15:09 18.03.2015 
+ LAddCurValToTrans_CalculateCosts:; //Edit***************************Sasha2,15:09 18.03.2015 
   
-  ForIV_CalculateCosts = res;
+  AddCurValToTrans_CalculateCosts = res;
   return;
 end; //Edit***************************Sasha2,13:24 18.03.2015 }
 
@@ -249,7 +291,7 @@ begin
 end;
 
 global //Edit***************************Sasha2,12:42 18.03.2015 {
-function val ForIV_FindCostPriceFIFO(Integer FIFOPerLocation,record INVc INr,string location,string serialnr,val qty,val adjustqty,Boolean costfrrecf,Boolean printf,Boolean todaysratef,Integer OverwriteCostModel,Integer consigstock,integer rownr,var record IVVc fifocurIVr)
+function val AddCurValToTrans_FindCostPriceFIFO(Integer FIFOPerLocation,record INVc INr,string location,string serialnr,val qty,val adjustqty,Boolean costfrrecf,Boolean printf,Boolean todaysratef,Integer OverwriteCostModel,Integer consigstock,integer rownr,var record IVVc fifocurIVr,var record StockMovVc fifocurSMr,integer recordtype)
 begin
   record ItemHistVc IHr;
   string 200 thekey;
@@ -312,11 +354,11 @@ begin
       end;
       if (testf) then begin
         //res = res + CalculateCosts(IHr,qty,adjv,skippedqty,takenqty,costfrrecf,printf,todaysratef,OverwriteCostModel,FIFOPerLocation,INr); //Edit***************************Sasha2,13:26 18.03.2015
-        res = res + ForIV_CalculateCosts(IHr,qty,adjv,skippedqty,takenqty,costfrrecf,printf,todaysratef,OverwriteCostModel,FIFOPerLocation,INr,rownr,fifocurIVr); //Edit***************************Sasha2,13:26 18.03.2015
+        res = res + AddCurValToTrans_CalculateCosts(IHr,qty,adjv,skippedqty,takenqty,costfrrecf,printf,todaysratef,OverwriteCostModel,FIFOPerLocation,INr,rownr,fifocurIVr,fifocurSMr,recordtype); //Edit***************************Sasha2,13:26 18.03.2015
       end;
     end;
   end;
-  ForIV_FindCostPriceFIFO = res;
+  AddCurValToTrans_FindCostPriceFIFO = res;
   return;
 end; //Edit***************************Sasha2,12:42 18.03.2015 }
 
@@ -1059,7 +1101,7 @@ begin
 end;
 
 global //Edit***************************Sasha2,12:03 18.03.2015 {
-function val ForIV_FindCostPrice(string artcode,string location,string serialnr,val qty,val adjustqty,Boolean todaysratef,integer rownr,var record IVVc fifocurIVr)
+function val AddCurValToTrans_FindCostPrice(string artcode,string location,string serialnr,val qty,val adjustqty,Boolean todaysratef,integer rownr,var record IVVc fifocurIVr,var record StockMovVc fifocurSMr,integer recordtype)
 begin
   record INVc INr;
   record ITVc ITr;
@@ -1097,7 +1139,7 @@ begin
         res = qty*v;
       case 4:
         switch (queuecostmodel) begin
-          case 0: res = ForIV_FindCostPriceFIFO(FIFOPerLocation(INr,ITr,CAb),INr,location,serialnr,qty,adjustqty,false,false,todaysratef,0,0,rownr,fifocurIVr); //Edit***************************Sasha2,12:43 18.03.2015
+          case 0: res = AddCurValToTrans_FindCostPriceFIFO(FIFOPerLocation(INr,ITr,CAb),INr,location,serialnr,qty,adjustqty,false,false,todaysratef,0,0,rownr,fifocurIVr,fifocurSMr,recordtype); //Edit***************************Sasha2,12:43 18.03.2015
           case 1: res = FindCostPriceLIFO(FIFOPerLocation(INr,ITr,CAb),INr,location,serialnr,qty,adjustqty,false,false,todaysratef,0,0);
         end;
       case 20: 
@@ -1120,7 +1162,31 @@ begin
     end;
   end;
   res = Round(res,CostPriceDecimals);
+  AddCurValToTrans_FindCostPrice = res;
+  RETURN;
+END; //Edit***************************Sasha2,12:03 18.03.2015 }
+
+global //Edit***************************Sasha2,12:03 18.03.2015 {
+function val ForIV_FindCostPrice(string artcode,string location,string serialnr,val qty,val adjustqty,Boolean todaysratef,integer rownr,var record IVVc fifocurIVr,integer recordtype)
+begin
+  record StockMovVc fifocurSMr;
+  val res;
+  
+    res = AddCurValToTrans_FindCostPrice(artcode,location,serialnr,qty,adjustqty,todaysratef,rownr,fifocurIVr,fifocurSMr,recordtype);
+  
   ForIV_FindCostPrice = res;
+  RETURN;
+END; //Edit***************************Sasha2,12:03 18.03.2015 }
+
+global //Edit***************************Sasha2,12:03 18.03.2015 {
+function val ForSM_FindCostPrice(string artcode,string location,string serialnr,val qty,val adjustqty,Boolean todaysratef,integer rownr,var record StockMovVc fifocurSMr,integer recordtype)
+begin
+  record IVVc fifocurIVr;
+  val res;
+  
+    res = AddCurValToTrans_FindCostPrice(artcode,location,serialnr,qty,adjustqty,todaysratef,rownr,fifocurIVr,fifocurSMr,recordtype);
+  
+  ForSM_FindCostPrice = res;
   RETURN;
 END; //Edit***************************Sasha2,12:03 18.03.2015 }
 

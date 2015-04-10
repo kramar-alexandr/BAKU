@@ -17,7 +17,7 @@ external function Integer CheckSerialStatus(string,string,var string);
 external function Boolean CanOKStockRecord(var Integer);
 external updating procedure UpdateStockResFromStockMov(record StockMovVc);
 external function Integer CheckRates(string,val,val,val,val,val,var string);
-external function Integer MakeTransFromStockMov(record TRVc,record StockMovVc,record LocationVc,record LocationVc,Boolean,Integer);
+external function Integer MakeTransFromStockMov(record TRVc,record StockMovVc,record LocationVc,record LocationVc,Boolean,Integer,record StockMovVc); //Edit***************************Sasha2,18:04 09.04.2015
 external updating procedure StockMovUpdateReserved(record StockMovVc,Boolean,Boolean);
 external function Boolean StockMovVc_PasteQuant(var record StockMovVc,Integer);
 external procedure StockMovSumUp(var record StockMovVc);
@@ -38,7 +38,7 @@ external procedure SwapM4Val(var val,var val);
 external procedure B1ToB2Val(val,val,val,var val);
 external procedure B1ToB2StrVal(string,val,val,var string);
 external updating function Boolean UpdateIntOrderFromStockMov(record StockMovVc,record StockMovVc,Boolean);
-external procedure UpdateStockMovFIFO(var record StockMovVc,record StockMovVc,Integer);
+external procedure UpdateStockMovFIFO(var record StockMovVc,record StockMovVc,Integer,var record StockMovVc,integer); //Edit***************************Sasha2,17:47 09.04.2015
 external function string 255 CheckTrans(var record TRVc,Integer,Boolean);
 external updating procedure SaveTrans(record TRVc);
 external function Boolean ExistStockTrans(string,Date,var Integer,var string,string,LongInt,record MainStockBlock);
@@ -434,6 +434,7 @@ BEGIN
   row IntORVc IntORrw;
   record SHVc SHr;
   row SHVc SHrw;
+  record StockMovVc fifocurSMr; //Edit***************************Sasha2,11:34 18.03.2015
 
   res = 0;
   insertmode = 1;//Rs_insert
@@ -1067,7 +1068,7 @@ already checked few lines above
   end;
   
   if (check!=0) then begin
-    UpdateStockMovFIFO(SMp,SM2p,stat);
+    UpdateStockMovFIFO(SMp,SM2p,stat,fifocurSMr,2); //Edit***************************Sasha2,17:46 09.04.2015   1 - IVVc, 2 - StockMovVc
   end;  
   if (transsendf) then begin
     if (UserCanAction("SentStockMovOK",true)==false) then begin
@@ -1137,7 +1138,7 @@ LStockMovVcRecordCheck_GenTrans:;
   if (gentrans==false) then begin transsendf = false; end;
   if (gentrans==false) then begin transreceivef = false; end;
   if (transsendf) then begin
-    errcode = MakeTransFromStockMov(gTRp,SMp,LocFrRec,LocThrouRec,false,SentSTMovYc);
+    errcode = MakeTransFromStockMov(gTRp,SMp,LocFrRec,LocThrouRec,false,SentSTMovYc,fifocurSMr); //Edit***************************Sasha2,18:03 09.04.2015
     if (errcode!=0) then begin
       if (disperrf) then begin
         RecordCheckError(errcode,"",-1,"SerNr");      
@@ -1169,12 +1170,12 @@ LStockMovVcRecordCheck_GenTrans:;
   if (transreceivef) then begin
     if (blank(SMp.ThrouLocation)) then begin
       if (SMp.SentOKFlag!=0) then begin
-        errcode = MakeTransFromStockMov(gTRp,SMp,LocThrouRec,LocToRec,false,STMovYc);
+        errcode = MakeTransFromStockMov(gTRp,SMp,LocThrouRec,LocToRec,false,STMovYc,fifocurSMr); //Edit***************************Sasha2,18:42 09.04.2015
       end else begin
-        errcode = MakeTransFromStockMov(gTRp,SMp,LocFrRec,LocToRec,false,STMovYc);
+        errcode = MakeTransFromStockMov(gTRp,SMp,LocFrRec,LocToRec,false,STMovYc,fifocurSMr); //Edit***************************Sasha2,18:42 09.04.2015
       end;
     end else begin
-      errcode = MakeTransFromStockMov(gTRp,SMp,LocThrouRec,LocToRec,false,STMovYc);
+      errcode = MakeTransFromStockMov(gTRp,SMp,LocThrouRec,LocToRec,false,STMovYc,fifocurSMr); //Edit***************************Sasha2,18:42 09.04.2015
     end;
     if (errcode!=0) then begin
       if (disperrf) then begin

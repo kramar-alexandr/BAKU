@@ -24,7 +24,7 @@ external function Boolean ExpandStructItem(string,string,val,var record SHVc);
 external procedure FindStockValue(string,string,var record ItemStatusVc);
 external updating procedure UpdateInShipment(string,string,Date,val);
 external function val AbsoluteVal(val);// Edit ************************** Monday, 8 July 2013 10:36:11
-external function val ForIV_FindCostPrice(string,string,string,val,val,Boolean,integer,var record IVVc); //Edit***************************Sasha2,12:04 18.03.2015
+external function val ForIV_FindCostPrice(string,string,string,val,val,Boolean,integer,var record IVVc,integer); //Edit***************************Sasha2,12:04 18.03.2015
 
 /* INRS
 
@@ -1303,7 +1303,7 @@ LFindAdjstockvQtyIVVc:;
   RETURN;
 END;
 
-procedure CalculateIVRowFIFO(record INVc INr,record CostAccBlock CAb,string location,record IVVc IVp,row IVVc IVrw,Integer currow,var record IVVc fifocurIVr) //Edit***************************Sasha2,11:56 18.03.2015
+procedure CalculateIVRowFIFO(record INVc INr,record CostAccBlock CAb,string location,record IVVc IVp,row IVVc IVrw,Integer currow,var record IVVc fifocurIVr,integer recordtype) //Edit***************************Sasha2,11:56 18.03.2015
 BEGIN
   val adjstockv,t;
   Integer j;
@@ -1350,7 +1350,7 @@ BEGIN
       serialnr = FirstInRange(IVrw.SerialNr,30);
       while (nonblank(serialnr)) begin
         //IVrw.FIFORowVal = IVrw.FIFORowVal + FindCostPrice(IVrw.ArtCode,location,serialnr,1.00,adjstockv,false); //Edit***************************Sasha2,12:07 18.03.2015
-        IVrw.FIFORowVal = IVrw.FIFORowVal + ForIV_FindCostPrice(IVrw.ArtCode,location,serialnr,1.00,adjstockv,false,currow,fifocurIVr); //Edit***************************Sasha2,12:07 18.03.2015
+        IVrw.FIFORowVal = IVrw.FIFORowVal + ForIV_FindCostPrice(IVrw.ArtCode,location,serialnr,1.00,adjstockv,false,currow,fifocurIVr,recordtype); //Edit***************************Sasha2,12:07 18.03.2015
         qty = qty + 1;
         adjstockv = adjstockv + 1;
         serialnr = NextSerialNumber(IVrw.ArtCode,serialnr,SNrb);
@@ -1358,7 +1358,7 @@ BEGIN
       end;
     end else begin
       //IVrw.FIFORowVal = FindCostPrice(IVrw.ArtCode,location,IVrw.SerialNr,IVrw.Quant,adjstockv,false); //Edit***************************Sasha2,12:08 18.03.2015
-      IVrw.FIFORowVal = ForIV_FindCostPrice(IVrw.ArtCode,location,IVrw.SerialNr,IVrw.Quant,adjstockv,false,currow,fifocurIVr); //Edit***************************Sasha2,12:08 18.03.2015
+      IVrw.FIFORowVal = ForIV_FindCostPrice(IVrw.ArtCode,location,IVrw.SerialNr,IVrw.Quant,adjstockv,false,currow,fifocurIVr,recordtype); //Edit***************************Sasha2,12:08 18.03.2015
     end;
   end;
   
@@ -1381,7 +1381,7 @@ LCalculateIVRowFIFO:;
 END;
 
 global
-procedure IVUpdateFIFO(record IVVc IVp,Boolean trflg,var record IVVc fifocurIVr) //Edit***************************Sasha2,11:55 18.03.2015
+procedure IVUpdateFIFO(record IVVc IVp,Boolean trflg,var record IVVc fifocurIVr,integer recordtype) //Edit***************************Sasha2,11:55 18.03.2015
 BEGIN
   row IVVc IVrw;
   row IVVc IV2rw;
@@ -1468,11 +1468,11 @@ BEGIN
                 IVrw.FIFORowVal = Round(IVrw.FIFORowVal,SetRoundModeD(5));
                 IVrw.FIFO = IVrw.FIFORowVal/recqty;
               end else begin
-                CalculateIVRowFIFO(INr,CAb,location,IVp,IVrw,i,fifocurIVr); //Edit***************************Sasha2,11:56 18.03.2015
+                CalculateIVRowFIFO(INr,CAb,location,IVp,IVrw,i,fifocurIVr,recordtype); //Edit***************************Sasha2,11:56 18.03.2015
               end;  
             end else begin
               IVrw.FIFO = blankval;
-              CalculateIVRowFIFO(INr,CAb,location,IVp,IVrw,i,fifocurIVr); //Edit***************************Sasha2,11:56 18.03.2015
+              CalculateIVRowFIFO(INr,CAb,location,IVp,IVrw,i,fifocurIVr,recordtype); //Edit***************************Sasha2,11:56 18.03.2015
             end;  
           end;
         end else begin        

@@ -53,7 +53,7 @@ external function Boolean CurncyCodeRegistered(string);
 external function Boolean IsControlAccount(string,Boolean,Boolean);
 external function Integer CashSerNumberTest(string,val,string,LongInt,var Boolean);
 external function Boolean ExistStockTrans(string,Date,var Integer,var string,string,LongInt,record MainStockBlock);
-external procedure IVUpdateFIFO(record IVVc,Boolean,var record IVVc); //Edit***************************Sasha2,11:53 18.03.2015
+external procedure IVUpdateFIFO(record IVVc,Boolean,var record IVVc,integer); //Edit***************************Sasha2,11:53 18.03.2015
 external function Integer GetCreditedInvoiceType(record IVVc);
 external function Boolean IsSessionOpen(string,string,Date,Time);
 external function boolean ShouldSendArgEinvoice(record IVVc);
@@ -1277,7 +1277,7 @@ LkInvoiceTypeCredit:;
   end;  
   if (check==true) then begin
     if (IVp.UpdStockFlag!=0) then begin
-      IVUpdateFIFO(IVp,true,fifocurIVr); //Edit***************************Sasha2,11:53 18.03.2015
+      IVUpdateFIFO(IVp,true,fifocurIVr,1); //Edit***************************Sasha2,11:53 18.03.2015
       if (blank(IVp.CAE)) then begin
         if (DisallowPriceLowerCost_IVVc(IVp)) then begin
           RecordCheckError(20767,"",i,"Price");      

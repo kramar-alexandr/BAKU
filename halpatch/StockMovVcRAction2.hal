@@ -41,6 +41,7 @@ external function Boolean GetAccName(string,var string,Integer);
 external function Integer TypeOfCurncy(var string,var Integer);
 external procedure GetFullCurncyRateText(Boolean,var string,val,val,val,val,val);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external procedure AddEuroCurncyNomTrRow(record TRVc,string,string,string,string,val,Boolean,Boolean,var val,string,val,val,val,val,val,val,val,val,LongInt,Boolean,string,string,string,Integer); //Edit***************************Sasha2,18:30 09.04.2015
 
 global
 function LongInt StockMovVcRecordDefaults(var record StockMovVc StockMovr,record StockMovVc StockMov2r,LongInt stat,LongInt long4)
@@ -163,7 +164,7 @@ END;
 global
 function Integer AddStockMovCostRows(record TRVc gTRp,record LocationVc LocFrp,record LocationVc LocTop,record CostAccBlock CostAccRec,record AccBlock ARAccRec,
                                     record StockMovVc StockMovp,row StockMovVc StockMovrw,
-                                    Boolean dc1,Boolean dc2,Boolean sumupf,val br1,val br2,var val TotSum,Integer IntYc)
+                                    Boolean dc1,Boolean dc2,Boolean sumupf,val br1,val br2,var val TotSum,Integer IntYc,integer rownr,record IVVc fifocurSMr) //Edit***************************Sasha2,18:07 09.04.2015
 BEGIN
   Integer res;
   Boolean lsumupf;
@@ -174,6 +175,9 @@ BEGIN
   string 255 stockfrtxt,stocktotxt,errstr;
   Date blankd;
   string 20 consacc; //Edit***************************Sasha2,14:36 08.04.2015
+  val rs2_curr,histfrrate; //Edit***************************Sasha2,10:46 17.03.2015
+	string 20 currstr; //Edit***************************Sasha2,11:13 17.03.2015
+	row StockMovVc fifocurSMrw; //Edit***************************Sasha2,15:50 18.03.2015
   
   lsumupf = sumupf;
   frobjstr = StockMovp.Objects;
@@ -229,13 +233,23 @@ BEGIN
   if (res!=0) then begin
     goto LAddStockMovCostRows;
   end;
+  
+  MatRowGet(fifocurSMr,rownr,fifocurSMrw); //Edit***************************Sasha2,11:25 17.03.2015 {
+  rs2_curr = fifocurSMrw.SentFIFORowVal; 
+  currstr = fifocurSMrw.Spec;
+  if (fifocurSMrw.NewPrice!=0) then begin
+    histfrrate = fifocurSMrw.NewPrice;
+  end else begin
+    histfrrate = Round(fifocurSMrw.SentFIFORowVal/StockMovrw.FIFORowVal,DefaultCurRoundOff);
+  end; //Edit***************************Sasha2,11:25 17.03.2015 }
 
   if (NonBlank(INr.PurchAcc)) then begin //Edit***************************Sasha2,14:38 08.04.2015 {
     consacc = INr.PurchAcc;
   end else begin
     consacc = stockfracc;
   end; //Edit***************************Sasha2,14:38 08.04.2015 }
-  AddEuroTrRowType(gTRp,consacc,locobjstr,"",stockfrtxt,rs2,br1,br2,lsumupf,dc2,TotSum,false,"","","",kTransactionRowTypeStock); //Edit***************************Sasha2,14:41 08.04.2015
+  //AddEuroTrRowType(gTRp,consacc,locobjstr,"",stockfrtxt,rs2,br1,br2,lsumupf,dc2,TotSum,false,"","","",kTransactionRowTypeStock); //Edit***************************Sasha2,14:41 08.04.2015
+  AddEuroCurncyNomTrRow(gTRp,consacc,locobjstr,"",stockfrtxt,rs2,lsumupf,dc2,TotSum,currstr,histfrrate,1,-1,br1,br2,rs2_curr,-1,-1,-1,false,"","","",kTransactionRowTypeStock) //Edit***************************Sasha2,18:36 09.04.2015
   if (IntYc==SentSTMovYc) then begin
     if (nonblank(StockMovrw.SentExtraSCost)) then begin
       PUCalcPerc(rs2,StockMovrw.SentExtraSCost,t);
@@ -288,14 +302,15 @@ BEGIN
   end else begin
     consacc = stocktoacc;
   end; //Edit***************************Sasha2,14:38 08.04.2015 }
-  AddEuroTrRowType(gTRp,consacc,locobjstr,"",stocktotxt,rs2,br1,br2,lsumupf,dc1,TotSum,false,"","","",kTransactionRowTypeStock); //Edit***************************Sasha2,14:41 08.04.2015
+  //AddEuroTrRowType(gTRp,consacc,locobjstr,"",stocktotxt,rs2,br1,br2,lsumupf,dc1,TotSum,false,"","","",kTransactionRowTypeStock); //Edit***************************Sasha2,14:41 08.04.2015
+  AddEuroCurncyNomTrRow(gTRp,consacc,locobjstr,"",stocktotxt,rs2,lsumupf,dc1,TotSum,currstr,histfrrate,1,-1,br1,br2,rs2_curr,-1,-1,-1,false,"","","",kTransactionRowTypeStock) //Edit***************************Sasha2,18:36 09.04.2015
 LAddStockMovCostRows:;
   AddStockMovCostRows = res;
   RETURN;
 END;
 
 global
-function Integer MakeTransFromStockMov(record TRVc gTRp,record StockMovVc StockMovp,record LocationVc LocFrp,record LocationVc LocTop,Boolean rpt,Integer IntYc)
+function Integer MakeTransFromStockMov(record TRVc gTRp,record StockMovVc StockMovp,record LocationVc LocFrp,record LocationVc LocTop,Boolean rpt,Integer IntYc,record StockMovVc fifocurSMr) //Edit***************************Sasha2,18:04 09.04.2015
 BEGIN
   Integer res;
   record CostAccBlock CostAccRec;
@@ -396,7 +411,7 @@ BEGIN
   gTRp.Comment = ftxt; 
   for (i=0; i<rwcnt; i=i+1) begin
     MatRowGet(StockMovp,i,StockMovrw);
-    res = AddStockMovCostRows(gTRp,LocFrp,LocTop,CostAccRec,ARAccRec,StockMovp,StockMovrw,dc1,dc2,sumupf,br1,br2,TotSum,IntYc);
+    res = AddStockMovCostRows(gTRp,LocFrp,LocTop,CostAccRec,ARAccRec,StockMovp,StockMovrw,dc1,dc2,sumupf,br1,br2,TotSum,IntYc,i,fifocurSMr); //Edit***************************Sasha2,18:07 09.04.2015
     if (res!=0) then begin
       goto LMakeTransFromStockMov;
     end;                                 
