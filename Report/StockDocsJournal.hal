@@ -130,6 +130,11 @@ begin
       case "RetPUVc":
         RetPUr.SerNr = DocNumber;
         ReadFirstMain(RetPUr,1,true);
+        if (RetPUr.NotForReport==1) then begin
+          res = false;
+        end;
+        params[0] = RetPUr.VEName;
+        params[1] = RetPUr.VECode;
         if (NonBlank(RetPUr.OfficialSerNr)) then begin
           offnumber = RetPUr.OfficialSerNr;
         end else begin
@@ -335,7 +340,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
 	    filenames[fncnt] = "RetVc"; fncnt = fncnt + 1;
 	 case 1:
 	    filenames[fncnt] = "IVVc"; fncnt = fncnt + 1;
-	    //filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
+	    filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
 	    filenames[fncnt] = "SHVc"; fncnt = fncnt + 1;
 	 case 2:
 	    filenames[fncnt] = "StockMovVc"; fncnt = fncnt + 1; stmovf = true;
