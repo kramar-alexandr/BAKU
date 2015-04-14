@@ -7691,3 +7691,175 @@ begin
 end;
 
 
+
+
+
+window RetPUDClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,v,vm,vs;
+  Integer tilenr,f,flipnr;
+  
+  WindowBegin("Returned Goods to #Supplier#",RetPUDClass,CGview,-);
+  SetWRect(20,80,750,460);
+  Sizeable(-1,-1,0,0);
+  UseView(RetPUVc);
+  FormName(RetPurchaseForm);
+  Tile(0,74,false,"",SerNr);
+  v = 6; vs = 20;
+  EditField(75,vm=(v=6),95,"No.",Normal,SerNr,false,TSerSClass);
+  EditField(75,v+=20,95,"#Supplier#",ViewOnly,VECode,false,0);
+  EditField(h=255,v=vm,-40,"Name",ViewOnly,VEName,false,0);
+  EditField(h,vm=(v+=20),135,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
+  CheckBox(h=500,v,0,"Not for reports",NotForReport);		//Edit----------------------Dima  14.04.2015
+  v=v+20;
+  CheckBox(h4=-100,v=vm,0,"OK",OKFlag);
+  tilenr = 1;
+  TileButton(tilenr,"Terms"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Items"); tilenr = tilenr + 1;
+  if (HasMultiCurrency) then begin
+    TileButton(tilenr,"Currency"); tilenr = tilenr + 1;
+  end;
+  TileButton(tilenr,"Address"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Freight"); tilenr = tilenr + 1;
+  TileButton(tilenr,"Comment"); tilenr = tilenr + 1;
+//  TileButton(tilenr,"Extra Costs");
+  tilenr = 1;
+  Tile(tilenr,70,false,tilenr,TransDate); tilenr = tilenr + 1;
+  vs = 20; h1 = 110; h2 = 300; h3 = 530; h4 = -100;
+  EditField(h1,vm=(v=6),82,"Date",Normal,TransDate,false,PasteCurDate);
+  EditField(h1,v+=vs,82,"Location",Normal,Location,false,LocationSClass);
+  if (IsEnterprise) then begin
+    EditField(h1,v+=vs,82,"Reason",Normal,Reason,false,StandProblemsSClass);  
+  end;
+  EditField(h2,v=vm,125, "Purch. Order No.",ViewOnly,PONr,false,0);
+  EditField(h2,v+=vs,125,"Route",Normal,Sorting,false,DelRouteSClass);
+  ButtonFrame(h3=h3-70,v=16,140,2,"Reduce Quantities");
+  RadioButton(h3,v,0,0,"Received Only",Type);
+  RadioButton(h3,v+=16,1,0,"Ordered and Received",Type);
+  CheckBox(h4,v=vm,0,"Price  Incl. #VAT#",InclVAT);
+  EnterSkip(Math);
+  Tile(tilenr,79,true,tilenr,Math); tilenr = tilenr + 1;
+  v = 24;
+  MatrixBegin(4,v,-50,-22,-,199);
+  Flip(0);
+  if (HasJewelleryInterface) then begin
+    MatCol(1,24,"Serial No.",0,SerialNr,false,SerialNrSClass);
+    EnterSkip(Quant);
+    MatCol(1,130,"Item",0,ArtCode,false,INSClass);
+  end else begin
+    MatCol(1,24,"Item",0,ArtCode,false,INSClass);
+    MatCol(1,120,"Qty",0,Quant,true,0);
+  end;
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,174,"Description",0,Spec,false,0);
+  if (HasJewelleryInterface) then begin
+    MatCol(1,-280,"Location",0,Location,false,0);
+  end;
+  MatCol(1,-220,"#Supplier# Item No.",0,VEItemCode,false,0);
+  MatCol(1,-80,"Coeff.",0,Coefficient,true,0);
+  if (HasModNL or HasObjects) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    MatCol(1,174,"Description",0,Spec,false,0);
+    if (HasModNL) then begin
+      MatCol(1,-190,"Cost A/C",0,CostAcc,false,0);
+      MatCol(1,-130,"Purch. A/C",0,CredAcc,false,0);
+    end;
+    if (HasObjects) then begin
+      MatCol(1,-60,"Objects",0,Objects,false,0);
+    end;
+  end;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,174,"Description",0,Spec,false,0);
+  MatCol(1,-360,"Location",0,Location,false,0);
+//  MatColTL(1,-310,"Location",0,M4UStr,Normal,0,Location,false,0);
+  MatColTL(1,-300,"GR CostPrice",0,-1,ViewOnly,-1,PUCostPrice,false,0);
+  MatColTL(1,-220,"Price Var.",0,-1,ViewOnly,-1,VarianceAmount,false,0);
+  MatCol(1,-160,"FIFO",0,FIFO,true,0);
+  MatCol(1,-90,"Row FIFO",0,FIFORowVal,true,0);
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,174,"Description",0,Spec,false,0);
+  if (IsEnterprise) then begin
+    MatCol(1,-300,"Position",0,PosCode,false,PosSClass);
+  end;
+  if (HasSerialNumbers) then begin
+    MatCol(1,-235,"Serial No.",0,SerialNr,false,SerialNrSClass);
+  end;
+  MatCol(1,-135,"Width",0,UnitXval,true,0);
+  MatCol(1,-90,"Height",0,UnitYval,true,0);
+  MatCol(1,-45,"Depth",0,UnitZval,true,0);
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,164,"Description",0,Spec,false,0);
+  MatCol(1,-260,"GR No.",0,PUNr,false,PUSClass);
+  MatCol(1,-190,"GR Row",0,PURow,false,0);
+  MatCol(1,-130,"PO No.",0,PONr,false,POSClass);
+  MatCol(1,-60,"PO Row",0,OrdRow,false,0);
+ 
+  DeleteRowTest;
+  InsertRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18;/* 28 */ 
+  if (flipnr>2) then begin
+    for (f=1;f<flipnr;f=f+1) begin
+      VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1));
+      v = v + vs;
+    end;
+  end;
+  
+
+  EditField(133,-20,60,"Total Qty",ViewOnly,SumQuant,true,0);
+//  EditField(-450,-20,70,"Freight",Normal,ShipCost,true,0);
+//  EditField(-300,-20,70,"Customs",Normal,CustomsCost,true,0);
+  EditField(-130,-20,70,"TOTAL",ViewOnly,SumCostPrice,true,0);
+  if (HasMultiCurrency or HasBase2) then begin
+    Tile(tilenr,70,false,tilenr,FrRate); tilenr = tilenr + 1;
+    h1 = 110; vs = 20;
+    if (HasBase2) then begin
+      h1 = h1 + 20;
+    end;
+    EditField(h1,v=6,50,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
+    if (HasMultiCurrency) then begin
+      EditField(h2,v,50,"Rate",Normal,FrRate,true,0);
+      EditField(h2+65,v,50,":",Normal,ToRateB1,true,0);
+      if (HasBase2) then begin
+        StaticText(h2+125,v+14,"Base Currency 1",false);
+        EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
+        EditField(h2+65,v,50,":",Normal,ToRateB2,true,0);
+        StaticText(h2+125,v+14,"Base Currency 2",false);
+        EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
+      end else begin
+        StaticText(h2+125,v+14,"Base Currency",false);
+      end;
+    end else begin
+      EditField(h1,v+=vs,50,"Base Currency 1",Normal,BaseRate1,true,0);
+      EditField(h1,v+=vs,50,"Base Currency 2",Normal,BaseRate2,true,0);
+    end;
+  end;
+  Tile(tilenr,130,false,tilenr,DelAddr0); tilenr = tilenr + 1;
+  EditField(h1,v=6,80,"Address Code",Normal,DelAddrCode,false,DelAddr3SClass);
+  EditField(h1,v+=vs,-20,"Delivery",Normal,DelAddr0,false,0);
+  EditField(h1,v+=vs,-20,"Address",Normal,DelAddr1,false,0);
+  EditField(h1,v+=vs,-20,"",Normal,DelAddr2,false,0);
+  EditField(h1,v+=vs,-20,"",Normal,DelAddr3,false,0);
+  EditField(h1,v+=vs,-20,"",Normal,DelAddr4,false,0);
+  Tile(tilenr,130,false,tilenr,FreightCode); tilenr = tilenr + 1;
+  EditField(h1,v=6,80,"Freight Company",Normal,FreightCode,false,FreightCompanySClass);
+  EditField(h1,v+=vs,-20,"Name",Normal,FreightCompany,false,0);
+  EditField(h1,v+=vs,-20,"#Reg. No.#",Normal,FreightCompanyRegNr,false,0);
+  EditField(h1,v+=vs,-20,"Truck Information",Normal,TruckInfo,false,0);
+  EditField(h1,v+=vs,-20,"Driver",Normal,Driver,false,0);
+  EditField(h1,v+=vs,-20,"CMR",Normal,CMRText,false,0); // International transporting number
+  Tile(tilenr,30,false,tilenr,Comment); tilenr = tilenr + 1;
+  EditField(h1,v=6,-20,"Comment",Normal,Comment,false,0);
+ 
+  SpecialMenu("Create #Credit Note#",'F',0,"CredVIFromRetPUDsm");
+  if (HasModNL) then begin
+    SpecialMenu("Open #NL# Transaction",'t',1,"OpenTRFromRetPU");
+  end;
+  if (IsEnterprise) then begin
+    SpecialMenu("Quality Control",'u',10,"QualConFromRetPUDsm");
+  end;
+  EndWindow;
+end;
