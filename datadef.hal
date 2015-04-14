@@ -230,6 +230,7 @@ begin
   RecordField(CredOfficialSerNr,M4UStr,100,0);
   RecordField(AcceptanceFYI,M4List,200,UserVc);
   RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
+  RecordField(ReceiptNrForReturn,M4Str,30,0);
   return;
 end; 
 

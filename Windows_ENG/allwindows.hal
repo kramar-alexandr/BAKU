@@ -1844,6 +1844,7 @@ if (HasTouchScreenLook==false) then begin
   EditField(h3,v=vm,80,"#Salesman#",Normal,SalesMan,false,UserSClass);
   EditField(h3,v+=vs,80,"Loc. machine ",Normal,MachineName,false,LocalMachineSClass);// Edit ************************** Monday, 15 April 2013 12:00:16
   EditField(h3,v+=vs,80,"Renting",Normal,RetValue,false,0);// Edit ************************** Monday, 15 April 2013 12:00:16
+  EditField(h3,v+=vs,80,"Receipt No.",Normal,ReceiptNrForReturn,false,0);	//Edit----------------------Dima  14.04.2015
   
   //EditField(h3,v+=vs,-20,"Comment",Normal,InvComment,false,0);
   /*EditField(h3,v+=vs,80,"Loc. machine ",Normal,MachineName,false,LocalMachineSClass);

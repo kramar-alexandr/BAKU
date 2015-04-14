@@ -1941,6 +1941,10 @@ BEGIN
 			end;
 		end;
 	end;
+	
+  if (FIELDINFORM("F_CHECKNR")) then begin
+      OUTFORMFIELD("F_CHECKNR",IVr.ReceiptNrForReturn);  	//Edit----------------------Dima  14.04.2015
+  end; 
   
   
   PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc");

@@ -318,15 +318,19 @@ begin
 
 	record PDVc PDr;
 	record IVVc IVloop;
-	string 200 normalPayments;
+	string 200 normalPayments,cashPayments;
 	boolean TrHs;
 	
 	normalPayments = "";
+	cashPayments = "";
 	
 	While(LoopMain(PDr,1,true)) begin
 		if (PDr.PDType == kInvoiceTypeNormal) then begin
 				normalPayments = normalPayments & PDr.Code & ",";
 		end;
+		if (PDr.PDType == kInvoiceTypeCash) then begin
+				cashPayments = cashPayments & PDr.Code & ",";
+		end;		
 	end;
 	
 	OfficialSerNr = "";
@@ -344,9 +348,16 @@ begin
 	if (TrHs) then begin
 	
 		if (IVr.CurncyCode != "EUR") then begin
-			if (IVloop.CurncyCode != "EUR" and SetInSet(IVloop.PayDeal,normalPayments) and nonblank(IVloop.OfficialSerNr)) then begin
-				lastOffSerNr = IVloop.OfficialSerNr;
-				TrHs = false;
+			if (IVr.Sum4 < 0) then begin
+				if (IVloop.CurncyCode != "EUR" and SetInSet(IVloop.PayDeal,cashPayments) and nonblank(IVloop.OfficialSerNr)) then begin
+					lastOffSerNr = IVloop.OfficialSerNr;
+					TrHs = false;
+				end;
+			end else begin
+				if (IVloop.CurncyCode != "EUR" and SetInSet(IVloop.PayDeal,normalPayments) and nonblank(IVloop.OfficialSerNr)) then begin
+					lastOffSerNr = IVloop.OfficialSerNr;
+					TrHs = false;
+				end;
 			end;
 		end;
 		
@@ -361,6 +372,7 @@ begin
 				
 	end;
 	
+	
 		
 	if (IVr.CurncyCode != "EUR") then begin
 		lastNumber = StringToInt(Right(lastOffSerNr,5)) + 1;
@@ -368,18 +380,22 @@ begin
 	end else begin
 		lastNumber = StringToInt(Right(lastOffSerNr,3)) + 1;
 		SerNumber = Right("000" & lastNumber,3);
-	end;	
+	end;
 	
 	month = Right("0" & GetMonth(IVr.TransDate),2);
 	
-	if (IVr.CurncyCode != "EUR") then begin 
-		OfficialSerNr = year & "/" & month & "/" & SerNumber;
+	if (IVr.CurncyCode != "EUR") then begin
+		if (IVr.Sum4<0) then begin 
+			OfficialSerNr = "ZW/" & year & "/" & month & "/" & SerNumber;
+		end else begin	
+			OfficialSerNr = year & "/" & month & "/" & SerNumber;
+		end;
 	end else begin	
 		OfficialSerNr = "WDT/" & year & "/" & month & "/M1/" & SerNumber;
 	end;
 	
 	
-	//LogText(0, lastDate & " + " & IVloop.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber & " % " & normalPayments);
+	//LogText(0, lastDate & " + " & IVloop.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber & " % " & cashPayments);
 
 GetNextOfficialSerNr_IV = OfficialSerNr;
 return;
