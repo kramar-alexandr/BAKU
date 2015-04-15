@@ -1262,11 +1262,11 @@ BEGIN
         if (nonblank(RUr.OTCode)) then begin
           ots[ocnt] = RUr.OTCode;
           for (j=0;j<ocnt ;j=j+1) begin
-            if (ots[j]==ots[ocnt]) then begin
+            /*if (ots[j]==ots[ocnt]) then begin// Edit ************************** Wednesday, 15 April 2015 11:26:08
               res = 1071;
               resstr = ostr;
               goto LCheckObjs;
-            end;
+            end;*/
           end;
         end;
       end;
