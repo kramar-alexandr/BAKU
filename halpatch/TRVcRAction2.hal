@@ -638,6 +638,23 @@ LTRVcRecordCheck11:;
 //    ChangeLastTrRow(TRp,temp2);//software changes amounts entered by user ? where is Update Note for this ? 
 //    TRSumup(TRp,temp);
   end;
+  
+  rwcnt = MatRowCnt(TRp);
+  for(i=0;i<rwcnt;i=i+1) begin					//Edit----------------------Dima  15.04.2015
+		MatRowGet(TRp,i,TRrw);
+		if (nonblank(TRrw.DebVal) and blank(TRrw.CurDebVal)) then begin
+		    RecordCheckError(31311,"",i,"CurDebVal");      
+    		res = -1; 
+    		goto LTRVcRecordCheck;
+		end;
+		if (nonblank(TRrw.CredVal) and blank(TRrw.CurCredVal)) then begin
+		    RecordCheckError(31311,"",i,"CurCredVal");      
+    		res = -1; 
+    		goto LTRVcRecordCheck;
+		end;		
+		
+	end;  
+  
 LTRVcRecordCheck:;
   if (res!=0) then begin TRp.Number = oldnr; end;
   TRVcRecordCheck = res;
