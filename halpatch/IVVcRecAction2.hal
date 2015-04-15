@@ -497,8 +497,11 @@ BEGIN
   end;
   
   if (CurrentCompany==10) then begin //Dupont
-		IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
-	end;	
+ 		if ((IVr.OKFlag>0) and blank(IVr.OfficialSerNr)) then begin 
+			IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
+		end;	
+	end;
+	
   
 LIVVcRecordSave:;
   IVVcRecordSave = res; 
@@ -928,6 +931,15 @@ BEGIN
       end;
       IVr.Prntdf = 0;
   end;
+  
+   
+  if (CurrentCompany==10) then begin //Dupont
+  
+ 		if ((IVr.OKFlag>0) and (IV2r.OKFlag==0) and blank(IVr.OfficialSerNr)) then begin 
+			IVr.OfficialSerNr = GetNextOfficialSerNr_IV(IVr);	//Edit----------------------Dima  01.04.2015
+		end;	
+	end;
+ 
 LIVVcRecordUpdate:;
   IVVcRecordUpdate = res; 
   RETURN;
