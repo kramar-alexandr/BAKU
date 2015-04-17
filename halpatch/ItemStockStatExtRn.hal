@@ -1,7 +1,7 @@
 external procedure ExtractObj(string,var Integer,var string);
 remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean SetInSet2(string,string);
-
+external function roundmode SetRoundMode(Integer,Integer,Integer,Integer);
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 function string 200 ParseClassification(string class)
@@ -350,7 +350,7 @@ begin
 	integer pos,cnt;
   string 50 uloc,pricecur;
   val fr,to1,to2,br1,br2;
-  val baseprice,cur,price;
+  val baseprice,cur,price,baseprice5;
   record INConsVc INCr;
 	val instock,awercost,awercostcur;
 	record PLDefVc PLDefr;
@@ -359,6 +359,11 @@ begin
 	row PUVc PUrw;
   record IVVc IVr;
   row IVVc IVrw;
+  roundmode rmode5;
+
+  
+  rmode5 = SetRoundMode(0,kRoundingDirectionToFromPosInf,kRoundingModeHalfUp,kRoundingStep5);	//Edit----------------------Dima  17.04.2015
+  
   
   if(serstock==0)then begin
   	instock = ISr.Instock;
@@ -376,8 +381,7 @@ begin
 			if(PLr.ArtCode==ISr.Code and PLr.PLCode=="RRP" and PLr.SerialNr==serial)then begin
 				price = PLr.ExVatPrice;
 			end;
-		end;
-				
+		end;	
 		outstring(0,0,INr.Code,false);
 		outstring(0,0,INr.AlternativeCode,false);
 		outstring(0,0,ISr.Location,false);
@@ -472,7 +476,7 @@ begin
 					pricecur = PLr.CurncyCode;
 				end;
 			end;
-		end;
+		end;		
 		if(price==0)then begin
 			cnt = 0;
 			PLr.ArtCode = ISr.Code;
@@ -492,7 +496,6 @@ begin
 			resetloop(PLr);
 			price = price/cnt;
 		end;
-		
 		GetFullCurncyRate(pricecur,todate,fr,to1,to2,br1,br2);
 		if(fr==0 or to1==0)then begin
 			fr=1; to1=1;
@@ -505,8 +508,11 @@ begin
 			end;
 			price = baseprice*fr/to1;
 		end;
+			
+		baseprice5 = round(baseprice,rmode5);	//Edit----------------------Dima  17.04.2015
 		outstring(0,0,price,false);
-		outstring(0,0,baseprice,false);
+		outstring(0,0,baseprice5,false);
+		//outstring(0,0,baseprice,false);
 		outstring(0,0,price*instock,false);
 		outstring(0,0,baseprice*instock,false);
 		total_price = total_price + baseprice*instock;
