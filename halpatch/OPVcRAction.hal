@@ -642,6 +642,14 @@ we don't have to check pmobject since it goes to diffrent account then OPrw.Obje
             res = 1582; 
             goto LOPVcRecordCheck;
           end;
+          errcode = CheckObjs(GetSupplierOnAccountAC(OPrw.VECode),OPrw.Objects,errstr); //Edit***************************Sasha2,15:24 17.04.2015 {
+          if (errcode!=0) then begin
+            if (disperrf) then begin
+              RecordCheckError(errcode,errstr,i,"Objects");      
+            end;
+            res = errcode; 
+            goto LOPVcRecordCheck;
+          end; //Edit***************************Sasha2,15:24 17.04.2015 }
           VIr.SerNr = OPrw.VISerNr;
           if (ReadFirstMain(VIr,1,true)==false) then begin            
             OPrsr.VINr = OPrw.VISerNr;
