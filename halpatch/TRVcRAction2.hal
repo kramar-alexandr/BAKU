@@ -642,15 +642,17 @@ LTRVcRecordCheck11:;
   rwcnt = MatRowCnt(TRp);
   for(i=0;i<rwcnt;i=i+1) begin					//Edit----------------------Dima  15.04.2015
 		MatRowGet(TRp,i,TRrw);
-		if (nonblank(TRrw.DebVal) and blank(TRrw.CurDebVal)) then begin
-		    RecordCheckError(31311,"",i,"CurDebVal");      
-    		res = -1; 
-    		goto LTRVcRecordCheck;
-		end;
-		if (nonblank(TRrw.CredVal) and blank(TRrw.CurCredVal)) then begin
-		    RecordCheckError(31311,"",i,"CurCredVal");      
-    		res = -1; 
-    		goto LTRVcRecordCheck;
+		if (TRrw.ovst==0) then begin
+			if (nonblank(TRrw.DebVal) and blank(TRrw.CurDebVal)) then begin
+			    RecordCheckError(31311,"",i,"CurDebVal");      
+    			res = -1; 
+    			goto LTRVcRecordCheck;
+			end;
+			if (nonblank(TRrw.CredVal) and blank(TRrw.CurCredVal)) then begin
+			    RecordCheckError(31311,"",i,"CurCredVal");      
+    			res = -1; 
+    			goto LTRVcRecordCheck;
+			end;
 		end;		
 		
 	end;  
