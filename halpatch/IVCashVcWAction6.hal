@@ -54,7 +54,7 @@ external function Integer OpenCCPayWindow(string,longint,integer,val,val,val,str
                           string,Integer);
 remote procedure FindLoyaltyCardRemote(string,var record LoyaltyCardVc,var boolean);
 remote procedure IVVc_PasteSerialNr(var record IVVc,Integer,Boolean);
-
+external function val AbsoluteVal(val); //Edit***************************Sasha2,17:41 16.04.2015
 
 procedure SetPOSWindowDisplay_PaymentRow(string spec,val v)
 begin
@@ -183,7 +183,7 @@ begin
 					rnd.step = kRoundingStep5;
 					IVr.Sum4 = round(IVr.Sum4*invfr/invto1,rnd);
 				end;
-        if (IVr.Sum4<RepSpec.vals0) then begin
+        if (AbsoluteVal(IVr.Sum4)<AbsoluteVal(RepSpec.vals0)) then begin //Edit***************************Sasha2,17:45 16.04.2015
           CloseWindow(wn);
           MessageBox(20878,"");
           WindowFieldGoto(wn,IVr,-1,"vals0",true);
@@ -1077,6 +1077,7 @@ begin
   record IVVc prevIVr;
   record IVVc IVr;
   row IVVc IVrw;
+  Boolean retf; //Edit***************************Sasha2,9:33 17.04.2015
   
   wn = CurWindow;
   DeselectWindow(wn,true);
@@ -1142,8 +1143,11 @@ begin
       	// Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 25 June 2013 14:37:32
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
-      	if(acrncnt>0)then begin
-      		if(StringToVal(GetWindowString(wn,"NPTSCashPaymentChangeDue" & 0),M4Val)!=0)then begin
+      	if(acrncnt>0)then begin //Edit***************************Sasha2,9:24 17.04.2015
+      		retf = false; //Edit***************************Sasha2,9:54 17.04.2015
+      		if(StringToVal(GetWindowString(wn,"NPTSCashPaymentCashReceived" & 0),M4Val)>0 and StringToVal(GetWindowString(wn,"NPTSCashPaymentChangeDue" & 0),M4Val)!=0)then begin retf = true; end; //Edit***************************Sasha2,9:59 17.04.2015
+      		if(StringToVal(GetWindowString(wn,"NPTSCashPaymentCashReceived" & 0),M4Val)<0 and StringToVal(GetWindowString(wn,"NPTSCashPaymentCashAmountDue" & 0),M4Val)>0) then begin retf = true; end; //Edit***************************Sasha2,9:34 17.04.2015
+      		if(retf) then begin
       			messagebox(31002,"");
       			goto LProceedCashPayTouchScreenDClass;
       		end;
