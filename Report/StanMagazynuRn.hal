@@ -60,13 +60,18 @@ begin
   record ItemHistVc IHr;
   record BaseCurBlock BCb;
   record CYBlock CYB;
+  record LocationVc Locr;	//Edit----------------------Dima  17.04.2015
   string 250 tstr;
   string 50 location,brand,key,baseCur,itemtyp;
   integer rw,rwcnt,i,pos;
-  val TotalCost,TotalQty,SubTotalCost,SubTotalQty,costsum;
+  val TotalCost,TotalQty,SubTotalCost,SubTotalQty,costsum,GeneralTotalCost;
 	Boolean testf,TrHs2,testf2,curdatef;
 	array integer outstrpos;
 	date costdate;
+	boolean TrHs;
+	
+	//	RepSpec.ArtMode = 0 - Detailed
+	//	RepSpec.ArtMode = 1 - Consolidated
 
   StartReportJob("Stan magazynu");
   rw=1;
@@ -90,7 +95,7 @@ begin
 	if (RepSpec.d1==CurrentDate) then begin
 	 curdatef = true;
 	end;
-	if (Blank(RepSpec.f1)) then begin
+	if (Blank(RepSpec.f1) and (RepSpec.ArtMode==0)) then begin
 	 goto LStanMagazynuRn;
 	end;
 	
@@ -130,97 +135,192 @@ begin
 	outstrpos[4] = 310;
 	outstrpos[5] = 360;
 	
+
 	StartFormat(15);
-	  OutString(outstrpos[0],0,"NAZWA TOWARU",false);			
-		OutString(outstrpos[1],0,"INDEKS",false);
-		OutString(outstrpos[2],0,"TYP",false);			
-		OutString(outstrpos[3],0,"STAN",false);	
-		OutString(outstrpos[4],0,"J.M.",false);
-		OutString(outstrpos[5],0,"WARTOSC ZAKUPU",false);
+		if (RepSpec.ArtMode==0) then begin
+	  	OutString(outstrpos[0],0,"NAZWA TOWARU",false);			
+			OutString(outstrpos[1],0,"INDEKS",false);
+			OutString(outstrpos[2],0,"TYP",false);			
+			OutString(outstrpos[3],0,"STAN",false);	
+			OutString(outstrpos[4],0,"J.M.",false);
+			OutString(outstrpos[5],0,"WARTOSC ZAKUPU",false);
+		end else begin																//Edit----------------------Dima  17.04.2015
+	  	OutString(outstrpos[0],0,"NAZWA MAGAZYNU",false);			
+			OutString(outstrpos[1],0,"WARTOSC",false);
+		end;
 	EndFormat;
 	Black_Divider(0,1);
 	
-	INr.Code = "";
-	while (LoopMain(INr,1,true)) begin
-	  testf = true;
-    if(nonblank(RepSpec.f2))then begin
-      testf = false;
-			brand = "";
-			pos = 0;
-			ExtractObj(INr.DispGroups,pos,brand);
-			while (nonblank(brand)) begin
-				if(nonblank(brand) and setinset(brand,RepSpec.f2))then begin
-					testf = true;
-					pos = 255;
-				end;
-				ExtractObj(INr.DispGroups,pos,brand);
+			
+	if (RepSpec.ArtMode==0) then begin		//Detailed
+	
+			INr.Code = "";
+			while (LoopMain(INr,1,true)) begin
+			  testf = true;
+  		  if(nonblank(RepSpec.f2))then begin
+  		    testf = false;
+					brand = "";
+					pos = 0;
+					ExtractObj(INr.DispGroups,pos,brand);
+					while (nonblank(brand)) begin
+						if(nonblank(brand) and setinset(brand,RepSpec.f2))then begin
+							testf = true;
+							pos = 255;
+						end;
+						ExtractObj(INr.DispGroups,pos,brand);
+					end;
+  		  end;
+  		  if (testf) then begin
+  		    switch (INr.ConsgType) begin
+  		      case 0:
+  		        itemtyp = "Towar";
+  		      case 1:
+  		        itemtyp = "Consigment";
+  		      case 2:
+  		        itemtyp = "LowCost";
+  		    end;
+  		    SubTotalCost = 0;
+			    SubTotalQty = 0;
+  		    IHr.ArtCode = INr.Code;
+  		    IHr.Location = location;
+  		    if (curdatef) then begin
+  		      key = "ActiveLocQty";
+  		    end else begin
+  		      key = "ArtCodeLoc";
+  		    end;
+  		    TrHs2 = true;
+  		    while (Loopkey(key,IHr,2,TrHs2)) begin
+  		      testf2 = true;
+  		      if (IHr.ArtCode!=INr.Code or location!=IHr.Location) then begin TrHs2 = false; testf2 = false; end;
+  		      if (IHr.TransDate>RepSpec.d1 or IHr.StockAffectf!=1) then begin testf2 = false; end;
+  		      if (testf2) then begin
+  		        if (NonBlankDate(IHr.InDate)) then begin
+  		          costdate = IHr.InDate;
+  		        end else begin
+  		          costdate = IHr.TransDate;
+  		        end;
+  		        if (curdatef) then begin
+  		          CurValToOtherCur(costdate,baseCur,IHr.RemCostPrice,"PLN",costsum,DefaultCurRoundOff);
+			          SubTotalQty = SubTotalQty + IHr.RemQty;
+			          SubTotalCost = SubTotalCost + costsum;
+  		        end else begin
+  		          CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+  		          SubTotalQty = SubTotalQty + IHr.Qty;
+  		          SubTotalCost = SubTotalCost + costsum * CheckSign(IHr.Qty);
+  		        end;
+  		      end;
+  		    end; RESETLOOP(IHr);
+  		    if (SubTotalQty!=0 or SubTotalCost!=0) then begin     
+  		      StartFormat(15);
+  		    	  OutString(outstrpos[0],0,INr.Name,false);			
+  		    		OutString(outstrpos[1],0,INr.Code,false);
+  		    		OutString(outstrpos[2],0,itemtyp,false);			
+  		    		OutString(outstrpos[3],0,SubTotalQty,false);	
+  		    		OutString(outstrpos[4],0,INr.Unittext,false);
+  		    		OutString(outstrpos[5],0,SubTotalCost,false);
+  		    	EndFormat;
+  		    	TotalQty = TotalQty + SubTotalQty;
+  		      TotalCost = TotalCost + SubTotalCost;
+  		    end;
+  		  end;
 			end;
-    end;
-    if (testf) then begin
-      switch (INr.ConsgType) begin
-        case 0:
-          itemtyp = "Towar";
-        case 1:
-          itemtyp = "Consigment";
-        case 2:
-          itemtyp = "LowCost";
-      end;
-      SubTotalCost = 0;
-	    SubTotalQty = 0;
-      IHr.ArtCode = INr.Code;
-      IHr.Location = location;
-      if (curdatef) then begin
-        key = "ActiveLocQty";
-      end else begin
-        key = "ArtCodeLoc";
-      end;
-      TrHs2 = true;
-      while (Loopkey(key,IHr,2,TrHs2)) begin
-        testf2 = true;
-        if (IHr.ArtCode!=INr.Code or location!=IHr.Location) then begin TrHs2 = false; testf2 = false; end;
-        if (IHr.TransDate>RepSpec.d1 or IHr.StockAffectf!=1) then begin testf2 = false; end;
-        if (testf2) then begin
-          if (NonBlankDate(IHr.InDate)) then begin
-            costdate = IHr.InDate;
-          end else begin
-            costdate = IHr.TransDate;
-          end;
-          if (curdatef) then begin
-            CurValToOtherCur(costdate,baseCur,IHr.RemCostPrice,"PLN",costsum,DefaultCurRoundOff);
-	          SubTotalQty = SubTotalQty + IHr.RemQty;
-	          SubTotalCost = SubTotalCost + costsum;
-          end else begin
-            CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
-            SubTotalQty = SubTotalQty + IHr.Qty;
-            SubTotalCost = SubTotalCost + costsum * CheckSign(IHr.Qty);
-          end;
-        end;
-      end; RESETLOOP(IHr);
-      if (SubTotalQty!=0 or SubTotalCost!=0) then begin     
-        StartFormat(15);
-      	  OutString(outstrpos[0],0,INr.Name,false);			
-      		OutString(outstrpos[1],0,INr.Code,false);
-      		OutString(outstrpos[2],0,itemtyp,false);			
-      		OutString(outstrpos[3],0,SubTotalQty,false);	
-      		OutString(outstrpos[4],0,INr.Unittext,false);
-      		OutString(outstrpos[5],0,SubTotalCost,false);
-      	EndFormat;
-      	TotalQty = TotalQty + SubTotalQty;
-        TotalCost = TotalCost + SubTotalCost;
-      end;
-    end;
 	end;
 	
-	if (TotalQty!=0 or TotalCost!=0) then begin
-  	Black_Divider(0,1);
-  	StartFormat(15);
-  	  OutString(outstrpos[0],0,"",false);
-      OutString(outstrpos[1],0,"",false);
-      OutString(outstrpos[2],0,"Totals:",false);	
-  	  OutString(outstrpos[3],0,TotalQty,false);	
-  	  OutString(outstrpos[4],0,"",false);	
-  	  OutString(outstrpos[5],0,TotalCost,false);			
-  	EndFormat;
+	
+	
+	if (RepSpec.ArtMode==1) then begin		//Consolidated						//Edit----------------------Dima  17.04.2015
+		GeneralTotalCost = 0;
+
+		while (LoopMain(Locr,1,true)) begin
+				INr.Code = "";
+				TotalCost = 0;
+				TotalQty = 0;
+				location = Locr.Code;				
+				while (LoopMain(INr,1,true)) begin
+				  testf = true;
+  			  if(nonblank(RepSpec.f2))then begin
+  			    testf = false;
+						brand = "";
+						pos = 0;
+						ExtractObj(INr.DispGroups,pos,brand);
+						while (nonblank(brand)) begin
+							if(nonblank(brand) and setinset(brand,RepSpec.f2))then begin
+								testf = true;
+								pos = 255;
+							end;
+							ExtractObj(INr.DispGroups,pos,brand);
+						end;
+  			  end;
+  			  if (testf) then begin
+
+  			    SubTotalCost = 0;
+				    SubTotalQty = 0;
+  			    IHr.ArtCode = INr.Code;
+  			    IHr.Location = location;
+  			    if (curdatef) then begin
+  			      key = "ActiveLocQty";
+  			    end else begin
+  			      key = "ArtCodeLoc";
+  			    end;
+  			    TrHs2 = true;
+  			    while (Loopkey(key,IHr,2,TrHs2)) begin
+  			      testf2 = true;
+  			      if (IHr.ArtCode!=INr.Code or location!=IHr.Location) then begin TrHs2 = false; testf2 = false; end;
+  			      if (IHr.TransDate>RepSpec.d1 or IHr.StockAffectf!=1) then begin testf2 = false; end;
+  			      if (testf2) then begin
+  			        if (NonBlankDate(IHr.InDate)) then begin
+  			          costdate = IHr.InDate;
+  			        end else begin
+  			          costdate = IHr.TransDate;
+  			        end;
+  			        if (curdatef) then begin
+  			          CurValToOtherCur(costdate,baseCur,IHr.RemCostPrice,"PLN",costsum,DefaultCurRoundOff);
+				          SubTotalQty = SubTotalQty + IHr.RemQty;
+				          SubTotalCost = SubTotalCost + costsum;
+  			        end else begin
+  			          CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+  			          SubTotalQty = SubTotalQty + IHr.Qty;
+  			          SubTotalCost = SubTotalCost + costsum * CheckSign(IHr.Qty);
+  			        end;
+  			      end;
+  			    end; RESETLOOP(IHr);
+  			    if (SubTotalQty!=0 or SubTotalCost!=0) then begin     
+
+  			    	TotalQty = TotalQty + SubTotalQty;
+  			      TotalCost = TotalCost + SubTotalCost;
+  			    end;
+  			  end;
+				end;
+				RESETLOOP(INr);
+				StartFormat(15);
+  				OutString(outstrpos[0],0,Locr.Name,false);			
+  				OutString(outstrpos[1],0,TotalCost,false);
+  			EndFormat;
+				GeneralTotalCost = GeneralTotalCost + TotalCost;
+		end;
+	end;
+	
+	switch (RepSpec.ArtMode)  begin
+		case 0:
+	
+				if (TotalQty!=0 or TotalCost!=0) then begin
+  				Black_Divider(0,1);
+  				StartFormat(15);
+  				  OutString(outstrpos[0],0,"",false);
+  			    OutString(outstrpos[1],0,"",false);
+  			    OutString(outstrpos[2],0,"Totals:",false);	
+  				  OutString(outstrpos[3],0,TotalQty,false);	
+  				  OutString(outstrpos[4],0,"",false);	
+  				  OutString(outstrpos[5],0,TotalCost,false);			
+  				EndFormat;
+				end;
+				
+		case 1:
+  				Black_Divider(0,1);
+  				StartFormat(15);
+  				  OutString(outstrpos[0],0,"",false);
+  			    OutString(outstrpos[1],0,GeneralTotalCost,false);
+  			  EndFormat;  		
 	end;
 	
 LStanMagazynuRn:;
