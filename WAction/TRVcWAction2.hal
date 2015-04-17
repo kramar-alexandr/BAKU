@@ -918,6 +918,9 @@ BEGIN
   Integer rwcnt,stp;
   row TRVc TRrw;
   val ct,ct2,bv,temp;
+  record BaseCurBlock BaseCurRec;
+
+  BlockLoad(BaseCurRec);	//Edit----------------------Dima  03.04.2015
 
   rwcnt = MatRowCnt(TRp);
   stp = 1;
@@ -948,6 +951,9 @@ BEGIN
             ct = DivRateToBase1(TRrw.Curncy,ct,TRrw.FrRate,TRrw.ToRateB1,TRrw.ToRateB2,TRrw.BaseRate1,TRrw.BaseRate2,DefaultCurRoundOff);
             TRrw.CurDebVal = ct;
           end;
+          if (BaseCurRec.BaseCur1 == TRrw.Curncy) then begin		//Edit----------------------Dima  15.04.2015
+						TRrw.CurDebVal = TRrw.DebVal;
+					end;
           TRrw.CredVal = blankval;
           TRrw.CredVal2 = blankval;
           TRrw.CurCredVal = blankval;
@@ -969,6 +975,9 @@ BEGIN
             bv = DivRateToBase1(TRrw.Curncy,bv,TRrw.FrRate,TRrw.ToRateB1,TRrw.ToRateB2,TRrw.BaseRate1,TRrw.BaseRate2,DefaultCurRoundOff);
             TRrw.CurCredVal = bv;
           end;
+          if (BaseCurRec.BaseCur1 == TRrw.Curncy) then begin		//Edit----------------------Dima  15.04.2015
+						TRrw.CurCredVal = TRrw.CredVal;
+					end;
           TRrw.DebVal = blankval;
           TRrw.DebVal2 = blankval;
           TRrw.CurDebVal = blankval;
