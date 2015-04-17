@@ -1575,3 +1575,30 @@ begin
     end;
   return;
 end; //Edit***************************Sasha2,11:25 07.04.2015 }
+
+
+
+
+
+global updating procedure SetEURBinPricesMn(record RcVc RepSpec)	//Edit----------------------Dima  17.04.2015
+begin
+	record PLVc PLr;
+	record INVc INr;
+	
+	if (CurrentCompany == 3) then begin //Jewellery
+
+		While(LoopMain(PLr,1,true)) begin	
+			INr.Code = PLr.ArtCode;
+			if (ReadFirstMain(INr,1,true)) begin
+				if (SetInSet("CARTIER",INr.DispGroups)) then begin
+						PLr.CurncyCode = "EURB";	
+						RecordStore(PLr,true);
+				end;
+			end;	
+		end;
+	
+	end;
+
+return;
+end;
+
