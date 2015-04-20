@@ -73,7 +73,7 @@ BEGIN
     DeselectWindow(wn,false);
     GetWindowRecord(wn,RepSpec);
     CloseWindow(wn);
-    queued.CreatePufromIVforPLHandle(RepSpec,CurrentCompany);
+    CreatePufromIVforPLHandle(RepSpec,CurrentCompany);
 
   RETURN;
 END;

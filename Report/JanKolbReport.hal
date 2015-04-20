@@ -1,0 +1,238 @@
+global procedure BrandsAndStockCorrelationRn(record RcVc RepSpec)
+begin
+	record DIVc DIr;
+	record INVc INr;
+	record ItemHistVc IHr;
+	record CTypeVc CTyper;
+	date sd,ed;
+	boolean intestf;
+	string 200 class;
+	boolean testf,TrHs,INTrHs;
+	array val turnover,pertr,stocexcons,perstockexcons,stockinccons,perstockinccons;
+	val totturnover,totstocexcons,totstockinccons;
+	array val prturnover,prpertr,prstockexcons,prperstockexcons,prstockinccons,prperstockinccons;
+	val prtotturnover,prtotstocexcons,prtotstockinccons;
+	integer i;
+	
+	sd = RepSpec.sStartDate;
+	ed = RepSpec.sEndDate;
+	class = RepSpec.f1;
+	
+	startreportjob("Brands & Stock Correlation");
+	
+	//Header(0,"00",0);
+	//Header(0,"01",1);
+	//Header(1,"10",0);
+	Header(1,"11",1);
+	Header(2,"20",0);
+	Header(2,"21",1);
+	Header(3,"30",0);
+	Header(3,"31",1);
+	endheader;
+	
+	
+	For(i=0;i<12;i=i+1) begin
+	  turnover[i] = 0;
+	  pertr[i] = 0;
+	  stocexcons[i] = 0;
+	  perstockexcons[i] = 0;
+	  stockinccons[i] = 0;
+	  perstockinccons[i] = 0;
+	end; 
+	For(i=0;i<12;i=i+1) begin
+	  prturnover[i] = 0;
+	  prpertr[i] = 0;
+	  prstockexcons[i] = 0;
+	  prperstockexcons[i] = 0;
+	  prstockinccons[i] = 0;
+	  prperstockinccons[i] = 0;
+	end; 
+	
+	INr.DispGroups = class;
+	INTrHs = true;
+	while(loopkey("MyDispGroups",INr,1,INTrHs))begin
+		intestf = true;
+		if(nonblank(class) and !setinset(class,INr.DispGroups))then begin intestf = false; INTrHs = false; end;
+		if(INr.Terminated>0)then begin intestf = false; end;
+		
+		if(intestf)then begin
+			resetloop(IHr);
+			IHr.ArtCode = INr.Code;
+			TrHs = true;
+			while(loopkey("ArtCode",IHr,1,TrHs))begin
+				testf = true;
+				if(IHr.TransDate>ed)then begin TrHs = false; testf = false; end;
+				if(IHr.ArtCode!=INr.Code)then begin TrHs = false; testf = false; end;
+				if(IHr.StockAffectf==0)then begin testf=false; end;
+				
+				if(testf)then begin
+					if(IHr.TransDate<sd)then begin
+						if(IHr.Qty>0)then begin
+							if(INr.ConsgType==1)then begin
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end else begin
+								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end;
+						end else begin
+							if(INr.ConsgType==1)then begin
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end else begin
+								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end;
+
+						end;
+					end else begin
+						if(IHr.Qty>0)then begin
+							turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							if(INr.ConsgType==1)then begin
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end else begin
+								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end;
+						end else begin
+							turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							if(INr.ConsgType==1)then begin
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end else begin
+								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end;
+						end;
+					end;
+				end;
+				
+				if(testf and IHr.TransDate<addyear(ed,-1))then begin
+					if(IHr.TransDate<addyear(sd,-1))then begin
+						if(INr.ConsgType==1)then begin
+							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+						end else begin
+							prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+						end;
+					end else begin
+						if(IHr.Qty>0)then begin
+							prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							if(INr.ConsgType==1)then begin
+								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end else begin
+								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+							end;
+						end else begin
+							prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							if(INr.ConsgType==1)then begin
+								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end else begin
+								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;	
+	
+	For(i=0;i<12;i=i+1) begin
+	  totturnover = totturnover + turnover[i];
+	  totstocexcons = totstocexcons + stocexcons[i];
+	  totstockinccons = totstockinccons + stockinccons[i];
+	end; 
+	
+	For(i=0;i<12;i=i+1) begin
+	  pertr[i] = turnover[i]/totturnover*100;
+	  perstockexcons[i] = stocexcons[i]/totstocexcons*100;
+	  perstockinccons[i] = stockinccons[i]/totstockinccons*100;
+	end; 
+	
+	For(i=0;i<12;i=i+1) begin
+	  prtotturnover = prtotturnover + prturnover[i];
+	  prtotstocexcons = prtotstocexcons + prstockexcons[i];
+	  prtotstockinccons = prtotstockinccons + prstockinccons[i];
+	end; 
+	
+	For(i=0;i<12;i=i+1) begin
+	  prpertr[i] = prturnover[i]/prtotturnover*100;
+	  prperstockexcons[i] = prstockexcons[i]/prtotstocexcons*100;
+	  prperstockinccons[i] = prstockinccons[i]/prtotstockinccons*100;
+	end;
+	
+	startformat(15);
+		outstring(0,0,"",false);
+		outstring(0,0,"Turnover",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"% from total TO",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"Total Stock excl. Cons.",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"% Stock excl. Cons.",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"Stock incl. Consi",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"% Stock incl. Cons.",false);
+		outstring(0,0,"",false);
+	endformat;
+	startformat(15);
+		outstring(0,0,"",false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+		outstring(0,0,getyear(addyear(sd,-1)),false);
+		outstring(0,0,getyear(sd),false);
+	endformat;
+	
+	For(i=0;i<12;i=i+1) begin
+		startformat(15);
+			outstring(0,0,i+1,false);
+			outstring(0,0,prturnover[i],false);
+			outstring(0,0,turnover[i],false);
+			outstring(0,0,prpertr[i],false);
+			outstring(0,0,pertr[i],false);
+			outstring(0,0,stocexcons[i],false);
+			outstring(0,0,stocexcons[i],false);
+			outstring(0,0,prperstockexcons[i],false);
+			outstring(0,0,perstockexcons[i],false);
+			outstring(0,0,prstockinccons[i],false);
+			outstring(0,0,stockinccons[i],false);
+			outstring(0,0,prperstockinccons[i],false);
+			outstring(0,0,perstockinccons[i],false);
+		endformat;
+	end;
+	
+	startformat(15);
+	endformat;
+	
+	startformat(15);
+		outstring(0,0,"TOTAL / AVERAGE",false);
+		outstring(0,0,prtotturnover,false);
+		outstring(0,0,totturnover,false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,prtotstocexcons,false);
+		outstring(0,0,totstocexcons,false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,prtotstockinccons,false);
+		outstring(0,0,totstockinccons,false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+		outstring(0,0,"",false);
+	endformat;
+	
+	endjob;
+	
+	
+	
+return;
+end;

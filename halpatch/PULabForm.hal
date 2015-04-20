@@ -16,6 +16,8 @@ external procedure GetLangNr(string,var record LangNrVc);
 external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);//nk
 external function Boolean SetInSet2(string,string);
 external inner function roundmode SetRoundModeD(Integer);
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 
 global procedure CreateEAN128(var string str)
 begin
@@ -64,6 +66,10 @@ BEGIN
   record PLVc PLr;// Edit ************************** Tuesday, 1 April 2014 13:12:18
   record PLDefVc PLDr;// Edit ************************** Tuesday, 1 April 2014 13:17:21
   record BaseCurBlock BCb;// Edit ************************** Tuesday, 1 April 2014 13:17:21
+  val fr,to1,to2,br1,br2;// Edit ************************** Friday, 17 April 2015 18:53:45
+  val price;
+  roundmode rnd;
+  string 5 cur;
   
   OUTFORMFIELD("F_VALUTA",PUr.CurncyCode);
   GetFullCurncyRateText(true,tstr,PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2);
@@ -137,6 +143,40 @@ BEGIN
 			OUTFORMFIELD("F_MYRETAILPRICE",PLr.ExVatPrice);// Edit ************************** Tuesday, 1 April 2014 13:15:55
 	  end;
 	end;
+	
+	if(FIELDINFORM("F_MYRETAILPRICEAZN")) then begin
+	  price = blankval;
+	  PLr.PLCode = "RRP";
+	  PLr.ArtCode = INr.Code;
+	  if(readfirstmain(PLr,2,true))then begin
+	  	blockload(BCb);
+	  	PLDr.Code = "RRP";
+			cur = "";
+			readfirstmain(PLDr,1,true);
+			cur = PLDr.CurncyCode;
+			if(blank(cur))then begin
+				cur = BCb.BaseCur1;
+			end;
+			if(nonblank(PLr.CurncyCode) and PLr.CurncyCode!=cur)then begin
+				cur = PLr.CurncyCode;
+			end;
+			rnd = DefaultValRoundoff;
+			rnd.decimals = 0;
+			rnd.mode = kRoundingModeHalfDown;
+			if(currentcompany==3)then begin
+				rnd.step = kRoundingStep5;
+			end;
+			if(cur!=BCb.BaseCur1)then begin
+				GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);// Edit ************************** Monday, 25 March 2013 17:43:28
+				price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
+			end else begin
+				price = PLr.ExVatPrice;
+			end;
+			OUTFORMFIELD("F_MYRETAILPRICEAZN",price & " AZN");// Edit ************************** Tuesday, 1 April 2014 13:15:55
+	  end;
+	end;
+	
+	
 	if (FIELDINFORM("F_MYRETAILCURNCY")) then begin
 		PLDr.Code = "RRP";
 		tstr = "";
