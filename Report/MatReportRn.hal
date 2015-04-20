@@ -83,7 +83,7 @@ begin
   row IVVc IVrw;
   record LocationVc Locr;
 	val fr,to1,to2,br1,br2;
-	val payAZN,payUSD,payEUR,payTRM,ivsum;
+	val payAZN,payUSD,payEUR,payTRM,ivsum,payLOY;
 	val ccAZN,ccUSD,ccEUR;
 	integer i,mtrw;
 	val dolg;
@@ -94,10 +94,10 @@ begin
 	record StockMovVc SMr;
 	row StockMovVc SMrw;
 	integer sign;
-	val totpayUSD,totpayEUR,totpayAZN,totccUSD,totccAZN,totccEUR,totpayTRM;
+	val totpayUSD,totpayEUR,totpayAZN,totccUSD,totccAZN,totccEUR,totpayTRM,totpayLOY;
 	boolean fullcash;
 	roundmode rnd;
-	val grandTotpayUSD, grandTotpayAZN,grandTotpayEUR,grandTotpayTRM;
+	val grandTotpayUSD, grandTotpayAZN,grandTotpayEUR,grandTotpayTRM,grandTotpayLOY;
 	record PDVc PDr;
 	
 	rnd = DefaultValRoundoff;
@@ -149,6 +149,7 @@ begin
 				  payUSD = 0;
 				  payEUR = 0;
 				  payTRM = 0;
+				  payLOY = 0;
 				  ivsum = 0;
 	        ccAZN = 0;
 	        ccUSD = 0;
@@ -161,7 +162,7 @@ begin
 				  totccAZN = 0;
 				  totccEUR = 0;
 				  totpayTRM = 0;
-				  
+				  totpayLOY = 0;
 				  
           startformat(15);
             outstring(0,0,USetStr(31016),false);
@@ -204,8 +205,8 @@ begin
             outstring(550,0,USetStr(31143),false);
             outstring(600,0,USetStr(31019),false);
             outstring(650,0,USetStr(31020),false);
-            //outstring(650,0,"TOTAL Bank EUR",false);
-            //outstring(650,0,"TOTAL Bank USD",false);
+            outstring(650,0,USetStr(28203),false);// Edit ************************** Monday, 20 April 2015 15:39:31
+            outstring(650,0,"TOTAL " & USetStr(28203),false);// Edit ************************** Monday, 20 April 2015 16:03:13
             outstring(700,0,USetStr(8121),false);
           endformat;
 				
@@ -227,6 +228,7 @@ begin
               payUSD = 0;
               payEUR = 0;
               payTRM = 0;
+              payLOY = 0;
               ivsum = 0;
               dolg = 0;
               mtrw = matrowcnt(IVr);
@@ -257,13 +259,18 @@ begin
                   totpayTRM = totpayTRM + IVrw.Sum;
                   dolg = dolg + IVrw.Sum;
                 end;
+                if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
+                  payLOY = payLOY + IVrw.Sum;
+                  totpayLOY = totpayLOY + IVrw.Sum;
+                  dolg = dolg + IVrw.Sum;
+                end;
                 if(IVrw.stp==kInvoiceRowTypeNormal)then begin
                   if(IVrw.Quant>0)then begin
                     ivsum = ivsum + IVrw.Sum;
                   end;
                 end;
               end; 
-              if(payAZN==0 and payEUR==0 and payUSD==0 and payTRM==0 and PDIsCash(IVr.PayDeal))then begin
+              if(payAZN==0 and payEUR==0 and payUSD==0 and payTRM==0 and payLOY==0 and PDIsCash(IVr.PayDeal))then begin
               	fullcash = true;
               	if(IVr.PayDeal=="O")then begin
 									switch(IVr.CurncyCode)begin
@@ -338,6 +345,10 @@ begin
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
+                    end; 
+                    if(ivsum==payLOY or ivsum-payLOY<1)then begin
+                      ivsum = 1;
+                      payLOY = 1;
                     end;       
                     outstring(300,0,round(IVrw.Sum/ivsum/1*payUSD,SetRoundModeD(0)),false);
                     outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
@@ -347,6 +358,8 @@ begin
                     outstring(550,0,round(IVrw.Sum/ivsum*payEUR,rnd),false);
                     outstring(600,0,round(IVrw.Sum/ivsum/1*payTRM,SetRoundModeD(0)),false);
                     outstring(650,0,round(IVrw.Sum/ivsum*payTRM,rnd),false);
+                    outstring(600,0,round(IVrw.Sum/ivsum/1*payLOY,SetRoundModeD(0)),false);
+                    outstring(650,0,round(IVrw.Sum/ivsum*payLOY,rnd),false);
                     outstring(700,0,IVr.InvComment,false);
                   endformat;
                 end;
@@ -386,7 +399,11 @@ begin
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
-                    end;       
+                    end;     
+                    if(ivsum==payLOY or ivsum-payLOY<1)then begin
+                      ivsum = 1;
+                      payLOY = 1;
+                    end;    
                     outstring(300,0,round(IVrw.Sum/ivsum/IVrw.Quant*payUSD,SetRoundModeD(0)),false);
                     outstring(350,0,round(IVrw.Sum/ivsum*payUSD,rnd),false);
                     outstring(400,0,round(IVrw.Sum/ivsum/IVrw.Quant*payAZN,SetRoundModeD(0)),false);
@@ -395,6 +412,8 @@ begin
                     outstring(550,0,round(IVrw.Sum/ivsum*payEUR,rnd),false);
                     outstring(600,0,round(IVrw.Sum/ivsum/IVrw.Quant*payTRM,SetRoundModeD(0)),false);
                     outstring(650,0,round(IVrw.Sum/ivsum*payTRM,rnd),false);
+                    outstring(600,0,round(IVrw.Sum/ivsum/IVrw.Quant*payLOY,SetRoundModeD(0)),false);
+                    outstring(650,0,round(IVrw.Sum/ivsum*payLOY,rnd),false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);
@@ -418,10 +437,10 @@ begin
                     outstring(550,0,"",false);
                     outstring(600,0,"",false);
                     outstring(650,0,"",false);
-                    outstring(700,0,"",false);
-                    outstring(700,0,"",false);
                     //outstring(700,0,"",false);
                     //outstring(700,0,"",false);
+                    outstring(700,0,"",false);
+                    outstring(700,0,"",false);
                     outstring(700,0,IVr.InvComment,false);
                   endformat;
                   end;
@@ -443,7 +462,7 @@ begin
                     outstring(700,0,"",false);
                     outstring(700,0,"",false);
                     //outstring(700,0,"",false);
-                    //outstring(700,0,"",false);
+                    outstring(700,0,"",false);
                     outstring(700,0,IVr.InvComment,false);
                   endformat;
                   end;
@@ -467,6 +486,7 @@ begin
                 payUSD = 0;
                 payEUR = 0;
                 payTRM = 0;
+                payLOY = 0;
                 if(IPrw.InvoiceNr>0)then begin
                   IVr.SerNr = IPrw.InvoiceNr;
                   readfirstmain(IVr,1,true);
@@ -493,6 +513,10 @@ begin
                                   totccEUR = totccEUR + IPrw.BankVal;
                       end;
                     end;
+                    if(left(IPr.PayMode,1)=="L")then begin
+                    	payLOY = payLOY + IPrw.BankVal;
+                      totpayLOY = totpayLOY + IPrw.BankVal;
+                    end;
                     startformat(15);
                       outstring(0,0,"",false);
                       outstring(50,0,"",false);
@@ -508,8 +532,8 @@ begin
                       outstring(600,0,payEUR,false);
                       outstring(650,0,"",false);
                       outstring(700,0,ccAZN,false);
-                      //outstring(700,0,ccEUR,false);
-                      //outstring(700,0,ccUSD,false);
+                      outstring(700,0,"",false);
+                      outstring(700,0,payLOY,false);
                       outstring(700,0,IPr.Comment,false);
                     endformat;
                   end;
@@ -555,8 +579,8 @@ begin
                       outstring(650,0,"",false);
                       outstring(700,0,"",false);
                       outstring(700,0,ccAZN+totccAZN,false);
-                      //outstring(700,0,ccEUR,false);
-                      //outstring(700,0,ccUSD,false);
+                      outstring(700,0,"",false);
+                      outstring(700,0,"",false);
                       outstring(700,0,IPr.Comment,false);
                     endformat;
                   end;
@@ -613,8 +637,8 @@ begin
                   outstring(650,0,"",false);
                   outstring(700,0,"",false);
                   outstring(700,0,"",false);
-                  //outstring(700,0,"",false);
-                  //outstring(700,0,"",false);
+                  outstring(700,0,"",false);
+                  outstring(700,0,"",false);
                   outstring(700,0,SMr.Comment,false);
                 endformat;
               end; 						
@@ -636,8 +660,8 @@ begin
             outstring(550,0,totpayEUR,false);
             outstring(600,0,"",false);
             outstring(650,0,totpayTRM,false);
-            //outstring(650,0,totccEUR,false);
-            //outstring(650,0,totccUSD,false);
+            outstring(650,0,"",false);
+            outstring(650,0,totpayLOY,false);
             outstring(700,0,"",false);
           endformat;
           
@@ -645,6 +669,7 @@ begin
           grandTotpayAZN = grandTotpayAZN + totpayAZN;
           grandTotpayEUR = grandTotpayEUR + totpayEUR;
           grandTotpayTRM = grandTotpayTRM + totpayTRM;
+          grandTotpayLOY = grandTotpayLOY + totpayLOY;
           
           startformat(15);
           endformat;
@@ -667,8 +692,8 @@ begin
 					outstring(550,0,grandTotpayEUR,false);
 					outstring(600,0,"",false);
 					outstring(650,0,grandTotpayTRM,false);
-					//outstring(650,0,totccEUR,false);
-					//outstring(650,0,totccUSD,false);
+					outstring(650,0,"",false);
+					outstring(650,0,grandTotpayLOY,false);
 					outstring(700,0,"",false);
 				endformat;
           
