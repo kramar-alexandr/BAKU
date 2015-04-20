@@ -765,6 +765,7 @@ begin
   return;
 end;
 
+global
 updating procedure NewINVilleroy(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
 	row POVc POrw;
@@ -942,7 +943,7 @@ begin
 return;
 end;
 
-
+global
 updating procedure NewINJW(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
 	row POVc POrw;
@@ -1133,6 +1134,7 @@ begin
 return;
 end;
 
+global
 updating procedure NewINLLardo(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
 	row POVc POrw;
@@ -1283,6 +1285,7 @@ begin
 return;
 end;
 
+global
 updating procedure NewINSwarowski(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
 	row POVc POrw;
@@ -1306,7 +1309,7 @@ begin
 			newINr.Unittext = "˜’";
 			newINr.VATCode = "0%I";
 			newINr.LastPurchCurncyCode = POr.CurncyCode;
-newINr.LastPurchPrice2 = POrw.Price;
+      newINr.LastPurchPrice2 = POrw.Price;
 			newINr.DispGroups = POrw.xClassification;
 			newINr.AlternativeCode = POrw.EAN13Code;
 			newINr.CPSCode = POrw.PPNum;
@@ -1864,7 +1867,6 @@ begin
 							case 11:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
 							case 12:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
 							case 13:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit ************************** Wednesday, 25 March 2015 15:46:51
-							
 						end;
 						matrowget(POr,i,POrw);
 					end;

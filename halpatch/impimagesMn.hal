@@ -16,6 +16,7 @@ external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
                                    val,val,val,val,val,val,
                                    string,var val,val,var val,string,Integer); //Edit***************************Sasha2,13:04 08.04.2015
 external procedure PUSumUp(var record PUVc); //Edit***************************Sasha2,13:09 08.04.2015
+external updating procedure CheckAndCreateClassification(var string); //Edit***************************Sasha2,16:36 20.04.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1510,6 +1511,96 @@ begin
 return;
 end;
 
+//Edit***************************Sasha2,18:11 20.04.2015 {
+updating procedure LookUpClassAndGroups(var record INVc INr,integer currcomp)
+begin
+  record DIVc DIr;
+  record ITVc ITr;
+  string 100 tclass,fullclass;
+  boolean findclass,foundgroup;
+  integer K,lenth;
+  
+    if(currcomp!=13)then begin
+			fullclass = INr.DispGroups;
+			fullclass = uppercase(fullclass);
+			INr.DispGroups = "";
+			lenth = len(fullclass);
+			for(k=0;k<lenth;k=k+1) begin
+				if(mid(fullclass,k,1)==",") then begin
+					tclass = mid(fullclass,0,k);
+					CheckAndCreateClassification(tclass);
+					findclass = true;
+					DIr.Code = tclass;
+					if(readfirstmain(DIr,1,findclass)) begin
+						if(DIr.Code==tclass and findclass)then begin
+							INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+							findclass = false;
+						end;
+					end;
+					if(findclass)then begin
+						DIr.Name = tclass;
+						if(readfirstkey("Name",DIr,1,findclass)) then begin
+							if(uppercase(DIr.Name)==tclass and findclass) then begin
+								INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+								findclass = false;
+							end;
+						end;
+					end;
+					fullclass = mid(fullclass,k+1,lenth-k-1);
+					k=0;
+					lenth = len(fullclass);
+				end;
+			end;
+			tclass = fullclass;
+			CheckAndCreateClassification(tclass);
+			findclass = true;
+			DIr.Code = tclass;
+			if(readfirstmain(DIr,1,findclass)) begin
+				if(DIr.Code==tclass and findclass) then begin
+					INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+					findclass = false;
+				end;
+			end;
+			if(findclass)then begin
+				DIr.Name = tclass;
+				if(readfirstkey("Name",DIr,1,findclass)) then begin
+					if(uppercase(DIr.Name)==tclass and findclass) then begin
+						INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+						findclass = false;
+					end;
+				end;
+			end;
+			lenth = len(INr.DispGroups);
+			if(mid(INr.DispGroups,lenth-1,1)==",") then begin
+				INr.DispGroups = mid(INr.DispGroups,0,lenth-1);
+			end;
+		end;
+			
+		foundgroup = false;
+		lenth = len(INr.DispGroups);
+		For(k=0;k<lenth;k=k+1) begin
+  		if(mid(INr.DispGroups,k,1)==",") then begin
+  			DIr.Code = mid(INr.DispGroups,0,k);
+  			readfirstmain(DIr,1,true);
+  			ITr.Comment = DIr.Name;
+  			if(readlastkey("Comment",ITr,1,true)) then begin
+  				INr.Group = ITr.Code;
+  			end;
+  			foundgroup = true;
+  		end;
+		end; 
+		if(foundgroup==false)then begin
+			DIr.Code = INr.DispGroups;
+			readfirstmain(DIr,1,true);
+			ITr.Comment = DIr.Name;
+			if(readlastkey("Comment",ITr,1,true)) then begin
+				INr.Group = ITr.Code;
+			end;
+		end;
+  
+  return;
+end; //Edit***************************Sasha2,18:11 20.04.2015 }
+
 global //Edit***************************Sasha2,11:25 07.04.2015 {
 updating procedure CreatePufromIVforPLHandle(record RcVc RepSpec,integer curcomp)
 begin
@@ -1517,17 +1608,18 @@ begin
   row IVVc IVrw;
   record PUVc PUr;
   row PUVc PUrw;
-  record POVc POr;
-  row POVc POrw;
+  record INVc INr,IN2r;
   integer i,rwcnt;
   string 255 warning,inwarn,compname;
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
   val p,s;
-  Boolean chsum
+  Boolean chsum;
   
     IVr.SerNr = RepSpec.long1;
     ReadFirstMain(IVr,1,true);
+    rwcnt = matrowcnt(IVr);
+     
     BlockLoad(Compb);
     rwcnt = matrowcnt(Compb);
     for(i=0;i<rwcnt;i=i+1)begin
@@ -1538,7 +1630,6 @@ begin
   		end;
   	end;
     if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
-      
       RECORDNEW(PUr);
       PUr.Location = RepSpec.f1;
       PUVc_PasteLocation(PUr,-1);
@@ -1546,10 +1637,21 @@ begin
       if (PUr.SerNr<=0) then begin
          PUr.SerNr = NextSerNr("PUVc",PUr.TransDate,-1,false,"");
       end;
-      rwcnt = MatRowCnt(IVr);
-      for (i=0;i<rwcnt;i=i+1) begin
-        MatRowGet(IVr,i,IVrw);
-        if (NonBlank(IVrw.ArtCode)) then begin
+      RESETCOMPANY(curcomp);
+    end;
+      
+    rwcnt = MatRowCnt(IVr);
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(IVr,i,IVrw);
+      if (NonBlank(IVrw.ArtCode)) then begin
+        INr.Code = IVrw.ArtCode;
+        ReadFirstMain(INr,1,true);
+        if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+          IN2r.Code = IVrw.ArtCode;
+          if (!ReadFirstMain(IN2r,1,true)) then begin
+            LookUpClassAndGroups(INr,curcomp);
+            RECORDSTORE(INr,false);
+          end;
           ClearRow(PUr,PUrw,1);
           PUrw.ArtCode = IVrw.ArtCode;
           MatRowPut(PUr,i,PUrw);
@@ -1568,14 +1670,18 @@ begin
           PUrw.Sum = s;
           chsum = true;
           MatRowPut(PUr,i,PUrw);
+          RESETCOMPANY(curcomp);
         end;
       end;
+    end;
+    if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
       if (chsum) then begin
         PUSumUp(PUr);
       end;
-      RECORDSTORE(PUr,false);
+      RECORDSTORE(PUr,false);  
       RESETCOMPANY(curcomp);
     end;
+    
   return;
 end; //Edit***************************Sasha2,11:25 07.04.2015 }
 
