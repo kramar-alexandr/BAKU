@@ -1556,7 +1556,7 @@ begin
           MatRowPut(PUr,i,PUrw);
           PUVc_PasteQuant(PUr,i);
           MatRowGet(PUr,i,PUrw);
-          PUrw.UPrice = IVrw.FIFORowVal;
+          PUrw.UPrice = IVrw.FIFORowVal/IVrw.Quant;
           PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUr.InclVAT,PUr.NoTAXonVAT,PUrw.Extra,PUr.CurncyCode,
                   PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2,
                   PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
