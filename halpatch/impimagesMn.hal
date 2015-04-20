@@ -1605,3 +1605,41 @@ begin
 return;
 end;
 
+
+global updating procedure SetCurrencyinPricesMn(record RcVc RepSpec)	//Edit----------------------Dima  17.04.2015
+begin
+	record PLVc PLr;
+	record INVc INr;
+	record DIVc DIr;
+	
+	string 30 brand,curncy;
+	
+	brand = RepSpec.f1;
+	curncy = RepSpec.f2;
+	
+	DIr.Code = brand;
+	if (ReadFirstMain(DIr,1,true)) then begin
+		if (DIr.CType!="BRAND") then begin
+			LogText(0,"The type of classification isn't a brand");		
+			goto LSetCurrencyinPricesMn;
+		end;	
+	end;
+	
+	if (CurrentCompany == 3) then begin //Jewellery
+
+		While(LoopMain(PLr,1,true)) begin	
+			INr.Code = PLr.ArtCode;
+			if (ReadFirstMain(INr,1,true)) begin
+				if (SetInSet(brand,INr.DispGroups)) then begin
+						PLr.CurncyCode = curncy;	
+						RecordStore(PLr,true);
+				end;
+			end;	
+		end;
+	
+	end;
+
+LSetCurrencyinPricesMn:;
+return;
+end;
+

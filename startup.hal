@@ -78,6 +78,7 @@ begin
 	
 	Maintenance("Распределить долг с карт лояльности",DebtDistribVClass,DebtDistribMn,modSO);
 	Maintenance("Set EURB for Cartier",FIXVClass,SetEURBinPricesMn,modDI);		//Edit----------------------Dima  17.04.2015
+	Maintenance("Set Currency for Brand",SetCurrencyinPricesVClass,SetCurrencyinPricesMn,modDI);
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
