@@ -200,6 +200,8 @@ begin
 			INr.Code = "";
 			while (LoopMain(INr,1,true)) begin
 			  testf = true;
+			  
+			  
   		  if(nonblank(RepSpec.f2))then begin
   		    testf = false;
 					brand = "";
@@ -213,6 +215,9 @@ begin
 						ExtractObj(INr.DispGroups,pos,brand);
 					end;
   		  end;
+  		  
+  		  if(INr.Terminated>0)then begin testf = false; end;// Edit ************************** Monday, 20 April 2015 17:55:35
+  		  
   		  if (testf) then begin
   		    switch (INr.ConsgType) begin
   		      case 0:
@@ -281,6 +286,8 @@ begin
 				location = Locr.Code;				
 				while (LoopMain(INr,1,true)) begin
 				  testf = true;
+				  
+				  
   			  if(nonblank(RepSpec.f2))then begin
   			    testf = false;
 						brand = "";
@@ -294,6 +301,9 @@ begin
 							ExtractObj(INr.DispGroups,pos,brand);
 						end;
   			  end;
+  			  
+  			  if(INr.Terminated>0)then begin testf = false; end;// Edit ************************** Monday, 20 April 2015 17:55:35
+  			  
   			  if (testf) then begin
 
   			    SubTotalCost = 0;
@@ -372,7 +382,8 @@ begin
 							j=vecSize;
 						end;					
 					end;
-							
+					
+					if(INr.Terminated>0)then begin testf = false; end;// Edit ************************** Monday, 20 April 2015 17:55:35
 					//--------------check-----------------
 
   			  if (testf) then begin
