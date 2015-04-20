@@ -114,7 +114,8 @@ begin
   Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
   Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
   
-  Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
+  Report("Brand & Stock Correlation",BrandStockCorrelRClass,BrandsAndStockCorrelationRn,0,modIN);
+  //Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
 
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
 

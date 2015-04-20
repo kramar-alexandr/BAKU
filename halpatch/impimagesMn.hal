@@ -1517,6 +1517,8 @@ begin
   row IVVc IVrw;
   record PUVc PUr;
   row PUVc PUrw;
+  record POVc POr;
+  row POVc POrw;
   integer i,rwcnt;
   string 255 warning,inwarn,compname;
   record CompaniesBlock Compb;
@@ -1536,6 +1538,7 @@ begin
   		end;
   	end;
     if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+      
       RECORDNEW(PUr);
       PUr.Location = RepSpec.f1;
       PUVc_PasteLocation(PUr,-1);
