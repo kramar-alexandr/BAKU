@@ -522,7 +522,7 @@ begin
 return;
 end;
 
-procedure PrintInfoWeb(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var area webpage1,string serverip)
+procedure PrintInfoWeb(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var area webpage1,string serverip,roundmode rnd) //Edit***************************Sasha2,15:48 21.04.2015
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
@@ -631,8 +631,13 @@ begin
 			end;
 			price = baseprice*fr/to1;
 		end;
-		ExportString("<td>" & price & "</td>");
-		ExportString("<td>" & INr.LastPurchCurncyCode & "</td>");
+		if (currentcompany==3) then begin //Edit***************************Sasha2,15:50 21.04.2015 {
+		  ExportString("<td>" & round(baseprice,rnd) & "</td>");
+		  ExportString("<td>" & "AZN" & "</td>");
+		end else begin //Edit***************************Sasha2,15:50 21.04.2015 }
+		  ExportString("<td>" & price & "</td>");
+		  ExportString("<td>" & INr.LastPurchCurncyCode & "</td>");
+		end;
 		filename = "";
 		res = "";
 		uid = "";
@@ -1033,6 +1038,7 @@ begin
   record SerBalVc SBr;
   date todate;
   string 200 classfind,model,brand;
+  roundmode rnd; //Edit***************************Sasha2,15:45 21.04.2015
   
   item = RepSpec.f1;
   location = RepSpec.f2;
@@ -1041,6 +1047,11 @@ begin
   if(blank(todate))then begin
   	todate = currentdate;
   end;
+  
+  rnd = DefaultValRoundoff; //Edit***************************Sasha2,15:47 21.04.2015
+  rnd.decimals = 0; //Edit***************************Sasha2,15:47 21.04.2015
+	rnd.step = kRoundingStep5; //Edit***************************Sasha2,15:47 21.04.2015
+	rnd.mode = kRoundingModeHalfUp; //Edit***************************Sasha2,15:47 21.04.2015
   
   userlocation = false;
   User.Code = currentuser;
@@ -1089,7 +1100,7 @@ begin
 					INr.Code = ISr.Code;
 					readfirstmain(INr,1,true);
 					if(INr.SerNrf==0)then begin
-						PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip);
+						PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd); //Edit***************************Sasha2,15:48 21.04.2015
 					end else begin
 						SBr.Item = INr.Code;
 						SBr.Location = ISr.Location;
@@ -1097,7 +1108,7 @@ begin
 							if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
 								ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
 								if(ISr.Instock>0)then begin
-									PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip);
+									PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip,rnd); //Edit***************************Sasha2,15:48 21.04.2015
 								end;
 							end;
 						end;
@@ -1159,7 +1170,7 @@ begin
 					
 						if(testf2)then begin
 							if(INr.SerNrf==0)then begin
-								PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip);
+								PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd); //Edit***************************Sasha2,15:49 21.04.2015
 							end else begin
 								SBr.Item = INr.Code;
 								SBr.Location = ISr.Location;
@@ -1167,7 +1178,7 @@ begin
 									if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
 										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
 										if(ISr.Instock>0)then begin
-											PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip);
+											PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip,rnd); //Edit***************************Sasha2,15:49 21.04.2015
 										end;
 									end;
 								end;
