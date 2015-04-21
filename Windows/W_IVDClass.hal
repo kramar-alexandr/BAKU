@@ -3242,8 +3242,8 @@ begin
   SoftEditFieldTLX(h+=110,v,f,"",M4Str,ViewOnly,100,15,patM4black,"NPTSCashPaymentChangeDueTotal",true,0);
 end;*/
   v = 10; h2 = 55; v3 = 48; vs = 48;
-  ColourPushButton(-360,-80/*v+4*vs*/,-360+3*h2,-30/*v+4*vs+v3*/,"CancelNPTSCashPaymentTClass","Отмена<BR>F2",20);
-  ColourPushButton(-180,-80/*v+4*vs*/,-180+3*h2,-30/*v+4*vs+v3*/,"ProceedNPTSCashPaymentTClass","Продолжить<BR>F1",20);
+  ColourPushButton(-360,-80/*v+4*vs*/,-360+3*h2,-30/*v+4*vs+v3*/,"CancelNPTSCashPaymentTClass","Отмена<BR>F2",20); //Edit***************************Sasha2,14:01 21.04.2015
+  ColourPushButton(-180,-80/*v+4*vs*/,-180+3*h2,-30/*v+4*vs+v3*/,"ProceedNPTSCashPaymentTClass","Продолжить<BR>F1",20); //Edit***************************Sasha2,14:01 21.04.2015
   
   /*h3 = 210; h4 = 400; v = 10; hm = 680;
 

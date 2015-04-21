@@ -3009,8 +3009,8 @@ begin
   v = v + 10;
 
   v = 10; h2 = 55; v3 = 48; vs = 48;
-  ColourPushButton(-350,v+4*vs,-350+3*h2,v+4*vs+v3,"CancelNPTSCashPaymentTClass","Отмена<BR>F2",20);
-  ColourPushButton(-170,v+4*vs,-170+3*h2,v+4*vs+v3,"ProceedNPTSCashPaymentTClass","Продолжить<BR>F1",20);
+  ColourPushButton(-360,-80/*v+4*vs*/,-360+3*h2,-30/*v+4*vs+v3*/,"CancelNPTSCashPaymentTClass","Отмена<BR>F2",20);
+  ColourPushButton(-180,-80/*v+4*vs*/,-180+3*h2,-30/*v+4*vs+v3*/,"ProceedNPTSCashPaymentTClass","Продолжить<BR>F1",20);
 
   EndWindow;
 end;
