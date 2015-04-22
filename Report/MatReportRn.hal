@@ -74,7 +74,7 @@ begin
   string 100 class,classname;
   record UserVc User;
   boolean userlocation;
-  string 50 uloc,brand,model,classfind,curcode;
+  string 50 uloc,brand,model,classfind,curcode,currncy; //Edit***************************Sasha2,17:07 21.04.2015
   record SerBalVc SBr;
   date frdate,todate;
   val total_qty;
@@ -175,18 +175,41 @@ begin
             outstring(0,0,"EUR:AZN",false);
             outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
+          
+          curcode = "EURB"; //Edit***************************Sasha2,17:01 21.04.2015 {
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"EURB:AZN",false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
+          endformat; //Edit***************************Sasha2,17:02 21.04.2015 }
+          
           curcode = "USD";
           GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
           startformat(15);
             outstring(0,0,"USD:AZN",false);
             outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
+          
+          curcode = "USDB"; //Edit***************************Sasha2,17:01 21.04.2015 {
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"USDB:AZN",false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
+          endformat; //Edit***************************Sasha2,17:02 21.04.2015 }
+          
           curcode = "CHF";
           GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
           startformat(15);
             outstring(0,0,"CHF:AZN",false);
             outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
           endformat;
+          
+          curcode = "CHFB"; //Edit***************************Sasha2,17:01 21.04.2015 {
+          GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+          startformat(15);
+            outstring(0,0,"CHFB:AZN",false);
+            outstring(0,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
+          endformat; //Edit***************************Sasha2,17:02 21.04.2015 }
         
         
         
@@ -239,7 +262,8 @@ begin
                   dolg = dolg + IVrw.Price;
                 end;
                 if(IVrw.stp==kInvoiceRowTypeCashPayment)then begin
-                  switch(IVrw.CurncyCode)begin
+                  currncy = left(IVrw.CurncyCode,3); //Edit***************************Sasha2,17:07 21.04.2015
+                  switch (currncy) begin //Edit***************************Sasha2,17:07 21.04.2015
                     case"AZN":payAZN = payAZN + IVrw.Sum;dolg = dolg + IVrw.Sum;
                               totpayAZN = totpayAZN + IVrw.Sum;
                     case"EUR":payEUR = payEUR + IVrw.Sum;
@@ -273,7 +297,8 @@ begin
               if(payAZN==0 and payEUR==0 and payUSD==0 and payTRM==0 and payLOY==0 and PDIsCash(IVr.PayDeal))then begin
               	fullcash = true;
               	if(IVr.PayDeal=="O")then begin
-									switch(IVr.CurncyCode)begin
+              	  currncy = left(IVrw.CurncyCode,3); //Edit***************************Sasha2,17:07 21.04.2015
+									switch (currncy) begin
 										case"AZN":payAZN = payAZN + IVr.Sum4;
 															totpayAZN = totpayAZN + IVr.Sum4;
 										case"EUR":payEUR = payEUR + IVr.Sum4;
@@ -333,6 +358,11 @@ begin
                     if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
                       ivsum = IVr.Sum4;
                     end;
+                    curcode = "USDB"; //Edit***************************Sasha2,17:21 21.04.2015 {
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                    end; //Edit***************************Sasha2,17:21 21.04.2015 }
                     if(ivsum==payAZN or ivsum-payAZN<1)then begin
                       ivsum = 1;
                       payAZN = 1;
@@ -342,6 +372,11 @@ begin
                     if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
                       ivsum = IVr.Sum4;
                     end;
+                    curcode = "EURB"; //Edit***************************Sasha2,17:27 21.04.2015 {
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                    end; //Edit***************************Sasha2,17:27 21.04.2015 }
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
@@ -385,6 +420,12 @@ begin
                       ivsum = IVr.Sum4;
                       //payUSD = 1/to1*fr;
                     end;
+                    curcode = "USDB"; //Edit***************************Sasha2,17:29 21.04.2015 {
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payUSD/fr*to1 or ivsum-payUSD/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                      //payUSD = 1/to1*fr;
+                    end; //Edit***************************Sasha2,17:29 21.04.2015 }
                     if(ivsum==payAZN or ivsum-payAZN<1)then begin
                       ivsum = 1;
                       payAZN = 1;
@@ -396,6 +437,13 @@ begin
                       //ivsum = 1;
                       //payEUR = 1/to1*fr;
                     end;
+                    curcode = "EURB"; //Edit***************************Sasha2,17:29 21.04.2015 {
+                    GetFullCurncyRate(curcode,todate,fr,to1,to2,br1,br2);
+                    if(ivsum==payEUR/fr*to1 or ivsum-payEUR/fr*to1<1)then begin
+                      ivsum = IVr.Sum4;
+                      //ivsum = 1;
+                      //payEUR = 1/to1*fr;
+                    end; //Edit***************************Sasha2,17:29 21.04.2015 }
                     if(ivsum==payTRM or ivsum-payTRM<1)then begin
                       ivsum = 1;
                       payTRM = 1;
@@ -492,7 +540,8 @@ begin
                   readfirstmain(IVr,1,true);
                   if(IVr.Location==location)then begin
                     if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
-                      switch(IPrw.BankCurncy)begin
+                      currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
+                      switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
                         case"USD":payUSD = IPrw.BankVal;
                                   totpayUSD = totpayUSD + payUSD;
                         case"AZN":payAZN = IPrw.BankVal;
@@ -503,7 +552,8 @@ begin
                       end;
                     end;
                     if(left(IPr.PayMode,1)=="B")then begin
-                      switch(IPrw.BankCurncy)begin
+                      currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
+                      switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
                         case"USD":ccUSD = IPrw.BankVal;
                                   totccUSD = totccUSD + IPrw.BankVal;
                         case"AZN":ccAZN = IPrw.BankVal;
@@ -543,7 +593,8 @@ begin
                   readfirstmain(ORr,1,true);
                   if(ORr.Location==location)then begin
                     if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
-                      switch(IPrw.BankCurncy)begin
+                      currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
+                      switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
                         case"USD":payUSD = IPrw.BankVal;
                                   totpayUSD = totpayUSD + payUSD;
                         case"AZN":payAZN = IPrw.BankVal;
@@ -553,7 +604,8 @@ begin
                       end;
                     end;
                     if(left(IPr.PayMode,1)=="B")then begin
-                      switch(IPrw.BankCurncy)begin
+                      currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
+                      switch (currncy) begin //Edit***************************Sasha2,17:32 21.04.2015
                         case"USD":ccUSD = IPrw.BankVal;
                                   totccUSD = totccUSD + ccUSD;
                         case"AZN":ccAZN = IPrw.BankVal;
