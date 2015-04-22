@@ -1040,7 +1040,10 @@ begin
     res = 20884;
     goto LIsUnOKAllowed_PUVc;
   end;
-LIsUnOKAllowed_PUVc:;  
+LIsUnOKAllowed_PUVc:; 
+
+	if (CurrentUser == "SA") then begin res = 0; end;	//Edit----------------------Dima  22.04.2015
+ 
   IsUnOKAllowed_PUVc = res;
   return;
 end;
@@ -1062,11 +1065,16 @@ begin
     res = 20884;
     goto LIsUnOKAllowed_StockMovVc;
   end;
+  
+	LIsUnOKAllowed_StockMovVc:;  										//Edit----------------------Dima  22.04.2015
+	if (CurrentUser == "SA") then begin res = 0; end;  //Edit----------------------Dima  22.04.2015
+  
   if (nonblank(SMp.Hash)) then begin
     res = 20650;
-    goto LIsUnOKAllowed_StockMovVc;
+    goto LIsUnOKAllowed_StockMovVc2;
   end;
-LIsUnOKAllowed_StockMovVc:;  
+
+	LIsUnOKAllowed_StockMovVc2:;
   IsUnOKAllowed_StockMovVc = res;
   return;
 end;
