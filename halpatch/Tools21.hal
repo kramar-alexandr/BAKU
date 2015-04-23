@@ -1178,3 +1178,21 @@ begin
 	FindVILocation = res;
 return;
 end;
+
+
+
+global
+function string 100 FindLocationFromARPay(string code)		//Edit----------------------Dima  10.03.2015
+begin
+	string 100 res;
+	record ORVc ORr;
+	
+	res="";
+	ORr.SerNr = code;	
+	if(ReadFirstMain(ORr,1,true)) then begin
+		res = ORr.Objects;
+	end;
+	
+	FindLocationFromARPay = res;
+return;
+end;

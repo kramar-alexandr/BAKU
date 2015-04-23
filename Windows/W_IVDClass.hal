@@ -7154,3 +7154,33 @@ begin
   SearchField("Найти");
   EndWindow;
 end;
+
+
+window ARPaySClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выберите предоплату - все",ARPaySClass,CGslist,-);
+  SetWRect(20,80,780,298);
+  Sizeable(150,150,0,0);
+  UseView(ARPayVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,    "Номер",CUPNr,false,CUPNr);
+  if (HasmodSO==false) then begin
+  RlColKey(90,90,  "Дата опл.",PayDate,false,PayDate); 
+  RlColKey(165,165,"Клиент",CustCode,false,CustCode); 
+  RlColKey(300,300,"Наим.",CustName,false,CustName); 
+  RlCol(-150,-150, "Сумма",RVal,true); 
+  end else begin
+  RlColKey(90,90,    "№ сч.",OrderNr,false,OrderNr);
+  RlColKey(180,180,  "Дата опл.",PayDate,false,PayDate);
+  RlColKey(255,255,"Клиент",CustCode,false,CustCode);
+  RlColKey(310,310,"Наим.",CustName,false,CustName);
+  RlCol(-290,-290, "НДС",VATVal,true);
+  RlCol(-230,-230, "Сумма",RVal,true);
+  RlCol(-170,-170, "Заброн.",BookRVal,true);
+  end;
+  RlCol(-120,-120, "Валюта",CurncyCode,false);
+  CalculatedColumn(-80,-80,"Объект","LocationThroughInvoice",true);
+  SearchField("Найти");
+  EndWindow;
+end;
