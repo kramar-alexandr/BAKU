@@ -1723,6 +1723,16 @@ begin
   								totcostpricecurncy = PUrw.UPrice * PUrw.Quant;
 		case	"IVVc":	IVr.SerNr = transnr;
   								readfirstmain(IVr,1,true);
+  								If(IVr.Invalid>0)then begin
+  									sourceIHr.FileName = "IVVc";
+  									sourceIHr.TransNr = IVr.SerNr;
+  									sourceIHr.Row = IHr.Row;
+  									Readlastkey("FNTransNr",sourceIHr,3,true);
+  									curncy = sourceIHr.CurncyCode;
+										infile = sourceIHr.InDate;
+										indate = sourceIHr.InFileName;
+										totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
+  								end;
   								matrowget(IVr,IHr.Row,IVrw);
 									curncy = INr.LastPurchCurncyCode;
   								totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
