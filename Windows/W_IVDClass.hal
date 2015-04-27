@@ -4071,6 +4071,10 @@ begin
   EditFieldTL(h,v+=20,150,"Классификация",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
   EditFieldTL(h,v+=20,150,"Бренд",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
   EditFieldTL(h,v+=20,150,"Модель",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
+
+  CheckBox(h,v+=25,0,"Исключить обычные товары",flags[1]);
+	CheckBox(h,v+=20,0,"Исключить товары консигн.",flags[2]);
+	CheckBox(h,v+=20,0,"Исключить товары малоцен.",flags[3]);
   EndWindow;
 end;
 

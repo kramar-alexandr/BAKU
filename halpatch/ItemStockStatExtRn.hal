@@ -833,6 +833,13 @@ begin
 		if(nonblank(item))then begin
 			ISr.Code = item;
 			TrHs = true;
+			INr.Code = item;
+			if (ReadFirstMain(INr,1,true)) then begin		//Edit----------------------Dima  27.04.2015
+			
+    		if(RepSpec.flags[1]==1 and INr.ConsgType==0)then begin TrHs = false; end;
+    		if(RepSpec.flags[2]==1 and INr.ConsgType==1)then begin TrHs = false; end;
+    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin TrHs = false; end;			
+    	end;			
 			while(loopmain(ISr,1,TrHs)) begin
 				testf = true;
 				if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
@@ -875,6 +882,10 @@ begin
 					testf1 = SetInSet2(class,INr.DispGroups);
 				end;
 				if(INr.Terminated!=0)then begin testf1 = false; end;
+				
+    		if(RepSpec.flags[1]==1 and INr.ConsgType==0)then begin testf1 = false; end;	//Edit----------------------Dima  27.04.2015
+    		if(RepSpec.flags[2]==1 and INr.ConsgType==1)then begin testf1 = false; end;
+    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin testf1 = false; end;		//Edit----------------------Dima  27.04.2015			
 				
 				if(testf1)then begin
 					if(nonblank(RepSpec.f4) or nonblank(RepSpec.f5))then begin
