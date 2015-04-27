@@ -5166,17 +5166,20 @@ end;
 window ItemStockStatExtWebRClass:1
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,v,vs;
+  real h,h2,v,vs,vm;
   WindowBegin("Store balances Report",ItemStockStatExtWebRClass,CGEcW,RcType);
   SetWRect(20,80,440,150);
   vs = 20;
-  h=100;
-  EditFieldTL(h,v+=20,150,"Date",M4Date,Normal,41,d1,false,PasteCurDate);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Item",M4UStr,Normal,41,f1,false,INSClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f2,false,LocationSClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Classification ",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Brand ",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Model ",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
+  h=100;h2=250;
+  EditFieldTL(h,v+=20,100,"Date",M4Date,Normal,41,d1,false,PasteCurDate);//carefull we run ARRn
+  ButtonFrame(h2,vm=35,123,6,"Display in currency"); //Edit***************************Sasha2,13:32 27.04.2015 {
+  RadioButton(h2,vm,0,0,"Last purchased",ArtMode);
+  RadioButton(h2,vm+=16,1,0,"Base",ArtMode); //Edit***************************Sasha2,13:32 27.04.2015 }
+  EditFieldTL(h,v+=20,100,"Item",M4UStr,Normal,41,f1,false,INSClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Location",M4UStr,Normal,41,f2,false,LocationSClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Classification ",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Brand ",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Model ",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
   //EditField(h,v+=vs,-100,"IP",Normal,f6,false,0);
 	//HalPushButton(-90,v,-10,v+20,"OstatkiSKartinkamiRn","Запуск");
   EndWindow;

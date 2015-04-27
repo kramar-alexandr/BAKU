@@ -5850,17 +5850,20 @@ end;
 window ItemStockStatExtWebRClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,v,vs;
+  real h,h2,v,vs,vm;
   WindowBegin("Отчет остатков по складам",ItemStockStatExtWebRClass,CGEcW,RcType);
   SetWRect(20,80,440,150);
   vs = 20;
-  h=100;
-  EditFieldTL(h,v+=20,150,"Дата",M4Date,Normal,41,d1,false,PasteCurDate);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Товар",M4UStr,Normal,41,f1,false,INSClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Склад",M4UStr,Normal,41,f2,false,LocationSClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Классификация",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Бренд",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
-  EditFieldTL(h,v+=20,150,"Модель",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
+  h=100;h2=250;
+  EditFieldTL(h,v+=20,100,"Дата",M4Date,Normal,41,d1,false,PasteCurDate);//carefull we run ARRn
+  ButtonFrame(h2,vm=35,123,6,"Выводить в валюте"); //Edit***************************Sasha2,13:32 27.04.2015 {
+  RadioButton(h2,vm,0,0,"Послед.пост.",ArtMode);
+  RadioButton(h2,vm+=16,1,0,"Базовой",ArtMode); //Edit***************************Sasha2,13:32 27.04.2015 }
+  EditFieldTL(h,v+=20,100,"Товар",M4UStr,Normal,41,f1,false,INSClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Склад",M4UStr,Normal,41,f2,false,LocationSClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Классификация",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Бренд",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
+  EditFieldTL(h,v+=20,100,"Модель",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
   //EditField(h,v+=vs,-100,"IP",Normal,f6,false,0);
 	//HalPushButton(-90,v,-10,v+20,"OstatkiSKartinkamiRn","Запуск");
   EndWindow;
