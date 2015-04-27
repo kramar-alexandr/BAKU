@@ -1940,7 +1940,7 @@ begin
           	INcheck.BarCode = POrw.EAN13Code;
           	if (ReadFirstKey("BarCode",INcheck,1,true)) then begin
 							if (INcheck.Code != POrw.ArtCode) then begin
-									RecordCheckError(31312,"",i,"EAN13Code");      
+									RecordCheckError(31312,INcheck.Code & " " & POrw.ArtCode,i,"EAN13Code");      
 									res = 31312; 
 									goto LPOVcRecordCheck;	
 							end;
