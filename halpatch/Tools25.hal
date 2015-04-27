@@ -69,35 +69,6 @@ string 100 tstr;
   end;
   
   
-  /*counter = 0;
-  IVr.InvDate = todate;
-  TrHs = true;
-  while(loopkey("InvDate",IVr,1,TrHs))begin
-    testf = true;
-    if()t
-    if(IVr.InvDate!=todate)then begin TrHs = false; testf = false; end;;
-    if(IVr.OKFlag==0 or IVr.Invalid>0)then begin testf = false; end;
-    
-    if(testf)then begin
-      
-      mtrw = matrowcnt(IVr);
-      for(i=0;i<mtrw;i=i+1)begin
-        matrowget(IVr,i,IVrw);
-        if(IVrw.ArtCode==artcode)then begin
-          artcodes[counter] = artcode;
-          artcodes[counter] = artcodes[counter] & chr(9) & IVrw.Quant;
-          artcodes[counter] = artcodes[counter] & chr(9) & IVrw.Price;
-          artcodes[counter] = artcodes[counter] & chr(9) & 0+IVrw.vRebate & "%";
-          artcodes[counter] = artcodes[counter] & chr(9) & IVrw.Sum;
-          artcodes[counter] = artcodes[counter] & chr(9) & IVr.Location;
-          artcodes[counter] = artcodes[counter] & chr(9) & IVr.CustCode;
-          artcodes[counter] = artcodes[counter] & chr(9) & IVr.Addr0;
-          counter = counter + 1;
-        end;
-      end;
-    end;
-  end;*/
-  
 return;
 end;
 

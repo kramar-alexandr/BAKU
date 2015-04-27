@@ -114,6 +114,7 @@ array string 100 params;
 string 255 inwarning,warning;
 Integer sernrf,k;
 Boolean chsum;
+string 20 tstr,transnr,rowstr;
 
   wn = curwindow;
   mwn = motherwindow(wn);
@@ -130,6 +131,9 @@ Boolean chsum;
     price = evaltoval(params[2+k]);
     rebate = evaltoval(mid(params[3+k],0,len(params[3+k])-1));
     sum = evaltoval(params[4+k]);
+    transnr = params[8+k];
+    rowstr = params[9+k];
+    messagebox(0,transnr & " " & rowstr);
     
     IVrw.ArtCode = art;
     matrowput(IVr,mtrw,IVrw);
