@@ -480,6 +480,7 @@ begin
 		end;
 		outstring(0,0,price,false);
 		outstring(0,0,INr.LastPurchCurncyCode,false);
+		outstring(0,0,baseprice,false);
 	endformat;
 
 return;
@@ -552,7 +553,9 @@ begin
 			outstring(0,0,"Кол-во",false);
 			outstring(0,0,"Резерв",false);
 			outstring(0,0,"Ед.изм.",false);
-			outstring(0,0,"Розница",false);
+			outstring(0,0,"Розница Валюта бренда",false);
+			outstring(0,0,"Валюта",false);
+			outstring(0,0,"Розница AZN",false);
 		endformat;
 	
 		if(nonblank(item))then begin
