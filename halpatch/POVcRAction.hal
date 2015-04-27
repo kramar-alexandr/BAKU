@@ -1549,7 +1549,7 @@ begin
   LongInt oldnr,newnr;
   Boolean gentrans,found,transf;
   row POVc POrw;
-  record INVc INr;
+  record INVc INr,INcheck;
   record CUVc VEr;
   record PlanDeliveryBlock PDb;
   Integer prevvt,curvt;
@@ -1934,6 +1934,17 @@ begin
 						
 						
           	
+          end;
+          
+          if (nonblank(POrw.EAN13Code)) then begin		//Edit----------------------Dima  27.04.2015
+          	INcheck.BarCode = POrw.EAN13Code;
+          	if (ReadFirstKey("BarCode",INcheck,1,true)) then begin
+							if (INcheck.Code != POrw.ArtCode) then begin
+									RecordCheckError(31312,"",i,"EAN13Code");      
+									res = 31312; 
+									goto LPOVcRecordCheck;	
+							end;
+						end;
           end;
           
           if ((POrw.Quant>0) and (POr.Closed==0)) then begin
