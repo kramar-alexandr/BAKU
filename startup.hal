@@ -124,6 +124,7 @@ begin
   Report("Материальный отчет",PecuniaryRClass,PecuniaryRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
+  Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modIN);
   Report("Суммарный отчет за период",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Отчет по учредителям",FoundersRClass,FoundersRn,0,modIN);//Edit----------------------Dima  23.02.2015
   Report("Фактурирование поступлений",PUInvoicingRClass,PUInvoicingRn,0,modPL);//Edit----------------------Dima  24.02.2015
