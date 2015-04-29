@@ -814,7 +814,10 @@ begin
     goto LIsUnOKAllowed_SDVc;
   end;
 //  res = IsUnOKAllowed_SDVc_TBIVVc(SDp);//JJRECALCSTOCK
+
 LIsUnOKAllowed_SDVc:;  
+
+	if (CurrentUser == "SA") then begin res = 0; end;// Edit ************************** Wednesday, 29 April 2015 13:56:55
   IsUnOKAllowed_SDVc = res;
   return;
 end;
@@ -953,6 +956,7 @@ begin
     goto LIsUnOKAllowed_RetPUVc;
   end;
 LIsUnOKAllowed_RetPUVc:;  
+if (CurrentUser == "SA") then begin res = 0; end;// Edit ************************** Wednesday, 29 April 2015 13:56:55
   IsUnOKAllowed_RetPUVc = res;
   return;
 end;
