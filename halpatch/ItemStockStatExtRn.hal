@@ -144,6 +144,48 @@ begin
 			testf = true;
 			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
 			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
+			if(IHr.StockAffectf==0)then begin testf=false; end;
+		
+			if(testf)then begin
+				curcost = curcost + IHr.RemCostPriceCurncy;
+				curqty = curqty + IHr.RemQty;
+			end;
+		end;
+		curcost = curcost/curqty;
+	end else begin
+		curcost = 0;
+		curqty = 0;
+		IHr.ArtCode = artcode;
+		IHr.Location = location;
+		TrHs = true;
+		while(loopkey("ArtCodeLoc",IHr,2,TrHs))begin
+			testf = true;
+			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
+			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
+			if(IHr.StockAffectf==0)then begin testf=false; end;
+		
+			if(testf)then begin
+				if(IHr.Qty>=0)then begin
+					curcost = curcost + IHr.TotCostPriceCurncy;
+				end else begin
+					curcost = curcost - IHr.TotCostPriceCurncy;
+				end;
+				curqty = curqty + IHr.Qty;
+			end;
+		end;
+		curcost = curcost/curqty;
+	end;
+	
+	/*if(todate>=currentdate)then begin
+		curcost = 0;
+		curqty = 0;
+		IHr.ArtCode = artcode;
+		IHr.Location = location;
+		TrHs = true;
+		while(loopkey("ActiveLocQty",IHr,2,TrHs))begin
+			testf = true;
+			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
+			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
 		
 			if(testf)then begin
 				if(IHr.Source>0)then begin
@@ -279,7 +321,7 @@ begin
 		end;
 		curcost = curcost/curqty;
 		resetloop(IHr);
-	end;
+	end;*/
 	FindAwerageCostCur = curcost;
 return;
 end;
