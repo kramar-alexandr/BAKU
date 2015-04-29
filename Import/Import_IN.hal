@@ -164,3 +164,38 @@ return;
 end;
 
 
+
+
+global
+updating procedure INColorSizeImportIn()		//Edit----------------------Dima  29.04.2015
+begin
+  record INVc INr,INr2;
+  string 100 code,colour,size;
+  string 200 name;
+
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			name = ImportField;
+			colour = ImportField;
+			size = ImportField;
+
+			if(nonblank(code) and nonblank(name) and nonblank(colour) nonblank(size)) then begin
+
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)) then begin
+		
+					INr.Code = code;
+					INr.Name = name;
+					INr.Colour = colour;
+					INr.Size = size;
+					RecordStore(INr,true);
+
+				end;
+			end;	
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+

@@ -141,6 +141,7 @@ begin
 	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);//Edit----------------------Dima  16.02.2015
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
+	Import("Обновление цвета и размера товаров",INColorSizeUpdatingIClass,INColorSizeImportIn,modIN);	//Edit----------------------Dima  29.04.2015
 	
 
 	SetBegin(900);
