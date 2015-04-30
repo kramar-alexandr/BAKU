@@ -177,18 +177,21 @@ begin
 	while (TestEOF()==false) begin
 			code = ImportField;
 			name = ImportField;
-			colour = ImportField;
 			size = ImportField;
-
-			if(nonblank(code) and nonblank(name) and nonblank(colour) nonblank(size)) then begin
+			colour = ImportField;
+			
+			if(nonblank(code) and nonblank(name)) then begin
 
 				INr.Code = code;				
 				if (ReadFirstMain(INr,1,true)) then begin
 		
-					INr.Code = code;
 					INr.Name = name;
-					INr.Colour = colour;
-					INr.Size = size;
+					if(nonblank(colour))then begin
+						INr.Colour = colour;
+					end;
+					if(nonblank(size))then begin
+						INr.Size = size;
+					end;
 					RecordStore(INr,true);
 
 				end;
