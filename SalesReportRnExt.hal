@@ -576,6 +576,10 @@ begin
 						outstring(0,0,USetStr(31049),false);
 						outstring(0,0,USetStr(31050),false);
 					end;
+					if(currentcompany==13)then begin		//Edit-----------------------------Dima  30.04.2015
+						outstring(0,0,USetStr(31320),false);
+						outstring(0,0,USetStr(35007),false);
+					end;					
 					outstring(0,0,USetStr(31051),false);
 					outstring(0,0,"EAN code",false);
 					outstring(0,0,USetStr(13199),false);//EKNCode
@@ -616,7 +620,7 @@ begin
 					if(currentcompany==9)then begin
 						outstring(0,0,USetStr(3264),false);
 					end;
-					outstring(0,0,USetStr(31073),false);
+					outstring(0,0,USetStr(31073),false);					
 				endformat;
 				
 				total_rebate = 0;//Edit***********************Vitalii 14:28 26.08.2014
@@ -741,6 +745,10 @@ begin
 												outstring(0,0,INr.BrcStr,false);
 												outstring(0,0,INr.Gender,false);
 											end;
+											if(currentcompany==13)then begin		//Edit----------------------Dima  30.04.2015
+												outstring(0,0,INr.Size,false);
+												outstring(0,0,INr.Colour,false);											
+											end;
 											outstring(0,0,IVrw.SerialNr,false);
 											outstring(0,0,INr.BarCode,false);
 											outstring(0,0,INr.EKNCode,false);
@@ -775,6 +783,10 @@ begin
 													arrstrs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
 													arrstrs[strscnt] = INr.Gender; strscnt = strscnt + 1;
 												end;
+												if(currentcompany==13)then begin	//Edit----------------------Dima  30.04.2015
+													arrstrs[strscnt] = INr.Size; strscnt = strscnt + 1; 
+													arrstrs[strscnt] = INr.Colour; strscnt = strscnt + 1;
+												end;												
 												arrstrs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
 											end else begin
@@ -980,6 +992,10 @@ begin
 								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
 								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
 							end;
+							if(currentcompany==13)then begin			//Edit----------------------Dima  30.04.2015
+								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Size
+								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Colour
+							end;							
 							outstring(13,0,"",false); //IVrw.SerialNr
 							outstring(13,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BarCode
 							outstring(14,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
@@ -1025,6 +1041,10 @@ begin
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
 					end;
+					if(currentcompany==3)then begin	//Edit----------------------Dima  30.04.2015
+						outstring(0,0,"",false);
+						outstring(0,0,"",false);
+					end;					
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
