@@ -73,7 +73,7 @@ BEGIN
         end;
       end else begin
         //StockMovrw.SentFIFORowVal = FindCostPrice(StockMovrw.ArtCode,frlocation,StockMovrw.SerialNr,StockMovrw.SentQuant,adjstockv,false); //Edit***************************Sasha2,17:53 09.04.2015
-        StockMovrw.SentFIFORowVal = ForSM_FindCostPrice(StockMovrw.ArtCode,frlocation,serialnr,1.00,adjstockv,false,currow,fifocurSMr,recordtype); //Edit***************************Sasha2,17:52 09.04.2015
+        StockMovrw.SentFIFORowVal = ForSM_FindCostPrice(StockMovrw.ArtCode,frlocation,StockMovrw.SerialNr,StockMovrw.SentQuant,adjstockv,false,currow,fifocurSMr,recordtype); //Edit***************************Sasha2,17:52 09.04.2015
       end;
       StockMovrw.SentFIFORowVal = Round(StockMovrw.SentFIFORowVal,SetRoundModeD(5));
       StockMovrw.SentOldPrice = StockMovrw.SentFIFORowVal/StockMovrw.SentQuant;      
@@ -109,7 +109,7 @@ BEGIN
       end;
     end else begin
       //StockMovrw.FIFORowVal = FindCostPrice(StockMovrw.ArtCode,fromlocation,StockMovrw.SerialNr,StockMovrw.Quant,adjstockv,false); //Edit***************************Sasha2,17:54 09.04.2015
-      StockMovrw.FIFORowVal = ForSM_FindCostPrice(StockMovrw.ArtCode,frlocation,serialnr,1.00,adjstockv,false,currow,fifocurSMr,recordtype); //Edit***************************Sasha2,17:52 09.04.2015
+      StockMovrw.FIFORowVal = ForSM_FindCostPrice(StockMovrw.ArtCode,frlocation,StockMovrw.SerialNr,StockMovrw.Quant,adjstockv,false,currow,fifocurSMr,recordtype); //Edit***************************Sasha2,17:52 09.04.2015
     end;
     StockMovrw.FIFORowVal = Round(StockMovrw.FIFORowVal,SetRoundModeD(5));
     StockMovrw.OldPrice = StockMovrw.FIFORowVal/StockMovrw.Quant;      
