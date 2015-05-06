@@ -3,6 +3,29 @@ external function Boolean CheckObjType(string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+global //Edit***************************Sasha2,16:52 06.05.2015 {
+procedure DblOpenMainRep(string dblstr,string l,Integer currepwn)
+begin
+	record RcVc RepSpec,RcVcr1;
+	integer wn;
+	
+		getwindowrecord(currepwn,RcVcr1);
+
+		ReportDefaults(RepSpec,"MainRClass");   
+		wn = curwindow;
+		
+		RepSpec.sStartDate = RcVcr1.sStartDate;
+		RepSpec.sEndDate = RcVcr1.sEndDate;
+		RepSpec.Period2Str = RcVcr1.sStartDate & ":" & RcVcr1.sEndDate;
+		RepSpec.f4 = RcVcr1.f4;
+		RepSpec.ObjStr = dblstr;
+		RepSpec.Media = mtScreen;
+    RepSpec.repname = "MainRn";
+    
+    RunReport(RepSpec,0); 
+  
+  return;
+end; //Edit***************************Sasha2,16:52 06.05.2015 }
 
 global procedure ObjMainRn(record RcVc RepSpec)
 begin
@@ -157,7 +180,8 @@ begin
 			matrowget(SMr,oi,SMrw);
 			if(SMrw.CredVal!=0 or SMrw.DebVal!=0)then begin
 				startformat(15);
-					outstring(0,0,SMrw.Objects,false);
+					//outstring(0,0,SMrw.Objects,false); //Edit***************************Sasha2,17:10 06.05.2015
+					OutStringID(0,"DblOpenMainRep",SMrw.Objects,false,""); //Edit***************************Sasha2,17:10 06.05.2015
 					outstring(50,0,SMrw.Comment,false);
 					outstring(150,0,SMrw.CurDebVal - SMrw.CurCredVal,false);
 					outstring(200,0,SMrw.DebVal,false);
