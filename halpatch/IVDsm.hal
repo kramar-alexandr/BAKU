@@ -70,6 +70,30 @@ remote function boolean CheckPOFromOR(record ORVc);// Edit *********************
 
 SetLangMode(LangRussian,"RUS",0);
 
+global //Edit***************************Sasha2,16:52 06.05.2015 {
+procedure DblOpenMainRep(string dblstr,string l,Integer currepwn)
+begin
+	record RcVc RepSpec,RcVcr1;
+	integer wn;
+	
+		getwindowrecord(currepwn,RcVcr1);
+
+		ReportDefaults(RepSpec,"MainRClass");   
+		wn = curwindow;
+		
+		RepSpec.sStartDate = RcVcr1.sStartDate;
+		RepSpec.sEndDate = RcVcr1.sEndDate;
+		RepSpec.Period2Str = RcVcr1.sStartDate & ":" & RcVcr1.sEndDate;
+		RepSpec.f4 = RcVcr1.f4;
+		RepSpec.ObjStr = dblstr;
+		RepSpec.Media = mtScreen;
+    RepSpec.repname = "MainRn";
+    
+    RunReport(RepSpec,0); 
+  
+  return;
+end; //Edit***************************Sasha2,16:52 06.05.2015 }
+
 
 global procedure FindLoyaltyCardRemote(string lcard,var record LoyaltyCardVc LoyaltyCardr,var boolean findf)
 begin
