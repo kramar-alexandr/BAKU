@@ -1749,3 +1749,56 @@ LSetCurrencyinPricesMn:;
 return;
 end;
 
+global updating procedure FixStockMovMn()
+begin
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	record ItemHistVc IHr;
+	integer i,mtrw;
+	boolean TrHs,testf,changed;
+	val outcost;
+	
+	SMr.TransDate = stringtodate("10/04/2015");
+	while(loopkey("TransDate",SMr,1,true))begin
+		changed = false;
+		mtrw = matrowcnt(SMr);
+		For(i=0;i<mtrw;i=i+1) begin
+	  	matrowget(SMr,i,SMrw);
+	  	if(SMrw.Quant>1)then begin
+	  		IHr.FileName = "StockMovVc";
+	  		IHr.TransNr = SMr.SerNr;
+	  		IHr.Row = i;
+	  		TrHs = true;
+	  		outcost = blankval;
+	  		while(loopkey("FNTransNr",IHr,3,TrHs))begin
+	  			if(IHr.FileName!="StockMovVc" or IHr.TransNr!=SMr.SerNr or IHr.Row!=i)then begin TrHs = false; end;
+	  			
+	  			if(TrHs)then begin
+	  				if(IHr.Qty<0)then begin
+	  					outcost = outcost + IHr.TotCostPrice;
+	  				end;
+	  			end;
+	  		end;
+	  		//messagebox(0,outcost & " " & SMrw.FIFORowVal);
+	  		if(outcost!=SMrw.FIFORowVal)then begin
+	  			changed = true;
+	  			SMrw.FIFORowVal = outcost;
+	  			/*SMrw.SentOldPrice = SMrw.SentFIFORowVal/SMrw.Quant;      
+					SMrw.SentOldPrice = Round(SMrw.SentOldPrice,SetRoundModeD(5));
+					SMrw.SentNewPrice = SMrw.SentOldPrice;*/
+					SMrw.OldPrice = SMrw.FIFORowVal/SMrw.Quant;      
+					SMrw.OldPrice = Round(SMrw.OldPrice,SetRoundModeD(5));
+					SMrw.NewPrice = SMrw.OldPrice;
+					matrowput(SMr,i,SMrw);
+	  		end;
+	  		resetloop(IHr);
+	  	end;
+		end;
+		if(changed)then begin
+			recordStore(SMr,true);
+		end; 
+	end;
+
+
+return;
+end;

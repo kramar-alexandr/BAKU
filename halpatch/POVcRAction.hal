@@ -1961,6 +1961,7 @@ begin
 							case 11:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
 							case 12:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit by Victor 08.12.14	
 							case 13:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);	// Edit ************************** Wednesday, 25 March 2015 15:46:51
+							case 14:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2); // Edit ************************** Wednesday, 6 May 2015 10:24:06
 						end;
 						matrowget(POr,i,POrw);
 					end;

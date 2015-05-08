@@ -93,6 +93,7 @@ BEGIN
   record AccVc Accr;
   Date bd;
   string 20 curstr;
+  val tvalcur,dvalcur,cvalcur,acvalcur;
   
   res = false;
   ClearRow(TRp,OrgRow,1);
@@ -283,6 +284,7 @@ BEGIN
         end;
       end;
       if (testf) then begin
+      	TRrw.Curncy = OrgRow.Curncy;// Edit ************************** Wednesday, 6 May 2015 17:57:13
         if (tval>=0) then begin
           TRrw.DebVal = tval;
           temp = TRrw.BaseRate1/TRrw.BaseRate2;
@@ -323,6 +325,8 @@ BEGIN
       TRrw.CredVal = blankval;
       TRrw.DebVal2 = blankval;
       TRrw.CredVal2 = blankval;
+      TRrw.CurDebVal = blankval;// Edit ************************** Wednesday, 6 May 2015 17:47:51
+      TRrw.CurCredVal = blankval;// Edit ************************** Wednesday, 6 May 2015 17:47:55
       if ((Autrw.dstr=="B") or (Autrw.cstr=="B")) then begin
         acval = blankval; 
         dval = blankval; 
@@ -334,6 +338,7 @@ BEGIN
         end;
       end else begin    
         ATransVal(OrgRow.DebVal,OrgRow.CredVal,Autrw.dstr,Autrw.cstr,dval,acval,Autr.DontSwap!=0);
+        ATransVal(OrgRow.CurDebVal,OrgRow.CurCredVal,Autrw.dstr,Autrw.cstr,dvalcur,acvalcur,Autr.DontSwap!=0);// Edit ************************** Wednesday, 6 May 2015 17:45:56
       end;
       /*TRrw.FrRate = frrate;
       TRrw.ToRateB1 = torate1;
@@ -341,7 +346,7 @@ BEGIN
       TRrw.BaseRate1 = baserate1;
       TRrw.BaseRate2 = baserate2;*/
       TRrw.DebVal = dval;
-      
+      TRrw.CurDebVal = dvalcur;// Edit ************************** Wednesday, 6 May 2015 17:46:56
        // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 10 February 2015 14:07:45
 	     
@@ -364,6 +369,7 @@ BEGIN
 			
 			
       TRrw.CredVal = acval;
+      TRrw.CurCredVal = acvalcur;// Edit ************************** Wednesday, 6 May 2015 17:48:06
       if (nonblank(acval)) then begin
         temp = TRrw.BaseRate1/TRrw.BaseRate2;
         b2val = acval/temp;
@@ -371,16 +377,17 @@ BEGIN
         TRrw.CredVal2 = acval;
       end;
             
-      if(TRrw.DebVal!=0)then begin
+      if(TRrw.DebVal!=0 and TRrw.CurDebVal==blankval)then begin
 				TRrw.CurDebVal = round((TRrw.DebVal * TRrw.FrRate / TRrw.ToRateB1),defaultcurroundoff);// Edit ************************** Tuesday, 3 February 2015 16:13:21
 			end;
-			if(TRrw.CredVal!=0)then begin
+			if(TRrw.CredVal!=0 and TRrw.CurCredVal==blankval)then begin
 				TRrw.CurCredVal = round((TRrw.CredVal * TRrw.FrRate / TRrw.ToRateB1),defaultcurroundoff);// Edit ************************** Tuesday, 3 February 2015 16:13:21
       end;
     end; 
     if (OrgRow.Typ==kTransactionRowTypeStock) then begin
       TRrw.Typ = kTransactionRowTypeStock;
     end;
+    TRrw.Curncy = OrgRow.Curncy;
     if (insertf) then begin
       if (insertedf) then begin
         MatRowPut(TRp,trow,TRrw);

@@ -408,7 +408,7 @@ begin
                     outstring(150,0,classname,false);
                     outstring(200,0,IVrw.Spec,false);
                     outstring(250,0,IVrw.Quant,false);
-                    if(PDIsCash(IVr.PayDeal)==false and IVr.RetValue<0)then begin
+                    if(PDIsCash(IVr.PayDeal)==false and IVr.RetValue!=0)then begin
                       outstring(300,0,USetStr(9134),false);
                     end else begin
                       outstring(300,0,"",false);
@@ -588,10 +588,10 @@ begin
                     endformat;
                   end;
                 end;
-                if(IPrw.OrderNr>0)then begin
+                if(IPrw.OrderNr>0 or (IPrw.InvoiceNr<0 and nonblank(IPrw.Objects)))then begin
                   ORr.SerNr = IPrw.OrderNr;
                   readfirstmain(ORr,1,true);
-                  if(ORr.Location==location)then begin
+                  if(ORr.Location==location or IPrw.Objects==location)then begin
                     if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
                       currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
                       switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
@@ -629,7 +629,7 @@ begin
                       outstring(550,0,"",false);
                       outstring(600,0,payEUR,false);
                       outstring(650,0,"",false);
-                      outstring(700,0,"",false);
+                      //outstring(700,0,"",false);
                       outstring(700,0,ccAZN+totccAZN,false);
                       outstring(700,0,"",false);
                       outstring(700,0,"",false);

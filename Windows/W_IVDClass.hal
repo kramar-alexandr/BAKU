@@ -5160,6 +5160,7 @@ begin
   if (IsEnterprise) then begin
     Flip(flipnr); flipnr = flipnr + 1;
   MatCol(1,86,"Наименование",0,Spec,false,0);
+  MatCol(1,-260,"FIFO",0,FIFORowVal,true,0);
   MatCol(1,-180,"С места",0,FrPosCode,false,UsedPosSClass);
   MatCol(1,-90,"На место",0,ToPosCode,false,FreePosSClass);
   end;
