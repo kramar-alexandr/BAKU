@@ -1,4 +1,108 @@
-global procedure BrandsAndStockCorrelationRn(record RcVc RepSpec)
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode); //Edit***************************Sasha2,14:21 07.05.2015
+external function val AbsoluteVal(val); //Edit***************************Sasha2,15:31 07.05.2015
+
+//Edit***************************Sasha2,12:42 07.05.2015 {
+procedure CollectTurnOverTotals(var val totturnover,var val prtotturnover,date sd,date ed,string location,string basecur)
+begin
+  record IVVc IVr;
+  string 20 keyname;
+  boolean TrHs,testf;
+  integer keys;
+  val tsum,ivsum;
+  
+    if (NonBlank(location)) then begin
+      IVr.Location = location;
+      IVr.InvDate = ed;
+      keyname = "Location";
+      keys = 2;
+    end else begin
+      IVr.InvDate = ed;
+      keyname = "InvDate";
+      keys = 1;
+    end;
+    
+    TrHs = true;
+    while (LoopBackKey(keyname,IVr,keys,TrHs)) begin
+      testf = true;
+      if (IVr.InvDate>ed) then begin testf = false; end;
+      if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
+      if (nonblank(location) and location!=IVr.Location and keys==1) then begin testf = false; end;
+      if (nonblank(location) and location!=IVr.Location and keys==2) then begin TrHs = false; testf = false; end;
+      if (GetYear(IVr.InvDate)<GetYear(addyear(sd,-1))) then begin TrHs = false; testf = false;end;
+      if (testf) then begin
+        ivsum = IVr.Sum4;
+        if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
+          ivsum = ivsum*(-1);
+        end;
+        if (GetYear(IVr.InvDate)==GetYear(ed)) then begin
+          if (IVr.CurncyCode==basecur) then begin
+            totturnover = totturnover + ivsum;
+          end else begin
+            if (IVr.FrRate!=0 and IVr.ToRateB1!=0) then begin
+              totturnover = totturnover + round((ivsum/IVr.FrRate)*IVr.ToRateB1,DefaultCurRoundOff);
+            end else begin
+              CurValToOtherCur(IVr.InvDate,IVr.CurncyCode,ivsum,basecur,tsum,DefaultCurRoundOff);
+              totturnover = totturnover + tsum;
+            end;
+          end;
+        end;
+        if (GetYear(IVr.InvDate)==GetYear(addyear(ed,-1))) then begin
+          if (IVr.CurncyCode==basecur) then begin
+            prtotturnover = prtotturnover + ivsum;
+          end else begin
+            if (IVr.FrRate!=0 and IVr.ToRateB1!=0) then begin
+              prtotturnover = prtotturnover + round((ivsum/IVr.FrRate)*IVr.ToRateB1,DefaultCurRoundOff);
+            end else begin
+              CurValToOtherCur(IVr.InvDate,IVr.CurncyCode,ivsum,basecur,tsum,DefaultCurRoundOff);
+              prtotturnover = prtotturnover + tsum;
+            end;
+          end;
+        end;
+      end;
+    end;
+        
+  return;
+end; 
+
+function val GetIVrowSum(record ItemHistVc IHr,string basecur)
+begin
+  val res,sum,tsum;
+  record IVVc IVr;
+  row IVVc IVrw;
+  Boolean testf;
+  integer sign;
+    
+    res = 0;
+    IVr.SerNr = IHr.TransNr;
+    if (ReadFirstMain(IVr,1,true)) then begin
+      Matrowget(IVr,IHr.Row,IVrw);
+      testf = true;
+      if (IVrw.ArtCode!=IHr.ArtCode) then begin testf = false; end;
+      if (testf) then begin
+        sign = 1;
+        if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
+          sign = -1;
+        end;
+        sum = (IVrw.Sum/IVrw.Quant)*-IHr.Qty;
+        if (IVr.CurncyCode!=basecur) then begin
+          if (IVr.FrRate!=0 and IVr.ToRateB1!=0) then begin
+            sum = round((sum/IVr.FrRate)*IVr.ToRateB1,DefaultCurRoundOff);
+          end else begin
+            CurValToOtherCur(IVr.InvDate,IVr.CurncyCode,sum,basecur,tsum,DefaultCurRoundOff);
+            sum = tsum;
+          end;
+        end;
+        res = sum*sign;
+      end;
+    end;
+  
+  GetIVrowSum = res;
+return;
+end;
+//Edit***************************Sasha2,12:42 07.05.2015 }
+
+global 
+procedure BrandsAndStockCorrelationRn(record RcVc RepSpec)
 begin
 	record DIVc DIr;
 	record INVc INr;
@@ -6,17 +110,20 @@ begin
 	record CTypeVc CTyper;
 	date sd,ed;
 	boolean intestf;
-	string 200 class;
+	string 200 class,location; //Edit***************************Sasha2,10:56 07.05.2015
 	boolean testf,TrHs,INTrHs;
 	array val turnover,pertr,stocexcons,perstockexcons,stockinccons,perstockinccons;
 	val totturnover,totstocexcons,totstockinccons;
 	array val prturnover,prpertr,prstockexcons,prperstockexcons,prstockinccons,prperstockinccons;
 	val prtotturnover,prtotstocexcons,prtotstockinccons;
-	integer i;
+	integer i,keys; //Edit***************************Sasha2,10:16 08.05.2015
+	record BaseCurBlock bascur; //Edit***************************Sasha2,14:58 07.05.2015
+	string 20 keyname; //Edit***************************Sasha2,10:17 08.05.2015
 	
 	sd = RepSpec.sStartDate;
 	ed = RepSpec.sEndDate;
 	class = RepSpec.f1;
+	location = RepSpec.f2; //Edit***************************Sasha2,10:57 07.05.2015
 	
 	startreportjob("Brands & Stock Correlation");
 	
@@ -31,7 +138,7 @@ begin
 	endheader;
 	
 	
-	For(i=0;i<12;i=i+1) begin
+	For(i=1;i<13;i=i+1) begin
 	  turnover[i] = 0;
 	  pertr[i] = 0;
 	  stocexcons[i] = 0;
@@ -39,7 +146,7 @@ begin
 	  stockinccons[i] = 0;
 	  perstockinccons[i] = 0;
 	end; 
-	For(i=0;i<12;i=i+1) begin
+	For(i=1;i<13;i=i+1) begin
 	  prturnover[i] = 0;
 	  prpertr[i] = 0;
 	  prstockexcons[i] = 0;
@@ -48,87 +155,120 @@ begin
 	  prperstockinccons[i] = 0;
 	end; 
 	
+	BlockLoad(bascur);
+	CollectTurnOverTotals(totturnover,prtotturnover,sd,ed,location,bascur.BaseCur1); //Edit***************************Sasha2,14:34 07.05.2015
 	INr.DispGroups = class;
 	INTrHs = true;
-	while(loopkey("MyDispGroups",INr,1,INTrHs))begin
+	resetloop(INr);
+	while(loopkey("MyDispGroups",INr,1,INTrHs)) begin
 		intestf = true;
 		if(nonblank(class) and !setinset(class,INr.DispGroups))then begin intestf = false; INTrHs = false; end;
 		if(INr.Terminated>0)then begin intestf = false; end;
 		
 		if(intestf)then begin
 			resetloop(IHr);
-			IHr.ArtCode = INr.Code;
+			if (NonBlank(location)) then begin
+			  IHr.ArtCode = INr.Code;
+        IHr.Location = location;
+        keyname = "ArtCodeLoc";
+        keys = 2;
+			end else begin
+			  IHr.ArtCode = INr.Code;
+        keyname = "ArtCode";
+        keys = 1;
+			end;
 			TrHs = true;
-			while(loopkey("ArtCode",IHr,1,TrHs))begin
+			while(loopkey(keyname,IHr,keys,TrHs)) begin
 				testf = true;
 				if(IHr.TransDate>ed)then begin TrHs = false; testf = false; end;
 				if(IHr.ArtCode!=INr.Code)then begin TrHs = false; testf = false; end;
-				if(IHr.StockAffectf==0)then begin testf=false; end;
-				
+				//if(IHr.StockAffectf==0)then begin testf=false; end; //Edit***************************Sasha2,10:45 08.05.2015
+				if(nonblank(location) and location!=IHr.Location and keys==1) then begin testf = false; end; //Edit***************************Sasha2,15:52 07.05.2015
+				if(nonblank(location) and location!=IHr.Location and keys==2) then begin TrHs = false; testf = false; end; //Edit***************************Sasha2,15:52 07.05.2015
+
 				if(testf)then begin
 					if(IHr.TransDate<sd)then begin
-						if(IHr.Qty>0)then begin
-							if(INr.ConsgType==1)then begin
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end else begin
-								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end;
-						end else begin
-							if(INr.ConsgType==1)then begin
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end else begin
-								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end;
-
-						end;
+					  if (IHr.StockAffectf!=0) then begin
+  						if(IHr.Qty>0)then begin
+  							if(INr.ConsgType==1)then begin
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end else begin
+  								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end;
+  						end else begin
+  							if(INr.ConsgType==1)then begin
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end else begin
+  								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end;
+  						end;
+  					end;
 					end else begin
 						if(IHr.Qty>0)then begin
-							turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							if(INr.ConsgType==1)then begin
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end else begin
-								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end;
+						  if (IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,14:50 07.05.2015 {
+						    turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] + GetIVrowSum(IHr,bascur.BaseCur1);
+						  end; //Edit***************************Sasha2,14:50 07.05.2015 }
+							if (IHr.StockAffectf!=0) then begin
+  							if(INr.ConsgType==1)then begin
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end else begin
+  								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end;
+  						end;
 						end else begin
-							turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							if(INr.ConsgType==1)then begin
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end else begin
-								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end;
+						  if (IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,14:50 07.05.2015 {
+						    turnover[getmonth(IHr.TransDate)] = turnover[getmonth(IHr.TransDate)] + GetIVrowSum(IHr,bascur.BaseCur1);
+						  end; //Edit***************************Sasha2,14:50 07.05.2015 }
+							if (IHr.StockAffectf!=0) then begin
+  							if(INr.ConsgType==1)then begin
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end else begin
+  								stocexcons[getmonth(IHr.TransDate)] = stocexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  								stockinccons[getmonth(IHr.TransDate)] = stockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end;
+  						end;	
 						end;
 					end;
 				end;
 				
 				if(testf and IHr.TransDate<addyear(ed,-1))then begin
 					if(IHr.TransDate<addyear(sd,-1))then begin
-						if(INr.ConsgType==1)then begin
-							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-						end else begin
-							prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-						end;
+					  if (IHr.StockAffectf!=0) then begin
+  						if(INr.ConsgType==1)then begin
+  							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  						end else begin
+  							prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  						end;
+  					end;
 					end else begin
 						if(IHr.Qty>0)then begin
-							prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							if(INr.ConsgType==1)then begin
-								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end else begin
-								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
-							end;
+						  if (IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,14:50 07.05.2015 {
+						    prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] + GetIVrowSum(IHr,bascur.BaseCur1);
+						  end; //Edit***************************Sasha2,14:50 07.05.2015 }
+  						if (IHr.StockAffectf!=0) then begin
+  							if(INr.ConsgType==1)then begin
+  								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end else begin
+  								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] + IHr.TotCostPrice;
+  							end;
+  					  end;
 						end else begin
-							prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							if(INr.ConsgType==1)then begin
-								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end else begin
-								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
-							end;
+						  if (IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,14:50 07.05.2015 {
+						    prturnover[getmonth(IHr.TransDate)] = prturnover[getmonth(IHr.TransDate)] + GetIVrowSum(IHr,bascur.BaseCur1);
+						  end; //Edit***************************Sasha2,14:50 07.05.2015 }
+							if (IHr.StockAffectf!=0) then begin
+  							if(INr.ConsgType==1)then begin
+  								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end else begin
+  								prstockexcons[getmonth(IHr.TransDate)] = prstockexcons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  								prstockinccons[getmonth(IHr.TransDate)] = prstockinccons[getmonth(IHr.TransDate)] - IHr.TotCostPrice;
+  							end;
+  						end;
 						end;
 					end;
 				end;
@@ -136,25 +276,25 @@ begin
 		end;
 	end;	
 	
-	For(i=0;i<12;i=i+1) begin
-	  totturnover = totturnover + turnover[i];
+	For(i=1;i<13;i=i+1) begin
+	  //totturnover = totturnover + turnover[i];
 	  totstocexcons = totstocexcons + stocexcons[i];
 	  totstockinccons = totstockinccons + stockinccons[i];
 	end; 
 	
-	For(i=0;i<12;i=i+1) begin
+	For(i=1;i<13;i=i+1) begin
 	  pertr[i] = turnover[i]/totturnover*100;
 	  perstockexcons[i] = stocexcons[i]/totstocexcons*100;
 	  perstockinccons[i] = stockinccons[i]/totstockinccons*100;
 	end; 
 	
-	For(i=0;i<12;i=i+1) begin
-	  prtotturnover = prtotturnover + prturnover[i];
+	For(i=1;i<13;i=i+1) begin
+	  //prtotturnover = prtotturnover + prturnover[i];
 	  prtotstocexcons = prtotstocexcons + prstockexcons[i];
 	  prtotstockinccons = prtotstockinccons + prstockinccons[i];
 	end; 
 	
-	For(i=0;i<12;i=i+1) begin
+	For(i=1;i<13;i=i+1) begin
 	  prpertr[i] = prturnover[i]/prtotturnover*100;
 	  prperstockexcons[i] = prstockexcons[i]/prtotstocexcons*100;
 	  prperstockinccons[i] = prstockinccons[i]/prtotstockinccons*100;
@@ -191,9 +331,9 @@ begin
 		outstring(0,0,getyear(sd),false);
 	endformat;
 	
-	For(i=0;i<12;i=i+1) begin
+	For(i=1;i<13;i=i+1) begin
 		startformat(15);
-			outstring(0,0,i+1,false);
+			outstring(0,0,i,false);
 			outstring(0,0,prturnover[i],false);
 			outstring(0,0,turnover[i],false);
 			outstring(0,0,prpertr[i],false);
