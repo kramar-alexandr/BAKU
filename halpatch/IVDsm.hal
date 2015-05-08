@@ -87,6 +87,9 @@ begin
 		RepSpec.f4 = RcVcr1.f4;
 		RepSpec.ObjStr = dblstr;
 		RepSpec.Media = mtScreen;
+		RepSpec.flags[21] = 1;
+		RepSpec.flags[22] = 1;
+		RepSpec.flags[7] = 2;
     RepSpec.repname = "MainRn";
     
     RunReport(RepSpec,0); 
