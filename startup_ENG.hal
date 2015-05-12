@@ -302,6 +302,7 @@ begin
   
 // INQtyRn  
   SString(31231,"Item code");
+  SString(31238,"Quantity");
 
  //CustDebByComp
   SString(31257,"Report on clients' debts to companies"); 			//Отчет по задолженности клиентов по компаниям 
@@ -320,7 +321,12 @@ begin
   SString(31308,"Debt on invoices: ");
 
 //Error messages
-  SString(31310,"You can not add an item if the invoice has been created from Order.")								
+  SString(31310,"You can not add an item if the invoice has been created from Order.");
+  
+  SString(35008,"Extended report of stock balances");
+	SString(35009,"Retail. Brand currency");
+	SString(35010,"Shelf");
+	SString(35011,"Retail ");  								
 
 	
   /*StrSetBegin(3);

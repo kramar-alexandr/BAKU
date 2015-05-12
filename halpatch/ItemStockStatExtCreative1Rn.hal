@@ -2,7 +2,7 @@ external procedure ExtractObj(string,var Integer,var string);
 remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean SetInSet2(string,string);
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);
 
 function string 200 ParseClassification(string class)
 begin
@@ -498,11 +498,14 @@ begin
   record UserVc User;
   boolean userlocation;
   integer pos;
-  string 50 uloc,brand,model,classfind;
+  string 50 uloc,brand,model,classfind,retailbasecur;
   record SerBalVc SBr;
   date todate;
   val total_qty;
   val total_cost,total_price;
+  record BaseCurBlock BCb;
+  
+  BlockLoad(BCb);
   
   item = RepSpec.f1;
   location = RepSpec.f2;
@@ -528,7 +531,7 @@ begin
   	end;
   end;
   
-  startreportnoheaderjob("Отчет остатков по складам расширенный");
+  startreportnoheaderjob(USetStr(35008));			//Edit----------------------Dima  12.05.2015
   
   total_qty = 0;
   total_cost = 0;
@@ -536,26 +539,27 @@ begin
   
   if(userlocation)then begin
   	startformat(15);
-			outstring(50,0,"Вам не разрешен отчет по данному складу, выберите пожалуйста ваш склад",false);
+			outstring(50,0,USetStr(31014),false);
   	endformat;
   end else begin
 		startformat(15);
-			outstring(0,0,"Кодировка для системы Ханза",false);
-			outstring(0,0,"Кодировка поставщика",false);
-			outstring(0,0,"Склад",false);
-			outstring(0,0,"Бренд",false);
-			outstring(0,0,"Модель",false);
-			outstring(0,0,"Наименование",false);
-			outstring(0,0,"Полка",false);// Edit ************************** Thursday, 24 July 2014 10:31:44
-			outstring(0,0,"Цвет",false);
-			outstring(0,0,"Размер",false);
-			outstring(0,0,"Серийный номер",false);
-			outstring(0,0,"Кол-во",false);
-			outstring(0,0,"Резерв",false);
-			outstring(0,0,"Ед.изм.",false);
-			outstring(0,0,"Розница Валюта бренда",false);
-			outstring(0,0,"Валюта",false);
-			outstring(0,0,"Розница AZN",false);
+			outstring(0,0,USetStr(31042),false);
+			outstring(0,0,USetStr(31043),false);
+			outstring(0,0,USetStr(12861),false);//Location
+			outstring(0,0,USetStr(31044),false);
+			outstring(0,0,USetStr(31206),false);
+			outstring(0,0,USetStr(12713),false);
+			outstring(0,0,USetStr(35010),false);//Shelf  // Edit ************************** Thursday, 24 July 2014 10:31:44
+			outstring(0,0,USetStr(31253),false);//Colour
+			outstring(0,0,USetStr(31254),false);//Size
+			outstring(0,0,USetStr(31051),false);//Serial number
+			outstring(0,0,USetStr(31238),false);
+			outstring(0,0,USetStr(16141),false);//Reserve
+			outstring(0,0,USetStr(31175),false);
+			outstring(0,0,USetStr(35009),false);
+			outstring(0,0,USetStr(16018),false);		//Edit----------------------Dima  12.05.2015
+			retailbasecur = USetStr(35011) & BCb.BaseCur1;//Edit----------------------Dima  12.05.2015
+			outstring(0,0,retailbasecur,false);		//Edit----------------------Dima  12.05.2015
 		endformat;
 	
 		if(nonblank(item))then begin
@@ -678,7 +682,7 @@ begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,"Всего кол-во:",false);
+			outstring(0,0,USetStr(31074),false);
 			outstring(0,0,total_qty,false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
