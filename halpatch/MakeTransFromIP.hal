@@ -38,6 +38,7 @@ external function Boolean CheckVATLaws();
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean TransInFiscal(Date);
 external function Boolean GetAccName(string,var string,Integer);
+external procedure TRSumup(var record TRVc,var val); //Edit***************************Sasha2,10:59 13.05.2015
 
 
 procedure ARFindPaydAmount(record IPrsVc IPrsp,Integer noordered,var val ar,var val arbase)
@@ -1630,7 +1631,9 @@ L80:;
     end;
   end;
   end;
-  if (TotSum!=0) then begin
+  
+  TRSumup(gTRp,t); //Edit***************************Sasha2,11:10 13.05.2015
+  if (/*TotSum!=0*/gTRp.DiffVal!=0) then begin //Edit***************************Sasha2,11:14 13.05.2015
     rs = TotSum;
 /*
 gain calculated in difrent place
@@ -1645,7 +1648,7 @@ gain calculated in difrent place
     end;
 */    
     TotSum = Round(gTRp.DiffVal,SetRoundModeD(2));
-    if (TotSum!=0) then begin
+    if (TotSum!=0) then begin 
       if (GetAccName(ARAccb.RateRndOffAcc,tstr,60)==false) then begin
         res = 1904;
         goto LMakeTransFromIP2;
