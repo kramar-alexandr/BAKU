@@ -79,7 +79,7 @@ begin
 	Maintenance("Распределить долг с карт лояльности",DebtDistribVClass,DebtDistribMn,modSO);
 	Maintenance("Set EURB for Cartier",FIXVClass,SetEURBinPricesMn,modDI);		//Edit----------------------Dima  17.04.2015
 	Maintenance("Set Currency for Brand",SetCurrencyinPricesVClass,SetCurrencyinPricesMn,modDI);
-	
+	Maintenance("Проставить группы товаров по классификации и классификации по группам",FIXVClass,AddClassGroupToIN,modDBMain);
 	
 	Maintenance("FIX StockMovVc",FIXVClass,FixStockMovMn,modDBMain);
 	

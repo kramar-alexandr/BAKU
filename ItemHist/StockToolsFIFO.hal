@@ -1729,23 +1729,24 @@ begin
   									sourceIHr.Row = IHr.Row;
   									Readlastkey("FNTransNr",sourceIHr,3,true);
   									curncy = sourceIHr.CurncyCode;
-										infile = sourceIHr.InDate;
-										indate = sourceIHr.InFileName;
+										indate = sourceIHr.InDate;
+										infile = sourceIHr.InFileName;
 										totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
+  								end else begin
+  								//matrowget(IVr,IHr.Row,IVrw);
+										curncy = INr.LastPurchCurncyCode;
+										totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
+										infile = filename;
+										indate = IHr.TransDate;
   								end;
-  								matrowget(IVr,IHr.Row,IVrw);
-									curncy = INr.LastPurchCurncyCode;
-  								totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
-  								infile = filename;
-  								indate = IHr.TransDate;
   	case	"StockMovVc":	if(IHr.Qty>=0)then begin
   												sourceIHr.FileName = "StockMovVc";
   												sourceIHr.TransNr = IHr.TransNr;
   												sourceIHr.Row = IHr.Row;
   												readlastkey("FNTransNr",sourceIHr,3,false);
 													curncy = sourceIHr.CurncyCode;
-													infile = sourceIHr.InDate;
-  												indate = sourceIHr.InFileName;
+													indate = sourceIHr.InDate;
+  												infile = sourceIHr.InFileName;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
   											end;
   	case	"RetVc":	if(IHr.Qty>=0)then begin
@@ -1758,8 +1759,8 @@ begin
 													sourceIHr.TransNr = Retr.SHNr;
 													readfirstkey("FNTransNr",sourceIHr,3,true);
 													curncy = sourceIHr.CurncyCode;
-													infile = sourceIHr.InDate;
-  												indate = sourceIHr.InFileName;
+													indate = sourceIHr.InDate;
+  												infile = sourceIHr.InFileName;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy/-sourceIHr.Qty*IHr.Qty;
 													//logtext(0,sourceIHr.SerNr & " " & curncy & " " & totcostpricecurncy);
   											end;

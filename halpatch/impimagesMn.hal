@@ -1802,3 +1802,46 @@ begin
 
 return;
 end;
+
+
+global updating procedure AddClassGroupToIN()
+begin
+	record INVc INr;
+	record DIVc DIr;
+	record ITVc ITr;
+	integer i,pos;
+	string 20 class;
+	
+	while(loopmain(INr,1,true))begin
+		if(blank(INr.Group) or blank(INr.DispGroups))then begin
+			if(blank(INr.Group) and nonblank(INr.DispGroups))then begin
+				pos = 0;
+				ExtractObj(INr.DispGroups,pos,class);
+				if(nonblank(class))then begin
+					DIr.Code = class;
+					if(readfirstmain(DIr,1,true))then begin
+						ITr.Comment = DIr.Name;
+						if(readfirstkey("Comment",ITr,1,true))then begin
+							INr.Group = ITr.Code;
+							recordstore(INr,true);
+						end;
+					end;
+				end;
+			end;
+			
+			if(nonblank(INr.Group) and blank(INr.DispGroups))then begin
+					ITr.Code = INr.Group;
+					if(readfirstmain(ITr,1,true))then begin
+						DIr.Name = ITr.Comment;
+						if(readfirstkey("Name",DIr,1,true))then begin
+							INr.DispGroups = DIr.Code;
+							recordstore(INr,true);
+						end;
+					end;
+			end;
+			
+		end;
+	end;
+
+return;
+end;
