@@ -263,7 +263,7 @@ array string 100 artcodes;
   updatebrowses(wn);
   
   if(currentcompany!=1)then begin
-  	RepSpec.sStartDate = addyear(currentdate,-1);
+  	RepSpec.sStartDate = addyear(currentdate,-2);// Edit ************************** Wednesday, 13 May 2015 16:24:17
   end;
   if(nonblank(RepSpec.ObjStr) and nonblank(RepSpec.sStartDate))then begin
     FindReItems(RepSpec.ObjStr,RepSpec.sStartDate,artcodes,counter);
