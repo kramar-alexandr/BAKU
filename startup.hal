@@ -82,7 +82,7 @@ begin
 	Maintenance("Проставить группы товаров по классификации и классификации по группам",FIXVClass,AddClassGroupToIN,modDBMain);
 	
 	Maintenance("FIX StockMovVc",FIXVClass,FixStockMovMn,modDBMain);
-	
+	Maintenance("Платежи.Установить деб. счет 63 для предоплат",FIXVClass,SetDebAcc63ToIPMn,modDBMain);		//Edit----------------------Dima  13.05.2015
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
