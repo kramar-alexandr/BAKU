@@ -342,6 +342,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
 	    filenames[fncnt] = "IVVc"; fncnt = fncnt + 1;
 	    filenames[fncnt] = "RetPUVc"; fncnt = fncnt + 1;
 	    filenames[fncnt] = "SHVc"; fncnt = fncnt + 1;
+	    filenames[fncnt] = "SDVc"; fncnt = fncnt + 1;
 	 case 2:
 	    filenames[fncnt] = "StockMovVc"; fncnt = fncnt + 1; stmovf = true;
 	end;
@@ -407,25 +408,24 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
       if (IHr.TransDate > RepSpec.sEndDate) then begin TrHs = false; testf = false; end;
       if (IHr.StockAffectf!=1) then begin testf = false; end;
       if (nonblank(location) and (location!=IHr.Location)) then begin testf = false; end;
+      INr.Code = IHr.ArtCode;
+      if (readfirstmain(INr,1,true) and INr.Terminated>0) then begin testf = false; end;
       if(testf and nonblank(RepSpec.f2))then begin
         if (NonBlank(curitem) and curitem==IHr.ArtCode) then begin
           goto Lcuritem;
         end;
-        INr.Code = IHr.ArtCode;
         testf = false;
-  			if(readfirstmain(INr,1,true))then begin
-  				class = "";
-  				pos = 0;
-  				ExtractObj(INr.DispGroups,pos,class);
-  				while (nonblank(class)) begin
-    				if(nonblank(class) and setinset(class,RepSpec.f2))then begin
-    					testf = true;
-    					pos = 255;
-    					curitem = IHr.ArtCode;
-    				end;
-    				ExtractObj(INr.DispGroups,pos,class);
+				class = "";
+				pos = 0;
+				ExtractObj(INr.DispGroups,pos,class);
+				while (nonblank(class)) begin
+  				if(nonblank(class) and setinset(class,RepSpec.f2))then begin
+  					testf = true;
+  					pos = 255;
+  					curitem = IHr.ArtCode;
   				end;
-  			end;
+  				ExtractObj(INr.DispGroups,pos,class);
+				end;
   	Lcuritem:;
       end;
       if (testf) then begin
