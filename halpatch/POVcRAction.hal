@@ -1044,7 +1044,7 @@ begin
 	end;
 	if(found==true)then begin
 
-		if (INr.BarCode == POrw.EAN13Code) then begin
+		if (INr.BarCode == POrw.EAN13Code and (nonblank(INr.BarCode))) then begin
 				recordcopy(IN2r,INr);
 				changef = false;
 				if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
