@@ -411,6 +411,8 @@ begin
 	boolean findar;
 		
 	wn = curwindow;
+	WindowFieldGoto(wn,ORr,-1,"SerNr",true);
+	deselectwindow(wn,false);
 	getwindowrecord(wn,ORr);
 	if(ORr.OKFlag==0)then begin
 		mtrw = matrowcnt(ORr);
