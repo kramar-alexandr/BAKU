@@ -2439,6 +2439,7 @@ end else begin
 end;
 	SpecialMenu("Экспорт счет-фактуры в Excel",' ',0,"ExportInvoiceToExcelDsm");	//Edit----------------------Dima  04.03.2015
   SpecialMenu("Сделать поступление для FOB17",' ',0,"CreatePufromIVforPLDsm"); //Edit***************************Sasha2,14:35 07.04.2015
+  SpecialMenu("Создать кредитовый счет-фактуру",' ',20,"CreateCreditNoteIVDsm");
   EndWindow;
 end;
 
