@@ -779,21 +779,21 @@ begin
         nwn = OpenWindow("NPTSSearchBFCURClass",0,wn,"","",RepSpec);
         WindowFieldGoto(nwn,RepSpec,-1,"f1",true);
         goto LIVDClassTouchScreenPasteButtonDo;
-	  case kPOSButtonTypeGoodsReturn:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-		PasteRetItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-	    updatebrowses(wn);
-		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+  	  case kPOSButtonTypeGoodsReturn:// Edit ************************** Wednesday, 5 December 2012 11:44:24
+  		  PasteRetItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+  	    updatebrowses(wn);
+  		  goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
       case kPOSButtonTypeSpecialRebate:// Edit ************************** Wednesday, 5 December 2012 11:44:24
-		PasteSpecialRebateItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
-		updatebrowses(wn);
-		goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
-	  case kPOSButtonTypeCreateShotSDVc: //Edit***************************Sasha2,10:37 11.12.2014
-       CreateSDfromIVDsm(POSBrw.Code,POSBrw.Label);
-      goto LIVDClassTouchScreenPasteButtonDo;
-    case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
-      CreatePUfromIVDsm;
-      goto LIVDClassTouchScreenPasteButtonDo;
-    end;
+		    PasteSpecialRebateItemIVDsm;// Edit ************************** Wednesday, 5 December 2012 11:44:23
+		    updatebrowses(wn);
+		    goto LIVDClassTouchScreenPasteButtonDo;// Edit ************************** Wednesday, 5 December 2012 11:44:15
+      case kPOSButtonTypeCreateShotSDVc: //Edit***************************Sasha2,10:37 11.12.2014
+         CreateSDfromIVDsm(POSBrw.Code,POSBrw.Label);
+        goto LIVDClassTouchScreenPasteButtonDo;
+      case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
+        CreatePUfromIVDsm;
+        goto LIVDClassTouchScreenPasteButtonDo;
+      end;
   end;
 LIVDClassTouchScreenPasteButtonDo:;
   return;
