@@ -614,3 +614,16 @@ begin
   EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);
   EndWindow;
 end; //Edit***************************Sasha2,11:13 02.04.2015 }
+
+window DirectorWeekRClass:1 //Edit---------------Vitalii 15:00 19.05.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real h,v,vs;
+	WindowBegin("Определите еженедельный отчет директоров",DirectorWeekRClass,CGRcW,RcType);
+		SetWRect(20,80,410,340);
+		h = 160;
+		vs = 20;
+		PeriodField(h,v=6,"Период");
+		EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,60 ,ObjStr,false,ObjSClass);
+	EndWindow;
+end;

@@ -132,6 +132,7 @@ begin
   Report("Суммарный отчет за период",SumCostByPeriodRClass,SumCostByPeriodRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Отчет по учредителям",FoundersRClass,FoundersRn,0,modIN);//Edit----------------------Dima  23.02.2015
   Report("Фактурирование поступлений",PUInvoicingRClass,PUInvoicingRn,0,modPL);//Edit----------------------Dima  24.02.2015
+  Report("Еженедельный отчет директоров",DirectorWeekRClass,DirectorWeekRn,0,modNL);//Edit---------------Vitalii 14:49 19.05.2015
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -492,10 +493,24 @@ begin
 	SString(35008,"Отчет остатков по складам расширенный");
 	SString(35009,"Розница. Валюта бренда");
 	SString(35010,"Полка");
-	SString(35011,"Розница ");	
-
-
-
+	SString(35011,"Розница ");
+	
+	//DirectorWeekRn
+	SString(35012,"Еженедельный отчет директоров");
+	SString(35013,"AZN терминал");
+	SString(35014,"В осн. валюте");
+	SString(35015,"Остаток на ");
+	SString(35016,"по валютам");
+	SString(35017,"Расход");
+	SString(35018,"Касса");
+	SString(35019,"Сумма");
+	SString(35020,"Валюта");
+	SString(35021,"Терминал");
+	SString(35022,"Приход");
+	SString(35023,"Приход за товар");
+	SString(35024,"Расход за товар");
+	SString(35025,"Остаток");
+	SString(35026,"К сдаче");
 
 
 
