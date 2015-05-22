@@ -43,7 +43,7 @@ string 100 tstr;
   	end;
   	if(IHr.ArtCode!=artcode or IHr.FileName!="IVVc")then begin TrHs = false; testf = false; end;
   	if(IHr.Invalid==1)then begin testf=false; end;
-  	
+  	if(IHr.StockAffectf!=1) then begin testf = false; end; //Edit***************************Sasha2,15:25 20.05.2015
   	if(testf)then begin
   		
 			IVr.SerNr = IHr.TransNr;

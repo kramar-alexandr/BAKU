@@ -43,6 +43,8 @@ external function Boolean PODClassCost1_5EFAfter(Integer,Integer,Integer,Integer
 external function Boolean PODClassRowCost1_5EFAfter(Integer,Integer,Integer,Integer,Integer);
 external function Boolean PODClassShipCostEFAfter(Integer,Integer,Integer,Integer);
 external function Boolean PODClassCustomsCostEFAfter(Integer,Integer,Integer,Integer);
+external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Thursday, 14 November 2013 13:36:52
+external outer procedure CreateLoyaltyCardRemote(record CUVc,var record LoyaltyCardVc);// Edit ************************** Tuesday, 1 April 2014 16:05:50
 
 global
 updating procedure DropSHFromPODsm()
@@ -118,6 +120,7 @@ begin
   return;
 end;
 
+
 global
 updating procedure PUFromPODsm()
 BEGIN
@@ -176,6 +179,84 @@ BEGIN
 LPUFromPODsm:;  
   return;
 end;
+
+
+global procedure NormalizeClassName(var string classname)	//Transfered by ----------------------Dima  19.05.2015
+begin
+string 200 newclassname,c;
+integer i,lenth,zercnt;
+  
+  lenth = len(classname);
+  newclassname = "";
+
+  if(lenth>0)then begin
+    i=lenth - 1;
+    while(mid(classname,i,1)==" " and i>=0)begin
+      i=i-1;
+    end;
+  end;
+  newclassname = mid(classname,0,i+1);
+  
+  lenth = len(newclassname);
+  if(lenth>0)then begin
+    i=0;
+    while(mid(classname,i,1)==" " and i<lenth)begin
+      i=i+1;
+    end;
+  end;
+  newclassname = mid(newclassname,i,lenth-i);
+      
+  classname = newclassname;
+  newclassname = "";
+  lenth = len(classname);
+  For(i=0;i<lenth;i=i+1) begin
+	  c=mid(classname,i,1);
+	  if(asc(c)<32 or asc(c)>126)then begin
+	    c="_";
+	    newclassname = newclassname & c;
+	  end else begin
+	    newclassname = newclassname & c;
+	  end;
+	  
+	end; 
+  classname = newclassname;
+return;
+end;
+
+global procedure NormalizeName(var string name)				//Transfered by ----------------------Dima  19.05.2015
+begin
+string 200 newclassname,c;
+integer i,lenth,zercnt;
+  
+  lenth = len(name);
+  for(i=0;i<lenth;i=i+1)begin
+  	if((asc(mid(name,i,1))>31 and asc(mid(name,i,1))<127) or (asc(mid(name,i,1))>1039 and asc(mid(name,i,1))<1111))then begin
+  		if(mid(name,i,1)!="\"")then begin
+  		newclassname = newclassname & mid(name,i,1);
+  		end;
+  	end;
+  end;
+  name = newclassname;
+return;
+end;
+
+global procedure NormalizeArtCode(var string name)			//Transfered by ----------------------Dima  19.05.2015
+begin
+string 200 newclassname,c;
+integer i,lenth,zercnt;
+  
+  lenth = len(name);
+  for(i=0;i<lenth;i=i+1)begin
+  	if((asc(mid(name,i,1))>31 and asc(mid(name,i,1))<127) or (asc(mid(name,i,1))>1039 and asc(mid(name,i,1))<1111))then begin
+  		if((mid(name,i,1)!="\"") and (mid(name,i,1)!=" ") and (mid(name,i,1)!=","))then begin
+  		newclassname = newclassname & mid(name,i,1);
+  		end;
+  	end;
+  end;
+  name = newclassname;
+return;
+end;
+
 
 global
 updating function Boolean PODClassPrint(Integer wn,Boolean previewf)
@@ -1060,6 +1141,23 @@ begin
       end;
     end;
   end;
+  
+  switch (fieldname) begin
+		case "OrderDoneDate": if(POr.OrderDoneFlag==1)then begin res = false; end;// Edit ************************** Wednesday, 13 November 2013 17:30:30
+  end;
+  if (wnst==2) then begin//Rs_update
+    GetPrevWindowRecord(wn,PO2r);
+		if (PO2r.OKFlag!=0) then begin
+			switch (fieldname) begin
+				case "OrderDoneDate": if(POr.OrderDoneFlag==0)then begin res = true; end;// Edit ************************** Wednesday, 13 November 2013 17:30:30
+				case "OrderDoneFlag": if(POr.OrderDoneFlag==0)then begin res = true; end;// Edit ************************** Wednesday, 13 November 2013 17:30:30
+				case "OfficialSerNr": res = true;														//Edit----------------------Dima  01.04.2015
+				otherwise res = false;
+			end;
+		end;
+	end;
+  
+  
 LPODClassActiveEditField:;  
   PODClassActiveEditField = res;
   return;
@@ -1399,6 +1497,258 @@ begin
   return;
 end;
 
+
+function boolean PasteClassification(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 classification;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    classification = POrw.xClassification;
+    if(nonblank(classification))then begin
+      NormalizeClassName(classification);
+      if(POrw.xClassification!=classification)then begin
+        POrw.xClassification = classification;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteClassification = true;
+return;
+end;
+
+function boolean PasteSpec(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.Spec;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.Spec!=spec)then begin
+        POrw.Spec = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteSpec = true;
+return;
+end;
+
+function boolean PasteEAN13Code(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.EAN13Code;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.EAN13Code!=spec)then begin
+        POrw.EAN13Code = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteEAN13Code = true;
+return;
+end;
+
+function boolean PasteComment(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.Comment;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.Comment!=spec)then begin
+        POrw.Comment = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteComment = true;
+return;
+end;
+
+function boolean PasteRowWeight(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.RowWeight;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.RowWeight!=spec)then begin
+        POrw.RowWeight = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteRowWeight = true;
+return;
+end;
+
+function boolean PasteMetal(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.Metal;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.Metal!=spec)then begin
+        POrw.Metal = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteMetal = true;
+return;
+end;
+
+function boolean PasteMajStoneDet(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.MajStoneDet;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.MajStoneDet!=spec)then begin
+        POrw.MajStoneDet = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteMajStoneDet = true;
+return;
+end;
+
+function boolean PasteSize(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.Size;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.Size!=spec)then begin
+        POrw.Size = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteSize = true;
+return;
+end;
+
+function boolean PasteColour(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.Colour;
+    if(nonblank(spec))then begin
+      NormalizeName(spec);
+      if(POrw.Colour!=spec)then begin
+        POrw.Colour = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteColour = true;
+return;
+end;
+
+function boolean PasteArtCode(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+record POVc POr;
+row POVc POrw;
+string 200 spec;
+  
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,POr);
+    matrowget(POr,rownr,POrw);
+    spec = POrw.ArtCode;
+    if(nonblank(spec))then begin
+      NormalizeArtCode(spec);
+      if(POrw.ArtCode!=spec)then begin
+        POrw.ArtCode = spec;
+        matrowput(POr,rownr,POrw);
+        Putwindowrecord(wn,POr);
+      end;
+    end;
+  end;
+  
+PasteArtCode = true;
+return;
+end;
+
+
 global
 function Boolean PODClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 BEGIN
@@ -1438,6 +1788,17 @@ BEGIN
     case "CustomsCost": res = PODClassCustomsCostEFAfter(wn,fn,rownr,changed);
     case "StockType": res = PODClassStockTypeEFAfter(wn,rownr,changed!=0);
     case "TREO": res = PODClassTREOEFAfter(wn,rownr,changed!=0);
+    																																						//Added by---------------------Dima  19.05.2015
+    case "xClassification": res = PasteClassification(wn,fieldname,fn,rownr,changed);
+    case "Spec": res = PasteSpec(wn,fieldname,fn,rownr,changed);
+    case "EAN13Code": res = PasteEAN13Code(wn,fieldname,fn,rownr,changed);
+    case "Comment": res = PasteComment(wn,fieldname,fn,rownr,changed);
+    case "RowWeight": res = PasteRowWeight(wn,fieldname,fn,rownr,changed);
+    case "Metal": res = PasteMetal(wn,fieldname,fn,rownr,changed);
+    case "MajStoneDet": res = PasteMajStoneDet(wn,fieldname,fn,rownr,changed);
+    case "Size": res = PasteSize(wn,fieldname,fn,rownr,changed);
+    case "Colour": res = PasteColour(wn,fieldname,fn,rownr,changed);
+    case "ArtCode": res = PasteArtCode(wn,fieldname,fn,rownr,changed);    		//End----------------------Dima  19.05.2015
   end;
   PODClassAfterEditField = res;
   RETURN;
@@ -1960,3 +2321,168 @@ BEGIN
   PORowDClassAfterEditField = res;
   RETURN;
 END;
+
+
+function Boolean PODClassOrderDoneFlagButtonAction(Integer wn,Integer value)
+BEGIN
+  Boolean res;
+  record POVc POr;
+  Integer normalmode,updatemode;
+  Integer err;
+ 
+ 	res = true;
+  getwindowrecord(wn,POr);
+
+  if(POr.OKFlag==1 and POr.OrderDoneFlag==1)then begin
+  	res = false;
+  end;
+     
+  PODClassOrderDoneFlagButtonAction = res;
+  RETURN;
+END;
+
+
+global function ORDeliverTimeDsm()
+begin
+	integer wn;
+	record DIVc DIr;
+	record CUVc CUr;
+	record ORVc ORr;
+	row ORVc ORrw;
+	integer mtrw,i,j,days;
+	date plan;
+	string 100 class,model,brand;
+	record INVc INr;
+	integer acnt,pos;
+	array string 100 amodel,abrand,avendor;
+	boolean findar;
+		
+	wn = curwindow;
+	WindowFieldGoto(wn,ORr,-1,"SerNr",true);
+	deselectwindow(wn,false);
+	getwindowrecord(wn,ORr);
+	if(ORr.OKFlag==0)then begin
+		mtrw = matrowcnt(ORr);
+		
+		For(i=0;i<mtrw;i=i+1) begin
+			matrowget(ORr,i,ORrw);
+			if(nonblank(ORrw.ArtCode))then begin
+				pos = 0;
+				class = "";
+				model = "";
+				brand = "";
+				INr.Code = ORrw.ArtCode;
+				readfirstmain(INr,1,true);
+				ExtractObj(INr.DispGroups,pos,class);
+				while(nonblank(class))begin
+					DIr.Code = class;
+					readfirstmain(DIr,1,true);
+					if(DIr.CType=="MODEL")then begin
+						model = DIr.Name;
+					end;
+					if(DIr.CType=="BRAND")then begin
+						brand = DIr.Name;
+					end;
+					ExtractObj(INr.DispGroups,pos,class);
+				end;
+				findar = true;
+				For(j=0;j<acnt;j=j+1) begin
+					if(abrand[j]==brand)then begin
+						findar = false;
+					end;
+				end; 
+				if(findar)then begin
+					abrand[acnt]=brand;
+					CUr.Name = brand;
+					if(readfirstkey("Name",CUr,1,true))then begin
+						avendor[acnt] = CUr.Code;
+					end;
+					acnt = acnt + 1;
+				end;
+			end;
+		end; 
+		days = 0;
+		For(i=0;i<acnt;i=i+1) begin
+	  	CUr.Code = avendor[i];
+			if(readfirstmain(CUr,1,true))then begin
+				if(CUr.PlanShipDays>0)then begin
+					if(days<CUr.PlanShipDays)then begin
+						days = CUr.PlanShipDays;
+					end;
+				end;
+			end;
+		end;
+		plan = "";
+		if(days>0)then begin
+			plan = addday(ORr.OrdDate,days + 27);
+		end;
+		
+		ORr.PlanShip = plan;
+		putwindowrecord(wn,ORr);
+	end;
+return;
+end;
+
+
+
+
+global 
+function Boolean IVLClassOnOpenWindow(Integer wn)
+begin
+array string 10 as;
+record UserVc USr;
+string 5 subset;
+  
+  subset = "";
+  USr.Code = currentuser;
+  readfirstmain(USr,1,true);
+  if(usercanaction("ViewNextIV",true)==false)then begin
+    subset = USr.SalesGroup;
+  end;
+  if(nonblank(subset))then begin
+  	setwindowsubset(wn,subset);
+  end;
+  IVLClassOnOpenWindow = false;
+  
+  return;
+end;
+
+
+
+global
+procedure PrintPULabPUDsm()
+BEGIN
+  record RcVc RepSpec;
+  record PUVc PUr;
+  Integer wn;
+
+  wn = CurWindow;
+  GetWindowRecord(wn,PUr);
+  RepSpec.f1 = PUr.SerNr;
+  RepSpec.Media = mtPrinter;
+  RepSpec.ArtMode = 6;
+  RepSpec.repname = "PULabForm";
+  RepSpec.JobDf = 1;
+  OpenWindow("PULabMyRClass",1,0,"","",RepSpec);
+  
+  //if (PrintDocument(RepSpec,"PULabForm",false)) then begin end;
+  
+  RETURN;
+END;
+
+
+global updating procedure CreateLoyaltyCardDsm()
+begin
+	record CUVc CUr;
+	integer wn;
+	record LoyaltyCardVc LoyaltyCardr;
+	
+	wn = curwindow;
+	getwindowrecord(wn,CUr);
+	recordnew(LoyaltyCardr);
+	CreateLoyaltyCardRemote(CUr,LoyaltyCardr);
+	OpenWindow("LoyaltyCardDClass",0,0,"","",LoyaltyCardr);
+	
+
+return;
+end;

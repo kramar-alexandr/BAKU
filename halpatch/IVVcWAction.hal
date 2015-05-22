@@ -2190,3 +2190,24 @@ END;
 
 	// Edit End ---------------------------------------------- Edit End
 	
+	
+global  procedure OpenLinkWindow()	//Edit----------------------Dima  20.05.2015
+begin
+	record RcVc RepSpec;
+	integer wn,nwn,mwn;
+	string 100 subset;
+	record IVVc IVr;
+	
+	wn = curwindow;
+	mwn = MotherWindow(wn);
+	GetWindowRecord(wn,IVr);
+	
+	subset = BuildRecordIdStr(IVr,CurrentCompany);
+	//MessageBox(0,subset);
+	nwn = OpenWindow("ArchiveWClass",0,mwn,subset,"",RepSpec);
+	
+
+return;
+end;	
+	
+	

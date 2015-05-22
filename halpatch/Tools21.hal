@@ -1241,3 +1241,37 @@ begin
 	FindLocationFromARPay = res;
 return;
 end;
+
+global
+function string 100 FindLocationFromOPP(record OPPVc OPPr)		//Edit----------------------Dima  21.05.2015
+begin
+	string 100 res;
+	record POVc POr;
+	record APPayHistVc APPayHistr;
+	record OPVc OPr;
+	row OPVc OPrw;
+	integer rwcnt;
+	
+	res="";
+	if (OPPr.OrderNr>0) then begin
+		POr.SerNr = OPPr.OrderNr;	
+		if(ReadFirstMain(POr,1,true)) then begin
+			res = POr.Location;
+		end;
+	end else begin
+		APPayHistr.VEPNr = OPPr.SerNr;
+		APPayHistr.FileName = "OPVc";
+		if (ReadFirstMain(APPayHistr,2,true)) then begin
+			OPr.SerNr = APPayHistr.SerNr;
+			if (ReadFirstMain(OPr,1,true)) then begin
+				
+				rwcnt = MatRowCnt(OPr);				
+				MatRowGet(OPr,rwcnt-1,OPrw);
+				res = OPrw.Objects;
+			end;
+		end;
+	end;
+		
+	FindLocationFromOPP = res;
+return;
+end;

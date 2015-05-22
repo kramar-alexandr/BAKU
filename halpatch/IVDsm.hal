@@ -256,11 +256,11 @@ integer counter,i;
 array string 100 artcodes;
 
   wn = curwindow;
-  getwindowrecord(wn,RepSpec);
-  deselectwindow(wn,true);
+  deselectwindow(wn,false);
+  getwindowrecord(wn,RepSpec); //Edit***************************Sasha2,16:21 20.05.2015
   
   ClearStringList(wn);
-  updatebrowses(wn);
+  //updatebrowses(wn);
   
   if(currentcompany!=1)then begin
   	RepSpec.sStartDate = addyear(currentdate,-2);// Edit ************************** Wednesday, 13 May 2015 16:24:17
@@ -272,8 +272,10 @@ array string 100 artcodes;
     for(i=0;i<counter;i=i+1)begin
       SetListString(wn,60,artcodes[i],false);
     end;
-    
-  updatebrowses(wn);
+
+    putwindowrecord(wn,RepSpec);
+
+    //updatebrowses(wn);
   end;
     
   end else begin
