@@ -1639,18 +1639,18 @@ begin
 			OutString(350,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 		EndFormat;
 		EndHeader;
-	//пїЅпїЅпїЅпїЅпїЅпїЅ
+	//Ћбъект
 		Objr.Code = RepSpec.ObjStr;
 		ReadFirstMain(Objr,1,true);
 		StartFormat(15);
 			OutString(tab1,0," ",false);
 			OutString(tab2,0,Objr.Code & " " & Objr.Comment,false);
 		EndFormat;
-	//пїЅпїЅпїЅпїЅпїЅпїЅ
+	//Џериод
 		StartFormat(15);
 			OutString(tab7,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 		EndFormat;
-	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ...
+	//Ћстаток на...
 		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
 		FindNLAccBal("51","","",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
 		BeginBalance50n51 = BeginBalance50 + BeginBalance51;
@@ -1661,7 +1661,7 @@ begin
 		EndFormat;
 		StartFormat(15);
 		EndFormat;
-	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ... пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	//Ћстаток на... по валютам
 		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"USD",0,"","",BeginBalance50USD);
 		StartFormat(15);
 			OutString(tab1,0,USetStr(35015) & RepSpec.sStartDate & " " & USetStr(35016) & ":",false);
@@ -1683,44 +1683,44 @@ begin
 			OutString(185,0,USetStr(35013),false);
 		EndFormat;
 		Black_Divider(0,1);
-	//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	//апка таблицы
 		StartFormat(15);
-			OutString(tab1,0,USetStr(12001),false); //пїЅпїЅпїЅпїЅ
+			OutString(tab1,0,USetStr(12001),false); //„ата
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,"",false); 
-			OutStringCut(tab4,tab5,0,USetStr(11150),true,0); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			OutStringCut(tab4,tab5,0,USetStr(11150),true,0); // ЏоступлениЯ
 				//OutStringCut(integer x, integer y,
 				//			   integer und, string str,
 				//			   boolean bool, integer ovst)
-				//x    - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-				//y    - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-				//und  - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 0 - пїЅпїЅпїЅ / !=0 - пїЅпїЅ
-				//str  - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
-				//bool - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ?
-				//ovst - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 0-пїЅпїЅпїЅ / !=0-пїЅпїЅ
+				//x    - начальнаЯ координата Ячейки, в которую печатаетьсЯ начинаетсЯ
+				//y    - конечнаЯ координата Ячейки
+				//und  - подчеркивание: 0 - нет / !=0 - да
+				//str  - строка длЯ вывода
+				//bool - перенос ?
+				//ovst - зачеркивание: 0-нет / !=0-да
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
 			OutString(tab7,0,"",false);
 			OutString(tab8,0,"",false);
-			OutStringCut(tab9,tab10,0,USetStr(10670),true,0); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			OutStringCut(tab9,tab10,0,USetStr(10670),true,0); // ђасходы
 			OutString(tab10,0,"",false);
-			OutString(tab11,0,"",false); //пїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ
-			OutStringCut(tab12,480,0,USetStr(31292),false,0); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			OutString(tab11,0,"",false); //‚ осн. валюте
+			OutStringCut(tab12,480,0,USetStr(31292),false,0); //Џримечание
 		EndFormat;
 		Black_Divider(tab2,tab7-2);
 		Black_Divider(tab7+2,tab12-5);
 		StartFormat(15);
 			OutString(tab1,0,"",false);
-			OutString(tab2,0,USetStr(35013),false); //AZN пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			OutString(tab2,0,USetStr(35013),false); //AZN терминал
 			OutString(tab3,0,"AZN",false); 
 			OutString(tab4,0,"EUR",false);
 			OutString(tab5,0,"USD",false);
-			OutString(tab6,0,USetStr(35014),false); //пїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ
-			OutString(tab7,0,USetStr(35013),false); //AZN пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+			OutString(tab6,0,USetStr(35014),false); //‚ осн. валюте
+			OutString(tab7,0,USetStr(35013),false); //AZN терминал
 			OutString(tab8,0,"AZN",false);
 			OutString(tab9,0,"EUR",false);
 			OutString(tab10,0,"USD",false);
-			OutString(tab11,0,USetStr(35014),false); //пїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ
+			OutString(tab11,0,USetStr(35014),false); //‚ осн. валюте
 			OutString(tab12,0,"",false);
 		EndFormat;
 		
@@ -1740,12 +1740,12 @@ begin
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							tempTRrw.ReconDate = mainr.TransDate;	//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
-							tempTRrw.Curncy = TRrw.Curncy;			//пїЅпїЅпїЅпїЅпїЅпїЅ
-							tempTRrw.CurDebVal = TRrw.CurDebVal;	//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ AZN/EUR/USD
-							tempTRrw.CurCredVal = TRrw.CurCredVal;	//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ AZN/EUR/USD
-							tempTRrw.DebVal = TRrw.DebVal;			//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ
-							tempTRrw.CredVal = TRrw.CredVal;		//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅ
+							tempTRrw.ReconDate = mainr.TransDate;	//в столбик „ата
+							tempTRrw.Curncy = TRrw.Curncy;			//валюта
+							tempTRrw.CurDebVal = TRrw.CurDebVal;	//в столбики ЏоступлениЯ AZN/EUR/USD
+							tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики ђасходы AZN/EUR/USD
+							tempTRrw.DebVal = TRrw.DebVal;			//в столбик ЏоступлениЯ ‚ осн. валюте
+							tempTRrw.CredVal = TRrw.CredVal;		//в столбик ђасходы ‚ осн. валюте
 							MatRowPut(tempTRr,j,tempTRrw);
 							j = j + 1;
 						end;
@@ -1776,9 +1776,9 @@ begin
 						MatRowGet(TRr,i,TRrw);
 						if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 							tempTRrw.ReconDate = mainr.TransDate;
-							tempTRrw.Curncy = "TER";				//пїЅпїЅпїЅпїЅпїЅпїЅ
-							tempTRrw.CurDebVal = TRrw.DebVal;		//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ AZN пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-							tempTRrw.CurCredVal = TRrw.CredVal;		//пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ AZN пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+							tempTRrw.Curncy = "TER";				//валюта
+							tempTRrw.CurDebVal = TRrw.DebVal;		//в столбики ЏоступлениЯ AZN терминал
+							tempTRrw.CurCredVal = TRrw.CredVal;		//в столбики ђасходы AZN терминал
 							tempTRrw.DebVal = TRrw.DebVal;
 							tempTRrw.CredVal = TRrw.CredVal;
 							MatRowPut(tempTRr,j,tempTRrw);
@@ -1854,7 +1854,7 @@ begin
 					BaseCred = BaseCred + tempTRrw.CredVal;
 			EndFormat;
 		end;
-		//пїЅпїЅпїЅпїЅпїЅ
+		//€того
 		Black_Divider(0,1)
 		StartFormat(15);
 			OutString(tab1,0,USetStr(31222),false);
@@ -1872,7 +1872,7 @@ begin
 		Gray_Divider(0,1)
 		StartFormat(15);
 		EndFormat;
-		//пїЅпїЅпїЅпїЅпїЅпїЅ\пїЅпїЅпїЅпїЅпїЅпїЅ AZN
+		//Ћборот\ђасход AZN
 		StartFormat(15);
 			OutString(tab2,0,USetStr(31137) & " AZN:",false);
 			OutString(tab3,0,BaseDeb,false);
@@ -1881,7 +1881,7 @@ begin
 		EndFormat;
 		StartFormat(15);
 		EndFormat;
-		// пїЅпїЅпїЅпїЅ. 2,3
+		// ’абл. 2,3
 		Black_Divider(tab2,tab5+20);
 		Black_Divider(tab7,tab10+20);
 		StartFormat(15);
@@ -1937,11 +1937,8 @@ begin
 		Black_Divider(tab2,tab5+20);
 		StartFormat(15);
 		EndFormat;
-	// пїЅ пїЅпїЅпїЅпїЅпїЅ
-				+ (BaseDeb - AZNTermDeb)
-				+ BalItem1
-				- (BaseCred - AZNTermCred)
-				- BalItem2;
+	// к сдаче
+		SaldoEndPeriod = BeginBalance50 + (BaseDeb - AZNTermDeb) + BalItem1 - (BaseCred - AZNTermCred) - BalItem2;
 		SaldoEndPeriodUSD = BeginBalance50USD + USDDeb - USDCred;
 		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred;
 		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred;
