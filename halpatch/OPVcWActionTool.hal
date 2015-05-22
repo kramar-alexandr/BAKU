@@ -19,7 +19,8 @@ external procedure CutObjectCode(string,var string ,string,Boolean);
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);// Edit ************************** Tuesday, 10 March 2015 14:51:00
 remote function string 100 FindIVLocation(string ); //Edit----------------------Dima  10.03.2015
 remote function string 100 FindVILocation(string ); //Edit----------------------Dima  10.03.2015
-remote function string 100 FindLocationFromARPay(string);
+remote function string 100 FindLocationFromARPay(string);	//Edit----------------------Dima  28.04.2015
+remote function string 100 FindLocationFromOPP(record OPPVc);//Edit----------------------Dima  21.05.2015
 
 global
 procedure SplitRiigiObjVN(string objstr,var string obj1,var string  obj2)
@@ -1060,9 +1061,18 @@ end;
 
 
 global
-function string 100 LocationThroughInvoice (var record ARPayVc ARPayr)	//Edit----------------------Dima  23.04.2015
+function string 100 IPLocationThroughInvoice (var record ARPayVc ARPayr)	//Edit----------------------Dima  23.04.2015
 begin
 
-	LocationThroughInvoice = FindLocationFromARPay(ARPayr.OrderNr);
+	IPLocationThroughInvoice = FindLocationFromARPay(ARPayr.OrderNr);
+return;
+end;
+
+
+global
+function string 100 OPLocationThroughInvoice (var record OPPVc OPPr)	//Edit----------------------Dima  21.05.2015
+begin
+
+	OPLocationThroughInvoice = FindLocationFromOPP(OPPr);
 return;
 end;
