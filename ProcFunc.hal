@@ -498,18 +498,18 @@ begin
 								end;
 								OutString(20,0,IVrw.ArtCode,false);
 								OutString(50,0,IVrw.Spec,false);
-								OutVal(190,0,IVrw.Quant,M4Val,false);
-								OutVal(220,0,IVrw.Price*IVrw.Quant,M4Val,false);
-								OutVal(270,0,IVrw.Sum,M4Val,false);
+								OutVal(190,0,IVrw.Quant*cred,M4Val,false);
+								OutVal(220,0,IVrw.Price*IVrw.Quant*cred,M4Val,false);
+								OutVal(270,0,IVrw.Sum*cred,M4Val,false);
 								//OutVal(320,0,IVrw.Price*IVrw.Quant-IVrw.Sum,M4Val,false);
 								OutVal(320,0,IVrw.vRebate,M4Val,false);
 								if (UserCanAction("ViewCostPrice",true)==true) then begin
 									if(IVrw.Quant>0)then begin
 										sign = 1;
-										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate,M4Val,false);
+										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate*cred,M4Val,false);
 									end else begin
 										sign = -1;
-										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate*sign,M4Val,false);
+										OutVal(360,0,getIHCost(IVr.SerNr,i,updst)*rate*sign*cred,M4Val,false);
 									end;
 									OutString(410,0,IVr.InvComment,false);
 								end else begin
@@ -517,11 +517,11 @@ begin
 									OutString(410,0,IVr.InvComment,false);
 								end;
 							
-								totqty = totqty+IVrw.Quant;
-								totsum = totsum+IVrw.Sum;
-								totqtyprice = totqtyprice+IVrw.Price*IVrw.Quant;
+								totqty = totqty+IVrw.Quant*cred;
+								totsum = totsum+IVrw.Sum*cred;
+								totqtyprice = totqtyprice+IVrw.Price*IVrw.Quant*cred;
 								totqtypricesum =IVrw.vRebate;//totqtypricesum+IVrw.Price*IVrw.Quant-IVrw.Sum;
-								totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign;
+								totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign*cred;
 						
 							EndFormat;
            		 end;
@@ -624,43 +624,6 @@ begin
 							SMrw2.CustName = IVrw.Spec;
 							matrowput(SMgift,mtrw,SMrw2);
 							
-							
-							/*StartFormat(15);
-								OutString(0,0,rwnr,false);
-								if(currentcompany>3)then begin
-									OutString(10,0,"",false);
-									OutString(10,0,"",false);
-								end;
-								rwnr = rwnr+1;
-								OutString(20,0,"",false);
-								OutString(50,0,"Gift Voucher Sold",false);
-								OutVal(190,0,1,M4Val,false);
-								OutVal(220,0,IVrw.Sum*cred,M4Val,false);
-								OutVal(270,0,IVrw.Sum*cred,M4Val,false);
-								//OutVal(320,0,IVrw.Price*IVrw.Quant-IVrw.Sum,M4Val,false);
-								OutVal(320,0,0,M4Val,false);
-								if (UserCanAction("ViewCostPrice",true)==true) then begin
-									if(IVrw.Quant>0)then begin
-										sign = 1;
-										OutVal(360,0,0,M4Val,false);
-									end else begin
-										sign = -1;
-										OutVal(360,0,0,M4Val,false);
-									end;
-									OutString(410,0,IVr.InvComment,false);
-								end else begin
-									OutString(360,0,"",false);
-									OutString(410,0,IVr.InvComment,false);
-								end;
-
-							EndFormat;*/
-							
-							//totqty = totqty+IVrw.Quant;
-							//totsum = totsum+IVrw.Sum*cred;
-							//totqtyprice = totqtyprice+IVrw.Sum*cred;
-							//totqtypricesum =IVrw.vRebate;//totqtypricesum+IVrw.Price*IVrw.Quant-IVrw.Sum;
-							//totfifo = totfifo+getIHCost(IVr.SerNr,i,updst)*rate*sign;
-
 		case kInvoiceRowTypeGiftVoucherPayment:	//Edit-------------------------------------------Dima----------11.12.2014
 
 							mtrw = matrowcnt(SMpay);
