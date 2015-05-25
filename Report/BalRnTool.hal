@@ -1618,11 +1618,11 @@ procedure SumBalRnVectors(string accstr,LongInt idkey,Boolean zerof,
                           vector Boolean sumsv,
                           Array record UserDefRepLinesVc aUserDefRepLinesr,Integer udrlcnt)
 begin
-  string 255 nitem;
-  string 5 nsep;
-  Integer np;
+  string 255 nitem,nitem1;
+  string 5 nsep,mysep;
+  Integer np,i;
   Boolean sepd,addflag;
-  LongInt idn;
+  LongInt idn,oldidn;
 
   if (zerof) then begin
     S3ba[idkey] = 0;
@@ -1634,11 +1634,14 @@ begin
   end;
   np = 0;
   sepd = GetNextSep(accstr,np,nsep);
+  nitem1 = "";
+  oldidn = 0;	//Edit----------------------Dima  22.05.2015
   while (GetNextItem(accstr,np,nitem)) begin
     if (nsep=="-") then begin
       addflag = false; 
     end else begin
       addflag = true;
+      mysep = nsep;
     end;  
     sepd = GetNextSep(accstr,np,nsep);
     idn = FirstInRange(nitem,10);
@@ -1651,22 +1654,60 @@ begin
 //        end;
 //        sumsv[idn] = true; //no calculation here
       end;
-      if (addflag==true) then begin
-        S3ba[idkey] = S3ba[idkey] + S3ba[idn];
-        S4ba[idkey] = S4ba[idkey] + S4ba[idn];
-        S5ba[idkey] = S5ba[idkey] + S5ba[idn];
-        S6ba[idkey] = S6ba[idkey] + S6ba[idn];
-        Pba[idkey] = Pba[idkey] + Pba[idn];
-        Eba[idkey] = Eba[idkey] + Eba[idn];
-      end else begin
-        S3ba[idkey] = S3ba[idkey] - S3ba[idn];
-        S4ba[idkey] = S4ba[idkey] - S4ba[idn];
-        S5ba[idkey] = S5ba[idkey] - S5ba[idn];
-        S6ba[idkey] = S6ba[idkey] - S6ba[idn];
-        Pba[idkey] = Pba[idkey] - Pba[idn];
-        Eba[idkey] = Eba[idkey] - Eba[idn];
-      end;
+	      if (addflag==true) then begin
+
+					 switch(mysep) begin	//Edit----start------------------Dima  22.05.2015
+	  			            case "*": S3ba[idkey] = S3ba[idkey] * S3ba[idn];
+	  			                      S4ba[idkey] = S4ba[idkey] * S4ba[idn];
+	  			                      S5ba[idkey] = S5ba[idkey] * S5ba[idn];
+	  			                      S6ba[idkey] = S6ba[idkey] * S6ba[idn];
+	  			                      Pba[idkey] = Pba[idkey] * Pba[idn];
+	  			                      Eba[idkey] = Eba[idkey] * Eba[idn];
+	  			            case "/": S3ba[idkey] = S3ba[idkey] / S3ba[idn];
+	  			                      S4ba[idkey] = S4ba[idkey] / S4ba[idn];
+	  			                      S5ba[idkey] = S5ba[idkey] / S5ba[idn];
+	  			                      S6ba[idkey] = S6ba[idkey] / S6ba[idn];
+	  			                      Pba[idkey] = Pba[idkey] / Pba[idn];
+	  			                      Eba[idkey] = Eba[idkey] / Eba[idn];
+	  			            case "+":	S3ba[idkey] = S3ba[idkey] + S3ba[idn];
+	  			                      S4ba[idkey] = S4ba[idkey] + S4ba[idn];
+	  			                      S5ba[idkey] = S5ba[idkey] + S5ba[idn];
+	  			                      S6ba[idkey] = S6ba[idkey] + S6ba[idn];
+	  			                      Pba[idkey] = Pba[idkey] + Pba[idn];
+	  			                      Eba[idkey] = Eba[idkey] + Eba[idn];
+	  			            case "":  S3ba[idkey] = S3ba[idkey] + S3ba[idn];
+	  			                      S4ba[idkey] = S4ba[idkey] + S4ba[idn];
+	  			                      S5ba[idkey] = S5ba[idkey] + S5ba[idn];
+	  			                      S6ba[idkey] = S6ba[idkey] + S6ba[idn];
+	  			                      Pba[idkey] = Pba[idkey] + Pba[idn];
+	  			                      Eba[idkey] = Eba[idkey] + Eba[idn]; 
+	  			            case ":": 
+	  			            						S3ba[idkey] = S3ba[idkey] - S3ba[oldidn];
+	  			                      S4ba[idkey] = S4ba[idkey] - S4ba[oldidn];
+	  			                      S5ba[idkey] = S5ba[idkey] - S5ba[oldidn];
+	  			                      S6ba[idkey] = S6ba[idkey] - S6ba[oldidn];
+	  			                      Pba[idkey] = Pba[idkey] - Pba[oldidn];
+	  			                      Eba[idkey] = Eba[idkey] - Eba[oldidn];
+	  			                      For(i=oldidn;i<=idn;i=i+1) begin
+																	S3ba[idkey] = S3ba[idkey] + S3ba[i];
+																	S4ba[idkey] = S4ba[idkey] + S4ba[i];
+																	S5ba[idkey] = S5ba[idkey] + S5ba[i];
+																	S6ba[idkey] = S6ba[idkey] + S6ba[i];
+																	Pba[idkey] = Pba[idkey] + Pba[i];
+																	Eba[idkey] = Eba[idkey] + Eba[i];
+																end; 
+	  			      end;	
+	      end else begin	//Edit----end------------------Dima  22.05.2015
+        						S3ba[idkey] = S3ba[idkey] - S3ba[idn];
+        						S4ba[idkey] = S4ba[idkey] - S4ba[idn];
+        						S5ba[idkey] = S5ba[idkey] - S5ba[idn];
+        						S6ba[idkey] = S6ba[idkey] - S6ba[idn];
+        						Pba[idkey] = Pba[idkey] - Pba[idn];
+        						Eba[idkey] = Eba[idkey] - Eba[idn];
+	      end;
     end;
+    nitem1 = nitem;
+    oldidn = idn;
   end;
   return;    
 end;

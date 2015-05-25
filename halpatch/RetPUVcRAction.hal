@@ -870,6 +870,36 @@ BEGIN
     res = -1;
     goto LRetPUVcRecordCheck;
   end;
+  if (blank(RetPUp.CurncyCode)) then begin //Edit***************************Sasha2,13:25 25.05.2015 {
+    RecordCheckError(1854,"",-1,"CurncyCode");      
+    res = -1; 
+    goto LRetPUVcRecordCheck;
+  end else begin
+    MatRowGet(RetPUp,i,RetPUrw);
+    if (nonblank(RetPUrw.ArtCode)) then begin
+      INr.Code = RetPUrw.ArtCode;
+      ReadFirstMain(INr,1,true);
+      if (INr.LastPurchCurncyCode!=RetPUp.CurncyCode) then begin
+        RecordCheckError(1217,"",-1,"CurncyCode");      
+        res = -1; 
+        goto LRetPUVcRecordCheck;
+      end;
+    end else begin
+      if (nonblank(RetPUp.VECode)) then begin     
+        VEr.Code = RetPUp.VECode;
+        ReadFirstMain(VEr,1,true);
+        if (VEr.VECurncyCode!=RetPUp.CurncyCode) then begin
+          RecordCheckError(1217,RetPUp.VECode,-1,"CurncyCode");      
+          res = -1;
+          goto LRetPUVcRecordCheck;
+        end;
+      end else begin
+        RecordCheckError(1217,"",-1,"CurncyCode");      
+        res = -1; 
+        goto LRetPUVcRecordCheck;
+      end;
+    end;
+  end; //Edit***************************Sasha2,13:26 25.05.2015 }
   errcode = CheckRates(RetPUp.CurncyCode,RetPUp.FrRate,RetPUp.ToRateB1,RetPUp.ToRateB2,RetPUp.BaseRate1,RetPUp.BaseRate2,tstr);
   if (errcode!=0) then begin
     RecordCheckError(errcode,"",-1,tstr);      
