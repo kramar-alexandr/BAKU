@@ -387,7 +387,7 @@ begin
 								Gray_divider(0,1);
 							end;
 							startformat(15);
-								ParseClassification(INr.DispGroups);
+								//ParseClassification(INr.DispGroups);
 								outstring(0,0,"RRP",false);
 								outstring(90,0,ISr.Code,false);
 								outstring(150,0,"",false);
