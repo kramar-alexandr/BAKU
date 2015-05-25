@@ -8,6 +8,7 @@ remote procedure SalesReportExtPictRn(record RcVc,var area,string);
 external procedure GetUserName(string,var string);
 //Edit---------------Vitalii 16:23 21.05.2015
 external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
+external procedure YcToStr(Integer,var string);
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
@@ -1606,9 +1607,15 @@ procedure DirectorWeekRn(record RcVc RepSpec)
 begin
 	record MainVc mainr;
 	record TRVc TRr, tempTRr;
-	record ObjVc Objr;
 	row TRVc TRrw, tempTRrw, tempTRrw2, tempTRrw3;
-	Integer i,j,rwcnt;
+	record ObjVc Objr;
+	record IVVc IVr;
+	record IPVc IPr;
+	record CLInVc CLInr;
+	row CLInVc CLInrw;
+	record CLOutVc CLOutr;
+	row CLOutVc CLOutrw;
+	Integer i,j,rwcnt,rwcnt2, k;
 	boolean TrHs;
 	Date dateTemp;
 	val BeginBalance50n51, BeginBalance50AZN,
@@ -1623,64 +1630,77 @@ begin
 		SaldoEndPeriodAZNTerm,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN;
-	
 	Integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
 			tab10, tab11, tab12;
+	string 5 tempStr;
+
 	tab1 = 0;	 tab2 = 27;	  tab3 = 79;
 	tab4 = 106;  tab5 = 133;  tab6 = 160;
 	tab7 = 225;	 tab8 = 275;  tab9 = 300;
 	tab10 = 325; tab11 = 350; tab12 = 415;
 	
-	StartReportJob(USetStr(35012));
-		StartFormat(15);
-			OutString(300,0,USetStr(31102),false);
-			OutString(350,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
-		EndFormat;
-		EndHeader;
+	StartReportNoHeaderJob(USetStr(35012));
 	//Объект
 		Objr.Code = RepSpec.ObjStr;
 		ReadFirstMain(Objr,1,true);
 		StartFormat(15);
-			OutString(tab1,0," ",false);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,Objr.Code & " " & Objr.Comment,false);
 		EndFormat;
+		
 	//Период
 		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,"",false);
+			OutString(tab4,0,"",false);
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
 			OutString(tab7,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 		EndFormat;
 	//Остаток на...
-		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
-		FindNLAccBal("51","","",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
+		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
+		FindNLAccBal("51",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
 		BeginBalance50n51 = BeginBalance50 + BeginBalance51;
 		StartFormat(15);
 			OutString(tab1,0,USetStr(35015) & RepSpec.sStartDate & ":",false);
-			OutString(tab5,0,BeginBalance50n51,false);
-			OutString(185,0,"AZN",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,BeginBalance50n51,false);
+			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
 		EndFormat;
 	//Остаток на... по валютам
-		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"USD",0,"","",BeginBalance50USD);
+		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"USD",0,"","",BeginBalance50USD);
 		StartFormat(15);
 			OutString(tab1,0,USetStr(35015) & RepSpec.sStartDate & " " & USetStr(35016) & ":",false);
-			OutString(tab5,0,BeginBalance50USD,false);
-			OutString(185,0,"USD",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,BeginBalance50USD,false);
+			OutString(tab4,0,"USD",false);
 		EndFormat;
-		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"EUR",0,"","",BeginBalance50EUR);
+		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"EUR",0,"","",BeginBalance50EUR);
 		StartFormat(15);
-			OutString(tab5,0,BeginBalance50EUR,false);
-			OutString(185,0,"EUR",false);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,BeginBalance50EUR,false);
+			OutString(tab4,0,"EUR",false);
 		EndFormat;
-		FindNLAccBal("50","","",0,"",RepSpec.sStartDate,0,0,false,"AZN",0,"","",BeginBalance50AZN);
+		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"AZN",0,"","",BeginBalance50AZN);
 		StartFormat(15);
-			OutString(tab5,0,BeginBalance50AZN,false);
-			OutString(185,0,"AZN",false);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,BeginBalance50AZN,false);
+			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
-			OutString(tab5,0,BeginBalance51,false);
-			OutString(185,0,USetStr(35013),false);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,BeginBalance51,false);
+			OutString(tab4,0,USetStr(35013),false);
+		EndFormat;
+		StartFormat(15);
 		EndFormat;
 		Black_Divider(0,1);
 	//Шапка таблицы
@@ -1725,7 +1745,6 @@ begin
 		EndFormat;
 		
 		mainr.AccNumber = "50";
-		//mainr.TransDate = AddDay(RepSpec.sStartDate,-1);
 		mainr.TransDate = RepSpec.sStartDate;
 		TrHs = true;
 		while (LoopMain(mainr,2,TrHs)) begin
@@ -1740,6 +1759,53 @@ begin
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+							switch (TRr.IntYc) begin
+								case IVYc:
+									IVr.SerNr = TRr.Number;
+									if (ReadFirstMain(IVr,1,true)) then begin
+										if nonblank(TRr.Comment) then begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr & ", " & TRr.Comment;
+										end else begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+										end;
+									end;
+								case IPYc:
+									IPr.SerNr = TRr.Number;
+									if (ReadFirstMain(IPr,1,true)) then begin
+										if nonblank(TRr.Comment) then begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr & ", " & TRr.Comment;
+										end else begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+										end;
+									end;
+								case CLInYc:
+									CLInr.SerNr = TRr.Number;
+									if (ReadFirstMain(CLInr,1,true)) then begin
+										tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
+										rwcnt2 = MatRowCnt(CLInr);
+										for (k=0;k<rwcnt2;k=k+1) begin
+											MatRowGet(CLInr,k,CLInrw);
+											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
+												tempTRrw.Comment = USetStr(35029) & CLInr.SerNr & ", " & CLInrw.Comment;
+											end;
+										end;
+									end;
+								case CLOutYc:
+									CLOutr.SerNr = TRr.Number;
+									if (ReadFirstMain(CLOutr,1,true)) then begin
+										tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
+										rwcnt2 = MatRowCnt(CLOutr);
+										for (k=0;k<rwcnt2;k=k+1) begin
+											MatRowGet(CLOutr,k,CLOutrw);
+											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+												tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr & ", " & CLOutrw.Comment;
+											end;
+										end;
+									end;
+								otherwise
+									YcToStr(TRr.IntYc,tempStr);
+									tempTRrw.Comment = tempStr & "." & TRr.Number & ", " & TRr.Comment;
+							end;
 							tempTRrw.ReconDate = mainr.TransDate;	//в столбик Дата
 							tempTRrw.Curncy = TRrw.Curncy;			//валюта
 							tempTRrw.CurDebVal = TRrw.CurDebVal;	//в столбики Поступления AZN/EUR/USD
@@ -1775,6 +1841,53 @@ begin
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
 						if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+							switch (TRr.IntYc) begin
+								case IVYc:
+									IVr.SerNr = TRr.Number;
+									if (ReadFirstMain(IVr,1,true)) then begin
+										if nonblank(TRr.Comment) then begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr & ", " & TRr.Comment;
+										end else begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+										end;
+									end;
+								case IPYc:
+									IPr.SerNr = TRr.Number;
+									if (ReadFirstMain(IPr,1,true)) then begin
+										if nonblank(TRr.Comment) then begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr & ", " & TRr.Comment;
+										end else begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+										end;
+									end;
+								case CLInYc:
+									CLInr.SerNr = TRr.Number;
+									if (ReadFirstMain(CLInr,1,true)) then begin
+										tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
+										rwcnt2 = MatRowCnt(CLInr);
+										for (k=0;k<rwcnt2;k=k+1) begin
+											MatRowGet(CLInr,k,CLInrw);
+											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
+												tempTRrw.Comment = USetStr(35029) & CLInr.SerNr & ", " & CLInrw.Comment;
+											end;
+										end;
+									end;
+								case CLOutYc:
+									CLOutr.SerNr = TRr.Number;
+									if (ReadFirstMain(CLOutr,1,true)) then begin
+										tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
+										rwcnt2 = MatRowCnt(CLOutr);
+										for (k=0;k<rwcnt2;k=k+1) begin
+											MatRowGet(CLOutr,k,CLOutrw);
+											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+												tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr & ", " & CLOutrw.Comment;
+											end;
+										end;
+									end;
+								otherwise
+									YcToStr(TRr.IntYc,tempStr);
+									tempTRrw.Comment = tempStr & "." & TRr.Number & ", " & TRr.Comment;
+							end;
 							tempTRrw.ReconDate = mainr.TransDate;
 							tempTRrw.Curncy = "TER";				//валюта
 							tempTRrw.CurDebVal = TRrw.DebVal;		//в столбики Поступления AZN терминал
@@ -1818,40 +1931,66 @@ begin
 				OutString(tab1,0,tempTRrw.ReconDate,false);
 				dateTemp = tempTRrw.ReconDate;
 			end else begin
+				OutString(tab1,0,"",false);
 				Gray_Divider(0,1);
 			end;
 			switch (tempTRrw.Curncy) begin
 				case "AZN":
+					OutString(tab2,0,"",false);
 					OutString(tab3,0,tempTRrw.CurDebVal,false);
+					OutString(tab4,0,"",false);
+					OutString(tab5,0,"",false);
 					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					OutString(tab7,0,"",false);
 					OutString(tab8,0,tempTRrw.CurCredVal,false);
+					OutString(tab9,0,"",false);
+					OutString(tab10,0,"",false);
 					AZNCred = AZNCred + tempTRrw.CurCredVal;
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "EUR":
+					OutString(tab2,0,"",false);
+					OutString(tab3,0,"",false);
 					OutString(tab4,0,tempTRrw.CurDebVal,false);
 					EURDeb = EURDeb + tempTRrw.CurDebVal;
+					OutString(tab5,0,"",false);
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					OutString(tab7,0,"",false);
+					OutString(tab8,0,"",false);
 					OutString(tab9,0,tempTRrw.CurCredVal,false);
 					EURCred = EURCred + tempTRrw.CurCredVal;
+					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "USD":
+					OutString(tab2,0,"",false);
+					OutString(tab3,0,"",false);
+					OutString(tab4,0,"",false);
 					OutString(tab5,0,tempTRrw.CurDebVal,false);
 					USDDeb = USDDeb + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					OutString(tab7,0,"",false);
+					OutString(tab8,0,"",false);
+					OutString(tab9,0,"",false);
 					OutString(tab10,0,tempTRrw.CurCredVal,false);
 					USDCred = USDCred + tempTRrw.CurCredVal;
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "TER":
 					OutString(tab2,0,tempTRrw.CurDebVal,false);
 					AZNTermDeb = AZNTermDeb + tempTRrw.CurDebVal;
+					OutString(tab3,0,"",false);
+					OutString(tab4,0,"",false);
+					OutString(tab5,0,"",false);
 					OutString(tab6,0,tempTRrw.DebVal,false);
 					OutString(tab7,0,tempTRrw.CurCredVal,false);
 					AZNTermCred = AZNTermCred + tempTRrw.CurCredVal;
+					OutString(tab8,0,"",false);
+					OutString(tab9,0,"",false);
+					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 			end;
-					BaseDeb = BaseDeb + tempTRrw.DebVal;
-					BaseCred = BaseCred + tempTRrw.CredVal;
+				OutString(tab12,0,tempTRrw.Comment,false);
+			BaseDeb = BaseDeb + tempTRrw.DebVal;
+			BaseCred = BaseCred + tempTRrw.CredVal;
 			EndFormat;
 		end;
 		//Итого
@@ -1874,8 +2013,12 @@ begin
 		EndFormat;
 		//Оборот\Расход AZN
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(31137) & " AZN:",false);
 			OutString(tab3,0,BaseDeb,false);
+			OutString(tab4,0,"",false);
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
 			OutString(tab7,0,USetStr(35017) & " AZN:",false);
 			OutString(tab8,0,BaseCred,false);
 		EndFormat;
@@ -1885,10 +2028,12 @@ begin
 		Black_Divider(tab2,tab5+20);
 		Black_Divider(tab7,tab10+20);
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35018),false);
 			OutString(tab3,0,USetStr(35019),false);
 			OutString(tab4+20,0,USetStr(35020),false);
-			
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
 			OutString(tab7,0,USetStr(35021),false);
 			OutString(tab8,0,USetStr(35019),false);
 			OutString(tab9+20,0,USetStr(35020),false);
@@ -1896,10 +2041,12 @@ begin
 		Black_Divider(tab2,tab5+20);
 		Black_Divider(tab7,tab10+20);
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35022),false);
 			OutString(tab3,0,BaseDeb - AZNTermDeb,false);
 			OutString(tab4+20,0,"AZN",false);
-			
+			OutString(tab6,0,"",false);
+			OutString(tab5,0,"",false);
 			OutString(tab7,0,USetStr(35022),false);
 			OutString(tab8,0,AZNTermDeb,false);
 			OutString(tab9+20,0,"AZN",false);
@@ -1907,10 +2054,12 @@ begin
 		Gray_Divider(tab2,tab5+20);
 		Gray_Divider(tab7,tab10+20);
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35017),false);
 			OutString(tab3,0,BaseCred - AZNTermCred,false);
 			OutString(tab4+20,0,"AZN",false);
-			
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
 			OutString(tab7,0,USetStr(35017),false);
 			OutString(tab8,0,AZNTermCred,false);
 			OutString(tab9+20,0,"AZN",false);
@@ -1919,10 +2068,12 @@ begin
 		Gray_Divider(tab7,tab10+20);
 		SaldoEndPeriodAZNTerm = BeginBalance51 + AZNTermDeb - AZNTermCred;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35023),false);
 			OutString(tab3,0,BalItem1,false);
 			OutString(tab4+20,0,"AZN",false);
-			
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
 			OutString(tab7,0,USetStr(35025),false);
 			OutString(tab8,0,SaldoEndPeriodAZNTerm,false);
 			OutString(tab9+20,0,"AZN",false);
@@ -1930,6 +2081,7 @@ begin
 		Gray_Divider(tab2,tab5+20);
 		Black_Divider(tab7,tab10+20);
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35024),false);
 			OutString(tab3,0,BalItem2,false);
 			OutString(tab4+20,0,"AZN",false);
@@ -1943,6 +2095,7 @@ begin
 		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred;
 		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35026),false);
 			OutString(tab3,0,SaldoEndPeriod,false);
 			OutString(tab4+20,0,"AZN",false);
@@ -1951,21 +2104,25 @@ begin
 		StartFormat(15);
 		EndFormat;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35026) & " " & USetStr(35016),false);
 			OutString(tab3,0,SaldoEndPeriodUSD,false);
 			OutString(tab4+20,0,"USD",false);
 		EndFormat;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,SaldoEndPeriodEUR,false);
 			OutString(tab4+20,0,"EUR",false);
 		EndFormat;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,SaldoEndPeriodAZN,false);
 			OutString(tab4+20,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
+			OutString(tab1,0,"",false);
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,SaldoEndPeriodAZNTerm,false);
 			OutString(tab4+20,0,USetStr(35013),false);
