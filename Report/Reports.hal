@@ -1973,3 +1973,49 @@ begin
 	EndJob;
 	return;
 end;
+
+
+global procedure CheckItemHistErrorRn()
+begin
+	record INVc INr;
+	record ItemHistVc IHr;
+	boolean testf,TrHs;
+	record LocationVc Locr;
+	val qty;
+	
+	
+	startreportnoheaderjob("check");
+		INr.Code = "";
+		while(loopmain(INr,1,true))begin
+		//if(readfirstmain(INr,1,true))then begin	
+			Locr.Code = "";
+			while(loopmain(Locr,1,true))begin
+				IHr.ArtCode = INr.Code;
+				IHr.Location = Locr.Code;
+				TrHs = true;
+				qty = 0;
+				while(loopkey("ArtCodeLoc",IHr,2,TrHs))begin
+					if(IHr.ArtCode!=INr.Code or IHr.Location!=Locr.Code)then begin TrHs = false; end;
+
+					if(TrHs and IHr.StockAffectf==1)then begin
+						qty = qty + IHr.Qty;
+						if(qty<0)then begin
+							TrHs = false;
+							startformat(15);
+								outstring(0,0,IHr.ArtCode,false);
+								outstring(0,0,IHr.FileName,false);
+								outstring(0,0,IHr.TransNr,false);
+								outstring(0,0,IHr.TransDate,false);
+								outstring(0,0,IHr.SerNr,false);
+							endformat;
+						end;
+					end;
+				end;
+				resetloop(IHr);
+			end;
+			resetloop(Locr);
+		end;
+	endjob;
+	
+return;
+end;

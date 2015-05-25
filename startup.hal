@@ -118,7 +118,9 @@ begin
   Report("Журнал неоплаченных заказов поставщику",UnPayPORClass,UnPayPORn,0,modPO);
   Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
   Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
-  
+	
+	 Report("ПРоверка целостности склада",OrderStatusRClass,CheckItemHistErrorRn,0,modDBMain);// Edit ************************** Monday, 25 May 2015 15:32:06
+	
   Report("Brand & Stock Correlation",BrandStockCorrelRClass,BrandsAndStockCorrelationRn,0,modIN);
   //Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
 
