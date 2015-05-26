@@ -2060,3 +2060,20 @@ begin
 
 return;
 end;
+
+
+global  //Edit***************************Sasha2,14:00 26.05.2015 {
+updating procedure SetInvoiceInvalidDateMn()
+begin
+	record IVVc IVr;
+
+	IVr.SerNr = -1;
+	While(LoopMain(IVr,1,true)) begin
+	  if (IVr.Invalid!=0) then begin
+	    IVr.InvalidDate = IVr.InvDate;
+		  RECORDSTORE(IVr.true);
+	  end;
+	end;	
+
+return;
+end; //Edit***************************Sasha2,14:00 26.05.2015 }
