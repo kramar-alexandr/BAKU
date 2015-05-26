@@ -2203,6 +2203,8 @@ if (HasTouchScreenLook==false) then begin
   EditField(h1,v+=vs,80,"Стат. сумма",Normal,StatVal,true,0);
   EditField(h1,v+=vs,80,"Дата оказания усл.",Normal,ServiceDelDate,false,PasteCurDate);
   EditField(h1,v+=vs,80,"Время операции",Normal,TransTime,false,SetSClass);
+  EditField(h1,v+=vs,80,"InvalidDate",Normal,InvalidDate,false,0);// Edit ************************** Tuesday, 26 May 2015 11:33:08
+  EditField(h1,v+=vs,80,"InvalidLocOKNr",Normal,InvalidLocOKNr,false,0);// Edit ************************** Tuesday, 26 May 2015 11:33:07
   //  ColourPushButton(-100,v,-20,v+60,"TestIVDClassCardData","Test" & chr(10) & "CardData",4);
   //  SoftEditField(h3+50,v,100,"Control Code"  ,ViewOnly ,"TaxAuthIDCC",false,0,M4Str,60);
   EditField(h2,v=vm,135,"Налогов. орган",ViewOnly ,TaxAuthID,false,0);
