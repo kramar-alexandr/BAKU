@@ -70,5 +70,12 @@ begin
   EndWindow;
   
   
+  
+  WindowBegin("Импорт регистров",ImportOfRegisterIClass,CGIcW,RcType);
+  SetWRect(80,80,400,200);
+		 EditField(150,40,100,"Название регистра(Vc)",Normal,f1,false,0);   
+  EndWindow;  
+  
+  
   return;
   end;

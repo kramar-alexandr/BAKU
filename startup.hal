@@ -151,6 +151,7 @@ begin
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("€зменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 	Import("Ћбновление цвета и размера товаров",INColorSizeUpdatingIClass,INColorSizeImportIn,modIN);	//Edit----------------------Dima  29.04.2015
+	Import("€мпорт регистров",ImportOfRegisterIClass,ImportOfRegister,modDBMain);	//Edit----------------------Dima  27.05.2015
 	
 
 	SetBegin(900);

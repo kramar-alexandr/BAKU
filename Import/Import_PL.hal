@@ -354,6 +354,15 @@ BEGIN
 END;
 
 
+global
+updating procedure ImportOfRegister(record RcVc RepSpec)
+BEGIN
+string 100 tag;
+		tag = ImportField;
+    RegisterImport(tag);
+
+  RETURN;
+END;
 
 
 
