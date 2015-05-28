@@ -170,7 +170,6 @@ BEGIN
       LoyaltyCardr.CustCode = IVp.CustCode;
 			if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
 				IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
-				messagebox(0,LoyaltyCardr.SerNr);
 				IVVc_PasteLoyaltyCardNr(IVp);
 			end;
 			

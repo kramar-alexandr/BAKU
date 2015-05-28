@@ -17,6 +17,9 @@ external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
                                    string,var val,val,var val,string,Integer); //Edit***************************Sasha2,13:04 08.04.2015
 external procedure PUSumUp(var record PUVc); //Edit***************************Sasha2,13:09 08.04.2015
 external updating procedure CheckAndCreateClassification(var string); //Edit***************************Sasha2,16:36 20.04.2015
+external procedure CalculateIVVcPoints(var record IVVc);// Edit ************************** Thursday, 28 May 2015 11:14:54
+
+
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -2077,3 +2080,46 @@ begin
 
 return;
 end; //Edit***************************Sasha2,14:00 26.05.2015 }
+
+global updating procedure FixLoyaltyPointMn()
+begin
+	record IVVc IVr;
+	record LoyaltyCardVc LCr;
+	area log;
+	roundmode rnd;
+	
+	rnd = DefaultCurRoundoff;
+  rnd.decimals = 0;
+  rnd.mode = kRoundingModeHalfUp;
+	
+	IVr.SerNr = -1;
+	while(loopmain(IVr,1,true))begin
+		if(IVr.InvType==kInvoiceTypeDownpayment and IVr.OKFlag==1 and IVr.Invalid==0)then begin
+			if(blank(IVr.LoyaltyCardNr))then begin
+				LCr.CustCode = IVr.CustCode;
+				if (ReadFirstKey("ActCustCode",LCr,1,true)) then begin
+					IVr.LoyaltyCardNr = LCr.SerNr;
+					IVr.LCMLevel = LCr.LCMLevel;
+					CalculateIVVcPoints(IVr);
+					//recordStore(IVr,true);
+					if(IVr.Points!=0)then begin
+						LCr.PointsBalance = LCr.PointsBalance + round(IVr.Points,rnd);
+						//recordstore(LCr,true);
+						AddTextToArea(IVr.SerNr & chr(9),log);
+						AddTextToArea(IVr.CustCode & chr(9),log);
+						AddTextToArea(IVr.Addr0 & chr(9),log);
+						AddTextToArea(IVr.LoyaltyCardNr & chr(9),log);
+						AddTextToArea(round(IVr.Points,rnd) & chr(9),log);
+						AddTextToArea(chr(13) & chr(10),log);
+					end;
+					
+				end;
+			end;
+		end;
+	end;
+	createfile("log.txt");
+	closefile;
+	writeareatofile(log,"log.txt",0);
+	
+return;
+end;

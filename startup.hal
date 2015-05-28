@@ -86,6 +86,9 @@ begin
 	Maintenance("Удалить первичные документы",CleaningVClass,CleaningMn,modDBMain);												//Edit----------------------Dima  26.05.2015
 	Maintenance("Сч/ф клиенту: InvalidDate = InvDate",CleaningVClass,SetInvoiceInvalidDateMn,modDBMain);	//Edit***************************Sasha2,14:03 26.05.2015	
 	
+	
+	Maintenance("FIX Баллов лояльности по авансам",FIXVClass,FixLoyaltyPointMn,modDBMain);// Edit ************************** Thursday, 28 May 2015 11:25:21
+	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
   end;

@@ -486,7 +486,7 @@ begin
 	//Friday, 12 April 2013 12:50:07
 	
 	balcurncy = "EUR";
-	GetFullCurncyRate(balcurncy,CurrentDate,fr,to1,to2,br1,br2);
+	GetFullCurncyRate(balcurncy,IVr.InvDate,fr,to1,to2,br1,br2);
 	if(fr==0 or to1==0)then begin
 		fr = 1;
 		to1 = 1;
