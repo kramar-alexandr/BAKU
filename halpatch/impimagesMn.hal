@@ -2101,10 +2101,10 @@ begin
 					IVr.LoyaltyCardNr = LCr.SerNr;
 					IVr.LCMLevel = LCr.LCMLevel;
 					CalculateIVVcPoints(IVr);
-					//recordStore(IVr,true);
+					recordStore(IVr,true);
 					if(IVr.Points!=0)then begin
 						LCr.PointsBalance = LCr.PointsBalance + round(IVr.Points,rnd);
-						//recordstore(LCr,true);
+						recordstore(LCr,true);
 						AddTextToArea(IVr.SerNr & chr(9),log);
 						AddTextToArea(IVr.CustCode & chr(9),log);
 						AddTextToArea(IVr.Addr0 & chr(9),log);
@@ -2117,9 +2117,11 @@ begin
 			end;
 		end;
 	end;
+	setfileonserver(true);
 	createfile("log.txt");
 	closefile;
 	writeareatofile(log,"log.txt",0);
+	setfileonserver(false);
 	
 return;
 end;
