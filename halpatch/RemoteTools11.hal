@@ -134,7 +134,8 @@ BEGIN
   record RoundBlock Roundb;
   record TaxMatrixVc TMr;
   val RemainPerc;
-  
+  record LoyaltyCardVc LoyaltyCardr;// Edit ************************** Thursday, 28 May 2015 10:37:39
+
   BlockLoad(Roundb);
   ipcurncy = IVp.CurncyCode;
   IVp.OrderNr = ordnr;
@@ -163,6 +164,18 @@ BEGIN
     CUr.Code = ORr.InvoiceToCode;
     if (ReadFirstMain(CUr,1,true)) then begin
       IVp.CustCode = CUr.Code;
+      // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 28 May 2015 10:38:20
+	
+      LoyaltyCardr.CustCode = IVp.CustCode;
+			if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
+				IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+				messagebox(0,LoyaltyCardr.SerNr);
+				IVVc_PasteLoyaltyCardNr(IVp);
+			end;
+			
+	// Edit End ---------------------------------------------- Edit End
+	
       IVp.Addr0 = CUr.Name;
       IVp.Addr1 = CUr.InvAddr0;
       IVp.Addr2 = CUr.InvAddr1;
@@ -180,6 +193,17 @@ BEGIN
   end else begin
 L20OrdDownPay:;
     IVp.CustCode = ORr.CustCode;
+    // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 28 May 2015 10:38:41
+	
+   		LoyaltyCardr.CustCode = IVp.CustCode;
+			if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
+				IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+				IVVc_PasteLoyaltyCardNr(IVp);
+			end;
+			
+	// Edit End ---------------------------------------------- Edit End
+	
     IVp.Addr0 = ORr.Addr0;
     IVp.Addr1 = ORr.Addr1;
     IVp.Addr2 = ORr.Addr2;
