@@ -154,8 +154,8 @@ begin
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 	Import("Обновление цвета и размера товаров",INColorSizeUpdatingIClass,INColorSizeImportIn,modIN);	//Edit----------------------Dima  29.04.2015
-	Import("Импорт регистров",ImportOfRegisterIClass,ImportOfRegister,modDBMain);	//Edit----------------------Dima  27.05.2015
-	Import("Импорт регистров c перезаписью",ImportOfRegisterIClass,ImportOfRegisterRewriting,modDBMain);
+	Import("Импорт регистров БЕЗ ПЕРЕЗАПИСИ",ImportOfRegisterIClass,ImportOfRegister,modDBMain);	//Edit----------------------Dima  27.05.2015
+	Import("Импорт регистров C ПЕРЕЗАПИСЬЮ",ImportOfRegisterRewriteIClass,ImportOfRegisterRewriting,modDBMain);
 
 	SetBegin(900);
 		SetText(0,"Обычный");
