@@ -1,13 +1,12 @@
 external inner procedure ExtractObj(string,var Integer,var string);
-
+external inner function longint DateDiff2(date,date);
 
 //SetLangMode(LangRussian,"RUS",0);
 
 
-
 procedure ItemStockIHSerch(string item,string location,date sd,date ed,var array val qty_start,var array val pu_qty,
                            var array val sm_poz_qty,var array val sm_neg_qty,var array val iv_poz_qty,
-                           var array val iv_neg_qty,var array val sd_qty,var array val qty_end,integer anum)
+                           var array val iv_neg_qty,var array val sd_qty,var array val qty_end,var array integer days,integer anum)
 begin
   record ItemHistVc IHr;
   record StockMovVc SMr;
@@ -18,6 +17,12 @@ begin
   string 100 oldartcode,oldfilename;
 	longint oldsernr;
   integer oldrow,oldinvalid;
+  date startPeriod,endPeriod;
+  boolean periodContinue;
+  array date dates;
+  array val curQty;
+  integer step,i;
+
 	
 	qty_start[anum] = 0;
 	pu_qty[anum] = 0;
@@ -27,6 +32,11 @@ begin
 	iv_neg_qty[anum] = 0;
 	sd_qty[anum] = 0;
 	qty_end[anum] = 0;
+	startPeriod = "";
+	endPeriod = "";
+	step = 1;
+	curQty[0] = -1;//total items quantity per date
+	dates[0] = sd;	
 	
   IHr.ArtCode = item;
   IHr.Location = location;
@@ -117,11 +127,55 @@ begin
 						qty_end[anum] = qty_end[anum] + IHr.Qty;
 					end;
 			end;
+			
+
+			if (IHr.TransDate>=sd) then begin	//Edit----------------------Dima  29.05.2015
+				curQty[step] = qty_end[anum];
+				dates[step] = IHr.TransDate;
+				step=step+1;	
+			end;
+						
 		end;
   end; // while
   
-  qty_end[anum] = qty_start[anum] + qty_end[anum];
+  qty_end[anum] = qty_start[anum] + qty_end[anum]; 
   
+	//Edit--start-------------------------------------------------Dima  29.05.2015
+	curQty[0] = qty_start[anum];
+	dates[0] = sd;
+	for(i=1;i<step;i=i+1) begin
+		curQty[i] = curQty[i]+curQty[0];		 
+	end; 
+	
+	if (curQty[0]>0) then begin
+		periodContinue = true; //periodContinue - the flag when total quantity > 0 during date period
+		startPeriod = sd;
+	end else begin
+		periodContinue = false;
+	end;
+	
+	for(i=0;i<step;i=i+1) begin
+		//LogText(0,location &  ":   " & dates[i] & " - " & curQty[i]);	
+		if ((curQty[i]==0) and (periodContinue)) then begin
+			periodContinue = false;
+			endPeriod = dates[i];
+		end;
+		if ((curQty[i]>0) and (periodContinue==false)) then begin
+			periodContinue = true;
+			startPeriod = dates[i];
+		end;
+	end; 
+	
+  if ((qty_end[anum]>0) and (periodContinue)) then begin
+			endPeriod = ed;
+	end;
+	
+	if (blank(startPeriod) and blank(endPeriod))	then begin
+		days[anum] = 0;
+	end else begin
+		days[anum] = DateDiff2(endPeriod,startPeriod);
+	end; 
+	//Edit--end----------------------------------------------------Dima  29.05.2015  
   return;
 end;
 
@@ -129,14 +183,16 @@ global
 procedure ItemSaldoExtRn(record RcVc RepSpec)
 begin
   record INVc INr,IN2r;
+  record DIVc DIr;
   Date sd,ed;
 	record ItemStatusVc ISr;
   boolean testf,TrHs,nonzerro;
   string 200 locations;
-  string 20 curloc;
+  string 20 curloc,classification;
   integer pos,acnt,i;
   array val qty_start,pu_qty,sm_poz_qty,sm_neg_qty,iv_poz_qty,iv_neg_qty,sd_qty,qty_end;
   array val total_qty_start,total_pu_qty,total_sm_poz_qty,total_sm_neg_qty,total_iv_poz_qty,total_iv_neg_qty,total_sd_qty,total_qty_end;
+  array integer days;
   val subtotal_qty_start,subtotal_pu_qty,subtotal_sm_poz_qty,subtotal_sm_neg_qty,subtotal_iv_poz_qty,subtotal_iv_neg_qty,subtotal_sd_qty,subtotal_qty_end;
 	string 200 class;
 	string 50 key,item;
@@ -193,66 +249,27 @@ begin
     	OutString(0,0,"",false);
     	OutString(0,0,"",false);
     	OutString(0,0,USetStr(31086),false);
+			OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,"",false);
+    	OutString(0,0,USetStr(35031),false); //Edit----------------------Dima  29.05.2015   	
 		endformat;
     startformat(15);
     	OutString(0,0,USetStr(31231),false);
     	OutString(0,0,USetStr(31119),false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin    		
-				OutString(0,0,curloc,false);
+    	OutString(0,0,USetStr(31105),false);
+    	
+    	
+    	for(i=0;i<9;i=i+1) begin		//Edit----------------------Dima  29.05.2015
+				pos = 0;
 				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin    		
-				OutString(0,0,curloc,false);
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin    		
-				OutString(0,0,curloc,false);
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin 
-				OutString(0,0,curloc,false);   		
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin  
-				OutString(0,0,curloc,false);  		
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin   
-				OutString(0,0,curloc,false); 		
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin  
-				OutString(0,0,curloc,false);  		
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
-			pos = 0;
-			ExtractObj(locations,pos,curloc);
-			while(nonblank(curloc))begin  
-				OutString(0,0,curloc,false);  		
-				ExtractObj(locations,pos,curloc);
-			end;
-			OutString(0,0,"",false);
+				while(nonblank(curloc))begin  
+					OutString(0,0,curloc,false);  		
+					ExtractObj(locations,pos,curloc);
+				end;
+				OutString(0,0,"",false);
+			end;		
 		endformat;
     
     
@@ -285,7 +302,7 @@ begin
 				acnt = 0;
     		ExtractObj(locations,pos,curloc);
     		while(nonblank(curloc))begin    		
-      		ItemStockIHSerch(INr.Code,curloc,sd,ed,qty_start,pu_qty,sm_poz_qty,sm_neg_qty,iv_poz_qty,iv_neg_qty,sd_qty,qty_end,acnt);
+      		ItemStockIHSerch(INr.Code,curloc,sd,ed,qty_start,pu_qty,sm_poz_qty,sm_neg_qty,iv_poz_qty,iv_neg_qty,sd_qty,qty_end,days,acnt);
       		total_qty_start[acnt] = total_qty_start[acnt] + qty_start[acnt];
       		total_pu_qty[acnt] = total_pu_qty[acnt] + pu_qty[acnt];
       		total_sm_poz_qty[acnt] = total_sm_poz_qty[acnt] + sm_poz_qty[acnt];
@@ -305,11 +322,18 @@ begin
 	  				nonzerro = true;
 	  			end;
 				end; 
+				
+				classification = "";
+				DIr.Code = INr.DispGroups;
+				if (ReadFirstMain(DIr,1,true)) then begin
+					classification = DIr.Name;
+				end;
     		
     		If(nonzerro)then begin
 					startformat(15);
 						outstring(0,0,INr.Code,false);
 						outstring(0,0,INr.Name,false);
+						outstring(0,0,classification,false);
 						For(i=0;i<acnt;i=i+1) begin
 							outstring(0,0,qty_start[i],false);
 						end; 
@@ -341,6 +365,10 @@ begin
 						For(i=0;i<acnt;i=i+1) begin
 							outstring(0,0,qty_end[i],false);//End
 						end; 
+						outstring(0,0,"",false);
+						For(i=0;i<acnt;i=i+1) begin
+							outstring(0,0,days[i],false);
+						end;						
 					endformat;
 				end;
 	   	end;
@@ -357,6 +385,7 @@ begin
 		end; 
 		startformat(15);
 			outstring(0,0,USetStr(31087),false);
+			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			For(i=0;i<acnt;i=i+1) begin
 				outstring(0,0,total_qty_start[i],false);//Begin
@@ -391,6 +420,7 @@ begin
 			end; 
 		endformat;
 		startformat(15);
+    	OutString(0,0,"",false);
     	OutString(0,0,"",false);
     	OutString(0,0,"",false);
 			OutString(0,0,"",false);

@@ -155,7 +155,7 @@ begin
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 	Import("Обновление цвета и размера товаров",INColorSizeUpdatingIClass,INColorSizeImportIn,modIN);	//Edit----------------------Dima  29.04.2015
 	Import("Импорт регистров",ImportOfRegisterIClass,ImportOfRegister,modDBMain);	//Edit----------------------Dima  27.05.2015
-	
+	Import("Импорт регистров c перезаписью",ImportOfRegisterIClass,ImportOfRegisterRewriting,modDBMain);
 
 	SetBegin(900);
 		SetText(0,"Обычный");
@@ -524,7 +524,7 @@ begin
 	SString(35029,"ПКО № ");
 	SString(35030,"РКО № ");
 
-
+	SString(35031,"Дней на складе");
 
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
