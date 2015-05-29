@@ -1391,7 +1391,10 @@ LkInvoiceRowTypeNormal2:;
         PrintInvoiceRow_5(IVrw,INr,vatprc,vatval,vatexclprc,vatinclprc,rowtax,printedrownr,
                           RepSpec,IVr,Docr,RoundRec,LangNrr,SysFormatRec,negamountf);
       case kInvoiceRowTypePrepayment:
-        if (GetVATLaw!=vatRussian) and (GetVATLaw!=vatUkrainian) then begin
+        
+        OUTFORMFIELD("F_SPECIFIKATION",IVrw.Spec);
+        PrintValue("F_BELOPP",-IVrw.Sum,M4Val,LangNrr,SysFormatRec,negamountf);
+        /*if (GetVATLaw!=vatRussian) and (GetVATLaw!=vatUkrainian) then begin
           if (HasLocalization("POL")==false) then begin
             OUTFORMFIELD("F_SPECIFIKATION",IVrw.Spec);
           end;
@@ -1407,7 +1410,7 @@ LkInvoiceRowTypeNormal2:;
           OUTFORMFIELD("F_PREPAYDATE",ARHistr.TransDate);          
         end else begin
           endformrowf = false;
-        end;
+        end;*/
       case kInvoiceRowTypeLoan:
         OUTFORMFIELD("F_SALESACC",IVrw.SalesAcc);
         OUTFORMFIELD("F_MOMSKOD",IVrw.VATCode);
