@@ -207,3 +207,17 @@ begin
 	end;//if nonblank(artcode)
 return;
 end;//Edit ***** 8 July 2013 13:18:00 Larisa
+
+//Edit---------------Vitalii 18:57 03.06.2015
+global
+procedure DblCLOutID(string dblstr,string l,Integer currepwn)
+begin
+  Integer wn;
+  record CLOutVc CLOutr;
+  
+  CLOutr.SerNr = FirstInRange(l,10);
+  if (ReadFirstMain(CLOutr,1,true)) then begin
+    wn = OpenWindow("CLOutDClass",1,0,"","",CLOutr);
+  end;     
+  return;
+end;

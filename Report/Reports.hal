@@ -9,11 +9,7 @@ external procedure GetUserName(string,var string);
 //Edit---------------Vitalii 16:23 21.05.2015
 external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
 external procedure YcToStr(Integer,var string);
-external procedure DblIVVc(string,string,Integer);
-external procedure DblIPVc(string,string,Integer);
-external procedure DblCLInVc(string,string,Integer);
-external procedure DblCLOutVc(string,string,Integer);
-external procedure DblTrans(string,string,Integer);
+
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
@@ -1606,32 +1602,6 @@ begin
 return;
 end;
 
-//Edit---------------Vitalii 17:06 03.06.2015
-global
-procedure DblDirWeekRep(string dblstr,string l,Integer currepwn)
-begin
-	Integer yc1;
-	LongInt ser1;
-	
-	if (nonblank(l)) then begin
-		ser1 = FirstTransInRange(l);
-		yc1 = FirstTransTypeInRange(l);
-		switch (yc1) begin
-			case IVYc:
-				DblIVVc(ser1,"",currepwn);
-			case IPYc:
-				DblIPVc(ser1,"",currepwn);
-			case CLInYc:
-				DblCLInVc(ser1,"",currepwn);
-			case CLOutYc:
-				DblCLOutVc(ser1,"",currepwn);
-			otherwise
-				DblTrans(dblstr,CurrentCompany,currepwn);
-		end;
-	end;
-  return;
-end;
-
 //Edit---------------Vitalii 15:02 19.05.2015
 global
 procedure DirectorWeekRn(record RcVc RepSpec)
@@ -2013,7 +1983,18 @@ begin
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 			end;
-				OutStringID(tab12,"DblDirWeekRep",tempTRrw.Comment,false,tempTRrw.Comment);
+				switch (FirstTransTypeInRange(tempTRrw.Comment)) begin
+					case IVYc:
+						OutStringID(tab12,"DblIVVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case IPYc:
+						OutStringID(tab12,"DblIPVcID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case CLInYc:
+						OutStringID(tab12,"DblCLInID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case CLOutYc:
+						OutStringID(tab12,"DblCLOutID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					otherwise
+						OutStringID(tab12,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
+				end;
 				OutString(tab13,0,tempTRrw.ExtraComment,false);
 			BaseDeb = BaseDeb + tempTRrw.DebVal;
 			BaseCred = BaseCred + tempTRrw.CredVal;
