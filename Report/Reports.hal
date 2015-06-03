@@ -9,6 +9,11 @@ external procedure GetUserName(string,var string);
 //Edit---------------Vitalii 16:23 21.05.2015
 external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
 external procedure YcToStr(Integer,var string);
+external procedure DblIVVc(string,string,Integer);
+external procedure DblIPVc(string,string,Integer);
+external procedure DblCLInVc(string,string,Integer);
+external procedure DblCLOutVc(string,string,Integer);
+external procedure DblTrans(string,string,Integer);
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
@@ -1601,6 +1606,32 @@ begin
 return;
 end;
 
+//Edit---------------Vitalii 17:06 03.06.2015
+global
+procedure DblDirWeekRep(string dblstr,string l,Integer currepwn)
+begin
+	Integer yc1;
+	LongInt ser1;
+	
+	if (nonblank(l)) then begin
+		ser1 = FirstTransInRange(l);
+		yc1 = FirstTransTypeInRange(l);
+		switch (yc1) begin
+			case IVYc:
+				DblIVVc(ser1,"",currepwn);
+			case IPYc:
+				DblIPVc(ser1,"",currepwn);
+			case CLInYc:
+				DblCLInVc(ser1,"",currepwn);
+			case CLOutYc:
+				DblCLOutVc(ser1,"",currepwn);
+			otherwise
+				DblTrans(dblstr,CurrentCompany,currepwn);
+		end;
+	end;
+  return;
+end;
+
 //Edit---------------Vitalii 15:02 19.05.2015
 global
 procedure DirectorWeekRn(record RcVc RepSpec)
@@ -1633,13 +1664,15 @@ begin
 	Integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
-			tab10, tab11, tab12;
+			tab10,tab11,tab12,
+			tab13;
 	string 5 tempStr;
 
 	tab1 = 0;	 tab2 = 27;	  tab3 = 79;
 	tab4 = 106;  tab5 = 133;  tab6 = 160;
-	tab7 = 225;	 tab8 = 275;  tab9 = 300;
-	tab10 = 325; tab11 = 350; tab12 = 415;
+	tab7 = 210;	 tab8 = 260;  tab9 = 285;
+	tab10 = 310; tab11 = 330; tab12 = 380;
+	tab13 = 430;
 	
 	StartReportNoHeaderJob(USetStr(35012));
 	//Объект
@@ -1725,10 +1758,11 @@ begin
 			OutStringCut(tab9,tab10,0,USetStr(10670),true,0); // Расходы
 			OutString(tab10,0,"",false);
 			OutString(tab11,0,"",false); //В осн. валюте
-			OutStringCut(tab12,480,0,USetStr(31292),false,0); //Примечание
+			OutStringCut(tab12+25,480,0,USetStr(31292),false,0); //Примечание
 		EndFormat;
 		Black_Divider(tab2,tab7-2);
-		Black_Divider(tab7+2,tab12-5);
+		Black_Divider(tab7+2,tab13-2);
+		Black_Divider(tab13+2,480);
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35013),false); //AZN терминал
@@ -1741,7 +1775,8 @@ begin
 			OutString(tab9,0,"EUR",false);
 			OutString(tab10,0,"USD",false);
 			OutString(tab11,0,USetStr(35014),false); //В осн. валюте
-			OutString(tab12,0,"",false);
+			OutString(tab12,0,USetStr(35032),false);
+			OutString(tab13,0,USetStr(35033),false);
 		EndFormat;
 		
 		mainr.AccNumber = "50";
@@ -1763,20 +1798,14 @@ begin
 								case IVYc:
 									IVr.SerNr = TRr.Number;
 									if (ReadFirstMain(IVr,1,true)) then begin
-										if nonblank(TRr.Comment) then begin
-											tempTRrw.Comment = USetStr(35027) & IVr.SerNr & ", " & TRr.Comment;
-										end else begin
-											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
-										end;
+										tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case IPYc:
 									IPr.SerNr = TRr.Number;
 									if (ReadFirstMain(IPr,1,true)) then begin
-										if nonblank(TRr.Comment) then begin
-											tempTRrw.Comment = USetStr(35028) & IPr.SerNr & ", " & TRr.Comment;
-										end else begin
-											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
-										end;
+										tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case CLInYc:
 									CLInr.SerNr = TRr.Number;
@@ -1786,7 +1815,7 @@ begin
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
 											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.Comment = USetStr(35029) & CLInr.SerNr & ", " & CLInrw.Comment;
+												tempTRrw.ExtraComment = CLInrw.Comment;
 											end;
 										end;
 									end;
@@ -1798,13 +1827,14 @@ begin
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
 											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr & ", " & CLOutrw.Comment;
+												tempTRrw.ExtraComment = CLOutrw.Comment;
 											end;
 										end;
 									end;
 								otherwise
 									YcToStr(TRr.IntYc,tempStr);
-									tempTRrw.Comment = tempStr & "." & TRr.Number & ", " & TRr.Comment;
+									tempTRrw.Comment = tempStr & "." & TRr.Number;
+									tempTRrw.ExtraComment = TRr.Comment;
 							end;
 							tempTRrw.ReconDate = mainr.TransDate;	//в столбик Дата
 							tempTRrw.Curncy = TRrw.Curncy;			//валюта
@@ -1845,20 +1875,14 @@ begin
 								case IVYc:
 									IVr.SerNr = TRr.Number;
 									if (ReadFirstMain(IVr,1,true)) then begin
-										if nonblank(TRr.Comment) then begin
-											tempTRrw.Comment = USetStr(35027) & IVr.SerNr & ", " & TRr.Comment;
-										end else begin
-											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
-										end;
+										tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case IPYc:
 									IPr.SerNr = TRr.Number;
 									if (ReadFirstMain(IPr,1,true)) then begin
-										if nonblank(TRr.Comment) then begin
-											tempTRrw.Comment = USetStr(35028) & IPr.SerNr & ", " & TRr.Comment;
-										end else begin
-											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
-										end;
+										tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case CLInYc:
 									CLInr.SerNr = TRr.Number;
@@ -1868,7 +1892,7 @@ begin
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
 											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.Comment = USetStr(35029) & CLInr.SerNr & ", " & CLInrw.Comment;
+												tempTRrw.ExtraComment = USetStr(35029) & CLInrw.Comment;
 											end;
 										end;
 									end;
@@ -1880,13 +1904,14 @@ begin
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
 											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr & ", " & CLOutrw.Comment;
+												tempTRrw.ExtraComment = CLOutrw.Comment;
 											end;
 										end;
 									end;
 								otherwise
 									YcToStr(TRr.IntYc,tempStr);
-									tempTRrw.Comment = tempStr & "." & TRr.Number & ", " & TRr.Comment;
+									tempTRrw.Comment = tempStr & "." & TRr.Number;
+									tempTRrw.ExtraComment = TRr.Comment;
 							end;
 							tempTRrw.ReconDate = mainr.TransDate;
 							tempTRrw.Curncy = "TER";				//валюта
@@ -1988,7 +2013,8 @@ begin
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 			end;
-				OutString(tab12,0,tempTRrw.Comment,false);
+				OutStringID(tab12,"DblDirWeekRep",tempTRrw.Comment,false,tempTRrw.Comment);
+				OutString(tab13,0,tempTRrw.ExtraComment,false);
 			BaseDeb = BaseDeb + tempTRrw.DebVal;
 			BaseCred = BaseCred + tempTRrw.CredVal;
 			EndFormat;
