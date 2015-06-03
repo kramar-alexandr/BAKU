@@ -938,7 +938,7 @@ begin
     StartFormat(15);
 		endformat;
 
-		if (debt>0) then begin		//Edit------------Dima 22.01.2015
+		if (debt!=0) then begin		//Edit------------Dima 22.01.2015
 			outstring(0,0,USetStr(31308),false);
     	outstring(220,0,debt,false);
 			endformat;

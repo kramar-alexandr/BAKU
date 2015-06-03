@@ -1293,6 +1293,7 @@ LIVVcRecordCheck_GenTrans:;
   if (HasLocalization("POL") and (IsStandardProduct)) then begin
     transf = HasModNL;
   end;
+  logtext(0,"transf " & transf);
   if (transf) then begin
     errcode = MakeTransFromIV(gTRp,gSMp,IVp,false,false,fifocurIVr); //Edit***************************Sasha2,15:47 18.03.2015
     if (errcode==0) then begin
