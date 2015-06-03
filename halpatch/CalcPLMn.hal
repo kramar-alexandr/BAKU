@@ -139,6 +139,9 @@ begin
     end;
     newpr = newpr * PFr.Perc;
     newpr = newpr / 100;
+    if (PFr.RndTo==-3) then begin
+      PFr.RndTo = -4; //Edit***************************Sasha2,15:12 03.06.2015
+    end;
     newpr = Round(newpr + PFr.Add1Val,SetRoundModeD(PFr.RndTo));
     
     

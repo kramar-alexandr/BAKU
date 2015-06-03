@@ -44,6 +44,9 @@ begin
       price = price + PFormr.Add1Val;
     end;
     if nonblank(PFormr.RndTo) then begin
+      if (PFormr.RndTo==-3) then begin
+        PFormr.RndTo = -4; //Edit***************************Sasha2,14:57 03.06.2015
+      end;
       price = Round(price,SetRoundModeD(PFormr.RndTo));
     end;
     if nonblank(PFormr.Add2Val) then begin
@@ -490,6 +493,9 @@ begin
       price = price + PFormr.Add1Val;
     end;
     if nonblank(PFormr.RndTo) then begin
+      if (PFormr.RndTo==-3) then begin
+        PFormr.RndTo = -4; //Edit***************************Sasha2,14:57 03.06.2015
+      end;
       price = Round(price,SetRoundModeD(PFormr.RndTo));
     end;
     if nonblank(PFormr.Add2Val) then begin
