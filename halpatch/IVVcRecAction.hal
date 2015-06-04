@@ -234,6 +234,8 @@ BEGIN
   roundmode rnd;// Edit ************************** Friday, 15 March 2013 11:35:23
   record LocationVc Locationr;
   record IVVc fifocurIVr; //Edit***************************Sasha2,11:34 18.03.2015
+  record POSCurrenciesBlock POSCurblock;
+  string 5 posCurcncy;
   
   
   Locationr.Code = IVp.Location;
@@ -304,6 +306,7 @@ BEGIN
   BlockLoad(CreditLimitRec);
   BlockLoad(MainCLRec);
   BlockLoad(Ob);
+  BlockLoad(POSCurblock);//Edit----------------------Dima  04.06.2015
   if ((stat==insertmode) or ((stat==updatemode) and (IV2p.OKFlag==0))) then begin
     IVSumup(IVp,true); // Don't think this is needed at all.
   end;
@@ -1140,6 +1143,18 @@ LkInvoiceTypeCredit:;
     end;
   end;
   end;
+  
+  i=0;	//Edit----------------------Dima  04.06.2015
+  ExtractObj(POSCurblock.Currencies,i,posCurcncy);
+  for(i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(IVp,i,IVrw);    
+		if ((IVrw.stp==kInvoiceRowTypeCashPayment or IVrw.stp==kInvoiceRowTypeCreditCardPayment) and IVp.CurncyCode!=posCurcncy) then begin
+        RecordCheckError(31313,"",-1,"CurncyCode");  
+        res = -1;
+        goto L99;
+		end;
+	end;//Edit---end-------------------Dima  04.06.2015
+  
   RecordNew(TRr);
   if (transf) then begin
     if (GetVATLaw==vatArgentinean) or (GetVATLaw==vatPortuguese) or ((HasLocalization("POL")) and (IsStandardProduct)) then begin

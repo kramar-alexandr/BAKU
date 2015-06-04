@@ -54,7 +54,6 @@ begin
 	Maintenance("Вернуть группу продаж",FIXVClass,SetBackSalesGroupVcMn,modDBMain); //Edit***************************Sasha2,12:17 23.12.2014
 
 	
-	
   Maintenance("DEltodayINr",FIXVClass,DellNewINMn,modDBMain);// Edit ************************** Tuesday, 4 November 2014 18:43:39
 
   Maintenance("AddRecHistToCU",FIXVClass,RHist2Mn,modDBMain);// Edit ************************** Tuesday, 30 September 2014 13:06:54
@@ -486,6 +485,7 @@ begin
   SString(31310,"Нельзя добавлять товар, если счет-фактура была создана из счета клиенту.");
   SString(31311,"Пустое поле Дебет/Кредит в валюте");
   SString(31312,"Указанный штрих-код уже существует");
+  SString(31313,"Расчет в данной валюте через кассу запрещен");
 
 	SString(31320,"Цвет");
 	SString(31321,"Размер");
