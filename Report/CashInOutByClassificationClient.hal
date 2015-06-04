@@ -1,0 +1,271 @@
+external procedure ExtractObj(string,var Integer,var string);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+
+
+function string 50 GetItemsBrand(string code, var vector string classifications)		//Edit----------------------Dima  04.06.2015
+Begin
+	record INVc INr;
+	record DIVc DIr;
+	integer pos;
+	string 50 temp,result;
+	
+	INr.Code = code;
+	
+	if (nonblank(classifications[code])) then begin
+		result = classifications[code];
+	end else begin
+		result = "";
+									
+		if(ReadFirstMain(INr,1,true)) then begin
+				pos = 0;
+			  ExtractObj(INr.DispGroups,pos,temp);
+  			while (nonblank(temp)) begin		
+  				DIr.Code = temp;
+  				ReadFirstMain(DIr,1,true);
+					if(DIr.CType=="BRAND") then begin
+						classifications[INr.Code] = DIr.Code;
+						result = DIr.Code;
+					end;   	
+  				ExtractObj(INr.DispGroups,pos,temp);
+  			end;
+			
+		end;	
+	end;
+	
+GetItemsBrand = result;
+return;
+end;
+
+
+function val GetPaymentCoef(record IVVc IVr)
+begin
+	val sum,coef,tempVal;
+	row IVVc IVrw;
+	integer rwcnt,i;
+	string 2 char;
+
+	sum = 0;
+	rwcnt = MatRowCnt(IVr);
+	for(i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(IVr,i,IVrw);
+		char = Left(IVrw.PayMode,1);
+		if ((IVrw.stp==kInvoiceRowTypeCashPayment) or (IVrw.stp==kInvoiceRowTypeCreditCardPayment and char=="T") or (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment)) then begin
+			tempVal = IVrw.Sum;
+			if (IVrw.CurncyCode != IVr.CurncyCode) then begin	//for cash currency
+					CurValToOtherCur(IVr.TransDate,IVrw.CurncyCode,IVrw.Sum,IVr.CurncyCode,tempVal,DefaultCurRoundOff);
+			end;
+			sum = sum + tempVal;
+		end;
+	end;
+	
+	coef = sum/IVr.Sum4;
+	GetPaymentCoef = coef;
+return;
+end;
+
+function val GetPrePaymentCoef(record IVVc IVr,date startDate)
+begin
+	val coef,sum;
+	row IVVc IVrw;
+	integer rwcnt,i;
+	record ARPayHistVc ARPayHistr;
+
+	sum = 0;
+	coef = 0;
+	rwcnt = MatRowCnt(IVr);
+	for(i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(IVr,i,IVrw);
+		if (IVrw.stp==kInvoiceRowTypePrepayment) then begin
+				ARPayHistr.CUPNr = IVrw.CUPNr;
+				ARPayHistr.FileName = "IPVc";
+				if (ReadFirstMain(ARPayHistr,2,true)) then begin
+					if (ARPayHistr.TransDate>=startDate) then begin
+							sum = sum + IVrw.Sum;							
+					end;
+				end;
+		end;
+	end;
+	coef = sum/IVr.Sum4;
+	
+	GetPrePaymentCoef = coef;
+return;
+end;
+
+
+global
+procedure CashInOutByClassificationRn(record RcVc RepSpec)			//Edit----------------------Dima  04.06.2015
+begin
+
+	record DIVc DIr;
+	record BaseCurBlock BCBb;
+	vector val cashIn,cashOut;
+	date sDate,eDate;
+	record IVVc IVr;
+	row IVVc IVrw;
+	record IPVc IPr;
+	row IPVc IPrw;
+	record ORVc ORr;
+	row ORVc ORrw;
+	boolean TrHs,testf;
+	integer i,j,rwcnt,rwcnt2,lenght;
+	string 50 classification,temp,currency;
+	array string 50 brands;
+	vector string 50 items;// items[INr.Code] = items's brand
+	val coef,prepaymentCoef,curncyCoef;
+	
+		BlockLoad(BCBb);
+    currency = BCBb.BaseCur1;
+    	
+		DIr.CType="BRAND";
+		TrHs=true;
+		i=0;
+		while(LoopKey("CType",DIr,1,TrHs)) begin
+			if (DIr.CType!="BRAND") begin TrHs = false; end;
+			if (TrHs) then begin
+					brands[i] = DIr.Code;
+					i=i+1;
+			end;
+		end;	
+		lenght = i;
+	
+	
+    sDate = RepSpec.sStartDate;
+    eDate = RepSpec.sEndDate; 
+
+
+    
+		TrHs=true;
+    IVr.TransDate=sDate;
+    While(LoopKey("TransDate",IVr,1,TrHs)) begin
+    		testf = true;
+    		prepaymentCoef = 0;
+    		
+    		if (IVr.TransDate>eDate) then begin  TrHs=false; testf=false; end; 
+				if (IVr.OKFlag==0) then begin testf=false;end;
+				if (nonblank(RepSpec.f1) and (RepSpec.f1 != IVr.Location)) then begin testf=false; end;
+    		
+    		if (testf) then begin
+    			testf = false;
+					rwcnt = MatRowCnt(IVr);				
+					for(i=rwcnt-1;i>=0;i=i-1) begin
+						MatRowGet(IVr,i,IVrw);
+						if (IVrw.stp==kInvoiceRowTypeCashPayment or IVrw.stp==kInvoiceRowTypeCreditCardPayment or IVrw.stp==kInvoiceRowTypeGiftVoucherPayment or IVrw.stp==kInvoiceRowTypePrepayment) then begin 
+							testf = true;							
+							i=-1;
+						end;
+					 end;
+				 end;
+				 				
+				
+				if (testf) then begin
+				
+						if (currency != IVr.CurncyCode) then begin
+							//	curncyCoef
+						end;
+						/*
+		GetFullCurncyRate(acrncy[i],RepSpec.d1,fr,to1,to2,br1,br2);
+			if(fr==0 or to1==0)then begin
+				fr=1; to1=1;
+			end;
+		coef = to1/fr/orto1*orfr;
+		*/				
+						coef = GetPaymentCoef(IVr);
+						prepaymentCoef = GetPrePaymentCoef(IVr,sDate);
+						LogText(0,IVr.SerNr & "    c:" & coef & "    :   " & prepaymentCoef);
+						for(i=0;i<rwcnt-1;i=i+1) begin	
+								MatRowGet(IVr,i,IVrw);
+								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+												classification = GetItemsBrand(IVrw.ArtCode,items);
+								
+												if (IVrw.Quant>0) then begin
+													cashIn[classification] = cashIn[classification] + IVrw.Sum*coef + IVrw.Sum*prepaymentCoef;
+												end else begin 
+													cashOut[classification] = cashOut[classification] + IVrw.Sum*coef + IVrw.Sum*prepaymentCoef;
+												end;
+																				
+								end;						
+						end;
+				end;
+
+		end;  
+		
+	
+		
+		TrHs = true;
+    IPr.TransDate=sDate;
+    While(LoopKey("TransDate",IPr,1,TrHs)) begin  
+    	testf = true;
+    
+    	if (IPr.TransDate>eDate) then begin  TrHs=false; testf=false; end;
+    	if (IPr.OKFlag==0) then begin testf=false; end;
+    	
+    	if (testf) then begin
+					rwcnt = MatRowCnt(IPr);
+					for(i=0;i<rwcnt;i=i+1) begin
+						MatRowGet(IPr,i,IPrw);
+						if (nonblank(IPrw.CUPNr)) then begin	//Collect prepayments
+								ORr.SerNr = IPrw.OrderNr;							
+								if (ReadFirstMain(ORr,1,true)) then begin
+									if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
+								
+										if (IPrw.RecCurncy==ORr.CurncyCode) then begin
+											coef = IPrw.RecVal/ORr.Sum4;
+											rwcnt2 = MatRowCnt(ORr);
+											
+											for(j=0;j<rwcnt2;j=j+1) begin
+													MatRowGet(ORr,j,ORrw);
+													classification = GetItemsBrand(ORrw.ArtCode,items);
+													cashIn[classification] = cashIn[classification] +ORrw.Sum*coef;
+											end;
+										end;
+									end;	
+								end;	
+						end else begin											//Collect payments
+								IVr.SerNr = IPrw.InvoiceNr;
+								if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
+									if (ReadFirstMain(IVr,1,true)) then begin
+										if (IPrw.RecCurncy==IVr.CurncyCode) then begin
+													coef = IPrw.RecVal/IVr.Sum4;
+													rwcnt2 = MatRowCnt(IVr);									
+													for(j=0;j<rwcnt2;j=j+1) begin	
+															MatRowGet(IVr,j,IVrw);
+															if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+															
+																			classification = GetItemsBrand(IVrw.ArtCode,items);
+									    						
+																			if (IVrw.Quant>0) then begin
+																				cashIn[classification] = cashIn[classification] +IVrw.Sum*coef;
+																			end else begin 
+																				cashOut[classification] = cashOut[classification] +IVrw.Sum*coef;
+																			end;			
+											  	
+															end;						
+													end;									
+										
+										end;
+									end;
+								end;	
+						end;
+					end;
+			end;    
+    
+    
+    end;
+	
+	
+
+
+		StartReportNoHeaderJob("CashIn/CashOut by classification");
+			for(i=0;i<lenght;i=i+1) begin
+				StartFormat(15);
+				 	OutString(20,0,brands[i],false);
+					OutString(200,0,cashIn[brands[i]],false);
+					OutString(300,0,cashOut[brands[i]],false);
+				EndFormat;	
+			end;			
+		
+		EndJob;
+  
+  
+end;  
+

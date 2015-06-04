@@ -627,3 +627,21 @@ begin
 		EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,60 ,ObjStr,false,ObjSClass);
 	EndWindow;
 end;
+
+
+
+window CashInOutClientsByClassificationRClass:1	//Edit----------------------Dima  02.06.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Приход/Расход(клиенты) по классификации",CashInOutClientsByClassificationRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"Период");
+  EditFieldTL(h,v+=vs,150,"Склад",M4Str,Normal,41,f1,false,LocationSClass);
+	//EditField(h,v+=vs,80,"Отчет в валюте",Normal,f2,false,CurncyCodeSClass);	
+
+  EndWindow;
+end;
+
+

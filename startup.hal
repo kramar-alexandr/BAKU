@@ -139,6 +139,7 @@ begin
   Report("Отчет по учредителям",FoundersRClass,FoundersRn,0,modIN);//Edit----------------------Dima  23.02.2015
   Report("Фактурирование поступлений",PUInvoicingRClass,PUInvoicingRn,0,modPL);//Edit----------------------Dima  24.02.2015
   Report("Еженедельный отчет директоров",DirectorWeekRClass,DirectorWeekRn,0,modNL);//Edit---------------Vitalii 14:49 19.05.2015
+	Report("Приход/расход по классификациям(клиенты)",CashInOutClientsByClassificationRClass,CashInOutByClassificationRn,0,modSL);	//Edit----------------------Dima  04.06.2015
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
