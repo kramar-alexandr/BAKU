@@ -77,7 +77,6 @@ begin
 				ARPayHistr.CUPNr = IVrw.CUPNr;
 				ARPayHistr.FileName = "IPVc";
 				if (ReadFirstMain(ARPayHistr,2,true)) then begin
-				LogText(0,"prepayment: " & ARPayHistr.CUPNr & "   " &  ARPayHistr.TransDate);
 					if (ARPayHistr.TransDate>=startDate) then begin
 							sum = sum + IVrw.Sum;							
 					end;
@@ -182,12 +181,11 @@ begin
 						end;
 						prepaymentCoef = prepaymentSum/IVr.Sum4;
 						
-						LogText(0,IVr.SerNr & "    " & paymentCoef & "    :   " & prepaymentCoef & "    cur:  " & curncyCoef );
+						//LogText(0,IVr.SerNr & "    " & paymentCoef & "    :   " & prepaymentCoef & "    cur:  " & curncyCoef );
 						for(i=0;i<rwcnt;i=i+1) begin	
 								MatRowGet(IVr,i,IVrw);
 								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
 												classification = GetItemsBrand(IVrw.ArtCode,items);
-								LogText(0,IVrw.ArtCode & "    " & classification);
 												if (IVrw.Quant>0) then begin
 													cashIn[classification] = cashIn[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
 												end else begin 
