@@ -523,6 +523,9 @@ BEGIN
     if (OPr.OrderedFlag!=0) then begin
       res = false;
     end;
+    if (OPr.OrderedFlag==0 and OPr.DoneFlag==0) then begin //Edit***************************Sasha2,12:05 05.06.2015 {
+      res = false;
+    end; //Edit***************************Sasha2,12:05 05.06.2015 }
   end;  
 //if (OPButActSpec(OPp,OP2p,WindowState(wn),*(Integer*)ap2)==false) then res = false;//I think it is not needed
 LOPDClassOrderedFlagButtonAction:;
