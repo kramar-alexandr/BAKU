@@ -528,6 +528,7 @@ begin
 	SString(35033,"Коммент.");
 
 	SString(35031,"Дней на складе");
+	SString(35034,"Оборот денег по классификации");
 
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

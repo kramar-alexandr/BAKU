@@ -37,7 +37,7 @@ return;
 end;
 
 
-function val GetPaymentCoef(record IVVc IVr)
+function val GetPaymentSum(record IVVc IVr)
 begin
 	val sum,coef,tempVal;
 	row IVVc IVrw;
@@ -58,12 +58,11 @@ begin
 		end;
 	end;
 	
-	coef = sum/IVr.Sum4;
-	GetPaymentCoef = coef;
+	GetPaymentSum = sum;
 return;
 end;
 
-function val GetPrePaymentCoef(record IVVc IVr,date startDate)
+function val GetPrePaymentSum(record IVVc IVr,date startDate)
 begin
 	val coef,sum;
 	row IVVc IVrw;
@@ -71,7 +70,6 @@ begin
 	record ARPayHistVc ARPayHistr;
 
 	sum = 0;
-	coef = 0;
 	rwcnt = MatRowCnt(IVr);
 	for(i=0;i<rwcnt;i=i+1) begin
 		MatRowGet(IVr,i,IVrw);
@@ -79,15 +77,16 @@ begin
 				ARPayHistr.CUPNr = IVrw.CUPNr;
 				ARPayHistr.FileName = "IPVc";
 				if (ReadFirstMain(ARPayHistr,2,true)) then begin
+				LogText(0,"prepayment: " & ARPayHistr.CUPNr & "   " &  ARPayHistr.TransDate);
 					if (ARPayHistr.TransDate>=startDate) then begin
 							sum = sum + IVrw.Sum;							
 					end;
 				end;
 		end;
 	end;
-	coef = sum/IVr.Sum4;
+	//coef = sum/IVr.Sum4;
 	
-	GetPrePaymentCoef = coef;
+	GetPrePaymentSum = sum;
 return;
 end;
 
@@ -110,11 +109,21 @@ begin
 	integer i,j,rwcnt,rwcnt2,lenght;
 	string 50 classification,temp,currency;
 	array string 50 brands;
-	vector string 50 items;// items[INr.Code] = items's brand
-	val coef,prepaymentCoef,curncyCoef;
+	vector string 50 items;// items[INr.Code] = itemses' brand
+	val paymentCoef,prepaymentCoef,curncyCoef;
+	val paymentSum,prepaymentSum,totalIn,totalOut;
 	
 		BlockLoad(BCBb);
     currency = BCBb.BaseCur1;
+    
+    StartReportNoHeaderJob(USetStr(35034));
+    
+    if blankdate(RepSpec.sStartDate) then begin
+        StartFormat(15);
+        OutString(0,0,USetStr(31088),false);
+        EndFormat;
+        goto LBreak_CashInOutByClassificationRn;
+     end;
     	
 		DIr.CType="BRAND";
 		TrHs=true;
@@ -141,7 +150,7 @@ begin
     		prepaymentCoef = 0;
     		
     		if (IVr.TransDate>eDate) then begin  TrHs=false; testf=false; end; 
-				if (IVr.OKFlag==0) then begin testf=false;end;
+				if (IVr.OKFlag==0 or IVr.Invalid==1) then begin testf=false;end;
 				if (nonblank(RepSpec.f1) and (RepSpec.f1 != IVr.Location)) then begin testf=false; end;
     		
     		if (testf) then begin
@@ -158,29 +167,31 @@ begin
 				 				
 				
 				if (testf) then begin
-				
+						curncyCoef = 1;
 						if (currency != IVr.CurncyCode) then begin
-							//	curncyCoef
+							CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
+						end;	
+						
+						paymentSum = GetPaymentSum(IVr);
+						prepaymentSum = GetPrePaymentSum(IVr,sDate);
+						paymentCoef = 0;
+						if (paymentSum + prepaymentSum > IVr.Sum4) then begin						
+							paymentCoef = (IVr.Sum4 - prepaymentSum)/IVr.Sum4;
+						end else begin
+							paymentCoef = paymentSum/IVr.Sum4;
 						end;
-						/*
-		GetFullCurncyRate(acrncy[i],RepSpec.d1,fr,to1,to2,br1,br2);
-			if(fr==0 or to1==0)then begin
-				fr=1; to1=1;
-			end;
-		coef = to1/fr/orto1*orfr;
-		*/				
-						coef = GetPaymentCoef(IVr);
-						prepaymentCoef = GetPrePaymentCoef(IVr,sDate);
-						LogText(0,IVr.SerNr & "    c:" & coef & "    :   " & prepaymentCoef);
-						for(i=0;i<rwcnt-1;i=i+1) begin	
+						prepaymentCoef = prepaymentSum/IVr.Sum4;
+						
+						LogText(0,IVr.SerNr & "    " & paymentCoef & "    :   " & prepaymentCoef & "    cur:  " & curncyCoef );
+						for(i=0;i<rwcnt;i=i+1) begin	
 								MatRowGet(IVr,i,IVrw);
 								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
 												classification = GetItemsBrand(IVrw.ArtCode,items);
-								
+								LogText(0,IVrw.ArtCode & "    " & classification);
 												if (IVrw.Quant>0) then begin
-													cashIn[classification] = cashIn[classification] + IVrw.Sum*coef + IVrw.Sum*prepaymentCoef;
+													cashIn[classification] = cashIn[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
 												end else begin 
-													cashOut[classification] = cashOut[classification] + IVrw.Sum*coef + IVrw.Sum*prepaymentCoef;
+													cashOut[classification] = cashOut[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
 												end;
 																				
 								end;						
@@ -203,29 +214,16 @@ begin
 					rwcnt = MatRowCnt(IPr);
 					for(i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(IPr,i,IPrw);
-						if (nonblank(IPrw.CUPNr)) then begin	//Collect prepayments
-								ORr.SerNr = IPrw.OrderNr;							
-								if (ReadFirstMain(ORr,1,true)) then begin
-									if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
-								
-										if (IPrw.RecCurncy==ORr.CurncyCode) then begin
-											coef = IPrw.RecVal/ORr.Sum4;
-											rwcnt2 = MatRowCnt(ORr);
-											
-											for(j=0;j<rwcnt2;j=j+1) begin
-													MatRowGet(ORr,j,ORrw);
-													classification = GetItemsBrand(ORrw.ArtCode,items);
-													cashIn[classification] = cashIn[classification] +ORrw.Sum*coef;
-											end;
-										end;
-									end;	
-								end;	
-						end else begin											//Collect payments
+						if (nonblank(IPrw.InvoiceNr)) then begin	//Collect payments
 								IVr.SerNr = IPrw.InvoiceNr;
-								if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
+								if (blank(RepSpec.f1) or (RepSpec.f1 == IVr.Location)) then begin 
 									if (ReadFirstMain(IVr,1,true)) then begin
-										if (IPrw.RecCurncy==IVr.CurncyCode) then begin
-													coef = IPrw.RecVal/IVr.Sum4;
+										if (IPrw.RecCurncy==IVr.CurncyCode and IVr.OKFlag>0 and IVr.Invalid==0) then begin
+													curncyCoef = 1;
+													if (currency != IVr.CurncyCode) then begin
+														CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
+													end;										
+													paymentCoef = IPrw.RecVal/IVr.Sum4;
 													rwcnt2 = MatRowCnt(IVr);									
 													for(j=0;j<rwcnt2;j=j+1) begin	
 															MatRowGet(IVr,j,IVrw);
@@ -234,9 +232,9 @@ begin
 																			classification = GetItemsBrand(IVrw.ArtCode,items);
 									    						
 																			if (IVrw.Quant>0) then begin
-																				cashIn[classification] = cashIn[classification] +IVrw.Sum*coef;
+																				cashIn[classification] = cashIn[classification] +IVrw.Sum*paymentCoef*curncyCoef;
 																			end else begin 
-																				cashOut[classification] = cashOut[classification] +IVrw.Sum*coef;
+																				cashOut[classification] = cashOut[classification] +IVrw.Sum*paymentCoef*curncyCoef;
 																			end;			
 											  	
 															end;						
@@ -255,17 +253,91 @@ begin
 	
 
 
-		StartReportNoHeaderJob("CashIn/CashOut by classification");
-			for(i=0;i<lenght;i=i+1) begin
-				StartFormat(15);
-				 	OutString(20,0,brands[i],false);
-					OutString(200,0,cashIn[brands[i]],false);
-					OutString(300,0,cashOut[brands[i]],false);
-				EndFormat;	
-			end;			
+	 StartFormat(15);
+    OutString(0,0,USetStr(35034),false);
+    EndFormat;
+  
+    OutString(0,0,USetStr(31102),false);
+    OutString(100,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+    endformat;
+    OutString(0,0,USetStr(31103),false);
+    if(nonblank(RepSpec.f1))then begin              
+          OutString(100,0,RepSpec.f1,false);
+      		endformat;
+    end else begin
+          OutString(100,0,USetStr(31104),false);
+      		endformat;
+    end;
+		endformat;
+	
+							
+		totalIn = 0;
+		totalOut = 0;
 		
+		OutString(20,0,"",false);
+		OutString(200,0,USetStr(35022),false); //cash in
+		OutString(300,0,USetStr(35017),false);// cash out
+		endformat;		
+
+		for(i=0;i<lenght;i=i+1) begin
+			StartFormat(15);
+			 	OutString(20,0,brands[i],false);
+				OutString(200,0,cashIn[brands[i]],false);
+				OutString(300,0,cashOut[brands[i]],false);
+			EndFormat;
+			totalIn = totalIn + cashIn[brands[i]];
+			totalOut = totalOut + cashOut[brands[i]];	
+		end;
+		EndFormat;
+		Black_Divider(0,1);			
+		OutString(20,0,USetStr(31211),false);
+		OutString(200,0,totalIn,false);
+		OutString(300,0,totalOut,false);		
+		EndFormat;
+		
+		LBreak_CashInOutByClassificationRn:;
 		EndJob;
   
   
 end;  
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+						if (nonblank(IPrw.CUPNr)) then begin	//Collect prepayments
+								ORr.SerNr = IPrw.OrderNr;							
+								if (ReadFirstMain(ORr,1,true)) then begin
+									if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
+								
+										if (IPrw.RecCurncy==ORr.CurncyCode) then begin
+											curncyCoef = 1;
+											if (currency != ORr.CurncyCode) then begin
+												CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
+											end;
+										
+											prepaymentCoef = IPrw.RecVal/ORr.Sum4;
+											rwcnt2 = MatRowCnt(ORr);
+											LogText(0,ORr.SerNr & " OR  :   " & prepaymentCoef & "    cur:  " & curncyCoef );
+											for(j=0;j<rwcnt2;j=j+1) begin
+													MatRowGet(ORr,j,ORrw);
+													classification = GetItemsBrand(ORrw.ArtCode,items);
+													cashIn[classification] = cashIn[classification] +ORrw.Sum*prepaymentCoef*curncyCoef;
+											end;
+										end;
+									end;	
+								end;	
+						end 
+
+*/
 
