@@ -181,7 +181,7 @@ begin
 						end;
 						prepaymentCoef = prepaymentSum/IVr.Sum4;
 						
-						LogText(0,IVr.SerNr & "    " & paymentCoef & "    :   " & prepaymentCoef & "    cur:  " & curncyCoef );
+						//LogText(0,IVr.SerNr & "    " & paymentCoef & "    :   " & prepaymentCoef & "    cur:  " & curncyCoef );
 						for(i=0;i<rwcnt;i=i+1) begin	
 								MatRowGet(IVr,i,IVrw);
 								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
@@ -225,7 +225,7 @@ begin
 										
 											prepaymentCoef = IPrw.RecVal/ORr.Sum4;
 											rwcnt2 = MatRowCnt(ORr);
-											LogText(0,ORr.SerNr & " OR  :   " & prepaymentCoef & "    cur:  " & curncyCoef  & "    Inv " & ORr.InvFlag);
+											//LogText(0,ORr.SerNr & " OR  :   " & prepaymentCoef & "    cur:  " & curncyCoef  & "    Inv " & ORr.InvFlag);
 											for(j=0;j<rwcnt2;j=j+1) begin
 													MatRowGet(ORr,j,ORrw);
 													classification = GetItemsBrand(ORrw.ArtCode,items);
@@ -244,7 +244,7 @@ begin
 														CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
 													end;										
 													paymentCoef = IPrw.RecVal/IVr.Sum4;
-									LogText(0,IVr.SerNr & "    " & paymentCoef  & "    cur:  " & curncyCoef );
+									//LogText(0,IVr.SerNr & "    " & paymentCoef  & "    cur:  " & curncyCoef );
 													rwcnt2 = MatRowCnt(IVr);									
 													for(j=0;j<rwcnt2;j=j+1) begin	
 															MatRowGet(IVr,j,IVrw);
@@ -325,40 +325,4 @@ end;
 
 
 
-
-
-
-
-
-
-
-
-
-/*
-
-						if (nonblank(IPrw.CUPNr)) then begin	//Collect prepayments
-								ORr.SerNr = IPrw.OrderNr;							
-								if (ReadFirstMain(ORr,1,true)) then begin
-									if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
-								
-										if (IPrw.RecCurncy==ORr.CurncyCode) then begin
-											curncyCoef = 1;
-											if (currency != ORr.CurncyCode) then begin
-												CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
-											end;
-										
-											prepaymentCoef = IPrw.RecVal/ORr.Sum4;
-											rwcnt2 = MatRowCnt(ORr);
-											LogText(0,ORr.SerNr & " OR  :   " & prepaymentCoef & "    cur:  " & curncyCoef );
-											for(j=0;j<rwcnt2;j=j+1) begin
-													MatRowGet(ORr,j,ORrw);
-													classification = GetItemsBrand(ORrw.ArtCode,items);
-													cashIn[classification] = cashIn[classification] +ORrw.Sum*prepaymentCoef*curncyCoef;
-											end;
-										end;
-									end;	
-								end;	
-						end 
-
-*/
 
