@@ -624,7 +624,9 @@ begin
 		h = 160;
 		vs = 20;
 		PeriodField(h,v=6,"Период");
-		EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,60 ,ObjStr,false,ObjSClass);
+		EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,60,ObjStr,false,ObjSClass);
+		RadioButton(h,v+=vs,0,0,"Подробный",ArtMode);
+		RadioButton(h,v+=16,1,0,"Сводный",ArtMode);
 	EndWindow;
 end;
 

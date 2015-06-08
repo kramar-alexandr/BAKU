@@ -1607,8 +1607,8 @@ global
 procedure DirectorWeekRn(record RcVc RepSpec)
 begin
 	record MainVc mainr;
-	record TRVc TRr, tempTRr;
-	row TRVc TRrw, tempTRrw, tempTRrw2, tempTRrw3;
+	record TRVc TRr,tempTRr,tempTRr2;
+	row TRVc TRrw,tempTRrw,tempTRrw2,tempTRrw3;
 	record ObjVc Objr;
 	record IVVc IVr;
 	record IPVc IPr;
@@ -1616,9 +1616,9 @@ begin
 	row CLInVc CLInrw;
 	record CLOutVc CLOutr;
 	row CLOutVc CLOutrw;
-	Integer i,j,rwcnt,rwcnt2, k;
-	boolean TrHs;
-	Date dateTemp;
+	Integer i,j,k,l,rwcnt,rwcnt2;
+	boolean TrHs,firstprint;
+	Date tempDate;
 	val BeginBalance50n51, BeginBalance50AZN,
 		BeginBalance50, BeginBalance51,
 		BeginBalance50USD, BeginBalance50EUR,
@@ -1631,13 +1631,13 @@ begin
 		SaldoEndPeriodAZNTerm,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN;
-	Integer tab1, tab2, tab3,
+	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
 			tab10,tab11,tab12,
 			tab13;
 	string 5 tempStr;
-
+	
 	tab1 = 0;	 tab2 = 27;	  tab3 = 79;
 	tab4 = 106;  tab5 = 133;  tab6 = 160;
 	tab7 = 210;	 tab8 = 260;  tab9 = 285;
@@ -1812,8 +1812,13 @@ begin
 							tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики Расходы AZN/EUR/USD
 							tempTRrw.DebVal = TRrw.DebVal;			//в столбик Поступления В осн. валюте
 							tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
-							MatRowPut(tempTRr,j,tempTRrw);
-							j = j + 1;
+							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
+								MatRowPut(tempTRr2,l,tempTRrw);
+								l = l + 1;
+							end else begin
+								MatRowPut(tempTRr,j,tempTRrw);
+								j = j + 1;
+							end;
 						end;
 						if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E131",TRrw.Objects)) then begin
 							BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
@@ -1889,25 +1894,67 @@ begin
 							tempTRrw.CurCredVal = TRrw.CredVal;		//в столбики Расходы AZN терминал
 							tempTRrw.DebVal = TRrw.DebVal;
 							tempTRrw.CredVal = TRrw.CredVal;
-							MatRowPut(tempTRr,j,tempTRrw);
-							j = j + 1;
+							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
+								MatRowPut(tempTRr2,l,tempTRrw);
+								l = l + 1;
+							end else begin
+								MatRowPut(tempTRr,j,tempTRrw);
+								j = j + 1;
+							end;
 						end;
 					end;
 				end;
 			end;
 		end;
+		if (RepSpec.ArtMode == 1) then begin
+			rwcnt2 = MatRowCnt(tempTRr2);
+			for (j=0;j<rwcnt2-1;j=j+1) begin
+				for (i=0;i<rwcnt2-1;i=i+1) begin
+					MatRowGet(tempTRr2,i,tempTRrw);
+					MatRowGet(tempTRr2,i+1,tempTRrw2);
+					if (tempTRrw.ReconDate > tempTRrw2.ReconDate) then begin
+						MatRowPut(tempTRr2,i,tempTRrw2);
+						MatRowPut(tempTRr2,i+1,tempTRrw);
+					end;
+				end;
+			end;
+			for (j=0;j<rwcnt2-1;j=j+1) begin
+				MatRowGet(tempTRr2,j,tempTRrw);
+				for (i=j + 1;i<rwcnt2;i=i+1) begin
+					MatRowGet(tempTRr2,i,tempTRrw2);
+					if (tempTRrw.ReconDate == tempTRrw2.ReconDate) then begin
+						tempTRrw.DebVal = tempTRrw.DebVal + tempTRrw2.DebVal;
+						MatRowPut(tempTRr2,j,tempTRrw);
+						MatRowDelete(tempTRr2,i);
+						i = i - 1;
+						rwcnt2 = rwcnt2 - 1;
+					end;
+				end;
+			end;
+			rwcnt = MatRowCnt(tempTRr);
+			for (i=0;i<rwcnt2;i=i+1) begin
+				MatRowGet(tempTRr2,i,tempTRrw);
+				tempTRrw3.DebVal = tempTRrw.DebVal;
+				tempTRrw3.Comment = USetStr(35027);
+				tempTRrw3.ReconDate = tempTRrw.ReconDate;
+				tempTRrw3.Curncy = "AZN";
+				MatRowPut(tempTRr,rwcnt + i,tempTRrw3);
+			end;
+		end;
+		
+		
 		rwcnt = MatRowCnt(tempTRr);
 		for (j=0;j<rwcnt-1;j=j+1) begin
 			for (i=0;i<rwcnt-1;i=i+1) begin
 				MatRowGet(tempTRr,i,tempTRrw);
 				MatRowGet(tempTRr,i+1,tempTRrw2);
 				if (tempTRrw.ReconDate > tempTRrw2.ReconDate) then begin
-					//tempTRrw3 = tempTRrw;
 					MatRowPut(tempTRr,i,tempTRrw2);
 					MatRowPut(tempTRr,i+1,tempTRrw);
 				end;
 			end;
 		end;
+		
 		AZNTermDeb = 0;
 		AZNTermCred = 0;
 		AZNDeb = 0;
@@ -1918,16 +1965,20 @@ begin
 		USDCred = 0;
 		BaseDeb = 0;
 		BaseCred = 0;
+		rwcnt = MatRowCnt(tempTRr);
 		for (i=0;i<rwcnt;i=i+1) begin
-			MatRowGet(tempTRr,i,tempTRrw)
-			StartFormat(15);
-			if (tempTRrw.ReconDate <> dateTemp) then begin 
+			MatRowGet(tempTRr,i,tempTRrw);
+			if (tempTRrw.ReconDate <> tempDate) then begin
 				Black_Divider(0,1);
-				OutString(tab1,0,tempTRrw.ReconDate,false);
-				dateTemp = tempTRrw.ReconDate;
-			end else begin
-				OutString(tab1,0,"",false);
+				StartFormat(15);
+					OutString(tab1,0,tempTRrw.ReconDate,false);
+				tempDate = tempTRrw.ReconDate;
+				firstprint = true;
+			end;
+			if (firstprint) then begin firstprint = false; end else begin
 				Gray_Divider(0,1);
+				StartFormat(15);
+					OutString(tab1,0,"",false);
 			end;
 			switch (tempTRrw.Curncy) begin
 				case "AZN":
@@ -1983,18 +2034,18 @@ begin
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 			end;
-				switch (FirstTransTypeInRange(tempTRrw.Comment)) begin
-					case IVYc:
-						OutStringID(tab12,"DblIVVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
-					case IPYc:
-						OutStringID(tab12,"DblIPVcID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
-					case CLInYc:
-						OutStringID(tab12,"DblCLInID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
-					case CLOutYc:
-						OutStringID(tab12,"DblCLOutID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
-					otherwise
-						OutStringID(tab12,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
-				end;
+			switch (FirstTransTypeInRange(tempTRrw.Comment)) begin
+				case IVYc:
+					OutStringID(tab12,"DblIVVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+				case IPYc:
+					OutStringID(tab12,"DblIPVcID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+				case CLInYc:
+					OutStringID(tab12,"DblCLInID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+				case CLOutYc:
+					OutStringID(tab12,"DblCLOutID",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+				otherwise
+					OutStringID(tab12,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
+			end;
 				OutString(tab13,0,tempTRrw.ExtraComment,false);
 			BaseDeb = BaseDeb + tempTRrw.DebVal;
 			BaseCred = BaseCred + tempTRrw.CredVal;
@@ -2097,7 +2148,7 @@ begin
 		StartFormat(15);
 		EndFormat;
 	// к сдаче
-		SaldoEndPeriod = BeginBalance50 + (BaseDeb - AZNTermDeb) + BalItem1 - (BaseCred - AZNTermCred) - BalItem2;
+		SaldoEndPeriod = BeginBalance50n51 + BaseDeb - BaseCred;
 		SaldoEndPeriodUSD = BeginBalance50USD + USDDeb - USDCred;
 		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred;
 		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred;
