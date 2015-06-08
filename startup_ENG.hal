@@ -328,7 +328,9 @@ begin
   SString(35008,"Extended report of stock balances");
 	SString(35009,"Retail. Brand currency");
 	SString(35010,"Shelf");
-	SString(35011,"Retail ");  								
+	SString(35011,"Retail ");
+	
+	SString(35035,"Without classification");  								
 
 	
   /*StrSetBegin(3);

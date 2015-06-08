@@ -37,6 +37,41 @@ return;
 end;
 
 
+function string 50 GetItemClassification(string code, var vector string classifications)		//Edit----------------------Dima  08.06.2015
+Begin
+	record INVc INr;
+	record DIVc DIr;
+	integer pos;
+	string 50 temp,result;
+	string 50 nullClassification;
+	
+	nullClassification = "EmptyClassification";
+	INr.Code = code;
+	
+	if (nonblank(classifications[code])) then begin
+		result = classifications[code];
+	end else begin
+		result = nullClassification;
+		classifications[INr.Code] = nullClassification;
+									
+		if(ReadFirstMain(INr,1,true)) then begin
+					pos = 0;
+			  	ExtractObj(INr.DispGroups,pos,temp);	
+  				DIr.Code = temp;
+  				if(ReadFirstMain(DIr,1,true)) then begin
+						classifications[INr.Code] = DIr.Code;
+						result = DIr.Code;
+						//listOfClassifications[length] = result;
+						//length = length + 1;
+					end;			
+		end;	
+	end;
+	
+GetItemClassification = result;
+return;
+end;
+
+
 function val GetPaymentSum(record IVVc IVr)
 begin
 	val sum,coef,tempVal;
@@ -105,12 +140,16 @@ begin
 	record ORVc ORr;
 	row ORVc ORrw;
 	boolean TrHs,testf;
-	integer i,j,rwcnt,rwcnt2,lenght;
+	integer i,j,rwcnt,rwcnt2,length;
 	string 50 classification,temp,currency;
-	array string 50 brands;
-	vector string 50 items;// items[INr.Code] = itemses' brand
+	//array string 50 brands;
+	vector string 50 items;// items[INr.Code] = itemses' classification
 	val paymentCoef,prepaymentCoef,curncyCoef;
 	val paymentSum,prepaymentSum,totalIn,totalOut;
+	string 50 nullClassification;
+	array string 50 listOfClassifications;
+	
+
 	
 		BlockLoad(BCBb);
     currency = BCBb.BaseCur1;
@@ -123,24 +162,20 @@ begin
         EndFormat;
         goto LBreak_CashInOutByClassificationRn;
      end;
-    	
-		DIr.CType="BRAND";
-		TrHs=true;
+
+		nullClassification = "EmptyClassification";	
 		i=0;
-		while(LoopKey("CType",DIr,1,TrHs)) begin
-			if (DIr.CType!="BRAND") begin TrHs = false; end;
-			if (TrHs) then begin
-					brands[i] = DIr.Code;
+		while(LoopMain(DIr,1,true)) begin
+					listOfClassifications[i] = DIr.Code;
 					i=i+1;
-			end;
-		end;	
-		lenght = i;
-	
+					LogText(0,DIr.Code);
+		end;
+		length = i;	
+			
+		
 	
     sDate = RepSpec.sStartDate;
     eDate = RepSpec.sEndDate; 
-
-
     
 		TrHs=true;
     IVr.TransDate=sDate;
@@ -185,7 +220,7 @@ begin
 						for(i=0;i<rwcnt;i=i+1) begin	
 								MatRowGet(IVr,i,IVrw);
 								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-												classification = GetItemsBrand(IVrw.ArtCode,items);
+												classification = GetItemClassification(IVrw.ArtCode,items);
 												if (IVrw.Quant>0) then begin
 													cashIn[classification] = cashIn[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
 												end else begin 
@@ -228,7 +263,7 @@ begin
 											//LogText(0,ORr.SerNr & " OR  :   " & prepaymentCoef & "    cur:  " & curncyCoef  & "    Inv " & ORr.InvFlag);
 											for(j=0;j<rwcnt2;j=j+1) begin
 													MatRowGet(ORr,j,ORrw);
-													classification = GetItemsBrand(ORrw.ArtCode,items);
+													classification = GetItemClassification(ORrw.ArtCode,items);
 													cashIn[classification] = cashIn[classification] +ORrw.Sum*prepaymentCoef*curncyCoef;
 											end;
 										end;
@@ -250,8 +285,7 @@ begin
 															MatRowGet(IVr,j,IVrw);
 															if (IVrw.stp==kInvoiceRowTypeNormal) then begin
 															
-																			classification = GetItemsBrand(IVrw.ArtCode,items);
-									    						
+																			classification = GetItemClassification(IVrw.ArtCode,items);
 																			if (IVrw.Quant>0) then begin
 																				cashIn[classification] = cashIn[classification] +IVrw.Sum*paymentCoef*curncyCoef;
 																			end else begin 
@@ -294,21 +328,33 @@ begin
 							
 		totalIn = 0;
 		totalOut = 0;
+		SortStringArray(listOfClassifications);
 		
 		OutString(20,0,"",false);
 		OutString(200,0,USetStr(35022),false); //cash in
 		OutString(300,0,USetStr(35017),false);// cash out
 		endformat;		
 
-		for(i=0;i<lenght;i=i+1) begin
-			StartFormat(15);
-			 	OutString(20,0,brands[i],false);
-				OutString(200,0,cashIn[brands[i]],false);
-				OutString(300,0,cashOut[brands[i]],false);
-			EndFormat;
-			totalIn = totalIn + cashIn[brands[i]];
-			totalOut = totalOut + cashOut[brands[i]];	
+		for(i=0;i<length;i=i+1) begin
+			if (cashIn[listOfClassifications[i]]>0 or cashOut[listOfClassifications[i]]<0) then begin
+				StartFormat(15);
+				 	DIr.Code = listOfClassifications[i];
+				 	ReadFirstMain(DIr,1,true);
+				 	OutString(20,0,DIr.Name,false);
+					OutString(200,0,cashIn[listOfClassifications[i]],false);
+					OutString(300,0,cashOut[listOfClassifications[i]],false);
+				EndFormat;
+			end;
+			totalIn = totalIn + cashIn[listOfClassifications[i]];
+			totalOut = totalOut + cashOut[listOfClassifications[i]];	
 		end;
+		
+		if (cashIn[nullClassification]>0 or cashOut[nullClassification]<0) then begin
+				 	OutString(20,0,USetStr(35035),false);
+					OutString(200,0,cashIn[nullClassification],false);
+					OutString(300,0,cashOut[nullClassification],false);
+		end;
+			
 		EndFormat;
 		Black_Divider(0,1);			
 		OutString(20,0,USetStr(31211),false);
