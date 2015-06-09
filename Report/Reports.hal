@@ -1918,11 +1918,29 @@ begin
 					end;
 				end;
 			end;
+			for (i=0;i<rwcnt2;i=i+1) begin
+				MatRowGet(tempTRr2,i,tempTRrw);
+				switch (tempTRrw.Curncy) begin
+					case "AZN":
+						tempTRrw.CredVal2 = tempTRrw.CurDebVal;
+					case "EUR":
+						tempTRrw.DebVal2 = tempTRrw.CurDebVal;
+					case "USD":
+						tempTRrw.Qty = tempTRrw.CurDebVal;
+					case "TER":
+						tempTRrw.NomVal = tempTRrw.CurDebVal;
+				end;
+				MatRowPut(tempTRr2,i,tempTRrw);
+			end;
 			for (j=0;j<rwcnt2-1;j=j+1) begin
 				MatRowGet(tempTRr2,j,tempTRrw);
 				for (i=j + 1;i<rwcnt2;i=i+1) begin
 					MatRowGet(tempTRr2,i,tempTRrw2);
 					if (tempTRrw.ReconDate == tempTRrw2.ReconDate) then begin
+						tempTRrw.CredVal2 = tempTRrw.CredVal2 + tempTRrw2.CredVal2;
+						tempTRrw.DebVal2 = tempTRrw.DebVal2 + tempTRrw2.DebVal2;
+						tempTRrw.Qty = tempTRrw.Qty + tempTRrw2.Qty;
+						tempTRrw.NomVal = tempTRrw.NomVal + tempTRrw2.NomVal;
 						tempTRrw.DebVal = tempTRrw.DebVal + tempTRrw2.DebVal;
 						MatRowPut(tempTRr2,j,tempTRrw);
 						MatRowDelete(tempTRr2,i);
@@ -1935,9 +1953,13 @@ begin
 			for (i=0;i<rwcnt2;i=i+1) begin
 				MatRowGet(tempTRr2,i,tempTRrw);
 				tempTRrw3.DebVal = tempTRrw.DebVal;
+				tempTRrw3.DebVal2 = tempTRrw.DebVal2;
+				tempTRrw3.Qty = tempTRrw.Qty;
+				tempTRrw3.CredVal2 = tempTRrw.CredVal2;
+				tempTRrw3.NomVal = tempTRrw.NomVal;
 				tempTRrw3.Comment = USetStr(35027);
 				tempTRrw3.ReconDate = tempTRrw.ReconDate;
-				tempTRrw3.Curncy = "AZN";
+				tempTRrw3.Curncy = "IVV";
 				MatRowPut(tempTRr,rwcnt + i,tempTRrw3);
 			end;
 		end;
@@ -1984,9 +2006,9 @@ begin
 				case "AZN":
 					OutString(tab2,0,"",false);
 					OutString(tab3,0,tempTRrw.CurDebVal,false);
+					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,"",false);
-					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
 					OutString(tab7,0,"",false);
 					OutString(tab8,0,tempTRrw.CurCredVal,false);
@@ -2033,6 +2055,21 @@ begin
 					OutString(tab9,0,"",false);
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
+				case "IVV":
+					OutString(tab2,0,tempTRrw.NomVal,false);
+					AZNTermDeb = AZNTermDeb + tempTRrw.NomVal;
+					OutString(tab3,0,tempTRrw.CredVal2,false);
+					AZNDeb = AZNDeb + tempTRrw.CredVal2;
+					OutString(tab4,0,tempTRrw.DebVal2,false);
+					EURDeb = EURDeb + tempTRrw.DebVal2;
+					OutString(tab5,0,tempTRrw.Qty,false);
+					USDDeb = USDDeb + tempTRrw.Qty;
+					OutString(tab6,0,tempTRrw.DebVal,false);
+					OutString(tab7,0,"",false);
+					OutString(tab8,0,"",false);
+					OutString(tab9,0,"",false);
+					OutString(tab10,0,"",false);
+					OutString(tab11,0,"",false);
 			end;
 			switch (FirstTransTypeInRange(tempTRrw.Comment)) begin
 				case IVYc:
