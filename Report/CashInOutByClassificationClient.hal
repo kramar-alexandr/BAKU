@@ -353,6 +353,8 @@ begin
 				 	OutString(20,0,USetStr(35035),false);
 					OutString(200,0,cashIn[nullClassification],false);
 					OutString(300,0,cashOut[nullClassification],false);
+					totalIn = totalIn + cashIn[nullClassification];
+					totalOut = totalOut + cashOut[nullClassification];					
 		end;
 			
 		EndFormat;
