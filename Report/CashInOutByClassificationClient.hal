@@ -168,7 +168,6 @@ begin
 		while(LoopMain(DIr,1,true)) begin
 					listOfClassifications[i] = DIr.Code;
 					i=i+1;
-					LogText(0,DIr.Code);
 		end;
 		length = i;	
 			
@@ -222,9 +221,9 @@ begin
 								if (IVrw.stp==kInvoiceRowTypeNormal) then begin
 												classification = GetItemClassification(IVrw.ArtCode,items);
 												if (IVrw.Quant>0) then begin
-													cashIn[classification] = cashIn[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
+													cashIn[classification] = cashIn[classification] + (IVrw.Sum*paymentCoef)*curncyCoef;
 												end else begin 
-													cashOut[classification] = cashOut[classification] + (IVrw.Sum*paymentCoef + IVrw.Sum*prepaymentCoef)*curncyCoef;
+													cashOut[classification] = cashOut[classification] + (IVrw.Sum*paymentCoef)*curncyCoef;
 												end;
 																				
 								end;						
@@ -249,7 +248,7 @@ begin
 						MatRowGet(IPr,i,IPrw);
 						if (nonblank(IPrw.CUPNr)) then begin	//Collect prepayments
 								ORr.SerNr = IPrw.OrderNr;							
-								if (ReadFirstMain(ORr,1,true) and (ORr.InvFlag==0)) then begin
+								if (ReadFirstMain(ORr,1,true)) then begin
 									if (blank(RepSpec.f1) or (RepSpec.f1 == ORr.Location)) then begin 
 								
 										if (IPrw.RecCurncy==ORr.CurncyCode) then begin
@@ -269,17 +268,18 @@ begin
 										end;
 									end;	
 								end;	
-						end		else begin	//Collect payments
+						end;
+						if (nonblank(IPrw.CUPNr)) then begin	//Collect payments
 								IVr.SerNr = IPrw.InvoiceNr;
-								if (blank(RepSpec.f1) or (RepSpec.f1 == IVr.Location)) then begin 
-									if (ReadFirstMain(IVr,1,true)) then begin
+								if (ReadFirstMain(IVr,1,true)) then begin
+									if (blank(RepSpec.f1) or (RepSpec.f1 == IVr.Location)) then begin 								
 										if (IPrw.RecCurncy==IVr.CurncyCode and IVr.OKFlag>0 and IVr.Invalid==0) then begin
 													curncyCoef = 1;
 													if (currency != IVr.CurncyCode) then begin
 														CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
 													end;										
 													paymentCoef = IPrw.RecVal/IVr.Sum4;
-									//LogText(0,IVr.SerNr & "    " & paymentCoef  & "    cur:  " & curncyCoef );
+									//LogText(0,IVr.SerNr & "  pay  " & paymentCoef  & "    cur:  " & curncyCoef );
 													rwcnt2 = MatRowCnt(IVr);									
 													for(j=0;j<rwcnt2;j=j+1) begin	
 															MatRowGet(IVr,j,IVrw);
