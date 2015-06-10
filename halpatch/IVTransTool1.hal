@@ -218,7 +218,7 @@ BEGIN
             goto LAddIVPrePayRow;
           end;
           if (CheckTTRPerRow("IVVc",ARAccRec.VATBAcc,"",dc1,taccnumber,0)) then begin end;
-          AddEuroCurncyTrRow(gTRp,ARAccRec.VATBAcc,"",AddVATCodeToVATAccRows(ARPayr.VATCode),tstr,btvat,false,dc1,TotSum,//vataccadd?
+          AddEuroCurncyTrRow(gTRp,ARAccRec.VATBAcc,objstr,AddVATCodeToVATAccRows(ARPayr.VATCode),tstr,btvat,false,dc1,TotSum,//vataccadd?
                              IVp.CurncyCode,ivfrrate,ivtorate1,ivtorate2,ivbaserate1,ivbaserate2,tvat,nilv,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,taccnumber);
         end;
       end;
@@ -246,14 +246,14 @@ BEGIN
         errstrno = 1918;
         goto LAddIVPrePayRow;
       end;
-      AddEuroTrRow(gTRp,ARAccRec.RateGainAcc,"","",tstr,diff,ivbaserate1,ivbaserate2,false,dc2,TotSum,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"","","");
+      AddEuroTrRow(gTRp,ARAccRec.RateGainAcc,objstr,"",tstr,diff,ivbaserate1,ivbaserate2,false,dc2,TotSum,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"","","");
     end;
     if (gain==1) then begin
       if (GetAccName(ARAccRec.RateLossAcc,tstr,60)==false) then begin
         errstrno = 1917;
         goto LAddIVPrePayRow;
       end;
-      AddEuroTrRow(gTRp,ARAccRec.RateLossAcc,"","",tstr,diff,ivbaserate1,ivbaserate2,false,dc2,TotSum,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"","","");
+      AddEuroTrRow(gTRp,ARAccRec.RateLossAcc,objstr,"",tstr,diff,ivbaserate1,ivbaserate2,false,dc2,TotSum,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"","","");
     end;
     if (ARPayr.VATVal!=0) then begin
       vatobjstr = ""; 
@@ -328,7 +328,7 @@ BEGIN
         goto LAddIVPrePayRow;
       end;
       if (CheckTTRPerRow("IVVc",ARAccRec.Tax1TmpAcc,"",dc1,taccnumber,0)) then begin end;
-      AddEuroTrRow(gTRp,ARAccRec.Tax1TmpAcc,"","",tstr,IVrw.TAX1Reb,ivbaserate1,ivbaserate2,false,dc1,TotSum,false,taccnumber,"","");         
+      AddEuroTrRow(gTRp,ARAccRec.Tax1TmpAcc,objstr,"",tstr,IVrw.TAX1Reb,ivbaserate1,ivbaserate2,false,dc1,TotSum,false,taccnumber,"","");         
 
       if (GetAccName(tax1acc,tstr,60)==false) then begin 
         errstrno = 20078;
