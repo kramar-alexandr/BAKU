@@ -591,7 +591,7 @@ begin
                 if(IPrw.OrderNr>0 or (IPrw.InvoiceNr<0 and nonblank(IPrw.Objects)))then begin
                   ORr.SerNr = IPrw.OrderNr;
                   readfirstmain(ORr,1,true);
-                  if(ORr.Location==location or IPrw.Objects==location)then begin
+                  if(ORr.Location==location or IPrw.Objects==Locr.Objects)then begin
                     if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
                       currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
                       switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
