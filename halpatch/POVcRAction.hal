@@ -839,6 +839,7 @@ begin
 			newINr.Metal = POrw.Metal;
 			newINr.Colour = POrw.Colour;
 			newINr.MajStoneDet = POrw.MajStoneDet;
+			newINr.BrcStr = POrw.BrcStr;		//Edit by Victor 18.06.15
 			
 			newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 			recordStore(newINr,true);
@@ -1112,6 +1113,12 @@ begin
 					changef = true;
 					INr.Reference = POrw.Reference;
 				end;
+				
+				if(nonblank(POrw.BrcStr) and INr.BrcStr!=POrw.BrcStr)then begin
+					changef = true;
+					INr.BrcStr = POrw.BrcStr;
+				end;
+				
 				if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
 					changef = true;
 					INr.ConsgType = POrw.ConsgType;
