@@ -535,14 +535,20 @@ LCuArtSTRn:;
 						keyIN = "Code";
 						INr.Code = RepSpec.f2;
 					end else begin
-						keyIN = "MyDispGroups";
-						INr.DispGroups = RepSpec.f5;
+						if(nonblank(RepSpec.f3))then begin// Edit ************************** Wednesday, 17 June 2015 15:58:04
+							keyIN = "Group";
+							INr.Group = RepSpec.f3;
+						end else begin		
+							keyIN = "Code";
+							INr.Code = "";
+						end;
 					end;
 					TS = true;
 					while (LoopKey(keyIN,INr,1,TS)) begin
 						testf1 = true;
-						if (nonblank(RepSpec.f5) and INr.DispGroups!=RepSpec.f5) then begin TS = false; testf1 = false; end;
+						if (nonblank(RepSpec.f5) and !setinset(RepSpec.f5,INr.DispGroups)) then begin testf1 = false; end;
 						if (nonblank(RepSpec.f2) and INr.Code!=RepSpec.f2) then begin TS = false; testf1 = false; end;
+						if (nonblank(RepSpec.f3) and INr.Group!=RepSpec.f3) then begin TS = false; testf1 = false; end;
 
 						if (testf1) then begin
 							IHr.ArtCode = INr.Code;
