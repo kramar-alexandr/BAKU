@@ -1786,9 +1786,9 @@ begin
 	  		if(outcost!=SMrw.FIFORowVal)then begin
 	  			changed = true;
 	  			SMrw.FIFORowVal = outcost;
-	  			/*SMrw.SentOldPrice = SMrw.SentFIFORowVal/SMrw.Quant;      
+	  			SMrw.SentOldPrice = SMrw.SentFIFORowVal/SMrw.Quant;      
 					SMrw.SentOldPrice = Round(SMrw.SentOldPrice,SetRoundModeD(5));
-					SMrw.SentNewPrice = SMrw.SentOldPrice;*/
+					SMrw.SentNewPrice = SMrw.SentOldPrice;
 					SMrw.OldPrice = SMrw.FIFORowVal/SMrw.Quant;      
 					SMrw.OldPrice = Round(SMrw.OldPrice,SetRoundModeD(5));
 					SMrw.NewPrice = SMrw.OldPrice;
