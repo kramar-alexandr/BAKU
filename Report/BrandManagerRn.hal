@@ -1,0 +1,307 @@
+external procedure YcToStr(Integer,var string);
+external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
+external procedure BrandManagerRnTool(record RcVc,var val,var val,var val,var val);
+external procedure GetObjs(string,string,var string);
+
+procedure BMRnPrintHeader(string AccNumber,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer tab9,integer tab10)
+BEGIN
+	string 20 head;
+	
+	switch (AccNumber) begin
+		case "60":
+			head = USetStr(35037);
+		case "64":
+			head = USetStr(35038);
+		case "61":
+			head = USetStr(35046);
+	end;
+	StartFormat(15);
+		OutString(tab1,0,"",false);
+		OutString(tab2,0,head,false);
+		OutString(tab3,0,"",false);
+		OutString(tab4,0,"",false);
+		OutString(tab5,0,"",false);
+		OutString(tab6,0,"",false);
+		OutString(tab7,0,"",false);
+		OutString(tab8,0,"",false);
+		OutString(tab9,0,"",false);
+		OutString(tab10,0,"",false);
+	EndFormat;
+	StartFormat(15);
+	EndFormat;
+	StartFormat(15);
+		OutString	(tab1,0,"",false);
+		OutString	(tab2,0,"",false);
+		OutStringCut(tab3,tab4 + 20,0,USetStr(35042),true,0);
+		OutString	(tab5,0,"",false);
+		OutStringCut(tab5,tab6,0,USetStr(35043),true,0);
+		OutString	(tab7,0,"",false);
+		OutStringCut(tab7,tab8 + 20,0,USetStr(35044),true,0);
+		OutString	(tab9,0,"",false);
+		OutStringCut(tab9,tab10 + 20,0,USetStr(35045),true,0);
+	EndFormat;
+	Black_Divider(tab3 + 1, tab5 - 1);
+	Black_Divider(tab5 + 1, tab7 - 1);
+	Black_Divider(tab7 + 1, tab9 - 1);
+	Black_Divider(tab9 + 1,1);
+	StartFormat(15);
+		OutString(tab1,0,USetStr(35039),false);
+		OutString(tab2,0,USetStr(35020),false);
+		OutString(tab3,0,USetStr(35040),false);
+		OutString(tab4,0,USetStr(35041),false);
+		OutString(tab5,0,USetStr(35040),false);
+		OutString(tab6,0,USetStr(35041),false);
+		OutString(tab7,0,USetStr(35040),false);
+		OutString(tab8,0,USetStr(35041),false);
+		OutString(tab9,0,USetStr(35040),false);
+		OutString(tab10,0,USetStr(35041),false);
+	EndFormat;
+	Black_Divider(0,1);
+	RETURN
+END;
+
+global
+procedure BrandManagerRn(record RcVc RepSpec)
+BEGIN
+	record MainVc mainr;
+	record TRVc TRr,tempTRr;
+	row TRVc TRrw,tempTRrw;
+	record ObjVc Objr;
+	record CurncyCodeVc CCr;
+	integer i,j,k,l,rwcnt,acccount,brandcount,curcount;
+	boolean TrHs;
+	integer tab1, tab2, tab3,
+			tab4, tab5, tab6,
+			tab7, tab8, tab9,
+			tab10;
+	Array string 100 BrandList;
+	Array string 10 AccList;
+	Array string 10 CurencyList;
+	vector boolean BrandNonBlank;
+	vector val BrandBeginBal,BrandDebet,BrandCredit,BrandEndBal;
+	val TotBeginBal,TotDebet,TotCredit,TotEndBal;
+	string 30 brand, tempstr;
+	
+	tab1 = 0;	 tab2 = 50;	  tab3 = 80;
+	tab4 = 130;  tab5 = 180;  tab6 = 230;
+	tab7 = 280;	 tab8 = 330;  tab9 = 380;
+	tab10 = 430;
+	
+	AccList[0] = "60";
+	AccList[1] = "64";
+	AccList[2] = "61";
+	acccount = 3;
+	TrHs = true;
+	curcount = 0;
+	while (LoopMain(CCr,1,TrHs)) begin
+		if (TrHs) then begin
+			CurencyList[curcount] = CCr.CurncyCode;
+			curcount = curcount + 1;
+		end;
+	end;
+	
+	StartReportNoHeaderJob(USetStr(35036));
+	if blank(RepSpec.f1) then begin
+		Objr.OTCode = "BRAND";
+		TrHs = true;
+		brandcount = 0;
+		while (LoopKey("OTCode",Objr,1,TrHs)) begin
+			if (TrHs) then begin
+				BrandList[brandcount] = Objr.Code;
+				brandcount = brandcount + 1;
+			end;
+		end;
+		BrandList[brandcount] = "BLANKBRAND";
+		brandcount = brandcount + 1;
+
+		for (i=0;i<acccount;i=i+1) begin
+			BMRnPrintHeader(AccList[i],tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
+			
+			for (j=0;j<brandcount;j=j+1) begin
+				BrandNonBlank[BrandList[j]] = false;
+			end;
+			for (j=0;j<brandcount;j=j+1) begin
+				for (k=0;k<curcount;k=k+1) begin
+					BrandBeginBal[BrandList[j] & ":" & CurencyList[k]] = blankval;
+					BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+					BrandDebet[BrandList[j] & ":" & CurencyList[k]] = blankval;
+					BrandDebet[BrandList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+					BrandCredit[BrandList[j] & ":" & CurencyList[k]] = blankval;
+					BrandCredit[BrandList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+					BrandEndBal[BrandList[j] & ":" & CurencyList[k]] = blankval;
+					BrandEndBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+				end;
+			end;
+			mainr.AccNumber = AccList[i];
+			TrHs = true;
+			while (LoopMain(mainr,1,TrHs)) begin
+				if ((mainr.AccNumber != AccList[i]) or (mainr.TransDate > RepSpec.sEndDate))  then begin
+					TrHs = false;	
+				end;
+				if ((TrHs) and (mainr.FileName=="TRVc")) then begin
+					TRr.Number = mainr.TransNr;
+					TRr.IntYc = mainr.IntYc;
+					if (ReadFirstMain(TRr,2,true)) then begin
+						if (mainr.TransDate == TRr.TransDate) then begin
+							rwcnt = MatRowCnt(TRr);
+							for (j=0;j<rwcnt;j=j+1) begin
+								MatRowGet(TRr,j,TRrw);
+								if ((TRrw.AccNumber == AccList[i]) and (TRrw.ovst <> 1) and (TRrw.stp == 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+									brand = "";
+									GetObjs("BRAND",TRrw.Objects,brand);
+									if blank(brand) then begin
+										brand = "BLANKBRAND";
+									end;
+									BrandNonBlank[brand] = true;
+									if (mainr.TransDate >= RepSpec.sStartDate) then begin
+										BrandDebet[brand & ":" & TRrw.Curncy] = BrandDebet[brand & ":" & TRrw.Curncy] + TRrw.CurDebVal;
+										BrandDebet[brand & ":" & TRrw.Curncy & ":BASE"] = BrandDebet[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.DebVal;
+										BrandCredit[brand & ":" & TRrw.Curncy] = BrandCredit[brand & ":" & TRrw.Curncy] + TRrw.CurCredVal;
+										BrandCredit[brand & ":" & TRrw.Curncy & ":BASE"] = BrandCredit[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal;
+									end else begin
+										if (AccList[i] <> "61") then begin
+											BrandBeginBal[brand & ":" & TRrw.Curncy] = BrandBeginBal[brand & ":" & TRrw.Curncy] + TRrw.CurCredVal - TRrw.CurDebVal;
+											BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal - TRrw.DebVal;
+										end else begin
+											BrandBeginBal[brand & ":" & TRrw.Curncy] = BrandBeginBal[brand & ":" & TRrw.Curncy] - TRrw.CurCredVal + TRrw.CurDebVal;
+											BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] - TRrw.CredVal + TRrw.DebVal;
+										end;
+									end;
+									if (AccList[i] <> "61") then begin
+										BrandEndBal[brand & ":" & TRrw.Curncy] = BrandEndBal[brand & ":" & TRrw.Curncy] + TRrw.CurCredVal - TRrw.CurDebVal;
+										BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal - TRrw.DebVal;
+									end else begin
+										BrandEndBal[brand & ":" & TRrw.Curncy] = BrandEndBal[brand & ":" & TRrw.Curncy] - TRrw.CurCredVal + TRrw.CurDebVal;
+										BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] - TRrw.CredVal + TRrw.DebVal;
+									end;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+			ResetLoop(mainr);
+			
+			for (j=0;j<brandcount;j=j+1) begin
+				if (BrandNonBlank[BrandList[j]]) then begin
+					for (k=0;k<curcount;k=k+1) begin
+						if ((BrandEndBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandBeginBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandDebet[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandCredit[BrandList[j] & ":" & CurencyList[k]] <> 0)) then begin
+							StartFormat(15);
+								if (BrandList[j] == "BLANKBRAND") then begin
+									OutString(tab1,0,"",false);
+								end else begin
+									OutStringID(tab1,"DblBrand",BrandList[j],false,AccList[i] & ":" & CurencyList[k]);
+								end;
+								OutString(tab2,0,CurencyList[k],false);
+								OutString(tab3,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k]],false);
+								OutString(tab4,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+								OutString(tab5,0,BrandDebet[BrandList[j] & ":" & CurencyList[k]],false);
+								OutString(tab6,0,BrandDebet[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+								OutString(tab7,0,BrandCredit[BrandList[j] & ":" & CurencyList[k]],false);
+								OutString(tab8,0,BrandCredit[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+								OutString(tab9,0,BrandEndBal[BrandList[j] & ":" & CurencyList[k]],false);
+								OutString(tab10,0,BrandEndBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+							EndFormat;
+							Gray_Divider(0,1);
+						end;
+					end;
+				end;
+			end;
+			Black_Divider(0,1);
+			RepSpec.f4 = AccList[i];
+			RepSpec.CurncyCode = "";
+			BrandManagerRnTool(RepSpec,TotDebet,TotCredit,TotBeginBal,TotEndBal);
+			StartFormat(15);
+				OutString(tab1,0,USetStr(31222),false);
+				OutString(tab2,0,"",false);
+				OutString(tab3,0,"",false);
+				OutString(tab4,0,TotBeginBal,false);
+				OutString(tab5,0,"",false);
+				OutString(tab6,0,TotDebet,false);
+				OutString(tab7,0,"",false);
+				OutString(tab8,0,TotCredit,false);
+				OutString(tab9,0,"",false);
+				OutString(tab10,0,TotEndBal,false);
+			EndFormat;
+			StartFormat(15);
+			EndFormat;
+		end;
+	end else begin
+		for (i=0;i<acccount;i=i+1) begin
+			mainr.AccNumber = AccList[i];
+			TrHs = true;
+			l = 0;
+			RecordClear(tempTRr);
+			while (LoopMain(mainr,1,TrHs)) begin
+				if ((mainr.AccNumber != AccList[i]) or (mainr.TransDate > RepSpec.sEndDate))  then begin
+					TrHs = false;	
+				end;
+				if ((TrHs) and (mainr.FileName=="TRVc")) then begin
+					TRr.Number = mainr.TransNr;
+					TRr.IntYc = mainr.IntYc;
+					if (ReadFirstMain(TRr,2,true)) then begin
+						if (mainr.TransDate == TRr.TransDate) then begin
+							rwcnt = MatRowCnt(TRr);
+							for (j=0;j<rwcnt;j=j+1) begin
+								MatRowGet(TRr,j,TRrw);
+								if ((TRrw.AccNumber == AccList[i]) and (TRrw.ovst <> 1) and (TRrw.stp == 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+									brand = "";
+									GetObjs("BRAND",TRrw.Objects,brand);
+									if (brand == RepSpec.f1) then begin
+										if (mainr.TransDate >= RepSpec.sStartDate) then begin
+											ClearRow(tempTRr,tempTRrw,1);
+											YcToStr(TRr.IntYc,tempstr);
+											tempTRrw.Comment = tempstr & TRr.Number;
+											tempTRrw.Curncy = TRrw.Curncy;
+											tempTRrw.CurDebVal = TRrw.CurDebVal;
+											tempTRrw.CurCredVal = TRrw.CurCredVal;
+											tempTRrw.DebVal = TRrw.DebVal;
+											tempTRrw.CredVal = TRrw.CredVal;
+											MatRowPut(tempTRr,l,tempTRrw);
+											l = l + 1;
+										end else begin
+											if (AccList[i] <> "61") then begin
+												BrandBeginBal[brand & ":" & TRrw.Curncy] = BrandBeginBal[brand & ":" & TRrw.Curncy] + TRrw.CurCredVal - TRrw.CurDebVal;
+												BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal - TRrw.DebVal;
+											end else begin
+												BrandBeginBal[brand & ":" & TRrw.Curncy] = BrandBeginBal[brand & ":" & TRrw.Curncy] - TRrw.CurCredVal + TRrw.CurDebVal;
+												BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandBeginBal[brand & ":" & TRrw.Curncy & ":BASE"] - TRrw.CredVal + TRrw.DebVal;
+											end;
+										end;
+										if (AccList[i] <> "61") then begin
+											BrandEndBal[brand & ":" & TRrw.Curncy] = BrandEndBal[brand & ":" & TRrw.Curncy] + TRrw.CurCredVal - TRrw.CurDebVal;
+											BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal - TRrw.DebVal;
+										end else begin
+											BrandEndBal[brand & ":" & TRrw.Curncy] = BrandEndBal[brand & ":" & TRrw.Curncy] - TRrw.CurCredVal + TRrw.CurDebVal;
+											BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] = BrandEndBal[brand & ":" & TRrw.Curncy & ":BASE"] - TRrw.CredVal + TRrw.DebVal;
+										end;
+									end;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+			ResetLoop(mainr);
+			rwcnt = MatRowCnt(tempTRr);
+			for (j=0;j<rwcnt;j=j+1) begin
+				StartFormat(15);
+					OutString(tab1,0,tempTRrw.Comment,false);
+					OutString(tab2,0,tempTRrw.Curncy,false);
+					OutString(tab3,0,"",false);
+					OutString(tab4,0,"",false);
+					OutString(tab5,0,tempTRrw.CurDebVal,false);
+					OutString(tab6,0,tempTRrw.DebVal,false);
+					OutString(tab7,0,tempTRrw.CurCredVal,false);
+					OutString(tab8,0,tempTRrw.CredVal,false);
+					OutString(tab9,0,"",false);
+					OutString(tab10,0,,false);
+				EndFormat;
+				Gray_Divider(0,1);
+			end;
+		end;
+	end;
+	EndJob;
+
+	RETURN;
+END;

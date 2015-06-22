@@ -139,7 +139,8 @@ begin
   Report("Отчет по учредителям",FoundersRClass,FoundersRn,0,modIN);//Edit----------------------Dima  23.02.2015
   Report("Фактурирование поступлений",PUInvoicingRClass,PUInvoicingRn,0,modPL);//Edit----------------------Dima  24.02.2015
   Report("Еженедельный отчет директоров",DirectorWeekRClass,DirectorWeekRn,0,modNL);//Edit---------------Vitalii 14:49 19.05.2015
-	Report("Оборот денег по классификации(клиенты)",CashInOutClientsByClassificationRClass,CashInOutByClassificationRn,0,modSL);	//Edit----------------------Dima  04.06.2015
+  Report("Оборот денег по классификации(клиенты)",CashInOutClientsByClassificationRClass,CashInOutByClassificationRn,0,modSL);	//Edit----------------------Dima  04.06.2015
+  Report("Отчет бренд менеджера",BrandManagerRClass,BrandManagerRn,0,modNL);//Edit---------------Vitalii 18:30 11.06.2015
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -530,6 +531,21 @@ begin
 	SString(35031,"Дней на складе");
 	SString(35034,"Оборот денег по классификации");
 	SString(35035,"Без классификации");
+
+	//BrandManagerRn
+	SString(35036,"Отчет бренд менеджера");
+	SString(35037,"Мы должны (сч. 60)");
+	SString(35038,"Нам должны (сч. 64)");
+	SString(35046,"Консигнация (сч. 61)");
+	SString(35039,"Поставщик");
+	//SString(35020,"Валюта");
+	SString(35040,"В валюте");
+	SString(35041,"В осн. вал.");
+	SString(35042,"На начало периода");
+	SString(35043,"Платежи");
+	SString(35044,"Поступления");
+	SString(35045,"На конец периода");
+	//SString(31222,"Итого");
 
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
