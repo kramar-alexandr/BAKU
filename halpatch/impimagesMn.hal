@@ -1767,7 +1767,7 @@ begin
 		mtrw = matrowcnt(SMr);
 		For(i=0;i<mtrw;i=i+1) begin
 	  	matrowget(SMr,i,SMrw);
-	  	if(SMrw.Quant>1)then begin
+	  	if(SMrw.Quant>0)then begin
 	  		IHr.FileName = "StockMovVc";
 	  		IHr.TransNr = SMr.SerNr;
 	  		IHr.Row = i;
@@ -1776,14 +1776,15 @@ begin
 	  		while(loopkey("FNTransNr",IHr,3,TrHs))begin
 	  			if(IHr.FileName!="StockMovVc" or IHr.TransNr!=SMr.SerNr or IHr.Row!=i)then begin TrHs = false; end;
 	  			
-	  			if(TrHs)then begin
+	  			if(TrHs and SMr.FrLocation==IHr.Location)then begin
 	  				if(IHr.Qty<0)then begin
 	  					outcost = outcost + IHr.TotCostPrice;
 	  				end;
 	  			end;
 	  		end;
+	  		resetloop(IHr);
 	  		//messagebox(0,outcost & " " & SMrw.FIFORowVal);
-	  		if(outcost!=SMrw.FIFORowVal)then begin
+	  		//if(outcost!=SMrw.FIFORowVal)then begin
 	  			changed = true;
 	  			SMrw.FIFORowVal = outcost;
 	  			SMrw.SentOldPrice = SMrw.SentFIFORowVal/SMrw.Quant;      
@@ -1793,8 +1794,8 @@ begin
 					SMrw.OldPrice = Round(SMrw.OldPrice,SetRoundModeD(5));
 					SMrw.NewPrice = SMrw.OldPrice;
 					matrowput(SMr,i,SMrw);
-	  		end;
-	  		resetloop(IHr);
+	  		//end;
+	  		
 	  	end;
 		end;
 		if(changed)then begin
