@@ -293,13 +293,17 @@ BEGIN
 				end;
 			end;
 			ResetLoop(mainr);
+			TotBeginBal = 0;
+			TotDebet = 0;
+			TotCredit = 0;
+			TotEndBal = 0;
 			BMRnPrintAccHeader(AccList[i],true,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
 			for (k=0;k<curcount;k=k+1) begin
-				if (BrandBeginBal[brand & ":" & CurencyList[k]] <> 0) then begin
+				if (BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) then begin
 					StartFormat(15);
 						OutString(tab2,0,CurencyList[k],false);
-						OutString(tab3,0,BrandBeginBal[brand & ":" & CurencyList[k]],false);
-						OutString(tab4,0,BrandBeginBal[brand & ":" & CurencyList[k] & ":BASE"],false);
+						OutString(tab3,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]],false);
+						OutString(tab4,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"],false);
 						OutString(tab5,0,"",false);
 						OutString(tab6,0,"",false);
 						OutString(tab7,0,"",false);
@@ -314,22 +318,42 @@ BEGIN
 			for (j=0;j<rwcnt;j=j+1) begin
 				MatRowGet(tempTRr,j,tempTRrw);
 				StartFormat(15);
-					OutString(tab1,0,tempTRrw.Comment,false);
+				switch (FirstTransTypeInRange(tempTRrw.Comment)) begin
+					case IVYc:
+						OutStringID(tab1,"DblIVVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case VIYc:
+						OutStringID(tab1,"DblVIVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case RetPUYc:
+						OutStringID(tab1,"DblRetPUVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case OPYc:
+						OutStringID(tab1,"DblOPVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case PUYc:
+						OutStringID(tab1,"DblPUVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case SDYc:
+						OutStringID(tab1,"DblSDVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					//case StockMovYc:
+					//	OutStringID(tab1,"DblStockMovVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					otherwise
+						OutStringID(tab1,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
+				end;
 					OutString(tab2,0,tempTRrw.Curncy,false);
 					OutString(tab3,0,"",false);
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,tempTRrw.CurDebVal,false);
+					TotBeginBal = TotBeginBal + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					TotDebet = TotDebet + tempTRrw.DebVal;
 					OutString(tab7,0,tempTRrw.CurCredVal,false);
+					TotEndBal = TotEndBal + tempTRrw.CurCredVal;
 					OutString(tab8,0,tempTRrw.CredVal,false);
+					TotCredit = TotCredit + tempTRrw.CredVal;
 					OutString(tab9,0,"",false);
 					OutString(tab10,0,"",false);
 				EndFormat;
 				Gray_Divider(0,1);
 			end;
 			for (k=0;k<curcount;k=k+1) begin
-				if (BrandEndBal[brand & ":" & CurencyList[k]] <> 0) then begin
-				Messagebox(0,"124");
+				if (BrandEndBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) then begin
 					StartFormat(15);
 						OutString(tab2,0,CurencyList[k],false);
 						OutString(tab3,0,"",false);
@@ -338,12 +362,26 @@ BEGIN
 						OutString(tab6,0,"",false);
 						OutString(tab7,0,"",false);
 						OutString(tab8,0,"",false);
-						OutString(tab9,0,BrandEndBal[brand & ":" & CurencyList[k]],false);
-						OutString(tab10,0,BrandEndBal[brand & ":" & CurencyList[k] & ":BASE"],false);
+						OutString(tab9,0,BrandEndBal[RepSpec.f1 & ":" & CurencyList[k]],false);
+						OutString(tab10,0,BrandEndBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"],false);
 					EndFormat;
 					Gray_Divider(0,1);
 				end;
 			end;
+			Black_Divider(0,1)
+			StartFormat(15);
+				OutString(tab1,0,USetStr(31222),false);
+				OutString(tab2,0,"",false);
+				OutString(tab3,0,"",false);
+				OutString(tab4,0,"",false);
+				OutString(tab5,0,TotBeginBal,false);
+				OutString(tab6,0,TotDebet,false);
+				OutString(tab7,0,TotEndBal,false);
+				OutString(tab8,0,TotCredit,false);
+				OutString(tab9,0,"",false);
+				OutString(tab10,0,"",false);
+			EndFormat;
+			
 			StartFormat(15);
 			EndFormat;
 		end;
