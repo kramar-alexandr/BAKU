@@ -531,22 +531,21 @@ begin
 	SString(35031,"Дней на складе");
 	SString(35034,"Оборот денег по классификации");
 	SString(35035,"Без классификации");
-
+	
 	//BrandManagerRn
 	SString(35036,"Отчет бренд менеджера");
 	SString(35037,"Мы должны (сч. 60)");
 	SString(35038,"Нам должны (сч. 64)");
-	SString(35046,"Консигнация (сч. 61)");
 	SString(35039,"Поставщик");
-	//SString(35020,"Валюта");
 	SString(35040,"В валюте");
 	SString(35041,"В осн. вал.");
 	SString(35042,"На начало периода");
 	SString(35043,"Платежи");
 	SString(35044,"Поступления");
 	SString(35045,"На конец периода");
-	//SString(31222,"Итого");
-
+	SString(35046,"Консигнация (сч. 61)");
+	SString(35047,"Бренд:");
+	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
 	StrSetText(RoyaltyRepApproveAnyPercentage,"Approve Royalty Sales records with custom royalty %");//!!TRANSLATE

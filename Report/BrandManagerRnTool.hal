@@ -583,33 +583,30 @@ BEGIN
 	record RcVc RepSpec;
 	
 	RepSpec = specRepSpec;
-	
-//RepSpec.ObjStr = ;
-RepSpec.f3 = "";
-//RepSpec.f4 = ""; // AccNumber
-RepSpec.f5 = "";
-RepSpec.ObjType = "";
-RepSpec.SimVerf = 0;
-RepSpec.basecurncy = 0;
-//RepSpec.CurncyCode = "";
-RepSpec.ArtMode = 0;
-RepSpec.UsedOnly = 1;
-RepSpec.LastAcc = 0;
-RepSpec.PocketPC = 0;
-RepSpec.IncDaughter = 0;
-RepSpec.flags[1] = 0;
-RepSpec.flags[4] = 0;
-RepSpec.flags[5] = 0;
-RepSpec.flags[8] = 0;
-RepSpec.flags[11] = 0;
-RepSpec.flags[12] = 0;
-RepSpec.flags[21] = 1;
-RepSpec.flags[22] = 1;
-RepSpec.flags[23] = 0;
-RepSpec.flags[26] = 0;
-RepSpec.flags[27] = 0;
-RepSpec.flags[28] = 0;
-RepSpec.flags[29] = 0;
+	RepSpec.f1 = "";
+	RepSpec.f3 = "";
+	RepSpec.f5 = "";
+	RepSpec.ObjType = "";
+	RepSpec.SimVerf = 0;
+	RepSpec.basecurncy = 0;
+	RepSpec.ArtMode = 0;
+	RepSpec.UsedOnly = 1;
+	RepSpec.LastAcc = 0;
+	RepSpec.PocketPC = 0;
+	RepSpec.IncDaughter = 0;
+	RepSpec.flags[1] = 0;
+	RepSpec.flags[4] = 0;
+	RepSpec.flags[5] = 0;
+	RepSpec.flags[8] = 0;
+	RepSpec.flags[11] = 0;
+	RepSpec.flags[12] = 0;
+	RepSpec.flags[21] = 1;
+	RepSpec.flags[22] = 1;
+	RepSpec.flags[23] = 0;
+	RepSpec.flags[26] = 0;
+	RepSpec.flags[27] = 0;
+	RepSpec.flags[28] = 0;
+	RepSpec.flags[29] = 0;
 
 	TotTransCnt = 0;
 	TotSumFwBal = 0;

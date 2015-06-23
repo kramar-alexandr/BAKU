@@ -105,7 +105,18 @@ BEGIN
 	end;
 	
 	StartReportNoHeaderJob(USetStr(35036));
+	StartFormat(15);
+		OutString(tab1,0,USetStr(31102),false);
+		OutString(tab2,0,RepSpec.sStartDate & " - " & RepSpec.sEndDate,false);
+	EndFormat;
+	StartFormat(15);
+		OutString(tab1,0,USetStr(31024),false);
+		OutString(tab2,0,RepSpec.ObjStr,false);
+	EndFormat;
 	if blank(RepSpec.f1) then begin
+		Black_Divider(0,1);
+		StartFormat(15);
+		EndFormat;
 		Objr.OTCode = "BRAND";
 		TrHs = true;
 		brandcount = 0;
@@ -119,8 +130,6 @@ BEGIN
 		brandcount = brandcount + 1;
 
 		for (i=0;i<acccount;i=i+1) begin
-			BMRnPrintAccHeader(AccList[i],false,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
-			
 			for (j=0;j<brandcount;j=j+1) begin
 				BrandNonBlank[BrandList[j]] = false;
 			end;
@@ -185,7 +194,7 @@ BEGIN
 				end;
 			end;
 			ResetLoop(mainr);
-			
+			BMRnPrintAccHeader(AccList[i],false,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
 			for (j=0;j<brandcount;j=j+1) begin
 				if (BrandNonBlank[BrandList[j]]) then begin
 					for (k=0;k<curcount;k=k+1) begin
@@ -231,6 +240,13 @@ BEGIN
 			EndFormat;
 		end;
 	end else begin
+		StartFormat(15);
+			OutString(tab1,0,USetStr(35047),false);
+			OutString(tab2,0,RepSpec.f1,false);
+		EndFormat;
+		Black_Divider(0,1);
+		StartFormat(15);
+		EndFormat;
 		for (i=0;i<acccount;i=i+1) begin
 			for (k=0;k<curcount;k=k+1) begin
 				BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]] = blankval;
@@ -301,6 +317,7 @@ BEGIN
 			for (k=0;k<curcount;k=k+1) begin
 				if (BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) then begin
 					StartFormat(15);
+						OutString(tab1,0,"",false);
 						OutString(tab2,0,CurencyList[k],false);
 						OutString(tab3,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]],false);
 						OutString(tab4,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"],false);
@@ -331,8 +348,8 @@ BEGIN
 						OutStringID(tab1,"DblPUVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
 					case SDYc:
 						OutStringID(tab1,"DblSDVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
-					//case StockMovYc:
-					//	OutStringID(tab1,"DblStockMovVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
+					case STMovYc:
+						OutStringID(tab1,"DblStockMovVc",tempTRrw.Comment,false,FirstTransInRange(tempTRrw.Comment));
 					otherwise
 						OutStringID(tab1,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
 				end;
@@ -340,11 +357,9 @@ BEGIN
 					OutString(tab3,0,"",false);
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,tempTRrw.CurDebVal,false);
-					TotBeginBal = TotBeginBal + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
 					TotDebet = TotDebet + tempTRrw.DebVal;
 					OutString(tab7,0,tempTRrw.CurCredVal,false);
-					TotEndBal = TotEndBal + tempTRrw.CurCredVal;
 					OutString(tab8,0,tempTRrw.CredVal,false);
 					TotCredit = TotCredit + tempTRrw.CredVal;
 					OutString(tab9,0,"",false);
@@ -355,6 +370,7 @@ BEGIN
 			for (k=0;k<curcount;k=k+1) begin
 				if (BrandEndBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) then begin
 					StartFormat(15);
+						OutString(tab1,0,"",false);
 						OutString(tab2,0,CurencyList[k],false);
 						OutString(tab3,0,"",false);
 						OutString(tab4,0,"",false);
@@ -369,19 +385,22 @@ BEGIN
 				end;
 			end;
 			Black_Divider(0,1)
+			RepSpec.f4 = AccList[i];
+			RepSpec.CurncyCode = "";
+			RepSpec.ObjStr = RepSpec.ObjStr & "," & RepSpec.f1;
+			BrandManagerRnTool(RepSpec,TotDebet,TotCredit,TotBeginBal,TotEndBal);
 			StartFormat(15);
 				OutString(tab1,0,USetStr(31222),false);
 				OutString(tab2,0,"",false);
 				OutString(tab3,0,"",false);
-				OutString(tab4,0,"",false);
-				OutString(tab5,0,TotBeginBal,false);
+				OutString(tab4,0,TotBeginBal,false);
+				OutString(tab5,0,"",false);
 				OutString(tab6,0,TotDebet,false);
-				OutString(tab7,0,TotEndBal,false);
+				OutString(tab7,0,"",false);
 				OutString(tab8,0,TotCredit,false);
 				OutString(tab9,0,"",false);
-				OutString(tab10,0,"",false);
+				OutString(tab10,0,TotEndBal,false);
 			EndFormat;
-			
 			StartFormat(15);
 			EndFormat;
 		end;
