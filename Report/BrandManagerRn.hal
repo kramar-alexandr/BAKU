@@ -206,8 +206,13 @@ BEGIN
 									OutStringID(tab1,"DblBrand",BrandList[j],false,AccList[i] & ":" & CurencyList[k]);
 								end;
 								OutString(tab2,0,CurencyList[k],false);
-								OutString(tab3,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k]],false);
-								OutString(tab4,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+								if (BrandList[j] == "BLANKBRAND") then begin
+									OutString(tab3,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k]],false);
+									OutString(tab4,0,BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
+								end else begin
+									OutStringID(tab3,"DblBrandBeginBal",BrandBeginBal[BrandList[j] & ":" & CurencyList[k]],false,AccList[i] & ":" & BrandList[j]);
+									OutStringID(tab4,"DblBrandBeginBal",BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false,AccList[i] & ":" & BrandList[j]);
+								end;
 								OutString(tab5,0,BrandDebet[BrandList[j] & ":" & CurencyList[k]],false);
 								OutString(tab6,0,BrandDebet[BrandList[j] & ":" & CurencyList[k] & ":BASE"],false);
 								OutString(tab7,0,BrandCredit[BrandList[j] & ":" & CurencyList[k]],false);

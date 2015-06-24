@@ -244,3 +244,27 @@ begin
 	
 	return;
 end;
+
+//Edit---------------Vitalii 15:27 24.06.2015
+global
+procedure DblBrandBeginBal(string dblstr,string l,Integer currepwn)
+begin
+	string 20 str;
+	record RcVc RepSpec,RepSpec2;
+	
+	getwindowrecord(currepwn,RepSpec2);
+	ReportDefaults(RepSpec,"MainRClass")
+	RepSpec.sStartDate = StringToDate("1/1/1900");
+	RepSpec.sEndDate = AddDay(RepSpec2.sStartDate, -1);
+	RepSpec.f4 = FirstInRange(l,15);//accnum
+	RepSpec.CurncyCode = "";
+	RepSpec.ObjStr = RepSpec2.ObjStr & "," & LastInRange(l,15);
+	RepSpec.flags[8] = 1;
+	RepSpec.flags[7] = 2;
+	RepSpec.flags[21] = 1;
+	RepSpec.flags[22] = 1;
+	RepSpec.repname = "MainRn";
+	RunReport(RepSpec,0);
+	
+	return;
+end;
