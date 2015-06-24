@@ -141,6 +141,7 @@ begin
   Report("Еженедельный отчет директоров",DirectorWeekRClass,DirectorWeekRn,0,modNL);//Edit---------------Vitalii 14:49 19.05.2015
   Report("Оборот денег по классификации(клиенты)",CashInOutClientsByClassificationRClass,CashInOutByClassificationRn,0,modSL);	//Edit----------------------Dima  04.06.2015
   Report("Отчет бренд менеджера",BrandManagerRClass,BrandManagerRn,0,modNL);//Edit---------------Vitalii 18:30 11.06.2015
+  Report("Отчет по срокам доставки заказов",DeliveryPeriodRClass,DeliveryPeriodRn,0,modPO); //Edit----------------------Dima  23.06.2015
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -545,6 +546,18 @@ begin
 	SString(35045,"На конец периода");
 	SString(35046,"Консигнация (сч. 61)");
 	SString(35047,"Бренд:");
+	
+	
+	//DeliveryPeriodRn
+	SString(35048,"Отчет по срокам доставки заказов");
+	SString(35049,"Поставщик");
+	SString(35050,"Тип Заказа");
+	SString(35051,"№ заказа");
+	SString(35052,"№ Сч/Ф от поставщика");
+	SString(35053,"Дата готовности(Hansa)");
+	SString(35054,"Дата готовности(поставщик)");
+	SString(35055,"Дата отгрузки");
+	SString(35056,"Просрочка");	
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

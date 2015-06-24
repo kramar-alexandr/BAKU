@@ -661,3 +661,17 @@ begin
 end;
 
 
+window DeliveryPeriodRClass:1	//Edit----------------------Dima  23.06.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Ћпределите отчет по срокам доставки заказов",DeliveryPeriodRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"Џериод");
+ //EditFieldTL(h,v+=vs,150,"‘клад",M4Str,Normal,41,f1,false,LocationSClass);
+
+
+  EndWindow;
+end;
+
