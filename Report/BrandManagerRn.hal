@@ -324,8 +324,8 @@ BEGIN
 					StartFormat(15);
 						OutString(tab1,0,"",false);
 						OutString(tab2,0,CurencyList[k],false);
-						OutString(tab3,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]],false);
-						OutString(tab4,0,BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"],false);
+						OutStringID(tab3,"DblBrandBeginBal",BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]],false,AccList[i] & ":" & RepSpec.f1);
+						OutStringID(tab4,"DblBrandBeginBal",BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"],false,AccList[i] & ":" & RepSpec.f1);
 						OutString(tab5,0,"",false);
 						OutString(tab6,0,"",false);
 						OutString(tab7,0,"",false);
