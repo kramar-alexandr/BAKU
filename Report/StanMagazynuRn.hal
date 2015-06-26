@@ -262,7 +262,7 @@ begin
   		      end;
   		    end; RESETLOOP(IHr);
   		    SubTotalCost = Round(SubTotalCost,DefaultCurRoundOff);
-  		    if (SubTotalQty!=0 or SubTotalCost!=0) then begin     
+  		    if (SubTotalQty!=0 /*or SubTotalCost!=0*/) then begin     
   		      StartFormat(15);
   		    	  OutString(outstrpos[0],0,INr.Name,false);			
   		    		OutString(outstrpos[1],0,INr.Code,false);
@@ -349,10 +349,12 @@ begin
   			  end;
 				end;
 				RESETLOOP(INr);
-				StartFormat(15);
-  				OutString(outstrpos[0],0,Locr.Name,false);			
-  				OutString(outstrpos[1],0,TotalCost,false);
-  			EndFormat;
+			  if (TotalCost!=0) then begin
+			    StartFormat(15);
+			      OutString(outstrpos[0],0,Locr.Name,false);			
+				    OutString(outstrpos[1],0,TotalCost,false);
+				  EndFormat;
+			  end;
 				GeneralTotalCost = GeneralTotalCost + TotalCost;
 		end;
 	end;
@@ -437,10 +439,12 @@ begin
 	
 	if (RepSpec.ArtMode==2) then begin 
 		for(i=0;i<vecSize;i=i+1) begin
-				StartFormat(15);	
-			  	OutString(outstrpos[0],0,brandsName[brands[i]],false);			
-  				OutString(outstrpos[1],0,brandsCost[brands[i]],false);
-  			EndFormat;	
+		  if (brandsCost[brands[i]]!=0) then begin
+		    StartFormat(15);
+		      OutString(outstrpos[0],0,brandsName[brands[i]],false);			
+			    OutString(outstrpos[1],0,brandsCost[brands[i]],false);
+			  EndFormat;
+		  end;	
 		end;
 	end;
 	
@@ -453,10 +457,12 @@ begin
   				StartFormat(15);
   				  OutString(outstrpos[0],0,"",false);
   			    OutString(outstrpos[1],0,"",false);
-  			    OutString(outstrpos[2],0,"Totals:",false);	
-  				  OutString(outstrpos[3],0,TotalQty,false);	
-  				  OutString(outstrpos[4],0,"",false);	
-  				  OutString(outstrpos[5],0,TotalCost,false);			
+  			    OutString(outstrpos[2],0,"Totals:",false);
+  			    if (TotalQty!=0) then begin
+  			      OutString(outstrpos[3],0,TotalQty,false);	
+  				    OutString(outstrpos[4],0,"",false);	
+  				    OutString(outstrpos[5],0,TotalCost,false);	
+  			    end;		
   				EndFormat;
 				end;
 				
@@ -470,7 +476,9 @@ begin
   				Black_Divider(0,1);
   				StartFormat(15);
   				  OutString(outstrpos[0],0,"",false);
-  			    OutString(outstrpos[1],0,TotalCost,false);
+  				  if (TotalQty!=0) then begin
+  			      OutString(outstrpos[1],0,TotalCost,false);
+  			    end;
   			  EndFormat;  			  
 	end;
 	
