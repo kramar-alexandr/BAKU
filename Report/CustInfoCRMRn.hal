@@ -325,9 +325,13 @@ begin
 						outstring(200,0,"По всем компаниям",false);
 					end;
 					outstring(260,0,lastbaydate,false);
-					if(nonblank(stringtoint(lastbaycompany)>-1))then begin
-						matrowget(CBb,stringtoint(lastbaycompany),CBrw);
-						lastbaycompany = CBrw.CompName;
+					if(RepSpec.flags[0]!=0)then begin
+						if(nonblank(stringtoint(lastbaycompany)>-1))then begin
+							matrowget(CBb,stringtoint(lastbaycompany),CBrw);
+							lastbaycompany = CBrw.CompName;
+						end;
+					end else begin
+						lastbaycompany = "";
 					end;
 					outstring(300,0,lastbaycompany,false);
 					outstring(400,0,act,false);

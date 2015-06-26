@@ -160,7 +160,6 @@ string 20 tstr,transnr,rowstr;
     sum = evaltoval(params[4+k]);
     transnr = params[8+k];
     rowstr = params[9+k];
-    messagebox(0,transnr & " " & rowstr);
     
     IVrw.ArtCode = art;
     matrowput(IVr,mtrw,IVrw);
