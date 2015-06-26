@@ -487,8 +487,7 @@ BEGIN
         if (errstrno!=0) then begin goto LMakeTransFromIV; end;
       end;
       goto LMakeTransFromIV;
-    otherwise
-      ;      
+    //otherwise
   end;
   SetInvARAcc(IVp);
   instalsum = blankval;
