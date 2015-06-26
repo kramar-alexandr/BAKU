@@ -1712,6 +1712,9 @@ BEGIN
       BlockLoad(LMb);
       res = CreateCreditNoteIV(IVr,kInvoiceTypeCredit,IVCreditr,LMb.DefReturnLocation,false);
       if (res==0) then begin
+      	if (TouchScreenLook)begin// Edit ************************** Friday, 26 June 2015 11:04:26
+      		closewindow(wn);
+      	end;
         nwn = OpenWindow("IVDClass",1,0,"","",IVCreditr);
         if (WindowDoOK(nwn,0)) then begin
           UpdateBrowses("IVVc");
