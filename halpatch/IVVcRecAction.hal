@@ -1172,6 +1172,14 @@ LkInvoiceTypeCredit:;
 				rnd.mode = kRoundingModeHalfUp;
 				cash = round(cash,rnd);
       end;
+      
+      if(currentcompany==11 or currentcompany==12)then begin// Edit ************************** Friday, 22 March 2013 17:45:30
+				rnd.decimals = -4;
+				rnd.step = kRoundingStepNone;
+				rnd.mode = kRoundingModeHalfUp;
+				cash = round(cash,rnd);
+      end;
+      
       if (IVp.Sum4>=0) then begin
         if (cash<IVp.Sum4) then begin
           testf = true;
@@ -1199,6 +1207,7 @@ LkInvoiceTypeCredit:;
 			end;// Edit ************************** Wednesday, 18 February 2015 16:29:28
       if (testf) then begin
       logtext(0,cash & " " & IVp.Sum4);
+      messagebox(0,cash & " " & IVp.Sum4);
         RecordCheckError(24177,"",MatRowCnt(IVp),"Sum");      
         res = -1; 
         goto L99;

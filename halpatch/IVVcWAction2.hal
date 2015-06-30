@@ -1002,6 +1002,9 @@ BEGIN
 	
 	rnd = DefaultValRoundoff;
   rnd.decimals = 2;
+	if(currentcompany==11 or currentcompany==12)then begin// Edit ************************** Friday, 22 March 2013 17:45:30
+		rnd.decimals = -4;
+	end;
 	
   rwcnt = MatRowCnt(IVr);
   for (i=0;i<rwcnt;i=i+1) begin

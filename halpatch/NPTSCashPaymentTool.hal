@@ -19,6 +19,9 @@ begin
   rnd = DefaultValRoundoff;
   rnd.decimals = 2;
   rnd.mode = kRoundingModeHalfUp;
+  if(currentcompany==11 or currentcompany==12)then begin
+		rnd.decimals = -4;
+  end;
   if(currentcompany==3)then begin
 		rnd.step = kRoundingStep5;
   end;
@@ -74,6 +77,9 @@ begin
   rnd = DefaultValRoundoff;
   rnd.decimals = 0;
   rnd.mode = kRoundingModeHalfDown;
+  if(currentcompany==11 or currentcompany==12)then begin
+		rnd.decimals = -4;
+  end;
 	if(currentcompany==3)then begin
 		rnd.step = kRoundingStep5;
   end;

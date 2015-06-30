@@ -941,6 +941,9 @@ begin
         RepSpec.vals3 = IVrw.Sum;
         RepSpec.vals4 = IVrw.PriceFactor;
         RepSpec.CurncyCode = IVrw.CurncyCode;
+        if(blank(IVrw.CurncyCode))then begin
+        	RepSpec.CurncyCode = IVr.CurncyCode;// Edit ************************** Monday, 29 June 2015 21:27:35
+        end;
         RepSpec.FirstAcc = IVrw.PayMode;
         RepSpec.long1 = rownr;
         wn = OpenWindow("AmendLineNPTSSClass",0,mwn,"","",RepSpec);

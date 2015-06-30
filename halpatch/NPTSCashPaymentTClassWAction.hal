@@ -632,6 +632,8 @@ begin
   price = p;  
   CalcSum(qty,price,pricefactor,reb,sum,GOb.UseDiscount);  
   switch (GetWindowFileName(mwn)) begin
+  	case "IVVc":
+      RoundRowSum(RepSpec.CurncyCode,RepSpec.FirstAcc,"IVVc",sum);// Edit ************************** Monday, 29 June 2015 21:20:11
     case "IVCashVc":
       RoundRowSum(RepSpec.CurncyCode,RepSpec.FirstAcc,"IVCashVc",sum);
     case "RestAccVc":
@@ -659,8 +661,10 @@ begin
   p = price; 
   CalcPrice(baseprice,pricefactor,reb,p,GOb.UseDiscount);
   price = p;  
-  CalcSum(qty,price,pricefactor,reb,sum,GOb.UseDiscount);  
+  CalcSum(qty,price,pricefactor,reb,sum,GOb.UseDiscount); 
   switch (GetWindowFileName(mwn)) begin
+  	case "IVVc":
+      RoundRowSum(RepSpec.CurncyCode,RepSpec.FirstAcc,"IVVc",sum);// Edit ************************** Monday, 29 June 2015 21:19:40
     case "IVCashVc":
       RoundRowSum(RepSpec.CurncyCode,RepSpec.FirstAcc,"IVCashVc",sum);
     case "RestAccVc":

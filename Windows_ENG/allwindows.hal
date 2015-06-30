@@ -4599,8 +4599,8 @@ begin
   end;
 
   v = -385; h2 = 55; v3 = 48; vs = 52;
-  ColourPushButton(-580,-60,-580+3*h2,-60+v3,"CancelAndOverrideLogout","Отмена",20);
-  ColourPushButton(-410,-60,-410+3*h2,-60+v3,"ProceedAmendLineNPTSSClass","Продолжить",20);
+  ColourPushButton(-580,-60,-580+3*h2,-60+v3,"CancelAndOverrideLogout","Cancel",20);
+  ColourPushButton(-410,-60,-410+3*h2,-60+v3,"ProceedAmendLineNPTSSClass","Procceed",20);
 
 //  ColourPushButton(h=10,v=-50,h+100,v+40,"CancelAndOverrideLogout","Cancel<BR>F2",20);
 //  ColourPushButton(h+=120,v,h+100,v+40,"ProceedAmendLineNPTSSClass","Proceed<BR>F1",20);

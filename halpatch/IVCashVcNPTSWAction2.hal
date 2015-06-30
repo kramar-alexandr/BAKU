@@ -125,6 +125,9 @@ begin
 	cur = curncy;
 	rnd = DefaultValRoundoff;
   rnd.decimals = 0;
+  if(currentcompany==11 or currentcompany==12)then begin
+  	rnd.decimals = -4;
+  end;
   rnd.mode = kRoundingModeHalfDown;
 	if(currentcompany==3)then begin
 		cur = "AZN";
