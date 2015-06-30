@@ -585,27 +585,27 @@ begin
 					outstring(0,0,USetStr(13199),false);//EKNCode
 					outstring(0,0,USetStr(31052),false);
 					outstring(100,0,USetStr(31053),false);
-					outstring(101,0,USetStr(31054),false);
+					outstring(101,0,USetStr(31055) & bcur,false);
 					if(bcur!=azn)then begin
 						outstring(102,0,USetStr(31055) & bcur,false);
 					end;
 					outstring(110,0,USetStr(31056),false);
-					outstring(111,0,USetStr(31057),false);
+					outstring(111,0,USetStr(31058) & bcur,false);
 					if(bcur!=azn)then begin
 						outstring(112,0,USetStr(31058) & bcur,false);
 					end;
 					outstring(120,0,USetStr(31059),false);
-					outstring(121,0,USetStr(31060),false);
+					outstring(121,0,USetStr(31061) & bcur,false);
 					if(bcur!=azn)then begin
 						outstring(122,0,USetStr(31061) & bcur,false);
 					end;
 					outstring(130,0,USetStr(31062),false);
-					outstring(131,0,USetStr(31063),false);
+					outstring(131,0,USetStr(31064) & bcur,false);
 					if(bcur!=azn)then begin
 						outstring(132,0,USetStr(31064) & bcur,false);
 					end;
 					outstring(140,0,USetStr(31065),false);
-					outstring(141,0,USetStr(31066),false);
+					outstring(141,0,USetStr(31067) & bcur,false);
 					if(bcur!=azn)then begin
 						outstring(142,0,USetStr(31067) & bcur,false);
 					end;

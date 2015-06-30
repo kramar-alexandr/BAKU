@@ -801,8 +801,11 @@ begin
   date todate;
   val total_qty;
   val total_cost,total_price;
-  string 200 classfind,model,brand;
+  string 200 classfind,model,brand,basecur;
+  record BaseCurBlock bascur;
   
+  BlockLoad(bascur);
+  basecur = bascur.BaseCur1;
   item = RepSpec.f1;
   location = RepSpec.f2;
   todate = RepSpec.d1;
@@ -866,14 +869,14 @@ begin
 			if(currentcompany!=10)then begin
 				if(usercanaction("ViewCostPrice",true))then begin
 					outstring(0,0,USetStr(31053),false);
-					outstring(0,0,USetStr(31054),false);
+					outstring(0,0,USetStr(31055) & basecur,false);
 					outstring(0,0,USetStr(31056),false);
-					outstring(0,0,USetStr(31057),false);
+					outstring(0,0,USetStr(31058) & basecur,false);
 				end;
 				outstring(0,0,USetStr(31059),false);
-				outstring(0,0,USetStr(31060),false);
+				outstring(0,0,USetStr(31061) & basecur,false);
 				outstring(0,0,USetStr(31062),false);
-				outstring(0,0,USetStr(31063),false);
+				outstring(0,0,USetStr(31064) & basecur,false);
 			end else begin
 				outstring(0,0,USetStr(31053),false);
 				outstring(0,0,USetStr(31171),false);
@@ -1042,7 +1045,7 @@ begin
 			end;
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			outstring(0,0,USetStr(31063),false);
+			outstring(0,0,USetStr(31064) & basecur,false);
 			outstring(0,0,total_price,false);
 		endformat;
 		
