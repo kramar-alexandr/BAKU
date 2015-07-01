@@ -1976,6 +1976,18 @@ begin
 				MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);
 				MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);
 				MatCol(1,-60,"PP №",0,PPNum,true,0);
+	case 11:
+				MatCol(1,194,"Наименование",0,Spec,false,0);
+				if (HasVarieties) then begin
+					MatCol(1,-300,"Кол-во",0,VEQuant,true,MATVARINSClass);
+				end else begin
+					MatCol(1,-300,"Кол-во",0,VEQuant,true,0); 
+				end;
+	
+				MatCol(1,-250,"EAN Код",0,EAN13Code,false,0);
+				MatCol(1,-170,"Классификация",0,xClassification,false,DISClass);
+				MatCol(1,-60,"PP №",0,PPNum,true,0);
+	
 	case 2:
 				MatCol(1,194,"Наименование",0,Spec,false,0);
 				if (HasVarieties) then begin
@@ -2039,6 +2051,11 @@ begin
 				MatCol(1,-120,"Метал",0,Metal,false,0);
 				MatCol(1,-60,"Каратность",0,MajStoneDet,true,0);
 	case 4:
+				Flip(flipnr); flipnr = flipnr + 1;
+				MatCol(1,194,"Наименование",0,Spec,false,0);
+				MatCol(1,-160,"Размер",0,Size,false,0);
+				MatCol(1,-100,"Цвет",0,Colour,false,0);
+	case 12:
 				Flip(flipnr); flipnr = flipnr + 1;
 				MatCol(1,194,"Наименование",0,Spec,false,0);
 				MatCol(1,-160,"Размер",0,Size,false,0);

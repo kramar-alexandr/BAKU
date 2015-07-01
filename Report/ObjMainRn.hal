@@ -126,7 +126,7 @@ begin
 					mtrw = matrowcnt(TRr);
 					For(i=0;i<mtrw;i=i+1) begin
 	  				matrowget(TRr,i,TRrw);
-	  				if(TRrw.AccNumber==acccode and TRrw.ovst==0)then begin
+	  				if(TRrw.AccNumber==acccode and TRrw.ovst==0 and TRr.TransDate==Mainr.TransDate)then begin
 							foundf = true;
 							if(nonblank(objcode) and setinset(objcode,TRrw.Objects)==false)then begin foundf = false; end;
 							if(foundf)then begin

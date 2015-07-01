@@ -7004,7 +7004,7 @@ window CLCorspSClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Выберите способ корреспонденции",CLCorspSClass,CGslist,CLCorspView);
-  SetWRect(240,80,550,250);
+  SetWRect(240,80,950,250);
   Sizeable(-1,-1,0,0);
   UseView(CLCorspVc);
   SpawnClass(CLCorspDClass);

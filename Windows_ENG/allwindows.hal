@@ -6283,7 +6283,7 @@ window CLCorspSClass:1
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Paste Corresponding Mode",CLCorspSClass,CGslist,CLCorspView);
-  SetWRect(240,80,550,250);
+  SetWRect(240,80,950,250);
   Sizeable(-1,-1,0,0);
   UseView(CLCorspVc);
   SpawnClass(CLCorspDClass);
@@ -6498,7 +6498,18 @@ begin
 	
   Flip(flipnr); flipnr = flipnr + 1;
   switch(currentcompany)begin
-
+	case 11:
+				MatCol(1,194,"Name",0,Spec,false,0);
+				if (HasVarieties) then begin
+					MatCol(1,-300,"Qty",0,VEQuant,true,MATVARINSClass);
+				end else begin
+					MatCol(1,-300,"Qty",0,VEQuant,true,0); 
+				end;
+	
+				MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
+				MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
+				MatCol(1,-60,"PP #",0,PPNum,true,0);
+				
 	case 10:
 			MatCol(1,194,"Name",0,Spec,false,0);
 			MatCol(1,300,"Vendor Code",0,Comment,false,0);
@@ -6510,6 +6521,21 @@ begin
 			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
 			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
 			MatCol(1,-60,"Price",0,Price,true,0);
+			
+	otherwise begin
+			MatCol(1,194,"Name",0,Spec,false,0);
+			if (HasVarieties) then begin
+				MatCol(1,-300,"Qty",0,VEQuant,true,MATVARINSClass);
+			end else begin
+				MatCol(1,-300,"Qty",0,VEQuant,true,0); 
+			end;
+
+			MatCol(1,-250,"EAN Code",0,EAN13Code,false,0);
+			MatCol(1,-170,"Classification",0,xClassification,false,DISClass);
+			MatCol(1,-60,"Price",0,Price,true,0);
+			
+		end;		
+	
   end;
   
   switch(currentcompany)begin
@@ -6522,6 +6548,13 @@ begin
 				MatCol(1,-180,"Weight",0,RowWeight,false,0);
 				MatCol(1,-120,"Metal",0,Metal,false,0);
 				MatCol(1,-60,"Carat",0,MajStoneDet,true,0);
+	case 12:
+				Flip(flipnr); flipnr = flipnr + 1;
+				MatCol(1,194,"Name",0,Spec,false,0);
+				MatCol(1,-160,"Size",0,Size,false,0);
+				MatCol(1,-100,"Color",0,Colour,false,0);
+				
+				
   end;
   
   
