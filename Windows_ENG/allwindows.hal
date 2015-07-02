@@ -7804,7 +7804,7 @@ begin
       MatCol(1,-130,"Purch. A/C",0,CredAcc,false,0);
     end;
     if (HasObjects) then begin
-      MatCol(1,-60,"Objects",0,Objects,false,0);
+      MatCol(1,-60,"Objects",0,Objects,false,ObjSClass);
     end;
   end;
   Flip(flipnr); flipnr = flipnr + 1;

@@ -443,6 +443,12 @@ L12:;
     
 	// Edit End ---------------------------------------------- Edit End
 	
+	  if (nonblank(OPrw.FrRateBankVal) and OPrw.FrRateBankVal!=1) then begin //Edit***************************Sasha2,17:31 02.07.2015 {
+      RecordCheckError(5247,"",i,"FrRateBankVal");      
+      res = -1; 
+      goto LOPVcRecordCheck;
+    end; //Edit***************************Sasha2,17:31 02.07.2015 }
+	
     if (UserCanAction("AllowNegOP",true)==false) then begin
       if (OPrw.RecVal<0) then begin
         RecordCheckError(20114,"",i,"RecVal");      
