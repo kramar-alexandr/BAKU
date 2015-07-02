@@ -7170,7 +7170,7 @@ window APSClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("Выберите неоплаченный сч/ф поставщика",APSClass,CGslist,-);
-  SetWRect(20,80,800,420);
+  SetWRect(20,80,1200,420);
   Sizeable(-1,-1,0,0);
   UseView(APVc);
   RecordList(4,17,-21,-39);
@@ -7181,7 +7181,7 @@ begin
   RlCol   (355,355,"Дата скидки",RebDate,false); 
   RlColKey(430,430,"Поставщик",VECode,false,VECode); 
   RlColKey(500,500,"Наимен.",VEName,false,VEName); 
-  RlColKey(-130,-130,"Остаток",RVal,true,RVal);
+  RlColKey(-200,-200,"Остаток",RVal,true,RVal);
   CalculatedColumn(-60,-60,"Объект","InvoiceFromLocation_AP",true);
   SearchField("Найти");
   EndWindow;
