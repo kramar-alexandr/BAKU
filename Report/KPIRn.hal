@@ -1,0 +1,297 @@
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+SetLangMode(LangRussian,"RUS",0);
+
+procedure printstrings(string daymonth,val turnover,val checkqty,val itemsqty,boolean monthdayf)
+begin
+ integer pos;
+  
+  pos = 0;
+	startformat(15);
+		OutString(pos,0,daymonth,false);
+		if (turnover==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,turnover,false);
+		end;
+		if (checkqty==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,checkqty,false);
+		end;
+		if (itemsqty==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,itemsqty,false);
+		end;
+		if (checkqty==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,turnover/checkqty,false);
+		end;
+		if (itemsqty==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,turnover/itemsqty,false);
+		end;
+		if (checkqty==0) then begin
+		  OutString(pos+=50,0,0,false);
+		end else begin
+		  OutString(pos+=50,0,itemsqty/checkqty,false);
+		end;
+	endformat;
+
+  return;
+end;
+
+
+global 
+procedure KPIRn(record RcVc RepSpec)
+begin
+  integer pos;
+  date curdate,frdate,todate,tempdate;
+  val turnover,checkqty,itemsqty,ivsum;
+  array val totturnover,totcheckqty,totitemsqty;
+  integer i,rwcnt,prevday,prevmonth,curday,curmonth,tempday,year,sign;
+  record BaseCurBlock bascur;
+  record IVVc IVr;
+  row IVVc IVrw;
+  Boolean TrHs,testf;
+
+  //RepSpec.Media = mtFile;
+	StartReportNoheaderJob("KPI");
+	
+	BlockLoad(bascur);
+	pos = 0;
+	startformat(15);
+		OutString(pos,0,"Месяц/день",false);
+		OutString(pos+=50,0,"Оборот",false);
+		OutString(pos+=50,0,"Кол.Чеков",false);
+		OutString(pos+=50,0,"Кол.Изделий",false);
+		OutString(pos+=50,0,"Цена чека",false);
+		OutString(pos+=50,0,"Цена изд.",false);
+		OutString(pos+=50,0,"Кол.изд.в чеке",false);
+	endformat;
+	
+	year = StringToInt(RepSpec.f1);
+	frdate = StringToDate("1/1/" & year);
+	todate = StringToDate("31/12/" & year);
+	
+	turnover = 0;
+  checkqty = 0;
+  itemsqty = 0;
+	
+  curdate = frdate;
+  while (curdate<=todate) begin
+    curday = GetDay(curdate);
+    curmonth = GetMonth(curdate);
+    if (prevday==0) then begin
+      startformat(15);
+        OutString(0,0,"Month " & curmonth,false);
+      endformat;
+      prevday = curday;
+    end;
+    if (prevmonth==0) then begin
+      prevmonth = curmonth;
+    end;
+    if (curmonth!=prevmonth) then begin
+      printstrings(prevday,turnover,checkqty,itemsqty,false);
+      turnover = 0;
+      checkqty = 0;
+      itemsqty = 0;
+      startformat(15);
+        OutString(0,0,"Month " & curmonth,false);
+      endformat;
+    end;
+    if (curmonth==prevmonth and curday!=prevday) then begin
+      printstrings(prevday,turnover,checkqty,itemsqty,false);
+      turnover = 0;
+      checkqty = 0;
+      itemsqty = 0;
+    end;
+    
+    IVr.InvDate = curdate;
+  	TrHs = true;
+  	while (LoopKey("InvDate",IVr,1,TrHs)) begin
+  	 testf = true;
+  	 if (IVr.OKFlag!=1 or IVr.Invalid!=0) then begin testf = false; end;
+  	 if (IVr.InvDate!=curdate) then begin TrHs = false; testf = false; end;
+  	 if (testf) then begin
+  	   sign = 1;
+  	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
+  	     sign = -1;
+  	   end;
+  	   if (IVr.CurncyCode!=bascur.BaseCur1) then begin
+         CurValToOtherCur(IVr.InvDate,IVr.CurncyCode,IVr.Sum4,bascur.BaseCur1,ivsum,DefaultCurRoundOff);
+         ivsum = ivsum*sign;
+       end else begin
+         ivsum = IVr.Sum4*sign;
+       end;
+  	   turnover = turnover + ivsum;
+  	   totturnover[curmonth] = totturnover[curmonth] + ivsum;
+  	   checkqty = checkqty + 1;
+  	   totcheckqty[curmonth] = totcheckqty[curmonth] + 1;
+  	   rwcnt = MatRowCnt(IVr);
+  	   for (i=0;i<rwcnt;i=i+1) begin
+  	     MatRowGet(IVr,i,IVrw);
+  	     if (NonBlank(IVrw.ArtCode)) then begin
+  	       itemsqty = itemsqty + IVrw.Quant*sign;
+  	       totitemsqty[curmonth] = totitemsqty[curmonth] + IVrw.Quant*sign;
+  	     end;
+  	   end;
+  	 end;
+  	end;RESETLOOP(IVr);
+    
+    prevday = curday;
+    prevmonth = curmonth;
+    curdate = addday(curdate,1);
+  end;
+
+  if (turnover!=0) then begin
+    printstrings(prevday,turnover,checkqty,itemsqty,false);
+  end; 
+  startformat(15);
+    OutString(0,0,"Year " & year,false);
+  endformat; 
+  for (i=1;i<13;i=i+1) begin
+    printstrings(i,totturnover[i],totcheckqty[i],totitemsqty[i],true);
+  end;
+		
+	endjob;
+return;
+end;
+
+
+
+/*global 
+procedure KPIRn(record RcVc RepSpec)
+begin
+  integer pos;
+  date curdate,frdate,todate,tempdate;
+  val turnover,checkqty,itemsqty;
+  array val totturnover,totcheckqty,totitemsqty;
+  integer i,rwcnt,prevday,prevmonth,curday,curmonth,tempday,year;
+  record IVVc IVr;
+  row IVVc IVrw;
+  Boolean TrHs,testf,foundf;
+	
+  //RepSpec.Media = mtFile;
+	StartReportNoheaderJob("KPI");
+	
+	pos = 0;
+	startformat(15);
+		OutString(pos,0,"Месяц/день",false);
+		OutString(pos+=50,0,"Оборот",false);
+		OutString(pos+=50,0,"Кол.Чеков",false);
+		OutString(pos+=50,0,"Кол.Изделий",false);
+		OutString(pos+=50,0,"Цена чека",false);
+		OutString(pos+=50,0,"Цена изд.",false);
+		OutString(pos+=50,0,"Кол.изд.в чеке",false);
+	endformat;
+	
+	year = GetYear(RepSpec.sStartDate);
+	frdate = StringToDate("1/1/" & year);
+	todate = StringToDate("31/12/" & year);
+	
+	curdate = frdate;
+	while (curdate<=todate) begin
+	  
+	  curdate = addday(curdate,1);
+	end;
+
+	IVr.InvDate = frdate;
+	TrHs = true;
+	foundf = false;
+	while (LoopKey("InvDate",IVr,1,TrHs)) begin
+	 testf = true;
+	 if (IVr.InvDate<frdate or IVr.OKFlag!=1 or IVr.Invalid==1) then begin testf = false; end;
+	 if (IVr.InvDate>todate) then begin TrHs = false; testf = false; end;
+	 if (testf) then begin
+	   curday = GetDay(IVr.InvDate);
+	   curmonth = GetMonth(IVr.InvDate);
+	   if (prevday==0) then begin
+	     startformat(15);
+	       OutString(0,0,"Month " & curmonth,false);
+	     endformat;
+	     prevday = curday;
+	     if (curday>1) then begin
+      	 tempday = 1;
+      	 while (tempday<curday) begin
+      	   printstrings(tempday,0,0,0,false);
+      	   tempday = tempday + 1;
+      	 end;  
+       end;
+       foundf = true;
+	   end;
+	   if (prevmonth==0) then begin
+	     prevmonth = curmonth;
+	   end;
+	   
+	   if (curmonth!=prevmonth) then begin
+	     printstrings(prevday,turnover,checkqty,itemsqty,false);
+	     turnover = 0;
+	     checkqty = 0;
+	     itemsqty = 0;
+	     tempdate = StringToDate("1/" & curmonth & "/" & year);
+       tempdate = AddDay(tempdate,-1);
+       tempday = GetDay(tempdate) - prevday;
+       if (tempday>0) then begin
+         i = 1;
+         while (tempday>0) begin
+      	   printstrings(i,0,0,0,false);
+      	   i = i + 1;
+      	   tempday = tempday - 1;
+      	 end;  
+       end;
+	     startformat(15);
+	       OutString(0,0,"Month " & curmonth,false);
+	     endformat;
+	     if (curday>1) then begin
+      	 tempday = 1;
+      	 while (tempday<curday) begin
+      	   printstrings(tempday,0,0,0,false);
+      	   tempday = tempday + 1;
+      	 end;  
+       end;
+       
+	   end;
+	   
+	   if (curmonth==prevmonth and curday!=prevday) then begin
+	     printstrings(prevday,turnover,checkqty,itemsqty,false);
+	     turnover = 0;
+	     checkqty = 0;
+	     itemsqty = 0;
+	   end;
+	   
+	   turnover = turnover + IVr.Sum4;
+	   totturnover[curmonth] = totturnover[curmonth] + IVr.Sum4;
+	   checkqty = checkqty + 1;
+	   totcheckqty[curmonth] = totcheckqty[curmonth] + 1;
+	   rwcnt = MatRowCnt(IVr);
+	   for (i=0;i<rwcnt;i=i+1) begin
+	     MatRowGet(IVr,i,IVrw);
+	     if (NonBlank(IVrw.ArtCode)) then begin
+	       itemsqty = itemsqty + IVrw.Quant;
+	       totitemsqty[curmonth] = totitemsqty[curmonth] + IVrw.Quant;
+	     end;
+	   end;
+	   
+	   prevday = GetDay(IVr.InvDate);
+	   prevmonth = GetMonth(IVr.InvDate);
+	 end;
+	end;
+	
+	if (foundf) then begin
+	  if (turnover!=0) then begin
+	    printstrings(prevday,turnover,checkqty,itemsqty,false);
+	  end; 
+	  startformat(15);
+      OutString(0,0,"Year " & year,false);
+    endformat; 
+	  for (i=1;i<totturnover.Length;i=i+1) begin
+	    printstrings(i,totturnover[i],totcheckqty[i],totitemsqty[i],true);
+	  end;
+	end;
+		
+	endjob;
+return;
+end;*/

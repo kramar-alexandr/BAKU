@@ -675,3 +675,17 @@ begin
   EndWindow;
 end;
 
+window KPIRClass:1	//Edit----------------------Dima  23.06.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет KPI",KPIRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  //PeriodField(h,v,"Период");
+ EditFieldTL(h,v,70,"Год",M4Str,Normal,41,f1,false,0);
+
+
+  EndWindow;
+end;
+
