@@ -142,7 +142,7 @@ begin
   Report("Оборот денег по классификации(клиенты)",CashInOutClientsByClassificationRClass,CashInOutByClassificationRn,0,modSL);	//Edit----------------------Dima  04.06.2015
   Report("Отчет бренд менеджера",BrandManagerRClass,BrandManagerRn,0,modNL);//Edit---------------Vitalii 18:30 11.06.2015
   Report("Отчет по срокам доставки заказов",DeliveryPeriodRClass,DeliveryPeriodRn,0,modPO); //Edit----------------------Dima  23.06.2015
-  Report("Отчет по KPI",KPIRClass,KPIRn,0,modSL); 
+  Report("KPI",KPIRClass,KPIRn,0,modSL); //Edit***************************Sasha2,11:28 03.07.2015
   
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
