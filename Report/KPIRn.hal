@@ -1,4 +1,5 @@
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 SetLangMode(LangRussian,"RUS",0);
 
 procedure printstrings(string daymonth,val turnover,val checkqty,val itemsqty,boolean monthdayf)
@@ -49,13 +50,15 @@ procedure KPIRn(record RcVc RepSpec)
 begin
   integer pos;
   date curdate,frdate,todate,tempdate;
-  val turnover,checkqty,itemsqty,ivsum;
+  val turnover,checkqty,itemsqty;
   array val totturnover,totcheckqty,totitemsqty;
   integer i,rwcnt,prevday,prevmonth,curday,curmonth,tempday,year,sign;
   record BaseCurBlock bascur;
   record IVVc IVr;
   row IVVc IVrw;
   Boolean TrHs,testf;
+  val fr,to1,to2,br1,br2;
+  string 20 curncy;
 
   //RepSpec.Media = mtFile;
 	StartReportNoheaderJob("KPI");
@@ -120,20 +123,26 @@ begin
   	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
   	     sign = -1;
   	   end;
-  	   if (IVr.CurncyCode!=bascur.BaseCur1) then begin
-         CurValToOtherCur(IVr.InvDate,IVr.CurncyCode,IVr.Sum4,bascur.BaseCur1,ivsum,DefaultCurRoundOff);
-         ivsum = ivsum*sign;
-       end else begin
-         ivsum = IVr.Sum4*sign;
-       end;
-  	   turnover = turnover + ivsum;
-  	   totturnover[curmonth] = totturnover[curmonth] + ivsum;
+			 fr = 1; to1 = 1;
+			 if(IVr.CurncyCode!=bascur.BaseCur1)then begin
+			   if (IVr.FrRate==0 or IVr.ToRateB1==0) then begin
+			     curncy = IVr.CurncyCode;
+				   GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+				   if(fr==0 or to1==0)then begin
+				     fr = 1;	to1 = 1;
+				   end;
+			   end else begin
+			     fr = IVr.FrRate;	to1 = IVr.ToRateB1;
+			   end; 
+			 end;
   	   checkqty = checkqty + 1;
   	   totcheckqty[curmonth] = totcheckqty[curmonth] + 1;
   	   rwcnt = MatRowCnt(IVr);
   	   for (i=0;i<rwcnt;i=i+1) begin
   	     MatRowGet(IVr,i,IVrw);
   	     if (NonBlank(IVrw.ArtCode)) then begin
+  	       turnover = turnover + (IVrw.Sum/fr*to1)*sign;
+  	       totturnover[curmonth] = totturnover[curmonth] + (IVrw.Sum/fr*to1)*sign;
   	       itemsqty = itemsqty + IVrw.Quant*sign;
   	       totitemsqty[curmonth] = totitemsqty[curmonth] + IVrw.Quant*sign;
   	     end;
