@@ -151,7 +151,9 @@ begin
 	array string 100 SharedStrings;
 	integer numOfUniqueSharedStrings,numOfSharedStrings,qtyMergeCell;
 	string 6 reportName;
-
+	
+	setexportcodepage("UTF8");
+	
 	reportName = "KPIRn";
 	if(windowsmode==1)then begin
 		fileToSave = "tmpxlsx.xlsx";

@@ -1,3 +1,6 @@
+external function roundmode SetRoundModeD(Integer);
+
+
 /*new and not working
 global 
 function Boolean CorspTRTest(record TRVc TRp,record AccVc MainAccp,Integer trrow,var val debvalp,var val credvalp)
@@ -158,8 +161,12 @@ begin
         end;
       end;
       runbal = runbal + TRrw.DebVal;
-      runbal = runbal - TRrw.CredVal;            
-      if (runbal==0) then begin
+      runbal = runbal - TRrw.CredVal;
+      
+      if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
+				logtext(0,MainAccp.AccNumber & " " & i & " " & runbal);
+			end;         
+      if (round(runbal,SetRoundModeD(2))==0) then begin// Edit ************************** Monday, 6 July 2015 17:44:52??????????
         if (i>=trrow) then begin
           if (((debcnt==1) and (firstdebrow==trrow)) or ((credcnt==1) and (firstcredrow==trrow))) then begin
             if (accexists) then begin
@@ -216,7 +223,13 @@ BEGIN
         	if(nonblank(object) and !setinset(object,TRrw.Objects))then begin testf = false; end;
         	if(TRrw.ovst>0)then begin testf = false; end;															//Edit----------------------Dima 10.02.2015
 					
+					if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
+						logtext(0,MainAccp.AccNumber & " " & CorAccp.AccNumber & " " & object & " " & i);
+					end;
           if (CorspTRTest(TRp,MainAccp,i,TRrw.DebVal,TRrw.CredVal) and testf) then begin// Edit ************************** Monday, 22 December 2014 13:30:12
+          	if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
+							logtext(0,MainAccp.AccNumber & " " & CorAccp.AccNumber & " " & object & " " & i);
+						end;
             SumDebet = SumDebet + TRrw.DebVal;
             SumCredit = SumCredit + TRrw.CredVal;                    
           end;       
@@ -240,6 +253,7 @@ begin
   Boolean found,found2,testf;
   record MainVc mainr;
   record AccVc CorAccr; 
+
   
   found = true;
   CorAccr.AccNumber = CorAcc;
@@ -260,7 +274,7 @@ begin
             TRr.IntYc = mainr.IntYc;
             if (ReadFirstMain(TRr,2,true)) then begin                
               if (mainr.TransDate==TRr.TransDate) then begin
-                ReadCorspTRRowSums(TRr,MainAccp,CorAccr,SumDebet,SumCredit,RepSpec.ObjStr);  
+                ReadCorspTRRowSums(TRr,MainAccp,CorAccr,SumDebet,SumCredit,RepSpec.ObjStr);                  
               end;
             end;                            
           end;
