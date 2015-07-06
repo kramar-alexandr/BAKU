@@ -773,6 +773,7 @@ BEGIN
   val realDisc, one; //Edit by Victor 05.12.14
   string 5 month;
   val fr,to1,to2,br1,br2,fifoTotSum;	//Edit by Victor 18.03.15
+  record IVVc corIVr;// Edit ************************** Friday, 3 July 2015 15:50:31
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -782,11 +783,11 @@ BEGIN
     end;
   end;
   
-  if (IVr.InvType==kInvoiceTypeNormal and IVr.Sum4<0) then begin //Edit***************************Sasha2,15:45 20.03.2015 {
+  if (IVr.InvType==kInvoiceTypeNormal and IVr.Sum4<0 or IVr.InvType==kInvoiceTypeCredit) then begin //Edit***************************Sasha2,15:45 20.03.2015 {
     rwcnt = MatRowCnt(IVr);
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(IVr,i,IVrw);
-      if (IVrw.Quant<0) then begin
+      if (IVrw.Quant<0 or IVr.InvType==kInvoiceTypeCredit) then begin
         if (IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin
           IVrw.Quant = -IVrw.Quant;
           IVrw.Sum = -IVrw.Sum;
@@ -950,7 +951,7 @@ BEGIN
     if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
       tstr = USetStr(1807);
       tstr = tstr & CreateInvoiceNumber(IVr.CredInv,IVr.CredOfficialSerNr);
-      OUTFORMFIELD("F_CREDITEDINVOICENR",tstr);
+      OUTFORMFIELD("F_CREDITEDINVOICENR",IVr.CredOfficialSerNr);// Edit ************************** Friday, 3 July 2015 15:51:17
     end;
   end;
   if (FIELDINFORM("F_CREDITEDINVOICEDATE")) then begin

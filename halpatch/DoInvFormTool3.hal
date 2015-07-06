@@ -539,16 +539,16 @@ BEGIN
   BlockLoad(MBr);
   if (MBr.NoTestprintEnabler==0) then begin
     if ((IVr.OKFlag==0) and (testprintoutf)) then begin
-      FormWaterMark(1117,onpage);
+      //FormWaterMark(1117,onpage);// Edit ************************** Friday, 3 July 2015 15:02:51
     end;
     if ((IVr.OKFlag!=0) and (IVr.Invalid==0)) then begin
       if (IVr.Prntdf!=0) then begin
-        FormWaterMark(1118,onpage);
+        //FormWaterMark(1118,onpage);// Edit ************************** Friday, 3 July 2015 15:02:52
       end;
     end;
   end;
   if (IVr.Invalid!=0) then begin
-    FormWaterMark(1400,onpage);
+    //FormWaterMark(1400,onpage);// Edit ************************** Friday, 3 July 2015 15:02:53
     res = false;
   end;
   PrintInvoiceWatermarks = res;

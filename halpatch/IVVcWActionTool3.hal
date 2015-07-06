@@ -587,6 +587,8 @@ begin
   res = 1958;
   BlockLoad(Mb);
   RecordCopy(CreditIVr,IVr);
+  
+  
   CreditIVr.PayDeal = "";
   CreditIVr.InvType = invtype;
   IVVcRecordDuplicateDo(CreditIVr,false,false);
@@ -623,6 +625,13 @@ begin
   CreditIVr.BaseRate2 = IVr.BaseRate2;
   CreditIVr.CredInv = IVr.SerNr;  
   CreditIVr.CredOfficialSerNr = IVr.OfficialSerNr;  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Friday, 3 July 2015 17:02:30
+	if(IVr.UpdStockFlag>0)then begin
+  	CreditIVr.UpdStockFlag = 1;
+  end;
+	// Edit End ---------------------------------------------- Edit End
+	
   if (Mb.CredUpdStock!=0) then begin
     if (nonblank(defreturnlocation)) then begin
       CreditIVr.Location = defreturnlocation;

@@ -7181,8 +7181,8 @@ begin
   RlCol   (355,355,"Дата скидки",RebDate,false); 
   RlColKey(430,430,"Поставщик",VECode,false,VECode); 
   RlColKey(500,500,"Наимен.",VEName,false,VEName); 
-  RlColKey(-200,-200,"Остаток",RVal,true,RVal);
-  CalculatedColumn(-60,-60,"Объект","InvoiceFromLocation_AP",true);
+  RlColKey(-200,-200,"Остаток",RVal,false,RVal);
+  CalculatedColumn(-100,-100,"Объект","InvoiceFromLocation_AP",true);
   SearchField("Найти");
   EndWindow;
 end;
