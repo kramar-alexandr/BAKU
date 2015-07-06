@@ -386,7 +386,7 @@ begin
   vs = 20;
   h = 160;
 
-  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCard);
+  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCardSClass);
   EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
 	
   EndWindow;
@@ -402,9 +402,9 @@ begin
   h = 160;
 
   PeriodField(h,v=6,"Период");
-  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCard);
+  EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCardSClass);
   EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
-	
+  EditFieldTL(h,v+=vs, 150,"Компании",   M4Str,Normal,90,f3,false,Companies2SClass);//Edit----------------------Dima  06.07.2015
   EndWindow;
 end;
 
@@ -417,7 +417,7 @@ begin
   vs = 20;
   h = 160;
 		EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f1,false,CUSClass);
-		EditFieldTL(h,v+=vs, 150,"Накопительная карта",   M4UStr,Normal,30,f2,false,LoyaltyCard);
+		EditFieldTL(h,v+=vs, 150,"Накопительная карта",   M4UStr,Normal,30,f2,false,LoyaltyCardSClass); //Edit----------------------Dima  06.07.2015
   EndWindow;
 end;
 
