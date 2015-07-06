@@ -132,16 +132,16 @@ end;
 
 global procedure PasteRetItems()
 begin
-integer wn,i,mtrw,mwn,cnt;
-record IVVc IVr;
-row IVVc IVrw;
+integer wn,i,mtrw,mwn,cnt,length;
+record IVVc IVr,IV2r; //Edit***************************Sasha2,13:56 03.07.2015
+row IVVc IVrw,IV2rw; //Edit***************************Sasha2,13:59 03.07.2015
 string 100 artcode,art;
 val price,rebate,sum,qty;
 array string 100 params;
 string 255 inwarning,warning;
 Integer sernrf,k;
 Boolean chsum;
-string 20 tstr,transnr,rowstr;
+string 20 tstr,transnr,rowstr; 
 
   wn = curwindow;
   mwn = motherwindow(wn);
@@ -159,7 +159,18 @@ string 20 tstr,transnr,rowstr;
     rebate = evaltoval(mid(params[3+k],0,len(params[3+k])-1));
     sum = evaltoval(params[4+k]);
     transnr = params[8+k];
+    length = len(transnr); //Edit***************************Sasha2,13:51 03.07.2015 {
+    for (i=0;i<length;i=i+1) begin
+      if (mid(transnr,i,1)==chr(35)) then begin
+        transnr = mid(transnr,i+1,length-i-1);
+        i = length;
+      end;
+    end; //Edit***************************Sasha2,13:51 03.07.2015 }
     rowstr = params[9+k];
+    
+    IV2r.SerNr = StringToLongInt(transnr);
+    ReadFirstMain(IV2r,1,true);
+    MatRowGet(IV2r,StringToInt(rowstr),IV2rw);
     
     IVrw.ArtCode = art;
     matrowput(IVr,mtrw,IVrw);
@@ -175,6 +186,10 @@ string 20 tstr,transnr,rowstr;
     matrowget(IVr,mtrw,IVrw);
     IVrw.vRebate = rebate;
     matrowput(IVr,mtrw,IVrw);
+    
+    matrowget(IVr,mtrw,IVrw); //Edit***************************Sasha2,14:13 03.07.2015 {
+    IVrw.FIFO = IV2rw.FIFO;
+    matrowput(IVr,mtrw,IVrw); //Edit***************************Sasha2,14:13 03.07.2015 }
     
     putwindowrecord(mwn,IVr);
     updatebrowses(mwn);

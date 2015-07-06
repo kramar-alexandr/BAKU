@@ -1733,9 +1733,13 @@ begin
 										infile = sourceIHr.InFileName;
 										totcostpricecurncy = sourceIHr.TotCostPriceCurncy;
   								end else begin
-  								//matrowget(IVr,IHr.Row,IVrw);
+  								  matrowget(IVr,IHr.Row,IVrw);
 										curncy = INr.LastPurchCurncyCode;
-										totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
+										if (IVrw.Quant<0 and IVrw.FIFO!=0) then begin //Edit***************************Sasha2,15:45 03.07.2015 {
+										  totcostpricecurncy = IVrw.FIFO * IHr.Qty;
+										end else begin
+										  totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
+										end; //Edit***************************Sasha2,15:45 03.07.2015 }
 										infile = filename;
 										indate = IHr.TransDate;
   								end;

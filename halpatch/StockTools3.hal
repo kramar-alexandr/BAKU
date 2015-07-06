@@ -1443,6 +1443,13 @@ BEGIN
           location = MainStockRec.MainStock;
         end;  
         if (nonblank(IVrw.ArtCode)) then begin
+          if (IVrw.Quant<0 and IVrw.FIFO!=0) then begin //Edit***************************Sasha2,15:00 03.07.2015 {
+            if (IVrw.FIFO<0) then begin
+              IVrw.FIFO = IVrw.FIFO*(-1);
+            end;
+            IVrw.FIFORowVal = absoluteval(IVrw.FIFO*IVrw.Quant);
+            goto L80SKIPROWIVUpdateFIFO;
+          end; //Edit***************************Sasha2,15:00 03.07.2015 }
           IVrw.FIFO = blankval;
           IVrw.FIFORowVal = blankval;
           skpif = true;

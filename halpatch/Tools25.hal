@@ -62,6 +62,9 @@ string 100 tstr;
           artcodes[counter] = artcodes[counter] & chr(9) & IVr.Location;
           artcodes[counter] = artcodes[counter] & chr(9) & "      " & IVr.CustCode;
           artcodes[counter] = artcodes[counter] & chr(9) & "      " & IVr.Addr0;
+          artcodes[counter] = artcodes[counter] & chr(9) & "      #" & IVr.SerNr; //Edit***************************Sasha2,12:39 03.07.2015
+          artcodes[counter] = artcodes[counter] & chr(9) & IHr.Row; //Edit***************************Sasha2,12:39 03.07.2015
+          artcodes[counter] = artcodes[counter] & chr(9); //Edit***************************Sasha2,13:39 03.07.2015
           counter = counter + 1;
         end;
 			end;
