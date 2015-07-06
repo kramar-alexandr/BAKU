@@ -85,6 +85,7 @@ begin
   Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
   Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
   Report("Stock list for pricing",ItemStockStatRClass,StockListForPricingRn,0,modDI);
+  Report("KPI Report",KPIRClass,KPIRn,0,modSL); 
   
   Document("Mails",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Item Labels",INinStockRClass,INinStockForm,INinStockFClass,modIN);
