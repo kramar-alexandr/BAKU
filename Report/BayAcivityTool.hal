@@ -257,20 +257,30 @@ record CUVc CUr;
 	record CompaniesBlock CBb;
 	row CompaniesBlock CBrw;
 	integer i,mtrw;
-	boolean findf,TrHs,testf,testf1;
+	boolean findf,TrHs,testf,testf1,nextCust;
 	string 20 custcode;
-	date lastdate;
+	date lastBuyDate;
 	time lasttime;
 	string 100 lastloc,temp,companiesStr;
 	array string 20 artcode,loc,curncy;
+	array date lastDates;
+	array longint lastSerNrs;
 	array val qty,sum;
 	integer aqty,ai,ivmtrw,ivi;
 	record LocationVc Locr;
 	date frdate,todate;
 	boolean findloc;
 	record BaseCurBlock BCb;
-	integer pos,companiesLength;
-	array integer companies; 
+	integer pos,companiesLength,shopsLength;
+	array integer companies;
+	array string 20 shops;  
+	longint lastInvoiceNr;
+	vector boolean include;
+	string 20 IncludeIndex;
+	
+//При просмотре клиентов, кто не совершал покупок, все покупавшие клиенты заносятся в вектор include
+//вместе с названием бутиков, или словом "ALL", если не был выбран бутик.
+//При выводе пролистывается регистр клиентов из которого выводятся все, кто не содержится в векторе include
 	
 	frdate = RepSpec.sStartDate;
 	todate = RepSpec.sEndDate;
@@ -305,7 +315,7 @@ record CUVc CUr;
 	mtrw = matrowcnt(CBb);
 	
 	companiesLength = 0;
-	if (nonblank(RepSpec.f3)) then begin
+	if (nonblank(RepSpec.f3)) then begin		//Edit----------------------Dima  07.07.2015
 		companiesStr = RepSpec.f3;
 		LogText(0,companiesStr);
 		pos = 0;
@@ -323,11 +333,23 @@ record CUVc CUr;
 		  companies[i] = StringToInt(CBrw.CompCode);
 		end;
 		companiesLength = mtrw;
-	end; 
+	end; 												
 	
-				For(i=0;i<companiesLength;i=i+1) begin
-				LogText(0,"comp:  " & companies[i]);
-				END;
+	
+	shopsLength = 0;
+	if (RepSpec.flags[1]>0 and nonblank(RepSpec.f4)) then begin
+			pos = 0;
+			ExtractObj(RepSpec.f4,pos,temp);
+			while(nonblank(temp)) begin
+				if(nonblank(temp))then begin
+					shops[shopsLength] = temp;
+					shopsLength = shopsLength + 1;
+				end;
+				ExtractObj(RepSpec.f4,pos,temp);
+			end;
+	end;
+																		//Edit--end--------------------Dima  07.07.2015
+	
 	
 		startreportnoheaderjob("Отчет по активности клиентов по бутикам");
 		startformat(15);
@@ -336,21 +358,22 @@ record CUVc CUr;
 			outstring(100,0,"Бутик",false);
 			outstring(150,0,"Кол-во покупок",false);
 			outstring(200,0,"Сумма",false);
-			outstring(250,0,"Валюта",false);
-			outstring(300,0,"ФИО",false);
-			outstring(350,0,"Адрес",false);
-			outstring(400,0,"Телефон",false);
+			outstring(250,0,"Дата последней",false);
+			outstring(250,0,"№ последней с/ф",false);
+			outstring(300,0,"Валюта",false);
+			outstring(330,0,"ФИО",false);
+			outstring(380,0,"Адрес",false);
+			outstring(450,0,"Телефон",false);
 		endformat;
 		
 		if(findf)then begin
+
 			For(ivi=0;ivi<aqty;ivi=ivi+1) begin
 				qty[ivi] = blankval;
 				sum[ivi] = blankval;
 			end;
 			aqty = 0;
-			lastdate = "";
-			lasttime = "";
-//			For(i=0;i<mtrw;i=i+1) begin
+			lastBuyDate = "";
 			For(i=0;i<companiesLength;i=i+1) begin
 				setcompany(companies[i],false);	//Edit----------------------Dima  06.07.2015
 					blockload(BCb);
@@ -364,8 +387,14 @@ record CUVc CUr;
 						if(IVr.OKFlag==0)then begin testf = false; end;
 						if(IVr.Sum4<=0)then begin testf = false; end;
 						if(IVr.Invalid==1)then begin testf = false; end;
+						if(nonblank(RepSpec.f4) and ((SetInSet(IVr.Location,RepSpec.f4)==false) or blank(IVr.Location)) ) then begin testf = false; end;//Edit--------------Dima  07.07.2015
+						
 						
 						if(testf)then begin
+							if (IVr.InvDate>lastBuyDate) then begin 	//Edit----------------------Dima  07.07.2015
+										lastBuyDate = IVr.InvDate;
+										lastInvoiceNr = IVr.SerNr; 
+							end;						
 							Locr.Code = IVr.Location;
 							readfirstmain(Locr,1,true);
 							findloc = false;
@@ -373,6 +402,8 @@ record CUVc CUr;
 								if(loc[ivi]==Locr.Code & " " & Locr.Name)then begin
 									qty[ivi] = qty[ivi] + IVr.TotQty;
 									sum[ivi] = sum[ivi] + IVr.BaseSum4;
+									lastDates[ivi] = lastBuyDate;
+									lastSerNrs[ivi] = lastInvoiceNr;
 									findloc = true;
 								end;
 							end;
@@ -380,6 +411,8 @@ record CUVc CUr;
 								qty[aqty] = qty[aqty] + IVr.TotQty;
 								sum[aqty] = sum[aqty] + IVr.BaseSum4;
 								loc[aqty] = Locr.Code & " " & Locr.Name;
+								lastDates[ivi] = lastBuyDate;
+								lastSerNrs[ivi] = lastInvoiceNr;								
 								curncy[aqty] = BCb.BaseCur1;
 								aqty = aqty + 1;
 							end;
@@ -390,7 +423,7 @@ record CUVc CUr;
 				resetcompany(1);
 			end; 
 			
-			if(aqty>0)then begin
+			if(aqty>0 and RepSpec.flags[1]==0)then begin	//Edit----------------------Dima  08.07.2015
 				For(i=0;i<aqty;i=i+1) begin
 					startformat(15);
 						outstring(0,0,LCr.SerNr,false);
@@ -398,10 +431,12 @@ record CUVc CUr;
 						outstring(100,0,loc[i],false);
 						outstring(150,0,qty[i],false);
 						outstring(200,0,sum[i],false);
-						outstring(250,0,curncy[i],false);
-						outstring(300,0,CUr.Name,false);
-						outstring(350,0,CUr.InvAddr0,false);
-						outstring(400,0,CUr.Phone,false);
+						outstring(250,0,lastDates[i],false);
+						outstring(250,0,lastSerNrs[i],false);
+						outstring(300,0,curncy[i],false);
+						outstring(330,0,CUr.Name,false);
+						outstring(380,0,CUr.InvAddr0,false);
+						outstring(450,0,CUr.Phone,false);
 					endformat;
 				end;
 			end;
@@ -412,7 +447,7 @@ record CUVc CUr;
 		end else begin
 			if(blank(RepSpec.f1) and blank(RepSpec.f2))then begin
 				LCr.SerNr = "";
-				while(loopmain(LCr,1,true))begin
+				while(loopmain(LCr,1,true)) begin
 					testf1 = true;
 					if(blank(LCr.CustCode))then begin testf1 = false; end;
 					if(blank(LCr.Closed==1))then begin testf1 = false; end;
@@ -427,25 +462,41 @@ record CUVc CUr;
 							sum[ivi] = blankval;
 						end;
 						aqty = 0;
-						lastdate = "";
-						lasttime = "";
-						//For(i=0;i<mtrw;i=i+1) begin
-						//	setcompany(i+1,false);
+						
 							For(i=0;i<companiesLength;i=i+1) begin
 							setcompany(companies[i],false);
 								blockload(BCb);
+								lastBuyDate = "";
 								IVr.CustCode = custcode;
 								IVr.InvDate = frdate;
 								TrHs = true;
-								while(loopkey("CustDate",IVr,2,TrHs))begin
+								while(loopkey("CustDate",IVr,2,TrHs)) begin
 									testf = true;
 									if(IVr.CustCode!=custcode)then begin TrHs = false; testf = false; end;
 									if(IVr.InvDate>todate)then begin TrHs = false; testf = false; end;
 									if(IVr.OKFlag==0)then begin testf = false; end;
 									if(IVr.Sum4<=0)then begin testf = false; end;
 									if(IVr.Invalid==1)then begin testf = false; end;
+									if(nonblank(RepSpec.f4) and ((SetInSet(IVr.Location,RepSpec.f4)==false) or blank(IVr.Location)) ) then begin testf = false; end;//Edit----------------------Dima  07.07.2015
+									
+									
+									if(RepSpec.flags[1]>0 and (testf==true)) then begin		//Edit----------------------Dima  08.07.2015
+										if (nonblank(RepSpec.f4)) then begin
+											IncludeIndex = custcode & "*" & IVr.Location;
+										end else begin
+											IncludeIndex = custcode & "*ALL";	
+										end;
+										include[IncludeIndex] = true;			
+										testf = false;				
+									end;									
 									
 									if(testf)then begin
+									
+										if (IVr.InvDate>lastBuyDate) then begin 	//Edit----------------------Dima  07.07.2015
+												lastBuyDate = IVr.InvDate;
+												lastInvoiceNr = IVr.SerNr; 
+										end;	
+									
 										Locr.Code = IVr.Location;
 										readfirstmain(Locr,1,true);
 										findloc = false;
@@ -453,6 +504,8 @@ record CUVc CUr;
 											if(loc[ivi]==Locr.Code & " " & Locr.Name)then begin
 												qty[ivi] = qty[ivi] + IVr.TotQty;
 												sum[ivi] = sum[ivi] + IVr.BaseSum4;
+												lastDates[ivi] = lastBuyDate;
+												lastSerNrs[ivi] = lastInvoiceNr;												
 												findloc = true;
 											end;
 										end;
@@ -460,6 +513,8 @@ record CUVc CUr;
 											qty[aqty] = qty[aqty] + IVr.TotQty;
 											sum[aqty] = sum[aqty] + IVr.BaseSum4;
 											loc[aqty] = Locr.Code & " " & Locr.Name;
+											lastDates[ivi] = lastBuyDate;
+											lastSerNrs[ivi] = lastInvoiceNr;											
 											curncy[aqty] = BCb.BaseCur1;
 											aqty = aqty + 1;
 										end;						
@@ -468,7 +523,7 @@ record CUVc CUr;
 								resetloop(IVr);
 							resetcompany(1);
 						end; 
-						if(aqty>0)then begin
+						if(aqty>0 and RepSpec.flags[1]==0)then begin
 							For(i=0;i<aqty;i=i+1) begin
 								startformat(15);
 									outstring(0,0,LCr.SerNr,false);
@@ -476,10 +531,12 @@ record CUVc CUr;
 									outstring(100,0,loc[i],false);
 									outstring(150,0,qty[i],false);
 									outstring(200,0,sum[i],false);
-									outstring(250,0,curncy[i],false);
-									outstring(300,0,CUr.Name,false);
-									outstring(350,0,CUr.InvAddr0,false);
-									outstring(400,0,CUr.Phone,false);
+									outstring(250,0,lastDates[i],false);
+									outstring(250,0,lastSerNrs[i],false);
+									outstring(300,0,curncy[i],false);
+									outstring(330,0,CUr.Name,false);
+									outstring(380,0,CUr.InvAddr0,false);
+									outstring(450,0,CUr.Phone,false);
 								endformat;
 							end;
 							gray_divider(0,1);
@@ -489,6 +546,68 @@ record CUVc CUr;
 					end;
 				end;
 			end;
+			
+			if (RepSpec.flags[1]>0) then begin //клиенты без покупок	//Edit----------------------Dima  08.07.2015
+					resetloop(LCr);
+					LCr.SerNr = blankval;
+					LCr.CustCode = "";			
+
+				if (blank(RepSpec.f4)) then begin //Locations					
+					while(loopKey("CustCode",LCr,1,true)) begin						
+						IncludeIndex = LCr.CustCode & "*ALL";
+						if ((include[IncludeIndex]==false)) then begin
+									CUr.Code = LCr.CustCode;
+									ReadFirstMain(CUr,1,true);
+									outstring(0,0,LCr.SerNr,false);			
+									outstring(50,0,CUr.Code,false);
+									outstring(100,0,"All boutiques",false);
+									outstring(150,0,"",false);
+									outstring(200,0,"",false);
+									outstring(250,0,"",false);
+									outstring(250,0,"",false);
+									outstring(300,0,"",false);
+									outstring(330,0,CUr.Name,false);
+									outstring(380,0,CUr.InvAddr0,false);
+									outstring(450,0,CUr.Phone,false);						
+									endformat;
+						end;
+					end;					
+				end else begin
+				
+					while(loopKey("CustCode",LCr,1,true)) begin
+						nextCust = false;
+						for(i=0;i<shopsLength;i=i+1) begin
+							IncludeIndex = LCr.CustCode & "*" & shops[i];
+							
+							if ((include[IncludeIndex]==false)) then begin           	
+										//CUr.Code = LCr.CustCode;
+										//ReadFirstMain(CUr,1,true);            	
+										outstring(0,0,LCr.SerNr,false);			    	
+										outstring(50,0,LCr.CustCode,false);
+										outstring(100,0,shops[i],false);
+										outstring(150,0,"",false);
+										outstring(200,0,"",false);
+										outstring(250,0,"",false);
+										outstring(250,0,"",false);
+										outstring(300,0,"",false);
+										outstring(330,0,LCr.CustName,false);
+										//outstring(380,0,CUr.InvAddr0,false);
+										//outstring(450,0,CUr.Phone,false);						
+										endformat;
+										nextCust = true;
+							end;
+						end;
+						if(nextCust) then begin
+							gray_divider(0,1);
+							startformat(15);
+							endformat;		
+						end;				
+					end;				
+					
+				end;
+			end;														//Edit--end-----------------------------Dima  08.07.2015
+			
+			
 		end;
 		
 	endjob;

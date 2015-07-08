@@ -405,6 +405,8 @@ begin
   EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCardSClass);
   EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
   EditFieldTL(h,v+=vs, 150,"Компании",   M4Str,Normal,90,f3,false,Companies2SClass);//Edit----------------------Dima  06.07.2015
+  EditFieldTL(h,v+=vs, 150,"Бутики",   M4Str,Normal,200,f4,false,LocationSClass);	//Edit----------------------Dima 07.07.2015
+  CheckBox(h-100,v+=30,0,"Показывать, только тех,кто не совершал покупок",flags[1]);
   EndWindow;
 end;
 
