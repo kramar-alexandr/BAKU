@@ -1906,7 +1906,19 @@ begin
 				end;
 			end;
 		end;
+		rwcnt = MatRowCnt(tempTRr);
+		for (i=0;i<rwcnt;i=i+1) begin
+			MatRowGet(tempTRr,i,tempTRrw);
+			tempTRrw.Curncy = left(tempTRrw.Curncy,3);
+			MatRowPut(tempTRr,i,tempTRrw);
+		end;
 		if (RepSpec.ArtMode == 1) then begin
+			rwcnt2 = MatRowCnt(tempTRr2);
+			for (i=0;i<rwcnt2;i=i+1) begin
+				MatRowGet(tempTRr2,i,tempTRrw);
+				tempTRrw.Curncy = left(tempTRrw.Curncy,3);
+				MatRowPut(tempTRr2,i,tempTRrw);
+			end;
 			rwcnt2 = MatRowCnt(tempTRr2);
 			for (j=0;j<rwcnt2-1;j=j+1) begin
 				for (i=0;i<rwcnt2-1;i=i+1) begin
@@ -2225,7 +2237,6 @@ begin
 	EndJob;
 	return;
 end;
-
 
 global procedure CheckItemHistErrorRn()
 begin
