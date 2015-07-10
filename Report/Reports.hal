@@ -1787,71 +1787,73 @@ begin
 				TRr.Number = mainr.TransNr;
 				TRr.IntYc = mainr.IntYc;
 				if (ReadFirstMain(TRr,2,true)) then begin
-					rwcnt = MatRowCnt(TRr);
-					for (i=0;i<rwcnt;i=i+1) begin
-						MatRowGet(TRr,i,TRrw);
-						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							switch (TRr.IntYc) begin
-								case IVYc:
-									IVr.SerNr = TRr.Number;
-									if (ReadFirstMain(IVr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
-										tempTRrw.ExtraComment = TRr.Comment;
-									end;
-								case IPYc:
-									IPr.SerNr = TRr.Number;
-									if (ReadFirstMain(IPr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
-										tempTRrw.ExtraComment = TRr.Comment;
-									end;
-								case CLInYc:
-									CLInr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLInr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
-										rwcnt2 = MatRowCnt(CLInr);
-										for (k=0;k<rwcnt2;k=k+1) begin
-											MatRowGet(CLInr,k,CLInrw);
-											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.ExtraComment = CLInrw.Comment;
+					if (mainr.TransDate == TRr.TransDate) then begin
+						rwcnt = MatRowCnt(TRr);
+						for (i=0;i<rwcnt;i=i+1) begin
+							MatRowGet(TRr,i,TRrw);
+							if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								switch (TRr.IntYc) begin
+									case IVYc:
+										IVr.SerNr = TRr.Number;
+										if (ReadFirstMain(IVr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+											tempTRrw.ExtraComment = TRr.Comment;
+										end;
+									case IPYc:
+										IPr.SerNr = TRr.Number;
+										if (ReadFirstMain(IPr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+											tempTRrw.ExtraComment = TRr.Comment;
+										end;
+									case CLInYc:
+										CLInr.SerNr = TRr.Number;
+										if (ReadFirstMain(CLInr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
+											rwcnt2 = MatRowCnt(CLInr);
+											for (k=0;k<rwcnt2;k=k+1) begin
+												MatRowGet(CLInr,k,CLInrw);
+												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
+													tempTRrw.ExtraComment = CLInrw.Comment;
+												end;
 											end;
 										end;
-									end;
-								case CLOutYc:
-									CLOutr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLOutr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
-										rwcnt2 = MatRowCnt(CLOutr);
-										for (k=0;k<rwcnt2;k=k+1) begin
-											MatRowGet(CLOutr,k,CLOutrw);
-											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.ExtraComment = CLOutrw.Comment;
+									case CLOutYc:
+										CLOutr.SerNr = TRr.Number;
+										if (ReadFirstMain(CLOutr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
+											rwcnt2 = MatRowCnt(CLOutr);
+											for (k=0;k<rwcnt2;k=k+1) begin
+												MatRowGet(CLOutr,k,CLOutrw);
+												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+													tempTRrw.ExtraComment = CLOutrw.Comment;
+												end;
 											end;
 										end;
-									end;
-								otherwise
-									YcToStr(TRr.IntYc,tempStr);
-									tempTRrw.Comment = tempStr & "." & TRr.Number;
-									tempTRrw.ExtraComment = TRr.Comment;
+									otherwise
+										YcToStr(TRr.IntYc,tempStr);
+										tempTRrw.Comment = tempStr & "." & TRr.Number;
+										tempTRrw.ExtraComment = TRr.Comment;
+								end;
+								tempTRrw.ReconDate = mainr.TransDate;	//в столбик Дата
+								tempTRrw.Curncy = TRrw.Curncy;			//валюта
+								tempTRrw.CurDebVal = TRrw.CurDebVal;	//в столбики Поступления AZN/EUR/USD
+								tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики Расходы AZN/EUR/USD
+								tempTRrw.DebVal = TRrw.DebVal;			//в столбик Поступления В осн. валюте
+								tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
+								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
+									MatRowPut(tempTRr2,l,tempTRrw);
+									l = l + 1;
+								end else begin
+									MatRowPut(tempTRr,j,tempTRrw);
+									j = j + 1;
+								end;
 							end;
-							tempTRrw.ReconDate = mainr.TransDate;	//в столбик Дата
-							tempTRrw.Curncy = TRrw.Curncy;			//валюта
-							tempTRrw.CurDebVal = TRrw.CurDebVal;	//в столбики Поступления AZN/EUR/USD
-							tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики Расходы AZN/EUR/USD
-							tempTRrw.DebVal = TRrw.DebVal;			//в столбик Поступления В осн. валюте
-							tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
-							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
-								MatRowPut(tempTRr2,l,tempTRrw);
-								l = l + 1;
-							end else begin
-								MatRowPut(tempTRr,j,tempTRrw);
-								j = j + 1;
+							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E131",TRrw.Objects)) then begin
+								BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
 							end;
-						end;
-						if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E131",TRrw.Objects)) then begin
-							BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
-						end;
-						if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E98",TRrw.Objects)) then begin
-							BalItem2 = BalItem2 - TRrw.CredVal + TRrw.DebVal;
+							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E98",TRrw.Objects)) then begin
+								BalItem2 = BalItem2 - TRrw.CredVal + TRrw.DebVal;
+							end;
 						end;
 					end;
 				end;
@@ -1869,64 +1871,66 @@ begin
 				TRr.Number = mainr.TransNr;
 				TRr.IntYc = mainr.IntYc;
 				if (ReadFirstMain(TRr,2,true)) then begin
-					rwcnt = MatRowCnt(TRr);
-					for (i=0;i<rwcnt;i=i+1) begin
-						MatRowGet(TRr,i,TRrw);
-						if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							switch (TRr.IntYc) begin
-								case IVYc:
-									IVr.SerNr = TRr.Number;
-									if (ReadFirstMain(IVr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
-										tempTRrw.ExtraComment = TRr.Comment;
-									end;
-								case IPYc:
-									IPr.SerNr = TRr.Number;
-									if (ReadFirstMain(IPr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
-										tempTRrw.ExtraComment = TRr.Comment;
-									end;
-								case CLInYc:
-									CLInr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLInr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
-										rwcnt2 = MatRowCnt(CLInr);
-										for (k=0;k<rwcnt2;k=k+1) begin
-											MatRowGet(CLInr,k,CLInrw);
-											if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.ExtraComment = USetStr(35029) & CLInrw.Comment;
+					if (mainr.TransDate == TRr.TransDate) then begin
+						rwcnt = MatRowCnt(TRr);
+						for (i=0;i<rwcnt;i=i+1) begin
+							MatRowGet(TRr,i,TRrw);
+							if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								switch (TRr.IntYc) begin
+									case IVYc:
+										IVr.SerNr = TRr.Number;
+										if (ReadFirstMain(IVr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35027) & IVr.SerNr;
+											tempTRrw.ExtraComment = TRr.Comment;
+										end;
+									case IPYc:
+										IPr.SerNr = TRr.Number;
+										if (ReadFirstMain(IPr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35028) & IPr.SerNr;
+											tempTRrw.ExtraComment = TRr.Comment;
+										end;
+									case CLInYc:
+										CLInr.SerNr = TRr.Number;
+										if (ReadFirstMain(CLInr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35029) & CLInr.SerNr;
+											rwcnt2 = MatRowCnt(CLInr);
+											for (k=0;k<rwcnt2;k=k+1) begin
+												MatRowGet(CLInr,k,CLInrw);
+												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
+													tempTRrw.ExtraComment = USetStr(35029) & CLInrw.Comment;
+												end;
 											end;
 										end;
-									end;
-								case CLOutYc:
-									CLOutr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLOutr,1,true)) then begin
-										tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
-										rwcnt2 = MatRowCnt(CLOutr);
-										for (k=0;k<rwcnt2;k=k+1) begin
-											MatRowGet(CLOutr,k,CLOutrw);
-											if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
-												tempTRrw.ExtraComment = CLOutrw.Comment;
+									case CLOutYc:
+										CLOutr.SerNr = TRr.Number;
+										if (ReadFirstMain(CLOutr,1,true)) then begin
+											tempTRrw.Comment = USetStr(35030) & CLOutr.SerNr;
+											rwcnt2 = MatRowCnt(CLOutr);
+											for (k=0;k<rwcnt2;k=k+1) begin
+												MatRowGet(CLOutr,k,CLOutrw);
+												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+													tempTRrw.ExtraComment = CLOutrw.Comment;
+												end;
 											end;
 										end;
-									end;
-								otherwise
-									YcToStr(TRr.IntYc,tempStr);
-									tempTRrw.Comment = tempStr & "." & TRr.Number;
-									tempTRrw.ExtraComment = TRr.Comment;
-							end;
-							tempTRrw.ReconDate = mainr.TransDate;
-							tempTRrw.Curncy = "TER";				//валюта
-							tempTRrw.CurDebVal = TRrw.DebVal;		//в столбики Поступления AZN терминал
-							tempTRrw.CurCredVal = TRrw.CredVal;		//в столбики Расходы AZN терминал
-							tempTRrw.DebVal = TRrw.DebVal;
-							tempTRrw.CredVal = TRrw.CredVal;
-							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
-								MatRowPut(tempTRr2,l,tempTRrw);
-								l = l + 1;
-							end else begin
-								MatRowPut(tempTRr,j,tempTRrw);
-								j = j + 1;
+									otherwise
+										YcToStr(TRr.IntYc,tempStr);
+										tempTRrw.Comment = tempStr & "." & TRr.Number;
+										tempTRrw.ExtraComment = TRr.Comment;
+								end;
+								tempTRrw.ReconDate = mainr.TransDate;
+								tempTRrw.Curncy = "TER";				//валюта
+								tempTRrw.CurDebVal = TRrw.DebVal;		//в столбики Поступления AZN терминал
+								tempTRrw.CurCredVal = TRrw.CredVal;		//в столбики Расходы AZN терминал
+								tempTRrw.DebVal = TRrw.DebVal;
+								tempTRrw.CredVal = TRrw.CredVal;
+								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
+									MatRowPut(tempTRr2,l,tempTRrw);
+									l = l + 1;
+								end else begin
+									MatRowPut(tempTRr,j,tempTRrw);
+									j = j + 1;
+								end;
 							end;
 						end;
 					end;
