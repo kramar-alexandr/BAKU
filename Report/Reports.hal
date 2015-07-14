@@ -1621,8 +1621,8 @@ begin
 	Integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint;
 	Date tempDate;
-	val BeginBalance50n51, BeginBalance50AZN,
-		BeginBalance50, BeginBalance51,
+	val BeginBalance50n51, BeginBalance50n51n53, BeginBalance50AZN,
+		BeginBalance50, BeginBalance51, BeginBalance53,
 		BeginBalance50USD, BeginBalance50EUR,
 		tempBal,
 		AZNTermDeb, AZNTermCred,
@@ -1631,7 +1631,7 @@ begin
 		USDDeb, USDCred,
 		BaseDeb, BaseCred,
 		BalItem1, BalItem2,
-		SaldoEndPeriodAZNTerm,
+		SaldoEndPeriodAZNTerm, SaldoEndPeriod53,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN;
 	integer tab1, tab2, tab3,
@@ -1675,11 +1675,13 @@ begin
 	//Ћстаток на...
 		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
 		FindNLAccBal("51",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
+		FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance53);
 		BeginBalance50n51 = BeginBalance50 + BeginBalance51;
+		BeginBalance50n51n53 = BeginBalance50n51 + BeginBalance53;
 		StartFormat(15);
 			OutString(tab1,0,USetStr(35015) & RepSpec.sStartDate & ":",false);
 			OutString(tab2,0,"",false);
-			OutString(tab3,0,BeginBalance50n51,false);
+			OutString(tab3,0,BeginBalance50n51n53,false);
 			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
@@ -2264,6 +2266,21 @@ begin
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,SaldoEndPeriodAZNTerm,false);
 			OutString(tab4+20,0,USetStr(35013),false);
+		EndFormat;
+		StartFormat(15);
+		EndFormat;
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35057),false);
+			FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod53);
+			OutString(tab3,0,SaldoEndPeriod53,false);
+			OutString(tab4+20,0,"AZN",false);
+		EndFormat;
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35058),false);
+			OutString(tab3,0,SaldoEndPeriod + SaldoEndPeriod53,false);
+			OutString(tab4+20,0,"AZN",false);
 		EndFormat;
 	EndJob;
 	return;
