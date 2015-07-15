@@ -2126,3 +2126,22 @@ begin
 	
 return;
 end;
+
+global updating procedure PasteCategoryToCUMn()	//Edit by Victor 14.07.15
+begin
+	record CUVc CUr;
+	boolean TrHs;
+
+	TrHs = true;
+
+	while (LoopMain(CUr,1,TrHs)) begin
+		
+		if (CUr.CUType==1) then begin
+				CUr.CustCat = "NONAM";
+				RecordStore(CUr,true); 
+		end;
+        
+	end;
+	
+return;
+end;
