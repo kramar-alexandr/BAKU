@@ -21,8 +21,7 @@ external function roundmode SetRoundModeD(Integer);
 external procedure CreateEAN128(var string);
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-
-
+remote procedure Handle_Zebra_Printing(record RcVc,var area,var integer); //Edit***************************Sasha2,17:01 08.07.2015
 
 
 procedure PrintINinStockLabel(record INVc INr,record DocVc Docr)
@@ -171,7 +170,35 @@ begin
   
   EndAndTestLabel = res;
   return;
-end;  
+end;
+
+//Edit***************************Sasha2,16:59 08.07.2015 {
+procedure Zebra_Printing(record RcVc RepSpec)
+begin
+  area aLabel;
+  integer k;
+  record ZebraPrinterBlock ZPb;
+  String 100 filename;
+  
+    blockload(ZPb);
+    
+    Handle_Zebra_Printing(RepSpec,aLabel,K);
+    if (k>0) then begin
+      filename = "ZebraPrint.epl";
+      CreateFile(filename);
+      closefile;
+      WriteAreaToFile(aLabel,filename,0);
+      millisleep(50);
+      if (WindowsMode==1) then begin
+        RunProgram("c:\\windows\\system32\\cmd.exe","/C \"" & "copy " & filename & " \\\\" & ZPb.CompNameWin & "\\" & ZPb.PrinterNameWin & "\"");
+      end;
+      if (WindowsMode==0) then begin
+        RunProgram("/usr/bin/lp","-d " & ZPb.PrinterNameMac & " -o raw " & filename);
+      end;
+    end;
+    
+  return;
+end;  //Edit***************************Sasha2,16:59 08.07.2015 }
 
 global
 procedure DoINinStockForm(record RcVc RepSpec,record RcVc RVr)
@@ -203,6 +230,10 @@ BEGIN
 	FDr.repname = RepSpec.repname;
   FDr.shortname = RepSpec.shortname;
  
+  if (RepSpec.flags[1]==0) then begin //Edit***************************Sasha2,16:45 08.07.2015 {
+    Zebra_Printing(RepSpec);
+    goto LDoPULabForm;
+  end; //Edit***************************Sasha2,16:45 08.07.2015 }
   
   if (ReadFirstMain(FDr,1,true)==false) then begin
     MessageBox(1624, " " & USetStr(1623));

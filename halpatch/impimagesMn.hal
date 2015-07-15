@@ -18,8 +18,8 @@ external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
 external procedure PUSumUp(var record PUVc); //Edit***************************Sasha2,13:09 08.04.2015
 external updating procedure CheckAndCreateClassification(var string); //Edit***************************Sasha2,16:36 20.04.2015
 external procedure CalculateIVVcPoints(var record IVVc);// Edit ************************** Thursday, 28 May 2015 11:14:54
-
-
+external procedure CreateEAN128(var string); //Edit***************************Sasha2,17:02 08.07.2015
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode); //Edit***************************Sasha2,17:17 08.07.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -2145,3 +2145,161 @@ begin
 	
 return;
 end;
+
+
+function val Get_Zebra_Price(integer switchf,string code,var String basecur)
+begin
+  record PLVc PLr;// Edit ************************** Tuesday, 1 April 2014 13:12:18
+	record PLDefVc PLDr;// Edit ************************** Tuesday, 1 April 2014 13:17:21
+	record BaseCurBlock BCb;// Edit ************************** Tuesday, 1 April 2014 13:17:21
+  val fr,to1,to2,br1,br2;// Edit ************************** Friday, 17 April 2015 18:53:45
+  val price;
+  roundmode rnd;
+  string 5 cur;
+  
+    basecur = "";
+    price = blankval;
+    switch (switchf) begin
+      case 0:
+        PLr.PLCode = "RRP";
+  	    PLr.ArtCode = code;
+  	    price = PLr.ExVatPrice;
+      case 1:
+        PLr.PLCode = "RRP";
+    	  PLr.ArtCode = code;
+    	  if(readfirstmain(PLr,2,true))then begin
+    	    blockload(BCb);
+    	    basecur = BCb.BaseCur1;
+    	  	PLDr.Code = "RRP";
+    			cur = "";
+    			readfirstmain(PLDr,1,true);
+    			cur = PLDr.CurncyCode;
+    			if(blank(cur))then begin
+    				cur = BCb.BaseCur1;
+    			end;
+    			if(nonblank(PLr.CurncyCode) and PLr.CurncyCode!=cur)then begin
+    				cur = PLr.CurncyCode;
+    			end;
+    			rnd = DefaultValRoundoff;
+    			rnd.decimals = 0;
+    			rnd.mode = kRoundingModeHalfDown;
+    			if(currentcompany==3)then begin
+    				rnd.step = kRoundingStep5;
+    			end;
+    			if(cur!=BCb.BaseCur1)then begin
+    				GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);
+    				price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
+    			end else begin
+    				price = PLr.ExVatPrice;
+    			end;
+    	  end;
+    end;
+  	
+  Get_Zebra_Price = price;
+  return;
+end;
+
+global //Edit***************************Sasha2,16:59 08.07.2015 {
+procedure Handle_Zebra_Printing(record RcVc RepSpec,var area aLabel,var integer K)
+begin
+  record PUVc newPUr;
+  record INVc INr;
+  record ItemStatusVc ISr;
+  row PUVc newPUrw;
+  integer i,mtrw,lenth,h;
+  boolean TrHs,testf;
+  string 50 frin,toin;
+  longint qty;
+  string 200 tstr;
+  string 5 basecur;
+  
+    
+    k=0;
+    recordnew(newPUr);
+    
+    frin = firstinrange(RepSpec.f1,20);
+		toin = lastinrange(RepSpec.f1,20);
+		INr.Code = frin; 
+		TrHs = true;
+		while(loopmain(INr,1,TrHs)) begin
+			testf = true;
+			if(nonblank(toin) and INr.Code>toin)then begin TrHs = false; testf = false; end;
+			ISr.Code = INr.Code;
+			qty = 0;
+			if(nonblank(RepSpec.f2))then begin
+				ISr.Location = RepSpec.f2;
+			end else begin
+				ISr.Location = ";;;";
+			end;
+			if(readfirstmain(ISr,2,true))then begin
+				qty = ISr.Instock;
+			end;
+			if(RepSpec.long1>0)then begin qty = RepSpec.long1; end;
+			if(qty<=0)then begin testf = false; end;
+			if(nonblank(RepSpec.f3) and setinset(RepSpec.f3,INr.DispGroups)==false)then begin testf = false; end;
+			/*If(nonblank(INr.AlternativeCode) and testf) then begin
+        lenth = len(INr.AlternativeCode);
+        if(lenth!=5)then begin testf=false; end;
+        for(h=0;h<lenth;h=h+1) begin
+          if((mid(INr.AlternativeCode,h,1)<"0") or (mid(INr.AlternativeCode,h,1)>"9")) then begin testf = false; end;
+        end;
+      end else begin
+        testf = false;
+      end;*/
+			if(testf)then begin
+				For(i=0;i<qty;i=i+1) begin
+				  matrowget(newPUr,k,newPUrw);
+          newPUrw.ArtCode = INr.Code;
+          /*tstr = INr.AlternativeCode;
+          CreateEAN128(tstr);
+          newPUrw.Spec = tstr;*/
+          newPUrw.Spec = INr.AlternativeCode;
+          newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur);
+          newPUrw.Comment = basecur;
+          matrowput(newPUr,k,newPUrw);
+          k=k+1;
+				end;
+			end; 
+		end;
+    
+    if(k>0)then begin
+      
+      SetAreaZeroSize(aLabel);
+      addtexttoarea("q336" & chr(13) & chr(10),aLabel); //Set Label Width 42 mm
+      addtexttoarea("Q64,16" & chr(13) & chr(10),aLabel); //Set Label Height 10mm
+      addtexttoarea("D10" & chr(13) & chr(10),aLabel); //print density
+      addtexttoarea("I8,C" & chr(13) & chr(10),aLabel); //appropriate character set for printing and display (KDU) "C": Wi1n2d5o1ws Cyrillic
+      addtexttoarea("FK\"1\"" & chr(13) & chr(10),aLabel); //iDelete forms from memory
+      addtexttoarea("FS\"1\"" & chr(13) & chr(10),aLabel); // Store Form
+      addtexttoarea("V00,30,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
+      addtexttoarea("V01,30,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
+      addtexttoarea("V02,15,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
+      addtexttoarea("V03,10,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
+      addtexttoarea("V04,3,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable V04 - Number of label sets
+      addtexttoarea("B8,24,0,1,3,2,32,N,V00" & chr(13) & chr(10),aLabel); // print standard bar codes
+      //addtexttoarea("X50,145,5,408,250" & chr(13) & chr(10),aLabel); // draw a box shape
+      addtexttoarea("A16,1,0,2,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A168,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A256,1,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("PAV04" & chr(13) & chr(10),aLabel); // to automatically print the form
+      addtexttoarea("FE" & chr(13) & chr(10),aLabel); // command is used to end a form store sequence.
+      addtexttoarea(chr(13) & chr(10),aLabel);
+      
+      mtrw = MatRowCnt(newPUr);
+      for (i=0;i<mtrw;i=i+1) begin
+        MatRowGet(newPUr,i,newPUrw);
+        if (nonblank(newPUrw.ArtCode)) then begin
+          addtexttoarea("FR\"1\"" & chr(13) & chr(10),aLabel); // to retrieve a form that was previously stored in memory
+          addtexttoarea("?" & chr(13) & chr(10),aLabel); //command signals the printer to Òfill-inÓ variable or counter ÒpromptÓ data field
+          addtexttoarea(newPUrw.Spec & chr(13) & chr(10),aLabel);
+          addtexttoarea(newPUrw.ArtCode & chr(13) & chr(10),aLabel);
+          addtexttoarea(newPUrw.UPrice & chr(13) & chr(10),aLabel);
+          addtexttoarea(newPUrw.Comment & chr(13) & chr(10),aLabel);
+          addtexttoarea("1" & chr(13) & chr(10),aLabel);
+          addtexttoarea(chr(13) & chr(10),aLabel);
+        end;
+      end; 
+    end;
+    
+  return;
+end;  //Edit***************************Sasha2,16:59 08.07.2015 }
