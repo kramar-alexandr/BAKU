@@ -2082,9 +2082,42 @@ begin
 return;
 end; //Edit***************************Sasha2,14:00 26.05.2015 }
 
+
+
+
+// Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 8 July 2015 16:07:17
+	
+procedure NumToHexExcel(string instr,var string res)
+BEGIN
+  string 16 hexs;
+  LongInt l,i;
+  string 255 tstr;
+  
+  res = "";
+  l = FirstInRange(instr,10);
+  hexs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (i=0;i<8;i=i+1) begin
+    tstr = tstr & Mid(hexs,BitAnd(l,25),1);
+    l = l/26;
+  end;
+  for (i=len(tstr);i>=0;i=i-1) begin
+    res = res & Mid(tstr,i,1);
+  end;  
+  RETURN;
+END;
+
+	// Edit End ---------------------------------------------- Edit End
+	
+
 global updating procedure FixLoyaltyPointMn()
 begin
-	record IVVc IVr;
+	string 100 res1,res2;
+	
+	res1 = 1;
+	NumToHexExcel(res1,res2);
+	messagebox(0,res2);
+	/*ecord IVVc IVr;
 	record LoyaltyCardVc LCr;
 	area log;
 	roundmode rnd;
@@ -2122,11 +2155,10 @@ begin
 	createfile("log.txt");
 	closefile;
 	writeareatofile(log,"log.txt",0);
-	setfileonserver(false);
+	setfileonserver(false);*/
 	
 return;
 end;
-
 global updating procedure PasteCategoryToCUMn()	//Edit by Victor 14.07.15
 begin
 	record CUVc CUr;
