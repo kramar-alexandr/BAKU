@@ -9,6 +9,7 @@ external procedure GetUserName(string,var string);
 //Edit---------------Vitalii 16:23 21.05.2015
 external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
 external procedure YcToStr(Integer,var string);
+external function Boolean CorspTRTest(record TRVc,record AccVc,Integer,var val,var val);
 
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
@@ -1617,9 +1618,10 @@ begin
 	record CLOutVc CLOutr;
 	row CLOutVc CLOutrw;
 	record CurncyCodeVc CCr;
+	record AccVc Accr;
 	array string 5 CurList;
 	Integer i,j,k,l,rwcnt,rwcnt2,curi;
-	boolean TrHs,firstprint;
+	boolean TrHs,firstprint,testf;
 	Date tempDate;
 	val BeginBalance50n51, BeginBalance50n51n53, BeginBalance50AZN,
 		BeginBalance50, BeginBalance51, BeginBalance53,
@@ -1633,7 +1635,8 @@ begin
 		BalItem1, BalItem2,
 		SaldoEndPeriodAZNTerm, SaldoEndPeriod53,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
-		SaldoEndPeriodEUR, SaldoEndPeriodAZN;
+		SaldoEndPeriodEUR, SaldoEndPeriodAZN,
+		corspdebval, corspcredval, Bal53;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
@@ -1641,6 +1644,36 @@ begin
 			tab13;
 	string 5 tempStr;
 	
+	BeginBalance50n51 = 0;
+	BeginBalance50n51n53 = 0;
+	BeginBalance50AZN = 0;
+	BeginBalance50 = 0;
+	BeginBalance51 = 0;
+	BeginBalance53 = 0;
+	BeginBalance50USD = 0;
+	BeginBalance50EUR = 0;
+	tempBal = 0;
+	AZNTermDeb = 0;
+	AZNTermCred = 0;
+	AZNDeb = 0;
+	AZNCred = 0;
+	EURDeb = 0;
+	EURCred = 0;
+	USDDeb = 0;
+	USDCred = 0;
+	BaseDeb = 0;
+	BaseCred = 0;
+	BalItem1 = 0;
+	BalItem2 = 0;
+	SaldoEndPeriodAZNTerm = 0;
+	SaldoEndPeriod53 = 0;
+	SaldoEndPeriod = 0;
+	SaldoEndPeriodUSD = 0;
+	SaldoEndPeriodEUR = 0;
+	SaldoEndPeriodAZN = 0;
+	corspdebval = 0;
+	corspcredval = 0;
+	Bal53 = 0;
 	tab1 = 0;	 tab2 = 27;	  tab3 = 79;
 	tab4 = 106;  tab5 = 133;  tab6 = 160;
 	tab7 = 210;	 tab8 = 260;  tab9 = 285;
@@ -1680,8 +1713,18 @@ begin
 		BeginBalance50n51n53 = BeginBalance50n51 + BeginBalance53;
 		StartFormat(15);
 			OutString(tab1,0,USetStr(35015) & RepSpec.sStartDate & ":",false);
-			OutString(tab2,0,"",false);
+			
+		EndFormat;
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35058),false);
 			OutString(tab3,0,BeginBalance50n51n53,false);
+			OutString(tab4,0,"AZN",false);
+		EndFormat;
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35057),false);
+			OutString(tab3,0,BeginBalance53,false);
 			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
@@ -1850,11 +1893,19 @@ begin
 									j = j + 1;
 								end;
 							end;
-							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E131",TRrw.Objects)) then begin
+							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects) and SetInSet("E131",TRrw.Objects)) then begin
 								BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
 							end;
-							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)and SetInSet("E98",TRrw.Objects)) then begin
+							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects )and SetInSet("E98",TRrw.Objects)) then begin
 								BalItem2 = BalItem2 - TRrw.CredVal + TRrw.DebVal;
+							end;
+							if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								Accr.AccNumber = "50";
+								ReadFirstMain(Accr,1,true);
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									Bal53 = Bal53 + TRrw.DebVal;
+								end;
 							end;
 						end;
 					end;
@@ -2196,7 +2247,7 @@ begin
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35017),false);
-			OutString(tab3,0,BaseCred - AZNTermCred,false);
+			OutString(tab3,0,BaseCred - AZNTermCred - Bal53,false);
 			OutString(tab4+20,0,"AZN",false);
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
@@ -2209,8 +2260,8 @@ begin
 		SaldoEndPeriodAZNTerm = BeginBalance51 + AZNTermDeb - AZNTermCred;
 		StartFormat(15);
 			OutString(tab1,0,"",false);
-			OutString(tab2,0,USetStr(35023),false);
-			OutString(tab3,0,BalItem1,false);
+			OutString(tab2,0,USetStr(35059),false);
+			OutString(tab3,0,Bal53,false);
 			OutString(tab4+20,0,"AZN",false);
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
@@ -2220,6 +2271,13 @@ begin
 		EndFormat;
 		Gray_Divider(tab2,tab5+20);
 		Black_Divider(tab7,tab10+20);
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35023),false);
+			OutString(tab3,0,BalItem1,false);
+			OutString(tab4+20,0,"AZN",false);
+		EndFormat;
+		Gray_Divider(tab2,tab5+20);
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35024),false);
