@@ -173,6 +173,7 @@ begin
 end;
 
 //Edit***************************Sasha2,16:59 08.07.2015 {
+global
 procedure Zebra_Printing(record RcVc RepSpec)
 begin
   area aLabel;
@@ -188,7 +189,7 @@ begin
       CreateFile(filename);
       closefile;
       WriteAreaToFile(aLabel,filename,0);
-      millisleep(50);
+      millisleep(100);
       if (WindowsMode==1) then begin
         RunProgram("c:\\windows\\system32\\cmd.exe","/C \"" & "copy " & filename & " \\\\" & ZPb.CompNameWin & "\\" & ZPb.PrinterNameWin & "\"");
       end;
@@ -231,7 +232,7 @@ BEGIN
   FDr.shortname = RepSpec.shortname;
  
   if (RepSpec.flags[1]==0) then begin //Edit***************************Sasha2,16:45 08.07.2015 {
-    Zebra_Printing(RepSpec);
+    ClientRemoteAsync.Zebra_Printing(RepSpec);
     goto LDoPULabForm;
   end; //Edit***************************Sasha2,16:45 08.07.2015 }
   
