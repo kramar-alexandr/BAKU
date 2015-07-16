@@ -198,7 +198,10 @@ BEGIN
 			for (j=0;j<brandcount;j=j+1) begin
 				if (BrandNonBlank[BrandList[j]]) then begin
 					for (k=0;k<curcount;k=k+1) begin
-						if ((BrandEndBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandBeginBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandDebet[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandCredit[BrandList[j] & ":" & CurencyList[k]] <> 0)) then begin
+						if ((BrandEndBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandEndBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"] <> 0) or 
+						(BrandBeginBal[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandBeginBal[BrandList[j] & ":" & CurencyList[k] & ":BASE"] <> 0) or 
+						(BrandDebet[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandDebet[BrandList[j] & ":" & CurencyList[k] & ":BASE"] <> 0) or 
+						(BrandCredit[BrandList[j] & ":" & CurencyList[k]] <> 0) or (BrandCredit[BrandList[j] & ":" & CurencyList[k] & ":BASE"] <> 0)) then begin
 							StartFormat(15);
 								if (BrandList[j] == "BLANKBRAND") then begin
 									OutString(tab1,0,"",false);
@@ -320,7 +323,7 @@ BEGIN
 			TotEndBal = 0;
 			BMRnPrintAccHeader(AccList[i],true,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
 			for (k=0;k<curcount;k=k+1) begin
-				if (BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) then begin
+				if ((BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k]] <> 0) or (BrandBeginBal[RepSpec.f1 & ":" & CurencyList[k] & ":BASE"] <> 0)) then begin
 					StartFormat(15);
 						OutString(tab1,0,"",false);
 						OutString(tab2,0,CurencyList[k],false);
