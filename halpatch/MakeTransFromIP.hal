@@ -227,7 +227,8 @@ END;
 function
 Integer AddIPRowPayMode(var record TRVc gTRp,var record IPVc IPp,record IVVc IVp,record PMBlock PMRec,Integer pmrow,Integer currow,
                         var val rowsum,var val currowsum,var val TotSum,record AccBlock ARAccb,Boolean dc1,Boolean dc2,Boolean accf,Integer transtocreate,LongInt insrow,Boolean custinfof,Integer objectonbankacc,
-                        record BaseCurBlock bcur,val prepbook,val prepbook2,Boolean NegativeAmountsf)
+                        record BaseCurBlock bcur,val prepbook,val prepbook2,Boolean NegativeAmountsf,
+                        array string SameAccNames,vector integer SameAccCases,integer SameAccCnt) //Edit***************************Sasha2,16:07 16.07.2015
 BEGIN
   record CheckVc Checkr;
   row PMBlock pmrw;
@@ -241,6 +242,8 @@ BEGIN
   val brd,brd2;
   val bookedwithcurrate,bookedwithcurrate2;
   Boolean rgdc1,rgdc2;
+  integer h; //Edit***************************Sasha2,16:22 16.07.2015
+  vector val SameAccVal; //Edit***************************Sasha2,12:34 03.04.2015
 
   MatRowGet(PMRec,pmrow,pmrw);
   MatRowGet(IPp,currow,IPrw);
@@ -446,17 +449,25 @@ BEGIN
                 res = 1917;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
+              if (SameAccCases[ARAccb.RateGainAcc]>1) then begin //Edit***************************Sasha2,16:17 16.07.2015 {
+                SameAccVal[ARAccb.RateGainAcc] = SameAccVal[ARAccb.RateGainAcc] + brd;
+              end else begin
+                AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+              end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end else begin
               if (GetAccName(ARAccb.RateLossAcc,tstr,60)==false) then begin
                 res = 1918;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
+              if (SameAccCases[ARAccb.RateLossAcc]>1) then begin //Edit***************************Sasha2,16:17 16.07.2015 {
+                SameAccVal[ARAccb.RateLossAcc] = SameAccVal[ARAccb.RateLossAcc] + brd;
+              end else begin
+                AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+              end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end;
           end;
           rgdc1 = true;
@@ -478,20 +489,35 @@ strango
                 res = 24221;
                 goto LAddIPRowPayMode;
               end;
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
+              if (SameAccCases[ARAccb.BankRateGainAcc]>1) then begin //Edit***************************Sasha2,16:17 16.07.2015 {
+                SameAccVal[ARAccb.BankRateGainAcc] = SameAccVal[ARAccb.BankRateGainAcc] + brd;
+              end else begin
+                AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+              end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end else begin
               if (GetAccName(ARAccb.BankRateLossAcc,tstr,60)==false) then begin
                 res = 24221;
                 goto LAddIPRowPayMode;
               end;
-
-              AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
+              if (SameAccCases[ARAccb.BankRateLossAcc]>1) then begin //Edit***************************Sasha2,16:17 16.07.2015 {
+                SameAccVal[ARAccb.BankRateLossAcc] = SameAccVal[ARAccb.BankRateLossAcc] + brd;
+              end else begin
+                AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+              end; //Edit***************************Sasha2,16:17 16.07.2015 } 
             end;
           end;
+          for (h=0;h<SameAccCnt;h=h+1) begin //Edit***************************Sasha2,16:22 16.07.2015 {
+            if (SameAccCases[SameAccNames[h]]>1) then begin
+              AddEuroCurncyNomARTrRow(gTRp,SameAccNames[h],otxt,"",tstr,SameAccVal[SameAccNames[h]],brd2,true,rgdc2,totsum,
+                                      "",blankval,blankval,blankval,blankval,blankval,
+                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+              SameAccVal[SameAccNames[h]] = 0;
+            end;
+          end; //Edit***************************Sasha2,16:23 16.07.2015 }
       end;    
     end;
     
@@ -1498,7 +1524,7 @@ L80:;
         if (pmrw.Code==IPrw.PayMode) then begin
           res = AddIPRowPayMode(gTRp,IPp,IVr,PMRec,j,i,booked,curbooked,TotSum,ARAccb,
                                 dc1,dc2,accf,transtocreate,-1,custinfof,ARAccb.ObjectonBankAcc,
-                                bascur,prepbook,prepbook2,NegativeAmountsf);
+                                bascur,prepbook,prepbook2,NegativeAmountsf,SameAccNames,SameAccCases,SameAccCnt); //Edit***************************Sasha2,16:08 16.07.2015
           if (res!=0) then begin
             goto LMakeTransFromIP2;
           end;
@@ -1520,7 +1546,7 @@ L80:;
           if (pmrw.Code==IPp.PayMode) then begin
             res = AddIPRowPayMode(gTRp,IPp,IVr,PMRec,j,i,booked,curbooked,TotSum,ARAccb,
                                   dc1,dc2,accf,transtocreate,insrow,custinfof,ARAccb.ObjectonBankAcc,
-                                  bascur,prepbook,prepbook2,NegativeAmountsf);
+                                  bascur,prepbook,prepbook2,NegativeAmountsf,SameAccNames,SameAccCases,SameAccCnt); //Edit***************************Sasha2,16:08 16.07.2015
             if (res!=0) then begin
               goto LMakeTransFromIP2;
             end;
