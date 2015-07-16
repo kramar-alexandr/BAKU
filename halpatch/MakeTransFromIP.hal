@@ -453,8 +453,8 @@ BEGIN
                 SameAccVal[ARAccb.RateGainAcc] = SameAccVal[ARAccb.RateGainAcc] + brd;
               end else begin
                 AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
-                                      "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+                                      bcur.BaseCur1,blankval,blankval,blankval,blankval,blankval,
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
               end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end else begin
               if (GetAccName(ARAccb.RateLossAcc,tstr,60)==false) then begin
@@ -465,8 +465,8 @@ BEGIN
                 SameAccVal[ARAccb.RateLossAcc] = SameAccVal[ARAccb.RateLossAcc] + brd;
               end else begin
                 AddEuroCurncyNomARTrRow(gTRp,ARAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
-                                      "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+                                      bcur.BaseCur1,blankval,blankval,blankval,blankval,blankval,
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
               end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end;
           end;
@@ -493,8 +493,8 @@ strango
                 SameAccVal[ARAccb.BankRateGainAcc] = SameAccVal[ARAccb.BankRateGainAcc] + brd;
               end else begin
                 AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
-                                      "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+                                      bcur.BaseCur1,blankval,blankval,blankval,blankval,blankval,
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
               end; //Edit***************************Sasha2,16:17 16.07.2015 }
             end else begin
               if (GetAccName(ARAccb.BankRateLossAcc,tstr,60)==false) then begin
@@ -505,16 +505,16 @@ strango
                 SameAccVal[ARAccb.BankRateLossAcc] = SameAccVal[ARAccb.BankRateLossAcc] + brd;
               end else begin
                 AddEuroCurncyNomARTrRow(gTRp,ARAccb.BankRateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
-                                      "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
+                                      bcur.BaseCur1,blankval,blankval,blankval,blankval,blankval,
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,11:13 08.04.2015
               end; //Edit***************************Sasha2,16:17 16.07.2015 } 
             end;
           end;
           for (h=0;h<SameAccCnt;h=h+1) begin //Edit***************************Sasha2,16:22 16.07.2015 {
             if (SameAccCases[SameAccNames[h]]>1) then begin
               AddEuroCurncyNomARTrRow(gTRp,SameAccNames[h],otxt,"",tstr,SameAccVal[SameAccNames[h]],brd2,true,rgdc2,totsum,
-                                      "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","","");
+                                      bcur.BaseCur1,blankval,blankval,blankval,blankval,blankval,
+                                      SameAccVal[SameAccNames[h]],blankval,"",-1,0,blankval,bd,-1,false,"","","");
               SameAccVal[SameAccNames[h]] = 0;
             end;
           end; //Edit***************************Sasha2,16:23 16.07.2015 }
@@ -1299,7 +1299,7 @@ BEGIN
                 tstr = tstr & IPrw.InvoiceNr;
               end;
               AddEuroCurncyTrRow(gTRp,ARAccb.RateGainAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/ brd,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
           end;
           if (rd>0) then begin
@@ -1317,7 +1317,7 @@ BEGIN
                 tstr = tstr & IPrw.InvoiceNr;
               end;
               AddEuroCurncyTrRow(gTRp,ARAccb.RateLossAcc,IPrw.Objects,"",tstr,rd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*rd2*/ brd,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
           end;          
 
@@ -1336,7 +1336,7 @@ BEGIN
                 tstr = tstr & IPrw.InvoiceNr;
               end;
               AddEuroCurncyTrRow(gTRp,ARAccb.BankRateGainAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/ brd,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
           end;
           if (brd>0) then begin
@@ -1354,7 +1354,7 @@ BEGIN
                 tstr = tstr & IPrw.InvoiceNr;
               end;
               AddEuroCurncyTrRow(gTRp,ARAccb.BankRateLossAcc,IPrw.Objects,"",tstr,brd,ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
+                                 bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/ brd,blankval,-1,false,""); //trrwcnt-2); //Edit***************************Sasha2,15:25 03.04.2015
             end;
           end;
           //Edit***************************Sasha2,13:29 03.04.2015 {  
@@ -1367,7 +1367,7 @@ BEGIN
           for (k=0;k<SameAccCnt;k=k+1) begin
             if (SameAccCases[SameAccNames[k]]>1) then begin
               AddEuroCurncyTrRow(gTRp,SameAccNames[k],IPrw.Objects,"",tstr,SameAccVal[SameAccNames[k]],ARAccb.BookRateGainPerIPRow==0,dc2,TotSum,
-                             bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/blankval,blankval,-1,false,""); //trrwcnt-2);
+                             bascur.BaseCur2,blankval,blankval,blankval,blankval,blankval,/*brd2*/ SameAccVal[SameAccNames[k]],blankval,-1,false,""); //trrwcnt-2);
               SameAccVal[SameAccNames[k]] = 0;
             end;
           end; //Edit***************************Sasha2,13:29 03.04.2015 }              
