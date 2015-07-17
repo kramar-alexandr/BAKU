@@ -145,8 +145,8 @@ begin
   Report("Отчет бренд менеджера",BrandManagerRClass,BrandManagerRn,0,modNL);//Edit---------------Vitalii 18:30 11.06.2015
   Report("Отчет по срокам доставки заказов",DeliveryPeriodRClass,DeliveryPeriodRn,0,modPO); //Edit----------------------Dima  23.06.2015
   Report("KPI Report",KPIRClass,KPIRn,0,modSL); 
-  //Report("KPI",KPITestRClass,KPITestRn,0,modSL);
-
+  Report("Отчет по учредителям",FounderRClass,FounderRn,0,modNL);////Edit---------------Vitalii 16:34 17.07.2015
+  
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
   Document("Накопительные карточки",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
@@ -565,6 +565,14 @@ begin
 	SString(35054,"Дата готовности(поставщик)");
 	SString(35055,"Дата отгрузки");
 	SString(35056,"Просрочка");	
+	
+	//FounderRn
+	SString(35060,"Отчет по учредителям");
+	SString(35061,"Учредители");
+  //SString(31234,"Товары");
+	SString(35062,"Погашение");
+	SString(35063,"Учредитель:");
+	
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

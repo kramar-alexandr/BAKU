@@ -1298,3 +1298,22 @@ begin
   CompLocationSClassOnOpenWindow = false;
   return;
 end; //Edit***************************Sasha2,10:50 07.04.2015 }
+
+global
+Function Boolean ObjStoreSClassOnOpenWindow(Integer wn)
+begin
+  
+	SetWindowSubset(wn,"STORE");
+  
+  ObjStoreSClassOnOpenWindow = false;
+  return;
+end;
+
+global
+Function Boolean ObjBrandSClassOnOpenWindow(Integer wn)
+begin
+	SetWindowSubset(wn,"BRAND");
+
+  ObjBrandSClassOnOpenWindow = false;
+  return;
+end;

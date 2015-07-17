@@ -1857,9 +1857,12 @@ begin
 											rwcnt2 = MatRowCnt(CLInr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLInr,k,CLInrw);
-												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
+												if ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
 													tempTRrw.ExtraComment = CLInrw.Comment;
 												end;
+											end;
+											if blank(tempTRrw.ExtraComment) then begin
+												tempTRrw.ExtraComment = CLInr.CorspComment;
 											end;
 										end;
 									case CLOutYc:
@@ -1869,9 +1872,12 @@ begin
 											rwcnt2 = MatRowCnt(CLOutr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLOutr,k,CLOutrw);
-												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+												if ((CLOutrw.Sum == TRrw.CurCredVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
 													tempTRrw.ExtraComment = CLOutrw.Comment;
 												end;
+											end;
+											if blank(tempTRrw.ExtraComment) then begin
+												tempTRrw.ExtraComment = CLOutr.CorspComment;
 											end;
 										end;
 									otherwise
@@ -1892,6 +1898,14 @@ begin
 									MatRowPut(tempTRr,j,tempTRrw);
 									j = j + 1;
 								end;
+								tempTRrw.ReconDate = "";
+								tempTRrw.Curncy = "";
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CredVal = blankval;
+								tempTRrw.Comment = "";
+								tempTRrw.ExtraComment = "";
 							end;
 							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects) and SetInSet("E131",TRrw.Objects)) then begin
 								BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
@@ -1949,9 +1963,12 @@ begin
 											rwcnt2 = MatRowCnt(CLInr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLInr,k,CLInrw);
-												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then begin
-													tempTRrw.ExtraComment = USetStr(35029) & CLInrw.Comment;
+												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then beginif ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
+													tempTRrw.ExtraComment = CLInrw.Comment;
 												end;
+											end;
+											if blank(tempTRrw.ExtraComment) then begin
+												tempTRrw.ExtraComment = CLInr.CorspComment;
 											end;
 										end;
 									case CLOutYc:
@@ -1961,9 +1978,12 @@ begin
 											rwcnt2 = MatRowCnt(CLOutr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLOutr,k,CLOutrw);
-												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then begin
+												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then beginif ((CLOutrw.Sum == TRrw.CurDebVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
 													tempTRrw.ExtraComment = CLOutrw.Comment;
 												end;
+											end;
+											if blank(tempTRrw.ExtraComment) then begin
+												tempTRrw.ExtraComment = CLOutr.CorspComment;
 											end;
 										end;
 									otherwise
@@ -1984,6 +2004,14 @@ begin
 									MatRowPut(tempTRr,j,tempTRrw);
 									j = j + 1;
 								end;
+								tempTRrw.ReconDate = "";
+								tempTRrw.Curncy = "";
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CredVal = blankval;
+								tempTRrw.Comment = "";
+								tempTRrw.ExtraComment = "";
 							end;
 						end;
 					end;

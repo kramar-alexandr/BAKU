@@ -4153,5 +4153,44 @@ begin
   RecordField(ParamVal2,M4Val,0,0);
   EndBlock; //Edit***************************Sasha2,11:36 15.07.2015 }
 			  
+  //Edit---------------Vitalii 10:52 17.07.2015
+  RecordBegin(ObjVc,-,"obj3");
+  NewAutosyncRegister(kSyncDirectionToClient,true);
+  RecordField(Code,M4Code,20,ObjVc);
+  RecordField(Comment,M4Str,60,0);
+  RecordField(MultiYear,M4Int,0,0);
+  RecordField(OTCode,M4Code,5,OTVc);
+  RecordField(TerminateFlag,M4Int,0,0);
+  RecordField(AutoObjects,M4UStr,60,ObjVc);
+  MainKeyBegin(Code,0);
+  KeySegment(Code);
+  KeyBegin(OTCode);
+  KeySegment(OTCode);
+  KeySegment(Code);
+  KeyBegin(Comment);
+  KeySegment(Comment);
+  KeySegment(Code);
+  KeyBegin(ActCode);
+  KeySegment(Code);
+  KeyBegin(ActOTCode);
+  KeySegment(OTCode);
+  KeySegment(Code);
+  KeyBegin(ActComment);
+  KeySegment(Comment);
+  KeySegment(Code);
+  SubSetKeyBegin2(AutoObjects);
+  AppendListFieldToKeyName(AutoObjects);
+  KeySegment(Code);
+  SubsetKeyBegin2(ActSbstOTCode);
+  StoreInBaseKey;
+  AppendFieldToKeyName(OTCode);
+  KeySegment(Code);
+  SubsetKeyBegin2(ActSbstComment);
+  StoreInBaseKey;
+  AppendFieldToKeyName(OTCode);
+  KeySegment(Comment);
+  KeySegment(Code);
+  EndRecord;
+  
   return;  
 end;
