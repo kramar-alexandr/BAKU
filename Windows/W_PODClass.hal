@@ -3416,14 +3416,14 @@ begin
   v = 24;
   MatrixBegin(4,v,-50,-22,-,1000);
   Flip(0);
-  if (HasJewelleryInterface) then begin
-    MatCol(1,24,"Серийный номер",0,SerialNr,false,SerialNrSClass); 
-    EnterSkip(Quant);
-    MatCol(1,130,"Товар",0,ArtCode,false,INSClass); 
-  end else begin
+  //if (HasJewelleryInterface) then begin		//Edit----------------------Dima  17.07.2015
+ //  MatCol(1,24,"Серийный номер",0,SerialNr,false,SerialNrSClass); 
+  //  EnterSkip(Quant);
+  //  MatCol(1,130,"Товар",0,ArtCode,false,INSClass); 
+  //end else begin
   MatCol(1,24,"Товар",0,ArtCode,false,INSClass);
   MatCol(1,120,"Кол-во",0,Quant,true,0);
-  end;
+  //end;
   flipnr = 1;
   Flip(flipnr); flipnr = flipnr + 1;
   MatCol(1,174,"Наим.",0,Spec,false,0);
