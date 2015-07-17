@@ -2285,7 +2285,7 @@ begin
           /*tstr = INr.AlternativeCode;
           CreateEAN128(tstr);
           newPUrw.Spec = tstr;*/
-          newPUrw.Spec = INr.AlternativeCode;
+          newPUrw.Spec = INr.Code;
           newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur);
           newPUrw.Comment = basecur;
           matrowput(newPUr,k,newPUrw);
