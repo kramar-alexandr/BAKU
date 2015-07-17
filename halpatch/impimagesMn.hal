@@ -2297,8 +2297,8 @@ begin
     if(k>0)then begin
       
       SetAreaZeroSize(aLabel);
-      addtexttoarea("q336" & chr(13) & chr(10),aLabel); //Set Label Width 42 mm
-      addtexttoarea("Q64,16" & chr(13) & chr(10),aLabel); //Set Label Height 10mm
+      addtexttoarea("q592" & chr(13) & chr(10),aLabel); //Set Label Width 74 mm
+      addtexttoarea("Q80,16" & chr(13) & chr(10),aLabel); //Set Label Height 10mm
       addtexttoarea("D10" & chr(13) & chr(10),aLabel); //print density
       addtexttoarea("I8,C" & chr(13) & chr(10),aLabel); //appropriate character set for printing and display (KDU) "C": Wi1n2d5o1ws Cyrillic
       addtexttoarea("FK\"1\"" & chr(13) & chr(10),aLabel); //iDelete forms from memory
