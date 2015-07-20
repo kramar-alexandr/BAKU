@@ -1963,7 +1963,7 @@ begin
 											rwcnt2 = MatRowCnt(CLInr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLInr,k,CLInrw);
-												if ((CLInrw.Sum == TRrw.CurDebVal) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) then beginif ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
+												if ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
 													tempTRrw.ExtraComment = CLInrw.Comment;
 												end;
 											end;
@@ -1978,7 +1978,7 @@ begin
 											rwcnt2 = MatRowCnt(CLOutr);
 											for (k=0;k<rwcnt2;k=k+1) begin
 												MatRowGet(CLOutr,k,CLOutrw);
-												if ((CLOutrw.Sum == TRrw.CurCredVal) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) then beginif ((CLOutrw.Sum == TRrw.CurDebVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
+												if ((CLOutrw.Sum == TRrw.CurCredVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
 													tempTRrw.ExtraComment = CLOutrw.Comment;
 												end;
 											end;
