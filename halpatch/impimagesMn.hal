@@ -2293,8 +2293,8 @@ begin
           end;
           newPUrw.Spec = tstr;
           newPUrw.ArtCode = INr.Code;
-          newPUrw.Comment = basecur;
           newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur);
+          newPUrw.Comment = basecur;
           matrowput(newPUr,k,newPUrw);
           k=k+1;
 				end;
@@ -2304,10 +2304,10 @@ begin
     if(k>0)then begin
       
       SetAreaZeroSize(aLabel);
-      //addtexttoarea("q592" & chr(13) & chr(10),aLabel); //Set Label Width 74 mm
-      addtexttoarea("q432" & chr(13) & chr(10),aLabel); //Set Label Width 54 mm
+      addtexttoarea("q592" & chr(13) & chr(10),aLabel); //Set Label Width 74 mm
+      //addtexttoarea("q432" & chr(13) & chr(10),aLabel); //Set Label Width 54 mm
       addtexttoarea("Q80,16" & chr(13) & chr(10),aLabel); //Set Label Height 10mm
-      addtexttoarea("D10" & chr(13) & chr(10),aLabel); //print density
+      addtexttoarea("D15" & chr(13) & chr(10),aLabel); //print density
       addtexttoarea("I8,C" & chr(13) & chr(10),aLabel); //appropriate character set for printing and display (KDU) "C": Wi1n2d5o1ws Cyrillic
       addtexttoarea("FK\"1\"" & chr(13) & chr(10),aLabel); //iDelete forms from memory
       addtexttoarea("FS\"1\"" & chr(13) & chr(10),aLabel); // Store Form
@@ -2317,10 +2317,10 @@ begin
       addtexttoarea("V03,10,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
       addtexttoarea("V04,3,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable V04 - Number of label sets
       //addtexttoarea("X50,145,5,408,250" & chr(13) & chr(10),aLabel); // draw a box shape
-      addtexttoarea("B1,1,0,1,1,2,40,N,V00" & chr(13) & chr(10),aLabel); // print standard bar codes
-      addtexttoarea("A1,48,0,2,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
-      addtexttoarea("A256,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
-      addtexttoarea("A256,32,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("B8,1,0,1,1,2,40,N,V00" & chr(13) & chr(10),aLabel); // print standard bar codes
+      addtexttoarea("A8,44,0,2,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A240,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A240,32,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
       addtexttoarea("PAV04" & chr(13) & chr(10),aLabel); // to automatically print the form
       addtexttoarea("FE" & chr(13) & chr(10),aLabel); // command is used to end a form store sequence.
       addtexttoarea(chr(13) & chr(10),aLabel);
@@ -2334,7 +2334,7 @@ begin
           addtexttoarea(newPUrw.Spec & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.ArtCode & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.Comment & chr(13) & chr(10),aLabel);
-          addtexttoarea(newPUrw.UPrice & chr(13) & chr(10),aLabel);
+          addtexttoarea(ValToString(newPUrw.UPrice,M4UVal,"","",1) & chr(13) & chr(10),aLabel); 
           addtexttoarea("1" & chr(13) & chr(10),aLabel);
           addtexttoarea(chr(13) & chr(10),aLabel);
         end;
