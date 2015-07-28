@@ -1620,7 +1620,7 @@ begin
 	record CurncyCodeVc CCr;
 	record AccVc Accr;
 	array string 5 CurList;
-	Integer i,j,k,l,rwcnt,rwcnt2,curi;
+	integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint,testf;
 	Date tempDate;
 	val BeginBalance50n51, BeginBalance50n51n53, BeginBalance50AZN,
@@ -1631,12 +1631,14 @@ begin
 		AZNDeb, AZNCred,
 		EURDeb, EURCred,
 		USDDeb, USDCred,
+		BaseDebErr, BDEBase, BDEVal, BDEDebTemp,
 		BaseDeb, BaseCred,
 		BalItem1, BalItem2,
 		SaldoEndPeriodAZNTerm, SaldoEndPeriod53,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN,
 		corspdebval, corspcredval, Bal53;
+	boolean BDEBaseChng, BDEValChng;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
@@ -1653,16 +1655,7 @@ begin
 	BeginBalance50USD = 0;
 	BeginBalance50EUR = 0;
 	tempBal = 0;
-	AZNTermDeb = 0;
-	AZNTermCred = 0;
-	AZNDeb = 0;
-	AZNCred = 0;
-	EURDeb = 0;
-	EURCred = 0;
-	USDDeb = 0;
-	USDCred = 0;
-	BaseDeb = 0;
-	BaseCred = 0;
+	BaseDebErr = 0;
 	BalItem1 = 0;
 	BalItem2 = 0;
 	SaldoEndPeriodAZNTerm = 0;
@@ -1833,6 +1826,11 @@ begin
 				TRr.IntYc = mainr.IntYc;
 				if (ReadFirstMain(TRr,2,true)) then begin
 					if (mainr.TransDate == TRr.TransDate) then begin
+						BDEBaseChng = false;
+						BDEValChng = false;
+						BDEBase = 0;
+						BDEVal = 0;
+						BDEDebTemp = 0;
 						rwcnt = MatRowCnt(TRr);
 						for (i=0;i<rwcnt;i=i+1) begin
 							MatRowGet(TRr,i,TRrw);
@@ -1891,6 +1889,15 @@ begin
 								tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики Расходы AZN/EUR/USD
 								tempTRrw.DebVal = TRrw.DebVal;			//в столбик Поступления В осн. валюте
 								tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
+								if ((TRrw.DebVal<>0) or (TRrw.CredVal<>0)) then begin
+									BDEBaseChng = true;
+									BDEBase = BDEBase + TRrw.DebVal - TRrw.CredVal;
+								end;
+								if ((TRrw.CurDebVal<>0) or (TRrw.CurCredVal<>0)) then begin
+									BDEValChng = true;
+									BDEVal = BDEVal + TRrw.CurDebVal - TRrw.CurCredVal;
+								end;
+								BDEDebTemp = BDEDebTemp + TRrw.DebVal;
 								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
 									MatRowPut(tempTRr2,l,tempTRrw);
 									l = l + 1;
@@ -1921,6 +1928,25 @@ begin
 									Bal53 = Bal53 + TRrw.DebVal;
 								end;
 							end;
+							if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								Accr.AccNumber = "50";
+								ReadFirstMain(Accr,1,true);
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									BaseDebErr = BaseDebErr + TRrw.DebVal;
+								end;
+							end;
+							if ((TRrw.AccNumber == "84/03") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								Accr.AccNumber = "50";
+								ReadFirstMain(Accr,1,true);
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									BaseDebErr = BaseDebErr + TRrw.DebVal;
+								end;
+							end;
+						end;
+						if (((BDEBase == 0) and BDEBaseChng) or ((BDEVal == 0) and BDEValChng)) then begin
+							BaseDebErr = BaseDebErr + BDEDebTemp;
 						end;
 					end;
 				end;
@@ -2234,7 +2260,7 @@ begin
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(31137) & " AZN:",false);
-			OutString(tab3,0,BaseDeb,false);
+			OutString(tab3,0,BaseDeb-BaseDebErr,false);
 			OutString(tab4,0,"",false);
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
