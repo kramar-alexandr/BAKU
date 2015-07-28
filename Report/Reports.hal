@@ -1933,7 +1933,7 @@ begin
 								ReadFirstMain(Accr,1,true);
 								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
 								if testf then begin
-									BaseDebErr = BaseDebErr + TRrw.DebVal;
+									BaseDebErr = BaseDebErr + TRrw.CredVal;
 								end;
 							end;
 							if ((TRrw.AccNumber == "84/03") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
@@ -1941,7 +1941,7 @@ begin
 								ReadFirstMain(Accr,1,true);
 								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
 								if testf then begin
-									BaseDebErr = BaseDebErr + TRrw.DebVal;
+									BaseDebErr = BaseDebErr + TRrw.CredVal;
 								end;
 							end;
 						end;
