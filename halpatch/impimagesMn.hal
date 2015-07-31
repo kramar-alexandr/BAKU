@@ -2179,18 +2179,17 @@ return;
 end;
 
 
-function val Get_Zebra_Price(integer switchf,string code,var String basecur)
+function val Get_Zebra_Price(integer switchf,string code,string basecur,string stockcur,var string printcur)
 begin
   record PLVc PLr;// Edit ************************** Tuesday, 1 April 2014 13:12:18
 	record PLDefVc PLDr;// Edit ************************** Tuesday, 1 April 2014 13:17:21
-	record BaseCurBlock BCb;// Edit ************************** Tuesday, 1 April 2014 13:17:21
   val fr,to1,to2,br1,br2;// Edit ************************** Friday, 17 April 2015 18:53:45
   val price;
   roundmode rnd;
   string 5 cur;
   
-    basecur = "";
     price = blankval;
+    printcur = "";
     switch (switchf) begin
       case 0:
         PLr.PLCode = "RRP";
@@ -2200,17 +2199,15 @@ begin
         PLr.PLCode = "RRP";
     	  PLr.ArtCode = code;
     	  if(readfirstmain(PLr,2,true))then begin
-    	    blockload(BCb);
-    	    basecur = BCb.BaseCur1;
     	  	PLDr.Code = "RRP";
     			cur = "";
     			readfirstmain(PLDr,1,true);
-    			cur = PLDr.CurncyCode;
-    			if(blank(cur))then begin
-    				cur = BCb.BaseCur1;
+    			cur = PLr.CurncyCode;
+    			if (blank(cur)) then begin
+    			  cur = PLDr.CurncyCode;
     			end;
-    			if(nonblank(PLr.CurncyCode) and PLr.CurncyCode!=cur)then begin
-    				cur = PLr.CurncyCode;
+    			if(blank(cur))then begin
+    				cur = basecur;
     			end;
     			rnd = DefaultValRoundoff;
     			rnd.decimals = 0;
@@ -2218,10 +2215,14 @@ begin
     			if(currentcompany==3)then begin
     				rnd.step = kRoundingStep5;
     			end;
-    			if(cur!=BCb.BaseCur1)then begin
-    				GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);
-    				price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
+    			if(cur!=stockcur)then begin
+    			  printcur = stockcur;
+    			  CurValToOtherCur(CurrentDate,cur,PLr.ExVatPrice,printcur,price,rnd); 
+    			  LogText(0,"FrCur:" & cur & ", FrVal:" & PLr.ExVatPrice & ", ToCur:" & printcur & ", ToVal:" & price);
+    				//GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);
+    				//price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
     			end else begin
+    				printcur = cur;
     				price = PLr.ExVatPrice;
     			end;
     	  end;
@@ -2237,22 +2238,42 @@ begin
   record PUVc newPUr;
   record INVc INr;
   record ItemStatusVc ISr;
+  record BaseCurBlock BCb;// Edit ************************** Tuesday, 1 April 2014 13:17:21
   row PUVc newPUrw;
   integer i,mtrw,lenth,h;
-  boolean TrHs,testf;
+  boolean TrHs,testf,caratf;
   string 50 frin,toin;
   longint qty;
   string 200 tstr;
-  string 5 basecur;
-  
+  string 5 basecur,stockcur,printcur;
     
     k=0;
     recordnew(newPUr);
+    blockload(BCb);
+    basecur = BCb.BaseCur1;
     
     frin = firstinrange(RepSpec.f1,20);
 		toin = lastinrange(RepSpec.f1,20);
 		INr.Code = frin; 
 		TrHs = true;
+		switch (RepSpec.f2) begin
+		  case "CARTIER":
+		    stockcur = "EUR";
+		    caratf = true;
+		  //case "CHOPARD":
+		  //case "ELLUX":
+		  case "GRAFF":
+		    stockcur = "USD";
+		    caratf = true;
+		  //case "JW":
+		  //case "RCOL1":
+		  //case "RCOL2":
+		  //case "RC_DG":
+		  //case "TIMEPIECES":
+		  otherwise
+		    stockcur = basecur;
+		    caratf = true;
+		end;
 		while(loopmain(INr,1,TrHs)) begin
 			testf = true;
 			if(nonblank(toin) and INr.Code>toin)then begin TrHs = false; testf = false; end;
@@ -2293,8 +2314,13 @@ begin
           end;
           newPUrw.Spec = tstr;
           newPUrw.ArtCode = INr.Code;
-          newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur);
-          newPUrw.Comment = basecur;
+          newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
+          newPUrw.Comment = printcur;
+          if (caratf) then begin
+            newPUrw.SerialNr = INr.MajStoneDet;
+          end else begin
+            newPUrw.SerialNr = "";
+          end;
           matrowput(newPUr,k,newPUrw);
           k=k+1;
 				end;
@@ -2315,13 +2341,15 @@ begin
       addtexttoarea("V01,30,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
       addtexttoarea("V02,15,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
       addtexttoarea("V03,10,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
-      addtexttoarea("V04,3,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable V04 - Number of label sets
+      addtexttoarea("V04,10,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable
+      addtexttoarea("V05,3,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable V05 - Number of label sets
       //addtexttoarea("X50,145,5,408,250" & chr(13) & chr(10),aLabel); // draw a box shape
       addtexttoarea("B8,1,0,1,1,2,40,N,V00" & chr(13) & chr(10),aLabel); // print standard bar codes
       addtexttoarea("A8,44,0,2,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
-      addtexttoarea("A240,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
-      addtexttoarea("A240,32,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
-      addtexttoarea("PAV04" & chr(13) & chr(10),aLabel); // to automatically print the form
+      addtexttoarea("A200,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A260,1,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A200,32,0,2,1,1,N,V04" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("PAV05" & chr(13) & chr(10),aLabel); // to automatically print the form
       addtexttoarea("FE" & chr(13) & chr(10),aLabel); // command is used to end a form store sequence.
       addtexttoarea(chr(13) & chr(10),aLabel);
       
@@ -2334,6 +2362,7 @@ begin
           addtexttoarea(newPUrw.Spec & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.ArtCode & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.Comment & chr(13) & chr(10),aLabel);
+          addtexttoarea(newPUrw.SerialNr & chr(13) & chr(10),aLabel);
           addtexttoarea(ValToString(newPUrw.UPrice,M4UVal,"","",1) & chr(13) & chr(10),aLabel); 
           addtexttoarea("1" & chr(13) & chr(10),aLabel);
           addtexttoarea(chr(13) & chr(10),aLabel);
