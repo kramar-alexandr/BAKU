@@ -2372,3 +2372,25 @@ begin
     
   return;
 end;  //Edit***************************Sasha2,16:59 08.07.2015 }
+
+
+global updating procedure SetNewCurrencyinPricesMn(record RcVc RepSpec)	//Edit----------------------Dima  17.04.2015
+begin
+	record PLVc PLr;	
+	string 10 curncy1,curncy2;
+	
+	curncy1 = RepSpec.f1;
+	curncy2 = RepSpec.f2;
+		
+
+	While(LoopMain(PLr,1,true)) begin	
+		if (PLr.CurncyCode == curncy1) then begin
+				PLr.CurncyCode = curncy2;
+				RecordStore(PLr,true);
+		end;			
+	end;
+	LogText(0,"Prices were changed. From " & curncy1 & " to " & curncy2);
+
+
+return;
+end;

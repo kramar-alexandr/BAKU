@@ -89,6 +89,7 @@ begin
 	Maintenance("Проставить клиентам категорию NONAME",FIXVClass,PasteCategoryToCUMn,modDBMain);	//Edit by Victor 14.07.15
 	
 	Maintenance("FIX Баллов лояльности по авансам",FIXVClass,FixLoyaltyPointMn,modDBMain);// Edit ************************** Thursday, 28 May 2015 11:25:21
+	Maintenance("Установить новую валюту в регистре цены",SetNewCurrencyinPricesVClass,SetNewCurrencyinPricesMn,modDI);	//Edit----------------------Dima  03.08.2015
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
