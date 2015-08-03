@@ -1,0 +1,114 @@
+//SetLangMode(LangRussian,"ENG",0);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function roundmode DefaultRoundMode();
+external procedure ExtractObj(string,var Integer,var string);
+external function val AbsoluteVal(val); //Edit***************************Sasha2,9:41 31.03.2015
+external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+
+//SetLangMode(LangPolish,"POL",0);
+
+
+global
+procedure PaperPlanesRn(record RcVc RepSpec)
+begin
+  record INVc INr;
+  record DIVc DIr;
+  record CUVc CUr;
+  record IVVc IVr;
+  record SHVc SHr;
+  record BaseCurBlock BCb;
+  row IVVc IVrw;
+  boolean TrHs,testf,found;
+  integer pos,brpos,i,rwcnt;
+  string 5 basecur,curr;
+  string 60 brand;
+  vector string 100 brandname,itemnames;
+  val fr,to1,to2,br1,br2;
+
+  startreportnoheaderjob("Paper Planes report");
+   
+   blockload(BCb);
+   basecur = BCb.BaseCur1;  //ClearVector(brandname);
+   
+   StartFormat(15);
+	   pos = 0;
+	   OutString(pos,0,"Customer",false);
+	   OutString(pos+=40,0,"Item",false);
+	   OutString(pos+=40,0,"Item name",false);
+	   OutString(pos+=150,0,"Brand",false);
+	   OutString(pos+=40,0,"Purchase date",false);
+	   OutString(pos+=40,0,"Sum",false);
+	   OutString(pos+=40,0,"Boutique",false);
+	 EndFormat;
+	 
+	 Black_Divider(0,1);
+	 
+	 IVr.SerNr = -1;
+	 TrHs = true;
+	 while (LoopMain(IVr,1,TrHs)) begin
+	   testf = true;
+	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
+	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
+	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
+	   if (testf) then begin
+	     
+	     if (IVr.CurncyCode!=basecur) then begin
+	       curr = IVr.CurncyCode;
+	       GetFullCurncyRate(curr,IVr.InvDate,fr,to1,to2,br1,br2);
+	       if (fr==0) then begin
+	         fr = 1;
+	       end;
+	       if (to1==0) then begin
+	         to1 = 1;
+	       end;
+	     end else begin
+	       fr = 1;
+	       to1 = 1;
+	     end;
+	     
+	     rwcnt = MatRowCnt(IVr);
+	     for (i=0;i<rwcnt;i=i+1) begin
+	       MatRowGet(IVr,i,IVrw);
+	       if (NonBlank(IVrw.ArtCode)) then begin
+	         if (blank(itemnames[IVrw.ArtCode])) then begin
+	           INr.Code = IVrw.ArtCode;
+	           ReadFirstMain(INr,1,true);
+	           itemnames[IVrw.ArtCode] = INr.Name;
+	           brand = "";
+          	 brpos = 0;
+          	 found = false;
+          	 ExtractObj(INr.DispGroups,brpos,brand);
+          	 while (nonblank(brand)) begin
+          		 DIr.Code = brand;
+          		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
+          		    brandname[IVrw.ArtCode] = DIr.Name;
+          		    brpos = 255;
+          		    found = true;
+          		 end;
+          		 ExtractObj(INr.DispGroups,brpos,brand);
+          	 end;
+          	 if (!found) then begin
+          	   brandname[IVrw.ArtCode] = "";
+          	 end;
+	         end;
+  	       StartFormat(15);
+        	   pos = 0;
+        	   OutString(pos,0,IVr.CustCode,false);
+        	   OutString(pos+=40,0,IVrw.ArtCode,false);
+        	   OutString(pos+=40,0,itemnames[IVrw.ArtCode],false);
+        	   OutString(pos+=150,0,brandname[IVrw.ArtCode],false);
+        	   OutString(pos+=40,0,IVr.InvDate,false);
+        	   OutString(pos+=40,0,Round(IVrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
+        	   OutString(pos+=40,0,IVr.Location,false);
+  	       EndFormat;
+	       end;
+	     end;
+	   end;
+	 end;
+	 
+LPaperPlanesRn:;
+	
+	EndJob;
+
+return;
+end;

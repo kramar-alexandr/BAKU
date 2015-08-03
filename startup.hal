@@ -147,6 +147,7 @@ begin
   Report("Отчет по срокам доставки заказов",DeliveryPeriodRClass,DeliveryPeriodRn,0,modPO); //Edit----------------------Dima  23.06.2015
   Report("KPI Report",KPIRClass,KPIRn,0,modSL); 
   Report("Отчет по учредителям",FounderRClass,FounderRn,0,modNL);////Edit---------------Vitalii 16:34 17.07.2015
+  Report("Paper Planes report",PaperPlanesRClass,PaperPlanesRn,0,modSL); //Edit***************************Sasha2,17:44 31.07.2015
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);

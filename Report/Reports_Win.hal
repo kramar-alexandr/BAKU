@@ -617,6 +617,21 @@ begin
   EndWindow;
 end; //Edit***************************Sasha2,11:13 02.04.2015 }
 
+//Edit***************************Sasha2,17:43 31.07.2015 {
+window PaperPlanesRClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm;
+  WindowBegin("Paper Planes",PaperPlanesRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+  //PeriodField(h=100,v=6,"Date");
+  //EditFieldTL(h,v=6,150,"Date",M4Date,Normal,0,d1,false,PasteCurDate);
+  //EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
+  //EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);
+  EndWindow;
+end; //Edit***************************Sasha2,17:43 31.07.2015 }
+
 window DirectorWeekRClass:1 //Edit---------------Vitalii 15:00 19.05.2015
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
