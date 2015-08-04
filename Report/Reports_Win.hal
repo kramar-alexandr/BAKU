@@ -625,6 +625,9 @@ begin
   WindowBegin("Paper Planes",PaperPlanesRClass,CGRcW,RcType);
   SetWRect(20,80,440,150);
   h=100;
+  ButtonFrame(h,vm=(v+=41),123,3,"Отчет по:");
+  RadioButton(h,v,0,0,"текущей компании",ArtMode);
+  RadioButton(h,v+=16,1,0,"всем компаниям Баку",ArtMode);
   //PeriodField(h=100,v=6,"Date");
   //EditFieldTL(h,v=6,150,"Date",M4Date,Normal,0,d1,false,PasteCurDate);
   //EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);

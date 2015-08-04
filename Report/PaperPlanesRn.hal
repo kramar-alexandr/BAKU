@@ -7,6 +7,20 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 
 //SetLangMode(LangPolish,"POL",0);
 
+procedure MyClearVector(var vector string vect1,var vector string vect2,var array string arr,var integer cnt)
+begin
+  integer i;
+  
+    for (i=0;i<cnt;i=i+1) begin
+      vect1[arr[i]] = "";
+      vect2[arr[i]] = "";
+      arr[i] = "";
+    end;
+    cnt = 0;
+  
+  return;
+end;
+
 
 global
 procedure PaperPlanesRn(record RcVc RepSpec)
@@ -16,19 +30,25 @@ begin
   record CUVc CUr;
   record IVVc IVr;
   record SHVc SHr;
+  row SHVc SHrw;
+  record ORVc ORr;
+  row ORVc ORrw;
   record BaseCurBlock BCb;
+  record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
   row IVVc IVrw;
-  boolean TrHs,testf,found;
-  integer pos,brpos,i,rwcnt;
+  boolean TrHs,testf,found,exportf;
+  integer pos,brpos,i,rwcnt,j,rwcnt1,oldcompany,currcomp,namescnt;
   string 5 basecur,curr;
   string 60 brand;
   vector string 100 brandname,itemnames;
+  array string 100 itemnamesarr;
   val fr,to1,to2,br1,br2;
 
   startreportnoheaderjob("Paper Planes report");
    
    blockload(BCb);
-   basecur = BCb.BaseCur1;  //ClearVector(brandname);
+   basecur = BCb.BaseCur1;
    
    StartFormat(15);
 	   pos = 0;
@@ -41,70 +61,160 @@ begin
 	   OutString(pos+=40,0,"Boutique",false);
 	 EndFormat;
 	 
-	 Black_Divider(0,1);
-	 
-	 IVr.SerNr = -1;
-	 TrHs = true;
-	 while (LoopMain(IVr,1,TrHs)) begin
-	   testf = true;
-	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
-	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
-	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
-	   if (testf) then begin
-	     
-	     if (IVr.CurncyCode!=basecur) then begin
-	       curr = IVr.CurncyCode;
-	       GetFullCurncyRate(curr,IVr.InvDate,fr,to1,to2,br1,br2);
-	       if (fr==0) then begin
-	         fr = 1;
-	       end;
-	       if (to1==0) then begin
-	         to1 = 1;
-	       end;
-	     end else begin
-	       fr = 1;
-	       to1 = 1;
-	     end;
-	     
-	     rwcnt = MatRowCnt(IVr);
-	     for (i=0;i<rwcnt;i=i+1) begin
-	       MatRowGet(IVr,i,IVrw);
-	       if (NonBlank(IVrw.ArtCode)) then begin
-	         if (blank(itemnames[IVrw.ArtCode])) then begin
-	           INr.Code = IVrw.ArtCode;
-	           ReadFirstMain(INr,1,true);
-	           itemnames[IVrw.ArtCode] = INr.Name;
-	           brand = "";
-          	 brpos = 0;
-          	 found = false;
-          	 ExtractObj(INr.DispGroups,brpos,brand);
-          	 while (nonblank(brand)) begin
-          		 DIr.Code = brand;
-          		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
-          		    brandname[IVrw.ArtCode] = DIr.Name;
-          		    brpos = 255;
-          		    found = true;
-          		 end;
-          		 ExtractObj(INr.DispGroups,brpos,brand);
-          	 end;
-          	 if (!found) then begin
-          	   brandname[IVrw.ArtCode] = "";
-          	 end;
-	         end;
-  	       StartFormat(15);
-        	   pos = 0;
-        	   OutString(pos,0,IVr.CustCode,false);
-        	   OutString(pos+=40,0,IVrw.ArtCode,false);
-        	   OutString(pos+=40,0,itemnames[IVrw.ArtCode],false);
-        	   OutString(pos+=150,0,brandname[IVrw.ArtCode],false);
-        	   OutString(pos+=40,0,IVr.InvDate,false);
-        	   OutString(pos+=40,0,Round(IVrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
-        	   OutString(pos+=40,0,IVr.Location,false);
-  	       EndFormat;
-	       end;
-	     end;
+	 oldcompany = CurrentCompany; 
+	 namescnt = 0; 
+   BlockLoad(Compb);
+   rwcnt1 = MatRowCnt(Compb);  
+   for (j=0;j<rwcnt1;j=j+1) begin
+  	 MatRowGet(Compb,j,Comprw);
+  	 currcomp = StringToInt(Comprw.CompCode);
+  	 exportf = false;
+  	 if (RepSpec.ArtMode==0 and ((currcomp==oldcompany) and SetCompanyCode(Comprw.CompCode,false) and Comprw.ActiveStatus==0)) then begin exportf = true; end;
+  	 if (RepSpec.ArtMode==1 and (((currcomp>=1 and currcomp<=9) or (currcomp>=13 and currcomp<=14)) and SetCompanyCode(Comprw.CompCode,false) and Comprw.ActiveStatus==0)) then begin exportf = true; end;
+     if (exportf) then begin
+       
+    	 Black_Divider(0,1);
+    	 
+    	 IVr.SerNr = -1;
+    	 TrHs = true;
+    	 while (LoopMain(IVr,1,TrHs)) begin
+    	   testf = true;
+    	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
+    	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
+    	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
+    	   if (testf) then begin
+    	     
+    	     if (IVr.CurncyCode!=basecur) then begin
+    	       curr = IVr.CurncyCode;
+    	       GetFullCurncyRate(curr,IVr.InvDate,fr,to1,to2,br1,br2);
+    	       if (fr==0) then begin
+    	         fr = 1;
+    	       end;
+    	       if (to1==0) then begin
+    	         to1 = 1;
+    	       end;
+    	     end else begin
+    	       fr = 1;
+    	       to1 = 1;
+    	     end;
+    	     
+    	     rwcnt = MatRowCnt(IVr);
+    	     for (i=0;i<rwcnt;i=i+1) begin
+    	       MatRowGet(IVr,i,IVrw);
+    	       if (NonBlank(IVrw.ArtCode) and IVrw.Sum>0) then begin
+    	         if (blank(itemnames[IVrw.ArtCode])) then begin
+    	           INr.Code = IVrw.ArtCode;
+    	           ReadFirstMain(INr,1,true);
+    	           itemnames[IVrw.ArtCode] = INr.Name;
+    	           brand = "";
+              	 brpos = 0;
+              	 found = false;
+              	 ExtractObj(INr.DispGroups,brpos,brand);
+              	 while (nonblank(brand)) begin
+              		 DIr.Code = brand;
+              		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
+              		    brandname[IVrw.ArtCode] = DIr.Name;
+              		    brpos = 255;
+              		    found = true;
+              		 end;
+              		 ExtractObj(INr.DispGroups,brpos,brand);
+              	 end;
+              	 if (!found) then begin
+              	   brandname[IVrw.ArtCode] = "";
+              	 end;
+              	 itemnamesarr[namescnt] = IVrw.ArtCode;
+              	 namescnt = namescnt + 1;
+    	         end;
+      	       StartFormat(15);
+            	   pos = 0;
+            	   OutString(pos,0,IVr.CustCode,false);
+            	   OutString(pos+=40,0,IVrw.ArtCode,false);
+            	   OutString(pos+=40,0,itemnames[IVrw.ArtCode],false);
+            	   OutString(pos+=150,0,brandname[IVrw.ArtCode],false);
+            	   OutString(pos+=40,0,IVr.InvDate,false);
+            	   OutString(pos+=40,0,Round(IVrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
+            	   OutString(pos+=40,0,IVr.Location,false);
+            	   //OutString(pos+=40,0,IVr.SerNr,false);
+      	       EndFormat;
+    	       end;
+    	     end;
+    	   end;
+    	 end; RESETLOOP(IVr);
+    	 
+    	 Gray_Divider(0,1);
+    	 
+    	 SHr.SerNr = -1;
+    	 TrHs = true;
+    	 while (LoopMain(SHr,1,TrHs)) begin
+    	   testf = true;
+    	   if (SHr.OKFlag==0 or SHr.Invalid!=0) then begin testf = false; end;
+    	   ORr.SerNr = SHr.OrderNr;
+    	   if (SHr.OrderNr<=0 or !ReadFirstMain(ORr,1,true)) then begin testf = false; end;
+    	   if (testf) then begin
+    	     
+    	     if (ORr.CurncyCode!=basecur) then begin
+    	       curr = ORr.CurncyCode;
+    	       GetFullCurncyRate(curr,ORr.OrdDate,fr,to1,to2,br1,br2);
+    	       if (fr==0) then begin
+    	         fr = 1;
+    	       end;
+    	       if (to1==0) then begin
+    	         to1 = 1;
+    	       end;
+    	     end else begin
+    	       fr = 1;
+    	       to1 = 1;
+    	     end;
+    	     
+    	     rwcnt = MatRowCnt(SHr);
+    	     for (i=0;i<rwcnt;i=i+1) begin
+    	       MatRowGet(SHr,i,SHrw);
+    	       if (NonBlank(SHrw.ArtCode) and SHrw.OrdRow>-1) then begin
+    	         MatRowGet(ORr,SHrw.OrdRow,ORrw);
+    	         if (NonBlank(ORrw.ArtCode) and ORrw.ArtCode==SHrw.ArtCode) then begin
+      	         if (blank(itemnames[ORrw.ArtCode])) then begin
+      	           INr.Code = ORrw.ArtCode;
+      	           ReadFirstMain(INr,1,true);
+      	           itemnames[ORrw.ArtCode] = INr.Name;
+      	           brand = "";
+                	 brpos = 0;
+                	 found = false;
+                	 ExtractObj(INr.DispGroups,brpos,brand);
+                	 while (nonblank(brand)) begin
+                		 DIr.Code = brand;
+                		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
+                		    brandname[ORrw.ArtCode] = DIr.Name;
+                		    brpos = 255;
+                		    found = true;
+                		 end;
+                		 ExtractObj(INr.DispGroups,brpos,brand);
+                	 end;
+                	 if (!found) then begin
+                	   brandname[ORrw.ArtCode] = "";
+                	 end;
+                	 itemnamesarr[namescnt] = SHrw.ArtCode;
+              	   namescnt = namescnt + 1;
+      	         end;
+        	       StartFormat(15);
+              	   pos = 0;
+              	   OutString(pos,0,ORr.CustCode,false);
+              	   OutString(pos+=40,0,ORrw.ArtCode,false);
+              	   OutString(pos+=40,0,itemnames[ORrw.ArtCode],false);
+              	   OutString(pos+=150,0,brandname[ORrw.ArtCode],false);
+              	   OutString(pos+=40,0,ORr.OrdDate,false);
+              	   OutString(pos+=40,0,Round(ORrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
+              	   OutString(pos+=40,0,ORr.Location,false);
+        	       EndFormat;  
+    	         end;
+    	       end;
+    	     end;
+    	   end;
+    	 end; RESETLOOP(SHr);
+    	 MyClearVector(itemnames,brandname,itemnamesarr,namescnt);
 	   end;
-	 end;
+	 end; 
+	 ResetCompany(oldcompany);
+	 
 	 
 LPaperPlanesRn:;
 	
