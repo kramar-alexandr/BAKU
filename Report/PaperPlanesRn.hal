@@ -81,6 +81,7 @@ begin
     	   testf = true;
     	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
     	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
+    	   if (IVr.UpdStockFlag!=0 and IVr.OrderNr>-1) then begin testf = false; end;
     	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
     	   if (testf) then begin
     	     
@@ -203,7 +204,11 @@ begin
               	   OutString(pos+=150,0,brandname[ORrw.ArtCode],false);
               	   OutString(pos+=40,0,ORr.OrdDate,false);
               	   OutString(pos+=40,0,Round(ORrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
-              	   OutString(pos+=40,0,ORr.Location,false);
+              	   if (NonBlank(SHr.Location)) then begin
+              	     OutString(pos+=40,0,SHr.Location,false);
+              	   end else begin
+              	     OutString(pos+=40,0,SHrw.Location,false);
+              	   end;
         	       EndFormat;  
     	         end;
     	       end;
