@@ -2218,7 +2218,7 @@ begin
     			if(cur!=stockcur)then begin
     			  printcur = stockcur;
     			  CurValToOtherCur(CurrentDate,cur,PLr.ExVatPrice,printcur,price,rnd); 
-    			  LogText(0,"FrCur:" & cur & ", FrVal:" & PLr.ExVatPrice & ", ToCur:" & printcur & ", ToVal:" & price);
+    			  //LogText(0,"FrCur:" & cur & ", FrVal:" & PLr.ExVatPrice & ", ToCur:" & printcur & ", ToVal:" & price);
     				//GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);
     				//price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
     			end else begin
