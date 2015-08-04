@@ -81,7 +81,6 @@ begin
     	   testf = true;
     	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
     	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
-    	   if (IVr.UpdStockFlag!=0 and IVr.OrderNr>-1) then begin testf = false; end;
     	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
     	   if (testf) then begin
     	     
