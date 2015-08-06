@@ -2290,7 +2290,7 @@ begin
 			if(RepSpec.long1>0)then begin qty = RepSpec.long1; end;
 			if(qty<=0)then begin testf = false; end;
 			if(nonblank(RepSpec.f3) and setinset(RepSpec.f3,INr.DispGroups)==false)then begin testf = false; end;
-			if (UpperCase(INr.Name)=="POS") then begin testf = false; end;
+			if(RepSpec.flags[2]<=0 and INr.ConsgType==2) then begin testf = false; end;
 			/*If(nonblank(INr.AlternativeCode) and testf) then begin
         lenth = len(INr.AlternativeCode);
         if(lenth!=5)then begin testf=false; end;
