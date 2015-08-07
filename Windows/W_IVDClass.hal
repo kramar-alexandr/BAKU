@@ -6495,6 +6495,8 @@ begin
   ButtonFrame(h=100,vm=(v+=40) /*v=vm*/,l=160,5,"Размер");
   RadioButton(h,v    ,6,0,"4*13 шт. 46*21 мм",ArtMode);
   RadioButton(h,v+=16,7,0,"4*14 шт. 52*20 мм",ArtMode);
+  RadioButton(h,v+=16,0,0,"1x1 (Zebra)",ArtMode); //Edit***************************Sasha2,13:40 07.08.2015
+  CheckBox(h,v+=16,0,"Включить в печать товары малоцен.(Zebra)",flags[2]);
 end;
   EndWindow;
 end;
