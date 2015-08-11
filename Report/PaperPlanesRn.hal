@@ -66,7 +66,9 @@ begin
 	   OutString(pos+=40,0,"Категория",false);
 	   OutString(pos+=40,0,"Дата покупки",false);
 	   OutString(pos+=40,0,"Время покупки",false);
-	   OutString(pos+=40,0,"Стоимость товара",false);
+	   OutString(pos+=40,0,"Цена",false);
+	   OutString(pos+=40,0,"Кол-во",false);
+	   OutString(pos+=40,0,"Сумма товара",false);	   
 	   OutString(pos+=40,0,"Магазин",false);
 	   OutString(pos+=40,0,"Номер транзакции",false);
 	   OutString(pos+=40,0,"Сумма транзакции",false);
@@ -185,6 +187,8 @@ begin
             	   OutString(pos+=40,0,itemtype[IVrw.ArtCode],false);
             	   OutString(pos+=40,0,IVr.InvDate,false);
             	   OutString(pos+=40,0,IVr.TransTime,false);
+            	   OutString(pos+=40,0,Round(IVrw.Price/to1*fr,DEFAULTCURROUNDOFF),false);
+            	   OutString(pos+=40,0,IVrw.Quant,false);            	   
             	   OutString(pos+=40,0,Round(IVrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
             	   OutString(pos+=40,0,location,false);
             	   OutString(pos+=40,0,IVr.SerNr,false);
