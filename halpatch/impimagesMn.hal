@@ -20,6 +20,7 @@ external updating procedure CheckAndCreateClassification(var string); //Edit****
 external procedure CalculateIVVcPoints(var record IVVc);// Edit ************************** Thursday, 28 May 2015 11:14:54
 external procedure CreateEAN128(var string); //Edit***************************Sasha2,17:02 08.07.2015
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode); //Edit***************************Sasha2,17:17 08.07.2015
+external procedure NextM4Number(string,var string); //Edit***************************Sasha2,12:12 11.08.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -2232,8 +2233,87 @@ begin
   return;
 end;
 
+function boolean CheckIfBarcodeIsDigits(string bcode)
+begin
+  Boolean res;
+  integer strlen,i;
+    
+    strlen = len(bcode);
+    res = true;
+    for (i=0;i<strlen;i=i+1) begin
+      if (Asc(mid(bcode,i,1))<48 or Asc(mid(bcode,i,1))>57) then begin
+        res = false;
+        i = strlen;
+      end;
+    end;
+    
+    CheckIfBarcodeIsDigits = res;
+  return;
+end;
+
+
+procedure updating CheckBarcodeValue(record INVc INr,var string bcode)
+begin
+  Boolean proceedf;
+  record INVc IN2r;
+  string 20 barcodenr;
+    
+    bcode = INr.Code;
+    proceedf = !CheckIfBarcodeIsDigits(bcode);
+    if (proceedf and Nonblank(INr.AlternativeCode) and len(bcode)>len(INr.AlternativeCode)) then begin
+      bcode = INr.AlternativeCode;
+      proceedf = !CheckIfBarcodeIsDigits(bcode);
+    end;
+    if (proceedf and Nonblank(INr.BarCode) and len(bcode)>len(INr.BarCode)) then begin
+      bcode = INr.BarCode;
+      proceedf = !CheckIfBarcodeIsDigits(bcode);
+    end; 
+    if (proceedf and blank(INr.BarCode) and len(bcode)>12) then begin
+      IN2r.BarCode = "IN_BC999999";
+      if (ReadLastKey("BarCode",IN2r,1,false)) then begin
+        if (mid(IN2r.BarCode,0,5)=="IN_BC" and len(IN2r.BarCode)==11) then begin
+          if (IN2r.BarCode=="IN_BC999999") then begin
+            goto LCheckBarcodeValue;
+          end;
+  LCheckBarcodeValueRepeat:;        
+          NextM4Number(IN2r.BarCode,barcodenr);
+          IN2r.Code = barcodenr;
+          if (ReadFirstmain(IN2r,1,true)) then begin
+            if (IN2r.Code=="IN_BC999999") then begin
+              goto LCheckBarcodeValue;
+            end;
+            goto LCheckBarcodeValueRepeat;
+          end;
+          IN2r.AlternativeCode = barcodenr;
+          if (ReadFirstKey("AlternativeCode",IN2r,1,true)) then begin
+            if (IN2r.AlternativeCode=="IN_BC999999") then begin
+              goto LCheckBarcodeValue;
+            end;
+            goto LCheckBarcodeValueRepeat;
+          end;
+        end else begin
+          barcodenr = "IN_BC000001";
+          IN2r.BarCode = "IN_BC000001";
+          if (ReadFirstKey("BarCode",IN2r,1,true)) then begin
+            goto LCheckBarcodeValue;
+          end;
+        end;
+        if (nonblank(barcodenr) and barcodenr!="1") then begin
+          INr.BarCode = barcodenr;
+          if (RECORDSTORE(INr,true)) then begin
+            bcode = barcodenr;
+          end;
+        end;
+      end;
+    end;
+  
+  LCheckBarcodeValue:;
+  
+  return;
+end;
+
 global //Edit***************************Sasha2,16:59 08.07.2015 {
-procedure Handle_Zebra_Printing(record RcVc RepSpec,var area aLabel,var integer K,string fromplace)
+updating procedure Handle_Zebra_Printing(record RcVc RepSpec,var area aLabel,var integer K,string fromplace)
 begin
   record PUVc newPUr;
   record INVc INr;
@@ -2309,18 +2389,13 @@ begin
     			if(testf)then begin
     				For(i=0;i<qty;i=i+1) begin
     				  matrowget(newPUr,k,newPUrw);
-              /*tstr = INr.AlternativeCode;
-              CreateEAN128(tstr);
-              newPUrw.Spec = tstr;*/
-              tstr = INr.Code;
-              if (Nonblank(INr.AlternativeCode) and len(tstr)>len(INr.AlternativeCode)) then begin
-                tstr = INr.AlternativeCode;
-              end;
-              if (Nonblank(INr.BarCode) and len(tstr)>len(INr.BarCode)) then begin
-                tstr = INr.BarCode;
-              end;
+              CheckBarcodeValue(INr,tstr);
               newPUrw.Spec = tstr;
-              newPUrw.ArtCode = INr.Code;
+              if (len(tstr)>14) then begin
+                newPUrw.ArtCode = left(tstr,11) & "...";
+              end else begin
+                newPUrw.ArtCode = tstr; 
+              end;
               newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
               newPUrw.Comment = printcur;
               if (caratf) then begin
@@ -2368,15 +2443,13 @@ begin
               if (testf) then begin     					
                 for (j=0;j<PUrw.Quant;j=j+1) begin
       						matrowget(newPUr,k,newPUrw);
-                  tstr = INr.Code;
-                  if (Nonblank(INr.AlternativeCode) and len(tstr)>len(INr.AlternativeCode)) then begin
-                    tstr = INr.AlternativeCode;
-                  end;
-                  if (Nonblank(INr.BarCode) and len(tstr)>len(INr.BarCode)) then begin
-                    tstr = INr.BarCode;
-                  end;
+                  CheckBarcodeValue(INr,tstr);
                   newPUrw.Spec = tstr;
-                  newPUrw.ArtCode = INr.Code;
+                  if (len(tstr)>14) then begin
+                    newPUrw.ArtCode = left(tstr,11) & "...";
+                  end else begin
+                    newPUrw.ArtCode = tstr; 
+                  end;
                   newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
                   newPUrw.Comment = printcur;
                   if (caratf) then begin

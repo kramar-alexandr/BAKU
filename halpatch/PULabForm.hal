@@ -18,7 +18,7 @@ external function Boolean SetInSet2(string,string);
 external inner function roundmode SetRoundModeD(Integer);
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-remote procedure Handle_Zebra_Printing(record RcVc,var area,var integer,string); //Edit***************************Sasha2,13:44 07.08.2015
+remote updating procedure Handle_Zebra_Printing(record RcVc,var area,var integer,string); //Edit***************************Sasha2,13:44 07.08.2015
 
 global procedure CreateEAN128(var string str)
 begin
@@ -408,7 +408,7 @@ LDoPULabFormPrint:;
 END;  
 
 global //Edit***************************Sasha2,13:54 07.08.2015 {
-procedure Zebra_PrintingPU(record RcVc RepSpec)
+updating procedure Zebra_PrintingPU(record RcVc RepSpec)
 begin
   area aLabel;
   integer k;
@@ -436,7 +436,7 @@ begin
 end;  //Edit***************************Sasha2,13:55 07.08.2015 }
 
 global
-procedure DoPULabForm(record RcVc RepSpec,record RcVc Dummyr)
+updating procedure DoPULabForm(record RcVc RepSpec,record RcVc Dummyr)
 BEGIN
   Integer i,rwcnt;  
   Boolean printf;
