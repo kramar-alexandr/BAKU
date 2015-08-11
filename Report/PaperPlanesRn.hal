@@ -1,4 +1,4 @@
-//SetLangMode(LangRussian,"ENG",0);
+SetLangMode(LangRussian,"RUS",0);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function roundmode DefaultRoundMode();
 external procedure ExtractObj(string,var Integer,var string);
@@ -7,13 +7,15 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 
 //SetLangMode(LangPolish,"POL",0);
 
-procedure MyClearVector(var vector string vect1,var vector string vect2,var array string arr,var integer cnt)
+procedure MyClearVector(var vector string vect1,var vector string vect2,var vector string vect3,var vector string vect4,var array string arr,var integer cnt)
 begin
   integer i;
   
     for (i=0;i<cnt;i=i+1) begin
       vect1[arr[i]] = "";
       vect2[arr[i]] = "";
+      vect3[arr[i]] = "";//Edit----------------------Dima  11.08.2015
+      vect4[arr[i]] = "";//Edit----------------------Dima  11.08.2015
       arr[i] = "";
     end;
     cnt = 0;
@@ -37,13 +39,17 @@ begin
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
   row IVVc IVrw;
+  record LocationVc Locr;
   boolean TrHs,testf,found,exportf;
   integer pos,brpos,i,rwcnt,j,rwcnt1,oldcompany,currcomp,namescnt;
   string 5 basecur,curr;
-  string 60 brand;
-  vector string 100 brandname,itemnames;
+  string 60 brand,location;
+  vector string 100 brandname,itemnames,locations,itemtype;
+  vector string 15 datecreated;
   array string 100 itemnamesarr;
   val fr,to1,to2,br1,br2;
+  val trSum,invoiceSum;
+
 
   startreportnoheaderjob("Paper Planes report");
    
@@ -52,13 +58,18 @@ begin
    
    StartFormat(15);
 	   pos = 0;
-	   OutString(pos,0,"Customer",false);
-	   OutString(pos+=40,0,"Item",false);
-	   OutString(pos+=40,0,"Item name",false);
-	   OutString(pos+=150,0,"Brand",false);
-	   OutString(pos+=40,0,"Purchase date",false);
-	   OutString(pos+=40,0,"Sum",false);
-	   OutString(pos+=40,0,"Boutique",false);
+	   OutString(pos,0,"Клиент",false);
+	   OutString(pos+=40,0,"Дата заведения карточки",false);
+	   OutString(pos+=40,0,"ID номенклатуры",false);
+	   OutString(pos+=40,0,"Артикул",false);
+	   OutString(pos+=150,0,"Бренд",false);
+	   OutString(pos+=40,0,"Категория",false);
+	   OutString(pos+=40,0,"Дата покупки",false);
+	   OutString(pos+=40,0,"Время покупки",false);
+	   OutString(pos+=40,0,"Стоимость товара",false);
+	   OutString(pos+=40,0,"Магазин",false);
+	   OutString(pos+=40,0,"Номер транзакции",false);
+	   OutString(pos+=40,0,"Сумма транзакции",false);
 	 EndFormat;
 	 
 	 oldcompany = CurrentCompany; 
@@ -75,13 +86,32 @@ begin
        
     	 Black_Divider(0,1);
     	 
+    	 While(LoopMain(Locr,1,true)) begin
+    	 	locations[Locr.Code] = Locr.Name;//Edit----------------------Dima  10.08.2015
+    	 end;
+    	 
+    	 datecreated["NONAME"] = "  ";
+    	 
+    	 
     	 IVr.SerNr = -1;
     	 TrHs = true;
     	 while (LoopMain(IVr,1,TrHs)) begin
     	   testf = true;
     	   if (IVr.OKFlag==0 or IVr.Invalid!=0) then begin testf = false; end;
-    	   if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
-    	   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
+    	   //if (IVr.UpdStockFlag==0 or IVr.OrderNr>-1) then begin testf = false; end;
+    	   //if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or IVr.Sum4<=0) then begin testf = false; end;
+
+    	   rwcnt = MatRowCnt(IVr);
+    	   invoiceSum = 0; 
+    	   for (i=0;i<rwcnt;i=i+1) begin
+    	       	MatRowGet(IVr,i,IVrw);
+    	       	if (IVrw.stp == kInvoiceRowTypeNormal) then begin
+								invoiceSum = invoiceSum + IVrw.Sum;
+							end;
+				 end;	
+
+				 
+				 if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales or invoiceSum<=0) then begin testf = false; end;
     	   if (testf) then begin
     	     
     	     if (IVr.CurncyCode!=basecur) then begin
@@ -98,7 +128,22 @@ begin
     	       to1 = 1;
     	     end;
     	     
-    	     rwcnt = MatRowCnt(IVr);
+    	     if (blank(datecreated[IVr.CustCode])) then begin
+    	     		CUr.Code = IVr.CustCode;
+    	     		if (ReadFirstMain(CUr,1,true)) then begin
+									datecreated[IVr.CustCode] = CUr.DateCreated;
+							end;
+    	     end;	
+    	    
+					 invoiceSum = Round(invoiceSum/to1*fr,DEFAULTCURROUNDOFF);
+					 
+					 if (currcomp==9) then Begin
+					 	location = "Creative System";
+					 end else begin
+					 	location = locations[IVr.Location];
+					 end;	
+					 
+    	     
     	     for (i=0;i<rwcnt;i=i+1) begin
     	       MatRowGet(IVr,i,IVrw);
     	       if (NonBlank(IVrw.ArtCode) and IVrw.Sum>0) then begin
@@ -112,11 +157,16 @@ begin
               	 ExtractObj(INr.DispGroups,brpos,brand);
               	 while (nonblank(brand)) begin
               		 DIr.Code = brand;
-              		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
-              		    brandname[IVrw.ArtCode] = DIr.Name;
-              		    brpos = 255;
-              		    found = true;
+              		 if (ReadFirstMain(DIr,1,true)) then begin
+              		 		if (DIr.CType=="BRAND") then begin
+              		    	brandname[IVrw.ArtCode] = DIr.Name;              		    	
+              		    //brpos = 255;
+              		    	found = true;
+              		    end else begin
+              		    	itemtype[IVrw.ArtCode] = DIr.Name;	//Edit----------------------Dima  11.08.2015
+											end;
               		 end;
+              		 itemtype[IVrw.ArtCode] = DIr.Name;
               		 ExtractObj(INr.DispGroups,brpos,brand);
               	 end;
               	 if (!found) then begin
@@ -128,18 +178,27 @@ begin
       	       StartFormat(15);
             	   pos = 0;
             	   OutString(pos,0,IVr.CustCode,false);
+            	   OutString(pos+=40,0,datecreated[IVr.CustCode],false);
             	   OutString(pos+=40,0,IVrw.ArtCode,false);
             	   OutString(pos+=40,0,itemnames[IVrw.ArtCode],false);
             	   OutString(pos+=150,0,brandname[IVrw.ArtCode],false);
+            	   OutString(pos+=40,0,itemtype[IVrw.ArtCode],false);
             	   OutString(pos+=40,0,IVr.InvDate,false);
+            	   OutString(pos+=40,0,IVr.TransTime,false);
             	   OutString(pos+=40,0,Round(IVrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
-            	   OutString(pos+=40,0,IVr.Location,false);
+            	   OutString(pos+=40,0,location,false);
+            	   OutString(pos+=40,0,IVr.SerNr,false);
+            	   OutString(pos+=40,0,invoiceSum,false);
             	   //OutString(pos+=40,0,IVr.SerNr,false);
       	       EndFormat;
     	       end;
     	     end;
     	   end;
     	 end; RESETLOOP(IVr);
+    	 
+    	 
+    	 /*
+    	 
     	 
     	 Gray_Divider(0,1);
     	 
@@ -166,6 +225,15 @@ begin
     	       to1 = 1;
     	     end;
     	     
+    	     if (blank(datecreated[IVr.CustCode])) then begin
+    	     		CUr.Code = IVr.CustCode;
+    	     		if (ReadFirstMain(CUr,1,true)) then begin
+									datecreated[IVr.CustCode] = CUr.DateCreated;
+							end;
+    	     end;	    	     
+    	     
+    	     trSum = Round(ORr.Sum4/to1*fr,DEFAULTCURROUNDOFF);
+    	     
     	     rwcnt = MatRowCnt(SHr);
     	     for (i=0;i<rwcnt;i=i+1) begin
     	       MatRowGet(SHr,i,SHrw);
@@ -182,11 +250,15 @@ begin
                 	 ExtractObj(INr.DispGroups,brpos,brand);
                 	 while (nonblank(brand)) begin
                 		 DIr.Code = brand;
-                		 if (ReadFirstMain(DIr,1,true) and DIr.CType=="BRAND") then begin
-                		    brandname[ORrw.ArtCode] = DIr.Name;
-                		    brpos = 255;
-                		    found = true;
-                		 end;
+              		 if (ReadFirstMain(DIr,1,true)) then begin
+              		 		if (DIr.CType=="BRAND") then begin
+              		    	brandname[IVrw.ArtCode] = DIr.Name;              		    	
+              		    //brpos = 255;
+              		    	found = true;
+              		    end else begin
+              		    	itemtype[IVrw.ArtCode] = DIr.Name;
+											end;
+              		 end;
                 		 ExtractObj(INr.DispGroups,brpos,brand);
                 	 end;
                 	 if (!found) then begin
@@ -198,23 +270,31 @@ begin
         	       StartFormat(15);
               	   pos = 0;
               	   OutString(pos,0,ORr.CustCode,false);
+              	   OutString(pos+=40,0,datecreated[IVr.CustCode],false);
               	   OutString(pos+=40,0,ORrw.ArtCode,false);
               	   OutString(pos+=40,0,itemnames[ORrw.ArtCode],false);
               	   OutString(pos+=150,0,brandname[ORrw.ArtCode],false);
+              	   OutString(pos+=40,0,itemtype[IVrw.ArtCode],false);
               	   OutString(pos+=40,0,ORr.OrdDate,false);
               	   OutString(pos+=40,0,Round(ORrw.Sum/to1*fr,DEFAULTCURROUNDOFF),false);
               	   if (NonBlank(SHr.Location)) then begin
-              	     OutString(pos+=40,0,SHr.Location,false);
+              	     OutString(pos+=40,0,locations[SHr.Location],false);
               	   end else begin
-              	     OutString(pos+=40,0,SHrw.Location,false);
+              	     OutString(pos+=40,0,locations[SHrw.Location],false);
               	   end;
+              	   OutString(pos+=40,0,devStr & SHr.SerNr,false);
+              	   OutString(pos+=40,0,trSum,false);
         	       EndFormat;  
     	         end;
     	       end;
     	     end;
     	   end;
     	 end; RESETLOOP(SHr);
-    	 MyClearVector(itemnames,brandname,itemnamesarr,namescnt);
+    	 
+    	 
+    	 */
+    	 
+    	 MyClearVector(itemnames,brandname,itemtype,datecreated,itemnamesarr,namescnt);
 	   end;
 	 end; 
 	 ResetCompany(oldcompany);
