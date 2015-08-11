@@ -2391,11 +2391,7 @@ begin
     				  matrowget(newPUr,k,newPUrw);
               CheckBarcodeValue(INr,tstr);
               newPUrw.Spec = tstr;
-              if (len(tstr)>14) then begin
-                newPUrw.ArtCode = left(tstr,11) & "...";
-              end else begin
-                newPUrw.ArtCode = tstr; 
-              end;
+              newPUrw.ArtCode = INr.Code; 
               newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
               newPUrw.Comment = printcur;
               if (caratf) then begin
@@ -2445,11 +2441,7 @@ begin
       						matrowget(newPUr,k,newPUrw);
                   CheckBarcodeValue(INr,tstr);
                   newPUrw.Spec = tstr;
-                  if (len(tstr)>14) then begin
-                    newPUrw.ArtCode = left(tstr,11) & "...";
-                  end else begin
-                    newPUrw.ArtCode = tstr; 
-                  end;
+                  newPUrw.ArtCode = INr.Code;
                   newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
                   newPUrw.Comment = printcur;
                   if (caratf) then begin
@@ -2487,7 +2479,7 @@ begin
       addtexttoarea("V06,3,N,\"\"" & chr(13) & chr(10),aLabel); // Define Variable V05 - Number of label sets
       //addtexttoarea("X50,145,5,408,250" & chr(13) & chr(10),aLabel); // draw a box shape
       addtexttoarea("B8,1,0,1,1,2,40,N,V00" & chr(13) & chr(10),aLabel); // print standard bar codes
-      addtexttoarea("A8,44,0,2,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
+      addtexttoarea("A8,44,0,1,1,1,N,V01" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
       addtexttoarea("A200,1,0,2,1,1,N,V02" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
       addtexttoarea("A200,20,0,2,1,1,N,V03" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
       addtexttoarea("A200,44,0,2,1,1,N,V04" & chr(13) & chr(10),aLabel); // Prints an ASCII text string
