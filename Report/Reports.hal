@@ -1631,14 +1631,16 @@ begin
 		AZNDeb, AZNCred,
 		EURDeb, EURCred,
 		USDDeb, USDCred,
-		BaseDebErr, BDEBase, BDEVal, BDEDebTemp,
+		BaseDebErr, BDEBase, BDECur, BDEDebTemp,
+		BaseCredErr, BCEBase, BCECur, BCECredTemp,
 		BaseDeb, BaseCred,
 		BalItem1, BalItem2,
 		SaldoEndPeriodAZNTerm, SaldoEndPeriod53,
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN,
 		corspdebval, corspcredval, Bal53;
-	boolean BDEBaseChng, BDEValChng;
+	boolean BDEBaseChng, BDECurChng,
+			BCEBaseChng, BCECurChng;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
@@ -1656,6 +1658,7 @@ begin
 	BeginBalance50EUR = 0;
 	tempBal = 0;
 	BaseDebErr = 0;
+	BaseCredErr = 0;
 	BalItem1 = 0;
 	BalItem2 = 0;
 	SaldoEndPeriodAZNTerm = 0;
@@ -1816,6 +1819,8 @@ begin
 		
 		mainr.AccNumber = "50";
 		mainr.TransDate = RepSpec.sStartDate;
+		Accr.AccNumber = "50";
+		ReadFirstMain(Accr,1,true);
 		TrHs = true;
 		while (LoopMain(mainr,2,TrHs)) begin
 			if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
@@ -1827,10 +1832,15 @@ begin
 				if (ReadFirstMain(TRr,2,true)) then begin
 					if (mainr.TransDate == TRr.TransDate) then begin
 						BDEBaseChng = false;
-						BDEValChng = false;
+						BDECurChng = false;
+						BCEBaseChng = false;
+						BCECurChng = false;
 						BDEBase = 0;
-						BDEVal = 0;
+						BDECur = 0;
 						BDEDebTemp = 0;
+						BCEBase = 0;
+						BCECur = 0;
+						BCECredTemp = 0;
 						rwcnt = MatRowCnt(TRr);
 						for (i=0;i<rwcnt;i=i+1) begin
 							MatRowGet(TRr,i,TRrw);
@@ -1891,13 +1901,18 @@ begin
 								tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
 								if ((TRrw.DebVal<>0) or (TRrw.CredVal<>0)) then begin
 									BDEBaseChng = true;
+									BCEBaseChng = true;
 									BDEBase = BDEBase + TRrw.DebVal - TRrw.CredVal;
+									BCEBase = BCEBase + TRrw.DebVal - TRrw.CredVal;
 								end;
 								if ((TRrw.CurDebVal<>0) or (TRrw.CurCredVal<>0)) then begin
-									BDEValChng = true;
-									BDEVal = BDEVal + TRrw.CurDebVal - TRrw.CurCredVal;
+									BDECurChng = true;
+									BCECurChng = true;
+									BDECur = BDECur + TRrw.CurDebVal - TRrw.CurCredVal;
+									BCECur = BCECur + TRrw.CurDebVal - TRrw.CurCredVal;
 								end;
 								BDEDebTemp = BDEDebTemp + TRrw.DebVal;
+								BCECredTemp = BCECredTemp + TRrw.CredVal;
 								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
 									MatRowPut(tempTRr2,l,tempTRrw);
 									l = l + 1;
@@ -1920,41 +1935,45 @@ begin
 							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects )and SetInSet("E98",TRrw.Objects)) then begin
 								BalItem2 = BalItem2 - TRrw.CredVal + TRrw.DebVal;
 							end;
-							if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								Accr.AccNumber = "50";
-								ReadFirstMain(Accr,1,true);
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
-								if testf then begin
-									Bal53 = Bal53 + TRrw.DebVal;
-								end;
-							end;
 							if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								Accr.AccNumber = "50";
-								ReadFirstMain(Accr,1,true);
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
-								if testf then begin
-									BaseDebErr = BaseDebErr + TRrw.CredVal + TRrw.DebVal;
-								end;
-							end;
-							if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								Accr.AccNumber = "50";
-								ReadFirstMain(Accr,1,true);
 								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
 								if testf then begin
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
+									BaseCredErr = BaseCredErr + TRrw.DebVal;
+								end;
+							end;
+							if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									BaseDebErr = BaseDebErr + TRrw.CredVal;
+									BaseCredErr = BaseCredErr + TRrw.DebVal;
+								end;
+							end;
+							if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									Bal53 = Bal53 + TRrw.DebVal;
+									BaseCredErr = BaseCredErr + TRrw.DebVal;
+								end;
+							end;
+							if ((TRrw.AccNumber == "58") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								if testf then begin
+									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
 							end;
 							if ((TRrw.AccNumber == "84/03") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								Accr.AccNumber = "50";
-								ReadFirstMain(Accr,1,true);
 								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
 								if testf then begin
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 								end;
 							end;
 						end;
-						if (((BDEBase == 0) and BDEBaseChng) or ((BDEVal == 0) and BDEValChng)) then begin
+						if (((BDEBase == 0) and BDEBaseChng) or ((BDECur == 0) and BDECurChng)) then begin
 							BaseDebErr = BaseDebErr + BDEDebTemp;
+						end;
+						if (((BCEBase == 0) and BCEBaseChng) or ((BCECur == 0) and BCECurChng)) then begin
+							BaseCredErr = BaseCredErr + BCECredTemp;
 						end;
 					end;
 				end;
@@ -2121,8 +2140,6 @@ begin
 				MatRowPut(tempTRr,rwcnt + i,tempTRrw3);
 			end;
 		end;
-		
-		
 		rwcnt = MatRowCnt(tempTRr);
 		for (j=0;j<rwcnt-1;j=j+1) begin
 			for (i=0;i<rwcnt-1;i=i+1) begin
@@ -2134,7 +2151,6 @@ begin
 				end;
 			end;
 		end;
-		
 		AZNTermDeb = 0;
 		AZNTermCred = 0;
 		AZNDeb = 0;
@@ -2273,7 +2289,7 @@ begin
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
 			OutString(tab7,0,USetStr(35017) & " AZN:",false);
-			OutString(tab8,0,BaseCred,false);
+			OutString(tab8,0,BaseCred-BaseCredErr,false);
 		EndFormat;
 		StartFormat(15);
 		EndFormat;

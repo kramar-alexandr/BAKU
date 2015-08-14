@@ -649,7 +649,6 @@ begin
 		RadioButton(h,v+=16,1,0,"Сводный",ArtMode);
 	EndWindow;
 end;
-
 window BrandManagerRClass:1 //Edit---------------Vitalii 18:31 11.06.2015
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -734,5 +733,17 @@ begin
 		PeriodField(h,v=6,"Период");
 		EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
 		
+	EndWindow;
+end;
+
+window DebtorRClass:1 //Edit---------------Vitalii 15:00 19.05.2015
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real h,v,vs;
+	WindowBegin("Определите отчет по ошибкам",DebtorRClass,CGRcW,RcType);
+		SetWRect(20,80,440,150);
+		h = 160;
+		vs = 20;
+		EditField(h,v+=10,120,"Дата",Normal,sEndDate,false,PasteCurDate);
 	EndWindow;
 end;

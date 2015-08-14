@@ -1,0 +1,195 @@
+external procedure YcToStr(Integer,var string);
+external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
+external procedure GetObjs(string,string,var string);
+external function val cur2b1(String,Date,Val);
+
+procedure DebtorRnPrintHeader(record RcVc RepSpec,integer tab1,integer tab2,integer tab3,integer tab4)
+BEGIN
+	string 20 head;
+	
+	StartFormat(15);
+		OutString(tab1,0,"",false);
+		OutString(tab2,0,USetStr(35064),false);
+		OutString(tab3,0,USetStr(31262) & " " & RepSpec.sEndDate,false);
+		OutString(tab4,0,"",false);
+	EndFormat;
+	StartFormat(15);
+	EndFormat;
+	StartFormat(15);
+		OutString(tab1,0,USetStr(31114),false);
+		OutString(tab2,0,USetStr(35065),false);
+		OutString(tab3,0,USetStr(35066),false);
+		OutString(tab4,0,USetStr(35067),false);
+	EndFormat;
+	Black_Divider(0,1);
+	RETURN
+END;
+
+function string 100 GetCustomerName(string custcode)
+BEGIN
+	record CUVc CUr;
+	string 100 res;
+	
+	CUr.Code = custcode;
+	ReadFirstMain(CUr,1,true);
+	res = CUr.Name;
+	GetCustomerName = res;
+	RETURN;
+END;
+
+global
+procedure DebtorRn(record RcVc RepSpec)
+BEGIN
+	record MainVc mainr;
+	record TRVc TRr;
+	row TRVc TRrw;
+	record ObjVc Objr;
+	record IPVc IPr;
+	row IPVc IPrw;
+	record IVVc IVr;
+	row IVVc IVrw;
+	integer i,j,rwcnt,doccustcount;
+	boolean TrHs;
+	integer tab1,tab2,tab3,tab4;
+	Array string 100 DocCustList;
+	vector boolean DocCustNonBlank;
+	vector val DocDebet,DocCredit;
+	vector string 100 CustNameVect;
+	val TotDebet,TotCredit,
+		resdoc,tempDeb,tempCred;
+	string 30 doc,custcode,tempstr;
+	string 100 customer;
+	string 10 AccNum;
+	
+	tab1 = 0;	 tab2 = 160;	  tab3 = 230;
+	tab4 = 300;
+	
+	StartReportNoHeaderJob(USetStr(35069));
+		DebtorRnPrintHeader(RepSpec,tab1,tab2,tab3,tab4);
+		doccustcount = 0;
+		TrHs = true;
+		IVr.InvDate = "";
+		while (LoopKey("InvDate",IVr,1,TrHs)) begin
+			if (IVr.InvDate > RepSpec.sEndDate) then begin
+				TrHs = false;	
+			end;
+			if (TrHs) then begin
+				TRr.Number = IVr.SerNr;
+				TRr.IntYc = IVYc;
+				ReadFirstMain(TRr,2,true);
+				tempDeb = 0;
+				tempCred = 0;
+				resdoc = 0;
+				rwcnt = MatRowCnt(TRr);
+				for (i=0;i<rwcnt;i=i+1) begin
+					MatRowGet(TRr,i,TRrw);
+					if ((TRrw.AccNumber == "62") and (TRrw.ovst <> 1) and (TRrw.stp == 1)) then begin
+						tempDeb = tempDeb + TRrw.DebVal;
+						tempCred = tempCred + TRrw.CredVal;
+					end;
+				end;
+				YcToStr(IVYc,tempstr);
+				doc = tempstr & "." & IVr.SerNr;
+				resdoc = tempDeb - tempCred - IVr.BaseSum4;
+				rwcnt = MatRowCnt(IVr);
+				for (i=0;i<rwcnt;i=i+1) begin
+					MatRowGet(IVr,i,IVrw);
+					switch (IVrw.stp) begin
+						case kInvoiceRowTypePrepayment:
+							resdoc = resdoc + IVrw.BasePrice;
+						case kInvoiceRowTypeCashPayment:
+							resdoc = resdoc + cur2b1(IVrw.CurncyCode,IVr.TransDate,IVrw.Sum);
+						case kInvoiceRowTypeCreditCardPayment:
+							resdoc = resdoc + IVrw.Sum;
+						case kInvoiceRowTypeGiftVoucherPayment:
+							resdoc = resdoc + IVrw.Sum;
+						case kInvoiceRowTypeLoyaltyPointsPayment:
+							resdoc = resdoc + cur2b1(IVrw.CurncyCode,IVr.TransDate,IVrw.Sum);
+					end;
+				end;
+				if (resdoc <> 0) then begin
+					custcode = IVr.CustCode;
+					if blank(CustNameVect[custcode]) then begin
+						CustNameVect[custcode] = IVr.Addr0;
+					end;
+					if (!DocCustNonBlank[doc & ":" & custcode]) then begin
+						DocCustList[doccustcount] = doc & ":" & custcode;
+						doccustcount = doccustcount + 1;
+						DocCustNonBlank[doc & ":" & custcode] = true;
+					end;
+					DocDebet [doc & ":" & custcode] = tempDeb;
+					DocCredit[doc & ":" & custcode] = tempCred;
+				end;
+			end;
+		end;
+		TrHs = true;
+		IPr.TransDate = "";
+		while (LoopKey("TransDate",IPr,1,TrHs)) begin
+			if (IPr.TransDate > RepSpec.sEndDate) then begin
+				TrHs = false;	
+			end;
+			if (TrHs) then begin
+				TRr.Number = IPr.SerNr;
+				TRr.IntYc = IPYc;
+				ReadFirstMain(TRr,2,true);
+				tempDeb = 0;
+				tempCred = 0;
+				resdoc = 0;
+				rwcnt = MatRowCnt(IPr);
+				for (i=0;i<rwcnt;i=i+1) begin
+					MatRowGet(IPr,i,IPrw);
+					resdoc = resdoc - cur2b1(IPrw.RecCurncy,IPr.TransDate,IPrw.RecVal);
+				end;
+
+				rwcnt = MatRowCnt(TRr);
+				for (i=0;i<rwcnt;i=i+1) begin
+					MatRowGet(TRr,i,TRrw);
+					if (((TRrw.AccNumber == "62") or (TRrw.AccNumber == "63")) and (TRrw.ovst <> 1) and (TRrw.stp == 1)) then begin
+						tempDeb = tempDeb + TRrw.DebVal;
+						tempCred = tempCred + TRrw.CredVal;
+					end;
+				end;
+				YcToStr(IPYc,tempstr);
+				doc = tempstr & "." & IPr.SerNr;
+				resdoc = resdoc + tempDeb - tempCred;
+				if (resdoc <> 0) then begin
+					custcode = IVr.CustCode;
+					if blank(CustNameVect[custcode]) then begin
+						CustNameVect[custcode] = IVr.Addr0;
+					end;
+					if (!DocCustNonBlank[doc & ":" & custcode]) then begin
+						DocCustList[doccustcount] = doc & ":" & custcode;
+						doccustcount = doccustcount + 1;
+						DocCustNonBlank[doc & ":" & custcode] = true;
+					end;
+					DocDebet [doc & ":" & custcode] = tempDeb;
+					DocCredit[doc & ":" & custcode] = tempCred;
+				end;
+			end;
+		end;
+		for (j=0;j<doccustcount;j=j+1) begin
+			if ((DocDebet[DocCustList[j]] <> 0) or 
+				(DocCredit[DocCustList[j]] <> 0)) then begin
+				StartFormat(15);
+					OutString(tab1,0,CustNameVect[LastInRange(DocCustList[j],10)],false);
+					switch (FirstTransTypeInRange(FirstInRange(DocCustList[j],10))) begin
+						case IVYc:
+							OutStringID(tab2,"DblIVVc",FirstInRange(DocCustList[j],10),false,FirstTransInRange(FirstInRange(DocCustList[j],10)));
+						case IPYc:
+							OutStringID(tab2,"DblIPVcID",FirstInRange(DocCustList[j],10),false,FirstTransInRange(FirstInRange(DocCustList[j],10)));
+						case CLInYc:
+							OutStringID(tab2,"DblCLInID",FirstInRange(DocCustList[j],10),false,FirstTransInRange(FirstInRange(DocCustList[j],10)));
+						case CLOutYc:
+							OutStringID(tab2,"DblCLOutID",FirstInRange(DocCustList[j],10),false,FirstTransInRange(FirstInRange(DocCustList[j],10)));
+						otherwise
+							OutStringID(tab2,"DblTrans",FirstInRange(DocCustList[j],10),false,CurrentCompany);
+					end;
+					OutString(tab3,0,DocDebet [DocCustList[j]],false);
+					OutString(tab4,0,DocCredit[DocCustList[j]],false);
+				EndFormat;
+			end;
+		end;
+	EndJob;
+
+	RETURN;
+END;

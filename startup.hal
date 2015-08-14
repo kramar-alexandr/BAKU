@@ -148,6 +148,7 @@ begin
   Report("KPI Report",KPIRClass,KPIRn,0,modSL); 
   Report("Отчет по учредителям",FounderRClass,FounderRn,0,modNL);////Edit---------------Vitalii 16:34 17.07.2015
   Report("Paper Planes report",PaperPlanesRClass,PaperPlanesRn,0,modSL); //Edit***************************Sasha2,17:44 31.07.2015
+  Report("Ошибки по должникам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -556,7 +557,6 @@ begin
 	SString(35046,"Консигнация (сч. 61)");
 	SString(35047,"Бренд:");
 	
-	
 	//DeliveryPeriodRn
 	SString(35048,"Отчет по срокам доставки заказов");
 	SString(35049,"Поставщик");
@@ -571,10 +571,16 @@ begin
 	//FounderRn
 	SString(35060,"Отчет по учредителям");
 	SString(35061,"Учредители");
-  //SString(31234,"Товары");
 	SString(35062,"Погашение");
 	SString(35063,"Учредитель:");
 	
+	//DebtorRn
+	SString(35069,"Ошибки по должникам");
+	SString(35064,"Должники");
+	SString(35065,"Документ");
+	SString(35066,"Дебет 62го сч");
+	SString(35067,"Кредит 62го сч");
+	SString(35068,"Всего ");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
