@@ -37,10 +37,12 @@ begin
   record RetVc Retr;
   row RetVc Retrw;
   
-  
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
 	
+	if(currentcompany==11 or currentcompany==12)then begin
+		curncy = "EUR";
+	end;
  	
   spi=1;
   
@@ -315,14 +317,14 @@ begin
   location = RepSpec.f1;
   
   rate = 1;
-  if(nonblank(RepSpec.f2))then begin
+  /*if(nonblank(RepSpec.f2))then begin
     fr = 1; to1 = 1;
 		GetFullCurncyRate(RepSpec.f2,CurrentDate,fr,to1,to2,br1,br2);
 		if(fr==0 or to1==0)then begin
 			fr = 1;	to1 = 1;
 		end;
 		rate = fr/to1;
-  end;
+  end;*/
 
 
 	//Edit--start------------------------------------------Dima  03.02.2015
@@ -346,7 +348,8 @@ begin
   //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,15:17 09.12.2014
   
   StartReportNoHeaderJob(USetStr(31100));
-  IF(blank(RepSpec.f2) and currentcompany!=1)THEN BEGIN
+  //IF(blank(RepSpec.f2) and currentcompany!=1)THEN BEGIN
+  IF(false)THEN BEGIN// Edit ************************** Monday, 17 August 2015 12:24:46
     StartFormat(15);
       OutString(0,0,USetStr(31101),false);
     EndFormat;
