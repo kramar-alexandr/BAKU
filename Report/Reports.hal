@@ -2392,7 +2392,7 @@ begin
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35026),false);// К сдаче
-			OutString(tab3,0,SaldoEndPeriod,false);
+			OutString(tab3,0,SaldoEndPeriod - kursovaya,false);
 			OutString(tab4+20,0,"AZN",false);
 		EndFormat;
 		StartFormat(15);
@@ -2405,7 +2405,7 @@ begin
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35026),false);
-			OutString(tab3,0,SaldoEndPeriod + kursovaya,false);
+			OutString(tab3,0,SaldoEndPeriod,false);
 			OutString(tab4+20,0,"AZN",false);
 		EndFormat;
 		
