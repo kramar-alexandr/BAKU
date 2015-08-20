@@ -341,7 +341,7 @@ begin
   return;
 end;
 
-updating procedure CalcGroupPrices(record RcVc RepSpec,string pricelist,string agroup,string formula,Integer deppr,var Integer flushcnt)
+updating procedure CalcGroupPrices(record RcVc RepSpec,string pricelist,string agroup1,string formula,Integer deppr,var Integer flushcnt)// Edit ************************** Thursday, 20 August 2015 14:00:16
 begin
   record INVc INr;
   record PLVc oldPLr;
@@ -363,6 +363,14 @@ begin
   integer keys;
   string 50 keystring;
 	record PFormVc PFr;// Edit ************************** Tuesday, 14 October 2014 18:11:52
+	string 100 agroup,aclass;
+	
+	agroup = firstinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
+	aclass = lastinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
+	
+	if(agroup==aclass)then begin
+		aclass = "";// Edit ************************** Thursday, 20 August 2015 14:01:54
+	end;
   
   PFr.Code = formula;// Edit ************************** Tuesday, 14 October 2014 18:12:06
   ReadFirstMain(PFr,1,true);// Edit ************************** Tuesday, 14 October 2014 18:12:05
@@ -393,11 +401,18 @@ begin
       if (nonblank(agroup)) then begin
         if (agroup<>INr.Group) then begin
           found = false;
-        end;
+        end;        
       end;
     end;
     if (found) then begin
       testf = true;
+      
+      if(nonblank(aclass))then begin
+				if(!setinset(aclass,INr.DispGroups))then begin
+					testf = false;// Edit ************************** Thursday, 20 August 2015 14:03:13
+				end;
+			end;
+      
       if (nonblank(RepSpec.f2)) then begin
         if ((INr.Code>into) or (INr.Code<infr)) then begin
           testf = false;
@@ -538,7 +553,7 @@ begin
       case 0:
         if (nonblank(RepSpec.f3)) then begin
           if (PLDefrw.ItemCode==RepSpec.f3) then begin
-            CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+            CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode & ":" & PLDefrw.DispGroups,PLDefrw.Formula,PLr.DepPrice,flushcnt);// Edit ************************** Thursday, 20 August 2015 13:58:20
           end;
         end else begin
 					//if (PLDefrw.ItemCode==RepSpec.f3) then begin// Edit ************************** Friday, 5 July 2013 10:01:50
@@ -546,13 +561,13 @@ begin
 						if(nonblank(RepSpec.f2))then begin
 							INr.Code = RepSpec.f2;
 							if(readfirstmain(INr,1,true) and INr.Group==PLDefrw.ItemCode)begin
-								CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+								CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode & ":" & PLDefrw.DispGroups,PLDefrw.Formula,PLr.DepPrice,flushcnt);
 							end;
 						end else begin
-							CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+							CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode & ":" & PLDefrw.DispGroups,PLDefrw.Formula,PLr.DepPrice,flushcnt);
 						end;
 					end else begin
-						CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+						CalcGroupPrices(RepSpec,PLr.Code,PLDefrw.ItemCode & ":" & PLDefrw.DispGroups,PLDefrw.Formula,PLr.DepPrice,flushcnt);
 					end;
 					//end;// Edit ************************** Friday, 5 July 2013 10:01:51
         end;

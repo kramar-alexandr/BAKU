@@ -459,13 +459,27 @@ begin
 					matrowget(PLDefr,j,PLDefrw)
 					switch (PLDefrw.CodeType) begin
 						case 0:
-							if (nonblank(RepSpec.f3)) then begin
-								if (PLDefrw.ItemCode==RepSpec.f3) then begin
-									formula = PLDefrw.Formula;
+							if(blank(PLDefrw.DispGroups))then begin// Edit ************************** Thursday, 20 August 2015 14:38:54
+								if (nonblank(RepSpec.f3)) then begin
+									if (PLDefrw.ItemCode==RepSpec.f3) then begin
+										formula = PLDefrw.Formula;
+									end;
+								end else begin
+									if (PLDefrw.ItemCode==RepSpec.f3) then begin
+										formula = PLDefrw.Formula;
+									end;
 								end;
-							end else begin
-								if (PLDefrw.ItemCode==RepSpec.f3) then begin
-									formula = PLDefrw.Formula;
+							end else begin// Edit ************************** Thursday, 20 August 2015 14:39:35
+								if(setinset(PLDefrw.DispGroups,INr.DispGroups))then begin// Edit ************************** Thursday, 20 August 2015 14:39:32
+									if (nonblank(RepSpec.f3)) then begin
+										if (PLDefrw.ItemCode==RepSpec.f3) then begin
+											formula = PLDefrw.Formula;
+										end;
+									end else begin
+										if (PLDefrw.ItemCode==RepSpec.f3) then begin
+											formula = PLDefrw.Formula;
+										end;
+									end;
 								end;
 							end;
 						case 1:

@@ -2834,7 +2834,7 @@ begin
   real h,l,v;
   WindowBegin("Прейскурант",PLDefDClass,CGview,-);
   UseView(PLDefVc);
-  SetWRect(20,80,550,370);
+  SetWRect(20,80,650,570);
   EditField(h=110,v=10,50,"Код",St_i,Code,false,0);
   EditField(250,v,-40,"Комментарий",Normal,Comment,false,0);
   if (IsEnterprise) then begin
@@ -2854,16 +2854,17 @@ begin
 //  EditField(230,v,80,"Код НДС",Normal,VATCode,false,VATCodeSClass);
   if (IsEnterprise or HasAdvancedPricing) then begin
   h = 7; v=v+19; l = 35;
-  MatrixBegin(h,v+=22,h+320,-11,-,2000);
+  MatrixBegin(h,v+=22,h+420,-11,-,2000);
 //  StaticText(h=45,v-5,"Код",false);
   MatCol(1,h=34,"Тип строки",0,CodeType,false,SetSClass);
   MatCol(1,h+=84,"Товар/Группа товара",60,ItemCode,false,ITSClass);
+  MatCol(1,h+=84,"Классификация",60,DispGroups,false,DISClass);
   MatCol(1,-100,"Формула цены",5,Formula,false,PFormSClass);
   MatCol(1,-30,"НДС",5,VATCode,false,VATCodeSClass);
   EndMatrix;
-  ButtonFrame(h=360,v=83,150,3,"НДС");
+  ButtonFrame(h=460,v=83,150,3,"НДС");
   end else begin
-    ButtonFrame(h=250,v+=40,150,3,"НДС");
+    ButtonFrame(h=350,v+=40,150,3,"НДС");
   end;
   RadioButton(h,v,0,0,"не включать",InclVAT);
   if (IsEnterprise) then begin
@@ -2872,7 +2873,7 @@ begin
   RadioButton(h,v+=16,2,0,"Включать",InclVAT);  
   EndFrame;
   if (HasAdvancedPricing) then begin
-  ButtonFrame(h=360,v+=40,150,3,"Тип");
+  ButtonFrame(h=460,v+=40,150,3,"Тип");
   RadioButton(h,v,0,0,"со скидками",DepPrice);
   RadioButton(h,v+=16,1,0,"со скидками от кол-ва",DepPrice);
     if (IsEnterprise) then begin

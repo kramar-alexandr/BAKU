@@ -4191,6 +4191,49 @@ begin
   KeySegment(Comment);
   KeySegment(Code);
   EndRecord;
-  
+	
+	RecordBegin(PLDefVc,-,"pldef2");
+  NewAutosyncRegister(kSyncDirectionToClient,true);
+  RecordField(Code,M4Code,5,0);
+  RecordField(Comment,M4Str,60,0);
+  RecordField(CurncyCode,M4Code,5,CurncyCodeVc);
+  RecordField(InclVAT,M4Int,0,0);
+  RecordField(Math,M4Matrix,0,0);
+  RecordField(DepPrice,M4Int,0,0);
+  RecordField(StartDate,M4Date,0,0);
+  RecordField(EndDate,M4Date,0,0);
+  RecordField(PLReplCode,M4Code,5,0);
+  RecordField(PLBasedOn,M4Int,0,0);
+  RecordField(VATCode,M4Code,10,VATCodeBlock);
+  RecordField(BBVECode,M4Code,20,VEVc);
+  RecordField(BBVarAcc,M4Code,10,AccVc);
+  RecordField(BBGenTrans,M4Int,0,0);
+  RecordField(LengthClass,M4Int,0,0);
+  RecordField(StartTime,M4Time,0,0);
+  RecordField(EndTime,M4Time,0,0);
+  ArrayBegin(Math,-,1);
+  ArrayField(ItemCode,M4UStr,60,INVc);
+  ArrayField(Formula,M4Code,5,0);
+  ArrayField(CodeType,M4Set,14,0);
+  ArrayField(VATCode,M4Code,10,VATCodeBlock);
+  ArrayField(DispGroups,M4Code,100,DIVc);// Edit ************************** Thursday, 20 August 2015 13:45:31
+  EndArray;
+  MainKeyBegin(Code,0);
+  KeySegment(Code);
+  KeySegment(StartDate);
+  KeyBegin(PLReplCode);
+  KeySegment(PLReplCode);
+  KeySegment(LengthClass);
+  KeySegment(StartDate);
+  KeySegment(Code);
+  KeyBegin(EndDate);//Used ? 
+  KeySegment(PLReplCode);
+  KeySegment(EndDate);
+  KeySegment(Code);
+  KeySegment(StartDate);
+  EndRecord;
+	  
   return;  
 end;
+
+
