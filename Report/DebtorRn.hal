@@ -18,6 +18,10 @@ BEGIN
 		OutString	(tab1,0,"",false);
 		OutStringCut(tab2,tab4,0,head,false,0);
 		OutString	(tab5,0,USetStr(31220) & ": " & RepSpec.sEndDate,false);
+		if nonblank(RepSpec.ObjStr) then begin
+			OutString(tab6,0,"",false);
+			OutString(tab7,0,USetStr(31024) & " " & RepSpec.ObjStr,false);
+		end;
 	EndFormat;
 	StartFormat(15);
 	EndFormat;
@@ -71,7 +75,7 @@ BEGIN
 	record IVVc IVr;
 	row IVVc IVrw;
 	integer i,rwcnt;
-	boolean TrHs,testf,firstf;
+	boolean TrHs,testf,firstf,cashMustBef,isCashf,haveStoref;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8;
@@ -103,6 +107,9 @@ BEGIN
 			if (IVr.OKFlag <> 1) then begin
 				testf = false;
 			end;
+			if (!setinset(RepSpec.ObjStr,IVr.Objects) and nonblank(RepSpec.ObjStr)) then begin
+				testf = false;
+			end;
 			if (testf) then begin
 				TRr.Number = IVr.SerNr;
 				TRr.IntYc = IVYc;
@@ -118,6 +125,12 @@ BEGIN
 					curCredit63 = 0;
 					resdoc63 = 0;
 					prep = 0;
+					isCashf = false;
+					if (IVr.PayDeal == "O") then begin
+						cashMustBef = true;
+					end else begin
+						cashMustBef = false;
+					end;
 					currency = IVr.CurncyCode;
 					rwcnt = MatRowCnt(TRr);
 					for (i=0;i<rwcnt;i=i+1) begin
@@ -152,14 +165,21 @@ BEGIN
 								resdoc62 = resdoc62 + IVrw.Sum;
 								prep = IVrw.Sum;
 							case kInvoiceRowTypeCashPayment:
+								isCashf = true;
 								resdoc62 = resdoc62 + cur2cur(IVrw.CurncyCode,currency,IVr.TransDate,IVrw.Sum);
 							case kInvoiceRowTypeCreditCardPayment:
+								isCashf = true;
 								resdoc62 = resdoc62 + cur2cur(IVrw.CurncyCode,currency,IVr.TransDate,IVrw.Sum);
 							case kInvoiceRowTypeGiftVoucherPayment:
+								isCashf = true;
 								resdoc62 = resdoc62 + cur2cur(IVrw.CurncyCode,currency,IVr.TransDate,IVrw.Sum);
 							case kInvoiceRowTypeLoyaltyPointsPayment:
+								isCashf = true;
 								resdoc62 = resdoc62 + cur2cur(IVrw.CurncyCode,currency,IVr.TransDate,IVrw.Sum);
 						end;
+					end;
+					if ((cashMustBef) and (!isCashf)) then begin
+						resdoc62 = resdoc62 + IVr.Sum4 - prep;
 					end;
 					if ((resdoc62 <> 0) or (resdoc63 <> 0)) then begin
 						if (firstf) then begin
@@ -179,8 +199,16 @@ BEGIN
 						if ((curDebit62 <> 0) and (curDebit62 == resdoc62) and ((resdoc62 - curDebit62 + curCredit62) == 0)) then begin
 							errStr = USetStr(35077);//  Не закрыт 62-й счет при оплаченой сч/ф
 						end;
+						if ((cashMustBef) and (!isCashf)) then begin
+							errStr = USetStr(35085);
+							resdoc62 = resdoc62 - IVr.Sum4 + prep;
+						end;
 						if (resdoc62 == -IVr.Sum4) then begin
-							errStr = USetStr(35074);//  Закрыт 62-й счет при отсутствии оплаты
+							if ((curCredit63 <> 0) or (curDebit63 <> 0)) then begin
+								errStr = USetStr(35084);
+							end else begin
+								errStr = USetStr(35074);//  Закрыт 62-й счет при отсутствии оплаты
+							end;
 						end;
 						if ((prep <> 0) and (curDebit63 == 0)) then begin
 							errStr = USetStr(35076);//  Предоплата не отражена на 63-м счету
@@ -233,6 +261,7 @@ BEGIN
 					curDebit63 = 0;
 					curCredit63 = 0;
 					prep = 0;
+					haveStoref = false;
 					currency = IPr.PayCurCode;
 					rwcnt = MatRowCnt(TRr);
 					for (i=0;i<rwcnt;i=i+1) begin
@@ -257,6 +286,9 @@ BEGIN
 					rwcnt = MatRowCnt(IPr);
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(IPr,i,IPrw);
+						if (setinset(RepSpec.ObjStr,IPrw.Objects) and nonblank(RepSpec.ObjStr)) then begin
+							haveStoref = true;
+						end;
 						if (IPrw.InvoiceNr==-1) then begin
 							resdoc63 = resdoc63 + cur2cur(IPrw.RecCurncy,currency,IPr.TransDate,IPrw.RecVal);
 							prep = cur2cur(IPrw.RecCurncy,currency,IPr.TransDate,IPrw.RecVal);
@@ -264,7 +296,7 @@ BEGIN
 							resdoc62 = resdoc62 + cur2cur(IPrw.RecCurncy,currency,IPr.TransDate,IPrw.RecVal);
 						end;
 					end;
-					if ((resdoc62 <> 0) or (resdoc63 <> 0)) then begin
+					if (((resdoc62 <> 0) or (resdoc63 <> 0)) and (haveStoref)) then begin
 						if (firstf) then begin
 							StartFormat(15);
 							EndFormat;
