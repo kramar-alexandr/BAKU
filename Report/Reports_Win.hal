@@ -740,7 +740,7 @@ window DebtorRClass:1 //Edit---------------Vitalii 15:00 19.05.2015
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 	real h,v,vs;
-	WindowBegin("Определите отчет по ошибкам",DebtorRClass,CGRcW,RcType);
+	WindowBegin("Определите отчет по долгам и авансам",DebtorRClass,CGRcW,RcType);
 		SetWRect(20,80,440,150);
 		h = 160;
 		vs = 20;

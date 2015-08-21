@@ -148,7 +148,7 @@ begin
   Report("KPI Report",KPIRClass,KPIRn,0,modSL); 
   Report("Отчет по учредителям",FounderRClass,FounderRn,0,modNL);////Edit---------------Vitalii 16:34 17.07.2015
   Report("Paper Planes report",PaperPlanesRClass,PaperPlanesRn,0,modSL); //Edit***************************Sasha2,17:44 31.07.2015
-  Report("Ошибки по должникам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
+  Report("Ошибки по долгам и авансам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -576,12 +576,29 @@ begin
 	SString(35063,"Учредитель:");
 	
 	//DebtorRn
-	SString(35069,"Ошибки по должникам");
-	SString(35064,"Должники");
-	SString(35065,"Документ");
-	SString(35066,"Дебет 62го сч");
-	SString(35067,"Кредит 62го сч");
-	SString(35068,"Всего ");
+	SString(35075,"Ошибки по долгам и авансам");
+	SString(35064,"Ошибки в ");
+	SString(35065,"счет-фактурах");
+	SString(35066,"платежах клиента");
+	SString(35067,"Документ");
+  //SString(31220,"Дата");
+	SString(35068,"Счет ");
+	SString(35069,"Дебет");
+	SString(35070,"Кредит");
+  //SString(31245,"Комментарий");
+	SString(35071,"по документу");
+	SString(35072,"по ошибке");
+	SString(35073,"Предоплата отразилась на 62-м счету");
+	SString(35074,"Закрыт 62-й счет при отсутствии оплаты");
+	SString(35076,"Предоплата не отражена на 63-м счету");
+	SString(35077,"Не закрыт 62-й счет при оплаченой сч/ф");
+	SString(35078,"Должен присутствовать счет округления");
+	SString(35079,"Неправильно указан дебет 62-го счета");
+	SString(35080,"Неправильные записи по 63-му счету");
+	SString(35081,"Неправильные записи по 62-му счету");
+	SString(35082,"Неправильные записи по 63-му счету в предоплате");
+	SString(35083,"Кредит 62 не совпадает с суммой платежа");
+	
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

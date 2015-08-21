@@ -1618,10 +1618,10 @@ begin
 	record CLOutVc CLOutr;
 	row CLOutVc CLOutrw;
 	record CurncyCodeVc CCr;
-	record AccVc Accr;
+	record AccVc Accr50,Accr58,Accr4403;
 	array string 5 CurList;
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
-	boolean TrHs,firstprint,testf;
+	boolean TrHs,firstprint,testf,done;
 	Date tempDate;
 	val BeginBalance50n51, BeginBalance50n51n53, BeginBalance50AZN,
 		BeginBalance50, BeginBalance51, BeginBalance53,
@@ -1647,6 +1647,7 @@ begin
 			tab10,tab11,tab12,
 			tab13;
 	string 5 tempStr;
+	string 200 tempComm;
 	
 	BeginBalance50n51 = 0;
 	BeginBalance50n51n53 = 0;
@@ -1819,12 +1820,16 @@ begin
 		
 		mainr.AccNumber = "50";
 		mainr.TransDate = RepSpec.sStartDate;
-		Accr.AccNumber = "50";
-		ReadFirstMain(Accr,1,true);
+		Accr50.AccNumber = "50";
+		ReadFirstMain(Accr50,1,true);
+		Accr58.AccNumber = "58";
+		ReadFirstMain(Accr58,1,true);
+		Accr4403.AccNumber = "44/03";
+		ReadFirstMain(Accr4403,1,true);
 		TrHs = true;
 		while (LoopMain(mainr,2,TrHs)) begin
 			if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
-				TrHs = false;	
+				TrHs = false;
 			end;
 			if (TrHs) then begin
 				TRr.Number = mainr.TransNr;
@@ -1844,6 +1849,7 @@ begin
 						rwcnt = MatRowCnt(TRr);
 						for (i=0;i<rwcnt;i=i+1) begin
 							MatRowGet(TRr,i,TRrw);
+							done = false;
 							if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								switch (TRr.IntYc) begin
 									case IVYc:
@@ -1899,6 +1905,61 @@ begin
 								tempTRrw.CurCredVal = TRrw.CurCredVal;	//в столбики Расходы AZN/EUR/USD
 								tempTRrw.DebVal = TRrw.DebVal;			//в столбик Поступления В осн. валюте
 								tempTRrw.CredVal = TRrw.CredVal;		//в столбик Расходы В осн. валюте
+								if ((TRr.IntYc == IVYc) and (TRrw.CredVal <> 0)) then begin
+									tempTRrw.CurDebVal = - TRrw.CurCredVal;
+									tempTRrw.CurCredVal = - TRrw.CurDebVal;
+									tempTRrw.DebVal = - TRrw.CredVal;
+									tempTRrw.CredVal = - TRrw.DebVal;
+								end;
+								testf = CorspTRTest(TRr,Accr58,i,corspdebval,corspcredval);
+								if testf then begin
+									tempComm = tempTRrw.ExtraComment;
+									for (k=0;k<rwcnt;k=k+1) begin
+										MatRowGet(TRr,k,tempTRrw2);
+										if (tempTRrw2.AccNumber == "58") then begin
+											tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
+											tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
+											tempTRrw.DebVal = tempTRrw2.CredVal;
+											tempTRrw.CredVal = tempTRrw2.DebVal;
+											tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
+											MatRowPut(tempTRr,j,tempTRrw);
+											j = j + 1;
+										end;
+									end;
+									testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
+									if testf then begin
+										for (k=0;k<rwcnt;k=k+1) begin
+											MatRowGet(TRr,k,tempTRrw2);
+											if (tempTRrw2.AccNumber == "44/03") then begin
+												tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
+												tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
+												tempTRrw.DebVal = tempTRrw2.CredVal;
+												tempTRrw.CredVal = tempTRrw2.DebVal;
+												tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
+												MatRowPut(tempTRr,j,tempTRrw);
+												j = j + 1;
+												done = true;
+											end;
+										end;
+									end;
+								end;
+								if (!done) then begin
+									if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
+										MatRowPut(tempTRr2,l,tempTRrw);
+										l = l + 1;
+									end else begin
+										MatRowPut(tempTRr,j,tempTRrw);
+										j = j + 1;
+									end;
+								end;
+								tempTRrw.ReconDate = "";
+								tempTRrw.Curncy = "";
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CredVal = blankval;
+								tempTRrw.Comment = "";
+								tempTRrw.ExtraComment = "";
 								if ((TRrw.DebVal<>0) or (TRrw.CredVal<>0)) then begin
 									BDEBaseChng = true;
 									BCEBaseChng = true;
@@ -1913,22 +1974,16 @@ begin
 								end;
 								BDEDebTemp = BDEDebTemp + TRrw.DebVal;
 								BCECredTemp = BCECredTemp + TRrw.CredVal;
-								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
-									MatRowPut(tempTRr2,l,tempTRrw);
-									l = l + 1;
-								end else begin
-									MatRowPut(tempTRr,j,tempTRrw);
-									j = j + 1;
-								end;
-								tempTRrw.ReconDate = "";
-								tempTRrw.Curncy = "";
-								tempTRrw.CurDebVal = blankval;
-								tempTRrw.CurCredVal = blankval;
-								tempTRrw.DebVal = blankval;
-								tempTRrw.CredVal = blankval;
-								tempTRrw.Comment = "";
-								tempTRrw.ExtraComment = "";
 							end;
+							/*
+							if ((TRrw.AccNumber == "58") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
+								if testf then begin
+									YcToStr(TRr.IntYc,tempStr);
+									BaseCredErr = BaseCredErr + TRrw.DebVal;
+								end;
+							end;
+							*/
 							if ((TRrw.AccNumber == "76") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects) and SetInSet("E131",TRrw.Objects)) then begin
 								BalItem1 = BalItem1 + TRrw.CredVal - TRrw.DebVal;
 								BaseDebErr = BaseDebErr + TRrw.CredVal;
@@ -1938,50 +1993,33 @@ begin
 								BaseCredErr = BaseCredErr + TRrw.DebVal;
 							end;
 							if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
 									YcToStr(TRr.IntYc,tempStr);
-									//logtext(0,"50 - 51 " & tempStr & "." & TRr.Number);
-									//logtext(0,TRrw.CredVal & " - " & TRrw.DebVal);
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
 							end;
 							if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
 									YcToStr(TRr.IntYc,tempStr);
-									//logtext(0,"50 - 52 " & tempStr & "." & TRr.Number);
-									//logtext(0,TRrw.CredVal & " - " & TRrw.DebVal);
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
 							end;
 							if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
 									YcToStr(TRr.IntYc,tempStr);
-									//logtext(0,"50 - 53 " & tempStr & "." & TRr.Number);
-									//logtext(0,TRrw.CredVal & " - " & TRrw.DebVal);
 									Bal53 = Bal53 + TRrw.DebVal;
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
 							end;
-							if ((TRrw.AccNumber == "58") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
-								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
-									//logtext(0,"50 - 58 " & tempStr & "." & TRr.Number);
-									//logtext(0,TRrw.CredVal & " - " & TRrw.DebVal);
-									BaseCredErr = BaseCredErr + TRrw.DebVal;
-								end;
-							end;
 							if ((TRrw.AccNumber == "84/03") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-								testf = CorspTRTest(TRr,Accr,i,corspdebval,corspcredval);
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
 									YcToStr(TRr.IntYc,tempStr);
-									//logtext(0,"50 - 84/03 " & tempStr & "." & TRr.Number);
-									//logtext(0,TRrw.CredVal & " - " & TRrw.DebVal);
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 									kursovaya = kursovaya - TRrw.DebVal + TRrw.CredVal;
