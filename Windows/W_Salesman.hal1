@@ -1792,7 +1792,8 @@ if (HasTouchScreenLook==false) then begin
   EditField(h1,v+=vs,-20,"Комментарий",Normal,InvComment,false,0);
   EnterSkip(Math);
   Tile(2,220,true,"2",Math);
-
+  
+  EditField(55,-21,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
   EditField(-150,-21,95,"Итого",ViewOnly ,Sum4,true,0);
   v = 24;
   MatrixBegin(4,v,-50,-49,-,200);
