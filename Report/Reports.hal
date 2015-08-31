@@ -1618,7 +1618,7 @@ begin
 	record CLOutVc CLOutr;
 	row CLOutVc CLOutrw;
 	record CurncyCodeVc CCr;
-	record AccVc Accr50,Accr58,Accr4403;
+	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403;
 	array string 5 CurList;
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint,testf,done;
@@ -1638,7 +1638,7 @@ begin
 		SaldoEndPeriod, SaldoEndPeriodUSD,
 		SaldoEndPeriodEUR, SaldoEndPeriodAZN,
 		corspdebval, corspcredval, Bal53,
-		kursovaya;
+		kursovaya,convtotal1,convtotal2,convtotal3,convtotal4,convtotal5;// Edit ************************** Wednesday, 26 August 2015 11:49:59
 	boolean BDEBaseChng, BDECurChng,
 			BCEBaseChng, BCECurChng;
 	integer tab1, tab2, tab3,
@@ -1794,6 +1794,13 @@ begin
 			OutString(tab6,0,"",false);
 			OutString(tab7,0,"",false);
 			OutString(tab8,0,"",false);
+			if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+				OutStringCut(tab9,tab10,0,USetStr(35086),true,0); // Конвертация/банк
+				OutString(tab5,0,"",false);
+				OutString(tab5,0,"",false);
+				OutString(tab5,0,"",false);
+				OutString(tab5,0,"",false);
+			end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 			OutStringCut(tab9,tab10,0,USetStr(10670),true,0); // Расходы
 			OutString(tab10,0,"",false);
 			OutString(tab11,0,"",false); //В осн. валюте
@@ -1809,6 +1816,15 @@ begin
 			OutString(tab4,0,"EUR",false);
 			OutString(tab5,0,"USD",false);
 			OutString(tab6,0,USetStr(35014),false); //В осн. валюте
+			
+			if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+				OutString(tab3,0,USetStr(35013),false); 
+				OutString(tab3,0,"AZN",false); 
+				OutString(tab4,0,"EUR",false);
+				OutString(tab5,0,"USD",false);
+				OutString(tab6,0,USetStr(35014),false); //В осн. валюте
+			end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
+			
 			OutString(tab7,0,USetStr(35013),false); //AZN терминал
 			OutString(tab8,0,"AZN",false);
 			OutString(tab9,0,"EUR",false);
@@ -1822,10 +1838,14 @@ begin
 		mainr.TransDate = RepSpec.sStartDate;
 		Accr50.AccNumber = "50";
 		ReadFirstMain(Accr50,1,true);
+		Accr51.AccNumber = "51";
+		ReadFirstMain(Accr51,1,true);
 		Accr58.AccNumber = "58";
 		ReadFirstMain(Accr58,1,true);
 		Accr4403.AccNumber = "44/03";
 		ReadFirstMain(Accr4403,1,true);
+		Accr8403.AccNumber = "84/03";
+		ReadFirstMain(Accr8403,1,true);
 		TrHs = true;
 		while (LoopMain(mainr,2,TrHs)) begin
 			if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
@@ -1911,6 +1931,7 @@ begin
 									tempTRrw.DebVal = - TRrw.CredVal;
 									tempTRrw.CredVal = - TRrw.DebVal;
 								end;
+								
 								testf = CorspTRTest(TRr,Accr58,i,corspdebval,corspcredval);
 								if testf then begin
 									tempComm = tempTRrw.ExtraComment;
@@ -1943,6 +1964,70 @@ begin
 										end;
 									end;
 								end;
+								
+								if(RepSpec.Media==mtExcel)then begin
+								
+									testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 11:01:28
+									if (testf  and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
+										YcToStr(TRr.IntYc,tempStr);
+										if(TRrw.CredVal!=0)then begin
+											tempTRrw.MyVal1 = -TRrw.CurCredVal;
+											tempTRrw.MyVal2 = -TRrw.CredVal;
+											BaseCredErr = BaseCredErr - TRrw.CredVal;
+										end else begin
+											tempTRrw.MyVal1 = TRrw.CurDebVal;
+											tempTRrw.MyVal2 = TRrw.DebVal;
+											BaseDebErr = BaseDebErr - TRrw.DebVal;
+										end;
+										convtotal5 = convtotal5 + tempTRrw.MyVal2;
+										switch(tempTRrw.Curncy)begin
+											case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
+											case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
+											case "EUR":convtotal3 = convtotal3 + tempTRrw.MyVal1;
+											case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
+										end;								
+									end;
+								
+									testf = CorspTRTest(TRr,Accr51,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
+									if testf then begin
+										if(TRrw.CredVal!=0)then begin
+											tempTRrw.MyVal1 = -TRrw.CurCredVal;
+											tempTRrw.MyVal2 = -TRrw.CredVal;
+										end else begin
+											tempTRrw.MyVal1 = TRrw.CurDebVal;
+											tempTRrw.MyVal2 = TRrw.DebVal;
+										end;
+										convtotal5 = convtotal5 + tempTRrw.MyVal2;
+										switch(tempTRrw.Curncy)begin
+											case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
+											case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
+											case "EUR":convtotal3 = convtotal3 + tempTRrw.MyVal1;
+											case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
+										end;
+									end;
+									
+									testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
+									if testf then begin
+										if(TRrw.CredVal!=0)then begin
+											tempTRrw.MyVal1 = -TRrw.CurCredVal;
+											tempTRrw.MyVal2 = -TRrw.CredVal;
+											BaseCredErr = BaseCredErr - TRrw.CredVal;
+										end else begin
+											tempTRrw.MyVal1 = TRrw.CurDebVal;
+											tempTRrw.MyVal2 = TRrw.DebVal;
+											BaseDebErr = BaseDebErr - TRrw.DebVal;
+										end;
+										convtotal5 = convtotal5 + tempTRrw.MyVal2;
+										switch(tempTRrw.Curncy)begin
+											case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
+											case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
+											case "EUR":convtotal3 = convtotal3 + tempTRrw.MyVal1;
+											case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
+										end;
+									end;
+								
+								end;
+								
 								if (!done) then begin
 									if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
 										MatRowPut(tempTRr2,l,tempTRrw);
@@ -1958,6 +2043,9 @@ begin
 								tempTRrw.CurCredVal = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.CredVal = blankval;
+								tempTRrw.MyVal1 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
+								tempTRrw.MyVal2 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
+								
 								tempTRrw.Comment = "";
 								tempTRrw.ExtraComment = "";
 								if ((TRrw.DebVal<>0) or (TRrw.CredVal<>0)) then begin
@@ -1996,10 +2084,11 @@ begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
 									YcToStr(TRr.IntYc,tempStr);
-									BaseDebErr = BaseDebErr + TRrw.CredVal;
-									BaseCredErr = BaseCredErr + TRrw.DebVal;
+									//BaseDebErr = BaseDebErr + TRrw.CredVal;// Edit ************************** Wednesday, 26 August 2015 16:11:22
+									//BaseCredErr = BaseCredErr + TRrw.DebVal;					
 								end;
 							end;
+							
 							if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
@@ -2107,6 +2196,23 @@ begin
 								tempTRrw.CurCredVal = TRrw.CredVal;		//в столбики Расходы AZN терминал
 								tempTRrw.DebVal = TRrw.DebVal;
 								tempTRrw.CredVal = TRrw.CredVal;
+								
+								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
+								if testf then begin
+									if(TRrw.CredVal!=0)then begin
+										tempTRrw.MyVal1 = -TRrw.CurCredVal;
+									end else begin
+										tempTRrw.MyVal1 = TRrw.CurDebVal;
+									end;
+									switch(tempTRrw.Curncy)begin
+										case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
+										case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
+										case "EUR":convtotal3 = convtotal3 + tempTRrw.MyVal1;
+										case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
+									end;
+								end;
+								
+								
 								if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
 									MatRowPut(tempTRr2,l,tempTRrw);
 									l = l + 1;
@@ -2120,6 +2226,8 @@ begin
 								tempTRrw.CurCredVal = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.CredVal = blankval;
+								tempTRrw.MyVal1 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
+								tempTRrw.MyVal2 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
 								tempTRrw.Comment = "";
 								tempTRrw.ExtraComment = "";
 							end;
@@ -2235,58 +2343,122 @@ begin
 			end;
 			switch (tempTRrw.Curncy) begin
 				case "AZN":
+										
+					if((tempTRrw.MyVal1!=0 or tempTRrw.MyVal2!=0) and RepSpec.Media==mtExcel)then begin
+						tempTRrw.CurDebVal = blankval;
+						tempTRrw.DebVal = blankval;
+						tempTRrw.CurCredVal = blankval;
+						tempTRrw.CredVal = blankval;
+					end;
+					BaseDeb = BaseDeb + tempTRrw.DebVal;
+					BaseCred = BaseCred + tempTRrw.CredVal;
+					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
+					AZNCred = AZNCred + tempTRrw.CurCredVal;
 					OutString(tab2,0,"",false);
 					OutString(tab3,0,tempTRrw.CurDebVal,false);
-					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,"",false);
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+						OutString(tab5,0,"",false);
+						OutString(tab3,0,tempTRrw.MyVal1,false); 
+						OutString(tab4,0,"",false);
+						OutString(tab5,0,"",false);
+						OutString(tab5,0,tempTRrw.MyVal2,false);
+					end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 					OutString(tab7,0,"",false);
 					OutString(tab8,0,tempTRrw.CurCredVal,false);
 					OutString(tab9,0,"",false);
 					OutString(tab10,0,"",false);
-					AZNCred = AZNCred + tempTRrw.CurCredVal;
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "EUR":
+					if((tempTRrw.MyVal1!=0 or tempTRrw.MyVal2!=0) and RepSpec.Media==mtExcel)then begin
+						tempTRrw.CurDebVal = blankval;
+						tempTRrw.DebVal = blankval;
+						tempTRrw.CurCredVal = blankval;
+						tempTRrw.CredVal = blankval;
+					end;
+					BaseDeb = BaseDeb + tempTRrw.DebVal;
+					BaseCred = BaseCred + tempTRrw.CredVal;
+					EURDeb = EURDeb + tempTRrw.CurDebVal;
+					EURCred = EURCred + tempTRrw.CurCredVal;
 					OutString(tab2,0,"",false);
 					OutString(tab3,0,"",false);
 					OutString(tab4,0,tempTRrw.CurDebVal,false);
-					EURDeb = EURDeb + tempTRrw.CurDebVal;
 					OutString(tab5,0,"",false);
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+						OutString(tab5,0,"",false);
+						OutString(tab3,0,"",false); 
+						OutString(tab4,0,tempTRrw.MyVal1,false);
+						OutString(tab5,0,"",false);
+						OutString(tab5,0,tempTRrw.MyVal2,false);
+					end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 					OutString(tab7,0,"",false);
 					OutString(tab8,0,"",false);
 					OutString(tab9,0,tempTRrw.CurCredVal,false);
-					EURCred = EURCred + tempTRrw.CurCredVal;
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "USD":
+					if((tempTRrw.MyVal1!=0 or tempTRrw.MyVal2!=0) and RepSpec.Media==mtExcel)then begin
+						tempTRrw.CurDebVal = blankval;
+						tempTRrw.DebVal = blankval;
+						tempTRrw.CurCredVal = blankval;
+						tempTRrw.CredVal = blankval;
+					end;
+					BaseDeb = BaseDeb + tempTRrw.DebVal;
+					BaseCred = BaseCred + tempTRrw.CredVal;
+					USDDeb = USDDeb + tempTRrw.CurDebVal;
+					USDCred = USDCred + tempTRrw.CurCredVal;
 					OutString(tab2,0,"",false);
 					OutString(tab3,0,"",false);
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,tempTRrw.CurDebVal,false);
-					USDDeb = USDDeb + tempTRrw.CurDebVal;
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+						OutString(tab5,0,"",false);
+						OutString(tab3,0,"",false); 
+						OutString(tab4,0,"",false);
+						OutString(tab5,0,tempTRrw.MyVal1,false);
+						OutString(tab5,0,tempTRrw.MyVal2,false);
+					end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 					OutString(tab7,0,"",false);
 					OutString(tab8,0,"",false);
 					OutString(tab9,0,"",false);
 					OutString(tab10,0,tempTRrw.CurCredVal,false);
-					USDCred = USDCred + tempTRrw.CurCredVal;
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "TER":
-					OutString(tab2,0,tempTRrw.CurDebVal,false);
+					if((tempTRrw.MyVal1!=0 or tempTRrw.MyVal2!=0) and RepSpec.Media==mtExcel)then begin
+						tempTRrw.DebVal = blankval;
+						tempTRrw.CredVal = blankval;
+						tempTRrw.CurCredVal = blankval;
+						tempTRrw.CurDebVal = blankval;
+					end;
+					BaseDeb = BaseDeb + tempTRrw.DebVal;
+					BaseCred = BaseCred + tempTRrw.CredVal;
 					AZNTermDeb = AZNTermDeb + tempTRrw.CurDebVal;
+					AZNTermCred = AZNTermCred + tempTRrw.CurCredVal;
+					
+					OutString(tab2,0,tempTRrw.CurDebVal,false);
 					OutString(tab3,0,"",false);
 					OutString(tab4,0,"",false);
 					OutString(tab5,0,"",false);
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+						OutString(tab3,0,tempTRrw.MyVal1,false); 
+						OutString(tab4,0,"",false);
+						OutString(tab5,0,"",false);
+						OutString(tab5,0,"",false);
+						OutString(tab5,0,tempTRrw.MyVal2,false);
+					end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 					OutString(tab7,0,tempTRrw.CurCredVal,false);
-					AZNTermCred = AZNTermCred + tempTRrw.CurCredVal;
 					OutString(tab8,0,"",false);
 					OutString(tab9,0,"",false);
 					OutString(tab10,0,"",false);
 					OutString(tab11,0,tempTRrw.CredVal,false);
 				case "IVV":
+					BaseDeb = BaseDeb + tempTRrw.DebVal;
+					BaseCred = BaseCred + tempTRrw.CredVal;
 					OutString(tab2,0,tempTRrw.NomVal,false);
 					AZNTermDeb = AZNTermDeb + tempTRrw.NomVal;
 					OutString(tab3,0,tempTRrw.CredVal2,false);
@@ -2296,6 +2468,13 @@ begin
 					OutString(tab5,0,tempTRrw.Qty,false);
 					USDDeb = USDDeb + tempTRrw.Qty;
 					OutString(tab6,0,tempTRrw.DebVal,false);
+					if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+						OutString(tab3,0,"",false);
+						OutString(tab3,0,"",false); 
+						OutString(tab4,0,"",false);
+						OutString(tab5,0,"",false);
+						OutString(tab5,0,"",false);
+					end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 					OutString(tab7,0,"",false);
 					OutString(tab8,0,"",false);
 					OutString(tab9,0,"",false);
@@ -2315,8 +2494,6 @@ begin
 					OutStringID(tab12,"DblTrans",tempTRrw.Comment,false,CurrentCompany);
 			end;
 				OutString(tab13,0,tempTRrw.ExtraComment,false);
-			BaseDeb = BaseDeb + tempTRrw.DebVal;
-			BaseCred = BaseCred + tempTRrw.CredVal;
 			EndFormat;
 		end;
 		//Итого
@@ -2328,6 +2505,13 @@ begin
 			OutString(tab4,0,EURDeb,false);
 			OutString(tab5,0,USDDeb,false);
 			OutString(tab6,0,BaseDeb,false);
+			if(RepSpec.Media==mtExcel)then begin// Edit ************************** Wednesday, 26 August 2015 10:09:40
+				OutString(tab3,0,convtotal1,false); 
+				OutString(tab3,0,convtotal2,false); 
+				OutString(tab4,0,convtotal3,false);
+				OutString(tab5,0,convtotal4,false);
+				OutString(tab5,0,convtotal5,false);
+			end;// Edit ************************** Wednesday, 26 August 2015 10:09:41
 			OutString(tab7,0,AZNTermCred,false);
 			OutString(tab8,0,AZNCred,false);
 			OutString(tab9,0,EURCred,false);
@@ -2392,7 +2576,7 @@ begin
 		EndFormat;
 		Gray_Divider(tab2,tab5+20);
 		Gray_Divider(tab7,tab10+20);
-		SaldoEndPeriodAZNTerm = BeginBalance51 + AZNTermDeb - AZNTermCred;
+		SaldoEndPeriodAZNTerm = BeginBalance51 + AZNTermDeb - AZNTermCred + convtotal1;// Edit ************************** Thursday, 27 August 2015 15:22:19
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35059),false);
@@ -2423,10 +2607,10 @@ begin
 		StartFormat(15);
 		EndFormat;
 	// к сдаче
-		SaldoEndPeriod = BeginBalance50n51 + BaseDeb - BaseCred;
-		SaldoEndPeriodUSD = BeginBalance50USD + USDDeb - USDCred;
-		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred;
-		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred;
+		SaldoEndPeriod = BeginBalance50n51 + BaseDeb - BaseCred + convtotal5;// Edit ************************** Thursday, 27 August 2015 15:22:15
+		SaldoEndPeriodUSD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
+		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
+		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35026),false);// К сдаче
@@ -2435,7 +2619,7 @@ begin
 		EndFormat;
 		StartFormat(15);
 			OutString(tab1,0,"",false);
-			OutString(tab2,0,USetStr(35070),false);
+			OutString(tab2,0,USetStr(35087),false);
 			OutString(tab3,0,kursovaya,false);
 			OutString(tab4+20,0,"AZN",false);
 		EndFormat;

@@ -4232,7 +4232,135 @@ begin
   KeySegment(Code);
   KeySegment(StartDate);
   EndRecord;
-	  
+	
+	
+	RecordBegin(TRVc,-,"TRVc1");
+  RecordField(Number,M4Long,0,0);
+  SerialNoBlock(TRSerBlock);                
+  RecordField(RegDate,M4Date,0,0);
+  RecordField(Comment,M4Str,60,0);
+  RecordField(TransDate,M4Date,0,0);
+  FieldIsTransDate(TransDate);
+  RecordField(Sign,M4Code,10,UserVc);
+  RecordField(Math,M4Matrix,0,0);
+  RecordField(DSum,M4Val,0,0);     // Not Exported, its a calculated field
+  RecordField(CSum,M4NegVal,0,0);  // Not Exported, its a calculated field
+  RecordField(DiffVal,M4Val,0,0);  // Not Exported, its a calculated field
+  RecordField(RefStr,M4Str,60,0);
+  RecordField(xMainf,M4Int,0,0);   // Not used
+  RecordField(IntYc,M4Int,0,0);
+  RecordField(xBalf,M4Int,0,0);    // Not used
+  RecordField(Expf,M4Int,0,0);     // Not used
+  RecordField(ExportedFlag,M4Int,0,0); // Not used
+  RecordField(DSum2,M4Val,0,0);    // Not Exported, its a calculated field
+  RecordField(CSum2,M4NegVal,0,0); // Not Exported, its a calculated field
+  RecordField(Diff2Val,M4Val,0,0); // Not Exported, its a calculated field
+  RecordField(LastChangeDate,M4Date,0,0);
+  RecordField(FileName,M4Str,20,0);
+  RecordField(TransNr,M4Long,0,0);  
+  RecordField(SeqNr,M4Long,0,0);  
+  RecordField(RegTime,M4Time,0,0);
+  ArrayBegin(Math,TRRowType,1);
+  ArrayField(stp,M4Int,0,0);
+  ArrayField(ovst,M4Int,0,0);
+  ArrayField(AccNumber,M4Code,10,AccVc);
+  ArrayField(Objects,M4UStr,60,ObjVc);
+  ArrayField(DebVal,M4Val,0,0);
+  ArrayField(CredVal,M4Val,0,0);
+  ArrayField(VATCode,M4List,100,VATCodeBlock);
+  ArrayField(Qty,M4Val,0,0);
+  ArrayField(CurDebVal,M4Val,0,0);
+  ArrayField(CurCredVal,M4Val,0,0);
+  ArrayField(ToRateB1,M4Rate,0,0);
+  ArrayField(Comment,M4Str,60,0);
+  ArrayField(Curncy,M4UStr,5,CurncyCodeVc);
+  ArrayField(BRSerNr,M4Long,0,0);
+  ArrayField(BRRowNr,M4Int,0,0);
+  ArrayField(NomVal,M4Val,0,0);
+  ArrayField(CompCode,M4Code,20,CUVc);
+  ArrayField(Typ,M4Set,24,0);
+  ArrayField(SerNr,M4Long,0,0);
+  ArrayField(DueDate,M4Date,0,0);
+  ArrayField(CorspSer,M4Long,0,0);
+  ArrayField(UpdDate,M4Date,0,0);
+  ArrayField(Sign,M4Code,10,UserVc);
+  ArrayField(OldTransDate,M4Date,0,0);
+  ArrayField(CorrNr,M4Long,0,0);
+  ArrayField(CorrDate,M4Date,0,0);
+  ArrayField(CorrYc,M4Int,0,0);
+  ArrayField(Reconsf,M4Int,0,0);
+  ArrayField(FrRate,M4Rate,0,0);
+  ArrayField(ToRateB2,M4Rate,0,0);
+  ArrayField(DebVal2,M4Val,0,0);
+  ArrayField(CredVal2,M4Val,0,0);
+  ArrayField(BaseRate1,M4Rate,0,0);
+  ArrayField(BaseRate2,M4Rate,0,0);
+  ArrayField(ACShort,M4Code,5,0);
+  ArrayField(ReconCode,M4Code,5,0);
+  ArrayField(TAccNumber,M4Code,10,TAccVc);
+  ArrayField(TFromFileName,M4Str,20,0);
+  ArrayField(TFromCode,M4Str,60,0);
+  ArrayField(SAFTType,M4Set,492,0);
+  ArrayField(ReconDate,M4Date,0,0);
+  ArrayField(ExtraComment,M4Str,60,0);
+  
+  ArrayField(MyVal1,M4Val,0,0);
+  ArrayField(MyVal2,M4Val,0,0);
+  ArrayField(MyVal3,M4Val,0,0);
+  ArrayField(MyVal4,M4Val,0,0);
+  ArrayField(MyVal5,M4Val,0,0);
+  ArrayField(MyVal6,M4Val,0,0);
+  
+  EndArray;
+  MainKeyBegin(Number,0);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(ExportedFlag);
+  KeySegment(ExportedFlag);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(Number);
+  KeySegment(IntYc);
+  KeyBegin(Comment);
+  KeySegment(Comment);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(RefStr);
+  KeySegment(RefStr);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(IntYc);
+  KeySegment(IntYc);
+  KeySegment(TransDate);
+  KeySegment(Number);
+  KeyBegin(LastChangeDate);
+  KeySegment(LastChangeDate);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(TransNr);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(SeqNr);
+  KeySegment(SeqNr);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  KeyBegin(SeqNrTransDate);
+  KeySegment(SeqNr);
+  KeySegment(TransDate);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  SubsetKeyBegin2(AccNumber);
+  StoreInBaseKey;
+  AppendMatrixFieldToKeyName(AccNumber,0);
+  KeySegment(TransDate);
+  KeySegment(IntYc);
+  KeySegment(Number);
+  EndRecord;
+	
   return;  
 end;
 

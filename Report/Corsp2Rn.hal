@@ -162,10 +162,7 @@ begin
       end;
       runbal = runbal + TRrw.DebVal;
       runbal = runbal - TRrw.CredVal;
-      
-      if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
-				logtext(0,MainAccp.AccNumber & " " & i & " " & runbal);
-			end;         
+              
       if (round(runbal,SetRoundModeD(2))==0) then begin// Edit ************************** Monday, 6 July 2015 17:44:52??????????
         if (i>=trrow) then begin
           if (((debcnt==1) and (firstdebrow==trrow)) or ((credcnt==1) and (firstcredrow==trrow))) then begin

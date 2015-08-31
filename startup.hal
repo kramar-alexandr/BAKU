@@ -538,11 +538,12 @@ begin
 	SString(35057,"Деньги в офисе");
 	SString(35058,"Остаток общего счета");
 	SString(35059,"Сдано");
-	SString(35070,"Курсовая");
+	SString(35087,"Курсовая");
 
 	SString(35031,"Дней на складе");
 	SString(35034,"Оборот денег по классификации");
 	SString(35035,"Без классификации");
+	SString(35086,"Конвертация/банк");// Edit ************************** Wednesday, 26 August 2015 10:11:07
 	
 	//BrandManagerRn
 	SString(35036,"Отчет бренд менеджера");
@@ -600,7 +601,7 @@ begin
 	SString(35083,"Кредит 62 не совпадает с суммой платежа");
 	SString(35084,"Используется 63-й счет при отсутствии предоплаты");
 	SString(35085,"Неоплаченая сч/ф при условии оплаты наличными");
-	
+	//85087 занят
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

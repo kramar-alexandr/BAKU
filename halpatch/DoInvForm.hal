@@ -844,6 +844,10 @@ BEGIN
     OUTFORMFIELD("F_RABATTLEV",IVr.RebCode);// Edit ************************** Tuesday, 14 May 2013 15:40:49
   end;
   
+  if (FIELDINFORM("F_MYTRANSTIME")) then begin
+    OUTFORMFIELD("F_MYTRANSTIME",IVr.TransTime);// Edit ************************** Tuesday, 14 May 2013 15:40:49
+  end;
+  
   if (IVr.Prntdf==0) then begin
     OUTFORMFIELD("F_COPYTYPE",USetStr(18630));
   end else begin
