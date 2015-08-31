@@ -1618,7 +1618,7 @@ begin
 	record CLOutVc CLOutr;
 	row CLOutVc CLOutrw;
 	record CurncyCodeVc CCr;
-	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403;
+	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403,Accr76;
 	array string 5 CurList;
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint,testf,done;
@@ -1846,6 +1846,8 @@ begin
 		ReadFirstMain(Accr4403,1,true);
 		Accr8403.AccNumber = "84/03";
 		ReadFirstMain(Accr8403,1,true);
+		Accr76.AccNumber = "76";
+		ReadFirstMain(Accr76,1,true);
 		TrHs = true;
 		while (LoopMain(mainr,2,TrHs)) begin
 			if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
@@ -2025,6 +2027,26 @@ begin
 											case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
 										end;
 									end;
+									
+									testf = CorspTRTest(TRr,Accr76,i,corspdebval,corspcredval);//Edit-------------------Vitalii 14:48 31.08.2015
+									if (testf and (SetInSet("E131",TRrw.Objects) or SetInSet("E98",TRrw.Objects))) then begin
+										if(TRrw.CredVal!=0)then begin
+											tempTRrw.MyVal1 = -TRrw.CurCredVal;
+											tempTRrw.MyVal2 = -TRrw.CredVal;
+											BaseCredErr = BaseCredErr - TRrw.CredVal;
+										end else begin
+											tempTRrw.MyVal1 = TRrw.CurDebVal;
+											tempTRrw.MyVal2 = TRrw.DebVal;
+											BaseDebErr = BaseDebErr - TRrw.DebVal;
+										end;
+										convtotal5 = convtotal5 + tempTRrw.MyVal2;
+										switch(tempTRrw.Curncy)begin
+											case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
+											case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
+											case "EUR":convtotal3 = convtotal3 + tempTRrw.MyVal1;
+											case "USD":convtotal4 = convtotal4 + tempTRrw.MyVal1;			
+										end;
+									end;
 								
 								end;
 								
@@ -2067,7 +2089,6 @@ begin
 							if ((TRrw.AccNumber == "58") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
 							end;
@@ -2083,7 +2104,6 @@ begin
 							if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
 									//BaseDebErr = BaseDebErr + TRrw.CredVal;// Edit ************************** Wednesday, 26 August 2015 16:11:22
 									//BaseCredErr = BaseCredErr + TRrw.DebVal;					
 								end;
@@ -2092,7 +2112,6 @@ begin
 							if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
@@ -2100,7 +2119,6 @@ begin
 							if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
 									Bal53 = Bal53 + TRrw.DebVal;
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 								end;
@@ -2108,7 +2126,6 @@ begin
 							if ((TRrw.AccNumber == "84/03") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 								if testf then begin
-									YcToStr(TRr.IntYc,tempStr);
 									BaseCredErr = BaseCredErr + TRrw.DebVal;
 									BaseDebErr = BaseDebErr + TRrw.CredVal;
 									kursovaya = kursovaya - TRrw.DebVal + TRrw.CredVal;
