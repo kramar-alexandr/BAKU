@@ -2218,9 +2218,12 @@ begin
 								if testf then begin
 									if(TRrw.CredVal!=0)then begin
 										tempTRrw.MyVal1 = -TRrw.CurCredVal;
+										tempTRrw.MyVal2 = -TRrw.CredVal;
 									end else begin
 										tempTRrw.MyVal1 = TRrw.CurDebVal;
+										tempTRrw.MyVal2 = TRrw.DebVal;
 									end;
+									convtotal5 = convtotal5 + tempTRrw.MyVal2;
 									switch(tempTRrw.Curncy)begin
 										case "TER":convtotal1 = convtotal1 + tempTRrw.MyVal1;
 										case "AZN":convtotal2 = convtotal2 + tempTRrw.MyVal1;
