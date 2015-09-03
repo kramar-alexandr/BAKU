@@ -202,6 +202,7 @@ LCorspTRTest:;
   return;
 end;
 
+global
 procedure ReadCorspTRRowSums(record TRVc TRp,record AccVc MainAccp,record AccVc CorAccp,var val SumDebet,var val SumCredit,string object)
 BEGIN
   Integer i,rwcnt;
