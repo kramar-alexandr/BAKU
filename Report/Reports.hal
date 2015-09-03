@@ -1990,7 +1990,7 @@ begin
 										tempTRrw.CurCredVal = blankval;
 										tempTRrw.CredVal = blankval;
 									end else begin
-										if (TRrw.DebVal!=0) then begin
+										if (TRrw.DebVal!=0) and nonblank(store) then begin
 											TRrw.CredVal = -TRrw.DebVal;
 											TRrw.DebVal = blankval;
 											TRrw.CurCredVal = -TRrw.CurDebVal;
