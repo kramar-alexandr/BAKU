@@ -249,9 +249,9 @@ begin
   record IVVc IVr;
   row IVVc IVrw;
   Boolean TrHs,testf,lmtestf,TrHs1;
-  integer i,j,rwcnt,mark,rwnr,cnt,maxcnt,cnt1,maxcnt1;
+  integer i,j,rwcnt,mark,rwnr,cnt,maxcnt,cnt1,maxcnt1,pos;
   Date d1;
-  string 60 curmachine;
+  string 60 curmachine,uloc;
   string 255 tstr;
   val totqty,totsum,totqtyprice,totqtypricesum,totfifo,total,rate,totgift;
   array val totcc;
@@ -291,6 +291,37 @@ begin
   integer sign;
 	val debt;
 	integer cred;
+	Boolean userlocation;
+	record UserVc User;
+	
+	
+	userlocation = false;
+  User.Code = currentuser;
+  if(readfirstmain(User,1,true))then begin			//Edit----------------------Dima  04.09.2015
+  	if(nonblank(User.UserLocations) and usercanaction("AllowReportWithUserLoc",false))then begin
+  		userlocation = true;
+  		pos = 0;
+			ExtractObj(User.UserLocations,pos,uloc);
+			while (nonblank(uloc)) begin
+				if(uloc==RepSpec.f2)then begin
+					userlocation = false;
+				end;
+				ExtractObj(User.UserLocations,pos,uloc);
+			end;
+  	end;
+  end;
+  
+  StartReportNoHeaderJob(USetStr(31023));
+  
+	if(userlocation)then begin
+			startformat(15);
+			outstring(50,0,USetStr(31014),false);
+			endformat;
+			goto LPecuniaryRn_end;								
+	end;  										//Edit---end-------------------Dima  04.09.2015
+	
+	
+	
 	
   recordnew(SMr);
   recordnew(SMgift);  //Edit -----------------Dima           11.12.2014
@@ -299,8 +330,7 @@ begin
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
   
-  BlockLoad(PMRec);
-    StartReportNoHeaderJob(USetStr(31023));
+  BlockLoad(PMRec);    
     if nonblank(RepSpec.d1) then begin
       d1 = RepSpec.d1;
     end else begin
@@ -962,6 +992,8 @@ begin
 		EndFormat;
    
     Gray_Divider(0,1);  
+    
+    LPecuniaryRn_end:;
       EndJob;
   return;
 end;
