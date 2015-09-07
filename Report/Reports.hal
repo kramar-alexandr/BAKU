@@ -1650,7 +1650,7 @@ begin
 			tab13,tab14,tab15,
 			tab16,tab17,tab18;
 	string 5 tempStr;
-	string 20 store;
+	string 20 store,store2;
 	string 200 tempComm;
 	
 	BeginBalance50n51 = 0;
@@ -1969,36 +1969,42 @@ begin
 									end;
 								end;
 								testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 11:01:28
-								if (testf  and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
-									corspdebval = blankval;
-									corspcredval = blankval;
+								if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
 									store = "";
 									GetObjs("STORE",TRrw.Objects,store);
-									ReadCorspTRRowSums(TRr,Accr50,Accr50,corspdebval,corspcredval,store);
-									if ((corspdebval!=blankval) and (corspcredval!=blankval)) then begin
-										if (TRrw.CredVal!=0) then begin
-											tempTRrw.MyVal1 = -TRrw.CurCredVal;
-											tempTRrw.MyVal2 = -TRrw.CredVal;
-											BaseCredErr = BaseCredErr - TRrw.CredVal;
-										end else begin
-											tempTRrw.MyVal1 = TRrw.CurDebVal;
-											tempTRrw.MyVal2 = TRrw.DebVal;
-											BaseDebErr = BaseDebErr - TRrw.DebVal;
-										end;
-										tempTRrw.CurDebVal = blankval;
-										tempTRrw.DebVal = blankval;
-										tempTRrw.CurCredVal = blankval;
-										tempTRrw.CredVal = blankval;
-									end else begin
-										if (TRrw.DebVal!=0) and nonblank(store) then begin
-											TRrw.CredVal = -TRrw.DebVal;
-											TRrw.DebVal = blankval;
-											TRrw.CurCredVal = -TRrw.CurDebVal;
-											TRrw.CurDebVal = blankval;
-											tempTRrw.CurDebVal = TRrw.CurDebVal;
-											tempTRrw.CurCredVal = TRrw.CurCredVal;
-											tempTRrw.DebVal = TRrw.DebVal;
-											tempTRrw.CredVal = TRrw.CredVal;
+									if nonblank(store) then begin
+										for (k=0;k<rwcnt;k=k+1) begin
+											MatRowGet(TRr,k,tempTRrw2);
+											if ((tempTRrw2.AccNumber == "50") and (tempTRrw2.CredVal == TRrw.DebVal) and (tempTRrw2.DebVal == TRrw.CredVal)) then begin
+												store2 = "";
+												GetObjs("STORE",tempTRrw2.Objects,store2);
+												if (store == store2) then begin
+													if (TRrw.CredVal!=0) then begin
+														tempTRrw.MyVal1 = -TRrw.CurCredVal;
+														tempTRrw.MyVal2 = -TRrw.CredVal;
+														BaseCredErr = BaseCredErr - TRrw.CredVal;
+													end else begin
+														tempTRrw.MyVal1 = TRrw.CurDebVal;
+														tempTRrw.MyVal2 = TRrw.DebVal;
+														BaseDebErr = BaseDebErr - TRrw.DebVal;
+													end;
+													tempTRrw.CurDebVal = blankval;
+													tempTRrw.DebVal = blankval;
+													tempTRrw.CurCredVal = blankval;
+													tempTRrw.CredVal = blankval;
+												end else begin
+													if (TRrw.DebVal!=0) then begin
+														TRrw.CredVal = -TRrw.DebVal;
+														TRrw.DebVal = blankval;
+														TRrw.CurCredVal = -TRrw.CurDebVal;
+														TRrw.CurDebVal = blankval;
+													end;
+													tempTRrw.CurDebVal = TRrw.CurDebVal;
+													tempTRrw.CurCredVal = TRrw.CurCredVal;
+													tempTRrw.DebVal = TRrw.DebVal;
+													tempTRrw.CredVal = TRrw.CredVal;
+												end;
+											end;
 										end;
 									end;
 								end;
