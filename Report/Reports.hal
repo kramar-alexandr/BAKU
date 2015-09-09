@@ -2548,7 +2548,7 @@ begin
 		StartFormat(15);
 			OutString(tab1,0,"",false);
 			OutString(tab2,0,USetStr(35017),false);// Касса - Расход
-			OutString(tab3,0,BaseCred - AZNTermCred - Bal53 - BaseCredErr,false);
+			OutString(tab3,0,BaseCred - AZNTermCred - BaseCredErr,false);
 			OutString(tab4,0,"AZN",false);
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
@@ -2566,7 +2566,19 @@ begin
 			OutString(tab4,0,"AZN",false);
 			OutString(tab5,0,"",false);
 			OutString(tab6,0,"",false);
-			OutString(tab7,0,USetStr(35025),false);
+			OutString(tab7,0,USetStr(35088),false);
+			OutString(tab8,0,convtotal1,false);
+			OutString(tab9,0,"AZN",false);
+		EndFormat;
+		Gray_Divider(tab2,tab5);
+		StartFormat(15);
+			OutString(tab1,0,"",false);
+			OutString(tab2,0,USetStr(35023),false);//Приход за товар
+			OutString(tab3,0,BalItem1,false);
+			OutString(tab4,0,"AZN",false);
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,"",false);
+			OutString(tab7,0,USetStr(35025),false);//Конв/банк
 			OutString(tab8,0,SaldoEndPeriodAZNTerm,false);
 			OutString(tab9,0,"AZN",false);
 		EndFormat;
@@ -2574,15 +2586,15 @@ begin
 		Black_Divider(tab7,tab10);
 		StartFormat(15);
 			OutString(tab1,0,"",false);
-			OutString(tab2,0,USetStr(35023),false);
-			OutString(tab3,0,BalItem1,false);
+			OutString(tab2,0,USetStr(35024),false);//Расход за товар
+			OutString(tab3,0,BalItem2,false);
 			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		Gray_Divider(tab2,tab5);
 		StartFormat(15);
 			OutString(tab1,0,"",false);
-			OutString(tab2,0,USetStr(35024),false);
-			OutString(tab3,0,BalItem2,false);
+			OutString(tab2,0,USetStr(35088),false);//Конв/банк
+			OutString(tab3,0,convtotal2,false);
 			OutString(tab4,0,"AZN",false);
 		EndFormat;
 		Black_Divider(tab2,tab5);

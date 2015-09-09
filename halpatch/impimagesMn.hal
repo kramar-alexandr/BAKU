@@ -16,11 +16,11 @@ external procedure PUCalcCostPrice(string,val,Integer,Integer,string,string,
                                    val,val,val,val,val,val,
                                    string,var val,val,var val,string,Integer); //Edit***************************Sasha2,13:04 08.04.2015
 external procedure PUSumUp(var record PUVc); //Edit***************************Sasha2,13:09 08.04.2015
-external updating procedure CheckAndCreateClassification(var string); //Edit***************************Sasha2,16:36 20.04.2015
 external procedure CalculateIVVcPoints(var record IVVc);// Edit ************************** Thursday, 28 May 2015 11:14:54
 external procedure CreateEAN128(var string); //Edit***************************Sasha2,17:02 08.07.2015
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode); //Edit***************************Sasha2,17:17 08.07.2015
 external procedure NextM4Number(string,var string); //Edit***************************Sasha2,12:12 11.08.2015
+external function string 255 StrReplace(string,string,string);//Edit-------------------Vitalii 17:06 08.09.2015
 
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
@@ -1515,94 +1515,115 @@ begin
 return;
 end;
 
-//Edit***************************Sasha2,18:11 20.04.2015 {
-updating procedure LookUpClassAndGroups(var record INVc INr,integer currcomp)
+//Edit-------------------Vitalii 13:02 08.09.2015
+updating procedure CheckAndCreateClassificationTest(string class,string classname,string classtype)
 begin
-  record DIVc DIr;
-  record ITVc ITr;
-  string 100 tclass,fullclass;
-  boolean findclass,foundgroup;
-  integer K,lenth;
-  
-    if(currcomp!=13)then begin
-			fullclass = INr.DispGroups;
-			fullclass = uppercase(fullclass);
-			INr.DispGroups = "";
-			lenth = len(fullclass);
-			for(k=0;k<lenth;k=k+1) begin
-				if(mid(fullclass,k,1)==",") then begin
-					tclass = mid(fullclass,0,k);
-					CheckAndCreateClassification(tclass);
-					findclass = true;
-					DIr.Code = tclass;
-					if(readfirstmain(DIr,1,findclass)) begin
-						if(DIr.Code==tclass and findclass)then begin
-							INr.DispGroups = INr.DispGroups & DIr.Code & ",";
-							findclass = false;
-						end;
-					end;
-					if(findclass)then begin
-						DIr.Name = tclass;
-						if(readfirstkey("Name",DIr,1,findclass)) then begin
-							if(uppercase(DIr.Name)==tclass and findclass) then begin
-								INr.DispGroups = INr.DispGroups & DIr.Code & ",";
-								findclass = false;
-							end;
-						end;
-					end;
-					fullclass = mid(fullclass,k+1,lenth-k-1);
-					k=0;
-					lenth = len(fullclass);
-				end;
+	boolean res;
+	record DIVc DIr;
+	record CTypeVc CTyper;
+	string 200 newclassname,c;
+	integer i,lenth,zercnt;
+	boolean testf;
+	res = false;
+
+	DIr.Code = class;
+	if (readfirstmain(DIr,1,true)) then begin
+		res = true;
+	end;
+	DIr.Name = class;
+	if (readfirstkey("Name",DIr,1,true)) then begin
+		res = true;
+	end;
+	DIr.Name = StrReplace(class,"_"," ");
+	if (readfirstkey("Name",DIr,1,true)) then begin
+		res = true;
+	end;
+	if (res==false) then begin
+		DIr.Code = class;
+		DIr.Name = classname;
+		DIr.CType = classtype;
+		recordStore(DIr,true);
+	end;
+	return;
+end;
+//Edit-------------------Vitalii 13:02 08.09.2015
+
+
+//Edit***************************Sasha2,18:11 20.04.2015 {
+updating procedure LookUpClassAndGroups(var record INVc INr,integer currcomp,array string arrClass,array string arrClassName,array string arrClassType,string groupCode,string groupComment)//Edit-------------------Vitalii 16:57 08.09.2015
+begin
+	record DIVc DIr;
+	record ITVc ITr;
+	string 100 tclass,fullclass;
+	boolean findclass,foundgroup;
+	integer k,lenth;
+	if(currcomp!=13)then begin
+		INr.DispGroups = "";
+		for (k=0;k<arrClass.length;k=k+1) begin
+			findclass = false;
+			CheckAndCreateClassificationTest(arrClass[k],arrClassName[k],arrClassType[k]);
+			DIr.Code = arrClass[k];
+			if (readfirstmain(DIr,1,true) and !setinset(DIr.Code,INr.DispGroups)) then begin
+				INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+				findclass = true;
 			end;
-			tclass = fullclass;
-			CheckAndCreateClassification(tclass);
-			findclass = true;
-			DIr.Code = tclass;
-			if(readfirstmain(DIr,1,findclass)) begin
-				if(DIr.Code==tclass and findclass) then begin
+			if !findclass then begin
+				DIr.Name = arrClass[k];
+				if (readfirstkey("Name",DIr,1,true) and !setinset(DIr.Code,INr.DispGroups)) then begin
 					INr.DispGroups = INr.DispGroups & DIr.Code & ",";
-					findclass = false;
+					findclass = true;
 				end;
-			end;
-			if(findclass)then begin
-				DIr.Name = tclass;
-				if(readfirstkey("Name",DIr,1,findclass)) then begin
-					if(uppercase(DIr.Name)==tclass and findclass) then begin
-						INr.DispGroups = INr.DispGroups & DIr.Code & ",";
-						findclass = false;
-					end;
-				end;
-			end;
-			lenth = len(INr.DispGroups);
-			if(mid(INr.DispGroups,lenth-1,1)==",") then begin
-				INr.DispGroups = mid(INr.DispGroups,0,lenth-1);
 			end;
 		end;
-			
-		foundgroup = false;
-		lenth = len(INr.DispGroups);
-		For(k=0;k<lenth;k=k+1) begin
-  		if(mid(INr.DispGroups,k,1)==",") then begin
-  			DIr.Code = mid(INr.DispGroups,0,k);
-  			readfirstmain(DIr,1,true);
-  			ITr.Comment = DIr.Name;
-  			if(readlastkey("Comment",ITr,1,true)) then begin
-  				INr.Group = ITr.Code;
-  			end;
-  			foundgroup = true;
-  		end;
+		for(k=0;k<arrClassName.length;k=k+1) begin
+			findclass = false;
+			CheckAndCreateClassificationTest(arrClass[k],arrClassName[k],arrClassType[k]);
+			DIr.Name = arrClassName[k];
+			if (readfirstkey("Name",DIr,1,true)) then begin
+				findclass = true;
+			end;
+			if !findclass then begin
+				CheckAndCreateClassificationTest(arrClass[k],StrReplace(arrClassName[k],"_"," "),arrClassType[k]);
+				DIr.Name = StrReplace(arrClassName[k],"_"," ");
+				if (readfirstkey("Name",DIr,1,true)) then begin
+					findclass = true;
+				end;
+			end;
+			if (findclass and !setinset(DIr.Code,INr.DispGroups)) then begin
+				INr.DispGroups = INr.DispGroups & DIr.Code & ",";
+			end;
+		end;
+	end;
+	if(mid(INr.DispGroups,len(INr.DispGroups)-1,1)==",") then begin
+		INr.DispGroups = mid(INr.DispGroups,0,len(INr.DispGroups)-1);
+	end;
+
+	ITr.Code = groupCode;
+	if(readfirstmain(ITr,1,true)) then begin
+		INr.Group = ITr.Code;
+		foundgroup = true;
+	end; 
+	if !foundgroup then begin
+		ITr.Comment = groupComment;
+		if(readlastkey("Comment",ITr,1,true)) then begin
+			INr.Group = ITr.Code;
+			foundgroup = true;
+		end;
+	end;
+	if !foundgroup then begin
+		ITr.Code = StrReplace(mid(groupComment,0,5)," ","_");
+		if(readfirstmain(ITr,1,true)) then begin
+			INr.Group = ITr.Code;
+			foundgroup = true;
 		end; 
-		if(foundgroup==false)then begin
-			DIr.Code = INr.DispGroups;
-			readfirstmain(DIr,1,true);
-			ITr.Comment = DIr.Name;
-			if(readlastkey("Comment",ITr,1,true)) then begin
-				INr.Group = ITr.Code;
-			end;
-		end;
-  
-  return;
+	end;
+	if !foundgroup then begin
+		ITr.Code = groupCode;
+		ITr.Comment = groupComment;
+		recordStore(ITr,true);
+		INr.Group = ITr.Code;
+	end;
+	return;
 end; //Edit***************************Sasha2,18:11 20.04.2015 }
 
 global //Edit***************************Sasha2,11:25 07.04.2015 {
@@ -1613,12 +1634,20 @@ begin
   record PUVc PUr;
   row PUVc PUrw;
   record INVc INr,IN2r;
-  integer i,rwcnt;
+  record DIVc DIr;//Edit-------------------Vitalii 14:19 08.09.2015
+  record ITVc ITr;//Edit-------------------Vitalii 14:19 08.09.2015
+  array string 10 arrClass;//Edit-------------------Vitalii 14:23 08.09.2015
+  array string 50 arrClassName;//Edit-------------------Vitalii 14:23 08.09.2015
+  array string 10 arrClassType;//Edit-------------------Vitalii 14:28 09.09.2015
+  string 5 groupCode;//Edit-------------------Vitalii 9:28 09.09.2015
+  string 50 groupComment;//Edit-------------------Vitalii 9:28 09.09.2015
+  integer i,k,rwcnt,lenth,acNum;
   string 255 warning,inwarn,compname;
+  string 100 tclass,fullclass;
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
   val p,s;
-  Boolean chsum;
+  Boolean chsum,findclass;
   
     IVr.SerNr = RepSpec.long1;
     ReadFirstMain(IVr,1,true);
@@ -1628,7 +1657,7 @@ begin
     rwcnt = matrowcnt(Compb);
     for(i=0;i<rwcnt;i=i+1)begin
   		matrowget(Compb,i,Comprw);
-  		if(RepSpec.flags[0]==(i+1))then begin
+  		if(CurrentCompany==(i+1))then begin
         compname = Comprw.CompName;
         i = rwcnt;
   		end;
@@ -1648,12 +1677,72 @@ begin
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(IVr,i,IVrw);
       if (NonBlank(IVrw.ArtCode)) then begin
-        INr.Code = IVrw.ArtCode;
+        ClearStringArray(arrClass);
+		ClearStringArray(arrClassName);
+		acNum = 0;
+		groupCode = "";
+		groupComment = "";
+		INr.Code = IVrw.ArtCode;
         ReadFirstMain(INr,1,true);
+		fullclass = INr.DispGroups;
+		fullclass = uppercase(fullclass);
+		INr.DispGroups = "";
+		lenth = len(fullclass);
+		for(k=0;k<lenth;k=k+1) begin
+			if(mid(fullclass,k,1)==",") then begin
+				tclass = mid(fullclass,0,k);
+				findclass = false;
+				DIr.Code = tclass;
+				if(readfirstmain(DIr,1,true)) begin
+					arrClass[acNum] = DIr.Code;
+					arrClassName[acNum] = DIr.Name;
+					arrClassType[acNum] = DIr.CType;
+					acNum = acNum + 1;
+					findclass = true;
+				end;
+				if(findclass)then begin
+					DIr.Name = tclass;
+					if(readfirstkey("Name",DIr,1,true)) then begin
+						arrClass[acNum] = DIr.Code;
+						arrClassName[acNum] = DIr.Name;
+						arrClassType[acNum] = DIr.CType;
+						acNum = acNum + 1;
+						findclass = true;
+					end;
+				end;
+				fullclass = mid(fullclass,k+1,lenth-k-1);
+				k=0;
+				lenth = len(fullclass);
+			end;
+		end;
+		tclass = fullclass;
+		findclass = false;
+		DIr.Code = tclass;
+		if(readfirstmain(DIr,1,true)) begin
+			arrClass[acNum] = DIr.Code;
+			arrClassName[acNum] = DIr.Name;
+			arrClassType[acNum] = DIr.CType;
+			acNum = acNum + 1;
+			findclass = true;
+		end;
+		if(findclass)then begin
+			DIr.Name = tclass;
+			if(readfirstkey("Name",DIr,1,true)) then begin
+				arrClass[acNum] = DIr.Code;
+				arrClassName[acNum] = DIr.Name;
+				arrClassType[acNum] = DIr.CType;
+				acNum = acNum + 1;
+				findclass = true;
+			end;
+		end;
+		groupCode = INr.Group;
+		ITr.Code = groupCode;
+		readfirstmain(ITr,1,true);
+		groupComment = ITr.Comment;
         if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
           IN2r.Code = IVrw.ArtCode;
           if (!ReadFirstMain(IN2r,1,true)) then begin
-            LookUpClassAndGroups(INr,curcomp);
+            LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,groupCode,groupComment);
             RECORDSTORE(INr,false);
           end;
           ClearRow(PUr,PUrw,1);
