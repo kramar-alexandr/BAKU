@@ -1550,7 +1550,7 @@ end;
 
 
 //Edit***************************Sasha2,18:11 20.04.2015 {
-updating procedure LookUpClassAndGroups(var record INVc INr,integer currcomp,array string arrClass,array string arrClassName,array string arrClassType,string groupCode,string groupComment)//Edit-------------------Vitalii 16:57 08.09.2015
+updating procedure LookUpClassAndGroups(var record INVc INr,integer currcomp,array string arrClass,array string arrClassName,array string arrClassType,integer acNum,string groupCode,string groupComment)//Edit-------------------Vitalii 16:57 08.09.2015
 begin
 	record DIVc DIr;
 	record ITVc ITr;
@@ -1559,7 +1559,7 @@ begin
 	integer k,lenth;
 	if(currcomp!=13)then begin
 		INr.DispGroups = "";
-		for (k=0;k<arrClass.length;k=k+1) begin
+		for (k=0;k<acNum;k=k+1) begin
 			findclass = false;
 			CheckAndCreateClassificationTest(arrClass[k],arrClassName[k],arrClassType[k]);
 			DIr.Code = arrClass[k];
@@ -1575,7 +1575,7 @@ begin
 				end;
 			end;
 		end;
-		for(k=0;k<arrClassName.length;k=k+1) begin
+		for(k=0;k<acNum;k=k+1) begin
 			findclass = false;
 			CheckAndCreateClassificationTest(arrClass[k],arrClassName[k],arrClassType[k]);
 			DIr.Name = arrClassName[k];
@@ -1677,8 +1677,8 @@ begin
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(IVr,i,IVrw);
       if (NonBlank(IVrw.ArtCode)) then begin
-        ClearStringArray(arrClass);
-		ClearStringArray(arrClassName);
+        //ClearStringArray(arrClass);
+		//ClearStringArray(arrClassName);
 		acNum = 0;
 		groupCode = "";
 		groupComment = "";
@@ -1742,7 +1742,7 @@ begin
         if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
           IN2r.Code = IVrw.ArtCode;
           if (!ReadFirstMain(IN2r,1,true)) then begin
-            LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,groupCode,groupComment);
+            LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,acNum,groupCode,groupComment);
             RECORDSTORE(INr,false);
           end;
           ClearRow(PUr,PUrw,1);
