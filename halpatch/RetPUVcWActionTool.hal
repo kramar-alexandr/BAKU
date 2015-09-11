@@ -178,6 +178,8 @@ BEGIN
   record ItemHistVc IHr;
   record ItemStatusVc ISr;
   val q;
+  record LocationVc Locationr;// Edit ************************** Friday, 11 September 2015 12:05:57
+  string 100 locobj,veobj;
   
   res = 1756; //1733;
   BlockLoad(MSb);    
@@ -223,6 +225,27 @@ BEGIN
   RetPUp.DelAddr3 = VEr.DelAddr3;
   RetPUp.DelAddr4 = VEr.DelAddr4;
   RetPUp.Sorting = FindCustRoute(RetPUp.VECode,RetPUp.Location,RetPUp.DelAddrCode);
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Friday, 11 September 2015 12:06:51
+	
+  if (nonblank(RetPUp.Location)) then begin
+		Locationr.Code = RetPUp.Location;
+		readfirstmain(Locationr,1,true);
+		if(nonblank(Locationr.Objects))then begin
+			locobj = Locationr.Objects;
+		end;
+  end;
+  
+  VEr.Code = RetPUp.VECode;
+  if(readfirstmain(VEr,1,true))then begin
+  	if(nonblank(VEr.VEObjects))then begin
+  		veobj = VEr.VEObjects;
+  	end;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+	
   rwcnt = MatRowCnt(PUp);
   retrw = 0;
   for (i=0;i<rwcnt;i=i+1) begin
@@ -292,11 +315,35 @@ BEGIN
         RetPUrw.VATCode = "";
         RetPUrw.SerialNr = PUrw.SerialNr;
         RetPUrw.PUCostPrice = PUrw.Sum/PUrw.Quant;
-        if (nonblank(RetPUrw.Location)) then begin
+        
+        // Edit Start ---------------------------------------------- Edit Start
+	//Friday, 11 September 2015 12:10:00
+	
+        if(nonblank(locobj) and !setinset(locobj,RetPUrw.Objects))then begin
+        	if(nonblank(RetPUrw.Objects))then begin
+        		RetPUrw.Objects = RetPUrw.Objects & "," & locobj;
+        	end else begin
+        		RetPUrw.Objects = locobj;
+        	end;
+        end;
+        
+        if(nonblank(veobj) and !setinset(veobj,RetPUrw.Objects))then begin
+        	if(nonblank(RetPUrw.Objects))then begin
+        		RetPUrw.Objects = RetPUrw.Objects & "," & veobj;
+        	end else begin
+        		RetPUrw.Objects = veobj;
+        	end;
+        end;
+        
+	// Edit End ---------------------------------------------- Edit End
+	
+       /*if (nonblank(RetPUrw.Location)) then begin
+        		Locationr.Code = RetPUrw.Location;
+        		readfirstmain(Locationr.Code);
         		RetPUrw.Objects = RetPUrw.Objects & "," & RetPUrw.Location;
         end else begin
 						RetPUrw.Objects = RetPUrw.Objects & "," & RetPUp.Location;
-				end;        
+				end;     */   
 /*        
         RetPUrw.ShipCost = PUrw.ShipCost;
         RetPUrw.CustomsCost = PUrw.CustomsCost;
