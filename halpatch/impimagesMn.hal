@@ -1626,6 +1626,52 @@ begin
 	return;
 end; //Edit***************************Sasha2,18:11 20.04.2015 }
 
+
+
+
+
+
+procedure updating AddFormulaToPricelist(string groupCode,record PFormVc PFormr)		//Edit----------------------Dima  14.09.2015
+begin
+  record PLDefVc PLdefr;
+  row PLDefVc PLDefrw,PLDefrwNew;
+  record PFormVc PForm2r,PFormrNew;
+  integer rwcnt2,j;
+  boolean found;
+  
+  found = false;
+  PLdefr.Code = "RRP";
+  	if (ReadFirstMain(PLdefr,1,true)) then begin
+			rwcnt2 = MatRowCnt(PLdefr);
+			for(j=0;j<rwcnt2;j=j+1) begin
+				MatRowGet(PLdefr,j,PLDefrw);
+				if (PLDefrw.ItemCode == groupCode) then begin
+						j=rwcnt2;
+						found = true;
+				end;
+			end;
+			if (found==false) then begin
+				PForm2r.Code = PFormr.Code;
+				if (ReadFirstMain(PForm2r,1,true)) then Begin					
+				end else begin
+					RecordCopy(PFormrNew,PFormr);
+					RecordInsert(PFormrNew,true);
+				end;
+				
+				if (rwcnt2>0) then begin
+					MatRowGet(PLdefr,0,PLDefrw);
+					CopyRow(PLdefr,PLDefrw,PLDefrwNew);
+					PLDefrwNew.ItemCode = groupCode;
+					PLDefrwNew.Formula = PFormr.Code;
+					MatRowInsert(PLdefr,rwcnt2,PLDefrwNew);
+					RecordStore(PLdefr,true);
+				end;					
+			end;			
+		end; 	  
+
+end;
+
+
 global //Edit***************************Sasha2,11:25 07.04.2015 {
 updating procedure CreatePufromIVforPLHandle(record RcVc RepSpec,integer curcomp)
 begin
@@ -1648,6 +1694,11 @@ begin
   row CompaniesBlock Comprw;
   val p,s;
   Boolean chsum,findclass;
+  record PLDefVc PLdefr;
+  row PLDefVc PLDefrw;
+  record PFormVc PFormr;		//Edit----------------------Dima  14.09.2015
+  integer rwcnt2,j;
+  
   
     IVr.SerNr = RepSpec.long1;
     ReadFirstMain(IVr,1,true);
@@ -1739,7 +1790,22 @@ begin
 		ITr.Code = groupCode;
 		readfirstmain(ITr,1,true);
 		groupComment = ITr.Comment;
+		
+		//For PriceList updating  ___Edit----------------------Dima  14.09.2015
+  	PLdefr.Code = "RRP";
+  	if (ReadFirstMain(PLdefr,1,true)) then begin
+			rwcnt2 = MatRowCnt(PLdefr);
+			for(j=0;j<rwcnt2;j=j+1) begin
+				MatRowGet(PLdefr,j,PLDefrw);
+				if (PLDefrw.ItemCode == groupCode) then begin
+						PFormr.Code = PLDefrw.Formula;
+						ReadFirstMain(PFormr,1,true);
+				end;
+			end;
+		end; 		
+		
         if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+        	AddFormulaToPricelist(groupCode,PFormr);	//Edit----------------------Dima  14.09.2015
           IN2r.Code = IVrw.ArtCode;
           if (!ReadFirstMain(IN2r,1,true)) then begin
             LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,acNum,groupCode,groupComment);
