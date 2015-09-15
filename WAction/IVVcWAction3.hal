@@ -1225,8 +1225,8 @@ BEGIN
 			mtrw = matrowcnt(IVp);
 			For(i=0;i<mtrw;i=i+1) begin
 				matrowget(IVp,i,IVrw);
-				if(IVrw.stp==kInvoiceRowTypeNormal)then begin
-					if(first)then begin
+				if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin
+					if(first) then begin
 						price = IVrw.Price;
 						location = IVrw.Location;
 						if (blank(location)) then begin
@@ -1241,7 +1241,10 @@ BEGIN
 							IVrw.vRebate = vreb;
 						end;
 						first = false;
-					end;
+					end else begin
+							IVrw.vRebate = 20;
+							MatRowPut(IVp,i,IVrw);					
+					end;					
 				end;
 			end; 
 		end;
