@@ -27,6 +27,11 @@ external procedure SplitEclass(string,var Array string);
 external function Boolean IVDClassInsertRowTest(Integer, Integer);
 remote procedure IVVc_PasteInvDate(var record IVVc,var Integer,var Integer);
 remote function string 255 CurDrawerCode(string);
+external function Boolean GetItemPriceDiscount3(string,val,var record INVc,string,val,val,val,val,val,string,string,string,string,
+                                                var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
+                                                string,Boolean,var Boolean,string,var string,var val,string,string,var string);// Edit ************************** Tuesday, 15 September 2015 11:59:12
+
+
 
 global
 function Boolean IVDClassInvalidButtonAction(Integer wn,Integer value)
@@ -1205,6 +1210,42 @@ BEGIN
   Boolean res,frvchangedf,sumchangedf;
   record GeneralOptionBlock GOb;
   record BelRusCashBlock BelRusCashr;
+	
+	val t,price,vreb,baseprice,temp,tax2prc;// Edit ************************** Tuesday, 15 September 2015 12:12:57
+  string 255 curitemname,salesacc,vatcode,tax2code,location,taxtemplatecode;// Edit ************************** Tuesday, 15 September 2015 12:12:58
+  Boolean dummyf;// Edit ************************** Tuesday, 15 September 2015 12:12:59
+	integer i,mtrw;
+	boolean first,calcprice1;// Edit ************************** Tuesday, 15 September 2015 12:13:39
+	record INVc INr;
+	
+  first = true;
+  if(currentcompany==14)then begin// Edit ************************** Tuesday, 15 September 2015 11:39:44
+		if(IVp.RebCode<"20%")then begin
+		
+			mtrw = matrowcnt(IVp);
+			For(i=0;i<mtrw;i=i+1) begin
+				matrowget(IVp,i,IVrw);
+				if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+					if(first)then begin
+						price = IVrw.Price;
+						location = IVrw.Location;
+						if (blank(location)) then begin
+							location = IVp.Location;
+						end;
+						if (GetItemPriceDiscount3(IVrw.ArtCode,IVrw.Quant,INr,IVp.CurncyCode,
+																IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,
+																IVp.LangCode,IVp.CustCat,IVp.PriceList,IVp.RebCode,
+																price,curitemname,vreb,vatcode,baseprice,salesacc,
+																IVp.ExportFlag,calcprice1,IVp.TransDate,IVp.TransTime,IVp.CustCode,true,dummyf,IVp.PayDeal,tax2code,tax2prc,IVp.Region,location,taxtemplatecode)) then begin
+
+							IVrw.vRebate = vreb;
+						end;
+						first = false;
+					end;
+				end;
+			end; 
+		end;
+	end;
   
   BlockLoad(GOb);
   MatRowGet(IVp,rownr,IVrw);

@@ -309,7 +309,8 @@ BEGIN
                             IVr.LangCode,IVr.CustCat,IVr.PriceList,IVr.RebCode,
                             price,tstr,vreb,dummystr,baseprice,dummystr,
                             exportflag,calcprice,IVr.TransDate,IVr.TransTime,IVr.CustCode,true,dummyf,IVr.PayDeal,
-                            tax2code,tax2prc,IVr.Region,location,dummystr)) then begin
+                            tax2code,tax2prc,IVr.Region,location,dummystr)) then begin                      
+    
     IVrw.ArtCode = INr.Code;
     if (nonblank(IVrw.ArtCode)) and (INr.SerNrf==1) then begin
       if (BulkSerialNos_CalculateQuantityAndSerialNr(SNrb,false,IVrw.ArtCode,IVrw.SerialNr,IVrw.Quant)) then begin
