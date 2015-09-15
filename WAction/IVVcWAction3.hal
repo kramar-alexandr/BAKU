@@ -1219,8 +1219,8 @@ BEGIN
 	record INVc INr;
 	
   first = true;
-  if(currentcompany==14)then begin// Edit ************************** Tuesday, 15 September 2015 11:39:44
-		if(IVp.RebCode<"20%")then begin
+  if(currentcompany==14) then begin // Edit ************************** Tuesday, 15 September 2015 11:39:44
+		if(nonblank(IVp.RebCode) and (IVp.RebCode<"20%")) then begin
 		
 			mtrw = matrowcnt(IVp);
 			For(i=0;i<mtrw;i=i+1) begin

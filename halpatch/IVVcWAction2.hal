@@ -1737,7 +1737,7 @@ procedure IVSumup(var record IVVc IVp,Boolean roundof)
 begin
   record SMVc SMr;/*VATBaseRowType*/
   record SMVc SMTax2r;
-  Integer vatcnt;
+  Integer vatcnt,mtrw,i;
   record FreightBlock FreightRec;
   val s0,s1,s2,s3,s4,TotGP;
   val tax1sum,tax2sum,t;
@@ -1747,6 +1747,14 @@ begin
   val ts3,ttax1sum,tax2base;
   record RPCUTaxVc RPCUTaxr;
   Boolean calcperceppercuf;
+
+
+	if (currentcompany==14) then begin	//Edit----------------------Dima  15.09.2015
+		mtrw = matrowcnt(IVp);
+		For(i=0;i<mtrw;i=i+1) begin
+			IVDchrsum(IVp,i);
+		end;
+	end;
   
   if (UseTaxTemplatesforTaxCalc) then begin
     IVSumup_TaxTemplate(IVp,roundof);
