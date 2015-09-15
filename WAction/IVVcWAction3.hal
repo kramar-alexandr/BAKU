@@ -1217,7 +1217,12 @@ BEGIN
 	integer i,mtrw;
 	boolean first,calcprice1;// Edit ************************** Tuesday, 15 September 2015 12:13:39
 	record INVc INr;
+	date fromDate,toDate;
 	
+	fromDate = StringToDate("15/09/2015");
+	toDate = StringToDate("30/09/2015");
+	
+	if (CurrentDate>=fromDate and CurrentDate<=toDate) then begin
   first = true;
   if(currentcompany==14) then begin // Edit ************************** Tuesday, 15 September 2015 11:39:44
 		if(nonblank(IVp.RebCode) and (IVp.RebCode<"20%")) then begin
@@ -1242,12 +1247,13 @@ BEGIN
 						end;
 						first = false;
 					end else begin
-							IVrw.vRebate = 20;
-							MatRowPut(IVp,i,IVrw);					
-					end;					
+							IVrw.vRebate = 20;					
+					end;
+					MatRowPut(IVp,i,IVrw);					
 				end;
 			end; 
 		end;
+	end;
 	end;
   
   BlockLoad(GOb);
