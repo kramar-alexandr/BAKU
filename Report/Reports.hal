@@ -1649,3 +1649,69 @@ begin
 	
 return;
 end;
+
+
+global procedure SameBarCodesRn()		//Edit----------------------Dima  18.09.2015
+begin
+record INVc INr;
+array string 30 samecodes;
+String 30 prevCode;
+integer i,k,step;
+
+	StartReportNoHeaderJob("The same barcodes");
+	
+/*	
+	While(LoopKey("BarCode",INr,1,true)) begin
+	
+					startformat(15);
+						outstring(20,0,INr.Code,false);
+						outstring(100,0,INr.BarCode,false);
+						if (prevCode == INr.BarCode) then begin
+								outstring(200,0,"SAME",false);
+						end;
+					endformat;
+					prevCode = INr.BarCode;
+	end;
+*/	
+
+
+	prevCode = "";
+	step = 50;
+	
+	ReadFirstKey("BarCode",INr,1,true);
+	prevCode = INr.BarCode;
+	
+	INr.BarCode = "";
+	k=0;
+	While(LoopKey("BarCode",INr,1,true)) begin
+		if (prevCode==INr.BarCode and nonblank(INr.BarCode)) then begin
+			samecodes[k] = INr.Code;
+			k=k+1;
+		end else begin	
+			if (k>1) then begin
+			LogText(0,prevCode & "  : " & k);
+					startformat(15);
+						outstring(20,0,prevCode,false);
+					for(i=0;i<k;i=i+1) begin
+						outstring(100+step*i,0,samecodes[i],false);
+					end;
+					endformat;
+			end;
+			
+			samecodes[0] = INr.Code;
+			k=1;
+			prevCode = INr.BarCode;
+		end;		
+	end;
+	
+	EndJob;	
+  
+end;
+
+
+
+
+
+
+
+
