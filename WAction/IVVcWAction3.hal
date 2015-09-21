@@ -1244,6 +1244,7 @@ BEGIN
 																IVp.ExportFlag,calcprice1,IVp.TransDate,IVp.TransTime,IVp.CustCode,true,dummyf,IVp.PayDeal,tax2code,tax2prc,IVp.Region,location,taxtemplatecode)) then begin
 
 							IVrw.vRebate = vreb;
+							MatRowPut(IVp,i,IVrw);
 						end;
 						first = false;
 					end else begin

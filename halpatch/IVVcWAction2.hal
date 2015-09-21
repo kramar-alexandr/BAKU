@@ -1747,8 +1747,7 @@ begin
   val ts3,ttax1sum,tax2base;
   record RPCUTaxVc RPCUTaxr;
   Boolean calcperceppercuf;
-
-
+	
 	if (currentcompany==14) then begin	//Edit----------------------Dima  15.09.2015
 		mtrw = matrowcnt(IVp);
 		For(i=0;i<mtrw;i=i+1) begin

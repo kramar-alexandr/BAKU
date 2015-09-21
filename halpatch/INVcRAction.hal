@@ -670,7 +670,8 @@ BEGIN
       goto LINVcRecordCheck;
     end;
   end;
-  if (ISb.UniqueBarCode!=0) then begin
+  //if (ISb.UniqueBarCode!=0) then begin// Edit ************************** Friday, 18 September 2015 11:22:39
+  if (true) then begin
     if (nonblank(INr.BarCode)) then begin
       if (stat==insertmode) then begin checkf = true; end;
       if (stat==updatemode) then begin
@@ -680,7 +681,7 @@ BEGIN
       if (checkf) then begin
         lINr.BarCode = INr.BarCode;
         if (ReadFirstKey("BarCode",lINr,1,true)) then begin
-          RecordCheckError(1547,"",-1,"BarCode");      
+          RecordCheckError(1547," BarCode " & lINr.Code,-1,"BarCode");      
           res = -1; 
           goto LINVcRecordCheck;
         end;
