@@ -154,15 +154,20 @@ begin
 									end;
 									MatRowGet(IVr,IHr.Row,IVrw);
 									sign = 1;
+									
 									if(IVrw.Quant<0)then begin
 										sign = -1;
 									end;
 									if(IHr.Invalid==1)then begin
 									  sign = -sign;
 									end;
-									iv_poz_sum = iv_poz_sum + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1; 
-									//gp = gp + (IVrw.rowGP);// Edit ************************** пятница, 27 июня 2014 г., 09:58:04
-									gp = gp + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//Sum AZN
+									if(IVr.InvType==kInvoiceTypeCredit)then begin
+										iv_poz_sum = iv_poz_sum - IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1; 
+										gp = gp - IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//Sum AZN
+									end else begin
+										iv_poz_sum = iv_poz_sum + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1; 
+										gp = gp + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//Sum AZN
+									end;
 									
 									if(IHr.StockAffectf>0)then begin
                     updst = true;
@@ -199,12 +204,19 @@ begin
 									if(IVrw.Quant<0)then begin
 										sign = -1;
 									end;
+									
 									if(IHr.Invalid==1)then begin
 									  sign = -sign;
 									end;
-									iv_neg_sum = iv_neg_sum + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;
+									if(IVr.InvType==kInvoiceTypeCredit)then begin
+										iv_neg_sum = iv_neg_sum - IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;
+										gp = gp - IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//SumAZN
+									end else begin
+										iv_neg_sum = iv_neg_sum + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;
+										gp = gp + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//SumAZN
+									end;
 									//gp = gp + IVrw.rowGP;
-									gp = gp + IVrw.Sum/IVrw.Quant*sign*AbsoluteVal(IHr.Qty)/ivfr*ivto*fr/to1;//SumAZN
+									
 									
 									if(IHr.StockAffectf>0)then begin
                     updst = true;

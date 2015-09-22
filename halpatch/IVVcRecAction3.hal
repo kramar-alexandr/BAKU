@@ -809,13 +809,13 @@ LkInvoiceRowTypeNormal2:;
           end;          
         end;
         if (nonblank(IVrw.ArtCode)) then begin
-          if (HasLocalization("PRT")) then begin
+          //if (HasLocalization("PRT")) then begin// Edit ************************** Monday, 21 September 2015 12:19:16
             if (IVrw.Quant==0) then begin
               RecordCheckError(2210,"",i,"Quant");      
               res = -1; 
               goto L99;
             end;
-          end;
+          //end;
           if (ReadFirstItem(IVrw.ArtCode,INr,true,true)==false) then begin
             if (INr.Terminated==1) then begin
               RecordCheckError(1266,IVrw.ArtCode,i,"ArtCode");      
