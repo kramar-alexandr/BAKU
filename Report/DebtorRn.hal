@@ -4,23 +4,25 @@ external procedure GetObjs(string,string,var string);
 external function val cur2cur(String,String,Date,Val);
 external function val cur2b1(String,Date,Val);
 
+SetLangMode(LangRussian,"RUS",0);
+
 procedure DebtorRnPrintHeader(record RcVc RepSpec,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer IntYc)
 BEGIN
 	string 100 head;
 	
 	switch (IntYc) begin
 		case IVYc:
-			head = USetStr(35064) & USetStr(35065);
+			head = "Ћшибки в счет-фактурах";
 		case IPYc:
-			head = USetStr(35064) & USetStr(35066);
+			head = "Ћшибки в платежах клиента";
 	end;
 	StartFormat(15);
 		OutString	(tab1,0,"",false);
 		OutStringCut(tab2,tab4,0,head,false,0);
-		OutString	(tab5,0,USetStr(31220) & ": " & RepSpec.sEndDate,false);
+		OutString	(tab5,0,"„ата: " & RepSpec.sEndDate,false);
 		if nonblank(RepSpec.ObjStr) then begin
 			OutString(tab6,0,"",false);
-			OutString(tab7,0,USetStr(31024) & " " & RepSpec.ObjStr,false);
+			OutString(tab7,0,"Њагазин: " & RepSpec.ObjStr,false);
 		end;
 	EndFormat;
 	StartFormat(15);
@@ -28,24 +30,24 @@ BEGIN
 	StartFormat(15);
 		OutString	(tab1,0,"",false);
 		OutString	(tab2,0,"",false);
-		OutStringCut(tab3,tab4,0,USetStr(35068) & "62",true,0);
+		OutStringCut(tab3,tab4,0,"‘чет 62",true,0);
 		OutString	(tab5,0,"",false);
-		OutStringCut(tab5,tab6,0,USetStr(35068) & "63",true,0);
+		OutStringCut(tab5,tab6,0,"‘чет 63",true,0);
 		OutString	(tab7,0,"",false);
-		OutStringCut(tab7,tab8,0,USetStr(31245),true,0);
+		OutStringCut(tab7,tab8,0,"Љомментарий",true,0);
 	EndFormat;
 	Black_Divider(tab3 + 1, tab5 - 1);
 	Black_Divider(tab5 + 1, tab7 - 1);
 	Black_Divider(tab7 + 1, 1);
 	StartFormat(15);
-		OutString(tab1,0,USetStr(35067),false);
-		OutString(tab2,0,USetStr(31220),false);
-		OutString(tab3,0,USetStr(35069),false);
-		OutString(tab4,0,USetStr(35070),false);
-		OutString(tab5,0,USetStr(35069),false);
-		OutString(tab6,0,USetStr(35070),false);
-		OutString(tab7,0,USetStr(35072),false);
-		OutString(tab8,0,USetStr(35071),false);
+		OutString(tab1,0,"„окумент",false);
+		OutString(tab2,0,"„ата",false);
+		OutString(tab3,0,"„ебет",false);
+		OutString(tab4,0,"Љредит",false);
+		OutString(tab5,0,"„ебет",false);
+		OutString(tab6,0,"Љредит",false);
+		OutString(tab7,0,"по ошибке",false);
+		OutString(tab8,0,"по документу",false);
 	EndFormat;
 	Black_Divider(0,1);
 	RETURN
@@ -82,7 +84,7 @@ BEGIN
 	val TotDebet,TotCredit,
 		resdoc62,debit62,credit62,curDebit62,curCredit62,
 		resdoc63,debit63,credit63,curDebit63,curCredit63,
-		prep;
+		prep,sum51,kurs;
 	string 30 doc,custcode,tempstr;
 	string 10 currency;
 	string 100 errStr;
@@ -91,7 +93,7 @@ BEGIN
 	tab4 = 130;  tab5 = 170;  tab6 = 210;
 	tab7 = 250;	 tab8 = 350;
 	
-	StartReportNoHeaderJob(USetStr(35075));
+	StartReportNoHeaderJob("Ћшибки по долгам и авансам");
 		firstf = true;
 		TrHs = true;
 		IVr.InvDate = "";
@@ -104,10 +106,13 @@ BEGIN
 			if (IVr.Invalid == 1) then begin
 				testf = false;
 			end;
-			if (IVr.OKFlag <> 1) then begin
+			if (IVr.OKFlag != 1) then begin
 				testf = false;
 			end;
 			if (!setinset(RepSpec.ObjStr,IVr.Objects) and nonblank(RepSpec.ObjStr)) then begin
+				testf = false;
+			end;
+			if (IVr.PayDeal == "F")  or (IVr.PayDeal == "U") or (IVr.PayDeal == "CN") then begin
 				testf = false;
 			end;
 			if (testf) then begin
@@ -125,17 +130,23 @@ BEGIN
 					curCredit63 = 0;
 					resdoc63 = 0;
 					prep = 0;
+					kurs = 0;
 					isCashf = false;
 					if (IVr.PayDeal == "O") then begin
 						cashMustBef = true;
 					end else begin
 						cashMustBef = false;
 					end;
+					if (IVr.PayDeal == "T1") then begin
+						sum51 = IVr.BaseSum4;
+					end else begin
+						sum51 = 0;
+					end;
 					currency = IVr.CurncyCode;
 					rwcnt = MatRowCnt(TRr);
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
-						if ((TRrw.ovst <> 1) and (TRrw.stp == 1)) then begin
+						if ((TRrw.ovst != 1) and (TRrw.stp == 1)) then begin
 							if (TRrw.AccNumber == "62") then begin
 								debit62 = debit62 + TRrw.DebVal;
 								credit62 = credit62 + TRrw.CredVal;
@@ -151,10 +162,18 @@ BEGIN
 							if (TRrw.AccNumber == "84") then begin
 								curDebit62 = curDebit62 - cur2cur(TRrw.Curncy,currency,TRr.TransDate,TRrw.CurCredVal);
 								curCredit62 = curCredit62 - cur2cur(TRrw.Curncy,currency,TRr.TransDate,TRrw.CurDebVal);
+								kurs = kurs + cur2cur(TRrw.Curncy,currency,TRr.TransDate,TRrw.CurDebVal) - cur2cur(TRrw.Curncy,currency,TRr.TransDate,TRrw.CurCredVal);
+							end;
+							if (TRrw.AccNumber == "51") and (IVr.PayDeal == "T1") then begin
+								sum51 = sum51 - TRrw.DebVal + TRrw.CredVal;
 							end;
 						end;
 					end;
+					
 					resdoc62 = curDebit62 - curCredit62 - IVr.Sum4;
+					if (IVr.RetValue <= 5) and (IVr.RetValue >= -5) then begin
+						resdoc62 = resdoc62 - IVr.RetValue;
+					end;
 					resdoc63 = curDebit63 - curCredit63;
 					rwcnt = MatRowCnt(IVr);
 					for (i=0;i<rwcnt;i=i+1) begin
@@ -163,7 +182,7 @@ BEGIN
 							case kInvoiceRowTypePrepayment:
 								resdoc63 = resdoc63 - IVrw.Sum;
 								resdoc62 = resdoc62 + IVrw.Sum;
-								prep = IVrw.Sum;
+								prep = prep + IVrw.Sum;
 							case kInvoiceRowTypeCashPayment:
 								isCashf = true;
 								resdoc62 = resdoc62 + cur2cur(IVrw.CurncyCode,currency,IVr.TransDate,IVrw.Sum);
@@ -181,40 +200,50 @@ BEGIN
 					if ((cashMustBef) and (!isCashf)) then begin
 						resdoc62 = resdoc62 + IVr.Sum4 - prep;
 					end;
-					if ((resdoc62 <> 0) or (resdoc63 <> 0)) then begin
+					if (sum51 == 0) and (IVr.PayDeal == "T1") then begin
+						resdoc62 = 0;
+						resdoc63 = 0;
+					end;
+					if (resdoc62 == kurs) then begin
+						resdoc62 = resdoc62 - kurs;
+					end;
+					if ((resdoc62 != 0) or (resdoc63 != 0) or (sum51 != 0)) then begin
 						if (firstf) then begin
 							DebtorRnPrintHeader(RepSpec,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,IVYc);
 							firstf = false;
 						end;
-						errStr = USetStr(35081);//  РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ Р·Р°РїРёСЃРё РїРѕ 62-РјСѓ СЃС‡РµС‚Сѓ
-						if (resdoc62 <> (debit62-credit62)) then begin
-							errStr = USetStr(35079);//  РќРµРїСЂР°РІРёР»СЊРЅРѕ СѓРєР°Р·Р°РЅ РґРµР±РµС‚ 62-РіРѕ СЃС‡РµС‚Р°
+						errStr = "Ќеправильные записи по 62-му счету";
+						if (resdoc62 != (curDebit62-curCredit62)) then begin
+							errStr = "Ќеправильно указан дебет 62-го счета";
 						end;
-						if (((prep <> curDebit63) and (curCredit63 <> 0)) or ((prep == 0) and ((curCredit63 <> 0) or (curDebit63 <> 0)))) then begin
-							errStr = USetStr(35080);//  РќРµРїСЂР°РІРёР»СЊРЅС‹Рµ Р·Р°РїРёСЃРё РїРѕ 63-РјСѓ СЃС‡РµС‚Сѓ
+						if (((prep != curDebit63) and (curCredit63 != 0)) or ((prep == 0) and ((curCredit63 != 0) or (curDebit63 != 0)))) then begin
+							errStr = "Ќеправильные записи по 63-му счету";
 						end;
 						if ((resdoc62 > 0) and (resdoc62 <= 0.02)) then begin
-							errStr = USetStr(35078);//  Р”РѕР»Р¶РµРЅ РїСЂРёСЃСѓС‚СЃС‚РІРѕРІР°С‚СЊ СЃС‡РµС‚ РѕРєСЂСѓРіР»РµРЅРёСЏ
+							errStr = "„олжен присутствовать счет округлениЯ";
 						end;
-						if ((curDebit62 <> 0) and (curDebit62 == resdoc62) and ((resdoc62 - curDebit62 + curCredit62) == 0)) then begin
-							errStr = USetStr(35077);//  РќРµ Р·Р°РєСЂС‹С‚ 62-Р№ СЃС‡РµС‚ РїСЂРё РѕРїР»Р°С‡РµРЅРѕР№ СЃС‡/С„
+						if ((curDebit62 != 0) and (curDebit62 == resdoc62) and ((resdoc62 - curDebit62 + curCredit62) == 0)) then begin
+							errStr = "Ќе закрыт 62-й счет при оплаченой сч/ф";
 						end;
 						if ((cashMustBef) and (!isCashf)) then begin
-							errStr = USetStr(35085);
+							errStr = "ЌеоплаченаЯ сч/ф при условии оплаты наличными";
 							resdoc62 = resdoc62 - IVr.Sum4 + prep;
 						end;
 						if (resdoc62 == -IVr.Sum4) then begin
-							if ((curCredit63 <> 0) or (curDebit63 <> 0)) then begin
-								errStr = USetStr(35084);
+							if ((curCredit63 != 0) or (curDebit63 != 0)) then begin
+								errStr = "€спользуетсЯ 63-й счет при отсутствии предоплаты";
 							end else begin
-								errStr = USetStr(35074);//  Р—Р°РєСЂС‹С‚ 62-Р№ СЃС‡РµС‚ РїСЂРё РѕС‚СЃСѓС‚СЃС‚РІРёРё РѕРїР»Р°С‚С‹
+								errStr = "‡акрыт 62-й счет при отсутствии оплаты";
 							end;
 						end;
-						if ((prep <> 0) and (curDebit63 == 0)) then begin
-							errStr = USetStr(35076);//  РџСЂРµРґРѕРїР»Р°С‚Р° РЅРµ РѕС‚СЂР°Р¶РµРЅР° РЅР° 63-Рј СЃС‡РµС‚Сѓ
+						if (sum51 != 0) then begin
+							errStr = "‡акрыт 62-й счет при неполной оплате через терминал";
 						end;
-						if ((prep <> curDebit63) and (resdoc62 <> 0)) then begin
-							errStr = USetStr(35073);//  РџСЂРµРґРѕРїР»Р°С‚Р° РѕС‚СЂР°Р·РёР»Р°СЃСЊ РЅР° 62-Рј СЃС‡РµС‚Сѓ
+						if ((prep != 0) and (curDebit63 == 0)) then begin
+							errStr = "Џредоплата не отражена на 63-м счету";
+						end;
+						if ((prep != curDebit63) and (resdoc62 != 0)) then begin
+							errStr = "Џредоплата отразилась на 62-м счету";
 						end;
 						StartFormat(15);
 							YcToStr(IVYc,tempstr);
@@ -243,7 +272,7 @@ BEGIN
 			if (IPr.Invalid == 1) then begin
 				testf = false;
 			end;
-			if (IPr.OKFlag <> 1) then begin
+			if (IPr.OKFlag != 1) then begin
 				testf = false;
 			end;
 			if (testf) then begin
@@ -266,7 +295,7 @@ BEGIN
 					rwcnt = MatRowCnt(TRr);
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
-						if ((TRrw.ovst <> 1) and (TRrw.stp == 1)) then begin
+						if ((TRrw.ovst != 1) and (TRrw.stp == 1)) then begin
 							if (TRrw.AccNumber == "62") then begin
 								debit62 = debit62 + TRrw.DebVal;
 								credit62 = credit62 + TRrw.CredVal;
@@ -296,7 +325,7 @@ BEGIN
 							resdoc62 = resdoc62 + cur2cur(IPrw.RecCurncy,currency,IPr.TransDate,IPrw.RecVal);
 						end;
 					end;
-					if (((resdoc62 <> 0) or (resdoc63 <> 0)) and (haveStoref)) then begin
+					if (((resdoc62 != 0) or (resdoc63 != 0)) and (haveStoref)) then begin
 						if (firstf) then begin
 							StartFormat(15);
 							EndFormat;
@@ -305,12 +334,12 @@ BEGIN
 							DebtorRnPrintHeader(RepSpec,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,IPYc);
 							firstf = false;
 						end;
-						errStr = USetStr(35081);
-						if ((curCredit62 <> (resdoc62 - curDebit62 + curCredit62))) then begin
-							errStr = USetStr(35083);
+						errStr = "Ќеправильные записи по 62-му счету";
+						if ((curCredit62 != (resdoc62 - curDebit62 + curCredit62))) then begin
+							errStr = "Љредит 62 не совпадает с суммой платежа";
 						end;
-						if ((prep<>0) and (prep <> (credit63-debit63))) then begin
-							errStr = USetStr(35082);
+						if ((prep!=0) and (prep != (credit63-debit63))) then begin
+							errStr = "Ќеправильные записи по 63-му счету в предоплате";
 						end;
 						StartFormat(15);
 							YcToStr(IPYc,tempstr);

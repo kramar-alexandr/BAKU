@@ -3,19 +3,21 @@ external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,I
 external procedure BrandManagerRnTool(record RcVc,var val,var val,var val,var val);
 external procedure GetObjs(string,string,var string);
 
+SetLangMode(LangRussian,"RUS",0);
+
 procedure FoundRnPrintHeader(record RcVc RepSpec,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer tab9,integer tab10)
 BEGIN
 	string 20 head;
 	
 	StartFormat(15);
 		OutString(tab1,0,"",false);
-		OutString(tab2,0,USetStr(35060),false);
+		OutString(tab2,0,"Отчет по учредителям",false);
 		OutString(tab3,0,"",false);
 		OutString(tab4,0,"",false);
 		OutString(tab5,0,"",false);
 		OutString(tab6,0,"",false);
 		OutString(tab7,0,"",false);
-		OutString(tab8,0,USetStr(31102),false);
+		OutString(tab8,0,"Период:",false);
 		OutString(tab9,0,RepSpec.sStartDate & " - " & RepSpec.sEndDate,false);
 		OutString(tab10,0,"",false);
 	EndFormat;
@@ -24,29 +26,29 @@ BEGIN
 	StartFormat(15);
 		OutString	(tab1,0,"",false);
 		OutString	(tab2,0,"",false);
-		OutStringCut(tab3,tab4 + 20,0,USetStr(35042),true,0);
+		OutStringCut(tab3,tab4 + 20,0,"На начало периода",true,0);
 		OutString	(tab5,0,"",false);
-		OutStringCut(tab5,tab6,0,USetStr(31234),true,0);
+		OutStringCut(tab5,tab6,0,"Товары",true,0);
 		OutString	(tab7,0,"",false);
-		OutStringCut(tab7,tab8 + 20,0,USetStr(35062),true,0);
+		OutStringCut(tab7,tab8 + 20,0,"Погашение",true,0);
 		OutString	(tab9,0,"",false);
-		OutStringCut(tab9,tab10 + 20,0,USetStr(35045),true,0);
+		OutStringCut(tab9,tab10 + 20,0,"На конец периода",true,0);
 	EndFormat;
 	Black_Divider(tab3 + 1, tab5 - 1);
 	Black_Divider(tab5 + 1, tab7 - 1);
 	Black_Divider(tab7 + 1, tab9 - 1);
 	Black_Divider(tab9 + 1,1);
 	StartFormat(15);
-		OutString(tab1,0,USetStr(35061),false);
-		OutString(tab2,0,USetStr(35020),false);
-		OutString(tab3,0,USetStr(35040),false);
-		OutString(tab4,0,USetStr(35041),false);
-		OutString(tab5,0,USetStr(35040),false);
-		OutString(tab6,0,USetStr(35041),false);
-		OutString(tab7,0,USetStr(35040),false);
-		OutString(tab8,0,USetStr(35041),false);
-		OutString(tab9,0,USetStr(35040),false);
-		OutString(tab10,0,USetStr(35041),false);
+		OutString(tab1,0,"Учредители",false);
+		OutString(tab2,0,"Валюта",false);
+		OutString(tab3,0,"В валюте",false);
+		OutString(tab4,0,"В осн. вал.",false);
+		OutString(tab5,0,"В валюте",false);
+		OutString(tab6,0,"В осн. вал.",false);
+		OutString(tab7,0,"В валюте",false);
+		OutString(tab8,0,"В осн. вал.",false);
+		OutString(tab9,0,"В валюте",false);
+		OutString(tab10,0,"В осн. вал.",false);
 	EndFormat;
 	Black_Divider(0,1);
 	RETURN
@@ -89,7 +91,7 @@ BEGIN
 		end;
 	end;
 	
-	StartReportNoHeaderJob(USetStr(35060));
+	StartReportNoHeaderJob("Отчет по учредителям");
 		Objr.OTCode = "FOUND";
 		TrHs = true;
 		foundcount = 0;
@@ -183,7 +185,7 @@ BEGIN
 		RepSpec.CurncyCode = "";
 		BrandManagerRnTool(RepSpec,TotDebet,TotCredit,TotBeginBal,TotEndBal);
 		StartFormat(15);
-			OutString(tab1,0,USetStr(31222),false);
+			OutString(tab1,0,"Итого",false);
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,"",false);
 			OutString(tab4,0,TotBeginBal,false);

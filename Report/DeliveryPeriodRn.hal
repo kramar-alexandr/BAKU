@@ -30,7 +30,7 @@ begin
 	date readyHansa,readySupplier,shipDate,prepayDate;
 	integer delay;
 
-	StartReportJob(USetStr(35048));
+	StartReportJob(USetStr(35017));
 
 	EndHeader;
 	
@@ -39,14 +39,14 @@ begin
   end;
 	
   StartFormat(15);
-  OutString(15,0,USetStr(35049),false);
-  OutString(80,0,USetStr(35050),false);
-  OutString(150,0,USetStr(35051),false);
-  OutString(210,0,USetStr(35052),false);
-  OutString(260,0,USetStr(35053),false);
-  OutString(310,0,USetStr(35054),false);
-  OutString(360,0,USetStr(35055),false);
-  OutString(410,0,USetStr(35056),false);  
+  OutString(15,0,USetStr(35018),false);
+  OutString(80,0,USetStr(35019),false);
+  OutString(150,0,USetStr(35020),false);
+  OutString(210,0,USetStr(35021),false);
+  OutString(260,0,USetStr(35022),false);
+  OutString(310,0,USetStr(35023),false);
+  OutString(360,0,USetStr(35024),false);
+  OutString(410,0,USetStr(35025),false);  
   EndFormat;
   Black_Divider(0,1);	
 

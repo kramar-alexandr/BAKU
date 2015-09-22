@@ -154,7 +154,7 @@ begin
 		BlockLoad(BCBb);
     currency = BCBb.BaseCur1;
     
-    StartReportNoHeaderJob(USetStr(35034));
+    StartReportNoHeaderJob(USetStr(35014));
     
     if blankdate(RepSpec.sStartDate) then begin
         StartFormat(15);
@@ -309,7 +309,7 @@ begin
 
 
 	 StartFormat(15);
-    OutString(0,0,USetStr(35034),false);
+    OutString(0,0,USetStr(35014),false);
     EndFormat;
   
     OutString(0,0,USetStr(31102),false);
@@ -331,8 +331,8 @@ begin
 		SortStringArray(listOfClassifications);
 		
 		OutString(20,0,"",false);
-		OutString(200,0,USetStr(35022),false); //cash in
-		OutString(300,0,USetStr(35017),false);// cash out
+		OutString(200,0,USetStr(35013),false); //cash in
+		OutString(300,0,USetStr(35012),false);// cash out
 		endformat;		
 
 		for(i=0;i<length;i=i+1) begin
@@ -350,7 +350,7 @@ begin
 		end;
 		
 		if (cashIn[nullClassification]>0 or cashOut[nullClassification]<0) then begin
-				 	OutString(20,0,USetStr(35035),false);
+				 	OutString(20,0,USetStr(35015),false);
 					OutString(200,0,cashIn[nullClassification],false);
 					OutString(300,0,cashOut[nullClassification],false);
 					totalIn = totalIn + cashIn[nullClassification];
