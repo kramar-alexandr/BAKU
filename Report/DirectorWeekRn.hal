@@ -150,7 +150,7 @@ begin
 										rwcnt2 = MatRowCnt(CLInr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
-											if ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
+											if (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLInrw.Comment;
 											end;
 										end;
@@ -165,7 +165,7 @@ begin
 										rwcnt2 = MatRowCnt(CLOutr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
-											if ((CLOutrw.Sum == TRrw.CurCredVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
+											if (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLOutrw.Comment;
 											end;
 										end;
@@ -387,13 +387,13 @@ begin
 							tempTRrw.Comment = "";
 							tempTRrw.ExtraComment = "";
 						end;
-/*??????*/				if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+/*??????*/				/*if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 							testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
 							if testf then begin
 								BaseDebErr = BaseDebErr + TRrw.CredVal;
 								BaseCredErr = BaseCredErr + TRrw.DebVal;
 							end;
-						end;
+						end;*/
 					end;
 				end;
 			end;
@@ -436,7 +436,7 @@ begin
 										rwcnt2 = MatRowCnt(CLInr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
-											if ((CLInrw.Sum == TRrw.CurDebVal) and ((nonblank(CLInrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLInrw.CorspCode,TRrw.Objects)) or (blank(CLInrw.CorspCode) and blank(TRrw.Objects)))) then begin
+											if (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLInrw.Comment;
 											end;
 										end;
@@ -451,7 +451,7 @@ begin
 										rwcnt2 = MatRowCnt(CLOutr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
-											if ((CLOutrw.Sum == TRrw.CurCredVal) and ((nonblank(CLOutrw.CorspCode) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.CorspCode,TRrw.Objects)) or (blank(CLOutrw.CorspCode) and blank(TRrw.Objects)))) then begin
+											if (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLOutrw.Comment;
 											end;
 										end;
@@ -606,6 +606,13 @@ begin
 		basef = true;
 	end;
 	aznf = true;
+	if CurrentCompany == 3 then begin
+		usdf = true;
+		eurf = true;
+		aznf = true;
+		terf = true;
+		basef = true;
+	end;
 	tab[1]  = 0;
 	if (terf and aznf and usdf and eurf and basef) then begin
 		step = 24;
@@ -773,14 +780,14 @@ begin
 			OutString(118,0,"",false);
 			OutString(265,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 		EndFormat;
-	//Остаток на...
 		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
 		FindNLAccBal("51",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
 		FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance53);
 		BeginBalance50n51 = BeginBalance50 + BeginBalance51;
 		BeginBalance50n51n53 = BeginBalance50n51 + BeginBalance53;
-		if CurrentCompany==3 or BeginBalance50n51n53 != 0 then begin
-			StartFormat(15);
+		StartFormat(15);
+		if CurrentCompany==3 then begin
+		//Остаток на...
 				OutString(0,0,"Остаток на " & RepSpec.sStartDate & ":",false);
 			EndFormat;
 			StartFormat(15);
@@ -789,8 +796,6 @@ begin
 				OutString(54,0,BeginBalance50n51n53,false);
 				OutString(79,0,"AZN",false);
 			EndFormat;
-		end;
-		if CurrentCompany==3 or BeginBalance53 != 0 then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"Деньги в офисе",false);
@@ -799,9 +804,7 @@ begin
 			EndFormat;
 			StartFormat(15);
 			EndFormat;
-		end;
-	//Остаток на... по валютам
-		if CurrentCompany==3 then begin
+		//Остаток на... по валютам
 			tempBal = 0;
 			for (i=0;i<curi;i=i+1) begin
 				if left(CurList[i],3)=="USD" then begin
@@ -868,12 +871,15 @@ begin
 				end;
 			end;
 			if ((BeginBalance50AZN!=0) or (BeginBalance51!=0)) then begin
+				StartFormat(15);
+					OutString(0,0,"Остаток на " & RepSpec.sStartDate & " по валютам:",false);
+				EndFormat;
 				if (BeginBalance50AZN!=0) then begin
 					StartFormat(15);
-						OutString(0,0,"Остаток на " & RepSpec.sStartDate & " по валютам:",false);
+						OutString(0,0,"",false);
 						OutString(20,0,"",false);
-							OutString(54,0,BeginBalance50AZN,false);
-							OutString(79,0,"AZN",false);
+						OutString(54,0,BeginBalance50AZN,false);
+						OutString(79,0,"AZN",false);
 					EndFormat;
 				end;
 				if (BeginBalance51!=0) then begin
