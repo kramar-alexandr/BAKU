@@ -33,6 +33,8 @@ external procedure AddVATBase(var record SMVc,string,val,val,Integer,Integer,Int
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure MulVATIV(string,val,var val,var val,Integer,Integer);
 external procedure GetVATCodeSalesVatAcc(string,var string);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);// Edit ************************** Tuesday, 29 September 2015 13:45:45
+
 
 procedure FindIPCurncyRate(LongInt prepnr,var val from,var val to1,var Date tdp)// we need BankCurncy in ARPayView and ARPayHistView
 BEGIN
@@ -635,6 +637,62 @@ BEGIN
   RETURN;
 END;
 
+
+function val LocalalculateIVCashBack(record IVVc IVr)// Edit ************************** Tuesday, 29 September 2015 13:44:28
+BEGIN
+  val t;
+  row IVVc IVrw;
+  Integer i,rwcnt;
+  val cash,v,pp;
+  record BaseCurBlock bascur;
+  Boolean bcurf;
+	roundmode rnd;
+	val res;
+	
+	rnd = DefaultValRoundoff;
+  rnd.decimals = 2;
+	
+  rwcnt = MatRowCnt(IVr);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(IVr,i,IVrw);
+    if (IVrw.stp==6) then begin 
+      pp = pp + IVrw.Sum;
+    end;
+    if ((IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) or (IVrw.stp==kInvoiceRowTypeChequePayment) or (IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)) then begin// Edit ************************** Tuesday, 26 February 2013 15:31:45
+      cash = cash + IVrw.Sum;
+    end;
+    if (IVrw.stp==15 or (IVrw.stp==kInvoiceRowTypeCreditCardPayment)) then begin 
+      if (IVrw.CurncyCode!=IVr.CurncyCode) then begin   
+        if (IVr.CurncyCode==bascur.BaseCur1) then begin
+          cash = cash + MulRateToBase1(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+          bcurf = true;
+        end;
+        if (IVr.CurncyCode==bascur.BaseCur2) then begin
+          cash = cash + MulRateToBase2(IVrw.CurncyCode,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+          bcurf = true;
+        end;
+        if (bcurf==false) then begin
+          CurValToOtherCur(IVr.InvDate,IVrw.CurncyCode,IVrw.Sum,IVr.CurncyCode,v,DefaultCurRoundOff);
+          cash = cash + v;
+        end;
+      end else begin
+        cash = cash + IVrw.Sum;
+      end;
+    end;    
+  end;  
+  IVr.RetnValue = blankval;
+  if (true) then begin
+    t = cash + pp;
+    
+    IVr.RetnValue = round(t - IVr.Sum4,rnd); 
+    IVr.RetValue = round(t - IVr.Sum4,rnd); //2 files for same thing
+  end;
+  res = IVr.RetValue;
+  LocalalculateIVCashBack = res;
+  
+  RETURN;
+END;
+
 global
 function Integer IVVc_Change(record TRVc gTRp,Integer ARUseObj,string defchangeacc,string cuobj,record IVVc IVp,val baserate1,val baserate2,Boolean dc1,Boolean dc2,var val TotSum)
 BEGIN
@@ -648,6 +706,8 @@ BEGIN
   row PMBlock PMrw;
   
   changeacc = defchangeacc;
+  IVp.RetnValue = LocalalculateIVCashBack(IVp);// Edit ************************** Tuesday, 29 September 2015 13:46:34
+  
   if (IVp.RetnValue==0) then begin goto LIVVc_Change; end;
   rwcnt = MatRowCnt(IVp);
   for (i=0; i<rwcnt; i=i+1) begin
@@ -673,12 +733,20 @@ BEGIN
     errstrno = 2191;
     goto LIVVc_Change;
   end;
+  
+  
   rs = MulRateToBase1(IVp.CurncyCode,IVp.RetnValue,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,DefaultCurRoundOff);
+  
   if ((IVp.InvType==kInvoiceTypeNormal) or (IVp.InvType==kInvoiceTypeInterest) or (IVp.InvType==kInvoiceTypeCash) or (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) or (IVp.InvType==kInvoiceTypeDownpayment)) then begin 
-    if ((IVp.RetnValue>0 and IVp.Sum4>0) or (IVp.RetnValue<0 and IVp.Sum4<0)) then begin    
+    if ((IVp.RetnValue>0 and IVp.Sum4>0) or (IVp.RetnValue<0 and IVp.Sum4<0)) then begin    // Edit ************************** Tuesday, 29 September 2015 16:15:45
       testf = true; 
-    end;
+    end else begin
+    	if(IVp.InvType==kInvoiceTypeCash and rs<20)then begin
+    		testf = true; // Edit ************************** Tuesday, 29 September 2015 16:44:13
+    	end;
+    end;// Edit ************************** Tuesday, 29 September 2015 16:15:43
   end;
+
   if (testf) then begin
     if (blank(changeacc)) then begin
       rwcnt = MatRowCnt(IVp);

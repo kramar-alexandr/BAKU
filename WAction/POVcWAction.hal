@@ -2433,6 +2433,8 @@ array string 10 as;
 record UserVc USr;
 string 5 subset;
   
+  
+  
   subset = "";
   USr.Code = currentuser;
   readfirstmain(USr,1,true);
