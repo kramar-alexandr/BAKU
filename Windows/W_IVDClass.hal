@@ -2229,7 +2229,12 @@ if (HasTouchScreenLook==false) then begin
   //  CheckBox(h3,v+=16,0,"E-Invoice Exported",EInvExpFlag);
   Tile(6,150,false,"6",PriceList); vs = 20;
   EditField(h1,v=vm,80,"Прайс-лист",Normal,PriceList,false,PLDefSClass);
-  EditField(h1,v+=vs,80,"Таблица сидок",ViewOnly,RebCode,false,0); 
+  if(currentuser=="SA")then begin
+		EditField(h1,v+=vs,80,"Таблица сидок",Normal,RebCode,false,0); 
+  end else begin
+		EditField(h1,v+=vs,80,"Таблица сидок",ViewOnly,RebCode,false,0); 
+  end;
+  
   //  EditField(h1,v+=vs,80,"Disc. %",ViewOnly,DiscPerc,false,0);
   //  EditField(h1,v+=vs,80,"Disc. Amount",ViewOnly,DiscSum,false,0);
   EditField(h1,v+=vs,80,"Первонач. клиент",ViewOnly,OrgCust,false,0);
