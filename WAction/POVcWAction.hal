@@ -2461,6 +2461,7 @@ BEGIN
   wn = CurWindow;
   GetWindowRecord(wn,PUr);
   RepSpec.f1 = PUr.SerNr;
+  RepSpec.f2 = PUr.Location; //Edit***************************Sasha2,10:25 30.09.2015
   RepSpec.Media = mtPrinter;
   RepSpec.ArtMode = 6;
   RepSpec.repname = "PULabForm";
