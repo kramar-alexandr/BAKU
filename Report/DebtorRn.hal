@@ -77,7 +77,7 @@ BEGIN
 	record IVVc IVr;
 	row IVVc IVrw;
 	integer i,rwcnt;
-	boolean TrHs,testf,firstf,cashMustBef,isCashf,haveStoref;
+	boolean TrHs,testf,firstf,cashMustBef,isCashf,haveStoref,isacc7502f;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8;
@@ -131,6 +131,7 @@ BEGIN
 					resdoc63 = 0;
 					prep = 0;
 					kurs = 0;
+					isacc7502f = false;
 					isCashf = false;
 					if (IVr.PayDeal == "O") then begin
 						cashMustBef = true;
@@ -167,13 +168,12 @@ BEGIN
 							if (TRrw.AccNumber == "51") and (IVr.PayDeal == "T1") then begin
 								sum51 = sum51 - TRrw.DebVal + TRrw.CredVal;
 							end;
+							if (TRrw.AccNumber == "75/02") then begin
+								isacc7502f = true;
+							end;
 						end;
 					end;
-					
 					resdoc62 = curDebit62 - curCredit62 - IVr.Sum4;
-					if (IVr.RetValue <= 5) and (IVr.RetValue >= -5) then begin
-						resdoc62 = resdoc62 - IVr.RetValue;
-					end;
 					resdoc63 = curDebit63 - curCredit63;
 					rwcnt = MatRowCnt(IVr);
 					for (i=0;i<rwcnt;i=i+1) begin
@@ -200,12 +200,27 @@ BEGIN
 					if ((cashMustBef) and (!isCashf)) then begin
 						resdoc62 = resdoc62 + IVr.Sum4 - prep;
 					end;
+					if (resdoc62 == kurs) then begin
+						resdoc62 = resdoc62 - kurs;
+					end;
 					if (sum51 == 0) and (IVr.PayDeal == "T1") then begin
 						resdoc62 = 0;
 						resdoc63 = 0;
 					end;
-					if (resdoc62 == kurs) then begin
-						resdoc62 = resdoc62 - kurs;
+					if isacc7502f then begin
+						resdoc62 = 0;
+						resdoc63 = 0;
+					end;
+					if IVr.SerNr == 3300 then begin
+						messagebox(0,"curDebit62 " & curDebit62);
+						messagebox(0,"curCredit62 " & curCredit62);
+						messagebox(0,"resdoc62 " & resdoc62);
+						messagebox(0,"curDebit63 " & curDebit63);
+						messagebox(0,"curCredit63 " & curCredit63);
+						messagebox(0,"resdoc63 " & resdoc63);
+						messagebox(0,"IVr.RetValue " & IVr.RetValue);
+						messagebox(0,"prep " & prep);
+						messagebox(0,"kurs " & kurs);
 					end;
 					if ((resdoc62 != 0) or (resdoc63 != 0) or (sum51 != 0)) then begin
 						if (firstf) then begin
