@@ -103,7 +103,7 @@ BEGIN
 				TrHs = false;	
 				testf = false;
 			end;
-			if (IVr.Invalid == 1) then begin
+			if (IVr.Invalid > 0) then begin
 				testf = false;
 			end;
 			if (IVr.OKFlag != 1) then begin
@@ -211,16 +211,8 @@ BEGIN
 						resdoc62 = 0;
 						resdoc63 = 0;
 					end;
-					if IVr.SerNr == 3300 then begin
-						messagebox(0,"curDebit62 " & curDebit62);
-						messagebox(0,"curCredit62 " & curCredit62);
-						messagebox(0,"resdoc62 " & resdoc62);
-						messagebox(0,"curDebit63 " & curDebit63);
-						messagebox(0,"curCredit63 " & curCredit63);
-						messagebox(0,"resdoc63 " & resdoc63);
-						messagebox(0,"IVr.RetValue " & IVr.RetValue);
-						messagebox(0,"prep " & prep);
-						messagebox(0,"kurs " & kurs);
+					if cashMustBef and (curDebit62 - curCredit62)==0 then begin
+						resdoc62 = 0;
 					end;
 					if ((resdoc62 != 0) or (resdoc63 != 0) or (sum51 != 0)) then begin
 						if (firstf) then begin
