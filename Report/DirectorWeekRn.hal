@@ -71,8 +71,8 @@ begin
 	SaldoEndPeriodUSD = 0;
 	SaldoEndPeriodEUR = 0;
 	SaldoEndPeriodAZN = 0;
-	corspdebval = 0;
-	corspcredval = 0;
+	corspdebval = blankval;
+	corspcredval = blankval;
 	Bal53 = 0;
 	
 	usdf = false;
@@ -130,9 +130,6 @@ begin
 						MatRowGet(TRr,i,TRrw);
 						done = false;
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							if TRr.Number == 915 then begin
-								messagebox(0, i & " - " & TRrw.ovst);
-							end;
 							switch (TRr.IntYc) begin
 								case IVYc:
 									IVr.SerNr = TRr.Number;
@@ -231,6 +228,8 @@ begin
 									end;
 								end;
 							end;
+							corspdebval = blankval;
+							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 11:01:28
 							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
 								store = "";
