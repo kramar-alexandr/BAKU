@@ -130,6 +130,9 @@ begin
 						MatRowGet(TRr,i,TRrw);
 						done = false;
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+							if TRr.Number == 915 then begin
+								messagebox(0, i & " - " & TRrw.ovst);
+							end;
 							switch (TRr.IntYc) begin
 								case IVYc:
 									IVr.SerNr = TRr.Number;
@@ -201,7 +204,7 @@ begin
 								tempComm = tempTRrw.ExtraComment;
 								for (k=0;k<rwcnt;k=k+1) begin
 									MatRowGet(TRr,k,tempTRrw2);
-									if (tempTRrw2.AccNumber == "58") then begin
+									if (tempTRrw2.AccNumber == "58") and (tempTRrw2.ovst <> 1) then begin
 										tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
 										tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
 										tempTRrw.DebVal = tempTRrw2.CredVal;
@@ -215,7 +218,7 @@ begin
 								if testf then begin
 									for (k=0;k<rwcnt;k=k+1) begin
 										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "44/03") then begin
+										if (tempTRrw2.AccNumber == "44/03") and (tempTRrw2.ovst <> 1) then begin
 											tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
 											tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
 											tempTRrw.DebVal = tempTRrw2.CredVal;
@@ -235,7 +238,7 @@ begin
 								if nonblank(store) then begin
 									for (k=0;k<rwcnt;k=k+1) begin
 										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "50") then begin 
+										if (tempTRrw2.AccNumber == "50") and (tempTRrw2.ovst <> 1) then begin 
 											if ((tempTRrw2.CredVal == TRrw.DebVal) and (tempTRrw2.DebVal == TRrw.CredVal)) then begin
 												store2 = "";
 												GetObjs("STORE",tempTRrw2.Objects,store2);
@@ -387,13 +390,6 @@ begin
 							tempTRrw.Comment = "";
 							tempTRrw.ExtraComment = "";
 						end;
-/*??????*/				/*if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);
-							if testf then begin
-								BaseDebErr = BaseDebErr + TRrw.CredVal;
-								BaseCredErr = BaseCredErr + TRrw.DebVal;
-							end;
-						end;*/
 					end;
 				end;
 			end;
