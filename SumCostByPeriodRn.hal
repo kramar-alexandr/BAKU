@@ -6,7 +6,7 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 
 procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,
                            var val ivshtotsum,var val ivshpricesum,var val putotsum,var val sdtotsum,var val smpozitivtotsum,
-                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu,var val srval)
+                           var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu,var val srval,string curcode,string basecur)
 begin
   record ItemHistVc IHr;
   record SHVc SHr;
@@ -36,9 +36,12 @@ begin
   Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
   record RetVc Retr;
   row RetVc Retrw;
+  val torate;// Edit ************************** Thursday, 8 October 2015 13:48:34
   
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
+	
+	torate = 1;
 	
 	if(currentcompany==11 or currentcompany==12)then begin
 		curncy = "EUR";
@@ -98,6 +101,54 @@ begin
       end;
     end;
     if testf then begin
+    	
+    	if(curcode==basecur)then begin// Edit ************************** Thursday, 8 October 2015 14:00:53
+    		torate = 1;
+    	end else begin
+    		if(nonblank(IHr.InDate))then begin
+    			if(IHr.CurncyCode==curcode)then begin
+						if(IHr.TotCostPrice/IHr.TotCostPriceCurncy!=0)then begin
+							torate = IHr.TotCostPrice/IHr.TotCostPriceCurncy;
+						end else begin
+							GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+								if(fr==0 or to1==0)then begin
+									GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+									if(fr==0 or to1==0)then begin
+										fr = 1;	to1 = 1;
+									end;
+								end;
+							end;
+							torate = to1/fr;
+						end;
+    			end else begin
+    				GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+								if(fr==0 or to1==0)then begin
+									fr = 1;	to1 = 1;
+								end;
+							end;
+						end;
+						torate = to1/fr;
+    			end;
+    		end else begin
+    			GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+					if(fr==0 or to1==0)then begin
+						GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr = 1;	to1 = 1;
+						end;
+					end;
+					torate = to1/fr;
+    		end;
+    	end;// Edit ************************** Thursday, 8 October 2015 14:00:51
+    	
+    	ihcost = ihcost / torate;// Edit ************************** Thursday, 8 October 2015 14:00:49
+    	
       if IHr.TransDate<sd then begin
         switch (IHr.FileName) begin
           case "IVVc":
@@ -343,6 +394,7 @@ begin
 	if (rate==1) then begin
 		rate = rate * coef;
 	end;
+	rate = 1;// Edit ************************** Thursday, 8 October 2015 13:44:44
 	//Edit----end-------------------------------------------Dima  03.02.2015
 
   //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,15:17 09.12.2014
@@ -551,7 +603,7 @@ begin
           end;
           if(calc)then begin
           
-            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval);
+            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
             if(blank(INr.DispGroups))then begin
               //messagebox(0,INr.Code & "  2  " & ivshpricesum);
             end;

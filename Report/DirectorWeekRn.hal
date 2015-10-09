@@ -130,9 +130,7 @@ begin
 						MatRowGet(TRr,i,TRrw);
 						done = false;
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
-							if TRr.Number == 915 then begin
-								messagebox(0, i & " - " & TRrw.ovst);
-							end;
+							clearrow(tempTRr,tempTRrw,1);
 							switch (TRr.IntYc) begin
 								case IVYc:
 									IVr.SerNr = TRr.Number;

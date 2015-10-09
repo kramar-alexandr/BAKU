@@ -7337,3 +7337,288 @@ begin
 	end;
   EndWindow;
 end;
+
+
+window TRDClass:2
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  Integer f,flipnr;
+
+  WindowBegin("Запись операции",TRDClass,CGview,-);
+  if (HasExtraNLComment) then begin
+  SetWRect(20,80,900,400);
+  end else begin
+  SetWRect(20,80,640,400);
+  end;
+  UseView(TRVc);
+  Sizeable(-1,-1,0,0);
+  FormName(PrintTRD);
+  ActiveFieldOnNew("TransDate");      
+  vs=20;
+  if (HasNumberSeries) then begin
+  EditField(80,v=6,80, "Номер",Normal,Number,false,TSerSClass);
+  end else begin
+    EditField(80,v=6,80,"Номер",Normal,Number,false,0); 
+  end;
+  EditField(240,v,82,"Дата",Normal,TransDate,false,PasteCurDate);
+  EnterSkip(Comment);
+  if (IsEnterprise) then begin
+  EditField(396,v,-40,"Ссылка",Normal,RefStr,false,0);
+//  EditField(570,v,80,"Doc No.",Normal,SeqNr,false,0);
+  end;
+  EditField(80,v+=vs,-40,"Комм.",Normal,Comment,false,0);
+//  CheckBox(450,v,0,"E_xported",Expf);
+  EnterSkip(Math);
+  if (HasBase2) then begin
+  EditField(120,  -41,85,"Разница осн.1",ViewOnly,DiffVal,true,0);
+  EditField(300,  -41,85,"Подпись",ViewOnly,Sign,true,0);// Edit ************************** Tuesday, 6 October 2015 10:06:11
+  
+  end else begin
+    EditField(120,-41,85,"Разница",ViewOnly,DiffVal,true,0); 
+  end;
+  if (HasMultiCurrency or HasBase2 or HasMultiCurrency) then begin
+    EditField(-265,-41,88,"Итого",ViewOnly,DSum,true,0); 
+    EditField(-172,-41,87,"",ViewOnly,CSum,true,0); 
+  if (HasBase2) then begin
+  EditField(120,  -21,85,"Разница осн.2",ViewOnly,Diff2Val,true,0);
+      EditField(-265,-21,88,"Баланс",ViewOnly,DSum2,true,0);
+      EditField(-172,-21,87,"",ViewOnly,CSum2,true,0); 
+    end;
+  end else begin
+    EditField(-240,-41,88,"Итого",ViewOnly,DSum,true,0); 
+    EditField(-147,-41,87,"",ViewOnly,CSum,true,0); 
+    if (HasBase2) then begin
+      EditField(120, -21,86,"Разница базы 2",ViewOnly,Diff2Val,true,0); 
+      EditField(-240,-21,88,"Итого",ViewOnly,DSum2,true,0); 
+      EditField(-147,-21,87,"",ViewOnly,CSum2,true,0); 
+    end;
+  end;
+  h=4; v=v+(vs+17);
+  if (HasMultiCurrency or HasBase2 or HasMultiCurrency) then begin
+  MatrixBegin(5,vm=v,-50,-46,-,500);
+  end else begin
+    MatrixBegin(5,vm=v,-25,-46,-,500);
+  end;
+  MatTypedRow(stp);
+  MatOverStrike(ovst);
+  Flip(0);
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass); 
+  if (HasObjects) then begin
+  MatCol(1,98,"Объекты",0,Objects,false,ObjSClass);
+//  MatCol(1,-400,"Short.",0,ACShort,false,ACShortSClass); // what the hell is this? Karl
+  if (HasExtraNLComment) then begin
+  MatCol(1,-550,"Комментарий",0,Comment,false,0); // -349 
+  MatCol(1,-380,"Дополнительный комментарий",0,ExtraComment,false,0); // -349 
+  end else begin
+  MatCol(1,-400,"Комментарий",0,Comment,false,0); // -349
+  end;
+  end else begin
+//  MatCol(1,-400,"Short.",0,ACShort,false,ACShortSClass); // what the hell is this? Karl
+    if (HasExtraNLComment) then begin
+      MatCol(1,-550,"Описание",0,Comment,false,0); // -349 
+      MatCol(1,-380,"Доп. описание",0,ExtraComment,false,0); // -349 
+    end else begin
+      MatCol(1,-550,"Описание",0,Comment,false,0); // -349 
+    end;
+  end;
+  if (HasMultiCurrency) then begin
+  MatCol(1,-210,"Дт осн.1",0,DebVal,true,0);
+  MatCol(1,-120,"Кт осн.1",0,CredVal,true,0);
+  end else begin
+    MatCol(1,-210,"Дебет",0,DebVal,true,0); 
+    MatCol(1,-120,"Кредит",0,CredVal,true,0); 
+  end;
+  MatCol(1,-30,"НДС",0,VATCode,false,VATCodeSClass);
+  MatText(2,32,"Подпись",true);
+  MatColTL(2,108,"",0,M4Code,ViewOnly,0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата исправления",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление записи",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+  if (HasBase2) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass);
+    if (HasObjects) then begin
+  MatCol(1,98,"Объекты",0,Objects,false,ObjSClass);
+    end else begin
+      MatCol(1,-550,"Описание",0,Comment,false,0); 
+    end;
+  MatCol(1,-400,"Дт осн.1",0,DebVal,true,0);
+  MatCol(1,-300,"Кт осн.1",0,CredVal,true,0);
+  MatCol(1,-200,"Дт осн.2",0,DebVal2,true,0);
+  MatCol(1,-100,"Кт осн.2",0,CredVal2,true,0);
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата исправления",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление записи",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+  end;
+  if (HasMultiCurrency) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass);
+    if (HasObjects) then begin
+  MatCol(1,98,"Объекты",0,Objects,false,ObjSClass);
+    end else begin
+      MatCol(1,-550,"Описание",0,Comment,false,0); 
+    end;
+    if (HasBase2) then begin
+  MatCol(1,-410,"Осн.1 Дт",0,DebVal,true,0);
+  MatCol(1,-330,"Осн.1 Кт",0,CredVal,true,0);
+    end else begin
+      MatCol(1,-410,"Дебет",0,DebVal,true,0); 
+      MatCol(1,-330,"Кредит",0,CredVal,true,0); 
+    end;
+  MatCol(1,-250,"Валюта",0,Curncy,false,CurncyCodeSClass);
+  MatCol(1,-200,"Дт в валюте",0,CurDebVal,true,0);
+  MatCol(1,-100,"Кт в валюте",0,CurCredVal,true,0);
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата исправления",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление записи",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass);
+    if (HasObjects) then begin
+  MatCol(1,98,"Объекты",0,Objects,false,ObjSClass);
+    end else begin
+      MatCol(1,-550,"Описание",0,Comment,false,0); 
+    end;
+    if (HasBase2) then begin
+      MatCol(1,-400,"Валюта",0,Curncy,false,CurncyCodeSClass);
+  MatCol(1,-350,"Курс осн.1",0,BaseRate1,true,0);
+  MatCol(1,-280,"Курс осн.2",0,BaseRate2,true,0);
+    end else begin
+      MatCol(1,-300,"Валюта",0,Curncy,false,CurncyCodeSClass); 
+    end;
+  MatCol(1,-210,"За...ед.",0,FrRate,true,0);
+  MatCol(1,-140,"по кур.1",0,ToRateB1,true,0);
+    if (HasBase2) then begin
+  MatCol(1,-70,"по кур.2",0,ToRateB2,true,0);
+    end;
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата исправления",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление записи",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+  end;
+  if (IsEnterprise) then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"T",0,Typ,false,SetSClass);
+  MatCol(1,52,"Номер",0,SerNr,false,ARSClass);
+  MatCol(1,112,"Срок опл.",0,DueDate,false,PasteCurDate);
+  MatCol(1,184,"Наимен.",0,CompCode,false,CUSClass);
+  if (HasExtraNLComment) then begin
+  MatCol(1,-550,"Комментарий",0,Comment,false,0); 
+  MatCol(1,-380,"Дополнительный комментарий",0,ExtraComment,false,0); 
+  end else begin
+  MatCol(1,-400,"Коммент.",0,Comment,false,0);
+  end;
+  MatCol(1,-290,"Счет",0,AccNumber,false,AccSClass);
+  MatCol(1,-210,"Дебет",0,DebVal,true,0);
+  MatCol(1,-120,"Кредит",0,CredVal,true,0);
+  MatCol(1,-30,"НДС",0,VATCode,false,VATCodeSClass);
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата исправления",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление записи",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass);
+    if (HasObjects) then begin
+  MatCol(1,98,"Объект",0,Objects,false,ObjSClass);
+    end;
+  if (HasExtraNLComment) then begin
+  MatCol(1,-550,"Комментарий",0,Comment,false,0); 
+  MatCol(1,-380,"Дополнительный комментарий",0,ExtraComment,false,0); 
+  end else begin
+  MatCol(1,-420," Коммент.",0,Comment,false,0);
+  end;
+  MatCol(1,-330,"Номинал",0,NomVal,true,0);
+  MatCol(1,-230,"Дебет",0,DebVal,true,0);
+  MatCol(1,-130,"Кредит",0,CredVal,true,0);
+  MatCol(1,-30,"Корр.",0,CorspSer,false,0);
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата рег-ции",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление на запись",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+    Flip(flipnr); flipnr = flipnr + 1;
+  MatCol(1,32,"Счет",0,AccNumber,false,AccSClass);
+    if (HasObjects) then begin
+  MatCol(1,98,"Объекты",0,Objects,false,ObjSClass);
+    end;
+  if (HasExtraNLComment) then begin
+  MatCol(1,-550,"Комментарий",0,Comment,false,0); 
+  MatCol(1,-380,"Дополнительный комментарий",0,ExtraComment,false,0); 
+  end else begin
+  MatCol(1,-420,"Комментарий",0,Comment,false,0);
+  end;
+  MatCol(1,-260,"Налог. счет",0,TAccNumber,false,TAccSClass);
+  MatCol(1,-180,"Количество",0,Qty,true,0);
+  MatCol(1,-100,"SAFT тип",0,SAFTType,false,SetSClass);
+  MatText(2,32,"Подпись",true);
+  MatCol(2,108,"",0,Sign,false,0);
+  MatText(2,160,"Дата старой записи",true);
+  MatColTL(2,290,"",0,-1,ViewOnly,-1,OldTransDate,false,0);
+  MatText(3,32,"Исправлено записью",true);
+  MatColTL(3,215,"",0,M4AppCode,ViewOnly,0,CorrNr,false,0);
+  MatText(3,315,"Дата рег-ции",true);
+  MatCol(3,385,"",0,CorrDate,false,0);
+  MatText(4,32,"Исправление на запись",true);
+  MatColTL(4,215,"",0,M4AppCode,Normal,0,CorrNr,false,0);
+  end;
+  InsertRowTest;
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = vm + 1; 
+  if (flipnr>2) then begin
+    for (f=1;f<flipnr;f=f+1) begin
+      VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
+      v = v + vs;
+    end;
+  end;
+  SpecialMenu("Сбалансировать",'B',0,"BalanceTRDsm");
+  SpecialMenu("Поменять дебет и кредит",' ',1,"SwapDCTRDsm");
+  SpecialMenu("Отметка об изменении",' ',2,"UpdateMarkTRDsm");
+  SpecialMenu("Отметка об исправлении",' ',3,"CorrectionMarkTRDsm");
+  SpecialMenu("Рассчитать поле",'F',4,"CalcFieldTRDsm");
+  SpecialMenu("Поменять знак",' ',5,"ChangeSignTRDsm");
+  SpecialMenu("Открыть запись подсистемы",'t',6,"OpenSubsystemTRDsm");
+  if (HasMultiCurrency) then begin
+  SpecialMenu("Обновить курсы валют",' ',7,"UpdCurRateTRDsm");
+  end;
+  EndWindow;
+end;
