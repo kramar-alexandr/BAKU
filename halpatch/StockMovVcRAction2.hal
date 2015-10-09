@@ -41,7 +41,9 @@ external function Boolean GetAccName(string,var string,Integer);
 external function Integer TypeOfCurncy(var string,var Integer);
 external procedure GetFullCurncyRateText(Boolean,var string,val,val,val,val,val);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-external procedure AddEuroCurncyNomTrRow(record TRVc,string,string,string,string,val,Boolean,Boolean,var val,string,val,val,val,val,val,val,val,val,LongInt,Boolean,string,string,string,Integer); //Edit***************************Sasha2,18:30 09.04.2015
+external procedure AddEuroCurncyNomTrRow(record TRVc,string,string,string,string,val,Boolean,Boolean,var val,string,val,val,val,val,val,val,val,val,LongInt,Boolean,string,string,string,Integer); 
+//Edit***************************Sasha2,18:30 09.04.2015
+external procedure AddTransAutoTransRows(record TRVc);
 
 global
 function LongInt StockMovVcRecordDefaults(var record StockMovVc StockMovr,record StockMovVc StockMov2r,LongInt stat,LongInt long4)
@@ -424,6 +426,8 @@ BEGIN
     t = TotSum;
     AddEuroTrRowType(gTRp,ARAccRec.StockGainAcc,"","",tstr,t,br1,br2,true,false,TotSum,false,"","","",kTransactionRowTypeStock);
   end;
+  
+  AddTransAutoTransRows(gTRp);
   res = 0;
 LMakeTransFromStockMov:;
   MakeTransFromStockMov = res;
