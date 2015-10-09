@@ -559,6 +559,35 @@ begin
 			endformat;
 		end else begin
 			if(nonblank(RepSpec.sStartDate) and nonblank(RepSpec.sEndDate))then begin
+				StartFormat(15);
+					outstring(0,0,USetStr(31102),false);
+					outstring(40,0,RepSpec.sStartDate & ":" & RepSpec.sEndDate,false);
+				endformat;
+				StartFormat(15);
+					outstring(0,0,USetStr(31103),false);
+					if(nonblank(RepSpec.f1))then begin
+						outstring(40,0,RepSpec.f1,false);
+					end else begin
+						outstring(40,0,USetStr(31104),false);
+					end;
+				endformat;
+				StartFormat(15);
+					outstring(0,0,USetStr(31105),false);
+					outstring(40,0,RepSpec.f2,false);
+				endformat;
+				StartFormat(15);
+					outstring(0,0,USetStr(31205),false);
+					outstring(40,0,RepSpec.f4,false);
+				endformat;
+				StartFormat(15);
+					outstring(0,0,USetStr(31206),false);
+					outstring(40,0,RepSpec.f5,false);
+				endformat;
+				StartFormat(15);
+				endformat;
+				
+				
+				
 				startformat(15);
 					outstring(0,0,USetStr(31042),false);
 					outstring(0,0,USetStr(31043),false);

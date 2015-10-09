@@ -15,6 +15,10 @@ external function Boolean GetItemNameStr(Integer,var string,string,string,string
 external function Boolean FindItemVAR(string,var string,var string,var string,var string);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,16:50 14.01.2015
+external procedure NormalizeClassName(var string);	// Edit ************************** Friday, 9 October 2015 15:16:42
+
+
+
 
 function Boolean CheckIntORRowShipd(row IntORVc IntORrwp,Integer shipd)
 BEGIN
@@ -216,6 +220,7 @@ BEGIN
   string 5 itgroup;
   record POSettingBlock POb;
   record PIVc PIr;
+  string 200 classification;
 
   BlockLoad(POb);
   POp.IntORNo = IntORp.SerNr;
@@ -270,7 +275,25 @@ BEGIN
           if (PIr.MinPOQty!=0) then begin
             if (PIr.MinPOQty>POrw.Quant) then begin POrw.Quant = PIr.MinPOQty; end;
           end;
-        end;        
+        end;  
+        // Edit Start ---------------------------------------------- Edit Start
+	//Friday, 9 October 2015 15:17:31
+	
+        if(currentcompany==4)then begin
+        	if(nonblank(IntORrw.xClassification) and blank(POrw.xClassification))then begin
+						POrw.xClassification = IntORrw.xClassification;
+						classification = IntORrw.xClassification;
+						if(nonblank(classification))then begin
+							NormalizeClassName(classification);
+							if(POrw.xClassification!=classification)then begin
+								POrw.xClassification = classification;
+							end;
+						end;
+					end;
+        end;
+             
+	// Edit End ---------------------------------------------- Edit End
+	 
         MatRowPut(POp,stcnt,POrw);      
         POVc_PasteQuant(POp,stcnt);
         MatRowGet(POp,stcnt,POrw);      
@@ -413,6 +436,9 @@ BEGIN
 				ExtractObj(INr.DispGroups,pos,classfound);
 			end; //Edit***************************Sasha2,16:56 14.01.2015
       IntORrw.xClassification = model;	//Edit by Victor 20.11.14
+      if(currentcompany==4)then begin
+      	IntORrw.xClassification = INr.DispGroups;// Edit ************************** Friday, 9 October 2015 15:28:23
+      end;
       IntORrw.Colour = INr.Colour;	//Edit by Victor 11.03.15	//colnr -> Colour
             
       MatRowPut(IntORp,rownr,IntORrw);    
