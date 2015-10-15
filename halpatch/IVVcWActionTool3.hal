@@ -710,10 +710,16 @@ LkInvoiceTypeCredit:;
     ClearRow(CreditIVr,IVrw,1);
     IVrw.stp = kInvoiceRowTypeNormal;
     IVrw.Spec = USetStr(2078);
+    If(currentcompany==10)then begin
+			IVrw.Spec="PRZED KOREKTA";// Edit ************************** Thursday, 15 October 2015 11:23:05
+		end;
     MatRowInsert(CreditIVr,1,IVrw);
     ClearRow(CreditIVr,IVrw,1);
     IVrw.stp = kInvoiceRowTypeNormal;
     IVrw.Spec = USetStr(2079);
+    If(currentcompany==10)then begin
+			IVrw.Spec="PO KOREKTA";// Edit ************************** Thursday, 15 October 2015 11:23:05
+		end;
     MatRowPut(CreditIVr,rwcnt+1,IVrw);
     for (i=1;i<rwcnt;i=i+1) begin
       MatRowGet(tmpIVr,i,IVrw);

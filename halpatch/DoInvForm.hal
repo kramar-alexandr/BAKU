@@ -774,6 +774,7 @@ BEGIN
   string 5 month;
   val fr,to1,to2,br1,br2,fifoTotSum;	//Edit by Victor 18.03.15
   record IVVc corIVr;// Edit ************************** Friday, 3 July 2015 15:50:31
+  boolean newCred;
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -783,7 +784,15 @@ BEGIN
     end;
   end;
   
-  if (IVr.InvType==kInvoiceTypeNormal and IVr.Sum4<0 or IVr.InvType==kInvoiceTypeCredit) then begin //Edit***************************Sasha2,15:45 20.03.2015 {
+  rwcnt = MatRowCnt(IVr);
+	for (i=0;i<rwcnt;i=i+1) begin
+		MatRowGet(IVr,i,IVrw);
+		if(IVrw.Spec=="PRZED KOREKTA" or IVrw.Spec=="PO KOREKTA")then begin
+			newCred = true;
+		end;
+	end;
+  
+  if ((IVr.InvType==kInvoiceTypeNormal and IVr.Sum4<0 or IVr.InvType==kInvoiceTypeCredit) and !newCred) then begin //Edit***************************Sasha2,15:45 20.03.2015 {
     rwcnt = MatRowCnt(IVr);
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(IVr,i,IVrw);
@@ -954,6 +963,9 @@ BEGIN
   if (FIELDINFORM("F_CREDITEDINVOICENR")) then begin
     if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
       tstr = USetStr(1807);
+      if(currentcompany==10)then begin
+      	tstr = "Do faktury nr:";// Edit ************************** Thursday, 15 October 2015 11:30:33
+      end;
       tstr = tstr & CreateInvoiceNumber(IVr.CredInv,IVr.CredOfficialSerNr);
       OUTFORMFIELD("F_CREDITEDINVOICENR",IVr.CredOfficialSerNr);// Edit ************************** Friday, 3 July 2015 15:51:17
     end;
@@ -1503,7 +1515,7 @@ BEGIN
   end;  
   OUTFORMFIELD("F_LEVNR",tstr);
   OUTFORMFIELD("F_LEVDATUM",lastSHr.ShipDate);
-  PrintValue("F_TOTQTY2",totqty2,M45Val,LangNrr,SysFormatRec,negamountf);
+  PrintValue("F_TOTQTY2",totqty2,M4Qty,LangNrr,SysFormatRec,negamountf);
   if (lastSHr.SerNr!=-1) then begin
 //    OUTFORMFIELD("F_LEVADRESS",lastSHr.Addr0);
 //    OUTFORMFIELD("F_LEVADRESS",lastSHr.Addr1);
@@ -1775,15 +1787,58 @@ BEGIN
       PrintValueInclZero("F_MOMS",IVr.Sum3,M4Val,LangNrr,SysFormatRec,negamountf);
     end;
   end;  
-  if (FIELDINFORM("F_ATTBETALA")) then begin
-    GetFieldArgument(Docr,F_ATTBETALA,tstr);
-    if (nonblank(tstr)) then begin
-      t = Round(IVr.Sum4,SetRoundModeD(StringToInt(tstr)));
-      PrintValueInclZero("F_ATTBETALA",t,M45Val,LangNrr,SysFormatRec,negamountf);
-    end else begin
-      PrintValueInclZero("F_ATTBETALA",IVr.Sum4,M4Val,LangNrr,SysFormatRec,negamountf);
-    end;
-  end;  
+  
+  if(newCred)then begin
+  	
+  	
+  	if (FIELDINFORM("MY_FTOPAY")) then begin// Edit ************************** Thursday, 15 October 2015 13:59:38
+			IVr.Sum4 = 0;
+			For(i=0;i<rwcnt;i=i+1) begin
+				MatRowGet(IVr,i,IVrw);
+				if (IVrw.stp==kInvoiceRowTypeCorrection) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin
+					IVr.Sum4 = IVr.Sum4 + IVrw.Sum;
+				end;
+			end; 
+//				t = Round(IVr.Sum4,SetRoundModeD(StringToInt(tstr)));
+			PrintValueInclZero("MY_FTOPAY",t,M45Val,LangNrr,SysFormatRec,negamountf);
+  	end;
+  	
+  	
+		if (FIELDINFORM("F_ATTBETALA")) then begin
+			
+			GetFieldArgument(Docr,F_ATTBETALA,tstr);
+			if (nonblank(tstr)) then begin
+
+				t = Round(IVr.Sum4,SetRoundModeD(StringToInt(tstr)));
+				PrintValueInclZero("MY_FTOPAY",t,M45Val,LangNrr,SysFormatRec,negamountf);
+			end else begin
+				IVr.Sum4 = 0;
+				For(i=0;i<rwcnt;i=i+1) begin
+					MatRowGet(IVr,i,IVrw);
+					if (IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) then begin
+						IVr.Sum4 = IVr.Sum4 + IVrw.Sum;
+				
+					end;
+				end; 
+				
+				PrintValueInclZero("F_ATTBETALA",IVr.Sum4,M4Val,LangNrr,SysFormatRec,negamountf);
+			end;
+		end;  
+  
+  end else begin
+		if (FIELDINFORM("F_ATTBETALA")) then begin
+			GetFieldArgument(Docr,F_ATTBETALA,tstr);
+			if (nonblank(tstr)) then begin
+				t = Round(IVr.Sum4,SetRoundModeD(StringToInt(tstr)));
+				PrintValueInclZero("F_ATTBETALA",t,M45Val,LangNrr,SysFormatRec,negamountf);
+			end else begin
+				PrintValueInclZero("F_ATTBETALA",IVr.Sum4,M4Val,LangNrr,SysFormatRec,negamountf);
+			end;
+		end;  
+
+  end;
+  
+  
   if (FIELDINFORM("F_ATTBETALASIGNARG")) then begin
     valtyp = M4Val;
     GetFieldArgument(Docr,F_ATTBETALASIGNARG,tstr);

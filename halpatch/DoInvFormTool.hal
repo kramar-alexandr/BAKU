@@ -1258,6 +1258,8 @@ BEGIN
   Boolean hiddenrowf,testf,endformrowf;
   val fr,to1,to2,br1,br2,fifoRowSum;
   String 5 PLN;
+  record IVVc credIVr;// Edit ************************** Thursday, 15 October 2015 11:39:15
+  boolean skiprow;// Edit ************************** Thursday, 15 October 2015 11:39:15
 
   BlockLoad(MSb);
   totinprice = blankval;
@@ -1265,6 +1267,7 @@ BEGIN
   totweight = blankval;
   totcombase2sum = blankval;
   for (i=0;i<rwcnt;i=i+1) begin
+  	skiprow = false;// Edit ************************** Thursday, 15 October 2015 11:39:14
     MatRowGet(IVr,i,IVrw);
     testf = true;
     if (hiddenrowf) then begin
@@ -1334,12 +1337,16 @@ done using ovst
       case kInvoiceRowTypeCorrection:
         totweight = totweight - IVrw.Quant*INr.Weight;
         totvolume = totvolume - IVrw.Quant*INr.Volume;
-        totqty = totqty - IVrw.Quant;
-        if (MSb.UnitConvCalc==0) then begin
+        if(totqty2==0)then begin
+        	totqty2 = 0;
+        end;
+        totqty2 = totqty2 + IVrw.Quant;
+
+        /*if (MSb.UnitConvCalc==0) then begin// Edit ************************** Thursday, 15 October 2015 13:27:18
           totqty2 = totqty2 - IVrw.Coefficient*IVrw.Quant;
         end else begin
           totqty2 = totqty2 - IVrw.Quant/IVrw.Coefficient;
-        end;
+        end;*/
     end;
     totfifo = totfifo + IVrw.FIFORowVal;   
     InvVat(1,IVr.InclVAT,IVr.NoTAXonVAT,IVr.ExportFlag,IVrw.VATCode,IVrw.Sum,vatprc,vatval,vatexclprc,vatinclprc,rowtax);
@@ -1376,12 +1383,25 @@ LkInvoiceRowTypeNormal2:;
         end;
       case kInvoiceRowTypeCredit:
         if (IVrw.OrdRow!=-1) then begin
-          tstr = USetStr(1807) & CreateInvoiceNumber(IVrw.OrdRow,IVrw.CredOfficialSerNr);
-          OUTFORMFIELD("F_SPECIFIKATION",tstr);
-          tstr = IVrw.Spec & CreateInvoiceNumber(IVrw.OrdRow,IVrw.CredOfficialSerNr);
-          OUTFORMFIELD("F_BESKRIVNING",tstr);
-//          tstr = USetStr(1807) & CreateInvoiceNumber2(IVrw.OrdRow);
-          OUTFORMFIELD("F_ARGINVNUMBER3",tstr);
+        	if(currentcompany==10)then begin
+						skiprow = true;
+        	end;
+        	if(!skiprow)then begin
+						tstr = USetStr(1807) & CreateInvoiceNumber(IVrw.OrdRow,IVrw.CredOfficialSerNr);
+					
+						credIVr.SerNr = IVrw.OrdRow;
+						if(readfirstmain(credIVr,1,true))then begin
+							IVrw.CredOfficialSerNr = credIVr.OfficialSerNr;// Edit ************************** Thursday, 15 October 2015 11:32:55
+						end;
+						if(currentcompany==10)then begin
+							tstr = "Do faktury nr:" & credIVr.OfficialSerNr;// Edit ************************** Thursday, 15 October 2015 11:30:33
+						end;
+						OUTFORMFIELD("F_SPECIFIKATION",tstr);
+						tstr = IVrw.Spec & CreateInvoiceNumber(IVrw.OrdRow,IVrw.CredOfficialSerNr);
+						OUTFORMFIELD("F_BESKRIVNING",tstr);
+	//          tstr = USetStr(1807) & CreateInvoiceNumber2(IVrw.OrdRow);
+						OUTFORMFIELD("F_ARGINVNUMBER3",tstr);
+          end;
         end;
       case kInvoiceRowTypeInterest:
         PrintInvoiceRow_4(MSb,INr,IVrw,vatprc,vatval,vatexclprc,vatinclprc,rowtax,printedrownr,
@@ -1488,8 +1508,10 @@ LkInvoiceRowTypeNormal2:;
 //    if (nonblank(INr.Code)) then begin
       OutFormImage(INr);
 //    end;
-    if (endformrowf) then begin
-      EndFormRow;
+		if(!skiprow)then begin// Edit ************************** Thursday, 15 October 2015 11:41:53
+			if (endformrowf) then begin
+				EndFormRow;
+			end;
     end;
     end;
   end;

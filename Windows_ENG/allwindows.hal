@@ -2322,6 +2322,9 @@ if (HasTouchScreenLook==false) then begin
   SpecialMenu("Create Credit Agreement",' ',25,"CreateCredManIVsm");
   SpecialMenu("Create Contract",' ',13,"COFromIVDsm");
   SpecialMenu("Create Correction Invoice",' ',16,"CreateCreditNoteIVDsm");// Edit ************************** Tuesday, 7 July 2015 12:02:08
+  
+  
+  SpecialMenu("Create Correction Invoice #2",' ',16,"CorrectionIVsm");// Edit ************************** Tuesday, 7 July 2015 12:02:08
   SpecialMenu("Create Debit Note",' ',20,"CreateDebitNoteIVDsm");
   SpecialMenu("Create EDI Invoice",' ',9,"DoEDIInvFromIVD");
   SpecialMenu("Create E-Mail",'m',23,"CreateMailFromIVDsm");

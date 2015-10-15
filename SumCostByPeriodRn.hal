@@ -108,7 +108,7 @@ begin
     		if(nonblank(IHr.InDate))then begin
     			if(IHr.CurncyCode==curcode)then begin
 						if(IHr.TotCostPrice/IHr.TotCostPriceCurncy!=0)then begin
-							torate = IHr.TotCostPrice/IHr.TotCostPriceCurncy;
+							torate = IHr.TotCostPriceCurncy/IHr.TotCostPrice;
 						end else begin
 							GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
 							if(fr==0 or to1==0)then begin
@@ -120,7 +120,7 @@ begin
 									end;
 								end;
 							end;
-							torate = to1/fr;
+							torate = fr/to1;
 						end;
     			end else begin
     				GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
@@ -133,7 +133,7 @@ begin
 								end;
 							end;
 						end;
-						torate = to1/fr;
+						torate = fr/to1;
     			end;
     		end else begin
     			GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
@@ -143,11 +143,11 @@ begin
 							fr = 1;	to1 = 1;
 						end;
 					end;
-					torate = to1/fr;
+					torate = fr/to1;
     		end;
     	end;// Edit ************************** Thursday, 8 October 2015 14:00:51
     	
-    	ihcost = ihcost / torate;// Edit ************************** Thursday, 8 October 2015 14:00:49
+    	ihcost = ihcost * torate;// Edit ************************** Thursday, 8 October 2015 14:00:49
     	
       if IHr.TransDate<sd then begin
         switch (IHr.FileName) begin

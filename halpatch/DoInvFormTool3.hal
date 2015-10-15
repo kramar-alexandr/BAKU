@@ -166,7 +166,9 @@ BEGIN
   record CUVc CUr;
   vector val vpaymodes;
   vector string 10 ivpaymode;
-
+	boolean newCred;// Edit ************************** Thursday, 15 October 2015 14:05:12
+	val totvatval0,totvatval1,basetotvatval0,basetotvatval1;// Edit ************************** Thursday, 15 October 2015 14:08:28
+	
   BlockLoad(ARAccRec);
   UseTaxTemplatesforTaxCalcf = UseTaxTemplatesforTaxCalc;
   CUr.Code = IVr.CustCode;
@@ -178,6 +180,14 @@ BEGIN
   SetupVATBase(VATWDr,vatcnt);          
   SetupVATBase(VATSkipCalcr,vatcnt);          
   rwcnt = MatRowCnt(IVr);
+  
+  for (i=0;i<rwcnt;i=i+1) begin// Edit ************************** Thursday, 15 October 2015 14:04:34
+    MatRowGet(IVr,i,IVrw);
+    if(IVrw.Spec=="PRZED KOREKTA" or IVrw.Spec=="PO KOREKTA")then begin
+			newCred = true;
+		end;
+  end;
+  
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(IVr,i,IVrw);
     if (IVrw.ovst==0) and ((IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeStructuredItemComponent) or (IVrw.stp==kInvoiceRowTypeInterest)) then begin      
@@ -260,7 +270,9 @@ BEGIN
     end;
     if (vatv!=0) or (nonblank(VATrw.DebVal)) then begin
     vatval = Round(vatv,GetVATRoundModeRB);
-    totvatval = totvatval + vatval;
+    
+    
+		totvatval = totvatval + vatval;
     totvatbase = totvatbase + VATrw.DebVal;
     totrowtot = totrowtot + VATrw.DebVal;    
     if (IVr.InclVAT>0) then begin
@@ -479,6 +491,91 @@ BEGIN
     end;
     PrintValueInclZero("F_TOTVATVAL",totvatval,valtyp,LangNrr,SysFormatRec,negamountf);
   end;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 15 October 2015 14:25:47
+	
+  if (FIELDINFORM("MYF_TOTVATVAL0")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval0 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+				totvatval0 = totvatval0 + Round(IVrw.Sum/123*23,GetTotalRoundMode(RoundRec));
+			end;		  
+		end; 
+
+    PrintValueInclZero("MYF_TOTVATVAL0",totvatval0,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  if (FIELDINFORM("MYF_TOTTOPAY0")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval0 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+				totvatval0 = totvatval0 + IVrw.Sum;
+			end;		  
+		end; 
+    PrintValueInclZero("MYF_TOTTOPAY0",totvatval0,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  
+  if (FIELDINFORM("MYF_TOTVATBASE0")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval0 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+				totvatval0 = totvatval0 + Round(IVrw.Sum/123*100,GetTotalRoundMode(RoundRec));
+			end;		  
+		end; 
+    PrintValueInclZero("MYF_TOTVATBASE0",totvatval0,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  
+  if (FIELDINFORM("MYF_TOTVATVAL1")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval1 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeCorrection)then begin
+				totvatval1 = totvatval1 + Round(IVrw.Sum/123*23,GetTotalRoundMode(RoundRec));
+			end;		  
+		end; 
+
+    PrintValueInclZero("MYF_TOTVATVAL1",totvatval1,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  if (FIELDINFORM("MYF_TOTTOPAY1")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval1 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeCorrection)then begin
+				totvatval1 = totvatval1 + IVrw.Sum;
+			end;		  
+		end; 
+    PrintValueInclZero("MYF_TOTTOPAY1",totvatval1,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  
+  if (FIELDINFORM("MYF_TOTVATBASE1")) then begin
+    valtyp = M4Val;
+    rwcnt = matrowcnt(IVr);
+    totvatval1 = 0;
+    For(i=0;i<rwcnt;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.stp==kInvoiceRowTypeCorrection)then begin
+				totvatval1 = totvatval1 + Round(IVrw.Sum/123*100,GetTotalRoundMode(RoundRec));
+			end;		  
+		end; 
+    PrintValueInclZero("MYF_TOTVATBASE1",totvatval1,valtyp,LangNrr,SysFormatRec,negamountf);
+  end;
+  
+  
+  
+	// Edit End ---------------------------------------------- Edit End
+	
   if (FIELDINFORM("F_TOTVATBASE")) then begin
     valtyp = M4Val;
     GetFieldArgument(Docr,F_TOTVATBASE,tstr);
