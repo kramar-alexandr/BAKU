@@ -68,7 +68,7 @@ external function Boolean IVDClassvRebateEFAfter(Integer,Integer,Integer,Integer
 remote updating procedure CreatePOfromOR(record ORVc);// Edit ************************** Thursday, 12 September 2013 09:21:48
 remote function boolean CheckPOFromOR(record ORVc);// Edit ************************** Thursday, 12 September 2013 14:45:12
 
-SetLangMode(LangRussian,"RUS",0);
+//SetLangMode(LangRussian,"RUS",0);
 
 global //Edit***************************Sasha2,16:52 06.05.2015 {
 procedure DblOpenMainRep(string dblstr,string l,Integer currepwn)
@@ -2485,6 +2485,8 @@ begin
 LWarrantyStatusIVDsm:;
   return;
 end;
+
+SetLangMode(LangRussian,"RUS",0);
 
 global
 updating procedure SignIVDsm()
