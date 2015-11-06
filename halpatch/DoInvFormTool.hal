@@ -378,6 +378,14 @@ BEGIN
   if (tstr==INr.Name) then begin
     if (GetItemNameStr(1,tstr,IVr.LangCode,INr.Name,INr.Code)) then begin end;
   end;
+  if(currentcompany==10)then begin
+  	if(tstr=="Before")then begin
+  		tstr = "PRZED KOREKTA";
+  	end;
+  	if(tstr=="After")then begin
+  		tstr = "PO KOREKCIE";
+  	end;
+  end;
   OUTFORMFIELD("F_SPECIFIKATION",tstr);
   PrintValueInclZero("F_BELOPP",IVrw.Sum,M4Val,LangNrr,SysFormatRec,negamountf);
 //  PrintValue("F_BELOPP",IVrw.Sum,M4Val,LangNrr,SysFormatRec,negamountf);

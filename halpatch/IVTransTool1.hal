@@ -741,7 +741,7 @@ BEGIN
     if ((IVp.RetnValue>0 and IVp.Sum4>0) or (IVp.RetnValue<0 and IVp.Sum4<0)) then begin    // Edit ************************** Tuesday, 29 September 2015 16:15:45
       testf = true; 
     end else begin
-    	if(IVp.InvType==kInvoiceTypeCash and rs<20)then begin
+    	if(IVp.InvType==kInvoiceTypeCash and rs<20 and IVp.RetnValue!=-IVp.Sum4)then begin
     		testf = true; // Edit ************************** Tuesday, 29 September 2015 16:44:13
     	end;
     end;// Edit ************************** Tuesday, 29 September 2015 16:15:43

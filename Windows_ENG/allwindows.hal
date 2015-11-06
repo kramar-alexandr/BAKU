@@ -1829,7 +1829,7 @@ if (HasTouchScreenLook==false) then begin
   TileButton(5,"Identifiers");
   TileButton(6,"Price List");
   TileButton(7,"Inv. Address");
-  TileButton(8,"Del. Address");
+  TileButton(8,"Faktura");// Edit ************************** Tuesday, 20 October 2015 14:08:21
   Tile(1,110,false,"1",InvDate);
   vs = 20; h1 = 110; h2 = 290; h3 = 530; h4 = -100;
   EditField(h1,vm=(v=6),82,"Invoice Date",Normal,InvDate,false,PasteCurDate);
@@ -2280,16 +2280,25 @@ if (HasTouchScreenLook==false) then begin
   EditField(h2,v+=vs,150,"#VAT Reg. No.#",Normal,VATNr,false,0);
   EditField(h2,v+=vs,150,"Telephone",Normal,Phone,false,0);
   EditField(h2,v+=vs,150,"Fax",Normal,Fax,false,0);
+  
   Tile(8,170,false,"8",ShipAddr0); vs = 20;
-  EditField(h1,v=6,80,"Address Code",Normal,DelAddrCode,false,DelAddr3SClass);
+  EditField(h1,v=6,80,"Do paragonu",Normal,ReceiptNrForReturn,false,0);// Edit ************************** Tuesday, 20 October 2015 14:14:09
+  EditField(h1,v+=vs,-20,"Name",Normal,Addr0,false,0);
+  EditField(h1,v+=vs,-20,"Addres 1",Normal,Addr1,false,0);
+  EditField(h1,v+=vs,-20,"Addres 2",Normal,Addr2,false,0);
+  EditField(h1,v+=vs,-20,"Addres 3",Normal,Addr3,false,0);
+  EditField(h1,v+=vs,-20,"NIP",Normal,VATNr,false,0);
+  
+  /*EditField(h1,v=6,80,"Address Code",Normal,DelAddrCode,false,DelAddr3SClass);
   EditField(h1,v+=vs,-20,"Отгрузка",Normal,ShipAddr0,false,0);
   EditField(h1,v+=vs,-20,"Address",Normal,ShipAddr1,false,0);
   EditField(h1,v+=vs,-20,"",Normal,ShipAddr2,false,0);
   EditField(h1,v+=vs,-20,"",Normal,ShipAddr3,false,0);
   EditField(h1,v+=vs,-20,"",Normal,DelAddr3,false,0);
   EditField(h1,v+=vs,-20,"",Normal,DelAddr4,false,0);
-  EditField(h1,v+=vs,80,"Country",Normal,DelCountry,false,CountrySClass);
+  EditField(h1,v+=vs,80,"Country",Normal,DelCountry,false,CountrySClass);*/
   EnterSkip(InvDate);
+  
   SpecialMenu("Item Status",'I',0,"ItemStatusIVDsm");
   SpecialMenu("Item Search",'f',1,"ItemSearchDsm");
   SpecialMenu("Invoice Status",'r',2,"IVInfoIVDsm");

@@ -349,7 +349,6 @@ begin
               		brandtestf = false;
               	end;
               	
-              	
                 if(setinset("31",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("32",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("33",INr.DispGroups))then begin posmat = false; end;
@@ -539,7 +538,7 @@ begin
                     outstring(700,0,IVr.InvComment,false);
                   endformat;
                   end;
-                  if(IVrw.Quant>0 and IVr.CustCode=="FOB" and posmat and brandtestf)then begin
+                  if(IVrw.Quant>0 and left(IVr.CustCode,3)=="FOB" and posmat and brandtestf)then begin
                   startformat(15);
                     outstring(0,0,IVrw.ArtCode,false);
                     outstring(50,0,INr.AlternativeCode,false);
@@ -647,11 +646,14 @@ begin
 													currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
 													switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
 														case"USD":payUSD = round(IPrw.BankVal * aitemprc[j],rnd);
-																			totpayUSD = totpayUSD + round(payUSD * aitemprc[j],rnd);
+																			//totpayUSD = totpayUSD + round(payUSD * aitemprc[j],rnd);
+																			totpayUSD = totpayUSD + payUSD;
 														case"AZN":payAZN = round(IPrw.BankVal * aitemprc[j],rnd);
-																			totpayAZN = totpayAZN + round(payAZN * aitemprc[j],rnd);
+																			//totpayAZN = totpayAZN + round(payAZN * aitemprc[j],rnd);
+																			totpayAZN = totpayAZN + payAZN;
 														case"EUR":payEUR = round(IPrw.BankVal * aitemprc[j],rnd);
-																			totpayEUR = totpayEUR + round(payEUR * aitemprc[j],rnd);
+																			totpayEUR = totpayEUR + payEUR;
+																			//totpayEUR = totpayEUR + round(payEUR * aitemprc[j],rnd);
 											
 													end;
 												end;

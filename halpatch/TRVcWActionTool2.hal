@@ -136,7 +136,7 @@ BEGIN
         end;
       end;
     end;
-    if (trow>298) then begin goto L88TRAutoTrans; end;
+    if (trow>498) then begin goto L88TRAutoTrans; end;// Edit ************************** Tuesday, 3 November 2015 12:44:20  WTF?????
     tstr = Autrw.AccNumber;
     tstrvat = Autrw.VATCode;
     if (trow>=MatRowCnt(TRp)) then begin
