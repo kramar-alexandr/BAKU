@@ -1101,6 +1101,9 @@ begin
     end;
     
     for (i=0;i<itemscnt;i=i+1) begin
+      if (dispscodes[types[i]]==".") then begin
+        dispscodes[types[i]] = "";
+      end;
       PutWindowString(wn,types[i] & i,dispscodes[types[i]]);
       PutWindowString(wn,"DIWithTypesName" & i,dispsnames[types[i]]);
     end;
