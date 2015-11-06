@@ -3989,27 +3989,27 @@ begin
   SpecialMenu("Открыть запись операции",'t',4,"OpenTRFromPU");
   end;
   if (IsEnterprise) then begin
-  SpecialMenu("Открыть нал. матрицу",' ',25,"OpenVatMatrixPUDsm"); 
+  //SpecialMenu("Открыть нал. матрицу",' ',25,"OpenVatMatrixPUDsm"); 
   end;
   SpecialMenu("Распечатать этикетки",'e',0,"PrintPULabPUDsm");
   if (IsEnterprise) then begin
-  SpecialMenu("Отправить для утверждения",' ',14,"PUSendforAcceptancePUDsm");
-  SpecialMenu("Отменить запрос на утверждение",' ',2,"CancelApprovalRequestDsm"); 
-  SpecialMenu("Разделить строку",' ',7,"SplitRowPUDsm");
+  //SpecialMenu("Отправить для утверждения",' ',14,"PUSendforAcceptancePUDsm");
+  //SpecialMenu("Отменить запрос на утверждение",' ',2,"CancelApprovalRequestDsm"); 
+  //SpecialMenu("Разделить строку",' ',7,"SplitRowPUDsm");
   SpecialMenu("Обновить цены",' ',1,"UpdatePricesPUDsm");
 
-  SpecialMenu("Принять складские перемещения",' ',9,"OKStockMovPUrDsm");
+  //SpecialMenu("Принять складские перемещения",' ',9,"OKStockMovPUrDsm");
   end;
   if (HasModPL) then begin
   SpecialMenu("Создать счет-фактуру поставщика",'F',3,"VIFromPUDsm");
   end;
   if (IsEnterprise) then begin
-  SpecialMenu("Контроль качества",'u',10,"QualConFromPUDsm");
+  //SpecialMenu("Контроль качества",'u',10,"QualConFromPUDsm");
 //  SpecialMenu("Отметка об исправлении",' ',6,"UpdateMarkPUDsm");
   SpecialMenu("Возврат товара поставщику",'B',7,"RetPUFromPUDsm");
 //  SpecialMenu("Create Stock Movement",' ',5,"StockMovFromPUSpec");
 //  SpecialMenu("Scan",' ',8,"ScanBarCodePUDsm");
-  SpecialMenu("Создать складское перемещение",' ',8,"INTransFromPUsm");
+  //SpecialMenu("Создать складское перемещение",' ',8,"INTransFromPUsm");
   SpecialMenu("Pack List",' ',8,"PackListPUDsm");
   end;
   EndWindow;
