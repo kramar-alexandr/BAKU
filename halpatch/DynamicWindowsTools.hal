@@ -1412,3 +1412,51 @@ begin
   AllowedInCountry = res;
   return;
 end; 
+
+global //Edit***************************Sasha2,11:03 03.11.2015 {
+procedure CntDiTypesForIn(string strcode,var Array string types,var Integer itemscnt,var Integer groupscnt)
+begin
+  record CTypeVc Ctyper;
+  record DiCheckBlock DiCb;
+  row DiCheckBlock DiCbw;
+  Integer pos,i,rwcnt;
+  string 255 curtype;
+  boolean foundf;
+  
+  itemscnt = 0;
+  groupscnt = 0;
+  if (Blank(strcode)) then begin
+    goto LCntDiTypesForIn;
+  end;
+  
+  BlockLoad(DiCb);
+  rwcnt = MatRowCnt(DiCb);  
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(DiCb,i,DiCbw);
+    if (DiCbw.DiCode==strcode) then begin
+      foundf = true;
+      i = rwcnt;
+    end;
+  end;
+  
+  if (foundf) then begin
+    pos = 0;
+    ExtractObj(DiCbw.DiType,pos,curtype);
+    while (nonblank(curtype)) begin
+      Ctyper.Code = curtype;
+      if (ReadFirstMain(Ctyper,1,true)) then begin
+        if (groupscnt>0 and types[groupscnt-1]==Ctyper.Code) then begin
+        end else begin
+          types[groupscnt] = Ctyper.Code;
+          groupscnt = groupscnt + 1;
+        end;
+        itemscnt = itemscnt + 1;
+      end;
+      ExtractObj(DiCbw.DiType,pos,curtype);
+    end;
+  end;
+  
+LCntDiTypesForIn:;
+
+  return;
+end; //Edit***************************Sasha2,11:03 03.11.2015 }

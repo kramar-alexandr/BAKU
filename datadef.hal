@@ -498,6 +498,7 @@ begin
   RecordField(TempFlag,M4Long,0,0); //Edit***************************Sasha2,16:34 28.11.2014
   RecordField(SavedCount,M4Long,0,0); //Edit***************************Sasha2,10:22 01.12.2014
   RecordField(ConsgType,M4Set,900,0); //Edit***************************Sasha2,10:22 01.12.2014
+  RecordField(MainDisp,M4UStr,10,DIVc); //Edit***************************Sasha2,15:37 04.11.2015
   ArrayBegin(Math,-,1);
   ArrayField(LangCode,M4Code,5,0);
   ArrayField(Text,M4Str,100,0);
@@ -4360,6 +4361,14 @@ begin
   KeySegment(IntYc);
   KeySegment(Number);
   EndRecord;
+  
+  BlockBegin(DiCheckBlock,-,""); //Edit***************************Sasha2,12:13 02.11.2015 {
+  RecordField(Math,M4Matrix,0,0);
+  ArrayBegin(Math,OTCheckRowType,1);
+  ArrayField(DiCode,M4Code,10,0);
+  ArrayField(DiType,M4Str,255,0);
+  EndArray;
+  EndBlock; //Edit***************************Sasha2,12:13 02.11.2015 }
 	
   return;  
 end;

@@ -567,6 +567,15 @@ BEGIN
   record ItemHistVc IHr;  
   record STVc STr;    
   record TaxTemplateVc TTr;
+  Boolean checkdif; //Edit***************************Sasha2,17:42 04.11.2015
+  record DiCheckBlock DiCb; //Edit***************************Sasha2,9:09 05.11.2015
+  row DiCheckBlock DiCbw; //Edit***************************Sasha2,9:09 05.11.2015
+  integer i,rwcnt,pos,pos1,itemscnt; //Edit***************************Sasha2,9:12 05.11.2015
+  string 10 curdisp,maindisp,curtype; //Edit***************************Sasha2,9:13 05.11.2015
+  record DIVc DIr; //Edit***************************Sasha2,9:19 05.11.2015
+  vector string 255 dispscodes; //Edit***************************Sasha2,9:57 06.11.2015
+  vector string 10 checktype; //Edit***************************Sasha2,9:57 06.11.2015
+  Array string 10 types; //Edit***************************Sasha2,9:57 06.11.2015
   
   res = 0;
   insertmode = 1;
@@ -1110,6 +1119,76 @@ BEGIN
       goto LINVcRecordCheck;
     end;
   end;
+  
+  checkdif = false; //Edit***************************Sasha2,17:48 04.11.2015 {
+  if (stat==updatemode) then begin
+    if ((INr.MainDisp!=IN2r.MainDisp or INr.DispGroups!=IN2r.DispGroups) and (NonBlank(INr.MainDisp) or NonBlank(INr.DispGroups))) then begin
+      checkdif = true;
+    end;
+  end;
+  if (stat==insertmode) then begin
+    if (NonBlank(INr.MainDisp) or NonBlank(INr.DispGroups)) then begin
+      checkdif = true;
+    end;
+  end;
+  if (checkdif) then begin
+    pos = 0;
+    ExtractObj(INr.MainDisp,pos,maindisp);
+    pos = 0;
+    ExtractObj(INr.DispGroups,pos,curdisp);
+    
+    checkdif = false;
+    BlockLoad(DiCb);
+    rwcnt = MatRowCnt(DiCb);  
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(DiCb,i,DiCbw);
+      if (DiCbw.DiCode==curdisp or DiCbw.DiCode==maindisp) then begin
+        checkdif = true;
+        i = rwcnt;
+        if (DiCbw.DiCode==maindisp and DiCbw.DiCode!=curdisp) then begin
+          RecordCheckError(2246,"",-1,"DispGroups");      
+          res = -1; 
+          goto LINVcRecordCheck;
+        end;
+      end;
+    end;
+    pos1 = 0;
+    itemscnt = 0;
+    if (checkdif) then begin
+      ExtractObj(DiCbw.DiType,pos1,curtype);
+      while (NonBlank(curtype)) begin
+        if (dispscodes[curtype] != ".") then begin
+          checktype[curtype] = "OK";
+          dispscodes[curtype] = ".";
+          types[itemscnt] = curtype;
+          itemscnt = itemscnt + 1;
+        end;
+        ExtractObj(DiCbw.DiType,pos1,curtype);
+      end;
+      if (itemscnt>0) then begin
+        ExtractObj(INr.DispGroups,pos,curdisp);
+        while (NonBlank(curdisp)) begin
+          Dir.Code = curdisp;
+          if (ReadFirstMain(Dir,1,true) and checktype[Dir.CType]=="OK") then begin
+            if (dispscodes[Dir.CType]==".") then begin
+              dispscodes[Dir.CType] = Dir.Code;
+            end else begin
+              dispscodes[Dir.CType] = dispscodes[Dir.CType] & "," & Dir.Code;
+            end;
+          end;
+          ExtractObj(INr.DispGroups,pos,curdisp);
+        end;
+        
+        for (i=0;i<itemscnt;i=i+1) begin
+          if (dispscodes[types[i]]==".") then begin
+            RecordCheckError(1707," " & types[i],-1,"DispGroups");      
+            res = -1; 
+            goto LINVcRecordCheck;
+          end;
+        end; 
+      end;
+    end;
+  end; //Edit***************************Sasha2,17:48 04.11.2015 }
 	
 LINVcRecordCheck:;
   INVcRecordCheck = res;
@@ -1761,6 +1840,7 @@ BEGIN
       goto LnINVcRecordCheck;
     end;
   end;
+  
 	
 LnINVcRecordCheck:;
   nINVcRecordCheck = res;

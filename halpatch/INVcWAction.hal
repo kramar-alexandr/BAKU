@@ -7,8 +7,10 @@ external procedure RecSumup(record RecVc);
 external procedure FindMotherWindowLocation(Integer,var string,var Date);
 external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
+remote procedure CntDiTypesForIn(string,var Array string,var Integer,var Integer); //Edit***************************Sasha2,11:35 03.11.2015
+external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,11:36 03.11.2015
 
-procedure CalcVolume(val w,val h,val d,var val vol)
+procedure CalcVolume(val w,val h,val d,var val vol) 
 BEGIN
   vol = blankval;
   if (w!=0) then begin
@@ -635,7 +637,8 @@ begin
       if (sp) then begin
         psname = "DIClassSClass";
       end else begin
-        psname = "DISClass";
+        //psname = "DISClass";
+        psname = "DIWithTypesSClass";
       end;
   end;
   INDClassSpecPasteName = psname;
@@ -1006,3 +1009,296 @@ BEGIN
   DI3SClassOnOpenWindow = true;
   RETURN;
 END;
+
+global //Edit***************************Sasha2,16:28 04.11.2015 {
+function Boolean DI4SClassOnOpenWindow(Integer wn)
+BEGIN
+  LongInt l;
+  string 255 subset;
+  Array string 255 adi;
+  Integer i,acnt;
+  
+  SetWindowSubset(wn,"TYPE");
+ 
+  DI4SClassOnOpenWindow = true;
+  RETURN;
+END; //Edit***************************Sasha2,16:29 04.11.2015 }
+
+global //Edit***************************Sasha2,15:02 03.11.2015 {
+function Boolean DIWithTypesSClassOnOpenWindow(integer wn)
+begin
+  record RcVc RepSpec;
+  record INVc INr;
+  record DIVc Dir;
+  string 10 curdi;
+  Integer i,rwcnt,pos,pos1,mwn,itemscnt;
+  record DiCheckBlock DiCb;
+  row DiCheckBlock DiCbw;
+  Array string 10 types;
+  vector string 255 dispscodes,dispsnames;
+  vector string 10 checktype;
+  boolean foundf;
+
+  switch (GetWindowFileName(wn)) begin
+    case "RCVc":
+      GetWindowRecord(wn, RepSpec);
+    otherwise
+      goto LDIWithTypesSClassOnOpenWindow;
+  end;
+
+  mwn  = MotherWindow(wn);
+  if (mwn>0) then begin
+    switch (GetWindowFileName(mwn)) begin
+      case "INVc":
+        DeselectWindow(mwn,false)
+        GetWindowRecord(mwn,INr);
+        pos = 0;
+        ExtractObj(INr.MainDisp,pos,curdi);
+        BlockLoad(DiCb);
+        rwcnt = MatRowCnt(DiCb);  
+        for (i=0;i<rwcnt;i=i+1) begin
+          MatRowGet(DiCb,i,DiCbw);
+          if (DiCbw.DiCode==curdi) then begin
+            foundf = true;
+            i = rwcnt;
+          end;
+        end;
+        RepSpec.f1 = curdi;
+        //PutWindowString(wn,"DIWithTypesItem",INr.Name);
+        PutWindowString(wn,"DIWithTypesMainCode",curdi);
+        Dir.Code = curdi;
+        ReadFirstMain(Dir,1,true);
+        PutWindowString(wn,"DIWithTypesMainName",Dir.Name);
+        if (foundf) then begin
+          pos1 = 0;
+          ExtractObj(DiCbw.DiType,pos1,curdi);
+          while (NonBlank(curdi)) begin
+            if (dispscodes[curdi] != ".") then begin
+              checktype[curdi] = "OK";
+              dispscodes[curdi] = ".";
+              types[itemscnt] = curdi;
+              itemscnt = itemscnt + 1;
+            end;
+            ExtractObj(DiCbw.DiType,pos1,curdi);
+          end;
+        end;
+    end;
+  end;
+  if (itemscnt>0) then begin
+    ExtractObj(INr.DispGroups,pos,curdi);
+    while (NonBlank(curdi)) begin
+      Dir.Code = curdi;
+      if (ReadFirstMain(Dir,1,true) and checktype[Dir.CType]=="OK") then begin
+        if (dispscodes[Dir.CType]==".") then begin
+          dispscodes[Dir.CType] = Dir.Code;
+          dispsnames[Dir.CType] = Dir.Name;
+        end else begin
+          dispscodes[Dir.CType] = dispscodes[Dir.CType] & "," & Dir.Code;
+          dispsnames[Dir.CType] = dispsnames[Dir.CType] & "," & Dir.Name;
+        end;
+      end;
+      ExtractObj(INr.DispGroups,pos,curdi);
+    end;
+    
+    for (i=0;i<itemscnt;i=i+1) begin
+      PutWindowString(wn,types[i] & i,dispscodes[types[i]]);
+      PutWindowString(wn,"DIWithTypesName" & i,dispsnames[types[i]]);
+    end;
+
+  end;
+  RepSpec.flags[0] = itemscnt;
+  PutWindowRecord(wn, RepSpec);
+  
+LDIWithTypesSClassOnOpenWindow:; 
+
+  DIWithTypesSClassOnOpenWindow = true;
+  return;
+end; //Edit***************************Sasha2,15:02 03.11.2015 }
+
+global //Edit***************************Sasha2,15:31 03.11.2015 {
+updating procedure ProceedDIWithTypesSClass()
+begin
+  Integer wn,mwn;
+  record RcVc RepSpec;
+  record DiVc Dir;
+  record DiCheckBlock DiCb;
+  row DiCheckBlock DiCbw;
+  record INVc INr;
+  Integer groupscnt,i,rwcnt,pos,pos1;
+  Boolean foundf;
+  string 10 settype,curdisp;
+  string 255 dilist;
+  
+  wn = CurWindow;
+  DeselectWindow(wn,true);
+  mwn = MotherWindow(wn);
+  if (mwn!=0) then begin
+    GetWindowRecord(wn,RepSpec);
+    BlockLoad(DiCb);
+    rwcnt = MatRowCnt(DiCb);  
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(DiCb,i,DiCbw);
+      if (DiCbw.DiCode==RepSpec.f1) then begin
+        foundf = true;
+        i = rwcnt;
+      end;
+    end;
+    
+    if (foundf==false) then begin
+      MessageBox(0,"Necessary SETTING is empty");
+      CloseWindow(wn);
+      goto LProceedDIWithTypesSClass;
+    end;
+    
+    groupscnt = RepSpec.flags[0];
+    pos = 0;
+    for (i=0;i<groupscnt;i=i+1) begin
+      ExtractObj(DiCbw.DiType,pos,settype);
+      dilist = GetWindowString(wn,settype & i);
+      if (blank(dilist)) then begin
+        MessageBox(0,"Empty type in row #" & i+2);
+        goto LProceedDIWithTypesSClass;
+      end;
+      pos1 = 0;
+      ExtractObj(dilist,pos1,curdisp);
+      while (NonBlank(curdisp)) begin
+        Dir.Code = curdisp;
+        ReadFirstMain(Dir,1,true);
+        if (Dir.CType!=settype) then begin
+          MessageBox(0,"Wrong type in row #" & i+2);
+          goto LProceedDIWithTypesSClass;
+        end else begin
+          RepSpec.f1 = RepSpec.f1 & "," & Dir.Code;
+        end;
+        ExtractObj(dilist,pos1,curdisp);
+      end;
+    end;
+    
+    switch (GetWindowFileName(mwn)) begin
+      case "INVc":
+        DeselectWindow(mwn,false);
+        GetWindowRecord(mwn,INr);
+        INr.DispGroups = RepSpec.f1;
+        PutWindowRecord(mwn,INr);
+    end;
+  end;
+  
+  CloseWindow(wn);
+  
+LProceedDIWithTypesSClass:;  
+
+  return;
+end; //Edit***************************Sasha2,15:31 03.11.2015 }
+
+global //Edit***************************Sasha2,14:52 03.11.2015 {
+procedure CancelDIWithTypesSClass()
+begin
+  Integer mwn;
+  record RcVc RepSpec;
+  
+  CloseWindow(CurWindow);
+  return;
+end; //Edit***************************Sasha2,14:52 03.11.2015 }
+
+global //Edit***************************Sasha2,16:31 03.11.2015 {
+function Boolean DIWithTypesSClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+begin
+  Boolean res,notfoundf;
+  record RcVc RepSpec;
+  record DIVc Dir;
+  Integer lenf,index,i,pos;
+  string 10 fname,indexnum,curcode;
+  string 255 dilist;
+  string 1 c;
+
+  res = true;
+  if (changed) then begin
+    lenf = len(fieldname);
+    index = 0; 
+    
+    for (i=lenf;i>0;i=i-1) begin
+      c = Mid(fieldname,i-1,1);
+      if ((asc(c)<asc("0")) or (asc(c)>asc("9"))) then begin
+        i = 0;
+      end else begin
+        index = index + 1;
+      end;
+    end;
+    
+    fname = Mid(fieldname,0,lenf-index);
+    indexnum = StringToInt(Right(fieldname,index));
+    
+    switch (fieldname) begin
+      case "":;
+      otherwise
+        GetWindowRecord(wn,RepSpec);
+        DeselectWindow(wn,false);
+        dilist = GetWindowString(wn,fname & indexnum);
+        pos = 0;
+        i = 0;
+        notfoundf = true;
+        ExtractObj(dilist,pos,curcode);
+        if (NonBlank(curcode)) then begin
+          notfoundf = false;
+        end;
+        while (NonBlank(curcode)) begin
+          Dir.Code = curcode;
+          if (ReadFirstMain(Dir,1,true)) then begin
+            if (i==0) then begin
+              PutWindowString(wn,"DIWithTypesName" & indexnum,Dir.Name);
+            end else begin
+              PutWindowString(wn,"DIWithTypesName" & indexnum,GetWindowString(wn,"DIWithTypesName" & indexnum) & "," & Dir.Name);
+            end;
+          end else begin
+            if (i==0) then begin
+              PutWindowString(wn,"DIWithTypesName" & indexnum,"");
+            end else begin
+              PutWindowString(wn,"DIWithTypesName" & indexnum,GetWindowString(wn,"DIWithTypesName" & indexnum) & "," & "");
+            end;
+          end;
+          ExtractObj(dilist,pos,curcode);
+          i = i + 1;
+        end;
+        if (notfoundf) then begin
+          PutWindowString(wn,"DIWithTypesName" & indexnum,"");
+        end;
+        PutWindowRecord(wn,RepSpec);  
+    end;
+  end;
+  
+  DIWithTypesSClassAfterEditField = res;
+  return;
+end; //Edit***************************Sasha2,16:31 03.11.2015 }
+
+global //Edit***************************Sasha2,10:51 04.11.2015 {
+function Boolean TypeDISClassOnOpenWindow(Integer wn)
+begin
+  Integer mwn;
+  string 10 fname,indexnum;
+  string 20 fieldname;
+  Integer lenf,index,i;
+  string 1 c;
+  
+  mwn = MotherWindow(wn);
+  fieldname = WindowActiveField(mwn);
+  lenf = len(fieldname);
+  index = 0; 
+  
+  for (i=lenf;i>0;i=i-1) begin
+    c = Mid(fieldname,i-1,1);
+    if ((asc(c)<asc("0")) or (asc(c)>asc("9"))) then begin
+      i = 0;
+    end else begin
+      index = index + 1;
+    end;
+  end;
+  fname = Mid(fieldname,0,lenf-index);
+  
+  if (NonBlank(fname)) then begin
+    SetWindowSubset(wn,fname);
+  end;
+
+  TypeDISClassOnOpenWindow = false;
+  return;
+end; //Edit***************************Sasha2,10:51 04.11.2015 }
+
