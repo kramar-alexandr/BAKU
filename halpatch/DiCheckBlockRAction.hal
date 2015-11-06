@@ -6,7 +6,7 @@ function LongInt DiCheckBlockCheck(var record DiCheckBlock DiCheckr,record DiChe
 BEGIN
   LongInt res;
   row DiCheckBlock DiCheckrw;
-  record DIVc DIr;
+  record CTypeVc CTyper;
   Integer insertmode,updatemode,i,rwcnt,pos;
   string 255 types;
   string 10 curtype,prevtype;
@@ -38,8 +38,8 @@ BEGIN
         res = -1;
         goto LDiCheckBlockCheck;
       end else begin
-        DIr.CType = curtype;
-        if (!ReadFirstKey("CType",Dir,1,true)) then begin
+        CTyper.Code = curtype;
+        if (!ReadFirstMain(CTyper,1,true)) then begin
           RecordCheckError(20098,"",i,"DiType");      
           res = -1;
           goto LDiCheckBlockCheck;

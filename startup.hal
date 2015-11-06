@@ -91,6 +91,7 @@ begin
 	
 	Maintenance("FIX Баллов лояльности по авансам",FIXVClass,FixLoyaltyPointMn,modDBMain);// Edit ************************** Thursday, 28 May 2015 11:25:21
 	Maintenance("Установить новую валюту в регистре цены",SetNewCurrencyinPricesVClass,SetNewCurrencyinPricesMn,modDI);	//Edit----------------------Dima  03.08.2015
+	Maintenance("Заменить одну классификацию на другую",RenameCertainDIVClass,RenameCertainDIMn,modIN);// Edit ************************** Thursday, 28 May 2015 11:25:21
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
