@@ -1187,6 +1187,7 @@ BEGIN
           end;
         end; 
       end;
+      INr.MainDisp = DiCbw.DiCode;
     end;
   end; //Edit***************************Sasha2,17:48 04.11.2015 }
 	
