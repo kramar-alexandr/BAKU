@@ -267,7 +267,7 @@ begin
 												end;
 											end else begin
 												if i != k then begin
-													if ((tempTRrw2.CredVal == TRrw.DebVal) or (tempTRrw2.DebVal == TRrw.CredVal)) and (tempTRrw2.Objects == TRrw.Objects) and (TRrw.Curncy != BaseCurRec.BaseCur1) and (tempTRrw2.Curncy != BaseCurRec.BaseCur1) then begin
+													if ((tempTRrw2.CredVal == TRrw.DebVal) or (tempTRrw2.DebVal == TRrw.CredVal)) and (tempTRrw2.Objects == TRrw.Objects) then begin
 														testf = CorspTRTest(TRr,Accr8403,k,corspdebval,corspcredval);
 														if testf then begin
 															if (TRrw.CredVal!=0) then begin

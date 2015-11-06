@@ -349,6 +349,7 @@ begin
               		brandtestf = false;
               	end;
               	
+              	
                 if(setinset("31",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("32",INr.DispGroups))then begin posmat = false; end;
                 if(setinset("33",INr.DispGroups))then begin posmat = false; end;
