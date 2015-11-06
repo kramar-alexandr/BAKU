@@ -524,7 +524,7 @@ begin
                     outstring(100,0,brandname,false);
                     outstring(150,0,classname,false);
                     outstring(200,0,IVrw.Spec,false);
-                    outstring(250,0,IVrw.Quant,false);
+                    outstring(250,0,""/*IVrw.Quant*/,false);
                     outstring(300,0,"",false);
                     outstring(300,0,"",false);
                     outstring(350,0,"",false);
@@ -546,7 +546,7 @@ begin
                     outstring(100,0,brandname,false);
                     outstring(150,0,classname,false);
                     outstring(200,0,IVrw.Spec,false);
-                    outstring(250,0,IVrw.Quant,false);
+                    outstring(250,0,""/*IVrw.Quant*/,false);
                     outstring(300,0,"",false);
                     outstring(350,0,"",false);
                     outstring(400,0,"",false);
