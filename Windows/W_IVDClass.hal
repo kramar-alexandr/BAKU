@@ -3383,9 +3383,9 @@ begin
   EditField(h1+150,v+56 ,50,"Счет оприходования",Normal,PurchAcc,false,AccSClass);
 	// Edit End ---------------------------------------------- Edit End
 	
-  Pict_Field(-175,8,-25,148,"");
+  Pict_Field(-165,8,-15,148,"");
   if (GuiType==kGuiCocoa) then begin
-    PushButton(-190,182,-50,202,ToolImagePicker,"Добавить картинку");//##cc  
+    PushButton(-155,160,-15,180,ToolImagePicker,"Добавить картинку");//##cc  
   end;
   CheckBox(h1,v+=32,0,"В проекте товар как материал",ItemMaterial);
   if (UserCanAction("AllowJewelleryInterface",false)) then begin
