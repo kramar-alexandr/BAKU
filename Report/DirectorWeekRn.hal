@@ -209,6 +209,7 @@ begin
 										tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
 										MatRowPut(tempTRr,j,tempTRrw);
 										j = j + 1;
+										done = true;
 									end;
 								end;
 								testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
@@ -313,6 +314,7 @@ begin
 									tempTRrw.MyVal1 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+								tempTRrw.MyVal3 = - corspdebval + corspcredval;
 								kursovaya = kursovaya - corspdebval + corspcredval;
 								tempTRrw.CurDebVal = blankval;
 								tempTRrw.DebVal = blankval;
@@ -320,7 +322,7 @@ begin
 								tempTRrw.CredVal = blankval;
 							end;
 							
-							testf = CorspTRTest(TRr,Accr76,i,corspdebval,corspcredval);//Edit-------------------Vitalii 14:48 31.08.2015
+							testf = CorspTRTest(TRr,Accr76,i,corspdebval,corspcredval);//Edit-------------------Vitalii 14:48 28.08.2015
 							if (testf and (SetInSet("E131",TRrw.Objects) or SetInSet("E98",TRrw.Objects))) then begin
 								if(TRrw.CredVal!=0)then begin
 									tempTRrw.MyVal1 = -TRrw.CurCredVal;
@@ -386,6 +388,7 @@ begin
 							tempTRrw.CredVal = blankval;
 							tempTRrw.MyVal1 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
 							tempTRrw.MyVal2 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
+							tempTRrw.MyVal3 = blankval;
 							tempTRrw.Comment = "";
 							tempTRrw.ExtraComment = "";
 						end;
@@ -480,6 +483,67 @@ begin
 								tempTRrw.DebVal = blankval;
 								tempTRrw.CurCredVal = blankval;
 								tempTRrw.CredVal = blankval;
+							end;
+							corspdebval = blankval;
+							corspcredval = blankval;
+							testf = CorspTRTest(TRr,Accr51,i,corspdebval,corspcredval);
+							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
+								store = "";
+								GetObjs("STORE",TRrw.Objects,store);
+								if nonblank(store) then begin
+									for (k=0;k<rwcnt;k=k+1) begin
+										MatRowGet(TRr,k,tempTRrw2);
+										if (tempTRrw2.AccNumber == "51") and (tempTRrw2.ovst <> 1) then begin 
+											if ((tempTRrw2.CredVal == TRrw.DebVal) and (tempTRrw2.DebVal == TRrw.CredVal)) then begin
+												store2 = "";
+												GetObjs("STORE",tempTRrw2.Objects,store2);
+												if (store == store2) then begin
+													if (TRrw.CredVal!=0) then begin
+														tempTRrw.MyVal1 = -TRrw.CredVal;
+														tempTRrw.MyVal2 = -TRrw.CredVal;
+													end else begin
+														tempTRrw.MyVal1 = TRrw.DebVal;
+														tempTRrw.MyVal2 = TRrw.DebVal;
+													end;
+													tempTRrw.CurDebVal = blankval;
+													tempTRrw.DebVal = blankval;
+													tempTRrw.CurCredVal = blankval;
+													tempTRrw.CredVal = blankval;
+												end else begin
+													if (TRrw.DebVal!=0) then begin
+														TRrw.CredVal = -TRrw.DebVal;
+														TRrw.DebVal = blankval;
+														TRrw.CurCredVal = -TRrw.DebVal;
+														TRrw.CurDebVal = blankval;
+													end;
+													tempTRrw.CurDebVal = TRrw.DebVal;
+													tempTRrw.CurCredVal = TRrw.CredVal;
+													tempTRrw.DebVal = TRrw.DebVal;
+													tempTRrw.CredVal = TRrw.CredVal;
+												end;
+											end else begin
+												if i != k then begin
+													if ((tempTRrw2.CredVal == TRrw.DebVal) or (tempTRrw2.DebVal == TRrw.CredVal)) and (tempTRrw2.Objects == TRrw.Objects) then begin
+														testf = CorspTRTest(TRr,Accr8403,k,corspdebval,corspcredval);
+														if testf then begin
+															if (TRrw.CredVal!=0) then begin
+																tempTRrw.MyVal1 = -TRrw.CurCredVal;
+																tempTRrw.MyVal2 = -TRrw.CredVal;
+															end else begin
+																tempTRrw.MyVal1 = TRrw.CurDebVal;
+																tempTRrw.MyVal2 = TRrw.DebVal;
+															end;
+															tempTRrw.CurDebVal = blankval;
+															tempTRrw.DebVal = blankval;
+															tempTRrw.CurCredVal = blankval;
+															tempTRrw.CredVal = blankval;
+														end;
+													end;
+												end;
+											end;
+										end;
+									end;
+								end;
 							end;
 							
 							
@@ -610,7 +674,7 @@ begin
 	end;
 	tab[1]  = 0;
 	if (terf and aznf and usdf and eurf and basef) then begin
-		step = 24;
+		step = 23;
 		tab[2]  = 20;
 		tab[3]  = tab[2]  + step; 
 		tab[4]  = tab[3]  + step + 1; 
@@ -621,14 +685,15 @@ begin
 		tab[9]  = tab[8]  + step;
 		tab[10] = tab[9]  + step + 1;
 		tab[11] = tab[10] + step;
-		tab[12] = tab[11] + step + 1;
+		tab[111] = tab[11] + step;
+		tab[12] = tab[111] + step + 1;
 		tab[13] = tab[12] + step;
 		tab[14] = tab[13] + step + 1;
 		tab[15] = tab[14] + step;
 		tab[16] = tab[15] + step + 1;
 	end;
 	if (terf and aznf and !usdf and eurf and basef) then begin
-		step = 31;
+		step = 28;
 		tab[2]  = 20;
 		tab[3]  = tab[2]  + step; 
 		tab[4]  = tab[3]  + step; 
@@ -639,14 +704,15 @@ begin
 		tab[9]  = tab[8]  + step;
 		tab[10] = 0;
 		tab[11] = tab[9]  + step;
-		tab[12] = tab[11] + step;
+		tab[111] = tab[11] + step;
+		tab[12] = tab[111] + step;
 		tab[13] = tab[12] + step;
 		tab[14] = tab[13] + step + 1;
 		tab[15] = 0;
 		tab[16] = tab[14] + step;
 	end;
 	if (terf and aznf and usdf and !eurf and basef) then begin
-		step = 31;
+		step = 28;
 		tab[2]  = 20;
 		tab[3]  = tab[2]  + step; 
 		tab[4]  = 0; 
@@ -657,14 +723,15 @@ begin
 		tab[9]  = 0;
 		tab[10] = tab[8]  + step;
 		tab[11] = tab[10]  + step;
-		tab[12] = tab[11] + step;
+		tab[111] = tab[11] + step;
+		tab[12] = tab[111] + step;
 		tab[13] = tab[12] + step;
 		tab[14] = 0;
 		tab[15] = tab[13] + step + 1;
 		tab[16] = tab[15] + step;
 	end;
 	if (!terf and aznf and usdf and eurf and basef) then begin
-		step = 31;
+		step = 28;
 		tab[2]  = 0; 
 		tab[3]  = 20;
 		tab[4]  = tab[3]  + step; 
@@ -675,14 +742,15 @@ begin
 		tab[9]  = tab[8]  + step + 1;
 		tab[10] = tab[9]  + step;
 		tab[11] = tab[10]  + step;
+		tab[111] = tab[11] + step;
 		tab[12] = 0;
-		tab[13] = tab[11] + step;
+		tab[13] = tab[111] + step;
 		tab[14] = tab[13] + step;
 		tab[15] = tab[14] + step + 1;
 		tab[16] = tab[15] + step;
 	end;
 	if (!terf and aznf and !usdf and eurf and basef) then begin
-		step = 43;
+		step = 39;
 		tab[2]  = 0; 
 		tab[3]  = 20;
 		tab[4]  = tab[3]  + step - 1; 
@@ -693,14 +761,15 @@ begin
 		tab[9]  = tab[8]  + step;
 		tab[10] = 0;
 		tab[11] = tab[9]  + step;
+		tab[111] = tab[11] + step;
 		tab[12] = 0;
-		tab[13] = tab[11] + step;
+		tab[13] = tab[111] + step;
 		tab[14] = tab[13] + step;
 		tab[15] = 0;
 		tab[16] = tab[14] + step;
 	end;
 	if (!terf and aznf and usdf and !eurf and basef) then begin
-		step = 43;
+		step = 39;
 		tab[2]  = 0; 
 		tab[3]  = 20;
 		tab[4]  = 0; 
@@ -711,14 +780,15 @@ begin
 		tab[9]  = 0;
 		tab[10] = tab[8]  + step;
 		tab[11] = tab[10]  + step;
+		tab[111] = tab[11] + step;
 		tab[12] = 0;
-		tab[13] = tab[11] + step;
+		tab[13] = tab[111] + step;
 		tab[14] = 0;
 		tab[15] = tab[13] + step;
 		tab[16] = tab[15] + step;
 	end;
 	if (terf and aznf and !usdf and !eurf and !basef) then begin
-		step = 57;
+		step = 55;
 		tab[2]  = 20; 
 		tab[3]  = tab[2]  + step + 1;
 		tab[4]  = 0;
@@ -729,15 +799,16 @@ begin
 		tab[9]  = 0;
 		tab[10] = 0;
 		tab[11] = 0;
-		tab[12] = tab[8]  + step;
+		tab[111] = tab[8] + step;
+		tab[12] = tab[111]  + step;
 		tab[13] = tab[12] + step;
 		tab[14] = 0;
 		tab[15] = 0;
 		tab[16] = 0;
 	end;
 	if (!terf and aznf and !usdf and !eurf and !basef) then begin
-		step = 114;
-		tab[2]  = 0; 
+		step = 100;
+		tab[2]  = 20; 
 		tab[3]  = 21;
 		tab[4]  = 0;
 		tab[5]  = 0; 
@@ -747,13 +818,14 @@ begin
 		tab[9]  = 0;
 		tab[10] = 0;
 		tab[11] = 0;
+		tab[111] = tab[8] + step;
 		tab[12] = 0;
-		tab[13] = tab[8] + step;
+		tab[13] = tab[111] + step;
 		tab[14] = 0;
 		tab[15] = 0;
 		tab[16] = 0;
 	end;
-	tab[17] = 390; tab[18] = 415;
+	tab[17] = 400; tab[18] = 425;
 	
 	StartReportNoHeaderJob("Еженедельный отчет директоров");
 	//Объект
@@ -892,7 +964,7 @@ begin
 		Black_Divider(0,1);
 	//Шапка таблицы
 		
-		if step==24 then begin
+		if step==23 then begin
 			StartFormat(15);
 				OutString(0,0,"Дата",false);
 				OutString(20,0,"",false);
@@ -921,12 +993,8 @@ begin
 				OutString(363,0,"",false);
 				OutStringCut(415,480,0,"Примечание",false,0);
 			EndFormat;
-			Black_Divider(20,140);
-			Black_Divider(144,263);
-			Black_Divider(267,388);
-			Black_Divider(392,480);
 		end;
-		if step==31 then begin
+		if step==28 then begin
 			StartFormat(15);
 				OutString(0,0,"Дата",false);
 				
@@ -947,12 +1015,8 @@ begin
 				
 				OutString(415,0,"Примечание",false);
 			EndFormat;
-			Black_Divider(20,140);
-			Black_Divider(144,263);
-			Black_Divider(267,388);
-			Black_Divider(392,480);
 		end;
-		if step==43 then begin
+		if step==39 then begin
 			StartFormat(15);
 				OutString(0,0,"Дата",false);
 				
@@ -970,12 +1034,8 @@ begin
 				
 				OutString(415,0,"Примечание",false);
 			EndFormat;
-			Black_Divider(20,140);
-			Black_Divider(144,263);
-			Black_Divider(267,388);
-			Black_Divider(392,480);
 		end;
-		if step==57 then begin
+		if step==55 then begin
 			StartFormat(15);
 				OutString(0,0,"Дата",false);
 				
@@ -983,35 +1043,84 @@ begin
 				OutString(50,0,"Поступления",false);
 				
 				OutString(160,0,"",false);
-				OutString(165,0,"Конвертация/банк",false);
+				OutString(155,0,"Конвертация/банк",false);
 				
 				OutString(270,0,"",false);
-				OutString(285,0,"Расходы",false);
+				OutString(320,0,"Расходы",false);
 				
 				OutString(415,0,"Примечание",false);
 			EndFormat;
-			Black_Divider(20,130);
-			Black_Divider(134,240);
-			Black_Divider(246,388);
-			Black_Divider(392,480);
 		end;
-		if step==114 then begin
+		if step==100 then begin
 			StartFormat(15);
 				OutString(0,0,"Дата",false);
 				
-				OutString(69,0,"Поступления",false);
+				OutString(30,0,"Поступления",false);
 				
-				OutString(191,0,"Конвертация/банк",false);
+				OutString(120,0,"Конвертация/банк",false);
 				
 				OutString(314,0,"Расходы",false);
 				
 				OutString(415,0,"Примечание",false);
 			EndFormat;
-			Black_Divider(20,130);
-			Black_Divider(134,240);
-			Black_Divider(246,388);
-			Black_Divider(392,480);
+			
 		end;
+		if (terf and aznf and usdf and eurf and basef) then begin
+			Black_Divider(tab[2],tab[7] - 1);
+			Black_Divider(tab[7] + 1,tab[111] - 1);
+			Black_Divider(tab[12],tab[17]-2);
+			Black_Divider(tab[17],480);
+		end else begin
+			if (terf and aznf and !usdf and eurf and basef) then begin
+				Black_Divider(tab[2],tab[7] - 1);
+				Black_Divider(tab[7] + 1,tab[111] - 1);
+				Black_Divider(tab[12],tab[17]-2);
+				Black_Divider(tab[17],480);
+			end else begin
+				if (terf and aznf and usdf and !eurf and basef) then begin
+					Black_Divider(tab[2],tab[7] - 1);
+					Black_Divider(tab[7] + 1,tab[111] - 1);
+					Black_Divider(tab[12],tab[17]-2);
+					Black_Divider(tab[17],480);
+				end else begin
+					if (!terf and aznf and usdf and eurf and basef) then begin
+						Black_Divider(tab[3],tab[8] - 1);
+						Black_Divider(tab[8] + 1,tab[111] - 1);
+						Black_Divider(tab[13],tab[17] - 2);
+						Black_Divider(tab[17],480);
+					end else begin
+						if (!terf and aznf and !usdf and eurf and basef) then begin
+							Black_Divider(tab[3],tab[8] - 1);
+							Black_Divider(tab[8] + 1,tab[111] - 1);
+							Black_Divider(tab[13],tab[17]-2);
+							Black_Divider(tab[17],480);
+						end else begin
+							if (!terf and aznf and usdf and !eurf and basef) then begin
+								Black_Divider(tab[3],tab[8] - 1);
+								Black_Divider(tab[8] + 1,tab[111] - 1);
+								Black_Divider(tab[13],tab[17]-2);
+								Black_Divider(tab[17],480);
+							end else begin
+								if (terf and aznf and !usdf and !eurf and !basef) then begin
+									Black_Divider(tab[2],tab[7] - 1);
+									Black_Divider(tab[7] + 1,tab[111] - 1);
+									Black_Divider(tab[12],tab[17]-2);
+									Black_Divider(tab[17],480);
+								end else begin
+									if (!terf and aznf and !usdf and !eurf and !basef) then begin
+										Black_Divider(20,100);
+										Black_Divider(110,210);
+										Black_Divider(300,388);
+										Black_Divider(392,480);
+									end;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+		
 		
 		StartFormat(15);
 			OutString(tab[1],0,"",false);
@@ -1045,6 +1154,7 @@ begin
 			if basef then begin
 				OutString(tab[11],0,"В осн. валюте",false);
 			end;
+			OutString(tab[111] + 2,0,"Курсовая",false);
 			if terf then begin
 				OutString(tab[12],0,"AZN терминал",false);
 			end;
@@ -1116,6 +1226,7 @@ begin
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
 					end;
+					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,"",false);
 					end;
@@ -1165,6 +1276,7 @@ begin
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
 					end;
+					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,"",false);
 					end;
@@ -1214,6 +1326,7 @@ begin
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
 					end;
+					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,"",false);
 					end;
@@ -1263,6 +1376,7 @@ begin
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
 					end;
+					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,tempTRrw.CurCredVal,false);
 					end;
@@ -1313,6 +1427,7 @@ begin
 					if basef then begin
 						OutString(tab[11],0,"",false);
 					end;
+					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,"",false);
 					end;
@@ -1382,6 +1497,7 @@ begin
 			if basef then begin
 				OutString(tab[11],0,convtotal5,false);
 			end;
+			OutString(tab[111],0,kursovaya,false);
 			if terf then begin
 				OutString(tab[12],0,AZNTermCred,false);
 			end;
