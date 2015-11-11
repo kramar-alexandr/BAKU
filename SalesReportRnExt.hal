@@ -434,6 +434,18 @@ begin
 return;
 end;
 
+//Edit***************************Sasha2,14:42 11.11.2015 {
+procedure MyClearVector(var vector string vect1,array string arr,integer cnt)
+begin
+  integer i;
+  
+    for (i=0;i<cnt;i=i+1) begin
+      vect1[arr[i]] = "";
+    end;
+  
+  return;
+end; //Edit***************************Sasha2,14:42 11.11.2015 }
+
 
 global
 procedure SalesReportExtRn(record RcVc RepSpec)
@@ -476,6 +488,10 @@ begin
   val itemoccurrences; //Edit***************************Sasha2,12:11 20.11.2014
   boolean iteminf;
   integer cred;
+  Record CTypeVc CTyper; //Edit***************************Sasha2,12:23 11.11.2015
+  integer ctypecnt,m; //Edit***************************Sasha2,12:24 11.11.2015
+  array string 10 typeindex; //Edit***************************Sasha2,14:08 11.11.2015
+  vector string 255 dispnames; //Edit***************************Sasha2,14:08 11.11.2015
   
   blockload(BCb);
   bcur = BCb.BaseCur1;
@@ -640,17 +656,27 @@ begin
 						outstring(142,0,USetStr(31067) & bcur,false);
 					end;
 					outstring(0,0,USetStr(31068),false);
-					outstring(0,0,USetStr(31069),false);
-					outstring(0,0,USetStr(31070),false);
-					outstring(0,0,USetStr(31071),false);
-					outstring(0,0,USetStr(16709),false);
-					outstring(0,0,USetStr(31072),false);
-					outstring(0,0,USetStr(9269),false);
-					outstring(0,0,USetStr(16574),false);
-					if(currentcompany==9)then begin
-						outstring(0,0,USetStr(3264),false);
+					if (modef) then begin
+  					outstring(0,0,USetStr(31069),false);
+  					outstring(0,0,USetStr(31070),false);
+  					outstring(0,0,USetStr(31071),false);
+  					outstring(0,0,USetStr(16709),false);
+  					outstring(0,0,USetStr(31072),false);
+  					outstring(0,0,USetStr(9269),false);
+  					outstring(0,0,USetStr(16574),false);
+  					if(currentcompany==9)then begin
+  						outstring(0,0,USetStr(3264),false);
+  					end;
+  					outstring(0,0,USetStr(31073),false);
 					end;
-					outstring(0,0,USetStr(31073),false);					
+					ctypecnt = 0; //Edit***************************Sasha2,14:10 11.11.2015 {
+					CTyper.Code = "";
+					while (LoopMain(CTyper,1,true)) begin
+					  typeindex[ctypecnt] = CTyper.Code;
+					  dispnames[typeindex[ctypecnt]] = "";
+					  outstring(0,0,CTyper.Code,false);
+					  ctypecnt = ctypecnt + 1;
+					end;//Edit***************************Sasha2,14:10 11.11.2015 }	
 				endformat;
 				
 				total_rebate = 0;//Edit***********************Vitalii 14:28 26.08.2014
@@ -663,8 +689,9 @@ begin
 				btotal_price = 0;
 				btotal_gp = 0;
 				rangecnt = 0; //Edit***************************Sasha2,11:41 20.11.2014
-				arrsize = 20; //Edit***************************Sasha2,17:19 21.11.2014
-
+				arrsize = 20; 
+				
+				arrsize = arrsize + ctypecnt; //Edit***************************Sasha2,16:49 11.11.2015
 				
 				IVr.TransDate = sd;
 				keyi = 1;
@@ -752,6 +779,7 @@ begin
 											outstring(0,0,IVrw.ArtCode,false);
 											outstring(0,0,INr.AlternativeCode,false);
 											outstring(0,0,IVr.Location,false);
+											
 											classname = "";
 											k=0;
 											ExtractObj(INr.DispGroups,k,classcode);
@@ -759,6 +787,8 @@ begin
 											readfirstmain(DIr,1,true);
 											classname = DIr.Name;
 											outstring(0,0,classname,false);
+											dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+											
 											classname2 = "";
 											ExtractObj(INr.DispGroups,k,classcode);
 											DIr.Code = classcode;
@@ -768,6 +798,17 @@ begin
 												category = DIr.CCat;	//Edit----------------------Dima  20.03.2015
 											end;											
 											outstring(0,0,classname2,false);
+											dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+											
+											ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
+											while (NonBlank(classcode)) begin
+											  DIr.Code = classcode;
+											  if (readfirstmain(DIr,1,true)) then begin
+											    dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ",";
+											  end;
+											  ExtractObj(INr.DispGroups,k,classcode);
+											end; //Edit***************************Sasha2,14:52 11.11.2015 }
+											
 											if(currentcompany==9) then begin
 												outstring(0,0,category,false);
 											end;
@@ -796,19 +837,24 @@ begin
 												arrstrs[strscnt] = IVrw.ArtCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.AlternativeCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = IVr.Location; strscnt = strscnt + 1;
+												
 												classname = "";
 												k=0;
 												ExtractObj(INr.DispGroups,k,classcode);
 												DIr.Code = classcode;
 												readfirstmain(DIr,1,true);
 												classname = DIr.Name;
+												dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
 												arrstrs[strscnt] = classname; strscnt = strscnt + 1;
+												
 												classname2 = "";
 												ExtractObj(INr.DispGroups,k,classcode);
 												DIr.Code = classcode;
 												readfirstmain(DIr,1,true);
 												classname2 = DIr.Name;
+												dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
 												arrstrs[strscnt] = classname2; strscnt = strscnt + 1;
+												
 												arrstrs[strscnt] = prepareStr(IVrw.Spec); strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.Reference; strscnt = strscnt + 1; 
 												arrstrs[strscnt] = INr.Metal; strscnt = strscnt + 1; 
@@ -824,8 +870,18 @@ begin
 												end;												
 												arrstrs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
+												
+												ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
+  											while (NonBlank(classcode)) begin
+  											  DIr.Code = classcode;
+  											  if (readfirstmain(DIr,1,true)) then begin
+  											    dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ",";
+  											  end;
+  											  ExtractObj(INr.DispGroups,k,classcode);
+  											end; //Edit***************************Sasha2,14:52 11.11.2015 }
+												
 											end else begin
-												if(currentcompany==3)then begin
+												if(currentcompany==3 or currentcompany==13)then begin
 													strscnt = strscnt + 14;
 												end else begin
 													strscnt = strscnt + 12;
@@ -981,6 +1037,10 @@ begin
 												arrvals[valscnt] = arrvals[valscnt] + (IVrw.Sum - fifob1*IVrw.Quant)*cred; valscnt = valscnt + 1;
 											end;
 											arrstrs[strscnt] = brandcur; strscnt = strscnt + 1;
+                      for (m=0;m<ctypecnt;m=m+1) begin 
+											  arrstrs[strscnt] = dispnames[typeindex[m]]; strscnt = strscnt + 1;
+											end; 
+											MyClearVector(dispnames,typeindex,ctypecnt);
 										end; //Edit***************************Sasha2,11:17 20.11.2014 }
 										
 										if (modef) then begin //Edit***************************Sasha2,11:17 20.11.2014	
@@ -994,6 +1054,10 @@ begin
 												end;
 											end;
 											outstring(0,0,tstr,false);
+											for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,15:28 11.11.2015 {
+											  outstring(0,0,Left(dispnames[typeindex[m]],len(dispnames[typeindex[m]])-1),false);
+											end; 
+											MyClearVector(dispnames,typeindex,ctypecnt); //Edit***************************Sasha2,15:28 11.11.2015 }
 										end;
 										
 									if (modef) then begin	//Edit***************************Sasha2,11:12 20.11.2014								
@@ -1061,6 +1125,9 @@ begin
 								outstring(30,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum - fifob1*IVrw.Quant
 							end;
 							outstring(31,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //brandcur
+							for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,16:15 11.11.2015 {
+							  outstring(32,0,Left(arrstrs[strscnt],len(arrstrs[strscnt])-1),false); strscnt = strscnt + 1; //disp types
+							end; //Edit***************************Sasha2,16:15 11.11.2015 }
 						endformat;
 					end;
 				end;
