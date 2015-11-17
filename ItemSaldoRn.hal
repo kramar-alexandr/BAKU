@@ -72,7 +72,7 @@ end;
 
 procedure ItemStockIHSerch(record RcVc RepSpec,string item,string location,date sd,date ed,var val qty_start,var val cost_start,var val pu_qty,var val pu_cost,
                            var val sm_poz_qty,var val sm_neg_qty,var val sm_poz_cost,var val sm_neg_cost,var val iv_poz_qty,
-                           var val iv_neg_qty,var val iv_poz_sum,var val iv_poz_cost,var val iv_neg_sum,var val gp,var val iv_neg_cost,var val sd_qty,var val sd_cost,var val cost_end,var val qty_end,var val srval)
+                           var val iv_neg_qty,var val iv_poz_sum,var val iv_poz_cost,var val iv_neg_sum,var val gp,var val iv_neg_cost,var val sd_qty,var val sd_cost,var val cost_end,var val qty_end,var val srval,var val rpu_qty,var val rpu_cost)
 begin
   record ItemHistVc IHr,IHrinvr;
   record StockMovVc SMr;
@@ -356,8 +356,8 @@ begin
 						qty_start = qty_start + IHr.Qty;
 						cost_start = cost_start - IHr.TotCostPrice;
 					end else begin
-						sd_qty = sd_qty + (-IHr.Qty);
-						sd_cost = sd_cost + IHr.TotCostPrice;
+						rpu_qty = rpu_qty + (-IHr.Qty);
+						rpu_cost = rpu_cost + IHr.TotCostPrice;
 						cost_end = cost_end - IHr.TotCostPrice;
 						qty_end = qty_end + IHr.Qty;
 					end;
@@ -373,7 +373,7 @@ begin
   record INVc INr;
   Boolean TrHs,testf;
   integer i,reprownr,mark,gi;
-  val rate,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval;
+  val rate,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval,rpu_qty,rpu_cost;
   array val totals;
   record PLVc PLr;
   val price;
@@ -382,13 +382,13 @@ begin
   //SetLangMode(LangRussian,"RUS",0);
   
   
-  ClearValArray(20,totals);
+  ClearValArray(23,totals);
   TrHs = true;
   INr.DispGroups = group;// Edit ************************** Tuesday, 30 October 2012 15:54:00
   reprownr = 0;
   GetCurncyRateOnDate("AZN",CurrentDate,rate);
   mark = 0;
-  while (LoopKey("MyDispGroups",INr,1,TrHs)) begin// Edit ************************** Tuesday, 30 October 2012 15:53:41
+  while (LoopKey("MyDispGroups",INr,1,TrHs)) begin// Edit ************************** Tuesday, 30 October 2012 15:53:4115:22 17.11.2015
     testf = true;
     gi=0;
     ExtractObj(INr.DispGroups,gi,curgr);
@@ -422,8 +422,10 @@ begin
       cost_end = 0;
       qty_end = 0;
       gp = 0;
-      ItemStockIHSerch(RepSpec,INr.Code,location,sd,ed,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval);
-      if (qty_start==0 and pu_qty==0 and sd_qty==0 and sm_poz_qty==0 and sm_neg_qty==0 and iv_poz_qty==0 and iv_neg_qty==0 and cost_start==0 and cost_end==0) then begin
+	  rpu_cost = 0;
+	  rpu_qty = 0;
+      ItemStockIHSerch(RepSpec,INr.Code,location,sd,ed,qty_start,cost_start,pu_qty,pu_cost,sm_poz_qty,sm_neg_qty,sm_poz_cost,sm_neg_cost,iv_poz_qty,iv_neg_qty,iv_poz_sum,iv_poz_cost,iv_neg_sum,gp,iv_neg_cost,sd_qty,sd_cost,cost_end,qty_end,srval,rpu_qty,rpu_cost);
+      if (qty_start==0 and pu_qty==0 and sd_qty==0 and sm_poz_qty==0 and sm_neg_qty==0 and iv_poz_qty==0 and iv_neg_qty==0 and rpu_qty==0 and cost_start==0 and cost_end==0) then begin
         reprownr = reprownr - 1;
       end else begin
         StartFormat(15);
@@ -500,13 +502,21 @@ begin
           
           //Возврат поставщикам
           
-          OutString(190,0,sd_qty,false);//Возврат поставщикам кол-во
-          totals[12] = totals[12] + sd_qty;
+          OutString(190,0,rpu_qty,false);//Возврат поставщикам кол-во
+          totals[12] = totals[12] + rpu_qty;
           
           if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
-            OutVal(200,0,sd_cost,M4Val,false);//Возврат поставщикам сумма
-            totals[13] = totals[13] + sd_cost;
-          
+            OutVal(200,0,rpu_cost,M4Val,false);//Возврат поставщикам сумма
+            totals[13] = totals[13] + rpu_cost;
+          end;
+		  //Edit-------------------Vitalii 15:11 17.11.2015
+		  OutString(203,0,sd_qty,false);//Списание кол-во
+          totals[21] = totals[21] + sd_qty;
+		  if(RepSpec.flags[0]==0)then begin
+            OutVal(206,0,sd_cost,M4Val,false);//Списание сумма
+            totals[22] = totals[22] + sd_cost;
+          end;
+          if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
             OutVal(210,0,gp,M4Val,false);//Прибыль
             totals[14] = totals[14] + gp;
           end;          
@@ -578,6 +588,13 @@ begin
 		OutVal(190,0,totals[12],m4val,false);
 		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutVal(200,0,totals[13],m4val,false);
+		end;
+		//Edit-------------------Vitalii 15:13 17.11.2015
+		OutVal(203,0,totals[21],m4val,false);
+		if(RepSpec.flags[0]==0)then begin
+		OutVal(206,0,totals[22],m4val,false);
+		end;
+		if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
       OutVal(210,0,totals[14],m4val,false);
 		end;
 		OutVal(220,0,totals[15],m4val,false);
@@ -724,6 +741,10 @@ begin
                 OutString(185,0,"",false);// Edit ************************** Wednesday, 12 November 2014 16:40:56
 							end;
 							OutString(190,0,USetStr(31111),false);
+							if(RepSpec.flags[0]==0)then begin//Edit-------------------Vitalii 15:42 17.11.2015
+							OutString(200,0,"",false);
+							end;
+							OutString(210,0,USetStr(31153),false);
 							EndFormat;
 							StartFormat(15);
 							OutString(0,0,"№",false);
@@ -774,7 +795,11 @@ begin
 							OutString(190,0,USetStr(31121),false);
 							if(RepSpec.flags[0]==0)then begin
                 OutString(200,0,USetStr(31122),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:28
-                OutString(210,0,USetStr(31135),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
+							end;
+				OutString(203,0,USetStr(31121),false);//Edit-------------------Vitalii 15:41 17.11.2015
+							if(RepSpec.flags[0]==0)then begin
+				OutString(206,0,USetStr(31122),false);
+				OutString(210,0,USetStr(31135),false);// Edit ************************** Thursday, July 3, 2014 at 16:26:27
 							end;
 							OutString(220,0,USetStr(31094),false);
 							if(RepSpec.flags[0]==0)then begin
