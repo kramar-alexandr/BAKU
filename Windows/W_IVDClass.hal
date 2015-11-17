@@ -7631,10 +7631,10 @@ begin
   
   WindowBegin("Для внесения начального сальдо по объектам",ObjInitBalRClass,CGRcW,RcType);
   UseView(RcVc);
-  SetWRect(20,80,600,380);
+  SetWRect(20,80,440,150);
   h = 100;
   vs = 20;
   PeriodField(h,v=6,"Период");
-  EditFieldTL(h,v+=vs,250,"Объект",M4UStr,Normal,60,ObjStr,false,ObjSClass);
+  EditFieldTL(h,v+=vs,150,"Объект",M4UStr,Normal,60,ObjStr,false,ObjSClass);
   EndWindow;
 end;

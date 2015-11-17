@@ -26,20 +26,22 @@ begin
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint,testf,done;
 	Date tempDate;
-	val BeginBalance50n51, BeginBalance50n51n53, BeginBalance50AZN,
-		BeginBalance50, BeginBalance51, BeginBalance53,
-		BeginBalance50USD, BeginBalance50EUR, tempBal,
-		AZNTermDeb, AZNTermCred,
-		AZNDeb, AZNCred,
-		EURDeb, EURCred,
-		USDDeb, USDCred,
+	val BeginBalance50, BeginBalance51, BeginBalance53,
+		BeginBalance50n51, BeginBalance50n51n53,
+		BeginBalance50n53AZN, BeginBalance50n53USD, BeginBalance50n53EUR,
+		BeginBalance50AZN,    BeginBalance50USD,    BeginBalance50EUR,
+		BeginBalance53AZN,    BeginBalance53USD,    BeginBalance53EUR,
+		tempBal,
+		AZNTermDeb,  AZNDeb,  USDDeb,  EURDeb,
+		AZNTermCred, AZNCred, USDCred, EURCred,
 		BaseDebErr, BDEBase, BDECur, BDEDebTemp,
 		BaseCredErr, BCEBase, BCECur, BCECredTemp,
 		BaseDeb, BaseCred,
 		BalItem1, BalItem2,
-		SaldoEndPeriodAZNTerm, SaldoEndPeriod53,
-		SaldoEndPeriod, SaldoEndPeriodUSD,
-		SaldoEndPeriodEUR, SaldoEndPeriodAZN,
+		SaldoEndPeriod53, SaldoEndPeriod53AZN, SaldoEndPeriod53USD, SaldoEndPeriod53EUR,
+		SaldoEndPeriod50n51,
+		SaldoEndPeriod51, SaldoEndPeriod50AZN, SaldoEndPeriod50USD, SaldoEndPeriod50EUR,
+		SaldoEndPeriod50n53USD, SaldoEndPeriod50n53EUR, SaldoEndPeriod50n53AZN,
 		corspdebval, corspcredval, Bal53,
 		kursovaya,convtotal1,convtotal2,convtotal3,convtotal4,convtotal5;// Edit ************************** Wednesday, 26 August 2015 11:49:59
 	boolean BDEBaseChng, BDECurChng,
@@ -52,28 +54,40 @@ begin
 	boolean usdf,eurf,aznf,terf,basef;
 	
 	BlockLoad(BaseCurRec);
-	BeginBalance50n51 = 0;
-	BeginBalance50n51n53 = 0;
-	BeginBalance50AZN = 0;
 	BeginBalance50 = 0;
 	BeginBalance51 = 0;
 	BeginBalance53 = 0;
+	BeginBalance50n51 = 0;
+	BeginBalance50n51n53 = 0;
+	BeginBalance50AZN = 0;
 	BeginBalance50USD = 0;
 	BeginBalance50EUR = 0;
+	BeginBalance53AZN = 0;
+	BeginBalance53USD = 0;
+	BeginBalance53EUR = 0;
 	tempBal = 0;
 	BaseDebErr = 0;
 	BaseCredErr = 0;
 	BalItem1 = 0;
 	BalItem2 = 0;
-	SaldoEndPeriodAZNTerm = 0;
 	SaldoEndPeriod53 = 0;
-	SaldoEndPeriod = 0;
-	SaldoEndPeriodUSD = 0;
-	SaldoEndPeriodEUR = 0;
-	SaldoEndPeriodAZN = 0;
+	SaldoEndPeriod53AZN = 0;
+	SaldoEndPeriod53USD = 0;
+	SaldoEndPeriod53EUR = 0;
+	SaldoEndPeriod50n51 = 0;
+	SaldoEndPeriod51 = 0;
+	SaldoEndPeriod50USD = 0;
+	SaldoEndPeriod50EUR = 0;
+	SaldoEndPeriod50AZN = 0;
 	corspdebval = blankval;
 	corspcredval = blankval;
 	Bal53 = 0;
+	kursovaya = 0;
+	convtotal1 = 0;
+	convtotal2 = 0;
+	convtotal3 = 0;
+	convtotal4 = 0;
+	convtotal5 = 0;
 	
 	usdf = false;
 	eurf = false;
@@ -105,6 +119,7 @@ begin
 	ReadFirstMain(Accr7505,1,true);
 	Accr53.AccNumber = "53";
 	ReadFirstMain(Accr53,1,true);
+	
 	TrHs = true;
 	while (LoopMain(mainr,2,TrHs)) begin
 		if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
@@ -847,11 +862,56 @@ begin
 			OutString(118,0,"",false);
 			OutString(265,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
 		EndFormat;
-		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
 		FindNLAccBal("51",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="USD" then begin
+				FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance50USD = BeginBalance50USD + tempBal;
+			end;
+		end;
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="EUR" then begin
+				FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance50EUR = BeginBalance50EUR + tempBal;
+			end;
+		end;
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="AZN" then begin
+				FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance50AZN = BeginBalance50AZN + tempBal;
+			end;
+		end;
+		FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance50);
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="USD" then begin
+				FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance53USD = BeginBalance53USD + tempBal;
+			end;
+		end;
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="EUR" then begin
+				FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance53EUR = BeginBalance53EUR + tempBal;
+			end;
+		end;
+		tempBal = 0;
+		for (i=0;i<curi;i=i+1) begin
+			if left(CurList[i],3)=="AZN" then begin
+				FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+				BeginBalance53AZN = BeginBalance53AZN + tempBal;
+			end;
+		end;
 		FindNLAccBal("53",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance53);
 		BeginBalance50n51 = BeginBalance50 + BeginBalance51;
 		BeginBalance50n51n53 = BeginBalance50n51 + BeginBalance53;
+		BeginBalance50n53USD = BeginBalance50USD + BeginBalance53USD;
+		BeginBalance50n53EUR = BeginBalance50EUR + BeginBalance53EUR;
+		BeginBalance50n53AZN = BeginBalance50AZN + BeginBalance53AZN;
 		StartFormat(15);
 		if CurrentCompany==3 then begin
 		//Остаток на...
@@ -860,39 +920,48 @@ begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"Остаток общего счета",false);
-				OutString(54,0,BeginBalance50n51n53,false);
+				OutString(54,0,BeginBalance50n53USD,false);
+				OutString(79,0,"USD",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(54,0,BeginBalance50n53EUR,false);
+				OutString(79,0,"EUR",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(54,0,BeginBalance50n53AZN,false);
 				OutString(79,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(54,0,BeginBalance51,false);
+				OutString(79,0,"AZN терминал",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
 				OutString(20,0,"Деньги в офисе",false);
-				OutString(54,0,BeginBalance53,false);
+				OutString(54,0,BeginBalance53USD,false);
+				OutString(79,0,"USD",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(54,0,BeginBalance53EUR,false);
+				OutString(79,0,"EUR",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(54,0,BeginBalance53AZN,false);
 				OutString(79,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 			EndFormat;
 		//Остаток на... по валютам
-			tempBal = 0;
-			for (i=0;i<curi;i=i+1) begin
-				if left(CurList[i],3)=="USD" then begin
-					FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
-					BeginBalance50USD = BeginBalance50USD + tempBal;
-				end;
-			end;
-			tempBal = 0;
-			for (i=0;i<curi;i=i+1) begin
-				if left(CurList[i],3)=="EUR" then begin
-					FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
-					BeginBalance50EUR = BeginBalance50EUR + tempBal;
-				end;
-			end;
-			tempBal = 0;
-			for (i=0;i<curi;i=i+1) begin
-				if left(CurList[i],3)=="AZN" then begin
-					FindNLAccBal("50",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
-					BeginBalance50AZN = BeginBalance50AZN + tempBal;
-				end;
-			end;
 			if ((BeginBalance50USD!=0) or (BeginBalance50EUR!=0) or (BeginBalance51!=0)) then begin
 				if (BeginBalance50USD!=0) then begin
 					StartFormat(15);
@@ -1572,7 +1641,7 @@ begin
 		EndFormat;
 		Gray_Divider(20,93);
 		Gray_Divider(142,216);
-		SaldoEndPeriodAZNTerm = BeginBalance51 + AZNTermDeb - AZNTermCred + convtotal1;// Edit ************************** Thursday, 27 August 2015 15:22:19
+		SaldoEndPeriod51 = BeginBalance51 + AZNTermDeb - AZNTermCred + convtotal1;// Edit ************************** Thursday, 27 August 2015 15:22:19
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(20,0,"Конв/банк",false);
@@ -1593,7 +1662,7 @@ begin
 			OutString(93,0,"",false);
 			OutString(118,0,"",false);
 			OutString(142,0,"Остаток",false);
-			OutString(167,0,SaldoEndPeriodAZNTerm,false);
+			OutString(167,0,SaldoEndPeriod51,false);
 			OutString(191,0,"AZN",false);
 		EndFormat;
 		Black_Divider(142,216);
@@ -1617,15 +1686,15 @@ begin
 		end;
 		Black_Divider(20,93);
 	// к сдаче
-		SaldoEndPeriod = BeginBalance50n51 + BaseDeb - BaseCred + convtotal5;// Edit ************************** Thursday, 27 August 2015 15:22:15
-		SaldoEndPeriodUSD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
-		SaldoEndPeriodEUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
-		SaldoEndPeriodAZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
+		SaldoEndPeriod50n51 = BeginBalance50n51 + BaseDeb - BaseCred + convtotal5;// Edit ************************** Thursday, 27 August 2015 15:22:15
+		SaldoEndPeriod50USD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
+		SaldoEndPeriod50EUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
+		SaldoEndPeriod50AZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
 		if (CurrentCompany == 3) or (kursovaya != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"К сдаче",false);
-				OutString(44,0,SaldoEndPeriod - kursovaya,false);
+				OutString(44,0,SaldoEndPeriod50n51 - kursovaya,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
@@ -1639,7 +1708,7 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(20,0,"К сдаче",false);
-			OutString(44,0,SaldoEndPeriod,false);
+			OutString(44,0,SaldoEndPeriod50n51,false);
 			OutString(69,0,"AZN",false);
 		EndFormat;
 		
@@ -1648,56 +1717,108 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(20,0,"К сдаче по валютам",false);
-			OutString(44,0,"",false);
-			OutString(69,0,"",false);
 		EndFormat;
-		if (CurrentCompany == 3) or (SaldoEndPeriodUSD != 0) then begin
+		if (CurrentCompany == 3) or (SaldoEndPeriod50USD != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"",false);
-				OutString(44,0,SaldoEndPeriodUSD,false);
+				OutString(44,0,SaldoEndPeriod50USD,false);
 				OutString(69,0,"USD",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriodEUR != 0) then begin
+		if (CurrentCompany == 3) or (SaldoEndPeriod50EUR != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"",false);
-				OutString(44,0,SaldoEndPeriodEUR,false);
+				OutString(44,0,SaldoEndPeriod50EUR,false);
 				OutString(69,0,"EUR",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriodAZN != 0) then begin
+		if (CurrentCompany == 3) or (SaldoEndPeriod50AZN != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"",false);
-				OutString(44,0,SaldoEndPeriodAZN,false);
+				OutString(44,0,SaldoEndPeriod50AZN,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriodAZNTerm != 0) then begin
+		if (CurrentCompany == 3) or (SaldoEndPeriod51 != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"",false);
-				OutString(44,0,SaldoEndPeriodAZNTerm,false);
+				OutString(44,0,SaldoEndPeriod51,false);
 				OutString(69,0,"AZN терминал",false);
 			EndFormat;
 		end;
 		if (CurrentCompany == 3) then begin
+			for (i=0;i<curi;i=i+1) begin
+				if left(CurList[i],3)=="USD" then begin
+					FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,CurList[i],0,"","",tempBal);
+					SaldoEndPeriod53USD = SaldoEndPeriod53USD + tempBal;
+				end;
+			end;
+			tempBal = 0;
+			for (i=0;i<curi;i=i+1) begin
+				if left(CurList[i],3)=="EUR" then begin
+					FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,CurList[i],0,"","",tempBal);
+					SaldoEndPeriod53EUR = SaldoEndPeriod53EUR + tempBal;
+				end;
+			end;
+			tempBal = 0;
+			for (i=0;i<curi;i=i+1) begin
+				if left(CurList[i],3)=="AZN" then begin
+					FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,CurList[i],0,"","",tempBal);
+					SaldoEndPeriod53AZN = SaldoEndPeriod53AZN + tempBal;
+				end;
+			end;
+			FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod53);
 			StartFormat(15);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(20,0,"Деньги в офисе",false);
-				FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod53);
-				OutString(44,0,SaldoEndPeriod53,false);
+				OutString(44,0,SaldoEndPeriod53USD,false);
+				OutString(69,0,"USD",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(44,0,SaldoEndPeriod53EUR,false);
+				OutString(69,0,"EUR",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(44,0,SaldoEndPeriod53AZN,false);
+				OutString(69,0,"AZN",false);
+			EndFormat;
+			SaldoEndPeriod50n53USD = SaldoEndPeriod50USD + SaldoEndPeriod53USD;
+			SaldoEndPeriod50n53EUR = SaldoEndPeriod50EUR + SaldoEndPeriod53EUR;
+			SaldoEndPeriod50n53AZN = SaldoEndPeriod50AZN + SaldoEndPeriod53AZN;
+			
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"Остаток общего счета",false);
+				OutString(44,0,SaldoEndPeriod50n53USD,false);
+				OutString(69,0,"USD",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(44,0,SaldoEndPeriod50n53EUR,false);
+				OutString(69,0,"EUR",false);
+			EndFormat;
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(20,0,"",false);
+				OutString(44,0,SaldoEndPeriod50n53AZN,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Остаток общего счета",false);
-				OutString(44,0,SaldoEndPeriod + SaldoEndPeriod53,false);
-				OutString(69,0,"AZN",false);
+				OutString(20,0,"",false);
+				OutString(44,0,SaldoEndPeriod51,false);
+				OutString(69,0,"AZN терминал",false);
 			EndFormat;
 		end;
 	EndJob;

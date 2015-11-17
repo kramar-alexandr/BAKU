@@ -1,4 +1,5 @@
 external function Boolean CheckObjType(string,string);
+external procedure ExtractObj(string,var Integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -7,12 +8,14 @@ begin
 	record MainVc mainr;
 	date sd,ed;
 	boolean TrHs,testf,foundf;
-	string 200 objcode;
+	string 50 objcode,ostr;
 	record TRVc TRr;
 	row TRVc TRrw;
 	record FBVc FBr;
 	row FBVc FBrw;
-	integer i,mtrw;
+	integer i,j,k,l,mtrw,pos,mi,qty;
+	string 255 tstr;
+	array string 50 mas;
 	
 	
 	vector boolean AccInArr,CurInArr,ObjInArr;
@@ -74,6 +77,98 @@ begin
 										RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
 										RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
 										RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+										pos = 0;
+										mi = 0;
+										ExtractObj(TRrw.Objects,pos,ostr);
+										if TRrw.Objects != ostr then begin
+											while (nonblank(ostr)) begin
+												mas[mi] = ostr;
+												mi = mi + 1;
+												ExtractObj(TRrw.Objects,pos,ostr);
+											end;
+											qty = mi;
+											if qty == 2 then begin
+												for (j=0;j<qty;j=j+1) begin
+													if !ObjInArr[mas[j]] then begin
+														ObjInArr[mas[j]] = true;
+														ObjArr[OAi] = mas[j];
+														OAi = OAi + 1;
+													end;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+												end;
+											end;
+											if qty == 3 then begin
+												for (j=0;j<qty;j=j+1) begin
+													if !ObjInArr[mas[j]] then begin
+														ObjInArr[mas[j]] = true;
+														ObjArr[OAi] = mas[j];
+														OAi = OAi + 1;
+													end;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+													for (k=j+1;k<qty;k=k+1) begin
+														if mas[j] != mas[k] then begin
+															tstr = mas[j] & "," & mas[k];
+															if !ObjInArr[tstr] then begin
+																ObjInArr[tstr] = true;
+																ObjArr[OAi] = tstr;
+																OAi = OAi + 1;
+															end;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+														end;
+													end;
+												end;
+											end;
+											if qty == 4 then begin
+												for (j=0;j<qty;j=j+1) begin
+													if !ObjInArr[mas[j]] then begin
+														ObjInArr[mas[j]] = true;
+														ObjArr[OAi] = mas[j];
+														OAi = OAi + 1;
+													end;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+													RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+													for (k=j+1;k<qty;k=k+1) begin
+														if mas[j] != mas[k] then begin
+															tstr = mas[j] & "," & mas[k];
+															if !ObjInArr[tstr] then begin
+																ObjInArr[tstr] = true;
+																ObjArr[OAi] = tstr;
+																OAi = OAi + 1;
+															end;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+															RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+															for (l=k+1;l<qty;l=l+1) begin
+																if (mas[j] != mas[l]) and (mas[k] != mas[l]) then begin
+																	tstr = mas[j] & "," & mas[k] & "," & mas[l];
+																	if !ObjInArr[tstr] then begin
+																		ObjInArr[tstr] = true;
+																		ObjArr[OAi] = tstr;
+																		OAi = OAi + 1;
+																	end;
+																	RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+																	RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+																	RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+																	RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+																end;
+															end;
+														end;
+													end;
+												end;
+											end;
+										end;
 									end;
 								end;
 							end; 
@@ -112,7 +207,29 @@ begin
 					end;
 				end;
 			end;
-		
+			
+			for (i=0;i<ObjArr.length;i=i+1) begin
+				for (j=i+1;j<ObjArr.length;j=j+1) begin
+					//if len(ObjArr[j]) < len(ObjArr[i]) then begin
+					if ObjArr[j] > ObjArr[i] then begin
+						tstr = ObjArr[i];
+						ObjArr[i] = ObjArr[j];
+						ObjArr[j] = tstr;
+					end;
+				end;
+			end;
+			StartFormat(15);
+				OutString(20,0,"‘чет",false);
+				OutString(50,0,"",false);
+				OutString(80,0,"„т. осн",false);
+				OutString(160,0,"Љт. осн",false);
+				OutString(240,0,"‚алюта",false);
+				OutString(320,0,"„т. вал",false);
+				OutString(400,0,"Љт. вал",false);
+			EndFormat;
+			Black_Divider(0,1);
+			StartFormat(15);
+			EndFormat;
 			for (OAi=0;OAi<ObjArr.length;OAi=OAi+1) begin
 				StartFormat(15);
 					OutString(0,0,ObjArr[OAi],false);
@@ -125,12 +242,12 @@ begin
 						   (RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred:base"] != blankval) then begin
 							StartFormat(15);
 								OutString(20,0,AccArr[AAi],false);
-								OutString(40,0,"",false);
-								OutString(60,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb"] & "",false);
-								OutString(120,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred"] & "",false);
-								OutString(180,0,CurArr[CAi],false);
-								OutString(240,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb:base"] & "",false);
-								OutString(300,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred:base"] & "",false);
+								OutString(50,0,"",false);
+								OutString(80,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb:base"] & "",false);
+								OutString(180,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred:base"] & "",false);
+								OutString(240,0,CurArr[CAi],false);
+								OutString(320,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb"] & "",false);
+								OutString(400,0,RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred"] & "",false);
 							EndFormat;
 						end;
 					end;
