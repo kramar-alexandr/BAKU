@@ -78,7 +78,7 @@ begin
   return;
 end; //Edit***************************Sasha2,11:56 30.03.2015 }
 
-function boolean CheckRegister(string filename,LongInt DocNumber,var string offnumber,array string params)	//Edit***************************Sasha2,11:56 30.03.2015 {
+function boolean CheckRegister(string filename,LongInt DocNumber,var string offnumber,array string params,string cucode)	//Edit***************************Sasha2,11:56 30.03.2015 {
 begin
   record PUVc PUr;
   record StockMovVc SMr;
@@ -96,10 +96,15 @@ begin
       case "PUVc":
         PUr.SerNr = DocNumber;
         ReadFirstMain(PUr,1,true);
+        if (NonBlank(cucode) and cucode!=PUr.VECode) then begin
+          res = false;
+          goto LCheckRegister;
+        end;
         params[0] = PUr.VEName;
         params[1] = PUr.VECode;
         if (PUr.NotForReport==1) then begin
           res = false;
+          goto LCheckRegister;
         end;
         if (NonBlank(PUr.OfficialSerNr)) then begin
           offnumber = PUr.OfficialSerNr;
@@ -107,6 +112,11 @@ begin
           offnumber = DocNumber;
         end;
       case "RetVc":
+        if (NonBlank(cucode)) then begin //if customer name would be included set this close after Readfirstmain
+          res = false;
+          goto LCheckRegister;
+        end;
+                
         Retr.SerNr = DocNumber;
         ReadFirstMain(Retr,1,true);
         if (NonBlank(Retr.OfficialSerNr)) then begin
@@ -119,6 +129,11 @@ begin
         ReadFirstMain(IVr,1,true);
         if (IVr.NotForReport==1) then begin
           res = false;
+          goto LCheckRegister;
+        end;
+        if (NonBlank(cucode) and cucode!=IVr.CustCode) then begin
+          res = false;
+          goto LCheckRegister;
         end;
         params[0] = IVr.Addr0;
         params[1] = IVr.CustCode;
@@ -132,6 +147,11 @@ begin
         ReadFirstMain(RetPUr,1,true);
         if (RetPUr.NotForReport==1) then begin
           res = false;
+          goto LCheckRegister;
+        end;
+        if (NonBlank(cucode) and cucode!=RetPUr.VECode) then begin
+          res = false;
+          goto LCheckRegister;
         end;
         params[0] = RetPUr.VEName;
         params[1] = RetPUr.VECode;
@@ -141,10 +161,16 @@ begin
           offnumber = DocNumber;
         end;
       case "StockMovVc":
+        if (NonBlank(cucode)) then begin
+          res = false;
+          goto LCheckRegister;
+        end;
+      
         SMr.SerNr = DocNumber;
         ReadFirstMain(SMr,1,true);
         if (SMr.NotForReport==1) then begin
           res = false;
+          goto LCheckRegister;
         end;
         if (NonBlank(SMr.OfficialSerNr)) then begin
           offnumber = SMr.OfficialSerNr;
@@ -152,6 +178,11 @@ begin
           offnumber = DocNumber;
         end;
       case "SDVc":
+        if (NonBlank(cucode)) then begin
+          res = false;
+          goto LCheckRegister;
+        end;
+      
         SDr.SerNr = DocNumber;
         ReadFirstMain(SDr,1,true);
         /*if (NonBlank(SDr.OfficialSerNr)) then begin
@@ -160,6 +191,11 @@ begin
           offnumber = DocNumber;
         //end;
       case "SHVc":
+        if (NonBlank(cucode)) then begin //if customer name would be included set this close after Readfirstmain
+          res = false;
+          goto LCheckRegister;
+        end;
+        
         SHr.SerNr = DocNumber;
         ReadFirstMain(SHr,1,true);
         if (NonBlank(SHr.OfficialSerNr)) then begin
@@ -168,6 +204,8 @@ begin
           offnumber = DocNumber;
         end;
     end;
+    
+   LCheckRegister:; 
      
     CheckRegister = res;
   return;
@@ -439,7 +477,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
     rwcnt = MatRowCnt(TBBUr);
     for (i=0;i<rwcnt;i=i+1) begin
       MatRowGet(TBBUr,i,TBBUrw);
-      if (/*TBBUrw.Cost!=0 and */TBBUrw.ItemType!=1 and CheckRegister(filenames[j],TBBUrw.Invoiced,offnumber,params)) then begin
+      if (/*TBBUrw.Cost!=0 and */TBBUrw.ItemType!=1 and CheckRegister(filenames[j],TBBUrw.Invoiced,offnumber,params,RepSpec.f3)) then begin
         if (stmovf) then begin
           if ((Blank(location) and NonBlank(TBBUrw.Spec)) or (NonBlank(location) and location==TBBUrw.Spec)) then begin
             costv = AbsoluteVal(TBBUrw.Price);

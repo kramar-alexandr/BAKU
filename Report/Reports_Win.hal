@@ -596,6 +596,7 @@ begin
   PeriodField(h=100,v=6,"Period");
   EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
   EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);
+  EditFieldTL(h,v+=20,150,"Customer",M4UStr,Normal,41,f3,false,CUSClass);
   ButtonFrame(h,vm=(v+=41),123,3,"Movement");
   RadioButton(h,v,0,0,"PZ",ArtMode);
   RadioButton(h,v+=16,1,0,"WZ",ArtMode);
