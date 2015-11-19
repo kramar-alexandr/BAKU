@@ -740,7 +740,7 @@ begin
                       outstring(550,0,"",false);
                       outstring(600,0,payEUR,false);
                       outstring(650,0,"",false);
-                      outstring(700,0,ccAZN+totccAZN,false);
+                      outstring(700,0,ccAZN,false);
                       outstring(700,0,"",false);
                       outstring(700,0,"",false);
                       outstring(700,0,IPr.Comment,false);
