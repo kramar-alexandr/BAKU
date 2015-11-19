@@ -219,6 +219,8 @@ begin
   date costdate;
   record ItemHistVc IH2r;
   boolean TrHs;
+  record IVVc IVr; //Edit***************************Sasha2,11:41 19.11.2015
+  row IVVc IVrw; //Edit***************************Sasha2,11:41 19.11.2015
     
     doc = docslist[IHr.TransNr];
     if (doc>-1) then begin
@@ -237,11 +239,21 @@ begin
     end else begin
       costdate = IHr.TransDate;
     end;
-    //if (IHr.CurncyCode!="PLN") then begin
-      CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
-    //end else begin
-      //costsum = IHr.TotCostPriceCurncy;
-    //end;
+    
+    if (IHr.StockAffectf!=1 and IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,11:42 19.11.2015 {
+      IVr.SerNr = IHr.TransNr;
+      if (ReadFirstMain(IVr,1,true)) then begin
+        MatRowGet(IVr,IHr.Row,IVrw);
+        CurValToOtherCur(costdate,baseCur,IVrw.FIFORowVal,"PLN",costsum,DefaultCurRoundOff);
+      end;
+    end else begin
+      //if (IHr.CurncyCode!="PLN") then begin
+        CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+      //end else begin
+        //costsum = IHr.TotCostPriceCurncy;
+      //end;
+    end; //Edit***************************Sasha2,11:42 19.11.2015 }
+    
     if (smf and NonBlank(location)) then begin
       IH2r.FileName = IHr.FileName;
       IH2r.TransNr = IHr.TransNr;
@@ -444,7 +456,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
       testf = true;
       if (IHr.FileName!=filenames[j]) then begin TrHs = false; testf = false; end;
       if (IHr.TransDate > RepSpec.sEndDate) then begin TrHs = false; testf = false; end;
-      if (IHr.StockAffectf!=1) then begin testf = false; end;
+      if (IHr.FileName!="IVVc" and IHr.StockAffectf!=1) then begin testf = false; end; //Edit***************************Sasha2,11:33 19.11.2015
       if (nonblank(location) and (location!=IHr.Location)) then begin testf = false; end;
       INr.Code = IHr.ArtCode;
       if (readfirstmain(INr,1,true) and INr.Terminated>0) then begin testf = false; end;
