@@ -631,27 +631,37 @@ begin
 					outstring(0,0,USetStr(13199),false);//EKNCode
 					outstring(0,0,USetStr(31052),false);
 					outstring(100,0,USetStr(31053),false);
-					outstring(101,0,USetStr(31055) & bcur,false);
+					if(bcur==azn)then begin
+						outstring(101,0,USetStr(31055) & bcur,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(102,0,USetStr(31055) & bcur,false);
 					end;
 					outstring(110,0,USetStr(31056),false);
+					if(bcur==azn)then begin
 					outstring(111,0,USetStr(31058) & bcur,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(112,0,USetStr(31058) & bcur,false);
 					end;
 					outstring(120,0,USetStr(31059),false);
-					outstring(121,0,USetStr(31061) & bcur,false);
+					if(bcur==azn)then begin
+						outstring(121,0,USetStr(31061) & bcur,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(122,0,USetStr(31061) & bcur,false);
 					end;
 					outstring(130,0,USetStr(31062),false);
-					outstring(131,0,USetStr(31064) & bcur,false);
+					if(bcur==azn)then begin
+						outstring(131,0,USetStr(31064) & bcur,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(132,0,USetStr(31064) & bcur,false);
 					end;
 					outstring(140,0,USetStr(31065),false);
-					outstring(141,0,USetStr(31067) & bcur,false);
+					if(bcur==azn)then begin
+						outstring(141,0,USetStr(31067) & bcur,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(142,0,USetStr(31067) & bcur,false);
 					end;
@@ -927,12 +937,16 @@ begin
 										
 										if (modef) then begin
 											outstring(100,0,brandfifo,false);//brandcur
-											outstring(101,0,fifoazn,false);//AZN
+											if(bcur==azn)then begin
+												outstring(101,0,fifoazn,false);//AZN
+											end;
 											if(bcur!=azn)then begin
 												outstring(102,0,fifob1,false);//basecur
 											end;
 											outstring(110,0,brandfifo*IVrw.Quant*cred,false);//brandcur
-											outstring(111,0,fifoazn*IVrw.Quant*cred,false);//AZN
+											if(bcur==azn)then begin
+												outstring(111,0,fifoazn*IVrw.Quant*cred,false);//AZN
+											end;
 											if(bcur!=azn)then begin
 												outstring(112,0,fifob1*IVrw.Quant*cred,false);//basecur
 											end;
@@ -970,7 +984,9 @@ begin
 										
 										if (modef) then begin
 											outstring(120,0,curprice,false);//brandcur
-											outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+											if(bcur==azn)then begin
+												outstring(121,0,IVrw.Price*aznfr/aznto,false);//AZN
+											end;
 										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
 											arrvals[valscnt] = arrvals[valscnt] + curprice; valscnt = valscnt + 1;
 											arrvals[valscnt] = arrvals[valscnt] + IVrw.Price*aznfr/aznto; valscnt = valscnt + 1;
@@ -992,7 +1008,9 @@ begin
 										
 										if (modef) then begin
 											outstring(130,0,curcusm,false);//brandcur
-											outstring(131,0,IVrw.Sum*aznfr/aznto*cred,false);//AZN
+											if(bcur==azn)then begin
+												outstring(131,0,IVrw.Sum*aznfr/aznto*cred,false);//AZN
+											end;
 										end else begin //Edit***************************Sasha2,11:17 20.11.2014 {
 											arrvals[valscnt] = arrvals[valscnt] + curcusm; valscnt = valscnt + 1;
 											arrvals[valscnt] = arrvals[valscnt] + IVrw.Sum*aznfr/aznto*cred; valscnt = valscnt + 1;
@@ -1014,7 +1032,9 @@ begin
 										
 										if (modef) then begin
 											outstring(140,0,curcusm - brandfifo*IVrw.Quant*cred,false);//brandcur
-											outstring(141,0,IVrw.Sum*aznfr/aznto*cred - fifob1*IVrw.Quant*aznfr/aznto*cred,false);//AZN
+											if(bcur==azn)then begin
+												outstring(141,0,IVrw.Sum*aznfr/aznto*cred - fifob1*IVrw.Quant*aznfr/aznto*cred,false);//AZN
+											end;
 											if(bcur!=azn)then begin
 												outstring(142,0,(IVrw.Sum - fifob1*IVrw.Quant)*cred,false);//basecur
 											end;
@@ -1100,27 +1120,37 @@ begin
 							outstring(14,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
 							outstring(15,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Quant
 							outstring(16,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //brandfifo
-							outstring(17,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //fifoazn
+							if(bcur==azn)then begin
+								outstring(17,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //fifoazn
+							end;
 							if(bcur!=azn)then begin
 								outstring(18,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //fifob1
 							end;
 							outstring(19,0,arrvals[valscnt],false); valscnt = valscnt + 1; //brandfifo*IVrw.Quant
-							outstring(20,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifoazn*IVrw.Quant
+							if(bcur==azn)then begin
+								outstring(20,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifoazn*IVrw.Quant
+							end;
 							if(bcur!=azn)then begin
 								outstring(21,0,arrvals[valscnt],false); valscnt = valscnt + 1; //fifob1*IVrw.Quant
 							end;
 							outstring(22,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //curprice
-							outstring(23,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
+							if(bcur==azn)then begin
+								outstring(23,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //IVrw.Price*aznfr/aznto
+							end;
 							if(bcur!=azn)then begin
 								outstring(24,0,arrvals[valscnt]/itemoccurrences,false); valscnt = valscnt + 1; //IVrw.Price
 							end;
 							outstring(25,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm
+							if(bcur==azn)then begin
 							outstring(26,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto
+							end;
 							if(bcur!=azn)then begin
 								outstring(27,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum
 							end;
 							outstring(28,0,arrvals[valscnt],false); valscnt = valscnt + 1; //curcusm - brandfifo*IVrw.Quant
-							outstring(29,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto
+							if(bcur==azn)then begin
+								outstring(29,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum*aznfr/aznto - fifob1*IVrw.Quant*aznfr/aznto
+							end;
 							if(bcur!=azn)then begin
 								outstring(30,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum - fifob1*IVrw.Quant
 							end;
@@ -1159,23 +1189,33 @@ begin
 						outstring(0,0,"",false);
 					end;
 					outstring(0,0,"",false);
-					outstring(0,0,"",false);
+					if(bcur==azn)then begin
+						outstring(0,0,"",false);
+					end;
 					
 					outstring(0,0,USetStr(31075),false);
-					outstring(0,0,total_cost,false);
+					if(bcur==azn)then begin
+						outstring(0,0,total_cost,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(0,0,btotal_cost,false);
 						outstring(0,0,"",false);
 					end;
+					if(bcur==azn)then begin
 					outstring(0,0,"",false);
+					end;
 					outstring(0,0,"",false);
 					outstring(0,0,USetStr(31076),false);
-					outstring(0,0,total_price,false);
+					if(bcur==azn)then begin
+						outstring(0,0,total_price,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(0,0,btotal_price,false);
 					end;
 					outstring(0,0,USetStr(31077),false);
-					outstring(0,0,total_price - total_cost,false);
+					if(bcur==azn)then begin
+						outstring(0,0,total_price - total_cost,false);
+					end;
 					if(bcur!=azn)then begin
 						outstring(0,0,btotal_price - btotal_cost,false);
 					end;
