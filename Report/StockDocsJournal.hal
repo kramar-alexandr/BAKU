@@ -211,7 +211,7 @@ begin
   return;
 end; //Edit***************************Sasha2,11:56 30.03.2015 }
 
-procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf,string baseCur,string location)
+procedure CollectDocCosts(var record TBBUVc TBBUr,record ItemHistVc IHr,var vector longint docslist,var integer docslistcnt, Boolean smf, var boolean errorf,string baseCur,string location,record INVc INr)
 begin
   row TBBUVc TBBUrw;
   LongInt doc;
@@ -240,12 +240,25 @@ begin
       costdate = IHr.TransDate;
     end;
     
-    if (IHr.StockAffectf!=1 and IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,11:42 19.11.2015 {
-      IVr.SerNr = IHr.TransNr;
-      if (ReadFirstMain(IVr,1,true)) then begin
-        MatRowGet(IVr,IHr.Row,IVrw);
-        CurValToOtherCur(costdate,baseCur,IVrw.FIFORowVal,"PLN",costsum,DefaultCurRoundOff);
+    if (IHr.FileName=="IVVc") then begin //Edit***************************Sasha2,11:42 19.11.2015 {
+      if (INr.ItemType>0 and IHr.StockAffectf!=1) then begin
+        IVr.SerNr = IHr.TransNr;
+        if (ReadFirstMain(IVr,1,true)) then begin
+          MatRowGet(IVr,IHr.Row,IVrw);
+          CurValToOtherCur(costdate,baseCur,IVrw.FIFORowVal,"PLN",costsum,DefaultCurRoundOff);
+        end;
+      end else begin
+        if (INr.ItemType==0) then begin
+          IVr.SerNr = IHr.TransNr;
+          if (ReadFirstMain(IVr,1,true)) then begin
+            MatRowGet(IVr,IHr.Row,IVrw);
+            CurValToOtherCur(costdate,baseCur,IVrw.Sum,"PLN",costsum,DefaultCurRoundOff);
+          end;
+        end else begin
+          CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
+        end;
       end;
+      
     end else begin
       //if (IHr.CurncyCode!="PLN") then begin
         CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
@@ -289,7 +302,10 @@ begin
         end;
       end else begin
         TBBUrw.Spec = IHr.Location;
-        TBBUrw.Cost = TBBUrw.Cost - costsum;
+        if (INr.ItemType>0) then begin
+          TBBUrw.Cost = TBBUrw.Cost - costsum;
+        end;
+        TBBUrw.Sum = TBBUrw.Sum - costsum;
       end;
     end else begin
       if (smf) then begin
@@ -299,7 +315,10 @@ begin
         end;
       end else begin
         TBBUrw.Spec = IHr.Location;
-        TBBUrw.Cost = TBBUrw.Cost + costsum;
+        if (INr.ItemType>0) then begin
+          TBBUrw.Cost = TBBUrw.Cost + costsum;
+        end;
+        TBBUrw.Sum = TBBUrw.Sum + costsum;
       end;
     end;
     
@@ -479,7 +498,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
   	Lcuritem:;
       end;
       if (testf) then begin
-        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf,baseCur,location,);
+        CollectDocCosts(TBBUr,IHr,docslist,docslistcnt,stmovf,errorf,baseCur,location,INr);
         if (errorf) then begin
           goto LStockDocsJournal;
         end;
@@ -518,7 +537,7 @@ array string 100 params; //Edit***************************Sasha2,14:02 01.04.201
             subTotalCostAbs = subTotalCostAbs + costv;
           end;
         end else begin
-          costv = AbsoluteVal(TBBUrw.Cost);
+          costv = AbsoluteVal(TBBUrw.Sum);
           StartFormat(15);
             OutString(outstrpos[0],0,TBBUrw.Spec,false);			
     				OutString(outstrpos[1],0,GetDocName(filenames[j],0),false);
