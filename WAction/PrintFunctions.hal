@@ -1,4 +1,5 @@
 remote procedure CreatePrintNoter(record RcVc, record ORVc);
+remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string); 
 
 global function string 255 GetTextForPrint(integer i, string rec)
 begin
@@ -44,6 +45,35 @@ Boolean foundf;
 
 return;
 end;
+
+global //Edit***************************Sasha2,10:49 25.11.2015 {
+procedure CheckFormsForPrint(string repName,string recName,integer cnt,var array Boolean toPrintF,var array LongInt intDocNr,var array string repDescr)
+begin
+  record FormDefVc FDr;
+  row FormDefVc FDrw;
+  Integer i;
+  string 200 formCode;
+  
+  FDr.repname = repName;
+  if (ReadFirstMain(FDr,1,true)) then begin
+   for(i=0;i<cnt;i=i+1)begin
+  		matrowget(FDr,i,FDrw);
+  		formCode = "";
+  		if(Getformcode(i,FDrw.intdocnr,FDrw.FPCode,FDrw.UserGroup,FDrw.LangCode,FDrw.SerNr,-1,FDrw.PrintGroupCode,"",i+1,recName,formCode))then begin
+  			toPrintF[i] = true;
+  			intDocNr[i] = FDrw.intdocnr;
+  			repDescr[i] = GetTextForPrint(i,recName);
+  		end else begin
+  		  toPrintF[i] = false;
+  			intDocNr[i] = -1;
+  			repDescr[i] = "";
+  		end;
+  	end; 
+  end;
+  
+    
+  return;
+end; //Edit***************************Sasha2,10:49 25.11.2015 }
 
 /*global
 procedure PrintDoOrdFormButton()
