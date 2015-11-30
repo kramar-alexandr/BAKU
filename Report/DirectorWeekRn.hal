@@ -502,7 +502,7 @@ begin
 							corspdebval = blankval;
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr51,i,corspdebval,corspcredval);
-							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
+							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal) and (TRr.IntYc != IVYc)) then begin
 								store = "";
 								GetObjs("STORE",TRrw.Objects,store);
 								if nonblank(store) then begin
@@ -843,24 +843,22 @@ begin
 	tab[17] = 400; tab[18] = 425;
 	
 	StartReportNoHeaderJob("Еженедельный отчет директоров");
-	//Объект
-		if nonblank(RepSpec.ObjStr) then begin
-			Objr.Code = RepSpec.ObjStr;
-			ReadFirstMain(Objr,1,true);
-			StartFormat(15);
-				OutString(0,0,"",false);
-				OutString(20,0,Objr.Code & " " & Objr.Comment,false);
-			EndFormat;
-		end;
-	//Период
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"",false);
-			OutString(54,0,"",false);
-			OutString(79,0,"",false);
-			OutString(93,0,"",false);
-			OutString(118,0,"",false);
+			if nonblank(RepSpec.ObjStr) then begin
+				Objr.Code = RepSpec.ObjStr;
+				ReadFirstMain(Objr,1,true);
+				OutString(15,0,Objr.Code & " " & Objr.Comment,false);
+			end else begin
+				OutString(15,0,"",false);
+			end;
+			OutString(120,0,"",false);
+			OutString(130,0,"",false);
+			OutString(140,0,"",false);
+			OutString(150,0,"",false);
 			OutString(265,0,RepSpec.sStartDate & " : " & RepSpec.sEndDate,false);
+		EndFormat;
+		StartFormat(15);
 		EndFormat;
 		FindNLAccBal("51",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,"",0,"","",BeginBalance51);
 		tempBal = 0;
@@ -919,45 +917,61 @@ begin
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Остаток общего счета",false);
-				OutString(54,0,BeginBalance50n53USD,false);
-				OutString(79,0,"USD",false);
+				OutString(15,0,"Остаток общего счета",false);
+				OutString(60,0,BeginBalance50n53USD,false);
+				OutString(90,0,"USD",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
-				OutString(54,0,BeginBalance50n53EUR,false);
-				OutString(79,0,"EUR",false);
+				OutString(15,0,"",false);
+				OutString(60,0,BeginBalance50n53EUR,false);
+				OutString(90,0,"EUR",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
-				OutString(54,0,BeginBalance50n53AZN,false);
-				OutString(79,0,"AZN",false);
+				OutString(15,0,"",false);
+				OutString(60,0,BeginBalance50n53AZN,false);
+				OutString(90,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
-				OutString(54,0,BeginBalance51,false);
-				OutString(79,0,"AZN терминал",false);
+				OutString(15,0,"",false);
+				OutString(60,0,BeginBalance51,false);
+				OutString(90,0,"AZN терминал",false);
+			EndFormat;
+			Gray_Divider(25,120);
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(25,0,"Сумма в осн. вал.",false);
+				OutString(60,0,BeginBalance50n51n53,false);
+				OutString(90,0,"AZN",false);
+			EndFormat;
+			StartFormat(15);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Деньги в офисе",false);
-				OutString(54,0,BeginBalance53USD,false);
-				OutString(79,0,"USD",false);
+				OutString(15,0,"Деньги в офисе",false);
+				OutString(60,0,BeginBalance53USD,false);
+				OutString(90,0,"USD",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
-				OutString(54,0,BeginBalance53EUR,false);
-				OutString(79,0,"EUR",false);
+				OutString(15,0,"",false);
+				OutString(60,0,BeginBalance53EUR,false);
+				OutString(90,0,"EUR",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
-				OutString(54,0,BeginBalance53AZN,false);
-				OutString(79,0,"AZN",false);
+				OutString(15,0,"",false);
+				OutString(60,0,BeginBalance53AZN,false);
+				OutString(90,0,"AZN",false);
+			EndFormat;
+			Gray_Divider(25,120);
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(25,0,"Сумма в осн. вал.",false);
+				OutString(60,0,BeginBalance53,false);
+				OutString(90,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 			EndFormat;
@@ -966,33 +980,33 @@ begin
 				if (BeginBalance50USD!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"Остаток на " & RepSpec.sStartDate & " по валютам:",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance50USD,false);
-						OutString(79,0,"USD",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance50USD,false);
+						OutString(90,0,"USD",false);
 					EndFormat;
 				end;
 				if (BeginBalance50EUR!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance50EUR,false);
-						OutString(79,0,"EUR",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance50EUR,false);
+						OutString(90,0,"EUR",false);
 					EndFormat;
 				end;
 				if (BeginBalance50AZN!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance50AZN,false);
-						OutString(79,0,"AZN",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance50AZN,false);
+						OutString(90,0,"AZN",false);
 					EndFormat;
 				end;
 				if (BeginBalance51!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance51,false);
-						OutString(79,0,"AZN терминал",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance51,false);
+						OutString(90,0,"AZN терминал",false);
 					EndFormat;
 				end;
 				StartFormat(15);
@@ -1013,17 +1027,17 @@ begin
 				if (BeginBalance50AZN!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance50AZN,false);
-						OutString(79,0,"AZN",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance50AZN,false);
+						OutString(90,0,"AZN",false);
 					EndFormat;
 				end;
 				if (BeginBalance51!=0) then begin
 					StartFormat(15);
 						OutString(0,0,"",false);
-						OutString(20,0,"",false);
-						OutString(54,0,BeginBalance51,false);
-						OutString(79,0,"AZN терминал",false);
+						OutString(15,0,"",false);
+						OutString(60,0,BeginBalance51,false);
+						OutString(90,0,"AZN терминал",false);
 					EndFormat;
 				end;
 				StartFormat(15);
@@ -1589,7 +1603,7 @@ begin
 		//Оборот\Расход AZN
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Оборот AZN:",false);
+			OutString(15,0,"Оборот AZN:",false);
 			OutString(44,0,BaseDeb - BaseDebErr,false);
 			OutString(69,0,"",false);
 			OutString(93,0,"",false);
@@ -1600,11 +1614,11 @@ begin
 		StartFormat(15);
 		EndFormat;
 		// Табл. 2,3
-		Black_Divider(20,93);
+		Black_Divider(15,93);
 		Black_Divider(142,216);
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Касса",false);
+			OutString(15,0,"Касса",false);
 			OutString(44,0,"Сумма",false);
 			OutString(69,0,"Валюта",false);
 			OutString(93,0,"",false);
@@ -1613,11 +1627,11 @@ begin
 			OutString(167,0,"Сумма",false);
 			OutString(191,0,"Валюта",false);
 		EndFormat;
-		Black_Divider(20,93);
+		Black_Divider(15,93);
 		Black_Divider(142,216);
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Приход",false);// Касса - Приход
+			OutString(15,0,"Приход",false);// Касса - Приход
 			OutString(44,0,BaseDeb - AZNTermDeb - BaseDebErr,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
@@ -1626,11 +1640,11 @@ begin
 			OutString(167,0,AZNTermDeb,false);
 			OutString(191,0,"AZN",false);
 		EndFormat;
-		Gray_Divider(20,93);
+		Gray_Divider(15,93);
 		Gray_Divider(142,216);
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Расход",false);// Касса - Расход
+			OutString(15,0,"Расход",false);// Касса - Расход
 			OutString(44,0,BaseCred - AZNTermCred - BaseCredErr,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
@@ -1639,12 +1653,12 @@ begin
 			OutString(167,0,AZNTermCred,false);
 			OutString(191,0,"AZN",false);
 		EndFormat;
-		Gray_Divider(20,93);
+		Gray_Divider(15,93);
 		Gray_Divider(142,216);
-		SaldoEndPeriod51 = BeginBalance51 + AZNTermDeb - AZNTermCred + convtotal1;// Edit ************************** Thursday, 27 August 2015 15:22:19
+		SaldoEndPeriod51 = BeginBalance51 + AZNTermDeb - AZNTermCred + convtotal1;// Edit ************************** Thursday, 27 August 1515 15:22:19
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Конв/банк",false);
+			OutString(15,0,"Конв/банк",false);
 			OutString(44,0,convtotal2,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
@@ -1653,10 +1667,10 @@ begin
 			OutString(167,0,convtotal1,false);
 			OutString(191,0,"AZN",false);
 		EndFormat;
-		Gray_Divider(20,93);
+		Gray_Divider(15,93);
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"Сдано",false);
+			OutString(15,0,"Сдано",false);
 			OutString(44,0,Bal53,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
@@ -1667,24 +1681,24 @@ begin
 		EndFormat;
 		Black_Divider(142,216);
 		if (CurrentCompany == 3) or (BalItem1 != 0) then begin
-			Gray_Divider(20,93);
+			Gray_Divider(15,93);
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Приход за товар",false);
+				OutString(15,0,"Приход за товар",false);
 				OutString(44,0,BalItem1,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
 		if (CurrentCompany == 3) or (BalItem2 != 0) then begin
-			Gray_Divider(20,93);
+			Gray_Divider(15,93);
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Расход за товар",false);
+				OutString(15,0,"Расход за товар",false);
 				OutString(44,0,BalItem2,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
-		Black_Divider(20,93);
+		Black_Divider(15,93);
 	// к сдаче
 		SaldoEndPeriod50n51 = BeginBalance50n51 + BaseDeb - BaseCred + convtotal5;// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50USD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
@@ -1693,21 +1707,21 @@ begin
 		if (CurrentCompany == 3) or (kursovaya != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"К сдаче",false);
+				OutString(15,0,"К сдаче",false);
 				OutString(44,0,SaldoEndPeriod50n51 - kursovaya,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Курсовая",false);
+				OutString(15,0,"Курсовая",false);
 				OutString(44,0,kursovaya,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
-			Black_Divider(20,93);
+			Black_Divider(15,93);
 		end;
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"К сдаче",false);
+			OutString(15,0,"К сдаче",false);
 			OutString(44,0,SaldoEndPeriod50n51,false);
 			OutString(69,0,"AZN",false);
 		EndFormat;
@@ -1716,12 +1730,12 @@ begin
 		EndFormat;
 		StartFormat(15);
 			OutString(0,0,"",false);
-			OutString(20,0,"К сдаче по валютам",false);
+			OutString(15,0,"К сдаче по валютам",false);
 		EndFormat;
 		if (CurrentCompany == 3) or (SaldoEndPeriod50USD != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod50USD,false);
 				OutString(69,0,"USD",false);
 			EndFormat;
@@ -1729,7 +1743,7 @@ begin
 		if (CurrentCompany == 3) or (SaldoEndPeriod50EUR != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod50EUR,false);
 				OutString(69,0,"EUR",false);
 			EndFormat;
@@ -1737,7 +1751,7 @@ begin
 		if (CurrentCompany == 3) or (SaldoEndPeriod50AZN != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod50AZN,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
@@ -1745,7 +1759,7 @@ begin
 		if (CurrentCompany == 3) or (SaldoEndPeriod51 != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod51,false);
 				OutString(69,0,"AZN терминал",false);
 			EndFormat;
@@ -1776,21 +1790,30 @@ begin
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Деньги в офисе",false);
+				OutString(15,0,"Деньги в офисе",false);
 				OutString(44,0,SaldoEndPeriod53USD,false);
 				OutString(69,0,"USD",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod53EUR,false);
 				OutString(69,0,"EUR",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod53AZN,false);
 				OutString(69,0,"AZN",false);
+			EndFormat;
+			Gray_Divider(25,90);
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(25,0,"Сумма в осн. вал.",false);
+				OutString(44,0,SaldoEndPeriod53,false);
+				OutString(69,0,"AZN",false);
+			EndFormat;
+			StartFormat(15);
 			EndFormat;
 			SaldoEndPeriod50n53USD = SaldoEndPeriod50USD + SaldoEndPeriod53USD;
 			SaldoEndPeriod50n53EUR = SaldoEndPeriod50EUR + SaldoEndPeriod53EUR;
@@ -1798,27 +1821,34 @@ begin
 			
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"Остаток общего счета",false);
+				OutString(15,0,"Остаток общего счета",false);
 				OutString(44,0,SaldoEndPeriod50n53USD,false);
 				OutString(69,0,"USD",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod50n53EUR,false);
 				OutString(69,0,"EUR",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod50n53AZN,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
-				OutString(20,0,"",false);
+				OutString(15,0,"",false);
 				OutString(44,0,SaldoEndPeriod51,false);
 				OutString(69,0,"AZN терминал",false);
+			EndFormat;
+			Gray_Divider(25,90);
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(25,0,"Сумма в осн. вал.",false);
+				OutString(44,0,SaldoEndPeriod50n51 + SaldoEndPeriod53,false);
+				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
 	EndJob;
