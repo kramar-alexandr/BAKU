@@ -447,7 +447,7 @@ begin
 		outstring(0,0,INr.Metal,false);
 		outstring(0,0,INr.RowWeight,false);
 		outstring(0,0,INr.MajStoneDet,false);
-		if(currentcompany==3)then begin
+		if(currentcompany==3 or currentcompany==17)then begin
 			outstring(0,0,INr.BrcStr,false);
 			outstring(0,0,INr.Gender,false);
 		end;
@@ -852,7 +852,7 @@ begin
 			outstring(0,0,USetStr(31047),false);
 			outstring(0,0,USetStr(31178),false);
 			outstring(0,0,USetStr(31048),false);
-			if(currentcompany==3)then begin
+			if(currentcompany==3 or currentcompany==17)then begin
 				outstring(0,0,USetStr(31049),false);
 				outstring(0,0,USetStr(31050),false);
 			end;
@@ -1022,7 +1022,7 @@ begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			if(currentcompany==3)then begin
+			if(currentcompany==3 or currentcompany==17)then begin
 				outstring(0,0,"",false);
 				outstring(0,0,"",false);
 			end;

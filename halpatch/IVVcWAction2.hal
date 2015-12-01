@@ -1041,7 +1041,7 @@ BEGIN
     t = cash + pp;
     
     rnd.mode = kRoundingModeHalfUp;
-    if(currentcompany==3)then begin
+    if(currentcompany==3 or currentcompany==17)then begin
     	rnd.step = kRoundingStep5;
     end;
     IVr.RetnValue = round(t - IVr.Sum4,rnd); 

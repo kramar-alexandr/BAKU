@@ -10,7 +10,7 @@ boolean TrHs,testf;
 
   todate = addday(currentdate,-16);
   IVr.InvDate = addday(currentdate,-1);
-  if(currentcompany==3)then begin
+  if(currentcompany==3 or currentcompany==17)then begin
   	IVr.InvDate = currentdate;	
   end;
   TrHs = true;

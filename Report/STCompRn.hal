@@ -492,7 +492,7 @@ BEGIN
         ItemClassTypef(RepSpec.f5,INr.DispGroups,testf);
       end;
     end;
-    if (CurrentCompany==3) then begin
+    if (CurrentCompany==3 or currentcompany==17) then begin
     	if(RepSpec.flags[6]==1 and INr.ConsgType==0)then begin testf = false; end;	//Edit----------------------Dima 11:50 28.05.2015
     	if(RepSpec.flags[7]==1 and INr.ConsgType==1)then begin testf = false; end;
     	if(RepSpec.flags[8]==1 and INr.ConsgType==2)then begin testf = false; end;  //Edit----------------------Dima  28.05.2015  

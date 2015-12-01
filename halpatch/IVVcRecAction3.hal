@@ -669,7 +669,7 @@ LkInvoiceRowTypeNormal2:;
         // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 17 September 2014 09:23:40
 	
-        if(currentcompany==3)then begin
+        if(currentcompany==3 or currentcompany==17)then begin
         	if (MSb.requireLocation!=0) then begin            
             if (nonblank(IVrw.ArtCode)) then begin
               if (blank(IVp.Location)) and (blank(IVrw.Location)) then begin

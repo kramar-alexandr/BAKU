@@ -163,7 +163,7 @@ begin
 							filename = "";
 							res = "";
 							uid = "";
-							if(currentcompany!=3)then begin
+							if(currentcompany!=3 and currentcompany!=17)then begin
 								if(ReadRecordLink(INr,1,Attachr,RLr))then begin
 									res = Attachr.SerNr;
 									uid = Attachr.UUID;

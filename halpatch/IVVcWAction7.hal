@@ -1606,7 +1606,7 @@ begin
 				port = PSb.httpPort;
 				path = CBrw.TCPIP;
 				//SWAROVSKI LLADRO J&W V&B Creative Ambiance Carpets Cadenza
-				if(currentcompany!=1 and currentcompany!=2 and currentcompany!=3 and currentcompany!=4 and currentcompany!=6 and currentcompany!=7 and currentcompany!=8 and currentcompany!=9 and currentcompany!=13 and currentcompany!=14)then begin
+				if(currentcompany!=1 and currentcompany!=2 and currentcompany!=3 and currentcompany!=4 and currentcompany!=6 and currentcompany!=7 and currentcompany!=8 and currentcompany!=9 and currentcompany!=13 and currentcompany!=14 and currentcompany!=17)then begin
 					tstr1 = GetINImageAttach(IVrw.ArtCode);
 				end else begin
 					if(currentcompany==9)then begin

@@ -175,7 +175,7 @@ begin
             end;
         end;
         BlockLoad(LMb);
-        if(currentcompany==3)then begin
+        if(currentcompany==3 or currentcompany==17)then begin
 					cur = "AZN";
 					if (GetFullCurncyPurchaseRate(cur,CurrentDate,invfr,invto1,mto2,mbr1,mbr2)==false) then begin// Edit ************************** Monday, 25 March 2013 17:43:29
 						GetFullCurncyRate(cur,CurrentDate,invfr,invto1,mto2,mbr1,mbr2);// Edit ************************** Monday, 25 March 2013 17:43:28

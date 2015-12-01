@@ -5,7 +5,7 @@ function Boolean HasJewelleryInterface()
 begin
   //record ModuleBlock Modb;
   
-  if(currentcompany==3)then begin
+  if(currentcompany==3 or currentcompany==17)then begin
   	HasJewelleryInterface = 1;
   end;
  /*if (IsEnterprise) then begin

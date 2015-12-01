@@ -247,57 +247,55 @@ begin
 							corspdebval = blankval;
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr50,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 11:01:28
-							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal))then begin
+							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal) and (TRr.IntYc != IVYc) and (TRr.IntYc != IPYc)) then begin
 								store = "";
 								GetObjs("STORE",TRrw.Objects,store);
-								if nonblank(store) then begin
-									for (k=0;k<rwcnt;k=k+1) begin
-										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "50") and (tempTRrw2.ovst <> 1) then begin 
-											if ((tempTRrw2.CredVal == TRrw.DebVal) and (tempTRrw2.DebVal == TRrw.CredVal)) then begin
-												store2 = "";
-												GetObjs("STORE",tempTRrw2.Objects,store2);
-												if (store == store2) then begin
-													if (TRrw.CredVal!=0) then begin
-														tempTRrw.MyVal1 = -TRrw.CurCredVal;
-														tempTRrw.MyVal2 = -TRrw.CredVal;
-													end else begin
-														tempTRrw.MyVal1 = TRrw.CurDebVal;
-														tempTRrw.MyVal2 = TRrw.DebVal;
-													end;
-													tempTRrw.CurDebVal = blankval;
-													tempTRrw.DebVal = blankval;
-													tempTRrw.CurCredVal = blankval;
-													tempTRrw.CredVal = blankval;
+								for (k=0;k<rwcnt;k=k+1) begin
+									MatRowGet(TRr,k,tempTRrw2);
+									if (tempTRrw2.AccNumber == "50") and (tempTRrw2.ovst <> 1) then begin 
+										if ((tempTRrw2.CredVal == TRrw.DebVal) and (tempTRrw2.DebVal == TRrw.CredVal)) then begin
+											store2 = "";
+											GetObjs("STORE",tempTRrw2.Objects,store2);
+											if ((store == store2) and nonblank(store) and nonblank(store2)) or (blank(store) and blank(store2)) then begin
+												if (TRrw.CredVal!=0) then begin
+													tempTRrw.MyVal1 = -TRrw.CurCredVal;
+													tempTRrw.MyVal2 = -TRrw.CredVal;
 												end else begin
-													if (TRrw.DebVal!=0) then begin
-														TRrw.CredVal = -TRrw.DebVal;
-														TRrw.DebVal = blankval;
-														TRrw.CurCredVal = -TRrw.CurDebVal;
-														TRrw.CurDebVal = blankval;
-													end;
-													tempTRrw.CurDebVal = TRrw.CurDebVal;
-													tempTRrw.CurCredVal = TRrw.CurCredVal;
-													tempTRrw.DebVal = TRrw.DebVal;
-													tempTRrw.CredVal = TRrw.CredVal;
+													tempTRrw.MyVal1 = TRrw.CurDebVal;
+													tempTRrw.MyVal2 = TRrw.DebVal;
 												end;
+												tempTRrw.CurDebVal = blankval;
+												tempTRrw.DebVal = blankval;
+												tempTRrw.CurCredVal = blankval;
+												tempTRrw.CredVal = blankval;
 											end else begin
-												if i != k then begin
-													if ((tempTRrw2.CredVal == TRrw.DebVal) or (tempTRrw2.DebVal == TRrw.CredVal)) and (tempTRrw2.Objects == TRrw.Objects) then begin
-														testf = CorspTRTest(TRr,Accr8403,k,corspdebval,corspcredval);
-														if testf then begin
-															if (TRrw.CredVal!=0) then begin
-																tempTRrw.MyVal1 = -TRrw.CurCredVal;
-																tempTRrw.MyVal2 = -TRrw.CredVal;
-															end else begin
-																tempTRrw.MyVal1 = TRrw.CurDebVal;
-																tempTRrw.MyVal2 = TRrw.DebVal;
-															end;
-															tempTRrw.CurDebVal = blankval;
-															tempTRrw.DebVal = blankval;
-															tempTRrw.CurCredVal = blankval;
-															tempTRrw.CredVal = blankval;
+												if (TRrw.DebVal!=0) then begin
+													TRrw.CredVal = -TRrw.DebVal;
+													TRrw.DebVal = blankval;
+													TRrw.CurCredVal = -TRrw.CurDebVal;
+													TRrw.CurDebVal = blankval;
+												end;
+												tempTRrw.CurDebVal = TRrw.CurDebVal;
+												tempTRrw.CurCredVal = TRrw.CurCredVal;
+												tempTRrw.DebVal = TRrw.DebVal;
+												tempTRrw.CredVal = TRrw.CredVal;
+											end;
+										end else begin
+											if i != k then begin
+												if ((tempTRrw2.CredVal == TRrw.DebVal) or (tempTRrw2.DebVal == TRrw.CredVal)) and (tempTRrw2.Objects == TRrw.Objects) then begin
+													testf = CorspTRTest(TRr,Accr8403,k,corspdebval,corspcredval);
+													if testf then begin
+														if (TRrw.CredVal!=0) then begin
+															tempTRrw.MyVal1 = -TRrw.CurCredVal;
+															tempTRrw.MyVal2 = -TRrw.CredVal;
+														end else begin
+															tempTRrw.MyVal1 = TRrw.CurDebVal;
+															tempTRrw.MyVal2 = TRrw.DebVal;
 														end;
+														tempTRrw.CurDebVal = blankval;
+														tempTRrw.DebVal = blankval;
+														tempTRrw.CurCredVal = blankval;
+														tempTRrw.CredVal = blankval;
 													end;
 												end;
 											end;
@@ -502,7 +500,7 @@ begin
 							corspdebval = blankval;
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr51,i,corspdebval,corspcredval);
-							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal) and (TRr.IntYc != IVYc)) then begin
+							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal) and (TRr.IntYc != IVYc) and (TRr.IntYc != IPYc)) then begin
 								store = "";
 								GetObjs("STORE",TRrw.Objects,store);
 								if nonblank(store) then begin
@@ -911,7 +909,7 @@ begin
 		BeginBalance50n53EUR = BeginBalance50EUR + BeginBalance53EUR;
 		BeginBalance50n53AZN = BeginBalance50AZN + BeginBalance53AZN;
 		StartFormat(15);
-		if CurrentCompany==3 then begin
+		if (CurrentCompany==3 or currentcompany==17) then begin
 		//Ћстаток на...
 				OutString(0,0,"Ћстаток на " & RepSpec.sStartDate & ":",false);
 			EndFormat;
