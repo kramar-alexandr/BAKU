@@ -909,7 +909,7 @@ begin
 		BeginBalance50n53EUR = BeginBalance50EUR + BeginBalance53EUR;
 		BeginBalance50n53AZN = BeginBalance50AZN + BeginBalance53AZN;
 		StartFormat(15);
-		if (CurrentCompany==3 or currentcompany==17) then begin
+		if CurrentCompany==3 then begin
 		//Ћстаток на...
 				OutString(0,0,"Ћстаток на " & RepSpec.sStartDate & ":",false);
 			EndFormat;
