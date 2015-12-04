@@ -153,6 +153,7 @@ begin
   Report("Paper Planes report",PaperPlanesRClass,PaperPlanesRn,0,modSL); //Edit***************************Sasha2,17:44 31.07.2015
   Report("Ошибки по долгам и авансам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
   Report("Повторяющиеся штрих-коды",SameBarCodesRClass,SameBarCodesRn,0,modIN);	//Edit----------------------Dima  18.09.2015
+  Report("Ошибки в начальных сальдо",FBErrRClass,FBErrRn,0,modNL);
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
