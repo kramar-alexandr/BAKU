@@ -2283,10 +2283,10 @@ window NewINDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   integer tilenr,flipnr,f;
-  real h,h1,h2,h3,h4,h5,v,vm,vs;
+  real h,h1,h2,h3,h4,h5,v,vm,vs,pos;
   string 255 label;
   WindowBegin("Новые товары",NewINDClass,CGview,-);
-  SetWRect(20,80,830,400);//##cc
+  SetWRect(20,80,1230,400);//##cc //830
   Sizeable(-1,-1,-1,0);
   UseView(NewINVc);
   Tile(0,87,false,"",SerNr); 
@@ -2326,11 +2326,11 @@ begin
 		//EditField(h,v+=vs,100,"% премии",Normal,Bonus,true,0);
 		EditField(h,v+=vs,-240,"Объекты",Normal,Objects,false,ObjSClass);
 		EditField(h,v+=vs,-240,"Классификация",Normal,DispGroups,false,DISClass);
-		ButtonFrame(h5+150,v=24,130,4,"Тип товара");//##cc
-		RadioButton(h5+150,v,kItemTypePlain,0,"Свободный",ItemType);
-		RadioButton(h5+150,v+=16,kItemTypeStocked,0,"Складируемый",ItemType);
-		RadioButton(h5+150,v+=16,kItemTypeStructured,0,"Структурированный",ItemType);
-		RadioButton(h5+150,v+=16,kItemTypeService,0,"Работа",ItemType);
+		ButtonFrame(/*h5+150*/-200,v=24,130,4,"Тип товара");//##cc
+		RadioButton(/*h5+150*/-200,v,kItemTypePlain,0,"Свободный",ItemType);
+		RadioButton(/*h5+150*/-200,v+=16,kItemTypeStocked,0,"Складируемый",ItemType);
+		RadioButton(/*h5+150*/-200,v+=16,kItemTypeStructured,0,"Структурированный",ItemType);
+		RadioButton(/*h5+150*/-200,v+=16,kItemTypeService,0,"Работа",ItemType);
 		//CheckBox(h1,v+=32,0,"В проекте товар как материал",ItemMaterial);
 /*Ювелир*/	Tile(tilenr,110,false,tilenr,-); tilenr = tilenr + 1;
 		EditField(h,v=6, 140,"Метал",Normal,Metal,false,0); 
@@ -2507,7 +2507,7 @@ begin
 		MatCol(1,-80,"Цвет",0,Colour,false,0);
 		Flip(flipnr); flipnr = flipnr + 1;
 		MatCol(1,130,"Наименование",0,Name,false,0);
-		MatCol(1,-50,"Серийный учет",0,SerNrf,false,0);
+		MatCol(1,-70,"Серийный учет",0,SerNrf,false,0);
 		//MatCol(1,200,"Стоимость осн.вал.",0,InPrice,true,0);
 		//MatCol(1,-240,"Валюта посл. покупки",0,LastPurchCurncyCode,true,CurncyCodeSClass);
 		Flip(flipnr); flipnr = flipnr + 1;
@@ -2520,6 +2520,54 @@ begin
 		MatCol(1,130,"Наименование",0,Name,false,0);
 		MatCol(1,-160,"Себестоимость",0,LastPurchPrice2,false,0);
 		MatCol(1,-80,"Валюта",0,LastPurchCurncyCode,false,CurncyCodeSClass);
+		Flip(flipnr); flipnr = flipnr + 1; //Edit***************************Sasha2,17:02 04.12.2015 {
+		pos = 100;
+		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+		MatCol(1,pos+=80,"Collection",0,Collection,false,TypeDISClass);
+		MatCol(1,pos+=80,"Style",0,Style,false,TypeDISClass);
+		MatCol(1,pos+=80,"Type",0,Type,false,TypeDISClass);
+		MatCol(1,pos+=80,"Gender",0,GenderSC,false,TypeDISClass);
+		MatCol(1,pos+=80,"Dial",0,Dial,false,TypeDISClass);
+		MatCol(1,pos+=80,"Strap",0,Strap,false,TypeDISClass);
+		MatCol(1,pos+=80,"Material",0,Material,false,TypeDISClass);
+		MatCol(1,pos+=80,"PrecStones",0,PrecStones,false,TypeDISClass);
+		MatCol(1,pos+=80,"Mechanism",0,Mechanism,false,TypeDISClass);
+		MatCol(1,pos+=80,"Function",0,Function,false,TypeDISClass);
+		MatCol(1,pos+=80,"WaterResist",0,WaterResist,false,TypeDISClass);
+		MatCol(1,pos+=80,"Diameter",0,Diameter,false,TypeDISClass);
+		Flip(flipnr); flipnr = flipnr + 1;
+		pos = 100;
+		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+		MatCol(1,pos+=80,"Collection",0,Collection,false,TypeDISClass);
+		MatCol(1,pos+=80,"Category",0,Category,false,TypeDISClass);
+		MatCol(1,pos+=80,"Division",0,Division,false,TypeDISClass);
+		MatCol(1,pos+=80,"Gender",0,GenderSC,false,TypeDISClass);
+    MatCol(1,pos+=80,"Material",0,Material,false,TypeDISClass);
+		MatCol(1,pos+=80,"WeightOfMat",0,WeightOfMat,false,TypeDISClass);
+		MatCol(1,pos+=80,"Diamonds",0,Diamonds,false,TypeDISClass);
+		MatCol(1,pos+=80,"DiamondsCarat",0,DiamondsCarat,false,TypeDISClass);
+		MatCol(1,pos+=80,"SolidStones05",0,SolidStones05,false,TypeDISClass);
+		MatCol(1,pos+=80,"PrecAndSemiPrec",0,PrecAndSemiPrec,false,TypeDISClass);
+		MatCol(1,pos+=80,"Style",0,Style,false,TypeDISClass);
+		MatCol(1,pos+=80,"RingSizes",0,RingSizes,false,TypeDISClass);
+		Flip(flipnr); flipnr = flipnr + 1;
+		pos = 100;
+		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+		MatCol(1,pos+=220,"Carat",0,Carat,false,TypeDISClass);
+		MatCol(1,pos+=220,"Clarity",0,ClaritySC,false,TypeDISClass);
+		MatCol(1,pos+=220,"Color",0,Color,false,TypeDISClass);
+		MatCol(1,pos+=220,"ShapeCut",0,ShapeCut,false,TypeDISClass); 
+		Flip(flipnr); flipnr = flipnr + 1;
+		pos = 100;
+		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+		MatCol(1,pos+=115,"Collection",0,Collection,false,TypeDISClass);
+		MatCol(1,pos+=115,"Category",0,Category,false,TypeDISClass);
+		MatCol(1,pos+=115,"Description",0,Description,false,TypeDISClass);
+		MatCol(1,pos+=115,"Art",0,Art,false,TypeDISClass);
+		MatCol(1,pos+=115,"Style",0,Style,false,TypeDISClass);
+		MatCol(1,pos+=115,"Material",0,Material,false,TypeDISClass);
+		MatCol(1,pos+=115,"ColorOfMat",0,ColorOfMat,false,TypeDISClass);
+		MatCol(1,pos+=115,"Gender",0,GenderSC,false,TypeDISClass);//Edit***************************Sasha2,17:38 04.12.2015 }
 		EndMatrix;
 		vs = 22;
 		v = v+1; 
@@ -2530,6 +2578,7 @@ begin
 		
   EndWindow;
 end;
+
 
 window NewINLClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
