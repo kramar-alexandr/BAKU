@@ -2090,6 +2090,12 @@ begin
 				MatCol(1,-180,"Вес",0,RowWeight,false,0);
 				MatCol(1,-120,"Метал",0,Metal,false,0);
 				MatCol(1,-60,"Каратность",0,MajStoneDet,true,0);
+	case 15:
+				Flip(flipnr); flipnr = flipnr + 1;
+				MatCol(1,194,"Наименование",0,Spec,false,0);
+				MatCol(1,-240,"Коллекция",0,Reference,false,0);
+				MatCol(1,-160,"Размер",0,Size,false,0);
+				MatCol(1,-100,"Цвет",0,Colour,false,0);
 	otherwise begin
 				Flip(flipnr); flipnr = flipnr + 1;
 				MatCol(1,194,"Наименование",0,Spec,false,0);

@@ -1153,6 +1153,7 @@ begin
     POrw.xClassification = INr.DispGroups;	//Edit by Victor 21.11.14 
     POrw.Size = INr.Size;	//Edit by Victor 21.11.14 
     POrw.Colour = INr.Colour;	//Edit by Victor 04.12.14 
+	POrw.Reference = INr.Reference;//Edit-------------------Vitalii 14:45 09.12.2015
     if (pifound) then begin
       POrw.VEArtCode = PIr.VEItemCode;
       POrw.CustomsCost = PIr.PurchaseCost;
