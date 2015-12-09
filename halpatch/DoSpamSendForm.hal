@@ -219,6 +219,7 @@ BEGIN
 			case 18: doccode = "VILLEROY&BOCH_3X7";
 			case 19: doccode = "YVES-DELORME_3X7";
 			case 20: doccode = "ELLUXUS_3X7";
+			case 21: doccode = "XTRAVAGANZA_3X7";
 		end;
 	end;
 	if(RepSpec.flags[1]==6)then begin
@@ -244,6 +245,7 @@ BEGIN
 			case 18: doccode = "VILLEROY&BOCH_4X7";
 			case 19: doccode = "YVES-DELORME_4X7";
 			case 20: doccode = "ELLUXUS_4X7";
+			case 21: doccode = "XTRAVAGANZA_4X7";
 		end;
 	end;
 	RepSpec.f3 = doccode;
@@ -450,7 +452,7 @@ begin
   h = 120;vs = 20;                                                             
   //PeriodField(h,v=6,"Период");
   //EditFieldTL(h,v+=vs,100,"От имени бутика:",M4UStr,Normal,200,f3,false,DocSClass);
-  ButtonFrame(h-20,v+=vs,l=200,21,"От имени бутика:");
+  ButtonFrame(h-20,v+=vs,l=200,22,"От имени бутика:");
   RadioButton(h-20,v,0,0,"Без отправителя",flags[2]);
   RadioButton(h-20,v+=16,1,0,"Ambiance",flags[2]);
   RadioButton(h-20,v+=16,2,0,"Baccarat",flags[2]);
@@ -472,6 +474,7 @@ begin
   RadioButton(h-20,v+=16,18,0,"Villeroy&Boch",flags[2]);
 	RadioButton(h-20,v+=16,19,0,"Yves-Delorme",flags[2]);
 	RadioButton(h-20,v+=16,20,0,"Elluxus",flags[2]);
+	RadioButton(h-20,v+=16,21,0,"Xtravaganza",flags[2]);
   
   v=v+vs;
   EditFieldTL(h,v+=vs,160,"Клиенты",M4Str,Normal,41,f1,false,AllCUSClass);

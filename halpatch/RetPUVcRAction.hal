@@ -800,7 +800,7 @@ BEGIN
   Array string 255 otcheckobjtyps; //Edit***************************Sasha2,13:11 02.07.2015
   Integer otcheckcnt; //Edit***************************Sasha2,13:11 02.07.2015
   Boolean initotcheckf; //Edit***************************Sasha2,13:11 02.07.2015
-
+		
   res = 0;
   insertmode = 1;//Rs_insert
   updatemode = 2;//Rs_update

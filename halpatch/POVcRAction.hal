@@ -1973,7 +1973,7 @@ begin
 							case 14:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2); // Edit ************************** Wednesday, 6 May 2015 10:24:06
 							case 15:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 16:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
-							case 17:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
+							case 17:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
 						end;
 						matrowget(POr,i,POrw);
 					end;

@@ -119,6 +119,13 @@ begin
 							filename = "Cadenza/" & imname & ".png";
 						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 3: if(fileexists("webcust/GRAFF/" & imname & ".jpg"))then begin
+							filename = "GRAFF/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/GRAFF/" & imname & ".png"))then begin
+							filename = "GRAFF/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 						
 		otherwise
 						WebSetContentType("image/jpeg");
