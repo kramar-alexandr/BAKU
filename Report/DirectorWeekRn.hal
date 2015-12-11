@@ -678,7 +678,7 @@ begin
 		basef = true;
 	end;
 	aznf = true;
-	if CurrentCompany == 3 then begin
+	if (CurrentCompany == 3) or (CurrentCompany == 17) then begin
 		usdf = true;
 		eurf = true;
 		aznf = true;
@@ -1678,7 +1678,7 @@ begin
 			OutString(191,0,"AZN",false);
 		EndFormat;
 		Black_Divider(142,216);
-		if (CurrentCompany == 3) or (BalItem1 != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (BalItem1 != 0) then begin
 			Gray_Divider(15,93);
 			StartFormat(15);
 				OutString(0,0,"",false);
@@ -1687,7 +1687,7 @@ begin
 				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (BalItem2 != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (BalItem2 != 0) then begin
 			Gray_Divider(15,93);
 			StartFormat(15);
 				OutString(0,0,"",false);
@@ -1702,7 +1702,7 @@ begin
 		SaldoEndPeriod50USD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50EUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
 		SaldoEndPeriod50AZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
-		if (CurrentCompany == 3) or (kursovaya != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (kursovaya != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"К сдаче",false);
@@ -1730,7 +1730,7 @@ begin
 			OutString(0,0,"",false);
 			OutString(15,0,"К сдаче по валютам",false);
 		EndFormat;
-		if (CurrentCompany == 3) or (SaldoEndPeriod50USD != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (SaldoEndPeriod50USD != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"",false);
@@ -1738,7 +1738,7 @@ begin
 				OutString(69,0,"USD",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriod50EUR != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (SaldoEndPeriod50EUR != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"",false);
@@ -1746,7 +1746,7 @@ begin
 				OutString(69,0,"EUR",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriod50AZN != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (SaldoEndPeriod50AZN != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"",false);
@@ -1754,7 +1754,7 @@ begin
 				OutString(69,0,"AZN",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) or (SaldoEndPeriod51 != 0) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) or (SaldoEndPeriod51 != 0) then begin
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"",false);
@@ -1762,7 +1762,7 @@ begin
 				OutString(69,0,"AZN терминал",false);
 			EndFormat;
 		end;
-		if (CurrentCompany == 3) then begin
+		if ((CurrentCompany == 3) or (CurrentCompany == 17)) then begin
 			for (i=0;i<curi;i=i+1) begin
 				if left(CurList[i],3)=="USD" then begin
 					FindNLAccBal("53",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,CurList[i],0,"","",tempBal);
