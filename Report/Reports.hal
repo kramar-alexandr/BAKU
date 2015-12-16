@@ -1710,7 +1710,81 @@ end;
 
 
 
+function string 200 OutJWAttribute(string attribute)
+begin
+string 200 str;
+	str = attribute;
+	if (blank(attribute)) then begin
+		str = " ";
+	end;
+OutJWAttribute = str;
+return;
+end;
 
+	
+global procedure AllJWAttributesRn(record RcVc RepSpec)
+begin
+	record INVc INr;
+
+	
+	StartReportNoHeaderJob("JW Attributes");
+	
+		startformat(15);
+			outstring(0,0,"Item",false);
+			outstring(0,0,"Weight",false);
+			outstring(0,0,"Size",false);
+			outstring(0,0,"Length",false);
+			outstring(0,0,"Collection",false);
+			outstring(0,0,"Stone",false);
+			outstring(0,0,"Colour",false);
+			outstring(0,0,"Clarity",false);
+			outstring(0,0,"Certificate",false);
+			outstring(0,0,"Minor Stone",false);
+			outstring(0,0,"Watch Brand",false);
+			outstring(0,0,"Style",false);
+			outstring(0,0,"Watch Metal",false);
+			outstring(0,0,"Movement",false);
+			outstring(0,0,"Bracelet",false);
+			outstring(0,0,"watch colour",false);
+			outstring(0,0,"durability",false);
+			outstring(0,0,"Other",false);
+		endformat;		
+	
+	
+		//INr.Code = "";
+	
+		while(loopmain(INr,1,true)) begin
+		
+			
+					startformat(15);
+						outstring(0,0,OutJWAttribute(INr.Code),false);
+						outstring(0,0,OutJWAttribute(INr.RowWeight),false);
+						outstring(0,0,OutJWAttribute(INr.Size),false);
+						outstring(0,0,OutJWAttribute(INr.Length),false);
+						outstring(0,0,OutJWAttribute(INr.Reference),false);
+						outstring(0,0,OutJWAttribute(INr.MajStoneDet),false);
+						outstring(0,0,OutJWAttribute(INr.Colour),false);
+						outstring(0,0,OutJWAttribute(INr.Clarity),false);
+						outstring(0,0,OutJWAttribute(INr.Cert),false);
+						outstring(0,0,OutJWAttribute(INr.MinStoneDet),false);
+						outstring(0,0,OutJWAttribute(INr.WatchBrand),false);
+						outstring(0,0,OutJWAttribute(INr.StyleName),false);
+						outstring(0,0,OutJWAttribute(INr.WatchMetal),false);
+						outstring(0,0,OutJWAttribute(INr.Movement),false);
+						outstring(0,0,OutJWAttribute(INr.BrcStr),false);
+						outstring(0,0,OutJWAttribute(INr.Gender),false);
+						outstring(0,0,OutJWAttribute(INr.Other),false);
+						outstring(0,0,OutJWAttribute(INr.Other2),false);												
+												
+					endformat;
+	
+					
+
+		end;		
+		
+	EndJob;
+	
+end;
 
 
 

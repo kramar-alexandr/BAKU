@@ -16,6 +16,7 @@ begin
 	Report("Приход",CLInRepRClass,CLInRepRn,0,modCL); // Edit ************************** Thursday, 24 April 2014 14:59:05
 	Report("Расход",CLOutRepRClass,CLOutRepRn,0,modCL); // Edit ************************** Thursday, 24 April 2014 14:59:05
 
+	Report("JW Attributes",SameBarCodesRClass,AllJWAttributesRn,0,modTC);//Edit----------------------Dima  16.12.2015
 
  return;
 end;  
