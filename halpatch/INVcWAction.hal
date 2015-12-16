@@ -1287,7 +1287,7 @@ begin
   fieldname = WindowActiveField(mwn);
   if (mwn>0) then begin
     switch (GetWindowFileName(mwn)) begin
-      case "INVc":
+      case "RCVc":
         lenf = len(fieldname);
         index = 0; 
         

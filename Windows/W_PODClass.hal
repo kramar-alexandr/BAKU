@@ -2283,10 +2283,15 @@ window NewINDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   integer tilenr,flipnr,f;
-  real h,h1,h2,h3,h4,h5,v,vm,vs,pos;
+  real h,h1,h2,h3,h4,h5,v,vm,vs,pos,matrixwidth,classtab; //Edit***************************Sasha2,10:40 16.12.2015
   string 255 label;
   WindowBegin("Новые товары",NewINDClass,CGview,-);
-  SetWRect(20,80,1530,400);//##cc //830
+  if (CurrentCompany==3) then begin //Edit***************************Sasha2,10:40 16.12.2015 {
+    matrixwidth = 1230;
+  end else begin
+    matrixwidth = 830;
+  end; //Edit***************************Sasha2,10:40 16.12.2015 }
+  SetWRect(20,80,matrixwidth,400);//##cc //Edit***************************Sasha2,10:41 16.12.2015
   Sizeable(-1,-1,-1,0);
   UseView(NewINVc);
   Tile(0,87,false,"",SerNr); 
@@ -2487,95 +2492,129 @@ begin
 		RadioButton(h2,v+=16,1,0,"Средневзвешенная не по складам",WAPerLocation);
 		RadioButton(h2,v+=16,2,0,"Средневзвешенная по каждому складу",WAPerLocation);  */
 		/*Матрица*/	Tile(tilenr,400,true,tilenr,-);  tilenr = tilenr + 1;
-		MatrixBegin(3,v+=32,-46,-20,-,1000);
-		Flip(0);
-		MatCol(1,28,"Товар",0,Code,false,INSClass);
-		flipnr = 1;
-		Flip(flipnr); flipnr = flipnr + 1;
-			MatCol(1,130,"Наименование",0,Name,false,0);
-			MatCol(1,360,"Группа",0,Group,false,ITSClass);
-			MatCol(1,-280,"Единица измерения",0,Unittext,false,UnitSClass);
-			//MatCol(1,-240,"Тип",0,ItemType,true,0);
-			MatCol(1,-200,"Объекты",0,Objects,false,ObjSClass);
-			MatCol(1,-120,"Классификация",0,DispGroups,false,DISClass);
-		Flip(flipnr); flipnr = flipnr + 1;
-		MatCol(1,100,"Метал",0,Metal,false,0);
-		MatCol(1,200,"Вес",0,RowWeight,false,0);
-		MatCol(1,300,"Размер",0,Size,false,0);
-		MatCol(1,350,"Ссылка",0,Reference,false,0);
-		MatCol(1,-220,"Гл. камень детали (карат.)",0,MajStoneDet,true,0);
-		MatCol(1,-80,"Цвет",0,Colour,false,0);
-		Flip(flipnr); flipnr = flipnr + 1;
-		MatCol(1,130,"Наименование",0,Name,false,0);
-		MatCol(1,-70,"Серийный учет",0,SerNrf,false,0);
-		//MatCol(1,200,"Стоимость осн.вал.",0,InPrice,true,0);
-		//MatCol(1,-240,"Валюта посл. покупки",0,LastPurchCurncyCode,true,CurncyCodeSClass);
-		Flip(flipnr); flipnr = flipnr + 1;
-		MatCol(1,100,"Штрих-код",0,BarCode,false,0);
-		//MatCol(1,150,"Код произв-ля",0,EUCodex,true,0);
-		MatCol(1,200,"Код EKN",0,EKNCode,false,0);
-		MatCol(1,300,"ПП Код",0,CPSCode,false,0);
-		MatCol(1,400,"Альтернативный код",0,AlternativeCode,false,0);
-		Flip(flipnr); flipnr = flipnr + 1;
-		MatCol(1,130,"Наименование",0,Name,false,0);
-		MatCol(1,-160,"Себестоимость",0,LastPurchPrice2,false,0);
-		MatCol(1,-80,"Валюта",0,LastPurchCurncyCode,false,CurncyCodeSClass);
-		Flip(flipnr); flipnr = flipnr + 1; //Edit***************************Sasha2,17:02 04.12.2015 {
-		pos = 100;
-		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-		MatCol(1,pos+=80,"Collection",0,Collection,false,TypeDISClass);
-		MatCol(1,pos+=80,"Style",0,Style,false,TypeDISClass);
-		MatCol(1,pos+=80,"Type",0,Type,false,TypeDISClass);
-		MatCol(1,pos+=80,"Gender",0,GenderSC,false,TypeDISClass);
-		MatCol(1,pos+=80,"Dial",0,Dial,false,TypeDISClass);
-		MatCol(1,pos+=80,"Strap",0,Strap,false,TypeDISClass);
-		MatCol(1,pos+=80,"Material",0,Material,false,TypeDISClass);
-		MatCol(1,pos+=80,"PrecStones",0,PrecStones,false,TypeDISClass);
-		MatCol(1,pos+=80,"Mechanism",0,Mechanism,false,TypeDISClass);
-		MatCol(1,pos+=80,"Function",0,Function,false,TypeDISClass);
-		MatCol(1,pos+=80,"WaterResist",0,WaterResist,false,TypeDISClass);
-		MatCol(1,pos+=80,"Diameter",0,Diameter,false,TypeDISClass);
-		Flip(flipnr); flipnr = flipnr + 1;
-		pos = 100;
-		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-		MatCol(1,pos+=80,"Collection",0,Collection,false,TypeDISClass);
-		MatCol(1,pos+=80,"Category",0,Category,false,TypeDISClass);
-		MatCol(1,pos+=80,"Division",0,Division,false,TypeDISClass);
-		MatCol(1,pos+=80,"Gender",0,GenderSC,false,TypeDISClass);
-    MatCol(1,pos+=80,"Material",0,Material,false,TypeDISClass);
-		MatCol(1,pos+=80,"WeightOfMat",0,WeightOfMat,false,TypeDISClass);
-		MatCol(1,pos+=80,"Diamonds",0,Diamonds,false,TypeDISClass);
-		MatCol(1,pos+=80,"DiamondsCarat",0,DiamondsCarat,false,TypeDISClass);
-		MatCol(1,pos+=80,"SolidStones05",0,SolidStones05,false,TypeDISClass);
-		MatCol(1,pos+=80,"PrecAndSemiPrec",0,PrecAndSemiPrec,false,TypeDISClass);
-		MatCol(1,pos+=80,"Style",0,Style,false,TypeDISClass);
-		MatCol(1,pos+=80,"RingSizes",0,RingSizes,false,TypeDISClass);
-		Flip(flipnr); flipnr = flipnr + 1;
-		pos = 100;
-		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-		MatCol(1,pos+=220,"Carat",0,Carat,false,TypeDISClass);
-		MatCol(1,pos+=220,"Clarity",0,ClaritySC,false,TypeDISClass);
-		MatCol(1,pos+=220,"Color",0,Color,false,TypeDISClass);
-		MatCol(1,pos+=220,"ShapeCut",0,ShapeCut,false,TypeDISClass); 
-		Flip(flipnr); flipnr = flipnr + 1;
-		pos = 100;
-		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-		MatCol(1,pos+=115,"Collection",0,Collection,false,TypeDISClass);
-		MatCol(1,pos+=115,"Category",0,Category,false,TypeDISClass);
-		MatCol(1,pos+=115,"Description",0,Description,false,TypeDISClass);
-		MatCol(1,pos+=115,"Art",0,Art,false,TypeDISClass);
-		MatCol(1,pos+=115,"Style",0,Style,false,TypeDISClass);
-		MatCol(1,pos+=115,"Material",0,Material,false,TypeDISClass);
-		MatCol(1,pos+=115,"ColorOfMat",0,ColorOfMat,false,TypeDISClass);
-		MatCol(1,pos+=115,"Gender",0,GenderSC,false,TypeDISClass);//Edit***************************Sasha2,17:38 04.12.2015 }
-		EndMatrix;
-		vs = 22;
-		v = v+1; 
-		for (f=1;f<flipnr;f=f+1) begin
-			VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
-			v = v + vs;
-		end;
 		
+		if (CurrentCompany==3) then begin //Edit***************************Sasha2,10:38 16.12.2015 {
+  		MatrixBegin(3,v+=32,-76,-20,-,1000);
+  		Flip(0);
+  		MatCol(1,28,"Товар",0,Code,false,INSClass);
+  		flipnr = 1;
+  		Flip(flipnr); flipnr = flipnr + 1;
+			MatCol(1,130,"Наименование",0,Name,false,0);
+			MatCol(1,-500,"Классификация",0,DispGroups,false,DISClass);
+      MatCol(1,-400,"Штрих-код",0,BarCode,false,0);
+      MatCol(1,-250,"Код поставщика",0,AlternativeCode,false,0);
+      MatCol(1,-100,"Тип изд.",0,Type,false,TypeDISClass);
+  		Flip(flipnr); classtab = flipnr; flipnr = flipnr + 1;
+  		pos = 100;
+  		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Collection",0,Collection,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Style",0,Style,false,TypeDISClass);
+  		MatCol(1,pos+=75,"WatchType",0,WatchType,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Gender",0,GenderSC,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Dial",0,Dial,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Strap",0,Strap,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Material",0,Material,false,TypeDISClass);
+  		MatCol(1,pos+=75,"PrecStones",0,PrecStones,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Mechanism",0,Mechanism,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Function",0,Function,false,TypeDISClass);
+  		MatCol(1,pos+=75,"WaterResist",0,WaterResist,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Diameter",0,Diameter,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Type",0,Type,false,TypeDISClass);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		pos = 100;
+  		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Collection",0,Collection,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Category",0,Category,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Division",0,Division,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Gender",0,GenderSC,false,TypeDISClass);
+      MatCol(1,pos+=75,"Material",0,Material,false,TypeDISClass);
+  		MatCol(1,pos+=75,"WeightOfMat",0,WeightOfMat,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Diamonds",0,Diamonds,false,TypeDISClass);
+  		MatCol(1,pos+=75,"DiamondsCarat",0,DiamondsCarat,false,TypeDISClass);
+  		MatCol(1,pos+=75,"SolidStones05",0,SolidStones05,false,TypeDISClass);
+  		MatCol(1,pos+=75,"PrecAndSemiPrec",0,PrecAndSemiPrec,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Style",0,Style,false,TypeDISClass);
+  		MatCol(1,pos+=75,"RingSizes",0,RingSizes,false,TypeDISClass);
+  		MatCol(1,pos+=75,"Type",0,Type,false,TypeDISClass);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		pos = 100;
+  		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		MatCol(1,pos+=170,"Carat",0,Carat,false,TypeDISClass);
+  		MatCol(1,pos+=170,"Clarity",0,ClaritySC,false,TypeDISClass);
+  		MatCol(1,pos+=170,"Color",0,Color,false,TypeDISClass);
+  		MatCol(1,pos+=170,"ShapeCut",0,ShapeCut,false,TypeDISClass);
+  		MatCol(1,pos+=170,"Type",0,Type,false,TypeDISClass); 
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		pos = 100;
+  		MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Collection",0,Collection,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Category",0,Category,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Description",0,Description,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Art",0,Art,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Style",0,Style,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Material",0,Material,false,TypeDISClass);
+  		MatCol(1,pos+=100,"ColorOfMat",0,ColorOfMat,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Gender",0,GenderSC,false,TypeDISClass);
+  		MatCol(1,pos+=100,"Type",0,Type,false,TypeDISClass);
+  		EndMatrix;
+  		vs = 22;
+  		v = v+1; 
+  		for (f=1;f<flipnr;f=f+1) begin
+  		  if (f>=classtab and f<=(classtab+3)) then begin
+  		    switch (f-classtab) begin
+  		      case 0: VTab(-56,v,-6,v+vs,ToolFlip,f,"WTCH"); 
+  		      case 1: VTab(-56,v,-6,v+vs,ToolFlip,f,"JEWE"); 
+  		      case 2: VTab(-56,v,-6,v+vs,ToolFlip,f,"STON"); 
+  		      case 3: VTab(-56,v,-6,v+vs,ToolFlip,f,"ACCE"); 
+  		    end;
+  		  end else begin
+  		    VTab(-56,v,-6,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
+  		  end;
+  			v = v + vs;
+  		end;
+		end else begin //Edit***************************Sasha2,10:38 16.12.2015 }
+		  MatrixBegin(3,v+=32,-46,-20,-,1000);
+		  Flip(0);
+  		MatCol(1,28,"Товар",0,Code,false,INSClass);
+  		flipnr = 1;
+  		Flip(flipnr); flipnr = flipnr + 1;
+  			MatCol(1,130,"Наименование",0,Name,false,0);
+  			MatCol(1,360,"Группа",0,Group,false,ITSClass);
+  			MatCol(1,-280,"Единица измерения",0,Unittext,false,UnitSClass);
+  			//MatCol(1,-240,"Тип",0,ItemType,true,0);
+  			MatCol(1,-200,"Объекты",0,Objects,false,ObjSClass);
+  			MatCol(1,-120,"Классификация",0,DispGroups,false,DISClass);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		MatCol(1,100,"Метал",0,Metal,false,0);
+  		MatCol(1,200,"Вес",0,RowWeight,false,0);
+  		MatCol(1,300,"Размер",0,Size,false,0);
+  		MatCol(1,350,"Ссылка",0,Reference,false,0);
+  		MatCol(1,-220,"Гл. камень детали (карат.)",0,MajStoneDet,true,0);
+  		MatCol(1,-80,"Цвет",0,Colour,false,0);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		MatCol(1,130,"Наименование",0,Name,false,0);
+  		MatCol(1,-70,"Серийный учет",0,SerNrf,false,0);
+  		//MatCol(1,200,"Стоимость осн.вал.",0,InPrice,true,0);
+  		//MatCol(1,-240,"Валюта посл. покупки",0,LastPurchCurncyCode,true,CurncyCodeSClass);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		MatCol(1,100,"Штрих-код",0,BarCode,false,0);
+  		//MatCol(1,150,"Код произв-ля",0,EUCodex,true,0);
+  		MatCol(1,200,"Код EKN",0,EKNCode,false,0);
+  		MatCol(1,300,"ПП Код",0,CPSCode,false,0);
+  		MatCol(1,400,"Альтернативный код",0,AlternativeCode,false,0);
+  		Flip(flipnr); flipnr = flipnr + 1;
+  		MatCol(1,130,"Наименование",0,Name,false,0);
+  		MatCol(1,-160,"Себестоимость",0,LastPurchPrice2,false,0);
+  		MatCol(1,-80,"Валюта",0,LastPurchCurncyCode,false,CurncyCodeSClass);
+  		EndMatrix;
+  		vs = 22;
+  		v = v+1; 
+  		for (f=1;f<flipnr;f=f+1) begin
+  			VTab(-35,v,-16,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
+  			v = v + vs;
+  		end;
+		end;
+
   EndWindow;
 end;
 

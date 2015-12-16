@@ -11,10 +11,11 @@ begin
   
     if (reversef==false) then begin
       switch (fieldname) begin
+        case "Type": res = "TYPE";
         case "BrandSC": res = "BRAND";
         case "Collection": res = "COLLECTION";
         case "Style": res = "STYLE";
-        case "Type": res = "TYPE";
+        case "WatchType": res = "WTYPE";
         case "GenderSC": res = "GENDER";
         case "Dial": res = "DIAL";
         case "Strap": res = "STRAP";
@@ -43,10 +44,11 @@ begin
       end;
     end else begin
       switch (fieldname) begin
+        case "TYPE": res = "Type";
         case "BRAND": res = "BrandSC";
         case "COLLECTION": res = "Collection";
         case "STYLE": res = "Style";
-        case "TYPE": res = "Type";
+        case "WTYPE": res = "WatchType";
         case "GENDER": res = "GenderSC";
         case "DIAL": res = "Dial";
         case "STRAP": res = "Strap";
@@ -74,7 +76,6 @@ begin
         otherwise res = "";
       end;
     end;
-    
     
     ReturnFieldDIType = res;
   return;
@@ -307,7 +308,7 @@ BEGIN
   row DiCheckBlock DiCbw; //Edit***************************Sasha2,16:52 07.12.2015
   vector string 255 diCheckTypes; //Edit***************************Sasha2,17:22 07.12.2015
   string 255 newdispstr,foundtypes,outdisps; //Edit***************************Sasha2,17:37 07.12.2015
-  string 20 brand; //Edit***************************Sasha2,10:34 08.12.2015
+  string 20 type; //Edit***************************Sasha2,10:34 08.12.2015
   
   res = 0;
   
@@ -375,19 +376,30 @@ BEGIN
 			end;
 		end;
 		
-		brand = ""; //Edit***************************Sasha2,17:53 07.12.2015 { Special classifications for CATALOQUE
-	  if (nonblank(newINrw.BrandSC) and len(diCheckTypes[newINrw.BrandSC])>0) then begin 
+		type = ""; //Edit***************************Sasha2,17:53 07.12.2015 { Special classifications for CATALOQUE
+	  if (nonblank(newINrw.Type) and len(diCheckTypes[newINrw.Type])>0) then begin 
       newdispstr = "";
       foundtypes = "";
 
-			if (!DIsWithTypeExists(newINrw.BrandSC,outdisps,ReturnFieldDIType("BrandSC",false))) then begin
-        RecordCheckError(9588,". " & USetStr(8182) & " " & USetStr(9588),i,"BrandSC");      
+			if (!DIsWithTypeExists(newINrw.Type,outdisps,ReturnFieldDIType("Type",false))) then begin
+        RecordCheckError(9588,". " & USetStr(8182) & " " & USetStr(9588),i,"Type");      
         res = -1; 
         goto LNewINVcRecordCheck;
       end else begin
-        newINrw.BrandSC = outdisps;
+        newINrw.Type = outdisps;
       end;
-      brand = newINrw.BrandSC;
+      type = newINrw.Type;
+      
+      if (NonBlank(newINrw.BrandSC)) then begin
+        if (!DIsWithTypeExists(newINrw.BrandSC,outdisps,ReturnFieldDIType("BrandSC",false))) then begin
+          RecordCheckError(9588,". " & USetStr(8182) & " " & USetStr(9588),i,"BrandSC");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.BrandSC = outdisps;
+        end;
+        HandleTypeField("BrandSC",newINrw.BrandSC,diCheckTypes[type],newdispstr,foundtypes);
+      end;
       
       if (NonBlank(newINrw.Collection)) then begin
         if (!DIsWithTypeExists(newINrw.Collection,outdisps,ReturnFieldDIType("Collection",false))) then begin
@@ -397,7 +409,7 @@ BEGIN
         end else begin
           newINrw.Collection = outdisps;
         end;
-        HandleTypeField("Collection",newINrw.Collection,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Collection",newINrw.Collection,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Style)) then begin
@@ -408,18 +420,18 @@ BEGIN
         end else begin
           newINrw.Style = outdisps;
         end;
-        HandleTypeField("Style",newINrw.Style,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Style",newINrw.Style,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
-      if (NonBlank(newINrw.Type)) then begin
-        if (!DIsWithTypeExists(newINrw.Type,outdisps,ReturnFieldDIType("Type",false))) then begin
-          RecordCheckError(9588,". " & USetStr(8182) & " " & USetStr(9588),i,"Type");      
+      if (NonBlank(newINrw.WatchType)) then begin
+        if (!DIsWithTypeExists(newINrw.WatchType,outdisps,ReturnFieldDIType("WatchType",false))) then begin
+          RecordCheckError(9588,". " & USetStr(8182) & " " & USetStr(9588),i,"WatchType");      
           res = -1; 
           goto LNewINVcRecordCheck;
         end else begin
-          newINrw.Type = outdisps;
+          newINrw.WatchType = outdisps;
         end;
-        HandleTypeField("Type",newINrw.Type,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("WatchType",newINrw.WatchType,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.GenderSC)) then begin
@@ -430,7 +442,7 @@ BEGIN
         end else begin
           newINrw.GenderSC = outdisps;
         end;
-        HandleTypeField("GenderSC",newINrw.GenderSC,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("GenderSC",newINrw.GenderSC,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Dial)) then begin
@@ -441,7 +453,7 @@ BEGIN
         end else begin
           newINrw.Dial = outdisps;
         end;
-        HandleTypeField("Dial",newINrw.Dial,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Dial",newINrw.Dial,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Strap)) then begin
@@ -452,7 +464,7 @@ BEGIN
         end else begin
           newINrw.Strap = outdisps;
         end;
-        HandleTypeField("Strap",newINrw.Strap,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Strap",newINrw.Strap,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Material)) then begin
@@ -463,7 +475,7 @@ BEGIN
         end else begin
           newINrw.Material = outdisps;
         end;
-        HandleTypeField("Material",newINrw.Material,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Material",newINrw.Material,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.PrecStones)) then begin
@@ -474,7 +486,7 @@ BEGIN
         end else begin
           newINrw.PrecStones = outdisps;
         end;
-        HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Mechanism)) then begin
@@ -485,7 +497,7 @@ BEGIN
         end else begin
           newINrw.Mechanism = outdisps;
         end;
-        HandleTypeField("Mechanism",newINrw.Mechanism,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Mechanism",newINrw.Mechanism,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Function)) then begin
@@ -496,7 +508,7 @@ BEGIN
         end else begin
           newINrw.Function = outdisps;
         end;
-        HandleTypeField("Function",newINrw.Function,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Function",newINrw.Function,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.WaterResist)) then begin
@@ -507,7 +519,7 @@ BEGIN
         end else begin
           newINrw.WaterResist = outdisps;
         end;
-        HandleTypeField("WaterResist",newINrw.WaterResist,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("WaterResist",newINrw.WaterResist,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Diameter)) then begin
@@ -518,7 +530,7 @@ BEGIN
         end else begin
           newINrw.Diameter = outdisps;
         end;
-        HandleTypeField("Diameter",newINrw.Diameter,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Diameter",newINrw.Diameter,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Category)) then begin
@@ -529,7 +541,7 @@ BEGIN
         end else begin
           newINrw.Category = outdisps;
         end;
-        HandleTypeField("Category",newINrw.Category,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Category",newINrw.Category,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Division)) then begin
@@ -540,7 +552,7 @@ BEGIN
         end else begin
           newINrw.Division = outdisps;
         end;
-        HandleTypeField("Division",newINrw.Division,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Division",newINrw.Division,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.WeightOfMat)) then begin
@@ -551,7 +563,7 @@ BEGIN
         end else begin
           newINrw.WeightOfMat = outdisps;
         end;
-        HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Diamonds)) then begin
@@ -562,7 +574,7 @@ BEGIN
         end else begin
           newINrw.Diamonds = outdisps;
         end;
-        HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.DiamondsCarat)) then begin
@@ -573,7 +585,7 @@ BEGIN
         end else begin
           newINrw.DiamondsCarat = outdisps;
         end;
-        HandleTypeField("DiamondsCarat",newINrw.DiamondsCarat,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("DiamondsCarat",newINrw.DiamondsCarat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.SolidStones05)) then begin
@@ -584,7 +596,7 @@ BEGIN
         end else begin
           newINrw.SolidStones05 = outdisps;
         end;
-        HandleTypeField("SolidStones05",newINrw.SolidStones05,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("SolidStones05",newINrw.SolidStones05,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.PrecAndSemiPrec)) then begin
@@ -595,7 +607,7 @@ BEGIN
         end else begin
           newINrw.PrecAndSemiPrec = outdisps;
         end;
-        HandleTypeField("PrecAndSemiPrec",newINrw.PrecAndSemiPrec,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("PrecAndSemiPrec",newINrw.PrecAndSemiPrec,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.RingSizes)) then begin
@@ -606,7 +618,7 @@ BEGIN
         end else begin
           newINrw.RingSizes = outdisps;
         end;
-        HandleTypeField("RingSizes",newINrw.RingSizes,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("RingSizes",newINrw.RingSizes,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Carat)) then begin
@@ -617,7 +629,7 @@ BEGIN
         end else begin
           newINrw.Carat = outdisps;
         end;
-        HandleTypeField("Carat",newINrw.Carat,diCheckTypes[newINrw.Brand],newdispstr,foundtypes);
+        HandleTypeField("Carat",newINrw.Carat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.ClaritySC)) then begin
@@ -628,7 +640,7 @@ BEGIN
         end else begin
           newINrw.ClaritySC = outdisps;
         end;
-        HandleTypeField("ClaritySC",newINrw.ClaritySC,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("ClaritySC",newINrw.ClaritySC,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Color)) then begin
@@ -639,7 +651,7 @@ BEGIN
         end else begin
           newINrw.Color = outdisps;
         end;
-        HandleTypeField("Color",newINrw.Color,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Color",newINrw.Color,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.ColorOfMat)) then begin
@@ -650,7 +662,7 @@ BEGIN
         end else begin
           newINrw.ColorOfMat = outdisps;
         end;
-        HandleTypeField("ColorOfMat",newINrw.ColorOfMat,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("ColorOfMat",newINrw.ColorOfMat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.ShapeCut)) then begin
@@ -661,7 +673,7 @@ BEGIN
         end else begin
           newINrw.ShapeCut = outdisps;
         end;
-        HandleTypeField("ShapeCut",newINrw.ShapeCut,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("ShapeCut",newINrw.ShapeCut,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Description)) then begin
@@ -672,7 +684,7 @@ BEGIN
         end else begin
           newINrw.Description = outdisps;
         end;
-        HandleTypeField("Description",newINrw.Description,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Description",newINrw.Description,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Art)) then begin
@@ -683,11 +695,11 @@ BEGIN
         end else begin
           newINrw.Art = outdisps;
         end;
-        HandleTypeField("Art",newINrw.Art,diCheckTypes[newINrw.BrandSC],newdispstr,foundtypes);
+        HandleTypeField("Art",newINrw.Art,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       pos = 0;
-      rawclass = diCheckTypes[newINrw.BrandSC];
+      rawclass = diCheckTypes[type];
       ExtractObj(rawclass,pos,uloc);
       while(nonblank(uloc)) begin
         if (!SetInSet(uloc,foundtypes)) then begin
@@ -697,7 +709,7 @@ BEGIN
         end;
         ExtractObj(rawclass,pos,uloc);
 			end;
-			newINrw.DispGroups = brand & "," & newdispstr;
+			newINrw.DispGroups = type & "," & newdispstr;
 	  end; //Edit***************************Sasha2,17:53 07.12.2015 }
 	  if(nonblank(newINrw.DispGroups))then begin
 			pos = 0;
@@ -803,7 +815,7 @@ BEGIN
 		//if(nonblank(newINr.FixedFreight))then begin INr.FixedFreight=newINr.FixedFreight;  end; if(nonblank(newINrw.FixedFreight))then begin INr.FixedFreight=newINrw.FixedFreight;  end;
 		if(nonblank(newINr.DispGroups))then begin INr.DispGroups=newINr.DispGroups;  end; 
 		if(nonblank(newINrw.DispGroups))then begin INr.DispGroups=newINrw.DispGroups;  end;		
-		if(nonblank(brand))then begin INr.MainDisp=brand;  end;	
+		if(nonblank(type))then begin INr.MainDisp=type;  end;	
 		//if(nonblank(newINr.HazLevCode))then begin INr.HazLevCode=newINr.HazLevCode;  end; if(nonblank(newINrw.HazLevCode))then begin INr.HazLevCode=newINrw.HazLevCode;  end;
 		//if(nonblank(newINr.Density))then begin INr.Density=newINr.Density;  end; if(nonblank(newINrw.Density))then begin INr.Density=newINrw.Density;  end;
 		//if(nonblank(newINr.xClassification))then begin INr.xClassification=newINr.xClassification;  end; if(nonblank(newINrw.xClassification))then begin INr.xClassification=newINrw.xClassification;  end;

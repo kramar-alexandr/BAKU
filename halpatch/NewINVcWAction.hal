@@ -1,3 +1,5 @@
+remote procedure HandleNewINDClassmCode(var record NewINVc,integer); //Edit***************************Sasha2,16:02 16.12.2015
+
 
 procedure NormalizeName(var string name)
 begin
@@ -15,6 +17,26 @@ integer i,lenth,zercnt;
   name = newclassname;
 return;
 end;
+
+//Edit***************************Sasha2,12:00 16.12.2015 {
+function boolean NewINDClassmCodeEFAfter(integer wn,integer rownr,integer changed)
+begin
+	integer i,mtrw;
+	record NewINVc newINr;	
+	boolean res;
+	
+	if(changed>0)then begin
+		getwindowrecord(wn,newINr);
+		if(rownr>-1)then begin
+			HandleNewINDClassmCode(newINr,rownr);
+		end else begin
+			//
+		end;
+		putwindowrecord(wn,newINr);
+	end;
+	NewINDClassmCodeEFAfter = res;
+return;
+end; //Edit***************************Sasha2,12:00 16.12.2015 }
 
 function boolean NewINDClassmNameEFAfter(integer wn,integer rownr,integer changed)
 begin
@@ -44,6 +66,7 @@ BEGIN
   Boolean res;
   res = true;
   switch (fieldname) begin
+    case "Code": res = NewINDClassmCodeEFAfter(wn,rownr,changed); //Edit***************************Sasha2,12:00 16.12.2015
     case "Name": res = NewINDClassmNameEFAfter(wn,rownr,changed);
   end;
   NewINDClassAfterEditField = res;

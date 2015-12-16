@@ -1807,6 +1807,7 @@ begin
 			ArrayField(ShapeCut,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
 			ArrayField(Description,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
 			ArrayField(Art,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
+			ArrayField(WatchType,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
 		EndArray;
 		MainKeyBegin(SerNr,0);
 		KeySegment(SerNr);
