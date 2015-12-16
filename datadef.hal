@@ -2206,6 +2206,9 @@ begin
   RecordField(AllowSendCall,M4Int,0,0);// Edit ************************** Thursday, 24 October 2013 15:19:33
   RecordField(AllowSendkMail,M4Int,0,0);// Edit ************************** Thursday, 24 October 2013 15:19:33
   
+  RecordField(SuprDate,M4Date,0,0);// Edit ************************** Wednesday, 16 December 2015 11:36:34
+  RecordField(WedDate,M4Date,0,0);// Edit ************************** Wednesday, 16 December 2015 11:36:35
+  
   MainKeyBegin(Code,1);
   StoreInBaseKey;
   AppendFieldToKeyName(SalesGroup);
