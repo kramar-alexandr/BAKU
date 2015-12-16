@@ -15,7 +15,7 @@ begin
   val invfr,invto1;// Edit ************************** Friday, 15 March 2013 11:36:06
   val sum4,v;// Edit ************************** Friday, 15 March 2013 11:36:07
   roundmode rnd;// Edit ************************** Friday, 15 March 2013 11:36:08
-  
+    
   rnd = DefaultValRoundoff;
   rnd.decimals = 2;
   rnd.mode = kRoundingModeHalfUp;
@@ -23,6 +23,7 @@ begin
 		rnd.decimals = -4;
   end;
   if(currentcompany==3 or currentcompany==17)then begin
+  	rnd.decimals = 0;
 		rnd.step = kRoundingStep5;
   end;
   if (GetFullCurncyPurchaseRate(curncytrue,CurrentDate,invfr,invto1,to2,br1,br2)==false) then begin
@@ -53,6 +54,9 @@ begin
 			//Base1ToOther(acrncy[i],-v,fr,to1,to2,br1,br2,temp,DefaultCurRoundOff);
 			Base1ToOther(acrncy[i],-tempret,fr,to1,to2,br1,br2,temp,DefaultCurRoundOff);
 			acrncyval[i] = round(-tempret,rnd);
+			if(currentuser=="SA")then begin
+				logtext(0,acrncytotaldue[i] & " " & acrncyval[i]);
+			end;
 			
   end;
   return;

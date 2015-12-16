@@ -2286,7 +2286,7 @@ begin
   real h,h1,h2,h3,h4,h5,v,vm,vs,pos;
   string 255 label;
   WindowBegin("Новые товары",NewINDClass,CGview,-);
-  SetWRect(20,80,1230,400);//##cc //830
+  SetWRect(20,80,1530,400);//##cc //830
   Sizeable(-1,-1,-1,0);
   UseView(NewINVc);
   Tile(0,87,false,"",SerNr); 
