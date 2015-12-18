@@ -764,10 +764,11 @@ begin
 						case "L1":  totcc[6] = totcc[6] + IVr.Sum4; ccpaydeal[6] = "L1"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
 						case "LC":  totcc[6] = totcc[6] + IVr.Sum4; ccpaydeal[6] = "LC"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
 						case "L‘":  totcc[6] = totcc[6] + IVr.Sum4; ccpaydeal[6] = "L‘"; termsum = termsum + IVr.Sum4; loybals = loybals + IVr.Sum4;
-						case "F":		CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,IVr.Sum4,baseCurcny,basesum,DefaultCurRoundOff);		//Edit----------------------Dima  12.11.2015
-												debt = debt + basesum;
-						case "U":		CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,IVr.Sum4,baseCurcny,basesum,DefaultCurRoundOff);
-												debt = debt + basesum;												
+						//Edit-------------------Vitalii 16:32 18.12.2015
+						//case "F":		CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,IVr.Sum4,baseCurcny,basesum,DefaultCurRoundOff);		//Edit----------------------Dima  12.11.2015
+						//						debt = debt + basesum;
+						//case "U":		CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,IVr.Sum4,baseCurcny,basesum,DefaultCurRoundOff);
+						//						debt = debt + basesum;
         	end;
         	if(IVr.CurncyCode==acrncy[0])then begin
         		totsumpay = totsumpay  + IVr.Sum4;
@@ -786,7 +787,8 @@ begin
 					totcash[j] = totcash[j] + cashsum[j];
         end;
 				
-				if(IVr.CurncyCode==acrncy[0])then begin
+				//Edit-------------------Vitalii 16:32 18.12.2015
+				/*if(IVr.CurncyCode==acrncy[0])then begin
 					debt = debt + GetDebtFromARVc(IVr.SerNr);		//Edit --------------Dima 22.01.2015
 				end else begin
 					GetFullCurncyRate(acrncy[0],IVr.InvDate,fr,to1,to2,br1,br2);
@@ -794,7 +796,7 @@ begin
 						fr=1; to1=1;
 					end;
 					debt = debt + GetDebtFromARVc(IVr.SerNr)*fr/to1;
-				end;
+				end;*/
 
       end; // testf
     end; //while 
@@ -899,6 +901,7 @@ begin
     OutVal(190,0,totqty,M4Val,false);
     OutVal(220,0,totqtyprice,M4Val,false);
     OutVal(270,0,totsum,M4Val,false);
+	debt = totsum; //Edit-------------------Vitalii 16:32 18.12.2015
     if (totalCurrencySum>0) then begin
 			OutVal(320,0,totalCurrencySum,M4Val,false);	//Edit----------------------Dima  11.11.2015
 		end;
@@ -915,6 +918,7 @@ begin
     OutString(0,0,"",false);
     OutString(0,0,USetStr(31032),false);
     OutVal(220,0,totsumpay,M4Val,false);
+	debt = debt - totsumpay; //Edit-------------------Vitalii 16:32 18.12.2015
     EndFormat;
     
     OutCashRows(totcash,acrncy,acrncnt);
@@ -1026,6 +1030,7 @@ begin
     				Gray_Divider(0,1);
 				outstring(310,0,USetStr(31211),false);
 				outstring(340,0,totgift,false);
+				debt = debt - totgift; //Edit-------------------Vitalii 16:32 18.12.2015
 				EndFormat;
 				EndFormat;
 	end;	
@@ -1051,6 +1056,7 @@ begin
 						outstring(70,0,USetStr(4087),false);
 					end else begin
 						outstring(70,0,USetStr(31037),false);
+						debt = debt - SMrw.RecVal; //Edit-------------------Vitalii 16:32 18.12.2015
 					end;
 					outstring(120,0,SMrw.ChequeNr,false);
 					outstring(160,0,USetStr(31122),false);
