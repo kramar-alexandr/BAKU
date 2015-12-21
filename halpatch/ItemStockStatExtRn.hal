@@ -767,6 +767,12 @@ begin
 							if(fileexists("webcust/Cadenza/" & INr.Code & ".png"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".png";
 							end;
+			case 16: if(fileexists("webcust/Xtravaganz/" & INr.Code & ".jpg"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+							end;
+							if(fileexists("webcust/Xtravaganz/" & INr.Code & ".png"))then begin
+								filename = "http://" & serverip & "/" & INr.Code & ".png";
+							end;
 			case 17: if(fileexists("webcust/GRAFF/" & INr.Code & ".jpg"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
 							end;

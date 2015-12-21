@@ -422,7 +422,8 @@ string 50 registerVc;
 	record FBVc FBr;
 	record ItemHistVc IHr;
 	record ItemStatusVc ISr;
-
+	record AccVc Accr;
+	
 	registerVc = UpperCase(RepSpec.f1);
 	tag = ImportField;
 
@@ -508,7 +509,11 @@ string 50 registerVc;
  			  	  
 				case "ITEMSTATUSVC": 					 	
  			  	  ImportOneRecord(ISr,tag);
- 			  	  RecordStore(ISr,true);  			  	   			  	   			  	  			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	  			  	  
+ 			  	  RecordStore(ISr,true);
+ 			  	  
+ 			  case "AccVc": 					 	
+ 			  	  ImportOneRecord(Accr,tag);
+ 			  	  RecordStore(Accr,true);  			  	   			  	   			  	  			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	   			  	  			  	  
 					
 			end;
 		end;	

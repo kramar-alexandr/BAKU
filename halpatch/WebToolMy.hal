@@ -113,10 +113,17 @@ begin
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 						
 		case 14: if(fileexists("webcust/Cadenza/" & imname & ".jpg"))then begin
-							filename = "Carpets/" & imname & ".jpg";
+							filename = "Cadenza/" & imname & ".jpg";
 						end;
 						if(fileexists("webcust/Cadenza/" & imname & ".png"))then begin
 							filename = "Cadenza/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 16: if(fileexists("webcust/Xtravaganz/" & imname & ".jpg"))then begin
+							filename = "Xtravaganz/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/Xtravaganz/" & imname & ".png"))then begin
+							filename = "Xtravaganz/" & imname & ".png";
 						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 		case 17: if(fileexists("webcust/GRAFF/" & imname & ".jpg"))then begin

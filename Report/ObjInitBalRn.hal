@@ -56,7 +56,7 @@ begin
 							mtrw = matrowcnt(TRr);
 							for (i=0;i<mtrw;i=i+1) begin
 								matrowget(TRr,i,TRrw);
-								if (TRrw.ovst == 0) and (TRrw.AccNumber == Mainr.AccNumber) then begin
+								if ((TRrw.ovst == 0) and (TRrw.AccNumber == Mainr.AccNumber and TRrw.stp == 1)) then begin
 									if setinset(objcode,TRrw.Objects) then begin
 										if !AccInArr[TRrw.AccNumber] then begin
 											AccInArr[TRrw.AccNumber] = true;
