@@ -93,6 +93,8 @@ begin
 	Maintenance("Установить новую валюту в регистре цены",SetNewCurrencyinPricesVClass,SetNewCurrencyinPricesMn,modDI);	//Edit----------------------Dima  03.08.2015
 	Maintenance("Заменить одну классификацию на другую",RenameCertainDIVClass,RenameCertainDIMn,modIN);// Edit ************************** Thursday, 28 May 2015 11:25:21
 	
+	Maintenance("Перенос начального сальдо по объектам",ObjInitBalVClass,ObjInitBalMn,modNL);//Edit-------------------Vitalii 16:57 21.12.2015
+	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
   end;
@@ -127,7 +129,7 @@ begin
   Report("Журнал неоплаченных заказов поставщику",UnPayPORClass,UnPayPORn,0,modPO);
   Report("Stock documents journal",StockDocsJournalRClass,StockDocsJournalRn,0,modIN);		//Edit----------------------Dima  23.03.2015
   Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
-  Report("Для внесения начального сальдо по объектам",ObjInitBalRClass,ObjInitBalRn,0,modNL);
+  Report("Для внесения начального сальдо по объектам",ObjInitBalRClass,ObjInitBalRn,0,modNL); //Edit-------------------Vitalii 16:56 21.12.2015
 	
 	 Report("ПРоверка целостности склада",OrderStatusRClass,CheckItemHistErrorRn,0,modDBMain);// Edit ************************** Monday, 25 May 2015 15:32:06
 	
