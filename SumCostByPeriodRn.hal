@@ -272,7 +272,7 @@ begin
 								if(ORrw.Invd>ORrw.Shipd2)then begin
 									ORrw.Invd=ORrw.Shipd2;
 								end;
-								qtynotpay = qtynotpay + (ORrw.Shipd2-ORrw.Invd)*(-IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
+								qtynotpay = qtynotpay + (ORrw.Shipd2-ORrw.Invd)*(-IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant/ivfr*ivto*fr/to1; //Edit-------------------Vitalii 15:32 23.12.2015
   						end;
               //ivshpricesum = ivshpricesum - IHr.Qty * ORrw.Sum/ORrw.Quant; 
             end;
@@ -327,7 +327,7 @@ begin
 								if(ORrw.Invd>ORrw.Shipd2)then begin
 									ORrw.Invd=ORrw.Shipd2;
 								end;
-								qtynotpay = qtynotpay - (ORrw.Shipd2-ORrw.Invd)*(IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant*fr/to1;
+								qtynotpay = qtynotpay - (ORrw.Shipd2-ORrw.Invd)*(IHr.Qty/ORrw.Shipd2-ORrw.Invd)*ORrw.Sum/ORrw.Quant/ivfr*ivto*fr/to1;//Edit-------------------Vitalii 15:33 23.12.2015
 							end;
 						end;
 						ivshtotsum = ivshtotsum - ihcost;
