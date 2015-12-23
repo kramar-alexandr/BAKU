@@ -173,11 +173,42 @@ begin
 									end;	
 								end;
 							end else begin
-								if(fileexists("webcust/J&W/" & INr.Code & ".jpg"))then begin
-									filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-								end;
-								if(fileexists("webcust/J&W/" & INr.Code & ".png"))then begin
-									filename = "http://" & serverip & "/" & INr.Code & ".png";
+								switch(currentcompany)begin
+									case 3:
+										if(fileexists("webcust/J&W/" & INr.Code & ".jpg"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+										end;
+										if(fileexists("webcust/J&W/" & INr.Code & ".png"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".png";
+										end;
+									case 17:
+										if(fileexists("webcust/GRAFF/" & INr.Code & ".jpg"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+										end;
+										if(fileexists("webcust/GRAFF/" & INr.Code & ".png"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".png";
+										end;
+									case 18:
+										if(fileexists("webcust/IDGroup/" & INr.Code & ".jpg"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+										end;
+										if(fileexists("webcust/IDGroup/" & INr.Code & ".png"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".png";
+										end;
+									case 19:
+										if(fileexists("webcust/Cartier/" & INr.Code & ".jpg"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+										end;
+										if(fileexists("webcust/Cartier/" & INr.Code & ".png"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".png";
+										end;
+									case 20:
+										if(fileexists("webcust/Elluxus/" & INr.Code & ".jpg"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+										end;
+										if(fileexists("webcust/Elluxus/" & INr.Code & ".png"))then begin
+											filename = "http://" & serverip & "/" & INr.Code & ".png";
+										end;
 								end;
 							end;
 							

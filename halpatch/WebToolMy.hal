@@ -133,6 +133,27 @@ begin
 							filename = "GRAFF/" & imname & ".png";
 						end;
 						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 18: if(fileexists("webcust/IDGroup/" & imname & ".jpg"))then begin
+							filename = "IDGroup/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/IDGroup/" & imname & ".png"))then begin
+							filename = "IDGroup/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 19: if(fileexists("webcust/Cartier/" & imname & ".jpg"))then begin
+							filename = "Cartier/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/Cartier/" & imname & ".png"))then begin
+							filename = "Cartier/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+		case 20: if(fileexists("webcust/Elluxus/" & imname & ".jpg"))then begin
+							filename = "Elluxus/" & imname & ".jpg";
+						end;
+						if(fileexists("webcust/Elluxus/" & imname & ".png"))then begin
+							filename = "Elluxus/" & imname & ".png";
+						end;
+						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 						
 		otherwise
 						WebSetContentType("image/jpeg");
