@@ -2671,6 +2671,8 @@ begin
   LongInt frompu,topu;
   record PUVc PUr;
   row PUVc PUrw;
+  record StockMovVc SMr;
+  row StockMovVc SMrw;
     
     k=0;
     recordnew(newPUr);
@@ -2780,6 +2782,52 @@ begin
               if(RepSpec.flags[2]<=0 and INr.ConsgType==2) then begin testf = false; end;
               if (testf) then begin     					
                 for (j=0;j<PUrw.Quant;j=j+1) begin
+      						matrowget(newPUr,k,newPUrw);
+                  CheckBarcodeValue(INr,tstr);
+                  newPUrw.Spec = tstr;
+                  newPUrw.ArtCode = INr.Code;
+                  newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
+                  newPUrw.Comment = printcur;
+                  if (caratf) then begin
+                    newPUrw.SerialNr = INr.MajStoneDet;
+                  end else begin
+                    newPUrw.SerialNr = "";
+                  end;
+                  newPUrw.VEItemCode = INr.RowWeight;
+                  matrowput(newPUr,k,newPUrw);
+                  k=k+1;
+                end;
+              end;
+            end;
+          end; 
+        end;
+      case "StockMovVc":
+    	  frompu = FirstInRange(RepSpec.f1,20);
+        topu = LastInRange(RepSpec.f1,20);
+        if nonblank(RepSpec.f1) then begin 
+          SMr.SerNr = frompu;
+        end;  
+        TrHs = true;
+        while (LoopMain(SMr,1,TrHs)) begin
+          testf = true;
+          if (TrHs) then begin
+            if (topu!=-1) then begin
+              if (SMr.SerNr>topu) then begin
+                TrHs = false;
+                testf = false;
+              end;
+            end;
+          end;
+          if (testf) then begin
+            rwcnt = MatRowCnt(SMr);
+            for (i=0;i<rwcnt;i=i+1) begin
+              testf = true;
+              MatRowGet(SMr,i,SMrw);
+              INr.Code = SMrw.ArtCode;
+              if (blank(SMrw.ArtCode) or !ReadFirstMain(INr,1,true)) then begin testf = false; end;  
+              if(RepSpec.flags[2]<=0 and INr.ConsgType==2) then begin testf = false; end;
+              if (testf) then begin     					
+                for (j=0;j<SMrw.Quant;j=j+1) begin
       						matrowget(newPUr,k,newPUrw);
                   CheckBarcodeValue(INr,tstr);
                   newPUrw.Spec = tstr;

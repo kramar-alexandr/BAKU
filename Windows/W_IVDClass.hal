@@ -3991,7 +3991,7 @@ begin
   if (IsEnterprise) then begin
   //SpecialMenu("Открыть нал. матрицу",' ',25,"OpenVatMatrixPUDsm"); 
   end;
-  SpecialMenu("Распечатать этикетки",'e',0,"PrintPULabPUDsm");
+  SpecialMenu("Распечатать этикетки",'e',0,"PrintLabRecDsm");
   if (IsEnterprise) then begin
   //SpecialMenu("Отправить для утверждения",' ',14,"PUSendforAcceptancePUDsm");
   //SpecialMenu("Отменить запрос на утверждение",' ',2,"CancelApprovalRequestDsm"); 
@@ -5275,6 +5275,7 @@ begin
   end;
   SpecialMenu("Pack List",' ',8,"PackListSMDsm");// Edit ************************** Tuesday, 1 October 2013 10:56:40
   SpecialMenu("Отчет по траку",' ',8,"PackListReportDsm");
+  SpecialMenu("Распечатать этикетки",'e',0,"PrintLabRecDsm"); //Edit***************************Sasha2,12:54 24.12.2015
   end;
   EndWindow;
 end;
@@ -6535,10 +6536,19 @@ end;
 window PULabMyRClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,l,v,vm;
-  WindowBegin("Определите этикетки поступлений",PULabMyRClass,CGRcW,RcType);
+  real h,l,v,vm,mwn;
+  WindowBegin("Определите этикетки для документа",PULabMyRClass,CGRcW,RcType);
   SetWRect(20,80,400,320);
-  EditFieldTL(h=150,v=6,153,"Поступление",   M4Str,ViewOnly,30,f1,false,0);
+  DynamicWindow;
+  mwn = MotherWindow(CurWindow);
+  if (mwn>0) then begin
+    switch (GetWindowFileName(mwn)) begin
+      case "PUVc":
+        EditFieldTL(h=150,v=6,153,"Поступление",M4Str,ViewOnly,30,f1,false,0);
+      case "StockMovVc":
+        EditFieldTL(h=150,v=6,153,"Перемещение",M4Str,ViewOnly,30,f1,false,0);
+    end;
+  end;
   if (IsEnterprise) then begin
   ButtonFrame(h=100,vm=(v+=40) /*v=vm*/,l=160,5,"Размер");
   RadioButton(h,v    ,6,0,"4*13 шт. 46*21 мм",ArtMode);

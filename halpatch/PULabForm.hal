@@ -408,7 +408,7 @@ LDoPULabFormPrint:;
 END;  
 
 global //Edit***************************Sasha2,13:54 07.08.2015 {
-updating procedure Zebra_PrintingPU(record RcVc RepSpec)
+updating procedure Zebra_PrintingRec(record RcVc RepSpec)
 begin
   area aLabel;
   integer k;
@@ -417,7 +417,7 @@ begin
   
     blockload(ZPb);
     
-    Handle_Zebra_Printing(RepSpec,aLabel,K,"PUVc");
+    Handle_Zebra_Printing(RepSpec,aLabel,K,RepSpec.f3);
     if (k>0) then begin
       filename = "ZebraPrint.epl";
       CreateFile(filename);
@@ -450,7 +450,7 @@ BEGIN
   FDr.shortname = Dummyr.shortname;
   
   if (RepSpec.ArtMode==0) then begin //Edit***************************Sasha2,13:53 07.08.2015 {
-    ClientRemoteAsync.Zebra_PrintingPU(RepSpec);
+    ClientRemoteAsync.Zebra_PrintingRec(RepSpec);
     goto LDoPULabForm;
   end; //Edit***************************Sasha2,13:53 07.08.2015 }
   
@@ -495,3 +495,15 @@ BEGIN
   tmpf = PrintDocument(RepSpec,"PULabForm",false);
   RETURN;
 END;
+
+global //Edit***************************Sasha2,12:43 24.12.2015 {
+updating procedure SMLabForm(record RcVc RepSpec)
+BEGIN
+  Boolean tmpf;
+  
+    if (RepSpec.ArtMode==0) then begin 
+      ClientRemoteAsync.Zebra_PrintingRec(RepSpec);
+    end;
+    
+  RETURN;
+END; //Edit***************************Sasha2,12:43 24.12.2015 ]
