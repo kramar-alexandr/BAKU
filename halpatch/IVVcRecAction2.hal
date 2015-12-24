@@ -92,6 +92,7 @@ external procedure InvVat(Integer,Integer,Integer,Integer,string,val,var val,var
 external function Boolean EInvoiceWithPDFFileTest(string,string,var record EInvCUVc);
 external updating procedure RoyaltyIVRemoved(record IVVc);
 external function Boolean FindSubString( string, string); //Edit----------------------Dima  27.02.2015
+external updating procedure UnOk_IVVc(var record IVVc);	//Edit----------------------Dima  24.12.2015
 
 procedure SetIVAcceptanceFlag(var record IVVc IVr,record IVVc prevIVr,LongInt stat)
 begin
@@ -940,6 +941,7 @@ BEGIN
           end;
       end;
       IVr.Prntdf = 0;
+      UnOk_IVVc(IVr);//Edit----------------------Dima  24.12.2015
   end;
   
    

@@ -2,6 +2,8 @@ external function Integer AccrualSimulationsTransferred(LongInt,string);
 external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Integer PMCheckType(string,var string,var string);
+external function boolean CheckUnOkIVVc(record IVVc);		//Edit----------------------Dima  24.12.2015
+
 
 global
 function Boolean CheckCurncy(string paymode,string curncy)
@@ -552,9 +554,12 @@ BEGIN
   if (nonblankdate(DBLockRec.SLLock)) then begin
     if (IVp.TransDate<=DBLockRec.SLLock) then begin
       res = 1046;
-if(currentuser=="SA" or currentuser=="USER1" or currentuser=="DINARA")then begin
-	res = 0;// Edit ************************** Wednesday, 13 May 2015 16:55:24
-end;
+ /*
+ //Commented by----------------------Dima  24.12.2015     
+	if(currentuser=="SA" or currentuser=="USER1" or currentuser=="DINARA")then begin
+		res = 0;// Edit ************************** Wednesday, 13 May 2015 16:55:24
+	end;
+*/
     end;
   end;
   if (IVp.UpdStockFlag!=0 and IVp.OrderNr==-1) then begin// Edit ************************** Monday, 25 November 2013 11:31:08
@@ -565,6 +570,7 @@ end;
         goto LIsUnOKAllowed_IVVc;
       end;
     end else begin
+      /****	//Edit----------------------Dima  24.12.2015
       rwcnt = MatRowCnt(IVp);
       for (i=0;i<rwcnt;i=i+1) begin
         MatRowGet(IVp,i,IVrw);
@@ -574,7 +580,19 @@ end;
             goto LIsUnOKAllowed_IVVc;
           end;
         end;
-      end;    
+      end;
+      ***/
+      
+      if (UserCanAction("UnOKUpdStockDocuments",false)) then begin	//Edit----------------------Dima  08.10.2015
+      	if (CheckUnOkIVVc(IVp)==false) then begin	
+      	      res = 1273;
+      	      goto LIsUnOKAllowed_IVVc;				
+				end;
+			end else begin
+      	  res = 1273;
+      	  goto LIsUnOKAllowed_IVVc;	
+      end;      
+          
     end;
   end;
   if (IVp.Invalid!=0) then begin
