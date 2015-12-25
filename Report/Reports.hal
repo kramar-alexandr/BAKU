@@ -1731,6 +1731,7 @@ begin
 	
 		startformat(15);
 			outstring(0,0,"Item",false);
+			outstring(0,0,"Metal",false);
 			outstring(0,0,"Weight",false);
 			outstring(0,0,"Size",false);
 			outstring(0,0,"Length",false);
@@ -1758,6 +1759,7 @@ begin
 			
 					startformat(15);
 						outstring(0,0,OutJWAttribute(INr.Code),false);
+						outstring(0,0,OutJWAttribute(INr.Metal),false);
 						outstring(0,0,OutJWAttribute(INr.RowWeight),false);
 						outstring(0,0,OutJWAttribute(INr.Size),false);
 						outstring(0,0,OutJWAttribute(INr.Length),false);
