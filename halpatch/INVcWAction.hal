@@ -10,6 +10,7 @@ external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 remote procedure CntDiTypesForIn(string,var Array string,var Integer,var Integer); //Edit***************************Sasha2,11:35 03.11.2015
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,11:36 03.11.2015
 remote function string 20 ReturnFieldDIType(string,boolean); //Edit***************************Sasha2,10:55 08.12.2015
+remote function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
 
 procedure CalcVolume(val w,val h,val d,var val vol) 
 BEGIN
@@ -1159,7 +1160,7 @@ begin
     for (i=0;i<groupscnt;i=i+1) begin
       ExtractObj(DiCbw.DiType,pos,settype);
       dilist = GetWindowString(wn,settype & i);
-      if (blank(dilist)) then begin
+      if (blank(dilist) and SkipCheckDIType(settype)==false) then begin
         MessageBox(0,"Empty type in row #" & i+2);
         goto LProceedDIWithTypesSClass;
       end;

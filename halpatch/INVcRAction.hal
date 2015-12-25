@@ -16,6 +16,7 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external function Integer CountObjects(string);
 external procedure ExtractElemFromSet(string,integer,var string);
 external updating procedure CalcPriceListsMn(record RcVc);// Edit ************************** Thursday, 21 February 2013 09:44:41
+external function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
 
 global
 function Boolean GetNextItemNr(var string itemnr)
@@ -1180,7 +1181,7 @@ BEGIN
         end;
         
         for (i=0;i<itemscnt;i=i+1) begin
-          if (dispscodes[types[i]]==".") then begin
+          if (dispscodes[types[i]]=="." and SkipCheckDIType(types[i])==false) then begin
             RecordCheckError(1707," " & types[i],-1,"DispGroups");      
             res = -1; 
             goto LINVcRecordCheck;

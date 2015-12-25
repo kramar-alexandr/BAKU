@@ -13,25 +13,26 @@ begin
     if (reversef==false) then begin
       switch (fieldname) begin
         case "Type": res = "TYPE";
-        case "BrandSC": res = "BRAND";
+        case "Brand": res = "BRAND";
         case "Collection": res = "COLLECTION"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "Style": res = "STYLE";
-        case "WatchType": res = "WTYPE";
+        case "WatchType": res = "WARCARD";
         case "GenderSC": res = "GENDER";
         case "Dial": res = "DIAL";
         case "Strap": res = "STRAP";
         case "Material": res = "MATERIAL";
-        case "PrecStones": res = "PR_STONES";
+        //case "PrecStones": res = "PR_STONES";
+        case "SerNrf": res = "SERIALYES";
         case "Mechanism": res = "MECHANISM";
         case "Function": res = "FUNCTIONS";
-        case "WaterResist": res = "W_R";
+        case "WaterResist": res = "SAP";
         case "Diameter": res = "DIAMETER";
         case "Category": res = "CATEGORY";
         case "Division": res = "DIVISION";
         case "WeightOfMat": res = "WEIGHT"; //"WEIGHT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
-        case "Diamonds": res = "DIAMONDS";
+        //case "Diamonds": res = "DIAMONDS";
         case "DiamondsCarat": res = "D_CARAT"; //"D_CARAT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
-        case "SolidStones05": res = "S_ST"; //"S_ST"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "SolidStones05": res = "CENT_ST"; //"CENT_ST"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "PrecAndSemiPrec": res = "PRECIOUS";
         case "RingSizes": res = "R_SIZE";
         case "Carat": res = "CARAT"; //"Carat"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
@@ -46,25 +47,26 @@ begin
     end else begin
       switch (fieldname) begin
         case "TYPE": res = "Type";
-        case "BRAND": res = "BrandSC";
+        case "BRAND": res = "Brand";
         case "COLLECTION": res = "Collection";
         case "STYLE": res = "Style";
-        case "WTYPE": res = "WatchType";
+        case "WARCARD": res = "WatchType";
         case "GENDER": res = "GenderSC";
         case "DIAL": res = "Dial";
         case "STRAP": res = "Strap";
         case "MATERIAL": res = "Material";
-        case "PR_STONES": res = "PrecStones";
+        //case "PR_STONES": res = "PrecStones";
+        case "SERIALYES": res = "SerNrf";
         case "MECHANISM": res = "Mechanism";
         case "FUNCTIONS": res = "Function";
-        case "W_R": res = "WaterResist";
+        case "SAP": res = "WaterResist";
         case "DIAMETER": res = "Diameter";
         case "CATEGORY": res = "Category";
         case "DIVISION": res = "Division";
         case "WEIGHT": res = "WeightOfMat";
-        case "DIAMONDS": res = "Diamonds";
+        //case "DIAMONDS": res = "Diamonds";
         case "D_CARAT": res = "DiamondsCarat";
-        case "S_ST": res = "SolidStones05";
+        case "CENT_ST": res = "SolidStones05";
         case "PRECIOUS": res = "PrecAndSemiPrec";
         case "R_SIZE": res = "RingSizes";
         case "CARAT": res = "Carat";
@@ -82,6 +84,20 @@ begin
   return;
 end; //Edit***************************Sasha2,15:46 07.12.2015 }
 
+global //Edit***************************Sasha2,15:46 07.12.2015 {
+function boolean SkipCheckDIType(string type)
+begin
+  boolean res;
+    
+    res = false;
+    switch (type) begin
+      case "SERIALYES": res = true;
+    end;
+
+    SkipCheckDIType = res;
+  return;
+end; //Edit***************************Sasha2,15:46 07.12.2015 }
+
 //Edit***************************Sasha2,18:12 07.12.2015 {
 procedure HandleTypeField(string fieldname,string fieldcontent,string comptostring,var String outdispstr, var String outtypesstr) 
 begin
@@ -89,7 +105,9 @@ begin
   
     curtype = ReturnFieldDIType(fieldname,false);
     if (NonBlank(curtype) and SetInSet(curtype,comptostring)) then begin
-      outdispstr = outdispstr & fieldcontent & ",";
+      if (fieldname!="SerNrf") then begin
+        outdispstr = outdispstr & fieldcontent & ","; 
+      end;
       outtypesstr = outtypesstr & curtype & ",";
     end;
       
@@ -233,8 +251,8 @@ begin
               case "D_CARAT": //supposed to be digital
                 suffix = "DC";
                 testf = true;
-              case "S_ST": //supposed to be digital
-                suffix = "SST";
+              case "CENT_ST": //supposed to be digital
+                suffix = "CST";
                 testf = true;
               case "Carat": //supposed to be digital
                 suffix = "CRT";
@@ -509,15 +527,17 @@ BEGIN
       end;
       type = newINrw.Type;
       
-      if (NonBlank(newINrw.BrandSC) and SetInSet(ReturnFieldDIType("BrandSC",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.BrandSC,outdisps,ReturnFieldDIType("BrandSC",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"BrandSC");      
+      if (NonBlank(newINr.Brand) and SetInSet(ReturnFieldDIType("Brand",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINr.Brand,outdisps,ReturnFieldDIType("Brand",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,-1,"Brand"); 
           res = -1; 
           goto LNewINVcRecordCheck;
         end else begin
-          newINrw.BrandSC = outdisps;
+          if (newINr.Brand!=outdisps) then begin
+           newINr.Brand = outdisps; 
+          end;
         end;
-        HandleTypeField("BrandSC",newINrw.BrandSC,diCheckTypes[type],newdispstr,foundtypes);
+        HandleTypeField("Brand",newINr.Brand,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Collection) and SetInSet(ReturnFieldDIType("Collection",false),diCheckTypes[type])) then begin
@@ -542,6 +562,7 @@ BEGIN
         HandleTypeField("Style",newINrw.Style,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
+      //WatchType -> Warranty Card;
       if (NonBlank(newINrw.WatchType) and SetInSet(ReturnFieldDIType("WatchType",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WatchType,outdisps,ReturnFieldDIType("WatchType",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"WatchType");      
@@ -597,7 +618,7 @@ BEGIN
         HandleTypeField("Material",newINrw.Material,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
-      if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
+      /*if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecStones,outdisps,ReturnFieldDIType("PrecStones",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"PrecStones");      
           res = -1; 
@@ -606,6 +627,10 @@ BEGIN
           newINrw.PrecStones = outdisps;
         end;
         HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
+      end;*/
+
+      if (NonBlank(newINrw.SerNrf) and SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
+        HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       if (NonBlank(newINrw.Mechanism) and SetInSet(ReturnFieldDIType("Mechanism",false),diCheckTypes[type])) then begin
@@ -630,6 +655,7 @@ BEGIN
         HandleTypeField("Function",newINrw.Function,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
+      //WaterResist -> SAP
       if (NonBlank(newINrw.WaterResist) and SetInSet(ReturnFieldDIType("WaterResist",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WaterResist,outdisps,ReturnFieldDIType("WaterResist",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"WaterResist");      
@@ -685,7 +711,7 @@ BEGIN
         HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
-      if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
+      /*if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diamonds,outdisps,ReturnFieldDIType("Diamonds",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"Diamonds");      
           res = -1; 
@@ -694,7 +720,7 @@ BEGIN
           newINrw.Diamonds = outdisps;
         end;
         HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[type],newdispstr,foundtypes);
-      end;
+      end;*/
       
       if (NonBlank(newINrw.DiamondsCarat) and SetInSet(ReturnFieldDIType("DiamondsCarat",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.DiamondsCarat,outdisps,ReturnFieldDIType("DiamondsCarat",false),mes)) then begin
@@ -822,7 +848,11 @@ BEGIN
       ExtractObj(rawclass,pos,uloc);
       while(nonblank(uloc)) begin
         if (!SetInSet(uloc,foundtypes)) then begin
-          RecordCheckError(1854,"",i,ReturnFieldDIType(uloc,true));      
+          if (uloc=="BRAND") then begin
+            RecordCheckError(1854,"",-1,"Brand");  
+          end else begin
+            RecordCheckError(1854,"",i,ReturnFieldDIType(uloc,true));
+          end;   
           res = -1; 
           goto LNewINVcRecordCheck;
         end;
