@@ -591,7 +591,7 @@ begin
   row IVVc IVrw;
   record Attach2Vc Attachr;
 	record RLinkVc RLr;
-	string 255 filename,uid,res;
+	string 255 filename,uid,res,inrcode;
 	string 50 comfolder;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
@@ -698,11 +698,16 @@ begin
 		
 		BlockLoad(Compb);
 		MatRowGet(Compb,currentcompany-1,Comprw);
-		if (fileexists("webcust/" & Comprw.ShortName & "/" & INr.Code & ".jpg")) then begin
-			filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+		if (currentcompany==9) then begin
+			inrcode = INr.AlternativeCode;
+		end else begin
+			inrcode = INr.Code;
 		end;
-		if (fileexists("webcust/" & Comprw.ShortName & "/" & INr.Code & ".png")) then begin
-			filename = "http://" & serverip & "/" & INr.Code & ".png";
+		if (fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg")) then begin
+			filename = "http://" & serverip & "/" & inrcode & ".jpg";
+		end;
+		if (fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png")) then begin
+			filename = "http://" & serverip & "/" & inrcode & ".png";
 		end;
 		/*switch(currentcompany)begin
 			case 1: if(fileexists("webcust/SWAROVSKI/" & INr.Code & ".jpg"))then begin

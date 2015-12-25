@@ -34,9 +34,17 @@ begin
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
 	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".jpg")) then begin
+		if (imname!=urlencode(imname)) then begin
+			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".jpg","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".jpg");
+		end;
+		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".jpg";
 	end;
 	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".png")) then begin
+		if (imname!=urlencode(imname)) then begin
+			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".png","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".png");
+		end;
+		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".png";
 	end;
 	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
