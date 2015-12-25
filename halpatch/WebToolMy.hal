@@ -24,11 +24,23 @@ begin
   record Attach2Vc Attachr;
   string 100 imname,curcomp,nimname;
   string 255 filename;
+	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
+	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
   
   imname = WebGetArg	("image");
   curcomp = WebGetArg	("curcomp");
   
-  switch(curcomp)begin
+	//Edit-------------------Vitalii 14:19 25.12.2015
+	BlockLoad(Compb);
+	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
+	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".jpg")) then begin
+		filename = Comprw.ShortName & "/" & imname & ".jpg";
+	end;
+	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".png")) then begin
+		filename = Comprw.ShortName & "/" & imname & ".png";
+	end;
+	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+  /*switch(curcomp)begin
   	case 1: if(fileexists("webcust/SWAROVSKI/" & imname & ".jpg"))then begin
 							filename = "SWAROVSKI/" & imname & ".jpg";
 						end;
@@ -158,7 +170,7 @@ begin
 		otherwise
 						WebSetContentType("image/jpeg");
 						WebOutAttachment(stringtoint(imname));
-  end;
+  end;*/
   
   return;
 end;

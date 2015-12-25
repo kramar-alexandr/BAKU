@@ -593,6 +593,8 @@ begin
 	record RLinkVc RLr;
 	string 255 filename,uid,res;
 	string 50 comfolder;
+	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
+	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
 	
   if(serstock==0)then begin
   	instock = ISr.Instock;
@@ -694,7 +696,15 @@ begin
 		res = "";
 		uid = "";
 		
-		switch(currentcompany)begin
+		BlockLoad(Compb);
+		MatRowGet(Compb,currentcompany-1,Comprw);
+		if (fileexists("webcust/" & Comprw.ShortName & "/" & INr.Code & ".jpg")) then begin
+			filename = "http://" & serverip & "/" & INr.Code & ".jpg";
+		end;
+		if (fileexists("webcust/" & Comprw.ShortName & "/" & INr.Code & ".png")) then begin
+			filename = "http://" & serverip & "/" & INr.Code & ".png";
+		end;
+		/*switch(currentcompany)begin
 			case 1: if(fileexists("webcust/SWAROVSKI/" & INr.Code & ".jpg"))then begin
 								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
 							end;
@@ -806,7 +816,7 @@ begin
 						filename = "http://" & serverip & "/" & Attachr.FileName;
 					end;	
 				end;
-		end;
+		end;*/
 		
 		if(nonblank(filename))then begin
 			ExportString("<td width=\"300\" height=\"300\" align=\"center\"><div align=\"justify\"><img src=\"" & filename & "\" width=\"100%\" height=\"100%\"/></div></td>");
