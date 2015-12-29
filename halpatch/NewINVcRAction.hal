@@ -21,7 +21,7 @@ begin
         case "Dial": res = "DIAL";
         case "Strap": res = "STRAP";
         case "Material": res = "MATERIAL";
-        //case "PrecStones": res = "PR_STONES";
+        case "PrecStones": res = "COMMENT";
         case "SerNrf": res = "SERIALYES";
         case "Mechanism": res = "MECHANISM";
         case "Function": res = "FUNCTIONS";
@@ -55,7 +55,7 @@ begin
         case "DIAL": res = "Dial";
         case "STRAP": res = "Strap";
         case "MATERIAL": res = "Material";
-        //case "PR_STONES": res = "PrecStones";
+        case "COMMENT": res = "PrecStones";
         case "SERIALYES": res = "SerNrf";
         case "MECHANISM": res = "Mechanism";
         case "FUNCTIONS": res = "Function";
@@ -618,7 +618,8 @@ BEGIN
         HandleTypeField("Material",newINrw.Material,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
-      /*if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
+      //PrecStones -> Comment
+      if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecStones,outdisps,ReturnFieldDIType("PrecStones",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"PrecStones");      
           res = -1; 
@@ -627,7 +628,7 @@ BEGIN
           newINrw.PrecStones = outdisps;
         end;
         HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
-      end;*/
+      end;
 
       if (NonBlank(newINrw.SerNrf) and SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
         HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);

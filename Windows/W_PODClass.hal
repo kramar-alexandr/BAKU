@@ -2518,7 +2518,6 @@ begin
   		MatCol(1,pos+=wdth,"Dial",0,Dial,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Strap",0,Strap,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Material",0,Material,false,TypeDISClass);
-  		//MatCol(1,pos+=wdth,"PrecStones",0,PrecStones,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Mechanism",0,Mechanism,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Function",0,Function,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Diameter",0,Diameter,false,TypeDISClass);
@@ -2527,7 +2526,7 @@ begin
   		MatCol(1,pos+=wdth,"Type",0,Type,false,TypeDISClass);
   		Flip(flipnr); flipnr = flipnr + 1;
   		pos = 105;
-  		wdth = 80;
+  		wdth = 73;
   		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
   		MatCol(1,pos,"Collection",0,Collection,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Category",0,Category,false,TypeDISClass);
@@ -2542,6 +2541,7 @@ begin
   		MatCol(1,pos+=wdth,"Style",0,Style,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"RingSizes",0,RingSizes,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"SAP code",0,WaterResist,false,TypeDISClass);
+  		MatCol(1,pos+=wdth,"Comment",0,PrecStones,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Type",0,Type,false,TypeDISClass);
   		Flip(flipnr); flipnr = flipnr + 1;
   		pos = 100;

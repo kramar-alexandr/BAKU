@@ -16,7 +16,7 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 external function Integer CountObjects(string);
 external procedure ExtractElemFromSet(string,integer,var string);
 external updating procedure CalcPriceListsMn(record RcVc);// Edit ************************** Thursday, 21 February 2013 09:44:41
-external function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
+remote function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
 
 global
 function Boolean GetNextItemNr(var string itemnr)
