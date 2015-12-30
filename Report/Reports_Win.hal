@@ -676,7 +676,7 @@ begin
   v = 6; vs = 20; h = 130;
   PeriodField(h,v,"Период");
   EditFieldTL(h,v+=vs,150,"Склад",M4Str,Normal,41,f1,false,LocationSClass);
-	//EditField(h,v+=vs,80,"Отчет в валюте",Normal,f2,false,CurncyCodeSClass);	
+	EditField(h,v+=vs,80,"Отчет в валюте",Normal,f2,false,CurncyCodeSClass);	
 
   EndWindow;
 end;
