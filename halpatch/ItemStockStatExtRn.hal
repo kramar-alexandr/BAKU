@@ -561,6 +561,19 @@ begin
 			baseprice5 = baseprice;
 		end;
 		
+		if(currentcompany==10)then begin
+			PLr.ArtCode = ISr.Code;
+			PLr.PLCode = "RRP";
+			PLr.CustCode = "";
+		
+			if(readfirstmain(PLr,3,true))then begin
+				if(PLr.ArtCode==ISr.Code and PLr.PLCode=="RRP")then begin
+					baseprice5 = PLr.ExVatPrice;
+					baseprice = PLr.ExVatPrice;
+				end;
+			end;	
+		end;
+		
 		outstring(0,0,price,false);
 		outstring(0,0,baseprice5,false);
 		//outstring(0,0,baseprice,false);

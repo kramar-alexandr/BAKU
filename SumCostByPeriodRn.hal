@@ -37,6 +37,7 @@ begin
   record RetVc Retr;
   row RetVc Retrw;
   val torate;// Edit ************************** Thursday, 8 October 2015 13:48:34
+  string 10 tempcur;
   
 	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
 	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
@@ -110,11 +111,14 @@ begin
 						if(IHr.TotCostPrice/IHr.TotCostPriceCurncy!=0)then begin
 							torate = IHr.TotCostPriceCurncy/IHr.TotCostPrice;
 						end else begin
-							GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
+							tempcur = curcode;
+							GetFullCurncyRate(tempcur,IHr.InDate,fr,to1,to2,br1,br2);
 							if(fr==0 or to1==0)then begin
-								GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+								tempcur = curcode;
+								GetFullCurncyRate(tempcur,IHr.TransDate,fr,to1,to2,br1,br2);
 								if(fr==0 or to1==0)then begin
-									GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+									tempcur = curcode;
+									GetFullCurncyRate(tempcur,CurrentDate,fr,to1,to2,br1,br2);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;
@@ -123,11 +127,14 @@ begin
 							torate = fr/to1;
 						end;
     			end else begin
-    				GetFullCurncyRate(curcode,IHr.InDate,fr,to1,to2,br1,br2);
+    				tempcur = curcode;
+    				GetFullCurncyRate(tempcur,IHr.InDate,fr,to1,to2,br1,br2);
 						if(fr==0 or to1==0)then begin
-							GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+							tempcur = curcode;
+							GetFullCurncyRate(tempcur,IHr.TransDate,fr,to1,to2,br1,br2);
 							if(fr==0 or to1==0)then begin
-								GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+								tempcur = curcode;
+								GetFullCurncyRate(tempcur,CurrentDate,fr,to1,to2,br1,br2);
 								if(fr==0 or to1==0)then begin
 									fr = 1;	to1 = 1;
 								end;
@@ -136,9 +143,11 @@ begin
 						torate = fr/to1;
     			end;
     		end else begin
-    			GetFullCurncyRate(curcode,IHr.TransDate,fr,to1,to2,br1,br2);
+    			tempcur = curcode;
+    			GetFullCurncyRate(tempcur,IHr.TransDate,fr,to1,to2,br1,br2);
 					if(fr==0 or to1==0)then begin
-						GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+						tempcur = curcode;
+						GetFullCurncyRate(tempcur,CurrentDate,fr,to1,to2,br1,br2);
 						if(fr==0 or to1==0)then begin
 							fr = 1;	to1 = 1;
 						end;
@@ -191,13 +200,14 @@ begin
 							if (ReadFirstMain(IVr,1,true) and testf1) then begin
 								ivfr = 1; ivto = 1;
 								fr = 1; to1 = 1;
-								if(IVr.CurncyCode!=curncy)then begin
+								if(IVr.CurncyCode!=curcode)then begin
 									ivfr = IVr.FrRate;
 									ivto = IVr.ToRateB1;
 									if(ivfr==0 or ivto==0)then begin
 										ivfr = 1;	ivto = 1;
 									end;
-									GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+									tempcur = curcode;
+									GetFullCurncyRate(tempcur,IVr.TransDate,fr,to1,to2,br1,br2);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;
@@ -210,19 +220,22 @@ begin
 							if (ReadFirstMain(IVr,1,true)and testf1) then begin
 								ivfr = 1; ivto = 1;
 								fr = 1; to1 = 1;
-								if(IVr.CurncyCode!=curncy)then begin
+								if(IVr.CurncyCode!=curcode)then begin
 									ivfr = IVr.FrRate;
 									ivto = IVr.ToRateB1;
 									if(ivfr==0 or ivto==0)then begin
 										ivfr = 1;	ivto = 1;
 									end;
-									GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
+									tempcur = curcode;
+									GetFullCurncyRate(tempcur,IVr.TransDate,fr,to1,to2,br1,br2);
+									logtext(0,curncy & " " & fr & " " & to1);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;
 								end;
 								MatRowGet(IVr,IHr.Row,IVrw);
 								ivshpricesum = ivshpricesum + IVrw.Sum/ivfr*ivto*fr/to1;
+								
 							end;
 						end;
             if IHr.StockAffectf==1 then begin
@@ -258,13 +271,14 @@ begin
 								MatRowGet(ORr,SHrw.OrdRow,ORrw);
 								ivfr = 1; ivto = 1;
 								fr = 1; to1 = 1;
-								if(ORr.CurncyCode!=curncy)then begin
+								if(ORr.CurncyCode!=curcode)then begin
 									ivfr = ORr.FrRate;
 									ivto = ORr.ToRateB1;
 									if(ivfr==0 or ivto==0)then begin
 										ivfr = 1;	ivto = 1;
 									end;
-									GetFullCurncyRate(curncy,ORr.OrdDate,fr,to1,to2,br1,br2);
+									tempcur = curcode;
+									GetFullCurncyRate(tempcur,ORr.OrdDate,fr,to1,to2,br1,br2);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;
@@ -313,13 +327,14 @@ begin
 								MatRowGet(ORr,Retrw.OrdRow,ORrw);
 								ivfr = 1; ivto = 1;
 								fr = 1; to1 = 1;
-								if(ORr.CurncyCode!=curncy)then begin
+								if(ORr.CurncyCode!=curcode)then begin
 									ivfr = ORr.FrRate;
 									ivto = ORr.ToRateB1;
 									if(ivfr==0 or ivto==0)then begin
 										ivfr = 1;	ivto = 1;
 									end;
-									GetFullCurncyRate(curncy,ORr.OrdDate,fr,to1,to2,br1,br2);
+									tempcur = curcode;
+									GetFullCurncyRate(tempcur,ORr.OrdDate,fr,to1,to2,br1,br2);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;
@@ -362,6 +377,7 @@ begin
   val rate,coef,fr,to1,to2,br1,br2,srval,srvalsum;
 	string 10 curcode;
 	record BaseCurBlock BCBb;
+	string 20 tempcur;
   
   spi = 1;
    
@@ -386,7 +402,9 @@ begin
 	end;
 
   fr = 1; to1 = 1;
-	GetFullCurncyRate(curcode,CurrentDate,fr,to1,to2,br1,br2);
+  tempcur = curcode;
+	GetFullCurncyRate(tempcur,CurrentDate,fr,to1,to2,br1,br2);
+	
 	if(fr==0 or to1==0)then begin
 			fr = 1;	to1 = 1;
 	end;
