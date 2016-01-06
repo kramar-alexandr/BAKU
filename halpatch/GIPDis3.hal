@@ -755,6 +755,9 @@ L44GetItemPriceDiscount3:;
   end;
   RegionPerceptionTax(custcode,region,INr.EUCodex,INr.Group,tax2code,tax2prc);
   nomoreremotecalls = !calcpricef and !rebfound and !qtyplfound;
+  
+  price = round(price,SetRoundModeD(0));// Edit ************************** Wednesday, 6 January 2016 10:16:26
+  
   GetItemPriceDiscount3 = res;
   RETURN;
 END;
