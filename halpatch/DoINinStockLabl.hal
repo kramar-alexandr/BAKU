@@ -71,7 +71,7 @@ begin
 			rnd = DefaultValRoundoff;
 			rnd.decimals = 0;
 			rnd.mode = kRoundingModeHalfDown;
-			if(currentcompany==3 or currentcompany==17)then begin
+			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
 				rnd.step = kRoundingStep5;
 			end;
 			if(cur!=BCb.BaseCur1)then begin
@@ -101,6 +101,11 @@ begin
 	  	end;
 			OUTFORMFIELD("F_MYRETAILCURNCY",tstr);// Edit ************************** Tuesday, 1 April 2014 13:15:56
 	  end;
+	end;
+	
+	if (FIELDINFORM("F_MYRETAILCURNCY1")) then begin
+		tstr = "y.e.";
+		OUTFORMFIELD("F_MYRETAILCURNCY1",tstr);// Edit ************************** Tuesday, 1 April 2014 13:15:56
 	end;
 	
 	

@@ -228,7 +228,7 @@ begin
 									end;
 									tempcur = curcode;
 									GetFullCurncyRate(tempcur,IVr.TransDate,fr,to1,to2,br1,br2);
-									logtext(0,curncy & " " & fr & " " & to1);
+									//logtext(0,curncy & " " & fr & " " & to1);
 									if(fr==0 or to1==0)then begin
 										fr = 1;	to1 = 1;
 									end;

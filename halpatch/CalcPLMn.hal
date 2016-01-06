@@ -145,7 +145,7 @@ begin
     newpr = Round(newpr + PFr.Add1Val,SetRoundModeD(PFr.RndTo));
     
     
-    if(currentcompany==3 or currentcompany==17)then begin
+    if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
     	newpr = Round(newpr + PFr.Add2Val,rnd);// Edit ************************** Friday, 24 May 2013 14:08:31
     end else begin
 			newpr = Round(newpr + PFr.Add2Val,SetRoundModeD(roundof));

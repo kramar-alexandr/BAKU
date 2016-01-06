@@ -24,6 +24,9 @@ external function string 255 StrReplace(string,string,string);//Edit------------
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,14:00 16.12.2015
 external function string 20 ReturnFieldDIType(string,boolean); //Edit***************************Sasha2,14:56 16.12.2015
 
+
+SetLangMode(LangRussian,"RUS",0);
+
 global //Edit***************************Sasha2,14:00 16.12.2015 {
 procedure HandleNewINDClassmCode(var record NewINVc newINr, integer rownr)
 begin
@@ -2524,13 +2527,17 @@ begin
   val price;
   roundmode rnd;
   string 5 cur;
-  
+  	
+  	
+  	//pechat stikerov s 5/1/16 tolko v u.e. vo vseh company // Edit ************************** Tuesday, 5 January 2016 10:44:24
+  	
     price = blankval;
     printcur = "";
     switch (switchf) begin
       case 0:
         PLr.PLCode = "RRP";
   	    PLr.ArtCode = code;
+  	    readfirstmain(PLr,2,true)
   	    price = PLr.ExVatPrice;
       case 1:
         PLr.PLCode = "RRP";
@@ -2549,22 +2556,19 @@ begin
     			rnd = DefaultValRoundoff;
     			rnd.decimals = 0;
     			rnd.mode = kRoundingModeHalfDown;
-    			if(currentcompany==3 or currentcompany==17)then begin
+    			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
     				rnd.step = kRoundingStep5;
     			end;
-    			if(cur!=stockcur)then begin
+    			if(cur!=stockcur and nonblank(stockcur))then begin// Edit ************************** Tuesday, 5 January 2016 10:46:17
     			  printcur = stockcur;
     			  CurValToOtherCur(CurrentDate,cur,PLr.ExVatPrice,printcur,price,rnd); 
-    			  //LogText(0,"FrCur:" & cur & ", FrVal:" & PLr.ExVatPrice & ", ToCur:" & printcur & ", ToVal:" & price);
-    				//GetFullCurncyRate(cur,CurrentDate,fr,to1,to2,br1,br2);
-    				//price = MulRateToBase1(cur,PLr.ExVatPrice,fr,to1,to2,br1,br2,rnd);
     			end else begin
     				printcur = cur;
     				price = PLr.ExVatPrice;
     			end;
     	  end;
     end;
-  	
+  printcur = "y.e.";
   Get_Zebra_Price = price;
   return;
 end;
@@ -2695,7 +2699,9 @@ begin
 		  //case "RC_DG":
 		  //case "TIMEPIECES":
 		  otherwise
-		    stockcur = basecur;
+		  	
+		    //stockcur = basecur;
+		    stockcur = "";
 		    caratf = true;
 		end;
 		switch (fromplace) begin

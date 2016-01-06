@@ -1041,7 +1041,7 @@ BEGIN
     t = cash + pp;
     
     rnd.mode = kRoundingModeHalfUp;
-    if(currentcompany==3 or currentcompany==17)then begin
+    if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
     	rnd.decimals = 0;
     	rnd.step = kRoundingStep5;
     end;
