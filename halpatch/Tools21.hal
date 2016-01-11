@@ -626,6 +626,7 @@ BEGIN
     if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) then begin ivsum = -ivsum; end;
     ARr.InvoiceNr = IVp.SerNr;
     if (ReadFirstMain(ARr,1,true)) then begin
+    	logtext(0,"ivsum " & ivsum);
       if (ARr.RVal!=ivsum) then begin
         res = 22059;
         goto LIsUnOKAllowed_IVVc;
