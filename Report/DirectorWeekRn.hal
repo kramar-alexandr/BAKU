@@ -21,7 +21,6 @@ begin
 	row CLOutVc CLOutrw;
 	record CurncyCodeVc CCr;
 	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403,Accr76,Accr7505,Accr53;
-	record BaseCurBlock BaseCurRec;
 	array string 5 CurList;
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
 	boolean TrHs,firstprint,testf,done;
@@ -34,8 +33,6 @@ begin
 		tempBal,
 		AZNTermDeb,  AZNDeb,  USDDeb,  EURDeb,
 		AZNTermCred, AZNCred, USDCred, EURCred,
-		BaseDebErr, BDEBase, BDECur, BDEDebTemp,
-		BaseCredErr, BCEBase, BCECur, BCECredTemp,
 		BaseDeb, BaseCred,
 		BalItem1, BalItem2,
 		SaldoEndPeriod53, SaldoEndPeriod53AZN, SaldoEndPeriod53USD, SaldoEndPeriod53EUR,
@@ -43,7 +40,7 @@ begin
 		SaldoEndPeriod51, SaldoEndPeriod50AZN, SaldoEndPeriod50USD, SaldoEndPeriod50EUR,
 		SaldoEndPeriod50n53USD, SaldoEndPeriod50n53EUR, SaldoEndPeriod50n53AZN,
 		corspdebval, corspcredval, Bal53,
-		kursovaya,convtotal1,convtotal2,convtotal3,convtotal4,convtotal5;// Edit ************************** Wednesday, 26 August 2015 11:49:59
+		kursovaya,kursovaya53,convtotal1,convtotal2,convtotal3,convtotal4,convtotal5;// Edit ************************** Wednesday, 26 August 2015 11:49:59
 	array integer tab;
 	integer step;
 	string 5 tempStr;
@@ -51,7 +48,6 @@ begin
 	string 200 tempComm;
 	boolean usdf,eurf,aznf,terf,basef,compf;
 	
-	BlockLoad(BaseCurRec);
 	BeginBalance50 = 0;
 	BeginBalance51 = 0;
 	BeginBalance53 = 0;
@@ -64,8 +60,6 @@ begin
 	BeginBalance53USD = 0;
 	BeginBalance53EUR = 0;
 	tempBal = 0;
-	BaseDebErr = 0;
-	BaseCredErr = 0;
 	BalItem1 = 0;
 	BalItem2 = 0;
 	SaldoEndPeriod53 = 0;
@@ -109,8 +103,6 @@ begin
 		curi = curi + 1;
 	end;
 	
-	mainr.AccNumber = "50";
-	mainr.TransDate = RepSpec.sStartDate;
 	Accr50.AccNumber = "50";
 	ReadFirstMain(Accr50,1,true);
 	Accr51.AccNumber = "51";
@@ -128,6 +120,8 @@ begin
 	Accr53.AccNumber = "53";
 	ReadFirstMain(Accr53,1,true);
 	
+	mainr.AccNumber = "50";
+	mainr.TransDate = RepSpec.sStartDate;
 	TrHs = true;
 	while (LoopMain(mainr,2,TrHs)) begin
 		if ((mainr.AccNumber != "50") or (mainr.TransDate > RepSpec.sEndDate))  then begin
@@ -138,12 +132,6 @@ begin
 			TRr.IntYc = mainr.IntYc;
 			if (ReadFirstMain(TRr,2,true)) then begin
 				if (mainr.TransDate == TRr.TransDate) then begin
-					BDEBase = 0;
-					BDECur = 0;
-					BDEDebTemp = 0;
-					BCEBase = 0;
-					BCECur = 0;
-					BCECredTemp = 0;
 					rwcnt = MatRowCnt(TRr);
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
@@ -581,6 +569,34 @@ begin
 							tempTRrw.MyVal2 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
 							tempTRrw.Comment = "";
 							tempTRrw.ExtraComment = "";
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;
+	ResetLoop(mainr);
+	mainr.AccNumber = "53";
+	mainr.TransDate = RepSpec.sStartDate;
+	TrHs = true;
+	while (LoopMain(mainr,2,TrHs)) begin
+		if ((mainr.AccNumber != "53") or (mainr.TransDate > RepSpec.sEndDate))  then begin
+			TrHs = false;
+		end;
+		if (TrHs) then begin
+			TRr.Number = mainr.TransNr;
+			TRr.IntYc = mainr.IntYc;
+			if (ReadFirstMain(TRr,2,true)) then begin
+				if (mainr.TransDate == TRr.TransDate) then begin
+					rwcnt = MatRowCnt(TRr);
+					for (i=0;i<rwcnt;i=i+1) begin
+						MatRowGet(TRr,i,TRrw);
+						done = false;
+						if ((TRrw.AccNumber == "53") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+							testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);
+							if testf then begin
+								kursovaya53 = kursovaya53 - corspdebval + corspcredval;
+							end;
 						end;
 					end;
 				end;
@@ -1599,12 +1615,12 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(15,0,"Оборот AZN:",false);
-			OutString(44,0,BaseDeb - BaseDebErr,false);
+			OutString(44,0,BaseDeb,false);
 			OutString(69,0,"",false);
 			OutString(93,0,"",false);
 			OutString(118,0,"",false);
 			OutString(142,0,"Расход AZN:",false);
-			OutString(167,0,BaseCred - BaseCredErr,false);
+			OutString(167,0,BaseCred,false);
 		EndFormat;
 		StartFormat(15);
 		EndFormat;
@@ -1627,7 +1643,7 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(15,0,"Приход",false);// Касса - Приход
-			OutString(44,0,BaseDeb - AZNTermDeb - BaseDebErr,false);
+			OutString(44,0,BaseDeb - AZNTermDeb,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
 			OutString(118,0,"",false);
@@ -1640,7 +1656,7 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(15,0,"Расход",false);// Касса - Расход
-			OutString(44,0,BaseCred - AZNTermCred - BaseCredErr,false);
+			OutString(44,0,BaseCred - AZNTermCred,false);
 			OutString(69,0,"AZN",false);
 			OutString(93,0,"",false);
 			OutString(118,0,"",false);
@@ -1808,6 +1824,14 @@ begin
 				OutString(44,0,SaldoEndPeriod53,false);
 				OutString(69,0,"AZN",false);
 			EndFormat;
+			Gray_Divider(25,90);
+			StartFormat(15);
+				OutString(0,0,"",false);
+				OutString(25,0,"Курсовая",false);
+				OutString(44,0,kursovaya53,false);
+				OutString(69,0,"AZN",false);
+			EndFormat;
+			Gray_Divider(25,90);
 			StartFormat(15);
 			EndFormat;
 			SaldoEndPeriod50n53USD = SaldoEndPeriod50USD + SaldoEndPeriod53USD;
