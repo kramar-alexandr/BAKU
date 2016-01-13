@@ -774,3 +774,11 @@ begin
 		//EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
 	EndWindow;
 end;
+
+window IVbyLocRClass:1 //Edit-------------------Vitalii 17:50 13.01.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	WindowBegin("Количество счет-фактур по складам",IVbyLocRClass,CGRcW,RcType);
+		SetWRect(20,80,440,340);
+	EndWindow;
+end;

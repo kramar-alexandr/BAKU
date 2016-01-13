@@ -156,6 +156,7 @@ begin
   Report("Ошибки по долгам и авансам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
   Report("Повторяющиеся штрих-коды",SameBarCodesRClass,SameBarCodesRn,0,modIN);	//Edit----------------------Dima  18.09.2015
   Report("Ошибки в начальных сальдо",FBErrRClass,FBErrRn,0,modNL);
+  Report("Количество счет-фактур по складам",IVbyLocRClass,IVbyLocRn,0,modDBMain);//Edit-------------------Vitalii 17:49 13.01.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
