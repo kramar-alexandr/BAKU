@@ -8,10 +8,11 @@ begin
 	record IVVc IVr;
 	Date sd,ed;
 	boolean TrHs,exportf;
-	string 100 tstr,prevMonth;
+	string 100 tstr,location;
 	integer k,currcomp,rwcnt,oldcompany;
 	record CompaniesBlock Compb;
 	row CompaniesBlock Comprw;
+	record LocationVc Locr;
 	
 	vector boolean LocInArr;
 	array string 30 LocArr;
@@ -43,18 +44,32 @@ begin
 			while (LoopKey("InvDate",IVr,1,TrHs)) begin
 				if (IVr.InvDate>ed) then begin TrHs = false; end;
 				if (TrHs and IVr.Invalid==0 and IVr.OKFlag<>0) then begin
-					if !LocInArr[IVr.Location] then begin
-						LocInArr[IVr.Location] = true;
-						LocArr[i] = IVr.Location;
+					if (currcomp==9) then Begin
+					 	location = "Creative System";
+					end else begin
+						if nonblank(IVr.Location) then begin
+							Locr.Code = IVr.Location;
+							if (ReadFirstMain(Locr,1,true)) then begin
+								location = Locr.Name;
+							end else begin
+								location = "";
+							end;
+						end else begin
+							location = "";
+						end;
+					end;
+					if !LocInArr[location] then begin
+						LocInArr[location] = true;
+						LocArr[i] = location;
 						i = i + 1;
 					end;
-					tstr = MonthName(IVr.InvDate) & "_" & GetYear(IVr.InvDate);
+					tstr = GetYear(IVr.InvDate) & "_" & GetMonth(IVr.InvDate);
 					if !MonYearInArr[tstr] then begin
 						MonYearInArr[tstr] = true;
 						MonYearArr[j] = tstr;
 						j = j + 1;
 					end;
-					qIVinMonth[Comprw.CompName & ":" & tstr & ":" & IVr.Location] = qIVinMonth[Comprw.CompName & ":" & tstr & ":" & IVr.Location] + 1;
+					qIVinMonth[Comprw.CompName & ":" & tstr & ":" & location] = qIVinMonth[Comprw.CompName & ":" & tstr & ":" & location] + 1;
 				end;
 			end;
 			ResetLoop(IVr);
@@ -71,23 +86,19 @@ begin
 				OutString(70,0,"Склад",false);
 				OutString(150,0,"Количество",false);
 			EndFormat;
-			prevMonth = "";
 			for (i=0;i<MonYearArr.length;i=i+1) begin
 				for (j=0;j<LocArr.length;j=j+1) begin
 					if (qIVinMonth[CompArr[k] & ":" & MonYearArr[i] & ":" & LocArr[j]]<>0) then begin
 						StartFormat(15);
-							if (prevMonth<>MonYearArr[i]) then begin
-								prevMonth = MonYearArr[i];
 								OutString(0,0,MonYearArr[i],false);
-							end else begin
-								OutString(0,0,"",false);
-							end;
 							OutString(70,0,LocArr[j],false);
 							OutString(150,0,qIVinMonth[CompArr[k] & ":" & MonYearArr[i] & ":" & LocArr[j]],false);
 						EndFormat;
 					end;
 				end;
 			end;
+			StartFormat(15);
+			EndFormat;
 		end;
 	EndJob;
 	
