@@ -108,9 +108,11 @@ BEGIN
       if (UserCanAction("UnOKAll",false)) then begin
         res = true;
       end;
-      if (UserCanAction("OKCashOut",true)==false) then begin
+      if (UserCanAction("UnOKCashOut",true)) then begin //Edit***************************Sasha2,14:02 14.01.2016 {
+        res = true;
+      end else begin
         res = false;
-      end; 
+      end; //Edit***************************Sasha2,14:20 14.01.2016 }
     end;
   end;  
   if (WindowState(wn)==updatemode) then begin
@@ -118,9 +120,9 @@ BEGIN
     if (CLOutr.OKFlag!=0) then begin
       res = false;
     end else begin  
-      if (UserCanAction("OKCashOut",true)==false) then begin
+      /*if (UserCanAction("OKCashOut",true)==false) then begin //Edit***************************Sasha2,14:03 14.01.2016
         res = false;
-      end;
+      end;*/
     end;    
   end;  
   CLOutDClassOKFlagButtonAction = res;

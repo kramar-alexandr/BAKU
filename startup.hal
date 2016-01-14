@@ -743,6 +743,8 @@ begin
 	StrSetText(UnOKCashCount,"Снимать OK со снятия кассы");
 	StrSetText(UnOKOR,"Снимать OK со счетов");
 	StrSetText(UnOKUpdStockDocuments,"Снимать OK с док-в изменяющих склад");	//Edit----------------------Dima  24.12.2015
+	StrSetText(UnOKCashIn,"Снимать галочку OK в ПКО"); //Edit***************************Sasha2,14:01 14.01.2016
+	StrSetText(UnOKCashOut,"Снимать галочку OK в РКО"); //Edit***************************Sasha2,14:01 14.01.2016
 	StrSetText(AllowDispute,"Согласовывать сч/ф");
 	StrSetText(AllowCreateGuest,"Создавать гостей");
 	StrSetText(AllowCreateDealer,"Создавать дилеров");
