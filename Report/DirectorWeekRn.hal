@@ -4,6 +4,7 @@ external function Boolean CorspTRTest(record TRVc,record AccVc,Integer,var val,v
 external procedure ReadCorspTRRowSums(record TRVc,record AccVc,record AccVc,var val,var val,string);
 external procedure GetObjs(string,string,var string);
 external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);
+external function string 200 ValToMyString(val,integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1291,12 +1292,12 @@ begin
 					if eurf then begin
 						tempStr = "EUR";
 						GetFullCurncyRate(tempStr,tempDate,fr,to1EUR,to2,br1,br2);
-						OutString(tab[4],0,to1EUR,false);
+						OutString(tab[4],0,ValToMyString(to1EUR,5),false);
 					end;
 					if usdf then begin
 						tempStr = "USD";
 						GetFullCurncyRate(tempStr,tempDate,fr,to1USD,to2,br1,br2);
-						OutString(tab[5],0,to1USD,false);
+						OutString(tab[5],0,ValToMyString(to1USD,5),false);
 					end;
 					if basef then begin
 						OutString(tab[6],0,"",false);
@@ -1308,10 +1309,10 @@ begin
 						OutString(tab[8],0,"",false); 
 					end;
 					if eurf then begin
-						OutString(tab[9],0,to1EUR,false);
+						OutString(tab[9],0,ValToMyString(to1EUR,5),false);
 					end;
 					if usdf then begin
-						OutString(tab[10],0,to1USD,false);
+						OutString(tab[10],0,ValToMyString(to1USD,5),false);
 					end;
 					if basef then begin
 						OutString(tab[11],0,"",false);
@@ -1324,10 +1325,10 @@ begin
 						OutString(tab[13],0,"",false);
 					end;
 					if eurf then begin
-						OutString(tab[14],0,to1EUR,false);
+						OutString(tab[14],0,ValToMyString(to1EUR,5),false);
 					end;
 					if usdf then begin
-						OutString(tab[15],0,to1USD,false);
+						OutString(tab[15],0,ValToMyString(to1USD,5),false);
 					end;
 					if basef then begin
 						OutString(tab[16],0,"",false);
