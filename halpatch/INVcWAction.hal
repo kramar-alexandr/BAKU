@@ -9,8 +9,99 @@ external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 remote procedure CntDiTypesForIn(string,var Array string,var Integer,var Integer); //Edit***************************Sasha2,11:35 03.11.2015
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,11:36 03.11.2015
-remote function string 20 ReturnFieldDIType(string,boolean); //Edit***************************Sasha2,10:55 08.12.2015
-remote function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
+
+global //Edit***************************Sasha2,15:46 07.12.2015 {
+function string 20 ReturnFieldDIType(string fieldname,boolean reversef)
+begin
+  string 20 res;
+  
+    if (reversef==false) then begin
+      switch (fieldname) begin
+        case "Type": res = "TYPE";
+        case "Brand": res = "BRAND";
+        case "Collection": res = "COLLECTION"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "Style": res = "STYLE";
+        case "WatchType": res = "WARCARD";
+        case "GenderSC": res = "GENDER";
+        case "Dial": res = "DIAL";
+        case "Strap": res = "STRAP";
+        case "Material": res = "MATERIAL";
+        case "PrecStones": res = "COMMENT";
+        case "SerNrf": res = "SERIALYES";
+        case "Mechanism": res = "MECHANISM";
+        case "Function": res = "FUNCTIONS";
+        case "WaterResist": res = "SAP";
+        case "Diameter": res = "DIAMETER";
+        case "Category": res = "CATEGORY";
+        case "Division": res = "DIVISION";
+        case "WeightOfMat": res = "WEIGHT"; //"WEIGHT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        //case "Diamonds": res = "DIAMONDS";
+        case "DiamondsCarat": res = "D_CARAT"; //"D_CARAT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "SolidStones05": res = "CENT_ST"; //"CENT_ST"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "PrecAndSemiPrec": res = "PRECIOUS";
+        case "RingSizes": res = "R_SIZE";
+        case "Carat": res = "CARAT"; //"Carat"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "ClaritySC": res = "CLARITY";
+        case "Color": res = "C_S";
+        case "ColorOfMat": res = "C_M";
+        case "ShapeCut": res = "SHAPE_CUT";
+        case "Description": res = "DESCRIPT";
+        case "Art": res = "ART";
+        otherwise res = "";
+      end;
+    end else begin
+      switch (fieldname) begin
+        case "TYPE": res = "Type";
+        case "BRAND": res = "Brand";
+        case "COLLECTION": res = "Collection";
+        case "STYLE": res = "Style";
+        case "WARCARD": res = "WatchType";
+        case "GENDER": res = "GenderSC";
+        case "DIAL": res = "Dial";
+        case "STRAP": res = "Strap";
+        case "MATERIAL": res = "Material";
+        case "COMMENT": res = "PrecStones";
+        case "SERIALYES": res = "SerNrf";
+        case "MECHANISM": res = "Mechanism";
+        case "FUNCTIONS": res = "Function";
+        case "SAP": res = "WaterResist";
+        case "DIAMETER": res = "Diameter";
+        case "CATEGORY": res = "Category";
+        case "DIVISION": res = "Division";
+        case "WEIGHT": res = "WeightOfMat";
+        //case "DIAMONDS": res = "Diamonds";
+        case "D_CARAT": res = "DiamondsCarat";
+        case "CENT_ST": res = "SolidStones05";
+        case "PRECIOUS": res = "PrecAndSemiPrec";
+        case "R_SIZE": res = "RingSizes";
+        case "CARAT": res = "Carat";
+        case "CLARITY": res = "ClaritySC";
+        case "C_S": res = "Color";
+        case "C_M": res = "ColorOfMat";
+        case "SHAPE_CUT": res = "ShapeCut";
+        case "DESCRIPT": res = "Description";
+        case "ART": res = "Art";
+        otherwise res = "";
+      end;
+    end;
+    
+    ReturnFieldDIType = res;
+  return;
+end; //Edit***************************Sasha2,15:46 07.12.2015 }
+
+global //Edit***************************Sasha2,15:46 07.12.2015 {
+function boolean SkipCheckDIType(string type)
+begin
+  boolean res;
+    
+    res = false;
+    switch (type) begin
+      case "SERIALYES": res = true;
+    end;
+
+    SkipCheckDIType = res;
+  return;
+end; //Edit***************************Sasha2,15:46 07.12.2015 }
 
 procedure CalcVolume(val w,val h,val d,var val vol) 
 BEGIN
