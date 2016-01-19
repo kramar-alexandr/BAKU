@@ -449,6 +449,14 @@ BEGIN
   
   res = 0;
   
+  if (newINr.SerNr==-1) then begin
+    if (SingleUserMode) then begin
+      newINr.SerNr = NextSerNr("NewINVc",currentdate,-1,false,""); 
+    end else begin
+      newINr.SerNr = -1;
+    end;
+  end;
+  
   BlockLoad(DiCb); //Edit***************************Sasha2,16:53 07.12.2015 {
   mtrw = MatRowCnt(DiCb);
   if (mtrw>0) then begin

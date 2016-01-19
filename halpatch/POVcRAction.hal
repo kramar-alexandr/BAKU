@@ -1960,7 +1960,7 @@ begin
 						switch(currentcompany)begin
 							case 1:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);// Edit ************************** Monday, 18 February 2013 09:36:54// Edit ************************** Monday, 18 February 2013 09:36:55// Edit ************************** Monday, 18 February 2013 09:36:57
 							case 2:NewINLLardo(POr,i,found,INr,fr,to1,to2,br1,br2);
-							case 3:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
+							//case 3:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 4:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 5:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 6:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
