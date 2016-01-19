@@ -1024,7 +1024,7 @@ begin
 			newINr.Gender = POrw.Gender;
 			newINr.Reference = POrw.Reference;
 			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
-			switch(newINr.ConsgType)begin
+			switch(newINr.ConsgType) begin
 				case 1:newINr.PurchAcc = "41/02";
 				case 2:newINr.PurchAcc = "12";
 			end;
@@ -1034,7 +1034,7 @@ begin
 			POVc_PasteArtCode(POr,i,false);
 			POVc_PasteQuant(POr,i);
 			
-			For(po=0;po<rwcnt;po=po+1) begin// Edit ************************** Friday, 15 February 2013 10:11:45// Edit ************************** Friday, 15 February 2013 10:11:45
+			For(po=0;po<rwcnt;po=po+1) begin // Edit ************************** Friday, 15 February 2013 10:11:45// Edit ************************** Friday, 15 February 2013 10:11:45
 				matrowget(POr,po,chPOrw);
 				if(chPOrw.ArtCode==newINr.Code) then begin
 					POVc_PasteArtCode(POr,po,false);
@@ -1119,7 +1119,7 @@ begin
 					INr.BrcStr = POrw.BrcStr;
 				end;
 				
-				if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07
+				if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin // Edit ************************** Wednesday, 17 December 2014 09:40:07
 					changef = true;
 					INr.ConsgType = POrw.ConsgType;
 					switch(INr.ConsgType)begin
