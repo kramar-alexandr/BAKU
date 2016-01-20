@@ -2895,7 +2895,12 @@ begin
           addtexttoarea(newPUrw.SerialNr & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.VEItemCode & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.Comment & chr(13) & chr(10),aLabel);
-          addtexttoarea(ValToString(newPUrw.UPrice,M4UVal,"","",1) & chr(13) & chr(10),aLabel); 
+          if(right(ValToString(newPUrw.UPrice,M4Val,"",".",0),2)=="00")then begin
+          	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",1) & chr(13) & chr(10),aLabel); 
+          end else begin
+          	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",0) & chr(13) & chr(10),aLabel); 
+          end;
+          //addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",0) & chr(13) & chr(10),aLabel); 
           addtexttoarea("1" & chr(13) & chr(10),aLabel);
           addtexttoarea(chr(13) & chr(10),aLabel);
         end;

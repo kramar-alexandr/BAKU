@@ -1067,7 +1067,7 @@ already checked few lines above
     end;
   end;
   
-  if (check!=0) then begin
+  if (check!=0 and stat==updatemode) then begin
     UpdateStockMovFIFO(SMp,SM2p,stat,fifocurSMr,2); //Edit***************************Sasha2,17:46 09.04.2015   1 - IVVc, 2 - StockMovVc
   end;  
   if (transsendf) then begin
