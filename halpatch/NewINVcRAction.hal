@@ -17,7 +17,11 @@ begin
     curtype = ReturnFieldDIType(fieldname,false);
     if (NonBlank(curtype) and SetInSet(curtype,comptostring)) then begin
       if (fieldname!="SerNrf") then begin
-        outdispstr = outdispstr & fieldcontent & ","; 
+        if (Blank(outdispstr)) then begin
+          outdispstr = fieldcontent;
+        end else begin
+          outdispstr = outdispstr & "," & fieldcontent;
+        end;
       end;
       outtypesstr = outtypesstr & curtype & ",";
     end;
@@ -345,6 +349,7 @@ BEGIN
   LongInt res;
   row NewINVc newINrw;
   record INVc INr,IN2r;
+  record ITVc ITr;
   integer mtrw,i; //Edit***************************Sasha2,17:50 07.12.2015
   string 20 codestring;
   LongInt stat1,long41;
@@ -780,6 +785,14 @@ BEGIN
 			end;
 			newINrw.DispGroups = type & "," & newdispstr;
 			matrowput(newINr,i,newINrw);
+			if (NonBlank(newINr.Brand)) then begin
+			  DIr.Code = newINr.Brand;
+				readfirstmain(DIr,1,true);
+				ITr.Comment = DIr.Name;
+				if(readlastkey("Comment",ITr,1,true))then begin
+					INr.Group = ITr.Code;
+				end;
+			end;
 	  end else begin; //Edit***************************Sasha2,17:53 07.12.2015 }
   	  if(nonblank(newINrw.DispGroups))then begin
   			pos = 0;

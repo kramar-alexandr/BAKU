@@ -945,6 +945,131 @@ return;
 end;
 
 global
+updating procedure UpdateINOnly_NewINJW(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
+begin
+	row POVc POrw;
+	record INVc newINr,IN2r;
+	record PLVc PLr;
+	record PricePointListVc PPLr;// Edit ************************** Friday, 31 August 2012 15:31:36
+  row PricePointListVc PPLrw;// Edit ************************** Friday, 31 August 2012 15:31:36
+  integer pi,pmtrw,po,rwcnt;// Edit ************************** Wednesday, 5 September 2012 16:06:18
+  boolean changef;
+  record DIVc DIr;
+  row POVc chPOrw;
+  val frrate,torate;
+  integer k,lenth,nextNo;
+  boolean foundgroup;
+  record ITVc ITr;
+  //val	fr,to1,to2,br1,br2;
+  		
+	//GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
+
+	frrate = fr;
+	torate = to1;
+	
+	if(frrate==0)then begin frrate=1; end;
+	if(torate==0)then begin torate=1; end;
+	
+	rwcnt = matrowcnt(POr);
+	matrowget(POr,i,POrw);
+	
+	if(found==true)then begin
+		if (blank(POrw.EAN13Code) or (INr.BarCode==POrw.EAN13Code) or (nonblank(POrw.EAN13Code) and blank(INr.BarCode))) then begin
+			recordcopy(IN2r,INr);
+			changef = false;
+			/*if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+				changef = true;
+				INr.DispGroups = POrw.xClassification;
+				
+				foundgroup = false;
+				lenth = len(INr.DispGroups);
+				For(k=0;k<lenth;k=k+1) begin
+  				if(mid(INr.DispGroups,k,1)==",")then begin
+  					DIr.Code = mid(INr.DispGroups,0,k);
+  					readfirstmain(DIr,1,true);
+  					ITr.Comment = DIr.Name;
+  					if(readlastkey("Comment",ITr,1,true))then begin
+  						INr.Group = ITr.Code;
+  					end;
+  					foundgroup = true;
+  				end;
+				end; 
+				if(foundgroup==false)then begin
+					DIr.Code = INr.DispGroups;
+					readfirstmain(DIr,1,true);
+					ITr.Comment = DIr.Name;
+					if(readlastkey("Comment",ITr,1,true))then begin
+						INr.Group = ITr.Code;
+					end;
+				end;
+			end;*/
+			if(nonblank(POrw.Comment) and INr.AlternativeCode!=POrw.Comment)then begin
+				changef = true;
+				INr.AlternativeCode = POrw.Comment;
+			end;
+			if(POrw.Price>0 and (POrw.Price!=INr.LastPurchPrice2 or INr.LastPurchCurncyCode!=POr.CurncyCode))then begin
+				changef = true;
+				INr.LastPurchCurncyCode = POr.CurncyCode;
+				INr.LastPurchPrice2 = POrw.Price;
+				INr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
+			end;
+			if(nonblank(POrw.EAN13Code) and INr.BarCode!=POrw.EAN13Code)then begin
+				changef = true;
+				INr.BarCode = POrw.EAN13Code;
+			end;
+			if(nonblank(POrw.RowWeight) and INr.RowWeight!=POrw.RowWeight)then begin
+				changef = true;
+				INr.RowWeight = POrw.RowWeight;
+			end;
+			if(nonblank(POrw.Size) and INr.Size!=POrw.Size)then begin
+				changef = true;
+				INr.Size = POrw.Size;
+			end;
+			if(nonblank(POrw.Metal) and INr.Metal!=POrw.Metal)then begin
+				changef = true;
+				INr.Metal = POrw.Metal;
+			end;
+			if(nonblank(POrw.Colour) and INr.Colour!=POrw.Colour)then begin
+				changef = true;
+				INr.Colour = POrw.Colour;
+			end;
+			if(nonblank(POrw.MajStoneDet) and INr.MajStoneDet!=POrw.MajStoneDet)then begin
+				changef = true;
+				INr.MajStoneDet = POrw.MajStoneDet;
+			end;
+			if(nonblank(POrw.Reference) and INr.Reference!=POrw.Reference)then begin
+				changef = true;
+				INr.Reference = POrw.Reference;
+			end;
+			
+			if(nonblank(POrw.BrcStr) and INr.BrcStr!=POrw.BrcStr)then begin
+				changef = true;
+				INr.BrcStr = POrw.BrcStr;
+			end;
+			
+			if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin // Edit ************************** Wednesday, 17 December 2014 09:40:07
+				changef = true;
+				INr.ConsgType = POrw.ConsgType;
+				switch(INr.ConsgType) begin
+					case 1:INr.PurchAcc = "41/02";
+					case 2:INr.PurchAcc = "12";
+				end;
+			end;
+			
+			if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
+				recordupdate(IN2r,INr,true);
+			end;	
+			if(POrw.Price==0)then begin
+				POrw.Price = round(INr.InPrice*frrate/torate,SetRoundModeD(2));
+				matrowput(POr,i,POrw);
+			end;
+			POVc_PastePrice(POr,i);
+		end;
+	end;
+return;
+end;
+
+global
 updating procedure NewINJW(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
 	row POVc POrw;
@@ -1023,7 +1148,7 @@ begin
 			newINr.BrcStr = POrw.BrcStr;
 			newINr.Gender = POrw.Gender;
 			newINr.Reference = POrw.Reference;
-			newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
+			newINr.ConsgType = POrw.ConsgType; // Edit ************************** Wednesday, 17 December 2014 09:37:30
 			switch(newINr.ConsgType) begin
 				case 1:newINr.PurchAcc = "41/02";
 				case 2:newINr.PurchAcc = "12";
@@ -1122,7 +1247,7 @@ begin
 				if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin // Edit ************************** Wednesday, 17 December 2014 09:40:07
 					changef = true;
 					INr.ConsgType = POrw.ConsgType;
-					switch(INr.ConsgType)begin
+					switch(INr.ConsgType) begin
 						case 1:INr.PurchAcc = "41/02";
 						case 2:INr.PurchAcc = "12";
 					end;
@@ -1139,87 +1264,85 @@ begin
 				POVc_PastePrice(POr,i);
 		
 		//matrowput(POr,i,POrw);
-		end else begin																	//Edit----------------------------------------------------Dima  27.04.2015
-				if(nonblank(POrw.ArtCode) and nonblank(POrw.Spec) and POrw.Quant>0)then begin
-					//recordNew(newINr);
-					nextNo = 1;
-					newINr.Code = POrw.ArtCode & nextNo;
-					while (ReadFirstMain(newINr,1,true))  begin
-						nextNo = nextNo + 1;
-						newINr.Code = POrw.ArtCode & nextNo;			
-					end;
-					recordNew(newINr);
-					newINr.Code = POrw.ArtCode & nextNo;
-					newINr.Name = POrw.Spec;
-					newINr.Unittext = "˜’";
-					newINr.VATCode = "0%I";
-					if(currentcompany==10)then begin
-						newINr.Unittext = "EACH";
-						newINr.VATCode = ""; //Edit***************************Sasha2,13:04 23.12.2014
-					end;
-					newINr.LastPurchCurncyCode = POr.CurncyCode;
-					newINr.LastPurchPrice2 = POrw.Price;
-					if(nonblank(POrw.xClassification))then begin
-						newINr.DispGroups = POrw.xClassification;
-					end else begin
-						newINr.DispGroups = "";
-					end;
-					foundgroup = false;
-					lenth = len(newINr.DispGroups);
-					For(k=0;k<lenth;k=k+1) begin
-	  				if(mid(newINr.DispGroups,k,1)==",")then begin
-	  					DIr.Code = mid(newINr.DispGroups,0,k);
-	  					readfirstmain(DIr,1,true);
-	  					ITr.Comment = DIr.Name;
-	  					if(readlastkey("Comment",ITr,1,true))then begin
-	  						newINr.Group = ITr.Code;
-	  					end;
-	  					foundgroup = true;
-	  				end;
-					end; 
-					if(foundgroup==false)then begin
-						DIr.Code = newINr.DispGroups;
-						readfirstmain(DIr,1,true);
-						ITr.Comment = DIr.Name;
-						if(readlastkey("Comment",ITr,1,true))then begin
-							newINr.Group = ITr.Code;
-						end;
-					end;
-					
-					newINr.BarCode = POrw.EAN13Code;
-					newINr.AlternativeCode = POrw.Comment;
-					
-					newINr.RowWeight = POrw.RowWeight;
-					newINr.Size = POrw.Size;
-					newINr.Metal = POrw.Metal;
-					newINr.Colour = POrw.Colour;
-					newINr.MajStoneDet = POrw.MajStoneDet;
-					newINr.BrcStr = POrw.BrcStr;
-					newINr.Gender = POrw.Gender;
-					newINr.Reference = POrw.Reference;
-					newINr.ConsgType = POrw.ConsgType;// Edit ************************** Wednesday, 17 December 2014 09:37:30
-					switch(newINr.ConsgType) begin
-						case 1:newINr.PurchAcc = "41/02";
-						case 2:newINr.PurchAcc = "12";
-					end;
-					newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
-					recordStore(newINr,true);
-					
-					POrw.ArtCode = newINr.Code;
-					MatRowPut(POr,i,POrw);
-					POVc_PasteArtCode(POr,i,false);
-					POVc_PasteQuant(POr,i);
-					
-					For(po=0;po<rwcnt;po=po+1) begin
-						matrowget(POr,po,chPOrw);
-						if(chPOrw.ArtCode==newINr.Code) then begin
-							POVc_PasteArtCode(POr,po,false);
-							POVc_PasteQuant(POr,po);
-						end;
-					end; 
-						
-				
+		end else begin //Edit----------------------------------------------------Dima  27.04.2015
+			if(nonblank(POrw.ArtCode) and nonblank(POrw.Spec) and POrw.Quant>0)then begin
+				//recordNew(newINr);
+				nextNo = 1;
+				newINr.Code = POrw.ArtCode & nextNo;
+				while (ReadFirstMain(newINr,1,true)) begin
+					nextNo = nextNo + 1;
+					newINr.Code = POrw.ArtCode & nextNo;			
 				end;
+				recordNew(newINr);
+				newINr.Code = POrw.ArtCode & nextNo;
+				newINr.Name = POrw.Spec;
+				newINr.Unittext = "˜’";
+				newINr.VATCode = "0%I";
+				if(currentcompany==10)then begin
+					newINr.Unittext = "EACH";
+					newINr.VATCode = ""; //Edit***************************Sasha2,13:04 23.12.2014
+				end;
+				newINr.LastPurchCurncyCode = POr.CurncyCode;
+				newINr.LastPurchPrice2 = POrw.Price;
+				if(nonblank(POrw.xClassification))then begin
+					newINr.DispGroups = POrw.xClassification;
+				end else begin
+					newINr.DispGroups = "";
+				end;
+				foundgroup = false;
+				lenth = len(newINr.DispGroups);
+				For(k=0;k<lenth;k=k+1) begin
+  				if(mid(newINr.DispGroups,k,1)==",")then begin
+  					DIr.Code = mid(newINr.DispGroups,0,k);
+  					readfirstmain(DIr,1,true);
+  					ITr.Comment = DIr.Name;
+  					if(readlastkey("Comment",ITr,1,true))then begin
+  						newINr.Group = ITr.Code;
+  					end;
+  					foundgroup = true;
+  				end;
+				end; 
+				if(foundgroup==false)then begin
+					DIr.Code = newINr.DispGroups;
+					readfirstmain(DIr,1,true);
+					ITr.Comment = DIr.Name;
+					if(readlastkey("Comment",ITr,1,true))then begin
+						newINr.Group = ITr.Code;
+					end;
+				end;
+				
+				newINr.BarCode = POrw.EAN13Code;
+				newINr.AlternativeCode = POrw.Comment;
+				
+				newINr.RowWeight = POrw.RowWeight;
+				newINr.Size = POrw.Size;
+				newINr.Metal = POrw.Metal;
+				newINr.Colour = POrw.Colour;
+				newINr.MajStoneDet = POrw.MajStoneDet;
+				newINr.BrcStr = POrw.BrcStr;
+				newINr.Gender = POrw.Gender;
+				newINr.Reference = POrw.Reference;
+				newINr.ConsgType = POrw.ConsgType; // Edit ************************** Wednesday, 17 December 2014 09:37:30
+				switch(newINr.ConsgType) begin
+					case 1:newINr.PurchAcc = "41/02";
+					case 2:newINr.PurchAcc = "12";
+				end;
+				newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
+				recordStore(newINr,true);
+				
+				POrw.ArtCode = newINr.Code;
+				MatRowPut(POr,i,POrw);
+				POVc_PasteArtCode(POr,i,false);
+				POVc_PasteQuant(POr,i);
+				
+				For(po=0;po<rwcnt;po=po+1) begin
+					matrowget(POr,po,chPOrw);
+					if(chPOrw.ArtCode==newINr.Code) then begin
+						POVc_PasteArtCode(POr,po,false);
+						POVc_PasteQuant(POr,po);
+					end;
+				end; 
+			end;
 		end;
 		
 	end;
@@ -1868,7 +1991,7 @@ begin
 						fullclass = uppercase(fullclass);
 						POrw.xClassification = "";
 						lenth = len(fullclass);
-						for(k=0;k<lenth;k=k+1)begin
+						for(k=0;k<lenth;k=k+1) begin
 							if(mid(fullclass,k,1)==",")then begin
 								tclass = mid(fullclass,0,k);
 								CheckAndCreateClassification(tclass);
@@ -1940,27 +2063,31 @@ begin
 							end;
 							ExtractObj(POrw.xClassification,k,tclass);
 						end;
-						
-						
-          	
           end;
           
           if (nonblank(POrw.EAN13Code)) then begin		//Edit----------------------Dima  27.04.2015
           	INcheck.BarCode = POrw.EAN13Code;
           	if (ReadFirstKey("BarCode",INcheck,1,true)) then begin
 							if (INcheck.Code != POrw.ArtCode) then begin
-									RecordCheckError(31312,INcheck.Code & " " & POrw.ArtCode,i,"EAN13Code");      
+									RecordCheckError(31312,". " &INcheck.Code & " " & POrw.ArtCode,i,"EAN13Code");      
 									res = 31312; 
 									goto LPOVcRecordCheck;	
 							end;
 						end;
+						if (currentcompany==3) then begin //Edit***************************Sasha2,12:55 20.01.2016 {
+						  if (NonBlank(INr.BarCode) and INr.BarCode!=POrw.EAN13Code) then begin
+						    RecordCheckError(35029,". " & INr.BarCode & " != " & POrw.EAN13Code,i,"EAN13Code");      
+								res = 35029; 
+								goto LPOVcRecordCheck;
+						  end;
+						end; //Edit***************************Sasha2,12:56 20.01.2016 }
           end;
           
           if ((POrw.Quant>0) and (POr.Closed==0)) then begin
 						switch(currentcompany)begin
 							case 1:NewINSwarowski(POr,i,found,INr,fr,to1,to2,br1,br2);// Edit ************************** Monday, 18 February 2013 09:36:54// Edit ************************** Monday, 18 February 2013 09:36:55// Edit ************************** Monday, 18 February 2013 09:36:57
 							case 2:NewINLLardo(POr,i,found,INr,fr,to1,to2,br1,br2);
-							//case 3:NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2);
+							case 3:UpdateINOnly_NewINJW(POr,i,found,INr,fr,to1,to2,br1,br2); //Edit***************************Sasha2,13:15 20.01.2016
 							case 4:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 5:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);
 							case 6:NewINVilleroy(POr,i,found,INr,fr,to1,to2,br1,br2);

@@ -542,7 +542,9 @@ begin
 	
 	SString(35026,"Сумма в вал.");
 	SString(35027,"Сч/ф учредителям:");
-	SString(35028,"Сч/ф технические:");		
+	SString(35028,"Сч/ф технические:");
+	
+	SString(35029,"Штрих-код не совпадает");		
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
