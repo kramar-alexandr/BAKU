@@ -54,6 +54,7 @@ external function Boolean ValidateOfficialSerialNrChronology(string,string,LongI
 external function Integer GetVATLaw();
 external function Integer CheckObjs(string,string,var string); //Edit***************************Sasha2,13:09 02.07.2015
 external procedure VerifyRowObjects(String,String,String,String,var Integer,var String,var Boolean,Array string,Array string,var Integer); //Edit***************************Sasha2,13:09 02.07.2015
+external updating procedure UnOk_RetPUVc(var record RetPUVc);//Edit----------------------Dima  20.01.2016
 
 global
 function LongInt RetPUVcRecordDefaults(var record RetPUVc RetPUr,record RetPUVc RetPU2r,LongInt stat,LongInt long4)
@@ -356,6 +357,9 @@ BEGIN
   if (ItemHistExists("RetPUVc",RetPUr.SerNr)==false) then begin
     RetPUr.LocOKNr = NextLocOKNr(RetPUr.Location);
   end;
+  if (RetPUr.OKFlag==0 and RetPU2r.OKFlag!=0) then begin				//Edit----------------------Dima  20.01.2016
+  	UnOk_RetPUVc(RetPUr);
+  end;  
   RetPUVcRecordUpdate = res;
   RETURN;
 END;

@@ -3,6 +3,8 @@ external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Integer PMCheckType(string,var string,var string);
 external function boolean CheckUnOkIVVc(record IVVc);		//Edit----------------------Dima  24.12.2015
+external function longint CheckUnOkPUVc(record PUVc);
+external function longint CheckUnOkRetPUVc(record RetPUVc);//Edit----------------------Dima  20.01.2016
 
 
 global
@@ -997,7 +999,7 @@ function Integer IsUnOKAllowed_RetPUVc(record RetPUVc RetPUp)
 begin  
   Integer res;
   record MainStockBlock MSb;
-
+  
   res = 0;
   BlockLoad(MSb);
   if (nonblankdate(MSb.StockCorectAfter)) then begin
@@ -1005,12 +1007,18 @@ begin
       res = 20884;
       goto LIsUnOKAllowed_RetPUVc;
     end;
+  end;
+  
+  if (UserCanAction("UnOKUpdStockDocuments",false)) then begin //Edit----------------------Dima  20.01.2016
+		res = CheckUnOkRetPUVc(RetPUp);
   end else begin
     res = 20884;
     goto LIsUnOKAllowed_RetPUVc;
-  end;
+  end;  
+  
+  
 LIsUnOKAllowed_RetPUVc:;  
-if (CurrentUser == "SA") then begin res = 0; end;// Edit ************************** Wednesday, 29 April 2015 13:56:55
+//if (CurrentUser == "SA") then begin res = 0; end;// Edit ************************** Wednesday, 29 April 2015 13:56:55
   IsUnOKAllowed_RetPUVc = res;
   return;
 end;
@@ -1085,23 +1093,16 @@ global
 function Integer IsUnOKAllowed_PUVc(record PUVc PUp)
 begin  
   Integer res;
-  record MainStockBlock MSb;
-
+	
   res = 0;
-  BlockLoad(MSb);
-  if (nonblankdate(MSb.StockCorectAfter)) then begin
-    if (PUp.TransDate<MSb.StockCorectAfter) then begin
-      res = 20884;
-      goto LIsUnOKAllowed_PUVc;
-    end;
+  if (UserCanAction("UnOKUpdStockDocuments",false)) then begin //Edit----------------------Dima  20.01.2016
+		res = CheckUnOkPUVc(PUp);
   end else begin
     res = 20884;
     goto LIsUnOKAllowed_PUVc;
-  end;
-LIsUnOKAllowed_PUVc:; 
-
-	if (CurrentUser == "SA") then begin res = 0; end;	//Edit----------------------Dima  22.04.2015
- 
+  end;	
+	
+LIsUnOKAllowed_PUVc:;  
   IsUnOKAllowed_PUVc = res;
   return;
 end;

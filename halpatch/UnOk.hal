@@ -165,3 +165,150 @@ begin
   return;
 end;
 
+
+
+global function longint CheckUnOkPUVc(record PUVc PUp)
+begin
+	record ItemHistVc IHr;
+	Integer res,count;
+	boolean TrHs;
+	row PUVc PUrw;
+	integer	rwcnt,i; 
+
+	res = 0;	
+	rwcnt = MatRowCnt(PUp);
+
+  for(i=0;i<rwcnt;i=i+1) begin
+  	MatRowGet(PUp,i,PUrw);
+  	IHr.FileName = "PUVc";
+  	IHr.TransNr = PUp.SerNr;
+  	IHr.Row = i;
+  	TrHs = true;
+  	count = 0;
+  	While(LoopKey("FNTransNr",IHr,3,TrHs)) begin	
+  		if(IHr.TransNr!=PUp.SerNr or IHr.Row!=i) then begin TrHs=false;  end;
+  		
+  		if (TrHs) then begin
+				if (IHr.RemQty != IHr.Qty) then begin
+					res = 20884;
+					goto LCheckUnOkPUVc;
+				end;
+				count=count+1;
+			end;
+			
+		end;
+		ResetLoop(IHr);
+				
+		if(count==0) then begin //records don't exist
+			res = 20884;
+			goto LCheckUnOkPUVc;
+		end;
+
+  end;
+
+
+LCheckUnOkPUVc:;
+CheckUnOkPUVc = res;
+return;
+end;
+
+
+
+
+
+global updating 
+procedure UnOk_PUVc(var record PUVc PUp)			//Edit----------------------Dima  20.01.2016
+begin
+  record ItemHistVc IHr;  
+	Integer res;
+	boolean TrHs;
+	
+	res = 0;
+	TrHs = true; 
+
+	  IHr.FileName = "PUVc";
+  	IHr.TransNr = PUp.SerNr;
+  	TrHs = true;
+  	While(LoopKey("FNTransNr",IHr,2,TrHs)) begin	
+  		if(IHr.TransNr!=PUp.SerNr) then begin TrHs=false; end;
+  		if (TrHs) then begin
+  		
+  				RemoveSerialNrRecord(IHr);  		
+  							
+					RecordDelete(IHr);
+					StepBack(IHr);
+					LogText(0,"DELETED  " & IHr.ArtCode);
+			end; 
+  	end;
+  	
+  	PUp.LocOKNr = BlankVal;
+
+  LUnOk_PUVc:;
+  return;
+end;
+
+
+
+global function longint CheckUnOkRetPUVc(record RetPUVc RetPUr)
+begin
+	record ItemHistVc IHr;
+	Integer res;
+	boolean TrHs;
+	val totQty;
+
+	res = 0;	
+
+  IHr.FileName = "RetPUVc";
+  IHr.TransNr = RetPUr.SerNr;
+  TrHs = true;
+  While(LoopKey("FNTransNr",IHr,2,TrHs)) begin	
+  	if(IHr.TransNr!=RetPUr.SerNr) then begin TrHs=false;  end;
+  	
+  	if (TrHs) then begin	
+			totQty = totQty + (-IHr.Qty);
+		end;		
+	end; 
+  
+	if (totQty != RetPUr.SumQuant) then begin
+		res = 20884;
+		goto LCheckUnOkRetPUVc;
+	end;
+LCheckUnOkRetPUVc:;
+CheckUnOkRetPUVc = res;
+return;
+end;
+
+
+global updating 
+procedure UnOk_RetPUVc(var record RetPUVc RetPUr)	//Edit----------------------Dima  20.01.2016
+begin
+  record ItemHistVc IHr,IH2r;  
+	Integer res;
+	boolean TrHs;
+	
+	res = 0;
+
+  IHr.FileName = "RetPUVc";
+  IHr.TransNr = RetPUr.SerNr;
+  TrHs = true;
+  While(LoopKey("FNTransNr",IHr,2,TrHs)) begin	
+  	if(IHr.TransNr!=RetPUr.SerNr) then begin TrHs=false; end;
+  	if (TrHs) then begin
+  			IH2r.SerNr = IHr.Source;
+  			if (ReadFirstMain(IH2r,1,true)) then begin
+  				IH2r.RemQty = IH2r.RemQty - IHr.Qty;
+  				IH2r.RemCostPrice = IH2r.TotCostPrice/IH2r.Qty*IH2r.RemQty;  
+  				if (RecordStore(IH2r,true)) then begin
+						//statuses and serial numbers are put back by themselves
+						LogText(0,"DELETED  " & IHr.ArtCode);
+						RecordDelete(IHr);
+						StepBack(IHr);
+					end; 
+  			end;
+		end;
+  end;
+  
+  RetPUr.LocOKNr = BlankVal;
+
+  return;
+end;
