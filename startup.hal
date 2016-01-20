@@ -156,6 +156,7 @@ begin
   Report("Ошибки по долгам и авансам",DebtorRClass,DebtorRn,0,modSL);//Edit---------------Vitalii 11:18 05.08.2015
   Report("Повторяющиеся штрих-коды",SameBarCodesRClass,SameBarCodesRn,0,modIN);	//Edit----------------------Dima  18.09.2015
   Report("Ошибки в начальных сальдо",FBErrRClass,FBErrRn,0,modNL);
+  Report("Количество счет-фактур по складам",IVbyLocRClass,IVbyLocRn,0,modDBMain);//Edit-------------------Vitalii 17:49 13.01.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -541,7 +542,9 @@ begin
 	
 	SString(35026,"Сумма в вал.");
 	SString(35027,"Сч/ф учредителям:");
-	SString(35028,"Сч/ф технические:");		
+	SString(35028,"Сч/ф технические:");
+	
+	SString(35029,"Штрих-код не совпадает");		
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
@@ -742,6 +745,8 @@ begin
 	StrSetText(UnOKCashCount,"Снимать OK со снятия кассы");
 	StrSetText(UnOKOR,"Снимать OK со счетов");
 	StrSetText(UnOKUpdStockDocuments,"Снимать OK с док-в изменяющих склад");	//Edit----------------------Dima  24.12.2015
+	StrSetText(UnOKCashIn,"Снимать галочку OK в ПКО"); //Edit***************************Sasha2,14:01 14.01.2016
+	StrSetText(UnOKCashOut,"Снимать галочку OK в РКО"); //Edit***************************Sasha2,14:01 14.01.2016
 	StrSetText(AllowDispute,"Согласовывать сч/ф");
 	StrSetText(AllowCreateGuest,"Создавать гостей");
 	StrSetText(AllowCreateDealer,"Создавать дилеров");

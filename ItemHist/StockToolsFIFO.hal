@@ -1626,13 +1626,13 @@ end;
 global
 updating procedure StoreItemHistory_In(record MainStockBlock MSb,string artcode,string serialnr,string location,string filename,Date td,Date fifod,val qty,val coeff,val totalcost,LongInt transnr,Integer rownr,Integer stockaffectf,string position,string vecode)
 begin
-  record ItemHistVc IHr;
+  record ItemHistVc IHr,oldIHr;
   record INVc INr;
   record ITVc ITr;
   record CostAccBlock CAb;
   Integer primary,queuecostmodel;
   val t;
-  Boolean setremqty;
+  Boolean setremqty,TrHs,testf;
   Date blankd;
   record PUVc PUr;// Edit ************************** Monday, 12 May 2014 10:02:25
   row PUVc PUrw;// Edit ************************** Monday, 12 May 2014 10:02:38
@@ -1646,6 +1646,7 @@ begin
 	row RetVc Retrw;// Edit ************************** Thursday, 15 May 2014 11:40:43
 	date indate;
 	string 20 infile;
+	val qty1;
 	
 	blockload(BCb);
 	
@@ -1735,8 +1736,40 @@ begin
   								end else begin
   								  matrowget(IVr,IHr.Row,IVrw);
 										curncy = INr.LastPurchCurncyCode;
-										if (IVrw.Quant<0 and IVrw.FIFO!=0) then begin //Edit***************************Sasha2,15:45 03.07.2015 {
-										  totcostpricecurncy = IVrw.FIFO * IHr.Qty;
+										if (IVrw.Quant<0) then begin //Edit-------------------Vitalii 13:18 15.01.2016
+										  //totcostpricecurncy = IVrw.FIFO * IHr.Qty;
+										  oldIHr.ArtCode = artcode;
+										  oldIHr.FileName = "IVVc";
+										  qty1 = IVrw.Quant;
+										  ResetLoop(oldIHr);
+										  TrHs = true;
+										  while (LoopBackKey("FNArtCode",oldIHr,2,TrHs)) begin
+                        if (oldIHr.ArtCode<>artcode) then begin TrHs = false; end;
+                        if (qty1>=0) then begin TrHs = false; end;
+                        if (TrHs) then begin
+                          testf = true;
+                          if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
+                          //if (oldIHr.Qty>0) then begin testf = false; end;
+                          if (oldIHr.Location<>location) then begin testf = false; end;
+                          if (oldIHr.TransNr>transnr) then begin testf = false; end;
+                          if (testf) then begin
+                            if (oldIHr.Qty<qty1) then begin
+                              totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy/oldIHr.Qty*qty1;
+                              qty1 = 0;
+                            end else begin
+                              if (oldIHr.Qty>0) then begin
+                                totcostpricecurncy = totcostpricecurncy - oldIHr.TotCostPriceCurncy;
+                              end else begin
+                                totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy;
+                              end;
+                              qty1 = qty1 - oldIHr.Qty;
+                            end;
+                            if (qty1==0) then begin
+                              TrHs = false;
+                            end;
+                          end;
+                        end;
+										  end;
 										end else begin
 										  totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
 										end; //Edit***************************Sasha2,15:45 03.07.2015 }
