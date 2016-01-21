@@ -765,6 +765,33 @@ begin
   return;
 end;
 
+//Edit***************************Sasha2,10:36 21.01.2016 {
+procedure FindINGroupViaClass(var record INVc INr)
+BEGIN
+  record DIVc DIr;
+  record ITVc ITr;
+  string 20 curdisp;
+  integer pos;
+  
+    if (NonBlank(INr.DispGroups)) then begin
+      pos = 0;
+      ExtractObj(INr.DispGroups,pos,curdisp);
+			while (nonblank(curdisp)) begin
+				DIr.Code = curdisp;
+				if (readfirstmain(DIr,1,true) and DIr.CType=="Brand") then begin
+				  ITr.Comment = DIr.Name;
+				  if(readlastkey("Comment",ITr,1,true))then begin
+	  				INr.Group = ITr.Code;
+	  				pos = len(INr.DispGroups);
+	  			end;
+				end;
+				ExtractObj(INr.DispGroups,pos,curdisp);
+			end;
+    end;
+  
+  RETURN;
+END; //Edit***************************Sasha2,10:36 21.01.2016 }
+
 global
 updating procedure NewINVilleroy(var record POVc POr,integer i,boolean found,var record INVc INr,val fr,val to1,val to2,val br1,val br2)
 begin
@@ -778,9 +805,6 @@ begin
   record DIVc DIr;
   row POVc chPOrw;
   val frrate,torate;
-  integer k,lenth;
-  boolean foundgroup;
-  record ITVc ITr;
 	
 	frrate = fr;
 	torate = to1;
@@ -809,27 +833,7 @@ begin
 			end else begin
 				newINr.DispGroups = "";
 			end;
-			foundgroup = false;
-			lenth = len(newINr.DispGroups);
-			For(k=0;k<lenth;k=k+1) begin
-	  		if(mid(newINr.DispGroups,k,1)==",")then begin
-	  			DIr.Code = mid(newINr.DispGroups,0,k);
-	  			readfirstmain(DIr,1,true);
-	  			ITr.Comment = DIr.Name;
-	  			if(readlastkey("Comment",ITr,1,true))then begin
-	  				newINr.Group = ITr.Code;
-	  			end;
-	  			foundgroup = true;
-	  		end;
-			end; 
-			if(foundgroup==false)then begin
-				DIr.Code = newINr.DispGroups;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					newINr.Group = ITr.Code;
-				end;
-			end;
+			FindINGroupViaClass(newINr); //Edit***************************Sasha2,10:54 21.01.2016
 			
 			newINr.BarCode = POrw.EAN13Code;
 			newINr.AlternativeCode = POrw.Comment;
@@ -862,28 +866,8 @@ begin
 		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
-				
-			foundgroup = false;
-			lenth = len(INr.DispGroups);
-			For(k=0;k<lenth;k=k+1) begin
-	  		if(mid(INr.DispGroups,k,1)==",")then begin
-	  			DIr.Code = mid(INr.DispGroups,0,k);
-	  			readfirstmain(DIr,1,true);
-	  			ITr.Comment = DIr.Name;
-	  			if(readlastkey("Comment",ITr,1,true))then begin
-	  				INr.Group = ITr.Code;
-	  			end;
-	  			foundgroup = true;
-	  		end;
-			end; 
-			if(foundgroup==false)then begin
-				DIr.Code = INr.DispGroups;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					INr.Group = ITr.Code;
-				end;
-			end;
+			FindINGroupViaClass(INr); //Edit***************************Sasha2,10:54 21.01.2016
+			
 		end;
 		if(nonblank(POrw.Comment) and INr.AlternativeCode!=POrw.Comment)then begin
 			changef = true;
@@ -957,9 +941,7 @@ begin
   record DIVc DIr;
   row POVc chPOrw;
   val frrate,torate;
-  integer k,lenth,nextNo;
-  boolean foundgroup;
-  record ITVc ITr;
+  integer nextNo;
   //val	fr,to1,to2,br1,br2;
   		
 	//GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
@@ -978,30 +960,7 @@ begin
 			recordcopy(IN2r,INr);
 			changef = false;
 			/*if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
-				changef = true;
-				INr.DispGroups = POrw.xClassification;
-				
-				foundgroup = false;
-				lenth = len(INr.DispGroups);
-				For(k=0;k<lenth;k=k+1) begin
-  				if(mid(INr.DispGroups,k,1)==",")then begin
-  					DIr.Code = mid(INr.DispGroups,0,k);
-  					readfirstmain(DIr,1,true);
-  					ITr.Comment = DIr.Name;
-  					if(readlastkey("Comment",ITr,1,true))then begin
-  						INr.Group = ITr.Code;
-  					end;
-  					foundgroup = true;
-  				end;
-				end; 
-				if(foundgroup==false)then begin
-					DIr.Code = INr.DispGroups;
-					readfirstmain(DIr,1,true);
-					ITr.Comment = DIr.Name;
-					if(readlastkey("Comment",ITr,1,true))then begin
-						INr.Group = ITr.Code;
-					end;
-				end;
+				FindINGroupViaClass(INr);
 			end;*/
 			if(nonblank(POrw.Comment) and INr.AlternativeCode!=POrw.Comment)then begin
 				changef = true;
@@ -1077,14 +1036,11 @@ begin
 	record PLVc PLr;
 	record PricePointListVc PPLr;// Edit ************************** Friday, 31 August 2012 15:31:36
   row PricePointListVc PPLrw;// Edit ************************** Friday, 31 August 2012 15:31:36
-  integer pi,pmtrw,po,rwcnt;// Edit ************************** Wednesday, 5 September 2012 16:06:18
+  integer pi,pmtrw,po,rwcnt,nextNo;// Edit ************************** Wednesday, 5 September 2012 16:06:18
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
   val frrate,torate;
-  integer k,lenth,nextNo;
-  boolean foundgroup;
-  record ITVc ITr;
   //val	fr,to1,to2,br1,br2;
   		
 	//GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
@@ -1115,27 +1071,7 @@ begin
 			end else begin
 				newINr.DispGroups = "";
 			end;
-			foundgroup = false;
-			lenth = len(newINr.DispGroups);
-			For(k=0;k<lenth;k=k+1) begin
-	  		if(mid(newINr.DispGroups,k,1)==",")then begin
-	  			DIr.Code = mid(newINr.DispGroups,0,k);
-	  			readfirstmain(DIr,1,true);
-	  			ITr.Comment = DIr.Name;
-	  			if(readlastkey("Comment",ITr,1,true))then begin
-	  				newINr.Group = ITr.Code;
-	  			end;
-	  			foundgroup = true;
-	  		end;
-			end; 
-			if(foundgroup==false)then begin
-				DIr.Code = newINr.DispGroups;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					newINr.Group = ITr.Code;
-				end;
-			end;
+			FindINGroupViaClass(newINr); //Edit***************************Sasha2,10:55 21.01.2016
 			
 			newINr.BarCode = POrw.EAN13Code;
 			newINr.AlternativeCode = POrw.Comment;
@@ -1177,28 +1113,8 @@ begin
 				if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 					changef = true;
 					INr.DispGroups = POrw.xClassification;
+					FindINGroupViaClass(INr); //Edit***************************Sasha2,10:55 21.01.2016
 					
-					foundgroup = false;
-					lenth = len(INr.DispGroups);
-					For(k=0;k<lenth;k=k+1) begin
-	  				if(mid(INr.DispGroups,k,1)==",")then begin
-	  					DIr.Code = mid(INr.DispGroups,0,k);
-	  					readfirstmain(DIr,1,true);
-	  					ITr.Comment = DIr.Name;
-	  					if(readlastkey("Comment",ITr,1,true))then begin
-	  						INr.Group = ITr.Code;
-	  					end;
-	  					foundgroup = true;
-	  				end;
-					end; 
-					if(foundgroup==false)then begin
-						DIr.Code = INr.DispGroups;
-						readfirstmain(DIr,1,true);
-						ITr.Comment = DIr.Name;
-						if(readlastkey("Comment",ITr,1,true))then begin
-							INr.Group = ITr.Code;
-						end;
-					end;
 				end;
 				if(nonblank(POrw.Comment) and INr.AlternativeCode!=POrw.Comment)then begin
 					changef = true;
@@ -1289,27 +1205,7 @@ begin
 				end else begin
 					newINr.DispGroups = "";
 				end;
-				foundgroup = false;
-				lenth = len(newINr.DispGroups);
-				For(k=0;k<lenth;k=k+1) begin
-  				if(mid(newINr.DispGroups,k,1)==",")then begin
-  					DIr.Code = mid(newINr.DispGroups,0,k);
-  					readfirstmain(DIr,1,true);
-  					ITr.Comment = DIr.Name;
-  					if(readlastkey("Comment",ITr,1,true))then begin
-  						newINr.Group = ITr.Code;
-  					end;
-  					foundgroup = true;
-  				end;
-				end; 
-				if(foundgroup==false)then begin
-					DIr.Code = newINr.DispGroups;
-					readfirstmain(DIr,1,true);
-					ITr.Comment = DIr.Name;
-					if(readlastkey("Comment",ITr,1,true))then begin
-						newINr.Group = ITr.Code;
-					end;
-				end;
+				FindINGroupViaClass(newINr); //Edit***************************Sasha2,10:55 21.01.2016
 				
 				newINr.BarCode = POrw.EAN13Code;
 				newINr.AlternativeCode = POrw.Comment;
@@ -1362,9 +1258,6 @@ begin
   record DIVc DIr;
   row POVc chPOrw;
   val frrate,torate;
-  integer k,lenth;
-  boolean foundgroup;
-  record ITVc ITr;
   
 	frrate = fr;
 	torate = to1;
@@ -1393,30 +1286,8 @@ begin
 			end else begin
 				newINr.DispGroups = "GENERAL";
 			end;
-			
-			foundgroup = false;
-			lenth = len(newINr.DispGroups);
-			For(k=0;k<lenth;k=k+1) begin
-	  		if(mid(newINr.DispGroups,k,1)==",")then begin
-	  			DIr.Code = mid(newINr.DispGroups,0,k);
-	  			readfirstmain(DIr,1,true);
-	  			ITr.Comment = DIr.Name;
-	  			if(readlastkey("Comment",ITr,1,true))then begin
-	  				newINr.Group = ITr.Code;
-	  			end;
-	  			foundgroup = true;
-	  		end;
-			end; 
-			if(foundgroup==false)then begin
-				DIr.Code = newINr.DispGroups;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					newINr.Group = ITr.Code;
-				end;
-			end;
-			
-			
+			FindINGroupViaClass(newINr);//Edit***************************Sasha2,10:51 21.01.2016
+						
 			newINr.AlternativeCode = POrw.EAN13Code;
 			newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 			recordStore(newINr,true);
@@ -1443,28 +1314,7 @@ begin
 		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
-					
-			foundgroup = false;
-			lenth = len(INr.DispGroups);
-			For(k=0;k<lenth;k=k+1) begin
-	  		if(mid(INr.DispGroups,k,1)==",")then begin
-	  			DIr.Code = mid(INr.DispGroups,0,k);
-	  			readfirstmain(DIr,1,true);
-	  			ITr.Comment = DIr.Name;
-	  			if(readlastkey("Comment",ITr,1,true))then begin
-	  				INr.Group = ITr.Code;
-	  			end;
-	  			foundgroup = true;
-	  		end;
-			end; 
-			if(foundgroup==false)then begin
-				DIr.Code = INr.DispGroups;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					INr.Group = ITr.Code;
-				end;
-			end;
+			FindINGroupViaClass(INr); //Edit***************************Sasha2,10:51 21.01.2016	
 		end;
 		if(nonblank(POrw.EAN13Code) and INr.AlternativeCode!=POrw.EAN13Code)then begin
 			changef = true;
