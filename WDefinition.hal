@@ -1237,3 +1237,13 @@ begin
   EditField(h,v+=vs,150,"Компания для переноса",Normal,f1,false,Companies2SClass);
   EndWindow;
 end;
+
+window CurrencyRateToBase1RateVClass:1 //Edit***************************Sasha2,14:46 21.01.2016 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Заполнить курсы основных валют для валюты",CurrencyRateToBase1RateVClass,CGMnt,RcType);
+  SetWRect(20,80,400,400);
+  EditField(150,10,140,"Валюта",Normal,f1,false,CurncyCodeSClass);
+  EndWindow;
+end; ///Edit***************************Sasha2,14:46 21.01.2016 }

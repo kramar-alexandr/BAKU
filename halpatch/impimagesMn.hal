@@ -2980,3 +2980,36 @@ LRenameCertainDIMn:;
 return;
 end; //Edit***************************Sasha2,13:42 06.11.2015 }
 
+global ///Edit***************************Sasha2,14:41 21.01.2016 {
+updating procedure CurrencyRateToBase1RateMn(record RcVc RepSpec)
+begin
+	record BaseERVc BERr;
+	record ERVc ERr;
+	record BaseCurBlock BSr;
+	Boolean TrHs;
+		
+    if (blank(RepSpec.f1)) then begin
+      goto LCurrencyRateToBaseRateMn;
+    end;
+    BlockLoad(BSr);
+    if (BSr.BaseCur1==RepSpec.f1 or BSr.BaseCur2!=RepSpec.f1) then begin
+      goto LCurrencyRateToBaseRateMn;
+    end;
+   
+    TrHs = true;
+    ERr.CurncyCode = RepSpec.f1;
+    while (LoopMain(ERr,1,TrHs)) begin
+      if (ERr.CurncyCode!=RepSpec.f1) then begin TrHs = false; end;
+      if (TrHs) then begin
+        Recordnew(BERr);
+        BERr.Date = ERr.Date;
+        BERr.Rate1 = ERr.ToRate1;
+        BERr.Rate2 = ERr.FrRate;
+        recordstore(BERr,true);
+      end;
+    end;
+   
+  LCurrencyRateToBaseRateMn:;   
+
+  return;
+end; //Edit***************************Sasha2,14:41 21.01.2016 }
