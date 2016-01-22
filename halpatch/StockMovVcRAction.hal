@@ -448,7 +448,13 @@ BEGIN
     if (SMp.SerNr<=0) and (SM2p.OKFlag==0) then begin
       SMp.SerNr = SM2p.SerNr;
     end;
-  end;      
+  end;   
+  
+  if (SMp.OrdFlag==0 and (SMp.OKFlag!=0 or SMp.SentOKFlag!=0)) then begin //Edit***************************Sasha2,10:47 22.01.2016 {
+    RecordCheckError(1854,". \"" & USetStr(15102) & "\"",-1,"OrdFlag");        
+    res = -1; 
+    goto LCheckStockMovRecord;
+  end; //Edit***************************Sasha2,10:47 22.01.2016 }   
 
   if (SMp.OKFlag==0) then begin
     if (stat==updatemode) then begin
