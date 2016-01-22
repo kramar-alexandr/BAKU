@@ -140,6 +140,7 @@ begin
 
   Report("Отчет по маркетингу",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   Report("Материальный отчет",PecuniaryRClass,PecuniaryRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
+  Report("Материальный отчет 1",PecuniaryTestRClass,PecuniaryRn,0,modSL);//Edit-------------------Vitalii 16:57 22.01.2016
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modIN);
