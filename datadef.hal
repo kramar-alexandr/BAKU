@@ -3637,6 +3637,7 @@ begin
   RecordField(CorspAcc,M4Code,10,AccVc);
   RecordField(CustType,M4Int,0,0)// Edit ************************** Tuesday, 21 October 2014 11:58:03
   RecordField(CurncyCode,M4Code,5,CurncyCodeVc);// Edit ************************** Thursday, 5 March 2015 14:48:11
+  RecordField(ObjDetail,M4Int,0,0);// Edit ************************** Friday, 22 January 2016 10:47:06
   ArrayBegin(Math,-,1);
   ArrayField(LangCode,M4Code,5,0);
   ArrayField(Text,M4Str,100,0);

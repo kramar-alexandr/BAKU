@@ -28,6 +28,7 @@ external procedure InitValArray(Integer,var Array val);
 external procedure InitLongArray(Integer,var Array LongInt);
 external procedure SumLine2(record RcVc,Boolean,string,string,string,var val,var val,var val,var val,var val,
                             var val,Boolean,val,Boolean,Date,Integer,LongInt,Boolean);
+external procedure ObjMainRnForResRn(record RcVc);  // Edit ************************** Friday, 22 January 2016 11:19:42                          
 
 procedure ALPB2ResGr(record RcVc RepSpec,Boolean PLf,record UserDefRepLinesVc UserDefRepLinesr,record AccVc Accp,string anru,
                 var val S3bp,var val Pbp,var val Ebp,var val S4bp,var val S5bp,var val S6bp,
@@ -40,7 +41,7 @@ BEGIN
   record CYBlock CompYear;
   string 255 tstr,tstr2;
   Date budsd,buded;
-  record RcVc RepSpec1;// Edit ************************** Monday, 22 December 2014 13:48:22
+  record RcVc RepSpec1,newRepSpec;// Edit ************************** Monday, 22 December 2014 13:48:22
     
   budsd = StringToDate(FirstInRange(RepSpec.Stext,10));
   if (blankdate(budsd)) then begin budsd = RepSpec.sStartDate; end;    
@@ -195,6 +196,15 @@ BEGIN
       GetAccountDescription2(Accp.AccNumber,RepSpec.Language,tstr);            
       if (blank(RepSpec.ObjType)) then begin 
         AGrSumLine2(RepSpec,0,Accp.AccNumber,tstr,UserDefRepLinesr.SpecCode,S3b1,Pb1,Eb1,S4b1,S5b1,S6b1,negf,goms,PLf,resUseAccum,"DblNL",UserDefRepLinesr.IdKey,usedf,printf,GetVATLaw!=vatFinnish);
+      	if(UserDefRepLinesr.ObjDetail==1)then begin
+					newRepSpec.f4 = Accp.AccNumber;
+					newRepSpec.ObjStr = RepSpec.ObjStr;
+					newRepSpec.ObjType = RepSpec.ObjType;
+					newRepSpec.sStartDate = RepSpec.sStartDate;
+					newRepSpec.sEndDate = RepSpec.sEndDate;
+					newRepSpec.Comparison = RepSpec.Comparison;
+					ObjMainRnForResRn(newRepSpec);// Edit ************************** Friday, 22 January 2016 11:10:09
+				end;
       end else begin      
         SumLine2(RepSpec,PLf,Accp.AccNumber,tstr,UserDefRepLinesr.SpecCode,S3b1,Pb1,Eb1,S4b1,S5b1,S6b1,negf,goms,resUseAccum,AccumStartDate,UserDefRepLinesr.DCSide,UserDefRepLinesr.IdKey,printf);
       end;            
