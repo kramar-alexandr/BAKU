@@ -7017,6 +7017,10 @@ begin
   RadioButton(h,v    ,0,0,"Нормальный",DCSide);
   RadioButton(h,v+=16,1,0,"Дебет",DCSide);
   RadioButton(h,v+=16,2,0,"Кредит",DCSide);
+  
+  CheckBox(h,v+=26,0,"Детализация по объектам",ObjDetail);// Edit ************************** Friday, 22 January 2016 10:47:18
+
+	
   ButtonFrame(h=410,v=150,100,3,"Актив/Пассив");
   RadioButton(h,v    ,0,0,"Нормальный",DCSaldo);
   RadioButton(h,v+=16,1,0,"Только дебет",DCSaldo);
