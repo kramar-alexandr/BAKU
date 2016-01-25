@@ -35,7 +35,7 @@ begin
         case "Category": res = "CATEGORY";
         case "Division": res = "DIVISION";
         case "WeightOfMat": res = "WEIGHT"; //"WEIGHT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
-        //case "Diamonds": res = "DIAMONDS";
+        case "Diamonds": res = "CATEGORY_A"; 
         case "DiamondsCarat": res = "D_CARAT"; //"D_CARAT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "SolidStones05": res = "CENT_ST"; //"CENT_ST"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "PrecAndSemiPrec": res = "PRECIOUS";
@@ -69,7 +69,7 @@ begin
         case "CATEGORY": res = "Category";
         case "DIVISION": res = "Division";
         case "WEIGHT": res = "WeightOfMat";
-        //case "DIAMONDS": res = "Diamonds";
+        case "CATEGORY_A": res = "Diamonds";
         case "D_CARAT": res = "DiamondsCarat";
         case "CENT_ST": res = "SolidStones05";
         case "PRECIOUS": res = "PrecAndSemiPrec";

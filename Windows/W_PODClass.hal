@@ -2557,7 +2557,7 @@ begin
   		wdth = 135;
   		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
   		MatCol(1,pos,"Collection",0,Collection,false,TypeDISClass);
-  		MatCol(1,pos+=wdth,"Category",0,Category,false,TypeDISClass);
+  		MatCol(1,pos+=wdth,"Category",0,Diamonds,false,TypeDISClass);
   		//MatCol(1,pos+=wdth,"Description",0,Description,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Art",0,Art,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Style",0,Style,false,TypeDISClass);

@@ -636,7 +636,8 @@ BEGIN
         HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
-      /*if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
+      //Diamonds -> Category_A
+      if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diamonds,outdisps,ReturnFieldDIType("Diamonds",false),mes)) then begin
           RecordCheckError(9588,". " & mes,i,"Diamonds");      
           res = -1; 
@@ -645,7 +646,7 @@ BEGIN
           newINrw.Diamonds = outdisps;
         end;
         HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[type],newdispstr,foundtypes);
-      end;*/
+      end;
       
       if (NonBlank(newINrw.DiamondsCarat) and SetInSet(ReturnFieldDIType("DiamondsCarat",false),diCheckTypes[type])) then begin
         if (!DIsWithTypeExistsOrCreateSpecific(newINrw.DiamondsCarat,outdisps,ReturnFieldDIType("DiamondsCarat",false),mes)) then begin
