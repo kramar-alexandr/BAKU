@@ -19,13 +19,18 @@ begin
       switch (fieldname) begin
         case "Type": res = "TYPE";
         case "Brand": res = "BRAND";
-        case "Collection": res = "COLLECTION"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
-        case "Style": res = "STYLE";
+        case "Collection": res = "COLL_J"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "classif30": res = "COLL_W"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "classif31": res = "COLL_A"; //"COLLECTION"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
+        case "Style": res = "STYLE_J";
+        case "classif32": res = "STYLE_A";
         case "WatchType": res = "WARCARD";
         case "GenderSC": res = "GENDER";
         case "Dial": res = "DIAL";
         case "Strap": res = "STRAP";
-        case "Material": res = "MATERIAL";
+        case "Material": res = "MATERIAL_J";
+        case "classif33": res = "MATERIAL_W";
+        case "classif34": res = "MATERIAL_A";
         case "PrecStones": res = "COMMENT";
         case "SerNrf": res = "SERIALYES";
         case "Mechanism": res = "MECHANISM";
@@ -53,13 +58,16 @@ begin
       switch (fieldname) begin
         case "TYPE": res = "Type";
         case "BRAND": res = "Brand";
-        case "COLLECTION": res = "Collection";
-        case "STYLE": res = "Style";
+        case "COLL_J": res = "Collection";
+        case "COLL_W": res = "classif30";
+        case "COLL_A": res = "classif31";
+        case "STYLE_J": res = "Style";
+        case "STYLE_A": res = "classif32";
         case "WARCARD": res = "WatchType";
         case "GENDER": res = "GenderSC";
         case "DIAL": res = "Dial";
         case "STRAP": res = "Strap";
-        case "MATERIAL": res = "Material";
+        case "MATERIAL_J": res = "Material";
         case "COMMENT": res = "PrecStones";
         case "SERIALYES": res = "SerNrf";
         case "MECHANISM": res = "Mechanism";

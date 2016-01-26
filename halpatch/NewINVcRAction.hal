@@ -58,7 +58,7 @@ end; //Edit***************************Sasha2,12:12 18.12.2015 }
 updating//Edit***************************Sasha2,16:17 09.12.2015 {
 function boolean DIsWithTypeExistsOrCreateSpecific(string indisps,var string outdisps,string type,var string mes)
 begin
-  boolean res,testf,TrHs,foundf;
+  boolean res,testf,testf1,TrHs,foundf;
   integer pos,i,lenth;
   string 20 classname;
   string 10 newdisp,suffix;
@@ -128,38 +128,15 @@ begin
           end; RESETLOOP(DIr);
           if (!foundf) then begin
             testf = false;
+            testf1 = false;
             suffix = "";
             switch (type) begin
-              case "COLLECTION":
-                newdisp = PrepareDICode(classname);
-                if (NonBlank(newdisp)) then begin
-                  j = 1;
-                  newdisp = left(newdisp,len(newdisp) - len(j)) & j;
-                  DIr.Code = newdisp;
-                  DIr.CType = type;
-                  TrHs = Readfirstkey("CType",DIr,2,true);
-                  while (TrHs) begin
-                    j = j + 1;
-                    newdisp = left(newdisp,len(newdisp) - len(j)) & j;
-                    DIr.Code = newdisp;
-                    DIr.CType = type;
-                    TrHs = Readfirstkey("CType",DIr,2,true);
-                  end;
-                  if (TrHs==false) then begin
-                    DIr.Code = newdisp;
-                    DIr.Name = classname;
-                    DIr.CType = type;
-                    if (RECORDSTORE(DIr,false)==false) then begin
-                      res = false;
-                      mes = " Can not store " & newdisp & "with type " & type & ".";
-                      goto LDIsWithTypeExistsOrCreateSpecific;
-                    end;
-                  end;
-                end else begin
-                  res = false;
-                  mes = " New classification code is empty.";
-                  goto LDIsWithTypeExistsOrCreateSpecific;
-                end;
+              case "COLL_W":
+                testf1 = true;
+              case "COLL_J":
+                testf1 = true;
+              case "COLL_A":
+                testf1 = true;
               case "WEIGHT": //supposed to be digital
                 suffix = "WM";
                 testf = true;
@@ -192,6 +169,37 @@ begin
                   if (RECORDSTORE(DIr,false)==false) then begin
                     res = false;
                     mes = " Can not store " & newdisp & " with type " & type & ".";
+                    goto LDIsWithTypeExistsOrCreateSpecific;
+                  end;
+                end;
+              end else begin
+                res = false;
+                mes = " New classification code is empty.";
+                goto LDIsWithTypeExistsOrCreateSpecific;
+              end;
+            end;
+            if (testf1) then begin
+              newdisp = PrepareDICode(classname);
+              if (NonBlank(newdisp)) then begin
+                j = 1;
+                newdisp = left(newdisp,len(newdisp) - len(j)) & j;
+                DIr.Code = newdisp;
+                DIr.CType = type;
+                TrHs = Readfirstkey("CType",DIr,2,true);
+                while (TrHs) begin
+                  j = j + 1;
+                  newdisp = left(newdisp,len(newdisp) - len(j)) & j;
+                  DIr.Code = newdisp;
+                  DIr.CType = type;
+                  TrHs = Readfirstkey("CType",DIr,2,true);
+                end;
+                if (TrHs==false) then begin
+                  DIr.Code = newdisp;
+                  DIr.Name = classname;
+                  DIr.CType = type;
+                  if (RECORDSTORE(DIr,false)==false) then begin
+                    res = false;
+                    mes = " Can not store " & newdisp & "with type " & type & ".";
                     goto LDIsWithTypeExistsOrCreateSpecific;
                   end;
                 end;
@@ -759,6 +767,66 @@ BEGIN
           newINrw.Art = outdisps;
         end;
         HandleTypeField("Art",newINrw.Art,diCheckTypes[type],newdispstr,foundtypes);
+      end;
+      
+      //classif30 -> Coll_W
+      if (NonBlank(newINrw.classif30) and SetInSet(ReturnFieldDIType("classif30",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif30,outdisps,ReturnFieldDIType("classif30",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"classif30");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.classif30 = outdisps;
+        end;
+        HandleTypeField("classif30",newINrw.classif30,diCheckTypes[type],newdispstr,foundtypes);
+      end;
+      
+      //classif31 -> Coll_A
+      if (NonBlank(newINrw.classif31) and SetInSet(ReturnFieldDIType("classif31",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif31,outdisps,ReturnFieldDIType("classif31",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"classif31");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.classif31 = outdisps;
+        end;
+        HandleTypeField("classif31",newINrw.classif31,diCheckTypes[type],newdispstr,foundtypes);
+      end;
+      
+      //classif32 -> Style_A
+      if (NonBlank(newINrw.classif32) and SetInSet(ReturnFieldDIType("classif32",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif32,outdisps,ReturnFieldDIType("classif32",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"classif32");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.classif32 = outdisps;
+        end;
+        HandleTypeField("classif32",newINrw.classif32,diCheckTypes[type],newdispstr,foundtypes);
+      end;
+      
+      //classif33 -> Material_W
+      if (NonBlank(newINrw.classif33) and SetInSet(ReturnFieldDIType("classif33",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif33,outdisps,ReturnFieldDIType("classif33",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"classif33");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.classif33 = outdisps;
+        end;
+        HandleTypeField("classif33",newINrw.classif33,diCheckTypes[type],newdispstr,foundtypes);
+      end;
+      
+      //classif34 -> Material_A
+      if (NonBlank(newINrw.classif34) and SetInSet(ReturnFieldDIType("classif34",false),diCheckTypes[type])) then begin
+        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif34,outdisps,ReturnFieldDIType("classif34",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"classif34");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.classif34 = outdisps;
+        end;
+        HandleTypeField("classif34",newINrw.classif34,diCheckTypes[type],newdispstr,foundtypes);
       end;
       
       pos = 0;

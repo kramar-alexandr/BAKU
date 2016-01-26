@@ -1808,6 +1808,12 @@ begin
 			ArrayField(Description,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
 			ArrayField(Art,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
 			ArrayField(WatchType,M4Str,200,DIVc); //Edit***************************Sasha2,15:44 04.12.2015
+			ArrayField(classif30,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
+			ArrayField(classif31,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
+			ArrayField(classif32,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
+			ArrayField(classif33,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
+			ArrayField(classif34,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
+			ArrayField(classif35,M4Str,200,DIVc); //Edit***************************Sasha2,11:49 26.01.2016
 		EndArray;
 		MainKeyBegin(SerNr,0);
 		KeySegment(SerNr);

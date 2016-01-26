@@ -2286,7 +2286,7 @@ begin
   real h,h1,h2,h3,h4,h5,v,vm,vs,pos,matrixwidth,classtab,wdth; //Edit***************************Sasha2,10:40 16.12.2015
   string 255 label;
   WindowBegin("Новые товары",NewINDClass,CGview,-);
-  if (CurrentCompany==3) then begin //Edit***************************Sasha2,10:40 16.12.2015 {
+  if (CurrentCompany==3 or CurrentCompany==19 or CurrentCompany==20) then begin //Edit***************************Sasha2,10:40 16.12.2015 {
     matrixwidth = 1230;
   end else begin
     matrixwidth = 830;
@@ -2297,7 +2297,7 @@ begin
   Tile(0,87,false,"",SerNr); 
   v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
   EditField(h,v, 150,"Номер",Normal,SerNr,false,0);
-  if (CurrentCompany==3) then begin //Edit***************************Sasha2,11:34 25.12.2015 {
+  if (CurrentCompany==3 or CurrentCompany==19 or CurrentCompany==20) then begin //Edit***************************Sasha2,11:34 25.12.2015 {
     EditField(h2,v,80,"Бренд",Normal,Brand,false,DI2SClass);
   end else begin //Edit***************************Sasha2,11:34 25.12.2015 }
     EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
@@ -2497,7 +2497,7 @@ begin
 		RadioButton(h2,v+=16,2,0,"Средневзвешенная по каждому складу",WAPerLocation);  */
 		/*Матрица*/	Tile(tilenr,400,true,tilenr,-);  tilenr = tilenr + 1;
 		
-		if (CurrentCompany==3) then begin //Edit***************************Sasha2,10:38 16.12.2015 {
+		if (CurrentCompany==3  or CurrentCompany==19 or CurrentCompany==20) then begin //Edit***************************Sasha2,10:38 16.12.2015 {
   		MatrixBegin(3,v+=32,-76,-20,-,1000);
   		Flip(0);
   		MatCol(1,28,"Товар",0,Code,false,INSClass);
@@ -2511,13 +2511,13 @@ begin
   		Flip(flipnr); classtab = flipnr; flipnr = flipnr + 1;
   		pos = 100;
   		wdth = 95;
-  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-  		MatCol(1,pos,"Collection",0,Collection,false,TypeDISClass);
+  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);  //"WTCH"
+  		MatCol(1,pos,"Collection",0,classif30,false,TypeDISClass);
   		//MatCol(1,pos+=wdth,"Style",0,Style,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Gender",0,GenderSC,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Dial",0,Dial,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Strap",0,Strap,false,TypeDISClass);
-  		MatCol(1,pos+=wdth,"Material",0,Material,false,TypeDISClass);
+  		MatCol(1,pos+=wdth,"Material",0,classif33,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Mechanism",0,Mechanism,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Function",0,Function,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Diameter",0,Diameter,false,TypeDISClass);
@@ -2527,14 +2527,13 @@ begin
   		Flip(flipnr); flipnr = flipnr + 1;
   		pos = 105;
   		wdth = 73;
-  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass); //"JEWE"
   		MatCol(1,pos,"Collection",0,Collection,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Category",0,Category,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Division",0,Division,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Gender",0,GenderSC,false,TypeDISClass);
       MatCol(1,pos+=wdth,"Material",0,Material,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"WeightOfMat",0,WeightOfMat,false,TypeDISClass);
-  		//MatCol(1,pos+=wdth,"Diamonds",0,Diamonds,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"DiamondsCarat",0,DiamondsCarat,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Center stones",0,SolidStones05,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"PrecAndSemiPrec",0,PrecAndSemiPrec,false,TypeDISClass);
@@ -2546,7 +2545,7 @@ begin
   		Flip(flipnr); flipnr = flipnr + 1;
   		pos = 100;
   		wdth = 220;
-  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
+  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass); //"STON"
   		MatCol(1,pos,"Carat",0,Carat,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Clarity",0,ClaritySC,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Color",0,Color,false,TypeDISClass);
@@ -2555,13 +2554,13 @@ begin
   		Flip(flipnr); flipnr = flipnr + 1;
   		pos = 100;
   		wdth = 135;
-  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass);
-  		MatCol(1,pos,"Collection",0,Collection,false,TypeDISClass);
+  		//MatCol(1,pos,"Brand",0,BrandSC,false,TypeDISClass); //"ACCE"
+  		MatCol(1,pos,"Collection",0,classif31,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Category",0,Diamonds,false,TypeDISClass);
   		//MatCol(1,pos+=wdth,"Description",0,Description,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Art",0,Art,false,TypeDISClass);
-  		MatCol(1,pos+=wdth,"Style",0,Style,false,TypeDISClass);
-  		MatCol(1,pos+=wdth,"Material",0,Material,false,TypeDISClass);
+  		MatCol(1,pos+=wdth,"Style",0,classif32,false,TypeDISClass);
+  		MatCol(1,pos+=wdth,"Material",0,classif34,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"ColorOfMat",0,ColorOfMat,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Gender",0,GenderSC,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Type",0,Type,false,TypeDISClass);
