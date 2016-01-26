@@ -3013,3 +3013,31 @@ begin
 
   return;
 end; //Edit***************************Sasha2,14:41 21.01.2016 }
+
+global ///Edit***************************Sasha2,14:41 21.01.2016 {
+updating procedure BaseERToggleMn(record RcVc RepSpec)
+begin
+	record BaseERVc BERr,oldBERr,tempBERr;
+	record BaseCurBlock BSr;
+		
+		BlockLoad(BSr);
+		if (Blank(BSr.BaseCur1) and Blank(BSr.BaseCur1)) then begin
+		  goto LBaseERToggleMn;
+		end;
+		RECORDNEW(tempBERr);
+    while (LoopMain(BERr,1,true)) begin
+      if (NonBlank(BERr.Rate1) and NonBlank(BERr.Rate2)) then begin
+        //RecordCopy(oldBERr,BERr);
+        tempBERr.Rate1 = BERr.Rate1;
+        BERr.Rate1 = BERr.Rate2;
+        BERr.Rate2 = tempBERr.Rate1;
+        RecordStore(BERr,true);
+        //RecordUpdate(oldBERr,BERr,true);
+      end;
+      
+    end;
+    
+  LBaseERToggleMn:;
+
+  return;
+end; //Edit***************************Sasha2,14:41 21.01.2016 }
