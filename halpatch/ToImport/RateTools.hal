@@ -24,10 +24,10 @@ procedure B1ToB2Val(val from,val br1p,val br2p,var val to)
 BEGIN
   val baserate;
 
-  /*DivM4OneRate(br2p,br1p,baserate);
+  DivM4OneRate(br2p,br1p,baserate);
   DivM4OneRate(from,baserate,to);
-  to = Round(to,DefaultRoundMode);*/
-  to = Round(from*1.1,DefaultRoundMode);
+  to = Round(to,DefaultRoundMode);
+  //to = Round(from*1.1,DefaultRoundMode);// Edit ************************** Tuesday, 26 January 2016 15:30:59
   RETURN;
 END;
 

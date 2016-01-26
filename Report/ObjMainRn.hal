@@ -196,7 +196,7 @@ begin
 						//outstring(200,0,SMrw.DebVal,false);
 						//outstring(250,0,SMrw.CredVal,false);
 						outstring(384,0,SMrw.DebVal - SMrw.CredVal,true);
-						outstring(1,0,SMrw.CurDebVal - SMrw.CurCredVal + SMrw.DebVal - SMrw.CredVal,true);
+						outstring(1,0,SMrw.DebVal - SMrw.CredVal,true);
 					endformat;
 				end;
 			end;

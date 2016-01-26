@@ -616,7 +616,7 @@ BEGIN
         case kInvoiceRowTypeGiftVoucherPayment:
           ivsum = ivsum - IVrw.Sum;
         case kInvoiceRowTypeCashPayment:
-          ivsum = ivsum - IVrw.Sum;
+          ivsum = ivsum - IVrw.Sum;// Edit ************************** Tuesday, 26 January 2016 16:33:41???????
         case kInvoiceRowTypeLoyaltyPointsPayment:
           ivsum = ivsum - IVrw.Sum;
         case kInvoiceRowTypeCreditCardPayment:

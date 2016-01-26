@@ -1360,8 +1360,7 @@ begin
 	
 	INr.Code = "";
 	while (loopmain(INr,1,true)) begin
-	  //changef = false;
-    IHr.ArtCode = INr.Code;
+    /*IHr.ArtCode = INr.Code;
     IHr.FileName = "PUVc";
     if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code) then begin
       cost = IHr.TotCostPrice/IHr.Qty;
@@ -1373,8 +1372,8 @@ begin
       end;
     end;
     if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
-      if (from!=0 and to1!=0) then begin
-        INr.LastPurchCurncyCode = eurcurncy;
+      if (from!=0 and to1!=0) then begin*/
+    INr.LastPurchCurncyCode = eurcurncy;/*
         INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
         //changef = true;
       end;
@@ -1389,7 +1388,7 @@ begin
     if (INr.LastPurchCurncyCode=="AZN") then begin
       INr.LastPurchCurncyCode = eurcurncy;
       //changef = true;
-    end;
+    end;*/
     //if (changef) then begin
       RECORDSTORE(INr,true);
     //end;
