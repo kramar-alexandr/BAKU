@@ -16,7 +16,8 @@ begin
   
     curtype = ReturnFieldDIType(fieldname,false);
     if (NonBlank(curtype) and SetInSet(curtype,comptostring)) then begin
-      if (fieldname!="SerNrf") then begin
+      //if (fieldname!="SerNrf") then begin
+      if (SkipCheckDIType(ReturnFieldDIType(fieldname,false))==false) then begin
         if (Blank(outdispstr)) then begin
           outdispstr = fieldcontent;
         end else begin
