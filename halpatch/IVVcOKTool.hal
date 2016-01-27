@@ -19,6 +19,7 @@ external function Integer GetVATLaw();
 external procedure FindSalesExVat(record TaxMatrixVc,string,val,Integer,Integer,var val);
 external function Integer DateGetIntMonth(Date);
 external function val AbsoluteVal(val);//Edit----------------------Dima  22.01.2016
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 
 procedure GetIVPrepaidInBase(record IVVc IVp,Integer rownr,var val totsump,var val prepaybasevp)
 BEGIN
@@ -1006,7 +1007,7 @@ BEGIN
   Integer i,rwcnt;
   Boolean cashf;
   Integer sign;
-  val basepayment;
+  val basepayment,sum;
   
   sign = 1;
   if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales or ARp.RVal<0) then begin //Edit----------------------Dima  22.01.2016
@@ -1016,7 +1017,8 @@ BEGIN
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(IVp,i,IVrw);
     if ((IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) or (IVrw.stp==kInvoiceRowTypeCashPayment) or (IVrw.stp==kInvoiceRowTypeCreditCardPayment) or (IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment) or (IVrw.stp==kInvoiceRowTypeChequePayment)) then begin
-      ARp.RVal = ARp.RVal - sign*AbsoluteVal(IVrw.Sum); 				//Edit----------------------Dima  22.01.2016
+    	CurValToOtherCur(IVp.TransDate,IVrw.CurncyCode,IVrw.Sum,IVp.CurncyCode,sum,DefaultCurRoundOff);
+      ARp.RVal = ARp.RVal - sign*AbsoluteVal(sum); 				//Edit----------------------Dima  22.01.2016
       basepayment = MulRateToBase1(IVp.CurncyCode,AbsoluteVal(IVrw.Sum),IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,DefaultCurRoundOff);
       ARp.BookRVal = ARp.BookRVal - sign*basepayment; 
       cashf = true;
@@ -1024,6 +1026,8 @@ BEGIN
   end;
   if ((IVp.RetnValue>0 and IVp.Sum4>0) or (IVp.RetnValue<0 and IVp.Sum4<0)) then begin
     ARp.RVal = ARp.RVal + sign*AbsoluteVal(IVp.RetnValue); 		//Edit----------------------Dima  22.01.2016
+    basepayment = MulRateToBase1(IVp.CurncyCode,AbsoluteVal(IVp.RetnValue),IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,DefaultCurRoundOff);
+    ARp.BookRVal = ARp.BookRVal + sign*basepayment;    
   end;
   if (cashf) then begin
 /*

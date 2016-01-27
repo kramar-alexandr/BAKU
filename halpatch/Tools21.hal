@@ -5,6 +5,7 @@ external function Integer PMCheckType(string,var string,var string);
 external function boolean CheckUnOkIVVc(record IVVc);		//Edit----------------------Dima  24.12.2015
 external function longint CheckUnOkPUVc(record PUVc);
 external function longint CheckUnOkRetPUVc(record RetPUVc);//Edit----------------------Dima  20.01.2016
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 
 
 global
@@ -538,7 +539,7 @@ BEGIN
   Integer res;
   row IVVc IVrw;
   Integer i,rwcnt;
-  val ivsum;
+  val ivsum,rowsum;
   Boolean prepayf;
   record INVc INr;
   record IPrsVc IPrsr;
@@ -616,7 +617,9 @@ BEGIN
         case kInvoiceRowTypeGiftVoucherPayment:
           ivsum = ivsum - IVrw.Sum;
         case kInvoiceRowTypeCashPayment:
-          ivsum = ivsum - IVrw.Sum;// Edit ************************** Tuesday, 26 January 2016 16:33:41???????
+        	CurValToOtherCur(IVp.TransDate,IVrw.CurncyCode,IVrw.Sum,IVp.CurncyCode,rowsum,DefaultCurRoundOff);
+          ivsum = ivsum - rowsum + IVp.RetnValue;	//Edit-------------------------------------------------Dima  27.01.2016
+          //ivsum = ivsum - IVrw.Sum;
         case kInvoiceRowTypeLoyaltyPointsPayment:
           ivsum = ivsum - IVrw.Sum;
         case kInvoiceRowTypeCreditCardPayment:
@@ -628,7 +631,7 @@ BEGIN
     if (IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales) then begin ivsum = -ivsum; end;
     ARr.InvoiceNr = IVp.SerNr;
     if (ReadFirstMain(ARr,1,true)) then begin
-    	logtext(0,"ivsum " & ivsum);
+    	//logtext(0,"ivsum " & ivsum);
       if (ARr.RVal!=ivsum) then begin
         res = 22059;
         goto LIsUnOKAllowed_IVVc;
