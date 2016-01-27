@@ -37,7 +37,7 @@ begin
         case "Function": res = "FUNCTIONS";
         case "WaterResist": res = "SAP";
         case "Diameter": res = "DIAMETER";
-        case "Category": res = "CATEGORY";
+        case "Category": res = "CATEGORY_J";
         case "Division": res = "DIVISION";
         case "WeightOfMat": res = "WEIGHT"; //"WEIGHT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "Diamonds": res = "CATEGORY_A"; 
@@ -74,7 +74,7 @@ begin
         case "FUNCTIONS": res = "Function";
         case "SAP": res = "WaterResist";
         case "DIAMETER": res = "Diameter";
-        case "CATEGORY": res = "Category";
+        case "CATEGORY_J": res = "Category";
         case "DIVISION": res = "Division";
         case "WEIGHT": res = "WeightOfMat";
         case "CATEGORY_A": res = "Diamonds";
