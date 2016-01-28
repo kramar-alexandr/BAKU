@@ -390,6 +390,7 @@ begin
   row IVVc IVrw;
   record ItemStatusVc IS1r;
   val totresqty;
+  string 255 brand,model;
   
   totresqty = 0;
   totresqty = ISr.RsrvQty;
@@ -433,7 +434,30 @@ begin
 		outstring(0,0,INr.AlternativeCode,false);
 		outstring(0,0,ISr.Location,false);
 		pos = 0;
+		brand = "";
+		model = "";
 		ExtractObj(INr.DispGroups,pos,uloc);
+		while (NonBlank(uloc)) begin
+		  DIr.Code = uloc;
+		  if (readfirstmain(DIr,1,true)) then begin
+		    if (DIr.CType=="BRAND") then begin
+		      brand = DIr.Name;
+		      category = DIr.CCat;
+		    end;
+		    if (DIr.CType=="MODEL") then begin
+		      model = DIr.Name;
+		    end;
+		  end;
+		  ExtractObj(INr.DispGroups,pos,uloc);
+		end;
+		if (NonBlank(brand)) then begin
+		  outstring(0,0,brand,false);
+		end;
+		if (NonBlank(model)) then begin
+		  outstring(0,0,model,false);
+		end;
+		
+		/*ExtractObj(INr.DispGroups,pos,uloc);
 		if(currentcompany==9)then begin
 			if(uloc=="GOODS")then begin
 				ExtractObj(INr.DispGroups,pos,uloc);
@@ -447,7 +471,9 @@ begin
 		ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
 		readfirstmain(DIr,1,true);
-		outstring(0,0,DIr.Name,false);
+		outstring(0,0,DIr.Name,false);*/
+		
+		
 		outstring(0,0,category,false);	//Edit----------------------Dima  23.03.2015
 		outstring(0,0,INr.Name,false);
 		//outstring(0,0,INr.Reference,false);

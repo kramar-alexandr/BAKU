@@ -593,6 +593,7 @@ begin
 	record INVc INr;
 	boolean TrHs,testf,TrHs1,testf1;
 	val totqty,selqty,retqty,prosroch;
+	string 255 brand,type; //Edit***************************Sasha2,15:42 28.01.2016
 
 	startreportnoheaderjob(USetStr(31159));
 
@@ -621,10 +622,27 @@ begin
 				INr.Code = INCr.Code;
 				readfirstmain(INr,1,true);
 				pos = 0;
+    		brand = "";
+    		ExtractObj(INr.DispGroups,pos,class);
+    		while (NonBlank(class)) begin
+    		  DIr.Code = class;
+    		  if (readfirstmain(DIr,1,true)) then begin
+    		    if (DIr.CType=="BRAND") then begin
+    		      brand = DIr.Name;
+    		      pos = len(INr.DispGroups);
+    		    end;
+    		  end;
+    		  ExtractObj(INr.DispGroups,pos,class);
+    		end;
+    		if(brand!=RepSpec.f2)then begin
+					testf = false;
+				end;
+				
+				/*pos = 0;
 				ExtractObj(INr.DispGroups,pos,class);
 				if(class!=RepSpec.f2)then begin
 					testf = false;
-				end;
+				end;*/
 			end;
 			if(testf)then begin
 				ISr.Code = INCr.Code;
@@ -635,7 +653,31 @@ begin
 					startformat(15);
 						outstring(0,0,INCr.Code,false);
 						outstring(50,0,INCr.Name,false);
+						
 						pos = 0;
+						brand = "";
+        		type = "";
+        		ExtractObj(INr.DispGroups,pos,class);
+        		while (NonBlank(class)) begin
+        		  DIr.Code = class;
+        		  if (readfirstmain(DIr,1,true)) then begin
+        		    if (DIr.CType=="BRAND") then begin
+        		      brand = DIr.Name;
+        		    end;
+        		    if (DIr.CType=="TYPE") then begin
+        		      type = DIr.Name;
+        		    end;
+        		  end;
+        		  ExtractObj(INr.DispGroups,pos,class);
+        		end;
+        		if (NonBlank(brand)) then begin
+        		  outstring(200,0,brand,false);
+        		end;
+        		if (NonBlank(type)) then begin
+        		  outstring(250,0,type,false);
+        		end;
+						
+						/*pos = 0;
 						ExtractObj(INr.DispGroups,pos,class);
 						DIr.Code = class;
 						readfirstmain(DIr,1,true);
@@ -643,7 +685,8 @@ begin
 						ExtractObj(INr.DispGroups,pos,class);
 						DIr.Code = class;
 						readfirstmain(DIr,1,true);
-						outstring(250,0,DIr.Name,false);
+						outstring(250,0,DIr.Name,false);*/
+						
 						outstring(320,0,ISr.Instock,false);
 						outstring(1,0,INCr.Days,true);
 					endformat;

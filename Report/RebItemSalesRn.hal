@@ -60,6 +60,7 @@ integer cnt;
 val totalqty,totalcost;
 val totalturnqty,totalturncost;
 val totalsalecost,totalsalesum,totalsaleqty;
+string 255 brand,type; //Edit***************************Sasha2,14:40 28.01.2016
 
 CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 
@@ -139,7 +140,29 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 					outstring(0,0,INr.Code,false);
 					outstring(40,0,INr.Name,false);
 					cnt = 0;
-					ExtractObj(INr.DispGroups,cnt,class);
+					brand = "";
+      		type = "";
+      		ExtractObj(INr.DispGroups,cnt,class);
+      		while (NonBlank(class)) begin
+      		  DIr.Code = class;
+      		  if (readfirstmain(DIr,1,true)) then begin
+      		    if (DIr.CType=="BRAND") then begin
+      		      brand = DIr.Name;
+      		    end;
+      		    if (DIr.CType=="TYPE") then begin
+      		      type = DIr.Name;
+      		    end;
+      		  end;
+      		  ExtractObj(INr.DispGroups,cnt,class);
+      		end;
+      		if (NonBlank(brand)) then begin
+      		  outstring(250,0,brand,false);
+      		end;
+      		if (NonBlank(type)) then begin
+      		  outstring(250,0,type,false);
+      		end;
+					
+					/*ExtractObj(INr.DispGroups,cnt,class);
 					if(nonblank(class))then begin
 						Dir.Code = class;
 						if(readfirstmain(DIr,1,true))then begin
@@ -160,7 +183,7 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
 						end;
 					end else begin
 						outstring(250,0,"",false);
-					end;
+					end;*/
 					
 					outstring(250,0,qty,false);
 					outstring(290,0,cost,false);

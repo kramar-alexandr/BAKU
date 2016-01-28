@@ -105,6 +105,9 @@ begin
 					model = DIr.Code;
 					modelname = DIr.Name;
 				end;
+				if ((NonBlank(brand) or NonBlank(brandname)) and (NonBlank(model) or NonBlank(modelname))) then begin
+				  pos = len(INr.DispGroups); //Edit***************************Sasha2,10:55 25.01.2016
+				end;
 				ExtractObj(INr.DispGroups,pos,classfind);
 			end;
 			if(nonblank(RepSpec.f4) and brand!=RepSpec.f4)then begin

@@ -68,6 +68,7 @@ BEGIN
   Array string 50 carncy;
   Array Boolean achangecrncyf;
   Integer acrncnt,blcnt;
+  string 255 brand,type;
 
 
   CntPOSCurrencies(carncy,achangecrncyf,acrncnt);
@@ -209,7 +210,6 @@ BEGIN
 
 										MatRowGet(IVr,i,IVrw);
 											if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-												pos = 0;
 												Startformat(15);
 													MatRowGet(Companiesb,CurrentCompany-1,Companiesrw);
 													outstring(40,0,Companiesrw.CompName,true);
@@ -220,14 +220,41 @@ BEGIN
 													outstring(240,0,IVrw.Spec,true);
 													INr.Code = IVrw.ArtCode;
 													ReadFirstMain(INr,1,true);
-													ExtractObj(INr.DispGroups,pos,classification);
+													pos = 0;
+													brand = "";
+      										type = "";
+      										ExtractObj(INr.DispGroups,pos,classification);
+      										while (NonBlank(classification)) begin
+      										  DIr.Code = classification;
+      										  if (ReadFirstMain(DIr,1,true)) then begin
+      										    if (DIr.CType=="BRAND") then begin
+      										      brand = DIr.Name;
+      										    end;
+      										    if (DIr.CType=="TYPE") then begin
+      										      type = DIr.Name;
+      										    end;
+      										  end;
+      										  if (NonBlank(brand) and NonBlank(type)) then begin
+      										    pos = len(INr.DispGroups);
+      										  end;
+      										  ExtractObj(INr.DispGroups,pos,classification);
+      										end;
+      										if (NonBlank(brand)) then begin
+                      		  outstring(280,0,brand,false);
+                      		end;
+                      		if (NonBlank(type)) then begin
+                      		  outstring(320,0,type,false);
+                      		end;
+
+													/*ExtractObj(INr.DispGroups,pos,classification);
 													DIr.Code = classification;
 													ReadFirstMain(DIr,1,true);
 													outstring(280,0,DIr.Name,true);
 													ExtractObj(INr.DispGroups,pos,classification);
 													DIr.Code = classification;
 													ReadFirstMain(DIr,1,true);
-													outstring(320,0,DIr.Name,true);
+													outstring(320,0,DIr.Name,true);*/
+													
 													outstring(340,0,IVrw.Price,true);
 				
 														if(Blank(IVrw.vRebate) or IVrw.vRebate==0)then begin

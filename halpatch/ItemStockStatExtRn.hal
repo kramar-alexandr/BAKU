@@ -4,53 +4,6 @@ external function Boolean SetInSet2(string,string);
 external function roundmode SetRoundMode(Integer,Integer,Integer,Integer);
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
-function string 200 ParseClassification(string class)
-begin
-	string 200 res,cl;
-	record DIVc DIr;
-	integer pos;
-	
-	if(nonblank(class))then begin
-		pos = 0;
-		ExtractObj(class,pos,cl);
-		DIr.Code = cl;
-		if(readfirstmain(DIr,1,true))then begin
-			res = DIr.Name;
-			outstring(0,0,DIr.Name,false);
-		end else begin
-			outstring(0,0,"",false);
-		end;
-	
-		ExtractObj(class,pos,cl);
-		if(nonblank(cl))then begin
-			DIr.Code = cl;
-			if(readfirstmain(DIr,1,true))then begin
-				if(nonblank(DIr.Code))then begin
-					res = res & "," & DIr.Name;
-				end;
-				if(currentcompany>3)then begin
-					outstring(0,0,DIr.Name,false);
-				end;
-			end else begin
-				if(currentcompany>3)then begin
-					outstring(0,0,"",false);
-				end;
-			end;
-		end else begin
-			if(currentcompany>3)then begin
-				outstring(0,0,"",false);
-			end;
-		end;
-	end else begin
-		outstring(0,0,"",false);
-		if(currentcompany>3)then begin
-			outstring(0,0,"",false);
-		end;
-	end;
-	
-	ParseClassification = res;
-return;
-end;
 
 function val ItemQtyPerDate(string artcode, date idate,string location,string serial,var val serialcost)
 begin
@@ -402,6 +355,7 @@ begin
   record IVVc IVr;
   row IVVc IVrw;
   roundmode rmode5;
+  string 255 brand,model;
 
   
   rmode5 = SetRoundMode(0,kRoundingDirectionToFromPosInf,kRoundingModeHalfUp,kRoundingStep5);	//Edit----------------------Dima  17.04.2015
@@ -428,7 +382,29 @@ begin
 		outstring(0,0,INr.AlternativeCode,false);
 		outstring(0,0,ISr.Location,false);
 		pos = 0;
+		brand = "";
+		model = "";
 		ExtractObj(INr.DispGroups,pos,uloc);
+		while (NonBlank(uloc)) begin
+		  DIr.Code = uloc;
+		  if (readfirstmain(DIr,1,true)) then begin
+		    if (DIr.CType=="BRAND") then begin
+		      brand = DIr.Name;
+		    end;
+		    if (DIr.CType=="MODEL") then begin
+		      model = DIr.Name;
+		    end;
+		  end;
+		  ExtractObj(INr.DispGroups,pos,uloc);
+		end;
+		if (NonBlank(brand)) then begin
+		  outstring(0,0,brand,false);
+		end;
+		if (NonBlank(model)) then begin
+		  outstring(0,0,model,false);
+		end;
+		
+		/*ExtractObj(INr.DispGroups,pos,uloc);
 		if(currentcompany==9)then begin
 			if(uloc=="GOODS")then begin
 				ExtractObj(INr.DispGroups,pos,uloc);
@@ -441,7 +417,9 @@ begin
 		ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
 		readfirstmain(DIr,1,true);
-		outstring(0,0,DIr.Name,false);
+		outstring(0,0,DIr.Name,false);*/
+		
+		
 		outstring(0,0,INr.Name,false);
 		outstring(0,0,INr.Reference,false);
 		outstring(0,0,INr.Metal,false);
@@ -608,6 +586,7 @@ begin
 	string 50 comfolder;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
+	Boolean founddi; //Edit***************************Sasha2,10:45 25.01.2016
 	
   if(serstock==0)then begin
   	instock = ISr.Instock;
@@ -616,8 +595,8 @@ begin
   end;
   
 	ExportString("<tr>");
-		DIr.Code = INr.DispGroups;
-		readfirstmain(DIr,1,true);
+		/*DIr.Code = INr.DispGroups;
+		readfirstmain(DIr,1,true);*/
 		PLr.ArtCode = ISr.Code;
 		PLr.PLCode = "RRP";
 		PLr.SerialNr = serial;
@@ -631,14 +610,32 @@ begin
 		ExportString("<td>" & INr.AlternativeCode & "</td>");
 		ExportString("<td>" & ISr.Location & "</td>");
 		pos = 0;
-		ExtractObj(INr.DispGroups,pos,uloc);
+		uloc = ""; 
+		founddi = false; //Edit***************************Sasha2,10:13 25.01.2016 {
+		ExtractObj(INr.DispGroups,pos,uloc); 
+		while(nonblank(uloc)) begin
+			DIr.Code = uloc;
+			readfirstmain(DIr,1,true);
+			if(DIr.CType=="BRAND")then begin
+				ExportString("<td>" & DIr.Name & "</td>");
+				pos = len(INr.DispGroups);
+				founddi = true;
+			end;
+			ExtractObj(INr.DispGroups,pos,uloc);
+		end; 
+		if (founddi==false) then begin
+		  ExportString("<td>" & "" & "</td>");
+		end; //Edit***************************Sasha2,10:13 25.01.2016 }
+		
+		/*ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
 		readfirstmain(DIr,1,true);
 		ExportString("<td>" & DIr.Name & "</td>");
 		//pos = 1;
 		ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
-		readfirstmain(DIr,1,true);
+		readfirstmain(DIr,1,true);*/
+
 		ExportString("<td>" & INr.Name & "</td>");
 		ExportString("<td>" & serial & "</td>");// Edit ************************** Tuesday, 7 May 2013 10:13:07
 		ExportString("<td>" & instock & "</td>");
@@ -1227,7 +1224,7 @@ begin
 		if(nonblank(item))then begin
 			ISr.Code = item;
 			TrHs = true;
-			while(loopmain(ISr,1,TrHs))begin
+			while(loopmain(ISr,1,TrHs)) begin
 				testf = true;
 				if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
 				if(ISr.Location==";;;")then begin testf = false; end;
@@ -1245,7 +1242,7 @@ begin
 					end else begin
 						SBr.Item = INr.Code;
 						SBr.Location = ISr.Location;
-						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location)))begin
+						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 							if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
 								ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
 								if(ISr.Instock>0)then begin
@@ -1275,7 +1272,7 @@ begin
 						pos = 0;
 						classfind = "";
 						ExtractObj(INr.DispGroups,pos,classfind);
-						while(nonblank(classfind))begin
+						while(nonblank(classfind)) begin
 							DIr.Code = classfind;
 							readfirstmain(DIr,1,true);
 							if(DIr.CType=="BRAND")then begin
@@ -1283,6 +1280,9 @@ begin
 							end;
 							if(DIr.CType=="MODEL")then begin
 								model = DIr.Code;
+							end;
+							if (NonBlank(brand) and NonBlank(model)) then begin
+							  pos = len(INr.DispGroups); //Edit***************************Sasha2,10:09 25.01.2016
 							end;
 							ExtractObj(INr.DispGroups,pos,classfind);
 						end;

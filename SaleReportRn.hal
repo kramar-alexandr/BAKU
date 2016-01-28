@@ -4,38 +4,57 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 external inner procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);// Edit ************************** Wednesday, 19 June 2013 14:02:13
 external procedure FindFIFOOrigValAndCurncyIV(longint,integer, var val, var string,var val,boolean);// Edit ************************** Tuesday, 2 July 2013 10:40:37
 
+//Edit***************************Sasha2,17:51 25.01.2016 {
+function string 200 GetDI(string classes)
+begin
+  string 200 res;
+  record DIVc DIr;
+  string 10 prevgroup;
+  integer gi;
+  
+      gi=0;
+			ExtractObj(classes,gi,prevgroup);
+      if(nonblank(prevgroup))then begin
+        DIr.Code = prevgroup;
+        if(readfirstmain(DIr,1,true))then begin res = DIr.Name; end;
+      end;
+
+  GetDI = res;
+return;
+end; //Edit***************************Sasha2,17:51 25.01.2016 }
 
 function string 200 ParseClassification(string class)
 begin
 	string 200 res,cl;
 	record DIVc DIr;
 	integer pos;
+	string 100 brandname,typename; //Edit***************************Sasha2,11:49 25.01.2016
 	
 	if(nonblank(class))then begin
 		pos = 0;
-		ExtractObj(class,pos,cl);
-		DIr.Code = cl;
-		if(readfirstmain(DIr,1,true))then begin
-			res = DIr.Name;
-			outstring(0,0,DIr.Name,false);
-		end else begin
-			outstring(0,0,"",false);
-		end;
-	
-		ExtractObj(class,pos,cl);
-		if(nonblank(cl))then begin
+		ExtractObj(class,pos,cl); 
+		while(nonblank(cl)) begin
 			DIr.Code = cl;
-			if(readfirstmain(DIr,1,true))then begin
-				if(nonblank(DIr.Code))then begin
-					res = res & "," & DIr.Name;
-				end;
-				if(currentcompany>3)then begin
-					outstring(0,0,DIr.Name,false);
-				end;
-			end else begin
-				if(currentcompany>3)then begin
-					outstring(0,0,"",false);
-				end;
+			readfirstmain(DIr,1,true);
+			if(DIr.CType=="BRAND")then begin
+				brandname = DIr.Name;
+			end;
+			if(DIr.CType=="TYPE")then begin
+				typename = DIr.Name;
+			end;
+			if (NonBlank(brandname) and NonBlank(brandname)) then begin
+			  pos = len(class);
+			end;
+			ExtractObj(class,pos,cl);
+		end; 
+		
+		res = brandname;
+		outstring(0,0,brandname,false);
+	
+		if(NonBlank(typename))then begin
+			res = res & "," & typename;
+			if(currentcompany>3)then begin
+				outstring(0,0,typename,false);
 			end;
 		end else begin
 			if(currentcompany>3)then begin
@@ -283,13 +302,16 @@ begin
                 tstr = "";
                 INr.Code = curartcode;
                 readfirstmain(INr,1,true);
-                prevgroup = INr.DispGroups;
+                
+                tstr = GetDI(INr.DispGroups); //Edit***************************Sasha2,17:53 25.01.2016
+                
+                /*prevgroup = INr.DispGroups;
                 gi=0;
 								ExtractObj(INr.DispGroups,gi,prevgroup);
                 if(nonblank(prevgroup))then begin
                   DIr.Code = prevgroup;
                   if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
-                end;
+                end;*/
                 
                 if(currentcompany>2)then begin
                 	ParseClassification(INr.DispGroups);
@@ -429,13 +451,16 @@ begin
                   tstr = "";
                   INr.Code = curartcode;
 									readfirstmain(INr,1,true);
-									prevgroup = INr.DispGroups;
+									tstr = GetDI(INr.DispGroups); //Edit***************************Sasha2,17:53 25.01.2016
+									
+									/*prevgroup = INr.DispGroups;
 									gi=0;
 									ExtractObj(INr.DispGroups,gi,prevgroup);
                   if(nonblank(prevgroup))then begin
                     DIr.Code = prevgroup;
                     if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
-                  end;
+                  end;*/
+                  
                   if(currentcompany>2)then begin
 										ParseClassification(INr.DispGroups);
 									end else begin
@@ -613,13 +638,14 @@ begin
         tstr = "";
         INr.Code = curartcode;
 				readfirstmain(INr,1,true);
-				prevgroup = INr.DispGroups;
+				tstr = GetDI(INr.DispGroups); //Edit***************************Sasha2,17:53 25.01.2016
+				/*prevgroup = INr.DispGroups;
 				gi=0;
 				ExtractObj(INr.DispGroups,gi,prevgroup);
         if(nonblank(prevgroup))then begin
           DIr.Code = prevgroup;
           if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
-        end;
+        end;*/
         if(currentcompany>2)then begin
         	ParseClassification(INr.DispGroups);
         end else begin
@@ -721,13 +747,14 @@ begin
               tstr = "";
               INr.Code = curartcode;
 							readfirstmain(INr,1,true);
-							prevgroup = INr.DispGroups;
+							tstr = GetDI(INr.DispGroups); //Edit***************************Sasha2,17:53 25.01.2016
+							/*prevgroup = INr.DispGroups;
 							gi=0;
 							ExtractObj(INr.DispGroups,gi,prevgroup);
               if(nonblank(prevgroup))then begin
                 DIr.Code = prevgroup;
                 if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
-              end;
+              end;*/
               OutString(150,0,tstr,false);
               OutString(185,0,totqty,false);
               OutVal(210,0,mcost/totqty,M4Val,false);
