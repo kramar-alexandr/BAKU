@@ -537,7 +537,9 @@ begin
 			OutString(150,0,USetStr(31016),false);
 			OutString(285,0,d1,false);
 			OutString(tab[8],0,USetStr(16681),false);
-			GetCurncyRateOnDate("AZN",d1,rate);
+			
+			GetCurncyRateOnDate(baseCurcny,d1,rate); //Edit----------------------Dima  28.01.2016
+			//GetCurncyRateOnDate("AZN",d1,rate);
 			//rate = 1;
 			OutString(410,0,rate,false);
 			

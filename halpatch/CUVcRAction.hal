@@ -1132,6 +1132,7 @@ BEGIN
   record BankFileBlock bfr;
   record CUUserLabelBlock CUUerLb;
   record TaxTemplateVc TTr;
+  record ObjVc Objr;
 
   BlockLoad(bfr);
   BlockLoad(CUUerLb);
@@ -1585,7 +1586,8 @@ BEGIN
         end;
       end;
     end;   
-  end;
+  end; 
+  
 LCUVcRecordCheck:;
   if (res!=0) then begin CUr.Code = oldnr; end;
   CUVcRecordCheck = res;

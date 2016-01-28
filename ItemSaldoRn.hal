@@ -5,6 +5,7 @@ external inner procedure CntPOSCurrencies(var Array string,var Array Boolean,var
 external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, 19 June 2013 13:43:37
 external inner function val AbsoluteVal(val);
 external procedure FindFIFOOrigValAndCurncyIV(longint, integer, var val, var string,var val,boolean);
+external procedure GetBaseCurncy(Integer,var string);//Edit----------------------Dima  28.01.2016
 
 
 
@@ -380,6 +381,7 @@ begin
   record PLVc PLr;
   val price;
   string 200 curgr,curgr1;
+  string 10 basecur;
   
   //SetLangMode(LangRussian,"RUS",0);
   
@@ -388,7 +390,9 @@ begin
   TrHs = true;
   INr.DispGroups = group;// Edit ************************** Tuesday, 30 October 2012 15:54:00
   reprownr = 0;
-  GetCurncyRateOnDate("AZN",CurrentDate,rate);
+//  GetCurncyRateOnDate("AZN",CurrentDate,rate);	//Edit----------------------Dima  28.01.2016
+	GetBaseCurncy(1,basecur);
+  GetCurncyRateOnDate(basecur,CurrentDate,rate);//Edit----------------------Dima  28.01.2016
   mark = 0;
   while (LoopKey("MyDispGroups",INr,1,TrHs)) begin// Edit ************************** Tuesday, 30 October 2012 15:53:4115:22 17.11.2015
     testf = true;

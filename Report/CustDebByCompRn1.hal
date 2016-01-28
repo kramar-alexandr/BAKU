@@ -15,7 +15,7 @@ begin
 	record IVVc IVr;
 	boolean TrHs,testf,findar;
 	record ARVc ARr;
-	string 5 basecur,azn;
+	string 5 basecur,curr;
 	Record SHVc SHr;
 	row SHVc SHrw;
 	record ORVc ORr;
@@ -37,12 +37,13 @@ begin
 
 
 	TrHs0 = true;
-	azn = "AZN";
+	//curr = "AZN";					//Edit----------------------Dima  28.01.2016
+	GetBaseCurncy(1,curr);	//Edit----------------------Dima  28.01.2016
 	if(currentcompany==10)THEN BEGIN
-		azn = "PLN";
+		curr = "PLN";
 	end;
 	if(currentcompany==11 or currentcompany==12)THEN BEGIN
-		azn = "IRR";
+		curr = "IRR";
 	end;
 
 	CUr.Code = RepSpec.f1;
@@ -89,7 +90,7 @@ begin
 		startformat(15);
 			outstring(0,0,USetStr(31259),false);
 			outstring(100,0,USetStr(31218),false);
-			outstring(200,0,USetStr(31260),false);
+			outstring(200,0,USetStr(31260) & " " & curr,false);
 		endformat;
 		
 		mtrw = matrowcnt(CBb);
@@ -105,8 +106,8 @@ begin
 			fr = 1;
 			to1 = 1;
 		  GetBaseCurncy(1,basecur);
-			if(basecur!=azn)then begin
-		    GetFullCurncyRate(azn,CurrentDate,fr,to1,to2,br1,br2);
+			if(basecur!=curr)then begin
+		    GetFullCurncyRate(curr,CurrentDate,fr,to1,to2,br1,br2);
 				if(fr==0 or to1==0)then begin
 					fr = 1;
 					to1 = 1;
