@@ -3040,3 +3040,18 @@ begin
 
   return;
 end; //Edit***************************Sasha2,14:41 21.01.2016 }
+
+global //Edit***************************Sasha2,11:15 29.01.2016 {
+updating procedure SetModelYDMn(record RcVc RepSpec)
+begin
+	record DIVc DIr;
+	
+	while(loopmain(DIr,1,true))begin
+		if (Blank(DIr.CType)) then begin
+		  DIr.CType = "MODEL";
+		  RECORDSTORE(DIr,true);
+		end;
+	end;
+	
+return;
+end; //Edit***************************Sasha2,11:15 29.01.2016 }

@@ -450,6 +450,7 @@ BEGIN
   record FormDefVc FDr;
   row FormDefVc FDrw;
   Integer labcnt;
+  record DocVc Docr;
 
   FDr.repname = Dummyr.repname;
   FDr.shortname = Dummyr.shortname;
@@ -458,10 +459,6 @@ BEGIN
     ClientRemoteAsync.Zebra_PrintingRec(RepSpec);
     goto LDoPULabForm;
   end; //Edit***************************Sasha2,13:53 07.08.2015 }
-  
-  if (CurrentCompany==8 and WindowsMode==1 and NonBlank(FDr.repname)) then begin
-    FDr.repname = FDr.repname & "_WIN"; //Edit***************************Sasha2,11:55 29.01.2016
-  end;
   
   if (ReadFirstMain(FDr,1,true)==false) then begin
     MessageBox(1624, " " & USetStr(1623));
@@ -482,6 +479,14 @@ BEGIN
     end;
 LBREAKPULab:;
     if (nonblank(formcode)) then begin
+      if (CurrentCompany==8 and WindowsMode==1) then begin
+        formcode = formcode & "_WIN"; //Edit***************************Sasha2,11:55 29.01.2016
+        Docr.Code = formcode;
+        if (ReadFirstMain(Docr,1,true)==false) then begin 
+          MessageBox(1624, " " & USetStr(1623));
+          goto LDoPULabForm;
+        end;
+      end;
       labcnt = 1;
       DoPULabFormPrint(RepSpec,formcode,FDrw.PrintGroupCode,labcnt);
     end else begin
