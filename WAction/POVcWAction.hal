@@ -2471,6 +2471,7 @@ BEGIN
         RepSpec.ArtMode = 6;
         RepSpec.repname = "PULabForm";
         RepSpec.JobDf = 1;
+        RepSpec.Custf = WindowsMode;
         OpenWindow("PULabMyRClass",1,wn,"","",RepSpec);
       case "StockMovVc":
         GetWindowRecord(wn,SMr);
@@ -2481,6 +2482,7 @@ BEGIN
         RepSpec.ArtMode = 0;
         RepSpec.repname = "SMLabForm";
         RepSpec.JobDf = 1;
+        RepSpec.Custf = WindowsMode;
         OpenWindow("PULabMyRClass",1,wn,"","",RepSpec);
     end;
   end;

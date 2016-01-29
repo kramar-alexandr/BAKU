@@ -444,7 +444,7 @@ global
 updating procedure DoPULabForm(record RcVc RepSpec,record RcVc Dummyr)
 BEGIN
   Integer i,rwcnt;  
-  Boolean printf;
+  Boolean printf,isWin;
   Integer intdocnr;
   string 30 formcode;
   record FormDefVc FDr;
@@ -459,6 +459,10 @@ BEGIN
     ClientRemoteAsync.Zebra_PrintingRec(RepSpec);
     goto LDoPULabForm;
   end; //Edit***************************Sasha2,13:53 07.08.2015 }
+  
+  if (RepSpec.Custf==1) then begin
+    isWin = true; //Edit***************************Sasha2,14:30 29.01.2016
+  end;
   
   if (ReadFirstMain(FDr,1,true)==false) then begin
     MessageBox(1624, " " & USetStr(1623));
@@ -479,7 +483,7 @@ BEGIN
     end;
 LBREAKPULab:;
     if (nonblank(formcode)) then begin
-      if (CurrentCompany==8 and WindowsMode==1) then begin
+      if (CurrentCompany==8 and isWin) then begin
         formcode = formcode & "_WIN"; //Edit***************************Sasha2,11:55 29.01.2016
         Docr.Code = formcode;
         if (ReadFirstMain(Docr,1,true)==false) then begin 
