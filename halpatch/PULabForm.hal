@@ -459,6 +459,10 @@ BEGIN
     goto LDoPULabForm;
   end; //Edit***************************Sasha2,13:53 07.08.2015 }
   
+  if (CurrentCompany==8 and WindowsMode==1 and NonBlank(FDr.repname)) then begin
+    FDr.repname = FDr.repname & "_WIN"; //Edit***************************Sasha2,11:55 29.01.2016
+  end;
+  
   if (ReadFirstMain(FDr,1,true)==false) then begin
     MessageBox(1624, " " & USetStr(1623));
     goto LDoPULabForm;
