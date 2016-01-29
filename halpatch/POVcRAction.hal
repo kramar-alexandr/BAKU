@@ -41,7 +41,7 @@ external function Boolean POVc_PasteArtCode(var record POVc,Integer,Boolean);// 
 external procedure POVc_PasteQuant(var record POVc,Integer);// Edit ************************** Friday, 31 August 2012 16:50:20
 external procedure POVc_PastePrice(var record POVc,Integer);// Edit ************************** Tuesday, 11 September 2012 17:22:00
 external function roundmode SetRoundModeD(Integer);
-remote updating procedure CheckAndCreateClassification(var string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
+remote updating procedure CheckAndCreateClassification(var string,string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
 external function LongInt TimeDiffInSeconds(Time,Time);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Friday, 27 March 2015 10:53:32
 
@@ -1844,7 +1844,10 @@ begin
 						for(k=0;k<lenth;k=k+1) begin
 							if(mid(fullclass,k,1)==",")then begin
 								tclass = mid(fullclass,0,k);
-								CheckAndCreateClassification(tclass);
+								switch (currentcompany) begin //Edit***************************Sasha2,16:02 29.01.2016 {
+    							case 8:CheckAndCreateClassification(tclass,"BRAND");
+                  otherwise CheckAndCreateClassification(tclass,"");
+    						end; //Edit***************************Sasha2,16:02 29.01.2016 }
 								findclass = true;
 								DIr.Code = tclass;
 								if(readfirstmain(DIr,1,findclass)) begin
@@ -1868,7 +1871,10 @@ begin
 							end;
 						end;
 						tclass = fullclass;
-						CheckAndCreateClassification(tclass);
+						switch (currentcompany) begin //Edit***************************Sasha2,16:02 29.01.2016 {
+							case 8:CheckAndCreateClassification(tclass,"MODEL");
+              otherwise CheckAndCreateClassification(tclass,"");
+						end; //Edit***************************Sasha2,16:02 29.01.2016 }
 						findclass = true;
 						DIr.Code = tclass;
 						if(readfirstmain(DIr,1,findclass)) begin

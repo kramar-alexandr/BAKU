@@ -1,5 +1,5 @@
 external function LongInt nINVcRecordCheck(var record INVc,record INVc,LongInt,LongInt,integer);
-remote updating procedure CheckAndCreateClassification(var string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
+remote updating procedure CheckAndCreateClassification(var string,string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
 
 external procedure ExtractObj(string,var Integer,var string);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
@@ -862,7 +862,7 @@ BEGIN
   			newINrw.DispGroups = "";
   			ExtractObj(rawclass,pos,uloc);
   			while(nonblank(uloc)) begin
-  				CheckAndCreateClassification(uloc);
+  				CheckAndCreateClassification(uloc,"");
   				DIr.Code = uloc;
   				if(readfirstmain(DIr,1,true))then begin
   					newINrw.DispGroups = newINrw.DispGroups & DIr.Code & ",";

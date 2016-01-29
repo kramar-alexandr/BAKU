@@ -1523,7 +1523,7 @@ begin
 end;
 
 
-global updating procedure CheckAndCreateClassification(var string classname)
+global updating procedure CheckAndCreateClassification(var string classname,string type)
 begin
 boolean res;
 record DIVc DIr;
@@ -1578,6 +1578,9 @@ L1:;
       recordnew(DIr);
       DIr.Code = i;
       DIr.Name = classname;
+      if (NonBlank(type)) then begin
+        DIr.CType = type;
+      end;
       recordStore(DIr,true);
     end;
   end;
