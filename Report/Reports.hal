@@ -670,12 +670,8 @@ begin
         		  end;
         		  ExtractObj(INr.DispGroups,pos,class);
         		end;
-        		if (NonBlank(brand)) then begin
-        		  outstring(200,0,brand,false);
-        		end;
-        		if (NonBlank(type)) then begin
-        		  outstring(250,0,type,false);
-        		end;
+        		outstring(200,0,brand,false);
+        		outstring(250,0,type,false);
 						
 						/*pos = 0;
 						ExtractObj(INr.DispGroups,pos,class);

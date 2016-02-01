@@ -155,12 +155,8 @@ CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
       		  end;
       		  ExtractObj(INr.DispGroups,cnt,class);
       		end;
-      		if (NonBlank(brand)) then begin
-      		  outstring(250,0,brand,false);
-      		end;
-      		if (NonBlank(type)) then begin
-      		  outstring(250,0,type,false);
-      		end;
+      		outstring(250,0,brand,false);
+      		outstring(250,0,type,false);
 					
 					/*ExtractObj(INr.DispGroups,cnt,class);
 					if(nonblank(class))then begin

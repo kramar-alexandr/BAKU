@@ -239,12 +239,8 @@ BEGIN
       										  end;
       										  ExtractObj(INr.DispGroups,pos,classification);
       										end;
-      										if (NonBlank(brand)) then begin
-                      		  outstring(280,0,brand,false);
-                      		end;
-                      		if (NonBlank(type)) then begin
-                      		  outstring(320,0,type,false);
-                      		end;
+                      		outstring(280,0,brand,false);
+                      		outstring(320,0,type,false);
 
 													/*ExtractObj(INr.DispGroups,pos,classification);
 													DIr.Code = classification;

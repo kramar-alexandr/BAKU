@@ -450,12 +450,8 @@ begin
 		  end;
 		  ExtractObj(INr.DispGroups,pos,uloc);
 		end;
-		if (NonBlank(brand)) then begin
-		  outstring(0,0,brand,false);
-		end;
-		if (NonBlank(model)) then begin
-		  outstring(0,0,model,false);
-		end;
+		outstring(0,0,brand,false);
+		outstring(0,0,model,false);
 		
 		/*ExtractObj(INr.DispGroups,pos,uloc);
 		if(currentcompany==9)then begin
