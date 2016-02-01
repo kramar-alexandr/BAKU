@@ -3113,7 +3113,7 @@ begin
     
     minval = 0;
     
-    /*FBr.SerNr = -1;
+    FBr.SerNr = -1;
     while (LoopMain(FBr,1,true)) begin
       testf = true;
       monthyear = GetMonth(FBr.TransDate) & "_" & GetYear(FBr.TransDate);
@@ -3146,7 +3146,7 @@ begin
           end;
         end;
       end;
-    end;*/
+    end;
     
     TrHs = true;
     mindate = StringToDate("1/02/2016");
@@ -3182,7 +3182,7 @@ begin
           if (tosavef) then begin
             TRSumup(TRr,t);
             t = TRr.DSum - AbsoluteVal(TRr.CSum);
-            if (t!=0) then begin LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number);
+            if (t!=0) then begin //LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number);
               ClearRow(TRr,TRrw,1);
               TRrw.AccNumber = "84/02";
               MatRowInsert(TRr,rwcnt,TRrw);
