@@ -23,7 +23,11 @@ external procedure NextM4Number(string,var string); //Edit**********************
 external function string 255 StrReplace(string,string,string);//Edit-------------------Vitalii 17:06 08.09.2015
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,14:00 16.12.2015
 external function string 20 ReturnFieldDIType(string,boolean); //Edit***************************Sasha2,14:56 16.12.2015
-
+external procedure FBSumup(var record FBVc); //Edit***************************Sasha2,17:40 29.01.2016
+external function roundmode SetRoundModeD(Integer); //Edit***************************Sasha2,10:49 01.02.2016
+external procedure TRSumup(var record TRVc,var val); //Edit***************************Sasha2,11:29 01.02.2016
+external function val AbsoluteVal(val); //Edit***************************Sasha2,13:04 01.02.2016
+external function Boolean TRVc_PasteAccNumber(var record TRVc,Integer,Integer,Boolean); //Edit***************************Sasha2,17:32 01.02.2016
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -3053,5 +3057,150 @@ begin
 		end;
 	end;
 	
+return;
+end; //Edit***************************Sasha2,11:15 29.01.2016 }
+
+global //Edit***************************Sasha2,11:15 29.01.2016 {
+updating procedure RecalcFBFToCurMn()
+begin
+  record FBVc FBr;
+  row FBVc FBrw;
+  record TRVc TRr;
+  row TRVc TRrw;
+  vector val rates;
+  string 7 monthyear;
+  Boolean testf,tosavef,TrHs;
+  integer rwcnt,i;
+  val minval,t;
+  date mindate;
+    
+    rates["1_2014"] = 0.7841;
+    rates["2_2014"] = 0.7841;
+    rates["3_2014"] = 0.7841;
+    rates["4_2014"] = 0.7841;
+    rates["5_2014"] = 0.7841;
+    rates["6_2014"] = 0.7841;
+    rates["7_2014"] = 0.7841;
+    rates["8_2014"] = 0.7841;
+    rates["9_2014"] = 0.7841;
+    rates["10_2014"] = 0.7841;
+    rates["11_2014"] = 0.7841;
+    rates["12_2014"] = 0.7841;
+    rates["1_2015"] = 0.7865;
+    rates["2_2015"] = 0.867;
+    rates["3_2015"] = 1.055;
+    rates["4_2015"] = 1.059;
+    rates["5_2015"] = 1.05;
+    rates["6_2015"] = 1.05;
+    rates["7_2015"] = 1.051;
+    rates["8_2015"] = 1.053;
+    rates["9_2015"] = 1.051;
+    rates["10_2015"] = 1.05;
+    rates["11_2015"] = 1.053;
+    rates["12_2015"] = 1.292;
+    //rates["1_2016"] = 1;
+    /*rates["2_2016"] = 1;
+    rates["3_2016"] = 1;
+    rates["4_2016"] = 1;
+    rates["5_2016"] = 1;
+    rates["6_2016"] = 1;
+    rates["7_2016"] = 1;
+    rates["8_2016"] = 1;
+    rates["9_2016"] = 1;
+    rates["10_2016"] = 1;
+    rates["11_2016"] = 1;
+    rates["12_2016"] = 1;*/
+    
+    minval = 0;
+    
+    /*FBr.SerNr = -1;
+    while (LoopMain(FBr,1,true)) begin
+      testf = true;
+      monthyear = GetMonth(FBr.TransDate) & "_" & GetYear(FBr.TransDate);
+      if (rates[monthyear]==0) then begin testf = false; end;
+      if (testf) then begin
+        rwcnt = MatRowCnt(FBr);
+        if (rwcnt>0) then begin
+          tosavef = false;
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(FBr,i,FBrw);
+            if (AbsoluteVal(FBrw.DebVal)>minval) then begin
+              tosavef = true;
+              FBrw.DebVal = Round(FBrw.DebVal/rates[monthyear],SetRoundModeD(2));
+              if (AbsoluteVal(FBrw.Deb2Val)>minval) then begin
+                FBrw.Deb2Val = Round(FBrw.Deb2Val/rates[monthyear],SetRoundModeD(2));
+              end;
+            end;
+            if (AbsoluteVal(FBrw.CredVal)>minval) then begin
+              tosavef = true;
+              FBrw.CredVal = Round(FBrw.CredVal/rates[monthyear],SetRoundModeD(2));
+              if (AbsoluteVal(FBrw.Cred2Val)>minval) then begin
+                FBrw.Cred2Val = Round(FBrw.Cred2Val/rates[monthyear],SetRoundModeD(2));
+              end;
+            end;
+            MatRowPut(FBr,i,FBrw);
+          end;
+          if (tosavef) then begin
+            FBSumup(FBr);
+            RECORDSTORE(FBr,true);
+          end;
+        end;
+      end;
+    end;*/
+    
+    TrHs = true;
+    mindate = StringToDate("1/02/2016");
+    //TRr.TransDate = mindate;
+    //TRr.Number = -1;
+    while (LoopKey("TransDate",TRr,1,TrHs)) begin
+      testf = true;
+      monthyear = GetMonth(TRr.TransDate) & "_" & GetYear(TRr.TransDate);
+      if (rates[monthyear]==0) then begin testf = false; end;
+      if (TRr.TransDate>=mindate) then begin testf = false; TrHs = false; end; //LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number & " ,testf:" & testf);
+      if (testf) then begin
+        rwcnt = MatRowCnt(TRr);
+        if (rwcnt>0) then begin
+          tosavef = false;
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(TRr,i,TRrw);
+            if (TRrw.stp==1) then begin
+              if (AbsoluteVal(TRrw.DebVal)>minval) then begin
+                tosavef = true;
+                TRrw.DebVal = Round(TRrw.DebVal/rates[monthyear],SetRoundModeD(2));
+                TRrw.FrRate = 1;
+                TRrw.ToRateB1 = TRrw.DebVal/TRrw.CurDebVal;
+              end;
+              if (AbsoluteVal(TRrw.CredVal)>minval) then begin
+                tosavef = true;
+                TRrw.CredVal = Round(TRrw.CredVal/rates[monthyear],SetRoundModeD(2));
+                TRrw.FrRate = 1;
+                TRrw.ToRateB1 = TRrw.CredVal/TRrw.CurCredVal;
+              end;
+              MatRowPut(TRr,i,TRrw);
+            end;
+          end;
+          if (tosavef) then begin
+            TRSumup(TRr,t);
+            t = TRr.DSum - AbsoluteVal(TRr.CSum);
+            if (t!=0) then begin LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number);
+              ClearRow(TRr,TRrw,1);
+              TRrw.AccNumber = "84/02";
+              MatRowInsert(TRr,rwcnt,TRrw);
+              TRVc_PasteAccNumber(TRr,1,rwcnt,true);
+              MatRowGet(TRr,rwcnt,TRrw);
+              if (t>0) then begin
+                TRrw.CredVal = t;
+              end else begin
+                TRrw.DebVal = AbsoluteVal(t);
+              end;
+              MatRowPut(TRr,rwcnt,TRrw);
+              TRSumup(TRr,t);
+            end;
+            RECORDSTORE(TRr,true);
+          end;
+        end;
+      end;
+    end;
+
 return;
 end; //Edit***************************Sasha2,11:15 29.01.2016 }

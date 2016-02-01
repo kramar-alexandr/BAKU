@@ -95,9 +95,9 @@ begin
 	Maintenance("Заменить одну классификацию на другую",RenameCertainDIVClass,RenameCertainDIMn,modIN);// Edit ************************** Thursday, 28 May 2015 11:25:21
 	
 	Maintenance("Перенос начального сальдо по объектам",ObjInitBalVClass,ObjInitBalMn,modNL);//Edit-------------------Vitalii 16:57 21.12.2015
-	if (currentcompany==8) then begin
-	  Maintenance("Проставить MODEL в класс-циях",FIXVClass,SetModelYDMn,modDBMain); //Edit***************************Sasha2,11:18 29.01.2016
-	end;
+	Maintenance("Проставить MODEL в класс-циях",FIXVClass,SetModelYDMn,modDBMain); //Edit***************************Sasha2,11:18 29.01.2016
+
+	Maintenance("Пересчитать проводки и нач.балансы по курсам",FIXVClass,RecalcFBFToCurMn,modNL); //Edit***************************Sasha2,11:03 01.02.2016
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
