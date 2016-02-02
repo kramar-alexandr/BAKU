@@ -33,6 +33,8 @@ begin
 	//Edit-------------------Vitalii 14:19 25.12.2015
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
+	logtext(0,"webcust/" & Comprw.ShortName & "/" & imname & ".jpg");
+	logtext(0,"webcust/" & Comprw.ShortName & "/" & imname & ".png");
 	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".jpg")) then begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".jpg","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".jpg");
@@ -48,6 +50,7 @@ begin
 		filename = Comprw.ShortName & "/" & imname & ".png";
 	end;
 	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+	logtext(0,"<img src=\"" & filename & "\" height=\"400\"/></div></td>");
   /*switch(curcomp)begin
   	case 1: if(fileexists("webcust/SWAROVSKI/" & imname & ".jpg"))then begin
 							filename = "SWAROVSKI/" & imname & ".jpg";
