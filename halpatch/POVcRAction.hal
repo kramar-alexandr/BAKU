@@ -41,7 +41,7 @@ external function Boolean POVc_PasteArtCode(var record POVc,Integer,Boolean);// 
 external procedure POVc_PasteQuant(var record POVc,Integer);// Edit ************************** Friday, 31 August 2012 16:50:20
 external procedure POVc_PastePrice(var record POVc,Integer);// Edit ************************** Tuesday, 11 September 2012 17:22:00
 external function roundmode SetRoundModeD(Integer);
-remote updating procedure CheckAndCreateClassification(var string,string);// Edit ************************** Wednesday, 14 August 2013 10:30:58
+remote updating procedure CheckAndCreateClassification(var string,string,boolean);// Edit ************************** Wednesday, 14 August 2013 10:30:58
 external function LongInt TimeDiffInSeconds(Time,Time);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Friday, 27 March 2015 10:53:32
 
@@ -1551,8 +1551,8 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  integer lenth,k;
-  string 100 tclass,fullclass;
+  integer lenth,lenth2,k;
+  string 100 tclass,tclass2,fullclass;
   boolean findclass;
   val fr,to1,to2,br1,br2;
   
@@ -1837,61 +1837,73 @@ begin
           found = ReadFirstItem(POrw.ArtCode,INr,true,false);
           
           if(currentcompany!=13)then begin
-						fullclass = POrw.xClassification;
-						fullclass = uppercase(fullclass);
+						fullclass = uppercase(POrw.xClassification);
 						POrw.xClassification = "";
-						lenth = len(fullclass);
-						for(k=0;k<lenth;k=k+1) begin
-							if(mid(fullclass,k,1)==",")then begin
-								tclass = mid(fullclass,0,k);
-								switch (currentcompany) begin //Edit***************************Sasha2,16:02 29.01.2016 {
-    							case 8:CheckAndCreateClassification(tclass,"BRAND");
-                  otherwise CheckAndCreateClassification(tclass,"");
-    						end; //Edit***************************Sasha2,16:02 29.01.2016 }
-								findclass = true;
-								DIr.Code = tclass;
-								if(readfirstmain(DIr,1,findclass)) begin
-									if(DIr.Code==tclass and findclass)then begin
-										POrw.xClassification = POrw.xClassification & DIr.Code & ",";
-										findclass = false;
-									end;
-								end;
-								if(findclass)then begin
-									DIr.Name = tclass;
-									if(readfirstkey("Name",DIr,1,findclass))then begin
-										if(uppercase(DIr.Name)==tclass and findclass)then begin
-											POrw.xClassification = POrw.xClassification & DIr.Code & ",";
-											findclass = false;
-										end;
-									end;
-								end;
-								fullclass = mid(fullclass,k+1,lenth-k-1);
-								k=0;
-								lenth = len(fullclass);
-							end;
-						end;
-						tclass = fullclass;
-						switch (currentcompany) begin //Edit***************************Sasha2,16:02 29.01.2016 {
-							case 8:CheckAndCreateClassification(tclass,"MODEL");
-              otherwise CheckAndCreateClassification(tclass,"");
-						end; //Edit***************************Sasha2,16:02 29.01.2016 }
-						findclass = true;
-						DIr.Code = tclass;
-						if(readfirstmain(DIr,1,findclass)) begin
-							if(DIr.Code==tclass and findclass)then begin
-								POrw.xClassification = POrw.xClassification & DIr.Code & ",";
-								findclass = false;
-							end;
-						end;
-						if(findclass)then begin
-							DIr.Name = tclass;
-							if(readfirstkey("Name",DIr,1,findclass))then begin
-								if(uppercase(DIr.Name)==tclass and findclass)then begin
+						
+						lenth = 0; //Edit***************************Sasha2,16:02 29.01.2016 {
+						k = 0;
+						ExtractObj(fullclass,lenth,tclass);
+						while (nonblank(tclass)) begin
+						  lenth2 = lenth;
+						  ExtractObj(fullclass,lenth2,tclass2);
+						  if (nonblank(tclass2)) then begin
+						    if (k==0) then begin
+  							  switch (currentcompany) begin 
+      							case 1:CheckAndCreateClassification(tclass,"MODEL",false);
+      							case 2:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 4:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 5:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 6:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 7:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 8:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 11:CheckAndCreateClassification(tclass,"MODEL",false);
+      							case 12:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 14:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 15:CheckAndCreateClassification(tclass,"BRAND",true);
+      							case 16:CheckAndCreateClassification(tclass,"BRAND",true);
+                    otherwise CheckAndCreateClassification(tclass,"",false);
+      						end;
+      				  end else begin
+      				     CheckAndCreateClassification(tclass,"",false);
+  							end;
+						  end else begin
+  						  switch (currentcompany) begin 
+    							case 1:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 2:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 4:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 5:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 6:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 7:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 8:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 11:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 12:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 14:CheckAndCreateClassification(tclass,"MODEL",false);
+    							case 15:CheckAndCreateClassification(tclass,"BRAND",true);
+    							case 16:CheckAndCreateClassification(tclass,"MODEL",false);
+                  otherwise CheckAndCreateClassification(tclass,"",false);
+    						end;
+						  end;
+							findclass = true;
+							DIr.Code = tclass;
+							if(readfirstmain(DIr,1,findclass)) begin
+								if(DIr.Code==tclass and findclass)then begin
 									POrw.xClassification = POrw.xClassification & DIr.Code & ",";
 									findclass = false;
 								end;
 							end;
-						end;
+							if(findclass)then begin
+								DIr.Name = tclass;
+								if(readfirstkey("Name",DIr,1,findclass))then begin
+									if(uppercase(DIr.Name)==tclass and findclass)then begin
+										POrw.xClassification = POrw.xClassification & DIr.Code & ",";
+										findclass = false;
+									end;
+								end;
+							end;
+							k = k + 1;
+							ExtractObj(fullclass,lenth,tclass);
+						end; //Edit***************************Sasha2,16:02 29.01.2016 }
+
 						lenth = len(POrw.xClassification);
 						if(mid(POrw.xClassification,lenth-1,1)==",")then begin
 							POrw.xClassification = mid(POrw.xClassification,0,lenth-1);

@@ -1522,16 +1522,43 @@ begin
   return;
 end;
 
+//Edit***************************Sasha2,12:12 18.12.2015 {
+function string 10 PrepareDICode(string indisp)
+begin
+  string 10 res,newdisp;
+  integer i,lenth;
+  string 1 c;
+  
+    res = "";
+    newdisp = left(indisp,10);
+    lenth = len(newdisp); 
+    if (lenth>0) then begin
+      for (i=0;i<lenth;i=i+1) begin
+        c= Mid(newdisp,i,1);
+        if (c==" " or c=="." or c==",") then begin
+          res = res & "_";
+        end else begin
+          res = res & c;
+        end;
+      end;
+      res = UpperCase(res);
+    end;
+    
+  PrepareDICode = res;
+  return;
+end; //Edit***************************Sasha2,12:12 18.12.2015 }
 
-global updating procedure CheckAndCreateClassification(var string classname,string type)
+
+global updating procedure CheckAndCreateClassification(var string classname,string type,Boolean makelettercode)
 begin
 boolean res;
 record DIVc DIr;
 string 200 newclassname,c;
-integer i,lenth,zercnt;
-boolean testf;
+integer i,lenth,zercnt,j;
+boolean testf,TrHs;
+string 10 newdisp;
 
-res = false;
+  res = false;
   
   lenth = len(classname);
   testf = true;
@@ -1561,22 +1588,39 @@ res = false;
         res = true;
       end;
     end;
-    DIr.Code = classname;
-    if(readfirstmain(DIr,1,true))then begin
-      If(DIr.Code==classname)then begin
-        res = true;
+    if (res==false) then begin
+      DIr.Code = classname;
+      if(readfirstmain(DIr,1,true))then begin
+        If(DIr.Code==classname)then begin
+          res = true;
+        end;
       end;
     end;
     if(res==false)then begin
-      i=CountRecords("DIVc");
-L1:;
-      DIr.Code = i;
-      if(readfirstmain(DIr,1,true))then begin
-      	i=i+1;
-      	goto L1;
+      if (makelettercode) then begin
+        j = 0;
+        newdisp = PrepareDICode(classname);
+        DIr.Code = newdisp;
+        TrHs = ReadfirstMain(DIr,1,true);
+        while (TrHs) begin
+          j = j + 1;
+          newdisp = left(newdisp,len(newdisp) - len(j)) & j;
+          DIr.Code = newdisp;
+          TrHs = ReadfirstMain(DIr,1,true);
+        end;
+      end else begin
+        i=CountRecords("DIVc");
+      L1:;
+        DIr.Code = i;
+        if(readfirstmain(DIr,1,true))then begin
+        	i=i+1;
+        	goto L1;
+        end;
+        newdisp = i;
       end;
+
       recordnew(DIr);
-      DIr.Code = i;
+      DIr.Code = newdisp;
       DIr.Name = classname;
       if (NonBlank(type)) then begin
         DIr.CType = type;
