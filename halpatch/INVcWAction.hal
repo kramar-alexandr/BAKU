@@ -44,7 +44,7 @@ begin
         case "DiamondsCarat": res = "D_CARAT"; //"D_CARAT"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "SolidStones05": res = "CENT_ST"; //"CENT_ST"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "PrecAndSemiPrec": res = "PRECIOUS";
-        case "RingSizes": res = "R_SIZE";
+        case "RingSizes": res = "R_SIZE"; //"R_SIZE"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "Carat": res = "CARAT"; //"Carat"  is a switch case in DIsWithTypeExistsOrCreateSpecific function!!!
         case "ClaritySC": res = "CLARITY";
         case "Color": res = "C_S";

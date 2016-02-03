@@ -147,8 +147,11 @@ begin
               case "CENT_ST": //supposed to be digital
                 suffix = "CST";
                 testf = true;
-              case "Carat": //supposed to be digital
+              case "CARAT": //supposed to be digital
                 suffix = "CRT";
+                testf = true;
+              case "R_SIZE": //supposed to be digital
+                suffix = "RS";
                 testf = true;
               otherwise
                 res = false;
