@@ -1,5 +1,14 @@
 external function val AbsoluteVal(val);
 
+/*
+*	All "UnOk" works by the same mechanism:
+*CheckUnOkXXXXVc : checks existance of all records in ItemHistVc,checks remaining quantity (FIFO queue must be correct)
+*
+*UnOk_XXXXVc: removes all items' history records (IHr) for selected document
+*							item's quantity returns to the source record (IH2r), if it exists
+*							restores all costs
+*							restores all serial numbers,reservs, etc.
+*/
 
 
 
@@ -137,6 +146,7 @@ begin
   						if (ReadFirstMain(IH2r,1,true)) then begin
   							IH2r.RemQty = IH2r.RemQty + (-IHr.Qty);  //this IHr has negative Qty
 			  				IH2r.RemCostPrice = IH2r.TotCostPrice/IH2r.Qty*IH2r.RemQty;
+			  				IH2r.RemCostPriceCurncy = IH2r.TotCostPriceCurncy/IH2r.Qty*IH2r.RemQty;
   							RecordStore(IH2r,true);
 			  				ReturnSerialNrRecord(IH2r);
 			  				RemoveSerialNrRecord(IHr);
@@ -144,7 +154,7 @@ begin
 						end;
 						
 						  	
-						LogText(0,"DELETED  " & IHr.SerNr & "    : " & IHr.ArtCode);
+						LogText(0,"DELETED  history IVVc" & IHr.SerNr & "    : " & IHr.ArtCode);
 						// if (IVrw.Quant<0 or IVr.InvType==kInvoiceTypeCredit)	then  -  just remove
 							
 					end;
@@ -237,7 +247,7 @@ begin
   							
 					RecordDelete(IHr);
 					StepBack(IHr);
-					LogText(0,"DELETED  " & IHr.ArtCode);
+					LogText(0,"DELETED history PUvc " & IHr.ArtCode);
 			end; 
   	end;
   	
@@ -298,9 +308,10 @@ begin
   			if (ReadFirstMain(IH2r,1,true)) then begin
   				IH2r.RemQty = IH2r.RemQty - IHr.Qty;
   				IH2r.RemCostPrice = IH2r.TotCostPrice/IH2r.Qty*IH2r.RemQty;  
+  				IH2r.RemCostPriceCurncy = IH2r.TotCostPriceCurncy/IH2r.Qty*IH2r.RemQty;
   				if (RecordStore(IH2r,true)) then begin
 						//statuses and serial numbers are put back by themselves
-						LogText(0,"DELETED  " & IHr.ArtCode);
+						LogText(0,"DELETED history  RetPU " & IHr.ArtCode);
 						RecordDelete(IHr);
 						StepBack(IHr);
 					end; 
