@@ -75,7 +75,7 @@ begin
       goto LDIsWithTypeExistsOrCreateSpecific;
     end;
     
-    lenth = len(indisps); //deleting of control symbols
+    lenth = len(indisps); //deleting control symbols
     if (lenth>0) then begin
       for (i=0;i<lenth;i=i+1) begin
         c= Mid(indisps,i,1);
