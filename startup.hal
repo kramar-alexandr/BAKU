@@ -98,6 +98,7 @@ begin
 	Maintenance("Проставить MODEL в класс-циях",FIXVClass,SetModelYDMn,modDBMain); //Edit***************************Sasha2,11:18 29.01.2016
 
 	Maintenance("Пересчитать проводки и нач.балансы по курсам",FIXVClass,RecalcFBFToCurMn,modNL); //Edit***************************Sasha2,11:03 01.02.2016
+	Maintenance("Fix ItemHistory cost",FIXVClass,FixItemHistoryMn,modDBMain);		//Edit----------------------Dima  04.02.2016
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);

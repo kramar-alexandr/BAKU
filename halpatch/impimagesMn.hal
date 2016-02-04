@@ -3204,3 +3204,37 @@ begin
 
 return;
 end; //Edit***************************Sasha2,11:15 29.01.2016 }
+
+
+
+global updating procedure FixItemHistoryMn()		//Edit----------------------Dima  04.02.2016
+begin
+	record ItemHistVc  IHr;
+	record CompaniesBlock CBb;
+	row CompaniesBlock CBrw;	
+	integer cnt,mtrw,i;
+	cnt=0;
+
+	blockload(CBb);
+	mtrw = matrowcnt(CBb);
+	For(i=0;i<mtrw;i=i+1) begin
+	  if (SetCompany(i+1,false)) then begin
+	  
+			LogText(0,"Company " & i);
+			while(LoopMain(IHr,1,true)) begin
+				if ((IHr.RemCostPriceCurncy - IHr.TotCostPriceCurncy/IHr.Qty*IHr.RemQty) < -0.001 or (IHr.RemCostPriceCurncy - IHr.TotCostPriceCurncy/IHr.Qty*IHr.RemQty) > 0.001) then begin
+  		
+					//IHr.RemCostPrice = IHr.TotCostPrice/IHr.Qty*IHr.RemQty;
+					IHr.RemCostPriceCurncy = IHr.TotCostPriceCurncy/IHr.Qty*IHr.RemQty;
+					RecordStore(IHr,true);
+					cnt = cnt + 1;
+					LogText(0,"ItemHistvc fixed  " & IHr.SerNr);
+				end;	  				
+			end;
+			ResetLoop(IHr);
+		ResetCompany(i+1);  
+  	end;
+	end; 	
+	LogText(0,cnt & " records were restored");
+end;
+
