@@ -1093,6 +1093,7 @@ BEGIN
   string 5 tstr;
   Integer ValForm;
   Boolean prntdf,skipf;
+  val rate;
 
   if (printf==false) then begin
     goto LAGrSumLine;
@@ -1101,6 +1102,12 @@ BEGIN
   if (usedf) then begin
     skipf = false;
   end;
+  
+  rate = 1;
+  if (nonblank(RepSpec.vals3)) then begin
+		rate = RepSpec.vals3;
+	end;
+  
   switch (RepSpec.AccSpec) begin
     case 4:
 //      if (Sp3!=0) then begin
@@ -1143,12 +1150,12 @@ BEGIN
   if (RepSpec.Notation==4) then begin
     ValForm = M40Val;
   end;  
-  s1 = Sp1;
-  s2 = Sp2;
-  s3 = Sp3;
-  s4 = Sp4;
-  s5 = Sp5;
-  s6 = Sp6;
+  s1 = Sp1/rate;	//Edit----------------------Dima  04.02.2016
+  s2 = Sp2/rate;
+  s3 = Sp3/rate;
+  s4 = Sp4/rate;
+  s5 = Sp5/rate;
+  s6 = Sp6/rate;	//Edit----------------------Dima  04.02.2016
   if (negf) then begin
     s1 = -s1;
     s2 = -s2;

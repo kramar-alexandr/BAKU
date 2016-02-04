@@ -6909,6 +6909,7 @@ begin
   if (HasObjects) then begin
   EditFieldTL(h,v+=20,150,"Искл. объект",M4UStr,Normal,60,f6,false,ObjSClass);
   end;
+  EditFieldTL(345,v+=25,70,"Отображать отчет по курсу",M4Val,Normal,0,vals3,false,0);	//Edit----------------------Dima  04.02.2016
   EditFieldTL(345,6,120,"Заголовок",M4Str,Normal,60 ,f1,false,0);
   ButtonFrame(h=30,vm=(v+=41),123,5,"Счета");
   RadioButton(h,v,0,0,"все",AccSpec);
