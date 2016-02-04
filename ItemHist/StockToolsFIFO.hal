@@ -1638,7 +1638,7 @@ begin
   row PUVc PUrw;// Edit ************************** Monday, 12 May 2014 10:02:38
   record IVVc IVr;
   row IVVc IVrw;
-  val totcostpricecurncy,remcostpricecurncy;// Edit ************************** Monday, 12 May 2014 10:15:03
+  val totcostpricecurncy;// Edit ************************** Monday, 12 May 2014 10:15:03
   string 5 curncy;// Edit ************************** Monday, 12 May 2014 10:15:03
   record ItemHistVc sourceIHr;// Edit ************************** Thursday, 15 May 2014 11:40:48
 	record BaseCurBlock BCb;// Edit ************************** Thursday, 15 May 2014 11:40:51
@@ -1772,7 +1772,7 @@ begin
 										  end;
 										end else begin
 										  totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
-										end; //Edit***************************Sasha2,15:45 03.07.2015 }
+										end; 
 										infile = filename;
 										indate = IHr.TransDate;
   								end;
