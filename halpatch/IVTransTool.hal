@@ -1491,7 +1491,8 @@ L22AddIVCostRow:;
                   lobjstr = AddObjectToObjectList(lobjstr,locobjstr);
                   if (CheckTTRPerRow("IVVc",rowstockacc,lobjstr,ldc2,taccnumber,0)) then begin end;
                   if(IVrw.Quant<0)then begin// Edit ************************** Tuesday, 25 November 2014 14:37:52
-										t1 = -t1;// Edit ************************** Tuesday, 25 November 2014 14:37:52
+										t1 = -t1;
+										t1_curr = -t1_curr;
 									end;// Edit ************************** Tuesday, 25 November 2014 14:37:53
 /*--------------*///AddEuroTrRowType(gTRp,rowstockacc,lobjstr,"",tstr,t1,baserate1,lbaserate2,laccf,ldc2,TotSum,negamf,taccnumber,"","",kTransactionRowTypeStock); //Edit***************************Sasha2,12:15 17.03.2015
                   AddEuroCurncyNomTrRow(gTRp,rowstockacc,lobjstr,"",tstr,t1,laccf,ldc2,TotSum,currstr,histfrrate,1,-1,baserate1,lbaserate2,t1_curr,-1,-1,-1,negamf,taccnumber,"","",kTransactionRowTypeStock); //Edit***************************Sasha2,12:15 17.03.2015

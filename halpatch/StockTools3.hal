@@ -1374,17 +1374,109 @@ BEGIN
   IVrw.FIFO = absoluteval(IVrw.FIFORowVal/IVrw.Quant);// Edit ************************** Monday, 8 July 2013 10:34:32
   
   
-  
-  
 LCalculateIVRowFIFO:;  
   RETURN;
 END;
+
+procedure LookForCurFIFOifIVQuantIsNegative(record INVc INr,record IVVc IVr,row IVVc IVrw,integer rownr,var record IVVc fifocurIVr) //Edit***************************Sasha2,15:06 04.02.2016 {
+BEGIN
+  record ItemHistVc oldIHr;
+  row IVVc fifocurIVrw;
+  val totcostpricecurncy,qty1;
+  boolean TrHs,testf;
+  string 5 curncy;
+  
+      If(IVr.Invalid>0)then begin
+  			oldIHr.FileName = "IVVc";
+  			oldIHr.TransNr = IVr.SerNr;
+  			oldIHr.Row = rownr;
+  			Readlastkey("FNTransNr",oldIHr,3,true);
+  			curncy = oldIHr.CurncyCode;
+  			totcostpricecurncy = oldIHr.TotCostPriceCurncy;
+  		end else begin
+  			//curncy = INr.LastPurchCurncyCode;
+  			if (IVrw.Quant<0) then begin
+  			  oldIHr.ArtCode = IVrw.ArtCode;
+  			  oldIHr.FileName = "IVVc";
+  			  qty1 = IVrw.Quant;
+  			  ResetLoop(oldIHr);
+  			  TrHs = true;
+  			  while (LoopBackKey("FNArtCode",oldIHr,2,TrHs)) begin
+            if (oldIHr.ArtCode<>IVrw.ArtCode) then begin TrHs = false; end;
+            if (qty1>=0) then begin TrHs = false; end;
+            if (TrHs) then begin
+              testf = true;
+              if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
+              if (oldIHr.Location<>IVr.Location) then begin testf = false; end;
+              if (oldIHr.TransNr>IVr.SerNr) then begin testf = false; end;
+              if (testf) then begin
+                if (Blank(curncy)) then begin
+                  if (NonBlank(oldIHr.CurncyCode)) then begin
+                    curncy = oldIHr.CurncyCode;
+                  end else begin
+                    curncy = INr.LastPurchCurncyCode;
+                  end;
+                end; 
+                if (oldIHr.Qty<qty1) then begin
+                  totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy/oldIHr.Qty*qty1;
+                  qty1 = 0;
+                end else begin
+                  if (oldIHr.Qty>0) then begin
+                    totcostpricecurncy = totcostpricecurncy - oldIHr.TotCostPriceCurncy;
+                  end else begin
+                    totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy;
+                  end;
+                  qty1 = qty1 - oldIHr.Qty;
+                end;
+                if (qty1==0) then begin
+                  TrHs = false;
+                end;
+              end;
+            end;
+  			  end;
+  			end else begin
+  			  totcostpricecurncy = INr.LastPurchPrice2 * IVrw.Quant;
+  			end; 
+  		end;
+  		if (totcostpricecurncy!=0) then begin
+  		  if (MatRowCnt(fifocurIVr)>rownr) then begin 
+          MatRowGet(fifocurIVr,rownr,fifocurIVrw);
+          if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=curncy) then begin
+            if (fifocurIVrw.Quant!=1) then begin
+              if (curncy!=fifocurIVrw.Spec) then begin
+                //CurValToOtherCur(IHr.TransDate,fifocurIVrw.Spec,fifocurIVrw.FIFO,CurrIHr.CurncyCode,convertedsum,DefaultCurRoundOff);
+                //fifocurIVrw.FIFO = convertedsum;
+                fifocurIVrw.FIFO = totcostpricecurncy;
+                fifocurIVrw.FrRate = BlankVal;
+                fifocurIVrw.BaseRate1 = 1;
+                fifocurIVrw.Spec = curncy;
+                fifocurIVrw.Quant = 1;
+              end else begin
+                fifocurIVrw.Quant = 1;
+              end;
+            end;
+          end;
+        end else begin
+          ClearRow(fifocurIVr,fifocurIVrw,1);
+          fifocurIVrw.Spec = curncy;
+          fifocurIVrw.BaseRate1 = 1;
+        end; 
+        /*if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IHr.CurncyCode) then begin
+          CurValToOtherCur(IHr.TransDate,IHr.CurncyCode,totcostpricecurncy,fifocurIVrw.Spec,convertedsum,DefaultCurRoundOff);
+          totcostpricecurncy = convertedsum;
+        end;*/
+        fifocurIVrw.FIFO = fifocurIVrw.FIFO + totcostpricecurncy; 
+        MatRowPut(fifocurIVr,rownr,fifocurIVrw);
+  		end;
+    
+  RETURN;
+END; //Edit***************************Sasha2,15:06 04.02.2016
 
 global
 procedure IVUpdateFIFO(record IVVc IVp,Boolean trflg,var record IVVc fifocurIVr,integer recordtype) //Edit***************************Sasha2,11:55 18.03.2015
 BEGIN
   row IVVc IVrw;
-  row IVVc IV2rw;
+  row IVVc IV2rw,fifocurIVrw;
   Integer rwcnt;
   Integer i,j;
   record SHVc SHr;
@@ -1448,6 +1540,7 @@ BEGIN
               IVrw.FIFO = IVrw.FIFO*(-1);
             end;
             IVrw.FIFORowVal = absoluteval(IVrw.FIFO*IVrw.Quant);
+            LookForCurFIFOifIVQuantIsNegative(INr,IVp,IVrw,i,fifocurIVr);
             goto L80SKIPROWIVUpdateFIFO;
           end; //Edit***************************Sasha2,15:00 03.07.2015 }
           IVrw.FIFO = blankval;
@@ -1480,6 +1573,10 @@ BEGIN
             end else begin
               IVrw.FIFO = blankval;
               CalculateIVRowFIFO(INr,CAb,location,IVp,IVrw,i,fifocurIVr,recordtype); //Edit***************************Sasha2,11:56 18.03.2015
+              MatRowGet(fifocurIVr,i,fifocurIVrw);
+              if (fifocurIVrw.FIFO==0) then begin
+                LookForCurFIFOifIVQuantIsNegative(INr,IVp,IVrw,i,fifocurIVr);
+              end;
             end;  
           end;
         end else begin        
