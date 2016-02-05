@@ -301,7 +301,7 @@ begin
               if(payAZN==0 and payEUR==0 and payUSD==0 and payTRM==0 and payLOY==0 and PDIsCash(IVr.PayDeal))then begin
               	fullcash = true;
               	if(IVr.PayDeal=="O")then begin
-              	  currncy = left(IVrw.CurncyCode,3); //Edit***************************Sasha2,17:07 21.04.2015
+              	  currncy = left(IVr.CurncyCode,3); //Edit***************************Sasha2,17:07 21.04.2015
 									switch (currncy) begin
 										case"AZN":payAZN = payAZN + IVr.Sum4;
 															totpayAZN = totpayAZN + IVr.Sum4;
@@ -643,7 +643,7 @@ begin
                   	
                   	if(brandtestf)then begin
 											if(IVr.Location==location)then begin
-												if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
+												if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="�" or left(IPr.PayMode,1)=="K")then begin
 													currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
 													switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
 														case"USD":payUSD = round(IPrw.BankVal * aitemprc[j],rnd);
@@ -702,7 +702,7 @@ begin
                   ORr.SerNr = IPrw.OrderNr;
                   readfirstmain(ORr,1,true);
                   if(setinset(Locr.Objects,IPrw.Objects))then begin
-                    if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="K")then begin
+                    if(left(IPr.PayMode,1)=="‘" or left(IPr.PayMode,1)=="C" or left(IPr.PayMode,1)=="�" or left(IPr.PayMode,1)=="K")then begin
                       currncy = left(IPrw.BankCurncy,3); //Edit***************************Sasha2,17:07 21.04.2015
                       switch (currncy) begin //Edit***************************Sasha2,17:31 21.04.2015
                         case"USD":payUSD = IPrw.BankVal;
