@@ -636,15 +636,20 @@ begin
 		end;
 		for (i=0;i<rwcnt2;i=i+1) begin
 			MatRowGet(tempTRr2,i,tempTRrw);
+      tempTRrw.MyVal6 = tempTRrw.MyVal3;
 			switch (tempTRrw.Curncy) begin
 				case "AZN":
 					tempTRrw.CredVal2 = tempTRrw.CurDebVal;
+          tempTRrw.MyVal1 = tempTRrw.MyVal1;
 				case "EUR":
 					tempTRrw.DebVal2 = tempTRrw.CurDebVal;
+          tempTRrw.MyVal3 = tempTRrw.MyVal1;
 				case "USD":
 					tempTRrw.Qty = tempTRrw.CurDebVal;
+          tempTRrw.MyVal4 = tempTRrw.MyVal1;
 				case "TER":
 					tempTRrw.NomVal = tempTRrw.CurDebVal;
+          tempTRrw.MyVal5 = tempTRrw.MyVal1;
 			end;
 			MatRowPut(tempTRr2,i,tempTRrw);
 		end;
@@ -658,7 +663,12 @@ begin
 					tempTRrw.Qty = tempTRrw.Qty + tempTRrw2.Qty;
 					tempTRrw.NomVal = tempTRrw.NomVal + tempTRrw2.NomVal;
 					tempTRrw.DebVal = tempTRrw.DebVal + tempTRrw2.DebVal;
-					MatRowPut(tempTRr2,j,tempTRrw);
+					tempTRrw.MyVal1 = tempTRrw.MyVal1 + tempTRrw2.MyVal1;
+          tempTRrw.MyVal2 = tempTRrw.MyVal2 + tempTRrw2.MyVal2;
+					tempTRrw.MyVal3 = tempTRrw.MyVal3 + tempTRrw2.MyVal3;
+          tempTRrw.MyVal4 = tempTRrw.MyVal4 + tempTRrw2.MyVal4;
+					tempTRrw.MyVal5 = tempTRrw.MyVal5 + tempTRrw2.MyVal5;
+          MatRowPut(tempTRr2,j,tempTRrw);
 					MatRowDelete(tempTRr2,i);
 					i = i - 1;
 					rwcnt2 = rwcnt2 - 1;
@@ -673,6 +683,11 @@ begin
 			tempTRrw3.Qty = tempTRrw.Qty;
 			tempTRrw3.CredVal2 = tempTRrw.CredVal2;
 			tempTRrw3.NomVal = tempTRrw.NomVal;
+      tempTRrw3.MyVal1 = tempTRrw.MyVal1;
+      tempTRrw3.MyVal2 = tempTRrw.MyVal2;
+      tempTRrw3.MyVal3 = tempTRrw.MyVal3;
+      tempTRrw3.MyVal4 = tempTRrw.MyVal4;
+      tempTRrw3.MyVal5 = tempTRrw.MyVal5;
 			tempTRrw3.Comment = "‘—/Š‹.";
 			tempTRrw3.ReconDate = tempTRrw.ReconDate;
 			tempTRrw3.Curncy = "IVV";
@@ -1346,14 +1361,12 @@ begin
 			end;
 			switch (tempTRrw.Curncy) begin
 				case "AZN":
-					AZNDeb = AZNDeb + tempTRrw.CurDebVal;
-					AZNCred = AZNCred + tempTRrw.CurCredVal;
-					convtotal2 = convtotal2 + tempTRrw.MyVal1;
 					if terf then begin
 						OutString(tab[2],0,"",false);
 					end;
 					if aznf then begin
 						OutString(tab[3],0,tempTRrw.CurDebVal,false);
+            AZNDeb = AZNDeb + tempTRrw.CurDebVal;
 					end;
 					if eurf then begin
 						OutString(tab[4],0,"",false);
@@ -1369,6 +1382,7 @@ begin
 					end;
 					if aznf then begin
 						OutString(tab[8],0,tempTRrw.MyVal1,false); 
+            convtotal2 = convtotal2 + tempTRrw.MyVal1;
 					end;
 					if eurf then begin
 						OutString(tab[9],0,"",false);
@@ -1385,6 +1399,7 @@ begin
 					end;
 					if aznf then begin
 						OutString(tab[13],0,tempTRrw.CurCredVal,false);
+            AZNCred = AZNCred + tempTRrw.CurCredVal;
 					end;
 					if eurf then begin
 						OutString(tab[14],0,"",false);
@@ -1396,9 +1411,6 @@ begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
 					end;
 				case "EUR":
-					EURDeb = EURDeb + tempTRrw.CurDebVal;
-					EURCred = EURCred + tempTRrw.CurCredVal;
-					convtotal3 = convtotal3 + tempTRrw.MyVal1;
 					if terf then begin
 						OutString(tab[2],0,"",false);
 					end;
@@ -1407,6 +1419,7 @@ begin
 					end;
 					if eurf then begin
 						OutString(tab[4],0,tempTRrw.CurDebVal,false);
+            EURDeb = EURDeb + tempTRrw.CurDebVal;
 					end;
 					if usdf then begin
 						OutString(tab[5],0,"",false);
@@ -1422,6 +1435,7 @@ begin
 					end;
 					if eurf then begin
 						OutString(tab[9],0,tempTRrw.MyVal1,false);
+            convtotal3 = convtotal3 + tempTRrw.MyVal1;
 					end;
 					if usdf then begin
 						OutString(tab[10],0,"",false);
@@ -1438,6 +1452,7 @@ begin
 					end;
 					if eurf then begin
 						OutString(tab[14],0,tempTRrw.CurCredVal,false);
+            EURCred = EURCred + tempTRrw.CurCredVal;
 					end;
 					if usdf then begin
 						OutString(tab[15],0,"",false);
@@ -1446,9 +1461,6 @@ begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
 					end;
 				case "USD":
-					USDDeb = USDDeb + tempTRrw.CurDebVal;
-					USDCred = USDCred + tempTRrw.CurCredVal;
-					convtotal4 = convtotal4 + tempTRrw.MyVal1;	
 					if terf then begin
 						OutString(tab[2],0,"",false);
 					end;
@@ -1460,6 +1472,7 @@ begin
 					end;
 					if usdf then begin
 						OutString(tab[5],0,tempTRrw.CurDebVal,false);
+            USDDeb = USDDeb + tempTRrw.CurDebVal;
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
@@ -1475,6 +1488,7 @@ begin
 					end;
 					if usdf then begin
 						OutString(tab[10],0,tempTRrw.MyVal1,false);
+            convtotal4 = convtotal4 + tempTRrw.MyVal1;	
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
@@ -1491,16 +1505,15 @@ begin
 					end;
 					if usdf then begin
 						OutString(tab[15],0,tempTRrw.CurCredVal,false);
+            USDCred = USDCred + tempTRrw.CurCredVal;
 					end;
 					if basef then begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
 					end;
 				case "TER":
-					AZNTermDeb = AZNTermDeb + tempTRrw.CurDebVal;
-					AZNTermCred = AZNTermCred + tempTRrw.CurCredVal;
-					convtotal1 = convtotal1 + tempTRrw.MyVal1;
 					if terf then begin
 						OutString(tab[2],0,tempTRrw.CurDebVal,false);
+            AZNTermDeb = AZNTermDeb + tempTRrw.CurDebVal;
 					end;
 					if aznf then begin
 						OutString(tab[3],0,"",false);
@@ -1516,6 +1529,7 @@ begin
 					end;
 					if terf then begin
 						OutString(tab[7],0,tempTRrw.MyVal1,false);
+            convtotal1 = convtotal1 + tempTRrw.MyVal1;
 					end;
 					if aznf then begin
 						OutString(tab[8],0,"",false); 
@@ -1532,6 +1546,7 @@ begin
 					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
 						OutString(tab[12],0,tempTRrw.CurCredVal,false);
+            AZNTermCred = AZNTermCred + tempTRrw.CurCredVal;
 					end;
 					if aznf then begin
 						OutString(tab[13],0,"",false);
@@ -1548,40 +1563,45 @@ begin
 				case "IVV":
 					if terf then begin
 						OutString(tab[2],0,tempTRrw.NomVal,false);
+            AZNTermDeb = AZNTermDeb + tempTRrw.NomVal;
 					end;
-					AZNTermDeb = AZNTermDeb + tempTRrw.NomVal;
 					if aznf then begin
 						OutString(tab[3],0,tempTRrw.CredVal2,false);
+            AZNDeb = AZNDeb + tempTRrw.CredVal2;
 					end;
-					AZNDeb = AZNDeb + tempTRrw.CredVal2;
 					if eurf then begin
 						OutString(tab[4],0,tempTRrw.DebVal2,false);
+            EURDeb = EURDeb + tempTRrw.DebVal2;
 					end;
-					EURDeb = EURDeb + tempTRrw.DebVal2;
 					if usdf then begin
 						OutString(tab[5],0,tempTRrw.Qty,false);
+            USDDeb = USDDeb + tempTRrw.Qty;
 					end;
-					USDDeb = USDDeb + tempTRrw.Qty;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
 					end;
 					if terf then begin
-						OutString(tab[7],0,"",false);
+						OutString(tab[7],0,tempTRrw.MyVal5,false);
+            convtotal1 = convtotal1 + tempTRrw.MyVal5;
 					end;
 					if aznf then begin
-						OutString(tab[8],0,"",false); 
+						OutString(tab[8],0,tempTRrw.MyVal1,false); 
+            convtotal2 = convtotal2 + tempTRrw.MyVal1;
 					end;
 					if eurf then begin
-						OutString(tab[9],0,"",false);
+						OutString(tab[9],0,tempTRrw.MyVal3,false);
+            convtotal3 = convtotal3 + tempTRrw.MyVal3;
 					end;
 					if usdf then begin
-						OutString(tab[10],0,"",false);
+						OutString(tab[10],0,tempTRrw.MyVal4,false);
+            convtotal4 = convtotal4 + tempTRrw.MyVal4;
 					end;
 					if basef then begin
-						OutString(tab[11],0,"",false);
+						OutString(tab[11],0,tempTRrw.MyVal2,false);
+            convtotal5 = convtotal5 + tempTRrw.MyVal2;
 					end;
-					OutString(tab[111],0,tempTRrw.MyVal3,false);
-					if terf then begin
+					OutString(tab[111],0,tempTRrw.MyVal6,false);
+          if terf then begin
 						OutString(tab[12],0,"",false);
 					end;
 					if aznf then begin
