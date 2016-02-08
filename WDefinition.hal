@@ -1224,6 +1224,22 @@ begin
   EndWindow;
 end; //Edit***************************Sasha2,15:02 06.11.2015 }
 
+window RenameCertainDI1VClass:1 //Edit***************************Sasha2,15:02 06.11.2015 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Заменить классификацию в товаре",RenameCertainDI1VClass,CGMnt,RcType);
+  SetWRect(20,80,400,800);
+  EditField(150,10,140,"С одной классификации",Normal,f1,false,DISClass);
+  EditField(150,35,140,"На две классификации",Normal,f2,false,DISClass);
+  h=20; v=80; vs = 15;
+  StaticText(h,v,"Второе поле должно содержать две класс-ции:",false);
+  StaticText(h,v+=vs,"первая - тип (TYPE), вторая - та, на которую заменится",false);
+  StaticText(h,v+=vs,"классификация с поля \"С одной классификации\"",false);
+  
+  EndWindow;
+end; //Edit***************************Sasha2,15:02 06.11.2015 }
+
 window ObjInitBalVClass:1  //Edit-------------------Vitalii 17:18 21.12.2015
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
