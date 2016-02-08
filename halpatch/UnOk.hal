@@ -199,7 +199,7 @@ begin
   		if(IHr.TransNr!=PUp.SerNr or IHr.Row!=i) then begin TrHs=false;  end;
   		
   		if (TrHs) then begin
-				if (IHr.RemQty != IHr.Qty) then begin
+				if (IHr.RemQty != IHr.Qty and IHr.StockAffectf!=0) then begin
 					res = 20884;
 					goto LCheckUnOkPUVc;
 				end;
