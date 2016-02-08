@@ -338,11 +338,11 @@ begin
 return;
 end;
 
-procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price)
+procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price,var vector string typeval,array string typename,Integer typescnt,boolean addclassf)
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
-	integer pos,cnt;
+	integer pos,cnt,i;
   string 50 uloc,pricecur;
   val fr,to1,to2,br1,br2;
   val baseprice,cur,price,baseprice5;
@@ -394,6 +394,9 @@ begin
 		    if (DIr.CType=="MODEL") then begin
 		      model = DIr.Name;
 		    end;
+		    if (addclassf and NonBlank(DIr.CType)) then begin //Edit***************************Sasha2,14:30 08.02.2016 {
+				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+				end; //Edit***************************Sasha2,14:30 08.02.2016 }
 		  end;
 		  ExtractObj(INr.DispGroups,pos,uloc);
 		end;
@@ -421,7 +424,7 @@ begin
 		outstring(0,0,INr.Metal,false);
 		outstring(0,0,INr.RowWeight,false);
 		outstring(0,0,INr.MajStoneDet,false);
-		if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+		if(addclassf or currentcompany==17)then begin
 			outstring(0,0,INr.BrcStr,false);
 			outstring(0,0,INr.Gender,false);
 		end;
@@ -529,7 +532,7 @@ begin
 			price = baseprice*fr/to1;
 		end;
 		
-		if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+		if(addclassf or currentcompany==17)then begin
 			baseprice5 = round(baseprice,rmode5);	//Edit----------------------Dima  17.04.2015
 		end else begin
 			baseprice5 = baseprice;
@@ -555,6 +558,18 @@ begin
 		outstring(0,0,baseprice*instock,false);
 		total_price = total_price + baseprice*instock;
 		outstring(0,0,INr.LastPurchCurncyCode,false);
+		if (addclassf) then begin //Edit***************************Sasha2,14:37 08.02.2016 {
+		  for (i=0;i<typescnt;i=i+1) begin
+		    pos = 0;
+		    ExtractObj(typeval[typename[i]],pos,uloc);
+		    if (uloc==INr.Code) then begin
+		      ExtractObj(typeval[typename[i]],pos,uloc);
+          outstring(0,0,uloc,false);
+        end else begin
+          outstring(0,0,"",false);
+		    end;
+		  end;
+		end; //Edit***************************Sasha2,14:37 08.02.2016 }
 	endformat;
 
 return;
@@ -859,12 +874,23 @@ begin
   val total_cost,total_price;
   string 200 classfind,model,brand,basecur;
   record BaseCurBlock bascur;
+  Boolean addclassf; //Edit***************************Sasha2,13:58 08.02.2016
+  vector string 20 typeval; //Edit***************************Sasha2,14:11 08.02.2016
+  array string 20 typename; //Edit***************************Sasha2,14:11 08.02.2016
+  record DiCheckBlock DiCb; //Edit***************************Sasha2,14:10 08.02.2016
+  row DiCheckBlock DiCbw; //Edit***************************Sasha2,14:10 08.02.2016
+  integer i,rwcnt,typescnt; //Edit***************************Sasha2,14:11 08.02.2016
+  record CTypeVc CTyper; //Edit***************************Sasha2,14:13 08.02.2016
   
   BlockLoad(bascur);
   basecur = bascur.BaseCur1;
   item = RepSpec.f1;
   location = RepSpec.f2;
   todate = RepSpec.d1;
+  
+  if (currentcompany==3 or currentcompany==19 or currentcompany==20) then begin
+    addclassf = true; //Edit***************************Sasha2,14:00 08.02.2016
+  end;
   
   if(blank(todate))then begin
   	todate = currentdate;
@@ -901,14 +927,14 @@ begin
 			outstring(0,0,USetStr(31042),false);
 			outstring(0,0,USetStr(31043),false);
 			outstring(0,0,USetStr(31103),false);
-			outstring(0,0,USetStr(31044),false);
-			outstring(0,0,USetStr(31120),false);
+			outstring(0,0,USetStr(31044),false); //brand
+			outstring(0,0,USetStr(31120),false); //model
 			outstring(0,0,USetStr(31204),false);
 			outstring(0,0,USetStr(31045),false);
 			outstring(0,0,USetStr(31047),false);
 			outstring(0,0,USetStr(31178),false);
 			outstring(0,0,USetStr(31048),false);
-			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+			if(addclassf or currentcompany==17)then begin
 				outstring(0,0,USetStr(31049),false);
 				outstring(0,0,USetStr(31050),false);
 			end;
@@ -944,6 +970,31 @@ begin
 				outstring(0,0,USetStr(31174),false);
 			end;
 			outstring(0,0,USetStr(31169),false);
+			if (addclassf) then begin //Edit***************************Sasha2,14:00 08.02.2016 {
+			  typescnt = 0;
+			  BlockLoad(DiCb);
+        rwcnt = MatRowCnt(DiCb);  
+        for (i=0;i<rwcnt;i=i+1) begin
+          MatRowGet(DiCb,i,DiCbw);
+          if (NonBlank(DiCbw.DiType)) then begin
+            pos = 0;
+      			ExtractObj(DiCbw.DiType,pos,uloc);
+      			while (nonblank(uloc)) begin
+      				if (blank(typeval[uloc])) then begin
+        				CTyper.Code = uloc;
+        				if (ReadFirstMain(CTyper,1,true)) then begin
+        				  typeval[CTyper.Code] = ".";
+        				  typename[typescnt] = CTyper.Code;
+        				  typescnt = typescnt + 1;
+        				  outstring(0,0,CTyper.Comment,false);
+        				end;
+      				end;
+      				ExtractObj(DiCbw.DiType,pos,uloc);
+      			end;
+          end;
+        end;
+			end; //Edit***************************Sasha2,14:01 08.02.2016 }
+			
 		endformat;
 
 		if(nonblank(item))then begin
@@ -970,15 +1021,15 @@ begin
 					INr.Code = ISr.Code;
 					readfirstmain(INr,1,true);
 					if(INr.SerNrf==0)then begin
-						PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price);
+						PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price,typeval,typename,typescnt,addclassf);
 					end else begin
 						SBr.Item = INr.Code;
 						SBr.Location = ISr.Location;
-						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location)))begin
+						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 							if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
 								ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
 								if(ISr.Instock>0)then begin
-									PrintInfo(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,total_qty,total_cost,total_price);
+									PrintInfo(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,total_qty,total_cost,total_price,typeval,typename,typescnt,addclassf);
 								end;
 							end;
 						end;
@@ -1046,7 +1097,7 @@ begin
 					
 						if(testf2)then begin
 							if(INr.SerNrf==0)then begin
-								PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price);
+								PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price,typeval,typename,typescnt,addclassf);
 							end else begin
 								SBr.Item = INr.Code;
 								SBr.Location = ISr.Location;
@@ -1054,7 +1105,7 @@ begin
 									if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
 										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
 										if(ISr.Instock>0)then begin
-											PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,total_qty,total_cost,total_price);
+											PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,total_qty,total_cost,total_price,typeval,typename,typescnt,addclassf);
 										end;
 									end;
 								end;
@@ -1078,7 +1129,7 @@ begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
-			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+			if(addclassf or currentcompany==17)then begin
 				outstring(0,0,"",false);
 				outstring(0,0,"",false);
 			end;
