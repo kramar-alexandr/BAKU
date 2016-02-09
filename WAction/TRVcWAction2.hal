@@ -20,6 +20,10 @@ external function Boolean WarnOldRecords(Date,string,LongInt);
 external function Boolean DateLocked(Date,string);
 external function Boolean DateWarned(Date,string);
 remote procedure SetTRObjectRows(var record TRVc);
+external procedure ExtractObj(string,var Integer,var string);
+external function Boolean FBVc_PasteDebVal(var record FBVc,Integer,var Integer);
+external function Boolean FBVc_PasteCredVal(var record FBVc,Integer,var Integer);
+external procedure YcToStr(Integer,var string);
 
 procedure TRUpdateCurDebValRows(var row TRVc TRrp,Date trdat)
 BEGIN
@@ -1376,5 +1380,209 @@ begin
       end;
     end;
   end;  
+  return;
+end;
+
+//Edit-------------------Vitalii 17:28 08.02.2016
+global
+updating procedure CreateNegBal(record TRVc TRr)
+begin
+  row TRVc TRrw;
+  record FBVc newFBr;
+  row FBVc newFBrw;
+  record AccVc Accr;
+  integer mtrw,i,currw,pos,mi,qty,mesnr,j,k,l;
+  string 255 tstr;
+  string 20 ostr;
+	array string 50 mas;
+  boolean nonblankFB;
+  
+  vector boolean AccInArr,CurInArr,ObjInArr;
+	array string 5 AccArr,CurArr,ObjArr;
+	integer AAi,CAi,OAi;
+	vector val RepVect;
+  
+  currw = 0;
+  mtrw = matrowcnt(TRr);
+  for (i=0;i<mtrw;i=i+1) begin
+    matrowget(TRr,i,TRrw);
+    if ((TRrw.ovst==0) and (TRrw.stp==1)) then begin
+      if !AccInArr[TRrw.AccNumber] then begin
+        AccInArr[TRrw.AccNumber] = true;
+        AccArr[AAi] = TRrw.AccNumber;
+        AAi = AAi + 1;
+      end;
+      if (right(TRrw.Curncy,1)=="B") then begin
+        TRrw.Curncy = left(TRrw.Curncy,3);
+      end;
+      if blank(TRrw.Curncy) then begin
+        TRrw.Curncy = "AZN";
+      end;
+      if !CurInArr[TRrw.Curncy] then begin
+        CurInArr[TRrw.Curncy] = true;
+        CurArr[CAi] = TRrw.Curncy;
+        CAi = CAi + 1;
+      end;
+      if !ObjInArr[TRrw.Objects] then begin
+        ObjInArr[TRrw.Objects] = true;
+        ObjArr[OAi] = TRrw.Objects;
+        OAi = OAi + 1;
+      end;
+      RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+      RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+      RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+      RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[TRrw.Objects & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+      pos = 0;
+      mi = 0;
+      ExtractObj(TRrw.Objects,pos,ostr);
+      if TRrw.Objects != ostr then begin
+        while (nonblank(ostr)) begin
+          mas[mi] = ostr;
+          mi = mi + 1;
+          ExtractObj(TRrw.Objects,pos,ostr);
+        end;
+        qty = mi;
+        if qty == 2 then begin
+          for (j=0;j<qty;j=j+1) begin
+            if !ObjInArr[mas[j]] then begin
+              ObjInArr[mas[j]] = true;
+              ObjArr[OAi] = mas[j];
+              OAi = OAi + 1;
+            end;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+          end;
+        end;
+        if qty == 3 then begin
+          for (j=0;j<qty;j=j+1) begin
+            if !ObjInArr[mas[j]] then begin
+              ObjInArr[mas[j]] = true;
+              ObjArr[OAi] = mas[j];
+              OAi = OAi + 1;
+            end;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+            for (k=j+1;k<qty;k=k+1) begin
+              if mas[j] != mas[k] then begin
+                tstr = mas[j] & "," & mas[k];
+                if !ObjInArr[tstr] then begin
+                  ObjInArr[tstr] = true;
+                  ObjArr[OAi] = tstr;
+                  OAi = OAi + 1;
+                end;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+              end;
+            end;
+          end;
+        end;
+        if qty == 4 then begin
+          for (j=0;j<qty;j=j+1) begin
+            if !ObjInArr[mas[j]] then begin
+              ObjInArr[mas[j]] = true;
+              ObjArr[OAi] = mas[j];
+              OAi = OAi + 1;
+            end;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+            RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[mas[j] & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+            for (k=j+1;k<qty;k=k+1) begin
+              if mas[j] != mas[k] then begin
+                tstr = mas[j] & "," & mas[k];
+                if !ObjInArr[tstr] then begin
+                  ObjInArr[tstr] = true;
+                  ObjArr[OAi] = tstr;
+                  OAi = OAi + 1;
+                end;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+                RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+                for (l=k+1;l<qty;l=l+1) begin
+                  if (mas[j] != mas[l]) and (mas[k] != mas[l]) then begin
+                    tstr = mas[j] & "," & mas[k] & "," & mas[l];
+                    if !ObjInArr[tstr] then begin
+                      ObjInArr[tstr] = true;
+                      ObjArr[OAi] = tstr;
+                      OAi = OAi + 1;
+                    end;
+                    RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred"] + TRrw.CurCredVal;
+                    RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb"] + TRrw.CurDebVal;
+                    RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":cred:base"] + TRrw.CredVal;
+                    RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] = RepVect[tstr & ":" & TRrw.AccNumber & ":" & TRrw.Curncy & ":deb:base"] + TRrw.DebVal;
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  //vector is collected
+  for (i=0;i<ObjArr.length;i=i+1) begin
+		for (j=i+1;j<ObjArr.length;j=j+1) begin
+			if ObjArr[j] > ObjArr[i] then begin
+				tstr = ObjArr[i];
+				ObjArr[i] = ObjArr[j];
+				ObjArr[j] = tstr;
+			end;
+		end;
+	end;
+  for (OAi=0;OAi<ObjArr.length;OAi=OAi+1) begin
+		RecordNew(newFBr);
+    nonblankFB = false;
+		newFBr.Objects = ObjArr[OAi];
+		newFBr.TransDate = CurrentDate;
+		newFBr.SerNr = NextSerNr("FBVc",newFBr.TransDate,-1,false,"");
+    YcToStr(TRr.IntYc,tstr);
+    newFBr.Comment = USetStr(35030) & tstr & "." & TRr.Number;
+		i = 0;
+		for (AAi=0;AAi<AccArr.length;AAi=AAi+1) begin
+			for (CAi=0;CAi<CurArr.length;CAi=CAi+1) begin
+				if (RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb"] != blankval) or
+				   (RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb:base"] != blankval) then begin
+					newFBrw.AccNumber = AccArr[AAi];
+					Accr.AccNumber = newFBrw.AccNumber;
+					ReadFirstKey("AccNumber",Accr,1,true);
+					newFBrw.Comment = Accr.Comment;
+					newFBrw.DebVal = - RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb:base"];
+					newFBrw.CurDebVal = - RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb"];
+					newFBrw.CurncyCode = CurArr[CAi];
+					matrowput(newFBr,i,newFBrw);
+          nonblankFB = true;
+					FBVc_PasteDebVal(newFBr,i,mesnr);
+					if (mesnr!=0) then begin logtext(0,USetStr(mesnr)); end;
+					i = i + 1;
+				end;
+				if (RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred"] != blankval) or
+				   (RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred:base"] != blankval) then begin
+					newFBrw.AccNumber = AccArr[AAi];
+					Accr.AccNumber = newFBrw.AccNumber;
+					ReadFirstKey("AccNumber",Accr,1,true);
+					newFBrw.Comment = Accr.Comment;
+					newFBrw.CredVal = - RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred:base"];
+					newFBrw.CurCredVal = - RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred"];
+					newFBrw.CurncyCode = CurArr[CAi];
+					matrowput(newFBr,i,newFBrw);
+          nonblankFB = true;
+					FBVc_PasteCredVal(newFBr,i,mesnr);
+					if (mesnr!=0) then begin logtext(0,USetStr(mesnr)); end;
+					i = i + 1;
+				end;
+			end;
+		end;
+    if nonblankFB then begin
+      RecordStore(newFBr,true);
+    end;
+	end;
+  
   return;
 end;

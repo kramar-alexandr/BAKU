@@ -6,7 +6,7 @@ global updating procedure ObjInitBalMn(record RcVc RepSpec)
 begin
 	record MainVc mainr;
 	date sd,ed;
-	boolean TrHs,testf,foundf;
+	boolean TrHs,testf,foundf,nonblankFB;
 	string 50 objcode,ostr;
 	record TRVc TRr;
 	row TRVc TRrw;
@@ -16,7 +16,6 @@ begin
 	integer i,j,k,l,mtrw,pos,mi,qty,curcomp,comptoadd,mesnr;
 	string 255 tstr;
 	array string 50 mas;
-	
 	
 	vector boolean AccInArr,CurInArr,ObjInArr;
 	array string 5 AccArr,CurArr,ObjArr;
@@ -217,6 +216,7 @@ begin
 	SetCompany(comptoadd,false);
 	for (OAi=0;OAi<ObjArr.length;OAi=OAi+1) begin
 		RecordNew(newFBr);
+    nonblankFB = false;
 		newFBr.Objects = ObjArr[OAi];
 		newFBr.TransDate = ed;
 		newFBr.SerNr = NextSerNr("FBVc",newFBr.TransDate,-1,false,"");
@@ -233,6 +233,7 @@ begin
 					newFBrw.CurDebVal = RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":deb"];
 					newFBrw.CurncyCode = CurArr[CAi];
 					matrowput(newFBr,i,newFBrw);
+          nonblankFB = true;
 					FBVc_PasteDebVal(newFBr,i,mesnr);
 					if (mesnr!=0) then begin logtext(0,USetStr(mesnr)); end;
 					i = i + 1;
@@ -247,13 +248,16 @@ begin
 					newFBrw.CurCredVal = RepVect[ObjArr[OAi] & ":" & AccArr[AAi] & ":" & CurArr[CAi] & ":cred"];
 					newFBrw.CurncyCode = CurArr[CAi];
 					matrowput(newFBr,i,newFBrw);
+          nonblankFB = true;
 					FBVc_PasteCredVal(newFBr,i,mesnr);
 					if (mesnr!=0) then begin logtext(0,USetStr(mesnr)); end;
 					i = i + 1;
 				end;
 			end;
 		end;
-		RecordStore(newFBr,true);
+    if nonblankFB then begin
+      RecordStore(newFBr,true);
+    end;
 	end;
 	ResetCompany(curcomp);
 return;

@@ -13,6 +13,7 @@ external function Boolean  AllowCurChange(string,Boolean);
 remote procedure TRSumup(var record TRVc,var val);
 external procedure YcToStr(Integer,var string);
 external procedure FindOTforAcc(string,var string);
+remote updating procedure CreateNegBal(var record TRVc);//Edit-------------------Vitalii 17:16 08.02.2016
 
 global
 procedure BalanceTRDsm()
@@ -1142,3 +1143,22 @@ BEGIN
   RETURN;
 END;
 
+//Edit-------------------Vitalii 17:14 08.02.2016
+global
+updating procedure CreateNegBalTRDsm()
+BEGIN
+  Integer wn;
+  record TRVc TRr;
+  record FBVc FBr;
+  string 20 tstr;
+
+  wn = CurWindow; 
+  if (WindowState(wn)==Rs_normal) then begin
+    GetWindowRecord(wn,TRr); 
+    CreateNegBal(TRr);
+    MessageBox(0,"Done!");
+  end else begin
+    MessageBox(0,USetStr(1356));
+  end;
+  RETURN;
+END;

@@ -552,6 +552,7 @@ begin
 	SString(35028,"Сч/ф технические:");
 	
 	SString(35029,"Штрих-код не совпадает");		
+  SString(35030,"Отрицательное нач. сальдо для операции ");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

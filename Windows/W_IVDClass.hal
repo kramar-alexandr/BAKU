@@ -7679,8 +7679,13 @@ begin
   SpecialMenu("Рассчитать поле",'F',4,"CalcFieldTRDsm");
   SpecialMenu("Поменять знак",' ',5,"ChangeSignTRDsm");
   SpecialMenu("Открыть запись подсистемы",'t',6,"OpenSubsystemTRDsm");
+  f = 7;
   if (HasMultiCurrency) then begin
-  SpecialMenu("Обновить курсы валют",' ',7,"UpdCurRateTRDsm");
+  SpecialMenu("Обновить курсы валют",' ',f,"UpdCurRateTRDsm");
+  f = f + 1;
+  end;
+  if (currentuser=="SA") then begin //Edit-------------------Vitalii 17:07 08.02.2016
+    SpecialMenu("Создать отрицательное нач. сальдо",' ',f,"CreateNegBalTRDsm");
   end;
   EndWindow;
 end;
