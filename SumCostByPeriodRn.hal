@@ -378,9 +378,12 @@ begin
 	string 10 curcode;
 	record BaseCurBlock BCBb;
 	string 20 tempcur,tempdi;
+	Boolean checkctypef; //Edit***************************Sasha2,11:37 09.02.2016
   
+  if (currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20) then begin
+    checkctypef = true; //Edit***************************Sasha2,11:38 09.02.2016
+  end;
   spi = 1;
-   
   location = RepSpec.f1;
   
   rate = 1;
@@ -486,36 +489,38 @@ begin
         IN2r.DispGroups = "";
         if (ReadLastKey("MyDispGroups",IN2r,1,false)) then begin
           //curgr=IN2r.DispGroups;
-          gi=0;
-          tempdi = "";
-          curgr1 = "";
-          ExtractObj(IN2r.DispGroups,gi,curgr);
-          while (NonBlank(curgr)) begin
-            DIr.Code = curgr;
-            if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-              if (currentcompany==9 and DIr.CType=="BRAND") then begin
-                curgr1 = DIr.Code;
-              end;
-              if (Blank(tempdi)) then begin
-                tempdi = curgr; 
-              end;           
-            end;
+          if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+            gi=0;
+            tempdi = "";
+            curgr1 = "";
             ExtractObj(IN2r.DispGroups,gi,curgr);
-          end;
-          curgr = tempdi;
-           
-          /*gi=0;
-          ExtractObj(IN2r.DispGroups,gi,curgr);
-          if(currentcompany==9)then begin
-            ExtractObj(INr.DispGroups,gi,curgr1);
-            DIr.Code = curgr1;
-            if(readfirstmain(DIr,1,true))then begin
-              if(DIr.CType!="BRAND")then begin
-                curgr1 = "";                
+            while (NonBlank(curgr)) begin
+              DIr.Code = curgr;
+              if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+                if (currentcompany==9 and DIr.CType=="BRAND") then begin
+                  curgr1 = DIr.Code;
+                end;
+                if (Blank(tempdi)) then begin
+                  tempdi = curgr; 
+                end;           
+              end;
+              ExtractObj(IN2r.DispGroups,gi,curgr);
+            end;
+            curgr = tempdi;
+          end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+            gi=0;
+            ExtractObj(IN2r.DispGroups,gi,curgr);
+            if(currentcompany==9)then begin
+              ExtractObj(INr.DispGroups,gi,curgr1);
+              DIr.Code = curgr1;
+              if(readfirstmain(DIr,1,true))then begin
+                if(DIr.CType!="BRAND")then begin
+                  curgr1 = "";                
+                end;
               end;
             end;
-          end;*/
-          
+          end;
+
         end;
         curgr = "";
         rownr = 1;
@@ -536,31 +541,33 @@ begin
         INr.DispGroups = "";
         calc = true;
         while (LoopKey("MyDispGroups",INr,1,true)) begin
-          gi=0;
-          tempdi = "";
-          ExtractObj(INr.DispGroups,gi,curgr1);
-          while (NonBlank(curgr1)) begin
-            DIr.Code = curgr1;
-            if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-              tempdi = curgr1;
-              gi = len(INr.DispGroups);                
+          if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+            gi=0;
+            tempdi = "";
+            ExtractObj(INr.DispGroups,gi,curgr1);
+            while (NonBlank(curgr1)) begin
+              DIr.Code = curgr1;
+              if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+                tempdi = curgr1;
+                gi = len(INr.DispGroups);                
+              end;
+              ExtractObj(INr.DispGroups,gi,curgr1);
             end;
+            curgr1 = tempdi;
+          end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+            gi=0;
             ExtractObj(INr.DispGroups,gi,curgr1);
-          end;
-          curgr1 = tempdi;
-          
-          /*gi=0;
-          ExtractObj(INr.DispGroups,gi,curgr1);
-          if(currentcompany==9)then begin
-            ExtractObj(INr.DispGroups,gi,curgr1);
-            DIr.Code = curgr1;
-            if(readfirstmain(DIr,1,true))then begin
-              if(DIr.CType!="BRAND")then begin
-                curgr1 = "";                
+            if(currentcompany==9)then begin
+              ExtractObj(INr.DispGroups,gi,curgr1);
+              DIr.Code = curgr1;
+              if(readfirstmain(DIr,1,true))then begin
+                if(DIr.CType!="BRAND")then begin
+                  curgr1 = "";                
+                end;
               end;
             end;
-          end;*/
-          
+          end;
+ 
           if (curgr!=curgr1) then begin          
             calc = false;
           end;
@@ -573,7 +580,11 @@ begin
             tstr = "";
             if(nonblank(curgr))then begin
               DIr.Code = curgr;
-              if(readfirstmain(DIr,1,true))then begin tstr = DIr.Name; end;
+              if(readfirstmain(DIr,1,true))then begin 
+                tstr = DIr.Name; 
+              end else begin
+                tstr = "Classification with no card" & "(" & curgr & ")";
+              end;
             end else begin
               tstr = "---";
             end;
@@ -640,36 +651,39 @@ begin
             end;
             calc = true;
             //curgr = INr.DispGroups;
-            gi=0;
-            tempdi = "";
-            ExtractObj(INr.DispGroups,gi,curgr);
-            while (NonBlank(curgr)) begin
-              DIr.Code = curgr;
-              if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-                tempdi = curgr;
-                gi = len(INr.DispGroups);                
-              end;
+            if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+              gi=0;
+              tempdi = "";
               ExtractObj(INr.DispGroups,gi,curgr);
-            end;
-            curgr = tempdi;
-            if(currentcompany==9)then begin
-              DIr.Code = curgr1;
-              if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
-                curgr1 = "";                 
+              while (NonBlank(curgr)) begin
+                DIr.Code = curgr;
+                if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+                  tempdi = curgr;
+                  gi = len(INr.DispGroups);                
+                end;
+                ExtractObj(INr.DispGroups,gi,curgr);
               end;
-            end;
-                        
-            /*gi=0;
-            ExtractObj(INr.DispGroups,gi,curgr);
-            if(currentcompany==9)then begin
-              ExtractObj(INr.DispGroups,gi,curgr);
-              DIr.Code = curgr1;
-              if(readfirstmain(DIr,1,true))then begin
-                if(DIr.CType!="BRAND")then begin
+              curgr = tempdi;
+              if(currentcompany==9)then begin
+                DIr.Code = curgr1;
+                if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
                   curgr1 = "";                 
                 end;
               end;
-            end;*/
+            end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+              gi=0;
+              ExtractObj(INr.DispGroups,gi,curgr);
+              if(currentcompany==9)then begin
+                ExtractObj(INr.DispGroups,gi,curgr);
+                DIr.Code = curgr1;
+                if(readfirstmain(DIr,1,true))then begin
+                  if(DIr.CType!="BRAND")then begin
+                    curgr1 = "";                 
+                  end;
+                end;
+              end;  
+            end;
+
           end;
           if(calc)then begin
           
@@ -746,36 +760,39 @@ begin
         rownr = rownr + 1;
         calc = true;
         //curgr = INr.DispGroups;
-        gi=0;
-        tempdi = "";
-        ExtractObj(INr.DispGroups,gi,curgr);
-        while (NonBlank(curgr)) begin
-          DIr.Code = curgr;
-          if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-            tempdi = curgr;
-            gi = len(INr.DispGroups);                
-          end;
+        if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+          gi=0;
+          tempdi = "";
           ExtractObj(INr.DispGroups,gi,curgr);
-        end;
-        curgr = tempdi;
-        if(currentcompany==9)then begin
-          DIr.Code = curgr1;
-          if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
-            curgr1 = "";                 
-          end;
-        end;
-        
-        /*gi=0;
-        ExtractObj(INr.DispGroups,gi,curgr);
-        if(currentcompany==9)then begin
-          ExtractObj(INr.DispGroups,gi,curgr);
-          DIr.Code = curgr1;
-          if(readfirstmain(DIr,1,true))then begin
-            if(DIr.CType!="BRAND")then begin
-              curgr1 = "";                  
+          while (NonBlank(curgr)) begin
+            DIr.Code = curgr;
+            if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+              tempdi = curgr;
+              gi = len(INr.DispGroups);                
             end;
+            ExtractObj(INr.DispGroups,gi,curgr);
           end;
-        end;*/
+          curgr = tempdi;
+          if(currentcompany==9)then begin
+            DIr.Code = curgr1;
+            if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
+              curgr1 = "";                 
+            end;
+          end;  
+        end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+          gi=0;
+          ExtractObj(INr.DispGroups,gi,curgr);
+          if(currentcompany==9)then begin
+            ExtractObj(INr.DispGroups,gi,curgr);
+            DIr.Code = curgr1;
+            if(readfirstmain(DIr,1,true))then begin
+              if(DIr.CType!="BRAND")then begin
+                curgr1 = "";                  
+              end;
+            end;
+          end;  
+        end;
+
         inpo = 0;
         
         Black_Divider(0,1);
