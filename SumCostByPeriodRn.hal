@@ -496,7 +496,9 @@ begin
               if (currentcompany==9 and DIr.CType=="BRAND") then begin
                 curgr1 = DIr.Code;
               end;
-              tempdi = curgr;              
+              if (Blank(tempdi)) then begin
+                tempdi = curgr; 
+              end;           
             end;
             ExtractObj(IN2r.DispGroups,gi,curgr);
           end;
