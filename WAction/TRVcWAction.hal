@@ -1303,7 +1303,7 @@ begin
 		RecordNew(newFBr);
     nonblankFB = false;
 		newFBr.Objects = ObjArr[OAi];
-		newFBr.TransDate = CurrentDate;
+		newFBr.TransDate = TRr.TransDate;
 		newFBr.SerNr = NextSerNr("FBVc",newFBr.TransDate,-1,false,"");
     YcToStr(TRr.IntYc,tstr);
     newFBr.Comment = USetStr(35030) & tstr & "." & TRr.Number;
