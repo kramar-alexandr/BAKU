@@ -61,19 +61,23 @@ external function Boolean SetUnitFactor(string,var val,val,val,val,var val,var v
 external function val CalculateSerialNrQuantity(string,string,string,Boolean,val,val,val,val);
 external procedure DisplayIVItem(record IVVc,Integer);
 remote procedure PastePDInInv(var record IVVc,string,Boolean);
-remote procedure CreatePufromIVforPLHandle(record RcVc,integer); //Edit***************************Sasha2,11:26 07.04.2015
+remote procedure CreatePufromIVforPLHandle(record RcVc,integer,var string); //Edit***************************Sasha2,11:26 07.04.2015
 
 global  //Edit***************************Sasha2,17:59 06.04.2015 {
 procedure YesCreatePufromIVforPLButton()
 BEGIN
   Integer wn;
   record RcVc RepSpec;
+  string 255 errmsg;
   
     wn = CurWindow;
     DeselectWindow(wn,false);
     GetWindowRecord(wn,RepSpec);
     CloseWindow(wn);
-    CreatePufromIVforPLHandle(RepSpec,CurrentCompany);
+    CreatePufromIVforPLHandle(RepSpec,CurrentCompany,errmsg);
+    if (NonBlank(errmsg)) then begin
+      MessageBox(0,errmsg);
+    end;
 
   RETURN;
 END;

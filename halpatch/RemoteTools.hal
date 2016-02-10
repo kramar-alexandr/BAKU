@@ -1826,6 +1826,7 @@ BEGIN
     if (totprepv>=viTotalSum) then begin found = false; end;
     if (found) then begin
       testf = true;
+      if (OPPr.VECode!=VIp.VECode) then begin testf = false; end;
       if (OPPr.CurncyCode!=VIp.CurncyCode) then begin
         if ((blank(OPPr.CurncyCode)) or (blank(VIp.CurncyCode))) then begin
           GetBaseCurncy(1,curcode);    

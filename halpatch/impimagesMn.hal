@@ -28,6 +28,12 @@ external function roundmode SetRoundModeD(Integer); //Edit**********************
 external procedure TRSumup(var record TRVc,var val); //Edit***************************Sasha2,11:29 01.02.2016
 external function val AbsoluteVal(val); //Edit***************************Sasha2,13:04 01.02.2016
 external function Boolean TRVc_PasteAccNumber(var record TRVc,Integer,Integer,Boolean); //Edit***************************Sasha2,17:32 01.02.2016
+external updating function LongInt PastePUInVI(record PUVc,var record VIVc,var string,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean,Boolean); //Edit***************************Sasha2,17:34 09.02.2016
+external function LongInt GetCurUserLastNr(string); //Edit***************************Sasha2,17:40 09.02.2016
+external function Boolean GetAccName(string,var string,Integer); //Edit***************************Sasha2,17:56 09.02.2016
+external function Boolean PUVc_PasteVECode(var record PUVc); //Edit***************************Sasha2,9:42 10.02.2016
+external procedure VICalcVals(var record VIVc); //Edit***************************Sasha2,11:43 10.02.2016
+external procedure VISumup(record VIVc,var val); //Edit***************************Sasha2,12:09 10.02.2016
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -1860,7 +1866,7 @@ end;
 
 
 global //Edit***************************Sasha2,11:25 07.04.2015 {
-updating procedure CreatePufromIVforPLHandle(record RcVc RepSpec,integer curcomp)
+updating procedure CreatePufromIVforPLHandle(record RcVc RepSpec,integer curcomp,var string errmsg)
 begin
   record IVVc IVr;
   row IVVc IVrw;
@@ -1875,21 +1881,28 @@ begin
   string 5 groupCode;//Edit-------------------Vitalii 9:28 09.09.2015
   string 50 groupComment;//Edit-------------------Vitalii 9:28 09.09.2015
   integer i,k,rwcnt,lenth,acNum;
-  string 255 warning,inwarn,compname;
+  string 255 warning,inwarn,compname,tstr;
   string 100 tclass,fullclass;
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
-  val p,s;
-  Boolean chsum,findclass;
+  val p,s,totpucost,ivsum,diffval,t;
+  Boolean chsum,findclass,tocompf;
   record PLDefVc PLdefr;
   row PLDefVc PLDefrw;
   record PFormVc PFormr;		//Edit----------------------Dima  14.09.2015
   integer rwcnt2,j;
-  
+  record VIVc VIr; //Edit***************************Sasha2,17:37 09.02.2016
+  row VIVc VIrw; //Edit***************************Sasha2,17:37 09.02.2016
+  LongInt newnr; //Edit***************************Sasha2,17:40 09.02.2016
+  record SRBlock SRRec; //Edit***************************Sasha2,17:40 09.02.2016
+  record BaseCurBlock BCb; //Edit***************************Sasha2,10:07 10.02.2016
+  record LocationVc Locr; //Edit***************************Sasha2,13:46 10.02.2016
   
     IVr.SerNr = RepSpec.long1;
     ReadFirstMain(IVr,1,true);
+    //ivsum = IVr.Sum4;
     rwcnt = matrowcnt(IVr);
+    BlockLoad(BCb);
      
     BlockLoad(Compb);
     rwcnt = matrowcnt(Compb);
@@ -1904,128 +1917,196 @@ begin
       RECORDNEW(PUr);
       PUr.Location = RepSpec.f1;
       PUVc_PasteLocation(PUr,-1);
+      Locr.Code = PUr.Location;
+      ReadFirstMain(Locr,1,true);
+      PUr.VECode = IVr.CustCode;
+      PUVc_PasteVECode(PUr);
       PUr.VEName = "Invoice # " & IVr.SerNr & " from company " & compname;
       if (PUr.SerNr<=0) then begin
          PUr.SerNr = NextSerNr("PUVc",PUr.TransDate,-1,false,"");
       end;
       RESETCOMPANY(curcomp);
+      tocompf = true;
     end;
-      
-    rwcnt = MatRowCnt(IVr);
-    for (i=0;i<rwcnt;i=i+1) begin
-      MatRowGet(IVr,i,IVrw);
-      if (NonBlank(IVrw.ArtCode)) then begin
-        //ClearStringArray(arrClass);
-		//ClearStringArray(arrClassName);
-		acNum = 0;
-		groupCode = "";
-		groupComment = "";
-		INr.Code = IVrw.ArtCode;
-        ReadFirstMain(INr,1,true);
-		fullclass = INr.DispGroups;
-		fullclass = uppercase(fullclass);
-		INr.DispGroups = "";
-		lenth = len(fullclass);
-		for(k=0;k<lenth;k=k+1) begin
-			if(mid(fullclass,k,1)==",") then begin
-				tclass = mid(fullclass,0,k);
-				findclass = false;
-				DIr.Code = tclass;
-				if(readfirstmain(DIr,1,true)) begin
-					arrClass[acNum] = DIr.Code;
-					arrClassName[acNum] = DIr.Name;
-					arrClassType[acNum] = DIr.CType;
-					acNum = acNum + 1;
-					findclass = true;
-				end;
-				if(findclass)then begin
-					DIr.Name = tclass;
-					if(readfirstkey("Name",DIr,1,true)) then begin
-						arrClass[acNum] = DIr.Code;
-						arrClassName[acNum] = DIr.Name;
-						arrClassType[acNum] = DIr.CType;
-						acNum = acNum + 1;
-						findclass = true;
-					end;
-				end;
-				fullclass = mid(fullclass,k+1,lenth-k-1);
-				k=0;
-				lenth = len(fullclass);
-			end;
-		end;
-		tclass = fullclass;
-		findclass = false;
-		DIr.Code = tclass;
-		if(readfirstmain(DIr,1,true)) begin
-			arrClass[acNum] = DIr.Code;
-			arrClassName[acNum] = DIr.Name;
-			arrClassType[acNum] = DIr.CType;
-			acNum = acNum + 1;
-			findclass = true;
-		end;
-		if(findclass)then begin
-			DIr.Name = tclass;
-			if(readfirstkey("Name",DIr,1,true)) then begin
-				arrClass[acNum] = DIr.Code;
-				arrClassName[acNum] = DIr.Name;
-				arrClassType[acNum] = DIr.CType;
-				acNum = acNum + 1;
-				findclass = true;
-			end;
-		end;
-		groupCode = INr.Group;
-		ITr.Code = groupCode;
-		readfirstmain(ITr,1,true);
-		groupComment = ITr.Comment;
-		
-		//For PriceList updating  ___Edit----------------------Dima  14.09.2015
-  	PLdefr.Code = "RRP";
-  	if (ReadFirstMain(PLdefr,1,true)) then begin
-			rwcnt2 = MatRowCnt(PLdefr);
-			for(j=0;j<rwcnt2;j=j+1) begin
-				MatRowGet(PLdefr,j,PLDefrw);
-				if (PLDefrw.ItemCode == groupCode) then begin
-						PFormr.Code = PLDefrw.Formula;
-						ReadFirstMain(PFormr,1,true);
-				end;
-			end;
-		end; 		
-		
-        if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
-        	AddFormulaToPricelist(groupCode,PFormr);	//Edit----------------------Dima  14.09.2015
-          IN2r.Code = IVrw.ArtCode;
-          if (!ReadFirstMain(IN2r,1,true)) then begin
-            LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,acNum,groupCode,groupComment);
-            RECORDSTORE(INr,false);
+    
+    if (tocompf) then begin
+      rwcnt = MatRowCnt(IVr);
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVr,i,IVrw);
+        if (NonBlank(IVrw.ArtCode)) then begin
+          //ClearStringArray(arrClass);
+      		//ClearStringArray(arrClassName);
+      		acNum = 0;
+      		groupCode = "";
+      		groupComment = "";
+      		INr.Code = IVrw.ArtCode;
+              ReadFirstMain(INr,1,true);
+      		fullclass = INr.DispGroups;
+      		fullclass = uppercase(fullclass);
+      		INr.DispGroups = "";
+      		lenth = len(fullclass);
+      		for(k=0;k<lenth;k=k+1) begin
+      			if(mid(fullclass,k,1)==",") then begin
+      				tclass = mid(fullclass,0,k);
+      				findclass = false;
+      				DIr.Code = tclass;
+      				if(readfirstmain(DIr,1,true)) begin
+      					arrClass[acNum] = DIr.Code;
+      					arrClassName[acNum] = DIr.Name;
+      					arrClassType[acNum] = DIr.CType;
+      					acNum = acNum + 1;
+      					findclass = true;
+      				end;
+      				if(findclass)then begin
+      					DIr.Name = tclass;
+      					if(readfirstkey("Name",DIr,1,true)) then begin
+      						arrClass[acNum] = DIr.Code;
+      						arrClassName[acNum] = DIr.Name;
+      						arrClassType[acNum] = DIr.CType;
+      						acNum = acNum + 1;
+      						findclass = true;
+      					end;
+      				end;
+      				fullclass = mid(fullclass,k+1,lenth-k-1);
+      				k=0;
+      				lenth = len(fullclass);
+      			end;
+      		end;
+      		tclass = fullclass;
+      		findclass = false;
+      		DIr.Code = tclass;
+      		if(readfirstmain(DIr,1,true)) begin
+      			arrClass[acNum] = DIr.Code;
+      			arrClassName[acNum] = DIr.Name;
+      			arrClassType[acNum] = DIr.CType;
+      			acNum = acNum + 1;
+      			findclass = true;
+      		end;
+      		if(findclass)then begin
+      			DIr.Name = tclass;
+      			if(readfirstkey("Name",DIr,1,true)) then begin
+      				arrClass[acNum] = DIr.Code;
+      				arrClassName[acNum] = DIr.Name;
+      				arrClassType[acNum] = DIr.CType;
+      				acNum = acNum + 1;
+      				findclass = true;
+      			end;
+      		end;
+      		groupCode = INr.Group;
+      		ITr.Code = groupCode;
+      		readfirstmain(ITr,1,true);
+      		groupComment = ITr.Comment;
+      		
+      		//For PriceList updating  ___Edit----------------------Dima  14.09.2015
+        	PLdefr.Code = "RRP";
+        	if (ReadFirstMain(PLdefr,1,true)) then begin
+      			rwcnt2 = MatRowCnt(PLdefr);
+      			for(j=0;j<rwcnt2;j=j+1) begin
+      				MatRowGet(PLdefr,j,PLDefrw);
+      				if (PLDefrw.ItemCode == groupCode) then begin
+      						PFormr.Code = PLDefrw.Formula;
+      						ReadFirstMain(PFormr,1,true);
+      				end;
+      			end;
+      		end; 		
+  		
+          if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+          	AddFormulaToPricelist(groupCode,PFormr);	//Edit----------------------Dima  14.09.2015
+            IN2r.Code = IVrw.ArtCode;
+            if (!ReadFirstMain(IN2r,1,true)) then begin
+              LookUpClassAndGroups(INr,curcomp,arrClass,arrClassName,arrClassType,acNum,groupCode,groupComment);
+              RECORDSTORE(INr,false);
+            end;
+            ClearRow(PUr,PUrw,1);
+            PUrw.ArtCode = IVrw.ArtCode;
+            MatRowPut(PUr,i,PUrw);
+            PUVc_PasteArtCode(PUr,i,warning,inwarn);
+            MatRowGet(PUr,i,PUrw);
+            PUrw.Quant = IVrw.Quant;
+            MatRowPut(PUr,i,PUrw);
+            PUVc_PasteQuant(PUr,i);
+            MatRowGet(PUr,i,PUrw);
+            PUrw.UPrice = IVrw.FIFORowVal/IVrw.Quant;
+            PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUr.InclVAT,PUr.NoTAXonVAT,PUrw.Extra,PUr.CurncyCode,
+                    PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2,
+                    PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
+                    PUrw.CustomsCost,p,PUrw.Quant,s,PUrw.VATCode,PUr.ExportFlag);
+            PUrw.CostPrice = p;
+            PUrw.Sum = s;
+            totpucost = totpucost + s;
+            chsum = true;
+            MatRowPut(PUr,i,PUrw);
+            RESETCOMPANY(curcomp);
           end;
-          ClearRow(PUr,PUrw,1);
-          PUrw.ArtCode = IVrw.ArtCode;
-          MatRowPut(PUr,i,PUrw);
-          PUVc_PasteArtCode(PUr,i,warning,inwarn);
-          MatRowGet(PUr,i,PUrw);
-          PUrw.Quant = IVrw.Quant;
-          MatRowPut(PUr,i,PUrw);
-          PUVc_PasteQuant(PUr,i);
-          MatRowGet(PUr,i,PUrw);
-          PUrw.UPrice = IVrw.FIFORowVal/IVrw.Quant;
-          PUCalcCostPrice(PUrw.ArtCode,PUrw.UPrice,PUr.InclVAT,PUr.NoTAXonVAT,PUrw.Extra,PUr.CurncyCode,
-                  PUr.FrRate,PUr.ToRateB1,PUr.ToRateB2,PUr.BaseRate1,PUr.BaseRate2,
-                  PUrw.ShipCost,PUrw.RowCost1,PUrw.RowCost2,PUrw.RowCost3,PUrw.RowCost4,PUrw.RowCost5,
-                  PUrw.CustomsCost,p,PUrw.Quant,s,PUrw.VATCode,PUr.ExportFlag);
-          PUrw.CostPrice = p;
-          PUrw.Sum = s;
-          chsum = true;
-          MatRowPut(PUr,i,PUrw);
-          RESETCOMPANY(curcomp);
         end;
       end;
-    end;
-    if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
-      if (chsum) then begin
-        PUSumUp(PUr);
-      end;
-      RECORDSTORE(PUr,false);  
-      RESETCOMPANY(curcomp);
+      if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
+        if (NonBlank(Locr.Objects)) then begin
+          rwcnt = MatRowCnt(PUr);
+          for (i=0;i<rwcnt;i=i+1) begin
+            matrowget(PUr,i,PUrw);
+            if (NonBlank(PUrw.Objects)) then begin
+              PUrw.Objects = PUrw.Objects & "," & Locr.Objects;
+            end else begin
+              PUrw.Objects = Locr.Objects;
+            end;
+            matrowput(PUr,i,PUrw);
+          end;
+        end;
+        if (chsum) then begin
+          PUSumUp(PUr);
+        end;
+        if (RECORDSTORE(PUr,false)) then begin
+          PastePUInVI(PUr,VIr,warning,false,false,false,false,false,false,false);
+          if (VIr.SerNr<=0) then begin
+            newnr = GetCurUserLastNr("VIVc");
+            if (newnr==-1) then begin
+              newnr = SRRec.LastVINr;
+            end;
+            VIr.SerNr = NextSerNr("VIVc",VIr.TransDate,newnr,false,"");
+          end;  
+          if (VIr.SerNr<=0) then begin goto LCreatePufromIVforPLHandle; end;  
+          if (MatRowCnt(VIr)>0) then begin
+            diffval = IVr.Sum4 - totpucost;
+            if (diffval!=0) then begin
+              ClearRow(VIr,VIrw,1);
+              VIrw.AccNumber = "76";
+              if (GetAccName(VIrw.AccNumber,tstr,60)) then begin end;
+              VIrw.Comment = tstr; 
+              VIrw.Objects = "128";
+              VIrw.Sum = diffval;
+              VIrw.qty = 1;
+              MatRowPut(VIr,MatRowCnt(VIr),VIrw);
+              VIr.PayVal = VIr.PayVal + diffval;
+              if (NonBlank(Locr.Objects)) then begin
+                rwcnt = MatRowCnt(VIr);
+                for (i=0;i<rwcnt;i=i+1) begin
+                  matrowget(VIr,i,VIrw);
+                  if (NonBlank(VIrw.Objects)) then begin
+                    VIrw.Objects = VIrw.Objects & "," & Locr.Objects;
+                  end else begin
+                    VIrw.Objects = Locr.Objects;
+                  end;
+                  matrowput(VIr,i,VIrw);
+                end;
+              end;
+              VICalcVals(VIr);
+              VISumup(VIr,t);
+            end;
+            if (RecordStore(VIr,false)) then begin
+              CreateRecordLink(PUr,CurrentCompany,VIr,CurrentCompany);  
+              CreateRecordLink(VIr,CurrentCompany,PUr,CurrentCompany);  
+            end;
+          end;
+          
+  LCreatePufromIVforPLHandle:;
+  
+          if (BCb.BaseCur1!=IVr.CurncyCode or BCb.BaseCur1!=PUr.CurncyCode) then begin
+            errmsg = "Attention. Different currencies in documents.";
+          end;
+        end;
+        RESETCOMPANY(curcomp);
+      end;  
     end;
     
   return;
