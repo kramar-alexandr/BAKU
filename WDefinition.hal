@@ -1263,16 +1263,3 @@ begin
   EditField(150,10,140,"Валюта",Normal,f1,false,CurncyCodeSClass);
   EndWindow;
 end; ///Edit***************************Sasha2,14:46 21.01.2016 }
-
-window PecuniaryTestRClass:1 //Edit-------------------Vitalii 17:00 22.01.2016
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
-begin
-  real h,v,vs,h1;
-  WindowBegin("Материальный отчет 1",PecuniaryTestRClass,CGRcW,RcType);
-  SetWRect(20,80,400,250);
-  v = 6; vs = 20; h = 120;
-  EditFieldTL(h,v,150,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
-  EditFieldTL(h,v+=vs,150,"Магазин",M4Str,Normal,20,f2,false,LocationSClass);
-  EditFieldTL(h,v+=vs,150,"Машина",M4Str,Normal,20,f1,false,LocalMachineSClass);
-  EndWindow;
-end;

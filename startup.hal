@@ -112,7 +112,7 @@ begin
   Report("Оформленные счета клиентам",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
   Report("Отчет по продажам расширенный",SalesReportExtRClass,SalesReportExtRn,0,modSL);
   Report("Отчет продаж по материалам и коллекциям",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
-  Report("Материальный отчет новый",MatReportRClass,MatReportRn,0,modSL);
+ // Report("Материальный отчет новый",MatReportRClass,MatReportRn,0,modSL);
   if(currentcompany!=9)then begin
 		Report("Отчет по остаткам расширенный",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
   end else begin
@@ -146,7 +146,7 @@ begin
 
   Report("Отчет по маркетингу",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   Report("Материальный отчет",PecuniaryRClass,PecuniaryRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
-  Report("Материальный отчет 1",PecuniaryTestRClass,PecuniaryRn,0,modSL);//Edit-------------------Vitalii 16:57 22.01.2016
+  Report("Материальный отчет новый",PecuniaryRClass,PecuniaryNewRn,0,modSL);//Edit-------------------Vitalii 16:57 22.01.2016
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Оборотно-сальдовая ведомость по товарам",ItemSaldoRClass,ItemSaldoRn,0,modIN);
@@ -553,6 +553,12 @@ begin
 	
 	SString(35029,"Штрих-код не совпадает");		
   SString(35030,"Отрицательное нач. сальдо для операции ");
+  
+  //ProcFuncRn new
+  SString(35040," за ед.");
+  SString(35041,"Терминал");
+  SString(35042,"Карта лояльности");
+  
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

@@ -500,6 +500,7 @@ begin
   EndWindow;
 end;
 
+/*
 window MatReportRClass:1 
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -514,7 +515,7 @@ begin
 	  EditFieldTL(h,v+=vs, 150,"Классификация",M4UStr,Normal,30,f2,false,DISClass);
 	  
   EndWindow;
-end;
+end; */
 
 window MarketingRClass:1 
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
