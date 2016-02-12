@@ -1320,7 +1320,7 @@ begin
   vector val PayModes;
   vector val PayModesTotals;
   array string 5 PayModesValues;
-  string 5 tempCurncy;
+  string 5 tempCurncy,tempPayDeal;
   val payAZN,payUSD,payEUR,payTRM,payLOY;
   
 		
@@ -1473,8 +1473,8 @@ begin
        OutString(tab[32],0,USetStr(9131),false);
      end;
      OutString(tab[4],0,USetStr(31121),false);
-     OutString(tab[5],0,USetStr(12754),false);
-     OutString(tab[6],0,USetStr(31122),false);
+     OutString(tab[5],0,USetStr(35043),false);
+     OutString(tab[6],0,USetStr(35044),false);
      // OutString(tab[7],0,USetStr(35026),false);
 			OutString(tab[20],0,USetStr(9134),false);
 			
@@ -1569,27 +1569,46 @@ begin
           mtrw = matrowcnt(IVr);
           For(i=0;i<mtrw;i=i+1) begin
             matrowget(IVr,i,IVrw);
-            if (IVrw.stp==kInvoiceRowTypeCashPayment) then begin
-              tempCurncy = left(IVrw.CurncyCode,3);
-              PayModes[tempCurncy] = PayModes[tempCurncy] + IVrw.Sum;
-              PayModesTotals[tempCurncy] = PayModesTotals[tempCurncy] + IVrw.Sum;
-							payrows = false;
-            end;
-            if (IVrw.stp==kInvoiceRowTypeCreditCardPayment) then begin
-              PayModes["TRM"] = PayModes["TRM"] + IVrw.Sum;
-              PayModesTotals["TRM"] = PayModesTotals["TRM"] + IVrw.Sum;
-							payrows = false;
-            end;
-            if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment) or (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment)then begin
-              PayModes["LOY"] = PayModes["LOY"] + IVrw.Sum;
-              PayModesTotals["LOY"] = PayModesTotals["LOY"] + IVrw.Sum;
-							payrows = false;							
-            end;
+            switch(IVrw.stp) begin
+            	case kInvoiceRowTypeCashPayment:            
+              							tempCurncy = left(IVrw.CurncyCode,3);
+              							PayModes[tempCurncy] = PayModes[tempCurncy] + IVrw.Sum;
+              							PayModesTotals[tempCurncy] = PayModesTotals[tempCurncy] + IVrw.Sum;
+														payrows = false;
+         
+         			case  kInvoiceRowTypeCreditCardPayment:
+              							PayModes["TRM"] = PayModes["TRM"] + IVrw.Sum;
+              							PayModesTotals["TRM"] = PayModesTotals["TRM"] + IVrw.Sum;
+														payrows = false;
+
+            	case  kInvoiceRowTypeLoyaltyPointsPayment:            
+							              PayModes["LOY"] = PayModes["LOY"] + IVrw.Sum;
+							              PayModesTotals["LOY"] = PayModesTotals["LOY"] + IVrw.Sum;
+														payrows = false;	
+							
+							case  kInvoiceRowTypeGiftVoucherPayment	:
+							              PayModes["LOY"] = PayModes["LOY"] + IVrw.Sum;
+							              PayModesTotals["LOY"] = PayModesTotals["LOY"] + IVrw.Sum;
+														payrows = false;													
+
+            case kInvoiceRowTypePrepayment:
+            								payrows = false;
+            end;		
           end; 
           if (PDIsCash(IVr.PayDeal) and payrows) then begin
-          	GetBaseCurncy(1,tempCurncy);
-          	PayModes[tempCurncy] = PayModes[tempCurncy] + IVrw.Sum;
-          	PayModesTotals[tempCurncy] = PayModesTotals[tempCurncy] + IVrw.Sum;            
+          	tempPayDeal = Left(IVr.PayDeal,1);
+          	switch(tempPayDeal) begin
+          		case "O":
+          							GetBaseCurncy(1,tempCurncy);
+          							PayModes[tempCurncy] = PayModes[tempCurncy] + IVr.Sum4;
+          							PayModesTotals[tempCurncy] = PayModesTotals[tempCurncy] + IVr.Sum4;    
+          		case "T": 
+              					PayModes["TRM"] = PayModes["TRM"] + IVr.Sum4;
+              					PayModesTotals["TRM"] = PayModesTotals["TRM"] + IVr.Sum4; 
+          		case "L": 
+              					PayModes["LOY"] = PayModes["LOY"] + IVr.Sum4;
+              					PayModesTotals["LOY"] = PayModesTotals["LOY"] + IVr.Sum4;               					        							
+          	end;        
           end;
         end;
       	cred = 1;

@@ -558,6 +558,8 @@ begin
   SString(35040," за ед.");
   SString(35041,"Терминал");
   SString(35042,"Карта лояльности");
+  SString(35043,"Цена за единицу");
+  SString(35044,"Сумма со скидкой");
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
