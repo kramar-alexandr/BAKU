@@ -169,6 +169,30 @@ return;
 end;
 
 global
+function string 200 ValToMyString(val value,integer dec)
+begin
+string 200 res,tempres;
+val tempval;
+integer i,templen;
+
+	res = "";
+	tempval = value;
+	For(i=0;i<dec;i=i+1) begin
+	  tempval = tempval * 10;
+	end; 
+	tempres = ValToString(tempval,M4Val,"",".",1);
+	templen = len(tempres);
+	if(left(tempres,templen-dec)=="")then begin
+		res = "0." & right(tempres,dec);
+	end else begin
+		res = left(tempres,templen-dec) & "." & right(tempres,dec);
+	end;
+	
+	ValToMyString = res;
+return;
+end;
+
+global
 procedure PecuniaryRClassReportDefaults(Integer wn)
 BEGIN
   record RcVc RepSpec;
@@ -1320,8 +1344,9 @@ begin
   vector val PayModes;
   vector val PayModesTotals;
   array string 5 PayModesValues;
+  array string 5 currencies;
   string 5 tempCurncy,tempPayDeal;
-  val payAZN,payUSD,payEUR,payTRM,payLOY;
+  //val payAZN,payUSD,payEUR,payTRM,payLOY;
   
 		
 	vertestf = true; //new MatReport
@@ -1346,8 +1371,9 @@ begin
   PayModesValues[0] = "USD";
   PayModesValues[1] = "AZN";
   PayModesValues[2] = "EUR";
-  PayModesValues[3] = "TRM";	//by Terminal
-	PayModesValues[4] = "LOY";	//by Loyalty cards
+  PayModesValues[3] = "CHF";
+  PayModesValues[4] = "TRM";	//by Terminal
+	PayModesValues[5] = "LOY";	//by Loyalty cards
     
   if vertestf then begin
     //tab[1]  = 0;
@@ -1404,7 +1430,8 @@ begin
     
   sign = 1;
   CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);
-  baseCurcny = acrncy[0];
+  GetBaseCurncy(1,baseCurcny);//Edit----------------------Dima  15.02.2016
+//  baseCurcny = acrncy[0];
   
   BlockLoad(PMRec);    
     if nonblank(RepSpec.d1) then begin
@@ -1443,8 +1470,23 @@ begin
 			//rate = 1;
 			OutString(410,0,rate,false);
 			
-    EndFormat;    
+    EndFormat; 
     
+    
+    currencies[0] = "USD";
+    currencies[1] = "USDB";
+    currencies[2] = "EUR";   
+    currencies[3] = "EURB";   
+    currencies[4] = "CHF";   
+    currencies[5] = "CHFB";   
+    for(i=0;i<currencies.length;i=i+1) begin			//Edit--------------------------Dima  15.02.2016
+      GetFullCurncyRate(currencies[i],d1,fr,to1,to2,br1,br2);
+      startformat(15);
+        outstring(0,0,currencies[i] & ":" & baseCurcny,false);
+        outstring(50,0,ValToMyString(fr,3) & ":" & ValToMyString(to1,3),false);
+      endformat;
+		end;
+		endformat;    
     
 
      if blank(RepSpec.f1) then begin
@@ -1484,6 +1526,8 @@ begin
 			OutString(tab[63],0,"AZN",false);
 			OutString(tab[64],0,"EUR"& USetStr(35040),false);
 			OutString(tab[65],0,"EUR",false);
+			OutString(tab[64],0,"CHF"& USetStr(35040),false);
+			OutString(tab[65],0,"CHF",false);			
 			OutString(tab[66],0,USetStr(35041) & USetStr(35040),false);//terminal
 			OutString(tab[67],0,USetStr(35041),false);
 			OutString(tab[68],0,USetStr(35042) & USetStr(35040),false);//gift
@@ -1559,11 +1603,7 @@ begin
       
       if testf then begin
         if vertestf then begin //Collect payment modes
-          payAZN = 0;
-          payUSD = 0;
-          payEUR = 0;
-          payTRM = 0;
-          payLOY = 0;
+
           ClearPayModesVector(PayModes);
 					payrows = true;
           mtrw = matrowcnt(IVr);
@@ -1733,6 +1773,8 @@ begin
 								outstring(tab[63],0,round(IVrw.Sum/IVr.Sum4*PayModes["AZN"],SetRoundModeD(0)),false);
 								outstring(tab[64],0,round(IVrw.Sum/IVr.Sum4/IVrw.Quant*PayModes["EUR"],SetRoundModeD(0)),false);
 								outstring(tab[65],0,round(IVrw.Sum/IVr.Sum4*PayModes["EUR"],SetRoundModeD(0)),false);
+								outstring(tab[64],0,round(IVrw.Sum/IVr.Sum4/IVrw.Quant*PayModes["CHF"],SetRoundModeD(0)),false);
+								outstring(tab[65],0,round(IVrw.Sum/IVr.Sum4*PayModes["CHF"],SetRoundModeD(0)),false);								
 								outstring(tab[66],0,round(IVrw.Sum/IVr.Sum4/IVrw.Quant*PayModes["TRM"],SetRoundModeD(0)),false);
 								outstring(tab[67],0,round(IVrw.Sum/IVr.Sum4*PayModes["TRM"],SetRoundModeD(0)),false);
 								outstring(tab[68],0,round(IVrw.Sum/IVr.Sum4/IVrw.Quant*PayModes["LOY"],SetRoundModeD(0)),false);
