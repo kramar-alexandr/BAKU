@@ -212,6 +212,7 @@ begin
 		count = 0;
 		if(User.Closed>0)then begin testf = false; end;
 		if(blank(User.UserLocations))then begin testf = false; end;
+		if(User.Code=="SA")then begin testf = true; end;
 		
 		if(testf)then begin
 			count = 0;
@@ -238,8 +239,8 @@ begin
 			PLHr.TransTime = currenttime;
 			TrHs = true;
 			
-			createfile("Prices Update.xls");
-			openexportfile("Prices Update.xls",false);
+			createfile("PricesHist/Prices Update " & User.Code & "_" & currentcompany & ".xls");
+			openexportfile("PricesHist/Prices Update " & User.Code & "_" & currentcompany & ".xls",false);
 			setexportcodepage("CP1251");
 			startformat(15);
 				outstring(0,0,"Товар",false);
@@ -252,6 +253,10 @@ begin
 				outstring(0,0,"Цена",false);
 				outstring(0,0,"Валюта",false);
 			endformat;
+			
+			logtext(0,User.Code);
+			logtext(0,lastactday);
+			
 			While(loopbackkey("TransDate",PLHr,2,TrHs))begin
 				testf = true;
 				if(PLHr.TransDate<lastactday)then begin TrHs = false; testf = false; end;
@@ -344,8 +349,8 @@ begin
 				Actr.Comment = "Обновились цены. Список изменений в прикрепленном файле";
 				Actr.SerNr = NextSerNr("ActVc",Actr.TransDate,-1,false,"");
 				recordinsert(Actr,true);
-				if(FileExists("Prices Update.xls"))then begin
-					RecordLinkFile("Prices Update.xls",0,Actr,comp);
+				if(FileExists("PricesHist/Prices Update " & User.Code & "_" & currentcompany & ".xls"))then begin
+					RecordLinkFile("PricesHist/Prices Update " & User.Code & "_" & currentcompany & ".xls",0,Actr,comp);
 				end;
 			end;
 		end;		
