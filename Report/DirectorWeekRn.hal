@@ -515,7 +515,49 @@ begin
 								tempTRrw.CurCredVal = blankval;
 								tempTRrw.CredVal = blankval;
 							end;
-							corspdebval = blankval;
+              
+              corspdebval = blankval;
+							corspcredval = blankval;
+							testf = CorspTRTest(TRr,Accr601,i,corspdebval,corspcredval);//Edit-------------------Vitalii 11:15 16.02.2016
+							if (testf) then begin
+								if(TRrw.CredVal!=0)then begin
+									tempTRrw.MyVal1 = -TRrw.CurCredVal;
+									tempTRrw.MyVal2 = -TRrw.CredVal;
+								end else begin
+									tempTRrw.MyVal1 = TRrw.CurDebVal;
+									tempTRrw.MyVal2 = TRrw.DebVal;
+								end;
+                BalItem2 = BalItem2 + TRrw.CredVal - TRrw.DebVal;
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.CredVal = blankval;
+							end;
+              
+              corspdebval = blankval;
+							corspcredval = blankval;
+							testf = CorspTRTest(TRr,Accr76,i,corspdebval,corspcredval);//Edit-------------------Vitalii 14:48 28.08.2015
+							if (testf and (SetInSet("E131",TRrw.Objects) or SetInSet("E98",TRrw.Objects))) then begin
+								if(TRrw.CredVal!=0)then begin
+									tempTRrw.MyVal1 = -TRrw.CurCredVal;
+									tempTRrw.MyVal2 = -TRrw.CredVal;
+								end else begin
+									tempTRrw.MyVal1 = TRrw.CurDebVal;
+									tempTRrw.MyVal2 = TRrw.DebVal;
+								end;
+								if SetInSet("E131",TRrw.Objects) then begin
+									BalItem1 = BalItem1 - TRrw.CredVal + TRrw.DebVal;
+								end;
+								if SetInSet("E98",TRrw.Objects) then begin
+									BalItem2 = BalItem2 + TRrw.CredVal - TRrw.DebVal;
+								end;
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.CredVal = blankval;
+							end;
+							
+              corspdebval = blankval;
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr51,i,corspdebval,corspcredval);
 							if (testf and (corspdebval==TRrw.CredVal or corspcredval==TRrw.DebVal) and (TRr.IntYc != IVYc) and (TRr.IntYc != IPYc)) then begin
