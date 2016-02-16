@@ -658,6 +658,13 @@ BEGIN
     res = 1120; 
     goto LCheckStockMovRecord;
   end;
+  if (AllowedToTakeFromThisLoc(LocToRec)==false) then begin //Edit***************************Sasha2,10:16 16.02.2016 {
+    if (disperrf) then begin
+      RecordCheckError(31182,"",-1,"ToLocation");      
+    end;
+    res = -1;
+    goto LCheckStockMovRecord;
+  end; //Edit***************************Sasha2,10:17 16.02.2016 }
 
   if (nonblank(SMp.ThrouLocation)) then begin
     if (SMp.FrLocation==SMp.ThrouLocation) then begin

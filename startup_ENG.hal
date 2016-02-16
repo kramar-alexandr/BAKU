@@ -283,6 +283,7 @@ begin
   SString(31179,"Extended balance report over stocks"); //Отчет остатков по складам расширенный
   SString(31180,"Consignment");
   SString(31181,"Compare goods between Inner Orders and Purchase Orders");
+  SString(31182,"You are not allowed to send any items to this location.");
 
 //RebItemSalesRn
   SString(31204,"Name"); //Название
