@@ -165,13 +165,8 @@ begin
     end;
   end;  
   if (WindowState(wn)==insertmode) then begin
-    GetWindowRecord(wn,StockMovr);
-    if (StockMovr.SentOKFlag!=0) then begin
-      res = false;
-    end;
-    if (StockMovr.OrdFlag!=0) then begin	//Edit----------------------Dima  15.02.2016
-      res = false;
-    end;    
+		res = false;		//Edit----------------------Dima  16.02.2016
+  
   end;  
   if (WindowState(wn)==updatemode) then begin
     GetWindowRecord(wn,StockMovr);
@@ -182,11 +177,11 @@ begin
         res = false;
       end;
     end;
-    if (prevStockMovr.OrdFlag==0) then begin		//Edit----------------------Dima  15.02.2016
+ /*   if (prevStockMovr.OrdFlag==0) then begin		//Edit----------------------Dima  15.02.2016
       if (StockMovr.OrdFlag!=0) then begin
         res = false;
       end;
-    end;    
+    end;    */
   end;  
   StockMovDClassOKFlagButtonAction = res;
   return;
@@ -217,9 +212,7 @@ begin
     end;    
   end;  
   if (WindowState(wn)==insertmode) then begin
-    if (StockMovr.OKFlag!=0) then begin
-      res = false;
-    end;
+			res = false;	//Edit----------------------Dima  16.02.2016
   end;  
   if (WindowState(wn)==updatemode) then begin
     GetPrevWindowRecord(wn,StockMov2r);
@@ -232,11 +225,11 @@ begin
     if (StockMovr.OKFlag!=0) then begin
       res = false;
     end;
-    if (StockMov2r.OrdFlag==0) then begin		//Edit----------------------Dima  15.02.2016
+ /*   if (StockMov2r.OrdFlag==0) then begin		//Edit----------------------Dima  15.02.2016
       if (StockMovr.OrdFlag!=0) then begin
         res = false;
       end;
-    end;    
+    end;    */
   end;  
   if (blank(StockMovr.ThrouLocation)) then begin
     MessageBox(20080,"");
