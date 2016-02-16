@@ -100,6 +100,8 @@ begin
 		case 17: compf = true;
 		case 19: compf = true;
 		case 20: compf = true;
+    case 21: compf = true;
+    case 22: compf = true;
 		otherwise
 			compf = false;
 	end;
