@@ -338,6 +338,7 @@ begin
 	
 	
 	SString(35029,"Barcode does not match"); 								
+  SString(35030,"Negative forward balance for the operation ");
 
 	
   /*StrSetBegin(3);
