@@ -1647,6 +1647,7 @@ begin
 	date indate;
 	string 20 infile;
 	val qty1;
+	boolean findfcurcost;
 	
 	blockload(BCb);
 	
@@ -1743,6 +1744,7 @@ begin
 										  qty1 = IVrw.Quant;
 										  ResetLoop(oldIHr);
 										  TrHs = true;
+										  findfcurcost = false;
 										  while (LoopBackKey("FNArtCode",oldIHr,2,TrHs)) begin
                         if (oldIHr.ArtCode<>artcode) then begin TrHs = false; end;
                         if (qty1>=0) then begin TrHs = false; end;
@@ -1755,12 +1757,15 @@ begin
                           if (testf) then begin
                             if (oldIHr.Qty<qty1) then begin
                               totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy/oldIHr.Qty*qty1;
+                              findfcurcost = true;
                               qty1 = 0;
                             end else begin
                               if (oldIHr.Qty>0) then begin
                                 totcostpricecurncy = totcostpricecurncy - oldIHr.TotCostPriceCurncy;
+                                findfcurcost = true;
                               end else begin
                                 totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy;
+                                findfcurcost = true;
                               end;
                               qty1 = qty1 - oldIHr.Qty;
                             end;
@@ -1769,6 +1774,9 @@ begin
                             end;
                           end;
                         end;
+										  end;
+										  if(findfcurcost==false)then begin
+										  	totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
 										  end;
 										end else begin
 										  totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
