@@ -85,7 +85,7 @@ begin
 		IHr.TransNr = sernr;
 		IHr.Row = rownr;
 		TrHs = true;
-		while(loopkey("FNTransNr",IHr,3,TrHs))begin
+		while(loopkey("FNTransNr",IHr,3,TrHs)) begin
 			if(IHr.FileName!="IVVc")then begin TrHs = false; end;
 			if(IHr.TransNr!=sernr)then begin TrHs = false; end;
 			if(IHr.Row!=rownr)then begin TrHs = false; end;
@@ -311,6 +311,7 @@ begin
 				totsum = 0;			
 				totalCurrencySum = 0;
 				totfifo = 0;
+				updst = IVr.UpdStockFlag!=0;
 				
 				rwcnt = MatRowCnt(IVr);									
         for(i=0;i<rwcnt;i=i+1) begin    
@@ -1466,8 +1467,8 @@ begin
 			OutString(tab[8],0,USetStr(16681),false);
 			
 			GetCurncyRateOnDate(baseCurcny,d1,rate); //Edit----------------------Dima  28.01.2016
-			//GetCurncyRateOnDate("AZN",d1,rate);
-			//rate = 1;
+			if (baseCurcny=="AZN") then begin rate = 1; end;
+
 			OutString(410,0,rate,false);
 			
     EndFormat; 
