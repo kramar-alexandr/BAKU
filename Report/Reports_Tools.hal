@@ -292,3 +292,36 @@ begin
 	
 	return;
 end;
+
+
+global
+function Boolean PecuniaryNewRClassOnOKWindow(Integer wn)		//Edit----------------------Dima  29.01.2016
+begin
+  Boolean res;
+  record RcVc RepSpec;
+  
+  res = true;
+  DeselectWindow(wn,false);
+  GetWindowRecord(wn,RepSpec);
+	RepSpec.flags[29] = 1;			//start Excel version of report
+	PutWindowRecord(wn,RepSpec);
+
+  PecuniaryNewRClassOnOKWindow = res;
+  return;
+end;
+
+/*
+
+global
+function Boolean PecuniaryNewRClassOnOpenWindow(Integer wn)
+begin
+  record RcVc RepSpec;
+
+    GetWindowRecord(wn,RepSpec); 
+    RepSpec.Media=mtExcel;
+    PutWindowRecord(wn,RepSpec);
+
+  PecuniaryNewRClassOnOpenWindow = false;
+  return;
+end;
+*/

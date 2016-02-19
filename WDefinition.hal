@@ -21,10 +21,20 @@ real h,v,vs,h1;
   WindowBegin("Материальный отчет",PecuniaryRClass,CGRcW,RcType);
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 120;
-  EditFieldTL(h,v,150,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+//  EditFieldTL(h,v,150,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  PeriodField(h,v,"Период");
   EditFieldTL(h,v+=vs,150,"Магазин",M4Str,Normal,20,f2,false,LocationSClass);
   EditFieldTL(h,v+=vs,150,"Машина",M4Str,Normal,20,f1,false,LocalMachineSClass);
   EndWindow;
+  
+  WindowBegin("Материальный отчет новый",PecuniaryNewRClass,CGRcW,RcType);		//Edit----------------------Dima  19.02.2016
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 120;
+  PeriodField(h,v,"Период");
+//  EditFieldTL(h,v,150,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  EditFieldTL(h,v+=vs,150,"Магазин",M4Str,Normal,20,f2,false,LocationSClass);
+  EditFieldTL(h,v+=vs,150,"Машина",M4Str,Normal,20,f1,false,LocalMachineSClass);
+  EndWindow;  
 
   WindowBegin("Отчёт по продажам",SaleReportRClass,CGRcW,RcType);
   SetWRect(20,80,400,250);
