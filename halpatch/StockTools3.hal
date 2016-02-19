@@ -1411,6 +1411,7 @@ BEGIN
             if (TrHs) then begin
               testf = true;
               if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
+              if (oldIHr.StockAffectf==0) then begin testf = false; end;
               if (oldIHr.Location<>IVr.Location) then begin testf = false; end;
               if (oldIHr.TransNr>IVr.SerNr) then begin testf = false; end;
               if (testf) then begin
@@ -1441,7 +1442,7 @@ BEGIN
               end;
             end;
   			  end;
-  			  
+  			    			  
   			  if(findfcur==false)then begin
   			  	totcostpricecurncy = INr.LastPurchPrice2 * -IVrw.Quant;
   			  	curncy = INr.LastPurchCurncyCode;

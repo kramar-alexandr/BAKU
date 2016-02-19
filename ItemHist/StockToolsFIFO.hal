@@ -1751,6 +1751,7 @@ begin
                         if (TrHs) then begin
                           testf = true;
                           if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
+                          if (oldIHr.StockAffectf==0) then begin testf = false; end;
                           //if (oldIHr.Qty>0) then begin testf = false; end;
                           if (oldIHr.Location<>location) then begin testf = false; end;
                           if (oldIHr.TransNr>transnr) then begin testf = false; end;
