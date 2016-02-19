@@ -3377,3 +3377,109 @@ LRenameCertainDIMn:;
 
 return;
 end; //Edit***************************Sasha2,16:43 08.02.2016 }
+
+global //Edit***************************Sasha2,14:29 19.02.2016 {
+updating procedure AggregateDataToJWMn(record RcVc RepSpec)
+begin
+	record INVc frINr,syncINr;
+	record PLVc frPLr,toPLr;
+	record ItemStatusVc ISr;
+	record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
+	integer oldcompany,sourcecomp,jwcomp,rwcnt,i,j,pldefcnt;
+	Boolean includecompf,TrHs,testf;
+	string 20 curitem;
+	vector string 20 pldefartcode;
+	vector val pldefprice;
+	array string 10 pldeflist;
+	LongInt foundflag;
+	
+		oldcompany = CurrentCompany;
+		jwcomp = 3;
+		BlockLoad(Compb);
+    rwcnt = MatRowCnt(Compb);  
+    for (j=0;j<rwcnt;j=j+1) begin
+    	MatRowGet(Compb,j,Comprw);
+    	includecompf = false;
+    	switch (StringToInt(Comprw.CompCode)) begin //Нужно включить необходимые компании.
+    	  //case 17: includecompf = true;
+    	  //case 19: includecompf = true;
+        //case 20: includecompf = true;
+        //case 21: includecompf = true;
+        //case 22: includecompf = true;
+    	  otherwise includecompf = false;
+    	end;
+    	if (includecompf) then begin
+      	if (SetCompanyCode(Comprw.CompCode,false) and Comprw.ActiveStatus==0) then begin
+      	  sourcecomp = CurrentCompany;
+      	  ISr.Code = "";
+      	  while (LoopMain(ISr,1,true)) begin
+      	    testf = true;
+      	    if (ISr.Code==curitem) then begin testf = false; end;
+      	    if (testf) then begin
+      	      curitem = ISr.Code;
+      	      frINr.Code = ISr.Code;
+      	      if (ReadFirstMain(frINr,1,true)) then begin
+        	      TrHs = true;
+        	      pldefcnt = 0;
+        	      frPLr.ArtCode = frINr.Code;
+        	      while (LoopKey("ArtCode",frPLr,1,TrHs)) begin
+        	        testf = true;
+        	        if (frPLr.ArtCode!=frINr.Code) then begin TrHs = false; testf = false; end;
+        	        if (testf) then begin 
+        	          if (pldefartcode[frPLr.PLCode]!=frINr.Code) then begin
+          	          pldefartcode[frPLr.PLCode] = frINr.Code;
+          	          pldefprice[frPLr.PLCode] = frPLr.ExVatPrice;
+          	          pldeflist[pldefcnt] = frPLr.PLCode;
+          	          pldefcnt = pldefcnt + 1;
+        	          end;
+        	        end;
+        	      end; RESETLOOP(frPLr);
+        	      if (SetCompanyCode(jwcomp,false)) then begin
+        	        syncINr.SyncFlag = 9999999999; //For WEB sync {
+                  if (ReadLastKey("SyncFlag",syncINr,1,false)) then begin
+                	  foundflag = syncINr.SyncFlag;
+                  end;
+                  frINr.SyncFlag = foundflag + 1;
+                  frINr.SavedCount = syncINr.SavedCount + 1; //For WEB sync }
+        	        if (RECORDSTORE(frINr,true)) then begin
+        	          LogText(0,"ArtCode stored (From comp " & sourcecomp & " to comp " & CurrentCompany & "):" & Chr(9) & frINr.Code);
+        	          for (i=0;i<pldefcnt;i=i+1) begin
+        	            if (pldefartcode[pldeflist[i]]==frINr.Code) then begin
+          	            toPLr.PLCode = pldeflist[i];
+          	            toPLr.ArtCode = frINr.Code;
+          	            if (ReadFirstMain(toPLr,2,true)) then begin
+          	              toPLr.ExVatPrice = pldefprice[pldeflist[i]];
+          	              if (RECORDSTORE(toPLr,true)) then begin
+          	                LogText(0,"Price updated (From comp " & sourcecomp & " to comp " & CurrentCompany & "):" & Chr(9) & toPLr.ArtCode & Chr(9) & toPLr.PLCode & Chr(9) & toPLr.ExVatPrice);
+          	              end;
+          	            end else begin
+          	              RECORDNEW(toPLr);
+          	              toPLr.PLCode = pldeflist[i];
+          	              toPLr.ArtCode = frINr.Code;
+          	              toPLr.Comment = frINr.Name;
+          	              toPLr.ExVatPrice = pldefprice[pldeflist[i]];
+          	              if (RECORDSTORE(toPLr,true)) then begin
+          	                LogText(0,"Price created (From comp " & sourcecomp & " to comp " & CurrentCompany & "):" & Chr(9) & toPLr.ArtCode & Chr(9) & toPLr.PLCode & Chr(9) & toPLr.ExVatPrice);
+          	              end;
+          	            end;  
+        	            end;
+        	          end;
+        	        end;
+        	        ResetCompany(sourcecomp);
+        	      end;  
+      	      end;
+      	    end;
+      	  end; RESETLOOP(ISr);
+    		end;
+    	end;
+  	end;
+	
+	ResetCompany(oldcompany);
+      
+      
+LAggregateDataToJWMn:;   
+
+return;
+end; //Edit***************************Sasha2,14:28 19.02.2016 }
+
