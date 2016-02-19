@@ -412,6 +412,139 @@ end;
 
 
 
+procedure GetClassifications(string artCode, var string brandname, var string classname)
+begin
+	record INVc INr;
+	record DIVc DIr;
+	string 100 brand,class;
+	integer pos;
+  
+  brandname = "";
+  classname = "";
+  
+  INr.Code = artCode;
+  if (readfirstmain(INr,1,true)) then begin
+  	pos = 0;  
+  	class = "";  
+  	brand = "";
+  	ExtractObj(INr.DispGroups,pos,class);
+  	while(nonblank(class)) begin
+  	  DIr.Code = class;
+  	  readfirstmain(DIr,1,true);
+  	  if(DIr.CType=="TYPE")then begin
+  	    classname = DIr.Name;
+  	  end;
+  	  if(DIr.CType=="BRAND")then begin
+  	    brandname = DIr.Name;
+  	    brand = DIr.Code;
+  	  end;
+  	  ExtractObj(INr.DispGroups,pos,class);
+  	end; 
+  end; 
+  
+end;
+
+
+
+procedure  PrintSMovementsAndDeprecation(record RcVc RepSpec,array integer tab)
+begin
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	record SDVc SDr;
+	row SDVc SDrw;
+	boolean TrHs,excelreport,recordsExist;
+	string 100 brandname,classname;
+	integer qty,i,count;
+	val cost;
+	
+	
+	if (RepSpec.flags[29]!=0) then begin	
+		excelreport = true; //new MatReport
+	end;
+	
+	SMr.FrLocation = RepSpec.f2;
+	SMr.OKFlag = 1;
+	SMr.TransDate = RepSpec.d1;
+	if (ReadFirstKey("FrLocOK",SMr,3,true)==false) then begin
+		goto LPrintSMovementsAndDeprecation;
+	end;	
+	
+	StartFormat(15);
+		OutString(tab[2],0,USetStr(35046),false);
+		OutString(tab[3],0,RepSpec.d1,false);
+	EndFormat;
+  StartFormat(15);
+  if !excelreport then begin
+    OutString(tab[1],0,"Ü",false);
+  end;
+  OutString(tab[2],0,USetStr(12501),false);
+  OutString(tab[3],0,USetStr(8105),false);
+  if excelreport then begin
+    OutString(tab[31],0,USetStr(31044),false);
+    OutString(tab[32],0,USetStr(9131),false);
+  end;
+  OutString(tab[4],0,USetStr(31121),false);    
+  OutString(tab[5],0,USetStr(35045),false);
+  OutString(tab[6],0,USetStr(18240),false);
+  
+  OutString(tab[7],0,"",false);
+  OutString(tab[8],0,USetStr(31144),false);
+  OutString(tab[10],0,USetStr(8121),false);
+	EndFormat;	
+	
+	
+	SMr.FrLocation = RepSpec.f2;
+	SMr.OKFlag = 1;
+	SMr.TransDate = RepSpec.d1;
+	TrHs = true;
+	While(LoopKey("FrLocOK",SMr,3,TrHs)) begin
+		if (SMr.TransDate!=RepSpec.d1 or SMr.OKFlag==0 or SMr.FrLocation!=RepSpec.f2) then begin TrHs = false; end;
+		if (TrHs) then begin
+			for(i=0;i<MatRowCnt(SMr);i=i+1) begin
+				MatRowGet(SMr,i,SMrw);
+				GetClassifications(SMrw.ArtCode,brandname,classname);				
+				if (blank(SMr.ThrouLocation)) then begin 
+					qty = SMrw.Quant;
+					cost = SMrw.FIFORowVal; 
+				end else begin
+					qty = SMrw.SentQuant; 
+					cost = SMrw.SentFIFORowVal;
+				end;				
+				
+  			StartFormat(15);
+  			if (!excelreport) then begin
+  			  OutString(tab[1],0,"Ü",false);
+  			end;
+  			OutString(tab[2],0,SMrw.ArtCode,false);
+  			OutString(tab[3],0,SMrw.Spec,false);
+  			if (excelreport) then begin
+  			  OutString(tab[31],0,brandname,false);
+  			  OutString(tab[32],0,classname,false);
+  			end;
+  			OutString(tab[4],0,qty,false);
+  			if (UserCanAction("ViewCostPrice",true)==true) then begin    
+  				OutString(tab[5],0,cost/qty,false);
+  				OutString(tab[6],0,cost,false); 
+  			end else begin
+  				OutString(tab[5],0,"",false);
+  				OutString(tab[6],0,"",false);
+				end;
+				OutString(tab[7],0,"",false);
+  			OutString(tab[8],0,SMr.SerNr,false);
+  			OutString(tab[10],0,SMr.Comment,false); 			
+				EndFormat;					
+				
+			end;	
+		end;
+	end;
+	EndFormat;
+  
+  LPrintSMovementsAndDeprecation:;
+end;
+
+
+
+
 
 global
 procedure RunPecuniaryRn(record RcVc RepSpec)
@@ -445,7 +578,7 @@ begin
   row IPVc IPrw;
   val totsumpay,fr,to1,to2,br1,br2,coef;
   val orfr,orto1,orto2,orbr1,orbr2;
-  record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
+  //record INVc INr;// Edit ************************** Monday, 15 April 2013 15:12:04
   integer ivcount,mtrw;
   record IPrsVc IPrsr; 
   record IPVc SMr,SMgift,SMpay;
@@ -469,7 +602,7 @@ begin
   boolean excelreport,vertestf;
   array integer tab;
   string 50 class,classname,brandname,brand;
-  record DIVc DIr;
+  //record DIVc DIr;
   vector val PayModes;
   vector val PayModesTotals;
   array string 5 PayModesValues;
@@ -842,29 +975,11 @@ begin
 
 								OutString(tab[2],0,IVrw.ArtCode,false);
 								OutString(tab[3],0,IVrw.Spec,false);
-                if excelreport then begin
-                  INr.Code = IVrw.ArtCode;
-                  readfirstmain(INr,1,true);
-                  pos = 0;
-                  classname = "";
-                  class = "";
-                  brandname = "";
-                  brand = "";
-                  ExtractObj(INr.DispGroups,pos,class);
-                  while(nonblank(class))begin
-                    DIr.Code = class;
-                    readfirstmain(DIr,1,true);
-                    if(DIr.CType=="TYPE")then begin
-                      classname = DIr.Name;
-                    end;
-                    if(DIr.CType=="BRAND")then begin
-                      brandname = DIr.Name;
-                      brand = DIr.Code;
-                    end;
-                    ExtractObj(INr.DispGroups,pos,class);
-                  end;
-                  OutString(tab[31],0,brandname,false);
-                  OutString(tab[32],0,classname,false);
+                if (excelreport) then begin                  
+                  GetClassifications(IVrw.ArtCode,brandname,classname);	//Edit----------------------Dima  19.02.2016
+                  
+                  OutString(tab[31],0,brandname,false);	//Brand
+                  OutString(tab[32],0,classname,false);	//Type
                 end;
 								OutVal(tab[4],0,IVrw.Quant*cred,M4Val,false);
 								OutVal(tab[5],0,IVrw.Price*IVrw.Quant*cred,M4Val,false);
@@ -1363,6 +1478,11 @@ begin
 		endformat;
 		StartFormat(15);
 		endformat;
+		
+		if (excelreport) then begin
+			PrintSMovementsAndDeprecation(RepSpec,tab);
+		end;
+			
 		StartFormat(15);
 		endformat;
 		StartFormat(15);
