@@ -3387,7 +3387,7 @@ begin
 	record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
 	integer oldcompany,sourcecomp,jwcomp,rwcnt,i,j,pldefcnt;
-	Boolean includecompf,TrHs,testf;
+	Boolean includecompf,TrHs,testf,TrHs1;
 	string 20 curitem;
 	vector string 20 pldefartcode;
 	vector val pldefprice;
@@ -3402,21 +3402,22 @@ begin
     	MatRowGet(Compb,j,Comprw);
     	includecompf = false;
     	switch (StringToInt(Comprw.CompCode)) begin //Нужно включить необходимые компании.
-    	  //case 17: includecompf = true;
-    	  //case 19: includecompf = true;
-        //case 20: includecompf = true;
-        //case 21: includecompf = true;
-        //case 22: includecompf = true;
+    	  case 17: includecompf = true;
+    	  case 19: includecompf = true;
+        case 20: includecompf = true;
+        case 21: includecompf = true;
+        case 22: includecompf = true;
     	  otherwise includecompf = false;
     	end;
     	if (includecompf) then begin
       	if (SetCompanyCode(Comprw.CompCode,false) and Comprw.ActiveStatus==0) then begin
       	  sourcecomp = CurrentCompany;
-      	  ISr.Code = "";
-      	  while (LoopMain(ISr,1,true)) begin
+      	  ISr.Location = ";;;";
+      	  TrHs1 = true;
+      	  while (LoopKey("Location",ISr,1,TrHs1)) begin
       	    testf = true;
-      	    if (ISr.Code==curitem) then begin testf = false; end;
-      	    if (testf) then begin
+      	    if (ISr.Location!=";;;") then begin TrHs1 = false; end;
+      	    if (TrHs1) then begin
       	      curitem = ISr.Code;
       	      frINr.Code = ISr.Code;
       	      if (ReadFirstMain(frINr,1,true)) then begin
