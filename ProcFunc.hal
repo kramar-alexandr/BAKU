@@ -466,7 +466,7 @@ begin
 	SMr.OKFlag = 1;
 	SMr.TransDate = RepSpec.d1;
 	if (ReadFirstKey("FrLocOK",SMr,3,true)==false) then begin
-		goto LPrintSMovementsAndDeprecation;
+		goto LPrintSMovementsAndDeprecation1;
 	end;	
 	
 	StartFormat(15);
@@ -537,6 +537,80 @@ begin
 			end;	
 		end;
 	end;
+	EndFormat;
+	
+	LPrintSMovementsAndDeprecation1:;
+	
+	SDr.Location = RepSpec.f2;
+	SDr.OKFlag = 1;
+	SDr.TransDate = RepSpec.d1;
+	if (ReadFirstKey("LocOK",SDr,3,true)==false) then begin
+		goto LPrintSMovementsAndDeprecation;
+	end;
+
+	StartFormat(15);
+		OutString(tab[2],0,USetStr(35047),false);
+		OutString(tab[3],0,RepSpec.d1,false);
+	EndFormat;
+  StartFormat(15);
+  if !excelreport then begin
+    OutString(tab[1],0,"Ü",false);
+  end;
+  OutString(tab[2],0,USetStr(12501),false);
+  OutString(tab[3],0,USetStr(8105),false);
+  if excelreport then begin
+    OutString(tab[31],0,USetStr(31044),false);
+    OutString(tab[32],0,USetStr(9131),false);
+  end;
+  OutString(tab[4],0,USetStr(31121),false);    
+  OutString(tab[5],0,USetStr(35045),false);
+  OutString(tab[6],0,USetStr(18240),false);
+  
+  OutString(tab[7],0,"",false);
+  OutString(tab[8],0,USetStr(31144),false);
+  OutString(tab[10],0,USetStr(8121),false);
+	EndFormat;
+		
+	SDr.Location = RepSpec.f2;
+	SDr.OKFlag = 1;
+	SDr.TransDate = RepSpec.d1;	
+	TrHs = true;
+	While(LoopKey("LocOK",SDr,3,TrHs)) begin
+		if (SDr.TransDate!=RepSpec.d1 or SDr.OKFlag==0 or SDr.Location!=RepSpec.f2) then begin TrHs = false; end;
+		if (TrHs) then begin
+			for(i=0;i<MatRowCnt(SDr);i=i+1) begin
+				MatRowGet(SDr,i,SDrw);
+				GetClassifications(SDrw.ArtCode,brandname,classname);										
+				
+  			StartFormat(15);
+  			if (!excelreport) then begin
+  			  OutString(tab[1],0,"Ü",false);
+  			end;
+  			OutString(tab[2],0,SMrw.ArtCode,false);
+  			OutString(tab[3],0,SMrw.Spec,false);
+  			if (excelreport) then begin
+  			  OutString(tab[31],0,brandname,false);
+  			  OutString(tab[32],0,classname,false);
+  			end;
+  			OutString(tab[4],0,SDrw.Qty,false);
+  			if (UserCanAction("ViewCostPrice",true)==true) then begin    
+  				OutString(tab[5],0,SDrw.FIFO,false);
+  				OutString(tab[6],0,SDrw.FIFORowVal,false); 
+  			end else begin
+  				OutString(tab[5],0,"",false);
+  				OutString(tab[6],0,"",false);
+				end;
+				OutString(tab[7],0,"",false);
+  			OutString(tab[8],0,SDr.SerNr,false);
+  			OutString(tab[10],0,SDr.Comment,false); 			
+				EndFormat;					
+				
+			end;	
+		end;
+	end;	
+	
+		
+	
 	EndFormat;
   
   LPrintSMovementsAndDeprecation:;
