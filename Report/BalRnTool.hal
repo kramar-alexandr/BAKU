@@ -1089,9 +1089,10 @@ procedure AGrSumLine2(record RcVc RepSpec,Integer c1,string t1,string t2,string 
 BEGIN
   val v,cppr;
   val s1,s2,s3,s4,s5,s6;
+  val s1rate,s2rate,s3rate,s4rate,s5rate,s6rate;
   val os1,os2,os3,os4,os5,os6;
   string 5 tstr;
-  Integer ValForm;
+  Integer ValForm,colNr;
   Boolean prntdf,skipf;
   val rate;
 
@@ -1104,8 +1105,8 @@ BEGIN
   end;
   
   rate = 1;
-  if (nonblank(RepSpec.vals3)) then begin
-		rate = RepSpec.vals3;
+  if (nonblank(RepSpec.vals3)) then begin		//Edit----------------------Dima  23.02.2016
+		rate = RepSpec.vals3;     		
 	end;
   
   switch (RepSpec.AccSpec) begin
@@ -1150,19 +1151,20 @@ BEGIN
   if (RepSpec.Notation==4) then begin
     ValForm = M40Val;
   end;  
-  s1 = Sp1/rate;	//Edit----------------------Dima  04.02.2016
-  s2 = Sp2/rate;
-  s3 = Sp3/rate;
-  s4 = Sp4/rate;
-  s5 = Sp5/rate;
-  s6 = Sp6/rate;	//Edit----------------------Dima  04.02.2016
+  s1 = Sp1;				s1rate = Sp1/rate;			//Edit----------------------Dima  23.02.2016
+  s2 = Sp2;				s2rate = Sp2/rate;      
+  s3 = Sp3;				s3rate = Sp3/rate;      
+  s4 = Sp4;				s4rate = Sp4/rate;      
+  s5 = Sp5;				s5rate = Sp5/rate;      
+  s6 = Sp6;				s6rate = Sp6/rate;	    
+    
   if (negf) then begin
-    s1 = -s1;
-    s2 = -s2;
-    s3 = -s3;
-    s4 = -s4;
-    s5 = -s5;
-    s6 = -s6;
+    s1 = -s1;			s1rate = -s1rate;
+    s2 = -s2;     s2rate = -s2rate;
+    s3 = -s3;     s3rate = -s3rate;
+    s4 = -s4;     s4rate = -s4rate;
+    s5 = -s5;     s5rate = -s5rate;
+    s6 = -s6;     s6rate = -s6rate;
   end;
   StartFormat(15);
   if ((RepSpec.repname!="ConsResRn") and (RepSpec.repname!="ConsBalRn")) then begin
@@ -1278,12 +1280,15 @@ BEGIN
     end;
   end;
   if (PLf==true) then begin
-    os1 = s1;
-    os2 = s2;
+  	colNr = 5;
+  
+    os1 = s1;		
+    os2 = s2;			if (nonblank(RepSpec.vals3)) then begin 	os2 = s2rate; colNr = 7; end;	//Edit----------------------Dima  23.02.2016
     os3 = s3;
     os4 = s4;
     os5 = s5;
-    os6 = s6;
+    os6 = s6;    
+    
     if (RepSpec.Notation==3) then begin
       s1 = s1/goms;
       s2 = s2/goms;
@@ -1300,10 +1305,15 @@ BEGIN
       s1 = blankval;
     end;  
     if (RepSpec.Comparison==0) then begin
-//      if (resUseAccum==true) then begin//I don't think this is needed here at all, in January number of columns is diffrent then in february why?
+			if (blank(RepSpec.vals3)) then begin
         OutVal(4,0,s1,ValForm,true);
-//      end;  
-      OutVal(5,0,s2,ValForm,true);
+      	OutVal(5,0,s2,ValForm,true);
+      end else begin						//out by rate	//Edit----------------------Dima  23.02.2016
+        OutVal(4,0,s1,ValForm,true);
+      	OutVal(5,0,s2,ValForm,true);      
+        OutVal(6,0,s1rate,ValForm,true);
+      	OutVal(7,0,s2rate,ValForm,true);
+      end;
     end;
     if (RepSpec.Comparison==1) then begin
       cppr = blankval;
@@ -1311,24 +1321,30 @@ BEGIN
         OutVal(3,0,s2,ValForm,true);
         OutVal(4,0,s1,ValForm,true);
       end else begin
-        OutVal(3,0,s1,ValForm,true);
-        OutVal(4,0,s2,ValForm,true);
+      	if (blank(RepSpec.vals3)) then begin		//Edit----------------------Dima  23.02.2016
+        	OutVal(3,0,s1,ValForm,true);
+        	OutVal(4,0,s2,ValForm,true);
+        end else begin
+        	OutVal(4,0,s1,ValForm,true);
+        	OutVal(5,0,s2,ValForm,true);
+        	OutVal(6,0,s2rate,ValForm,true);
+        end;
       end;
       if (comparef) then begin
         switch (RepSpec.flags[1]) begin
           case 0:
             v = os2 - os1;
-            OutVal(5,0,v,ValForm,true);
+            OutVal(colNr,0,v,ValForm,true);
           case 1:
             if (os1!=0) then begin
               v = os2 - os1;
               v = v/os1;        
               cppr = v*100;        
             end;
-            OutVal(5,0,cppr,M4Prcnt,true);
+            OutVal(colNr,0,cppr,M4Prcnt,true);
           case 2:
             v = os2 + os1;
-            OutVal(5,0,v,ValForm,true);
+            OutVal(colNr,0,v,ValForm,true);
         end;
       end;
     end;

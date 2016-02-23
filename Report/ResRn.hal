@@ -987,6 +987,12 @@ BEGIN
     end;
     SetRepCol(6,15);
   end;
+  if (nonblank(RepSpec.vals3)) then begin	//Out by rate	//Edit----------------------Dima  23.02.2016
+    SetRepCol(4,280);
+    SetRepCol(5,340);
+    SetRepCol(6,400);
+    SetRepCol(7,460);        		
+	end;  
   aidn = -1; 
   Goms = 1.00;
   if (RepSpec.Notation==3) then begin
@@ -1019,26 +1025,26 @@ BEGIN
       tstr = USetStr(3157);
       tstr = tstr & notstr;
       OutStringAdjust(5,0,tstr,true,M4Val);
+      if (nonblank(RepSpec.vals3)) then begin
+      	OutString(6,0,USetStr(35050),true);
+      	OutString(7,0,USetStr(35051),true);
+      end;
     end;
     if (RepSpec.Comparison==1) then begin
-      if (GetVATLaw==vatFinnish) then begin
-        tstr = USetStr(3159);
-        tstr = tstr & notstr;
-        OutString(3,0,tstr,true);
-        tstr = USetStr(3158);
-        tstr = tstr & notstr;
-        OutString(4,0,tstr,true);
-      end else begin
+			if (blank(RepSpec.vals3)) then begin
         tstr = USetStr(3158);
         tstr = tstr & notstr;
         OutString(3,0,tstr,true);
         tstr = USetStr(3159);
         tstr = tstr & notstr;
-        OutString(4,0,tstr,true);
-      end;
-      if (GetVATLaw!=vatFinnish) then begin
+        OutString(4,0,tstr,true);        
         OutString(5,0,USetStr(3160),true);
-      end;
+      end else begin 								//Edit----------------------Dima  23.02.2016
+      	OutString(4,0,USetStr(3158),true);   
+      	OutString(5,0,USetStr(3159),true);   
+      	OutString(6,0,USetStr(35052),true);   
+      	OutString(7,0,USetStr(3160),true); 
+			end;
     end;
     if (RepSpec.Comparison==2) then begin
       tstr = USetStr(3161);

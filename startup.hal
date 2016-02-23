@@ -566,6 +566,10 @@ begin
   SString(35046,"Перемещения за ");
   SString(35047,"Списания за ");  
   
+  SString(35050,"Период (по курсу)"); 
+  SString(35051,"Сумма (по курсу)");
+  SString(35052,"Итого (по курсу)"); 
+  
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
