@@ -1283,7 +1283,7 @@ BEGIN
   	colNr = 5;
   
     os1 = s1;		
-    os2 = s2;			if (nonblank(RepSpec.vals3)) then begin 	os2 = s2rate; colNr = 7; end;	//Edit----------------------Dima  23.02.2016
+    os2 = s2;			if (nonblank(RepSpec.vals3)) then begin colNr = 7; end;	//Edit----------------------Dima  23.02.2016
     os3 = s3;
     os4 = s4;
     os5 = s5;
@@ -1325,7 +1325,8 @@ BEGIN
         	OutVal(3,0,s1,ValForm,true);
         	OutVal(4,0,s2,ValForm,true);
         end else begin
-        	OutVal(4,0,s1,ValForm,true);
+        	OutVal(3,0,s1,ValForm,true);
+        	OutVal(4,0,s1rate,ValForm,true);
         	OutVal(5,0,s2,ValForm,true);
         	OutVal(6,0,s2rate,ValForm,true);
         end;

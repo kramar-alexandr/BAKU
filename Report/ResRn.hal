@@ -988,6 +988,7 @@ BEGIN
     SetRepCol(6,15);
   end;
   if (nonblank(RepSpec.vals3)) then begin	//Out by rate	//Edit----------------------Dima  23.02.2016
+  	SetRepCol(3,220);
     SetRepCol(4,280);
     SetRepCol(5,340);
     SetRepCol(6,400);
@@ -1040,7 +1041,8 @@ BEGIN
         OutString(4,0,tstr,true);        
         OutString(5,0,USetStr(3160),true);
       end else begin 								//Edit----------------------Dima  23.02.2016
-      	OutString(4,0,USetStr(3158),true);   
+      	OutString(3,0,USetStr(3158),true);
+      	OutString(4,0,USetStr(35053),true);   
       	OutString(5,0,USetStr(3159),true);   
       	OutString(6,0,USetStr(35052),true);   
       	OutString(7,0,USetStr(3160),true); 

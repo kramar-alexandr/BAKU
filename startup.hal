@@ -569,6 +569,7 @@ begin
   SString(35050,"Период (по курсу)"); 
   SString(35051,"Сумма (по курсу)");
   SString(35052,"Итого (по курсу)"); 
+  SString(35053,"Пред.год (по курсу)"); 
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
