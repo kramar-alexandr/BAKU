@@ -650,6 +650,8 @@ begin
 		EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
 		RadioButton(h,v+=vs,0,0,"Подробный",ArtMode);
 		RadioButton(h,v+=16,1,0,"Сводный",ArtMode);
+		EditFieldTL(h,v+=vs,150,"В USD по курсу:",M4Val,Normal,30,vals0,false,0);
+		StaticText(30,v+=vs+10,"При пересчете с курсом отчет лучше выводить в Excel",false);
 	EndWindow;
 end;
 window BrandManagerRClass:1 //Edit---------------Vitalii 18:31 11.06.2015
