@@ -8,6 +8,19 @@ external function string 200 ValToMyString(val,integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
+
+procedure OutMyString(integer p1,integer p2,val str,boolean alight)
+begin
+	
+	if(str!=0)then begin
+		outstring(p1,p2,str,alight);
+	end else begin
+		outstring(p1,p2,"",alight);
+	end;
+
+return;
+end;
+
 global
 procedure DirectorWeekRn(record RcVc RepSpec)
 begin
@@ -1048,6 +1061,10 @@ begin
 				OutString(25,0,"Сумма в осн. вал.",false);
 				OutString(60,0,BeginBalance50n51n53,false);
 				OutString(90,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+					OutMyString(160,0,BeginBalance50n51n53/RepSpec.vals0,false);
+				end;
 			EndFormat;
 			StartFormat(15);
 			EndFormat;
@@ -1075,6 +1092,11 @@ begin
 				OutString(25,0,"Сумма в осн. вал.",false);
 				OutString(60,0,BeginBalance53,false);
 				OutString(90,0,"AZN",false);
+				
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+					OutMyString(160,0,BeginBalance53/RepSpec.vals0,false);
+				end;
 			EndFormat;
 			StartFormat(15);
 			EndFormat;
@@ -1317,6 +1339,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[6],0,"В осн. валюте",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(tab[6]+25,0,"В USD по курсу: " & RepSpec.vals0,false);
+				end;
 			end;
 			if terf then begin
 				OutString(tab[7],0,"AZN терминал",false);
@@ -1332,6 +1357,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[11],0,"В осн. валюте",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(tab[11]+25,0,"В USD по курсу: " & RepSpec.vals0,false);
+				end;
 			end;
 			OutString(tab[111] + 2,0,"Курсовая",false);
 			if terf then begin
@@ -1348,6 +1376,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[16],0,"В осн. валюте",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(tab[16]+25,0,"В USD по курсу: " & RepSpec.vals0,false);
+				end;
 			end;
 			OutString(tab[17],0,"Докум.",false);
 			OutString(tab[18],0,"Коммент.",false);
@@ -1379,6 +1410,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,"",false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutString(tab[6]+25,0,"",false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,"",false);
@@ -1394,6 +1428,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,"",false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutString(tab[11]+25,0,"",false);
+						end;
 					end;
 					OutString(tab[111],0,"",false);
 					if terf then begin
@@ -1410,6 +1447,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,"",false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutString(tab[16]+25,0,"",false);
+						end;
 					end;
 					OutString(tab[17],0,"",false);
 					OutString(tab[18],0,"Курс на " & tempDate,false);
@@ -1439,6 +1479,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[6]+25,0,tempTRrw.DebVal/RepSpec.vals0,false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,"",false);
@@ -1455,6 +1498,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
+						end;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
@@ -1472,6 +1518,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.CredVal/RepSpec.vals0,false);
+						end;
 					end;
 				case "EUR":
 					if terf then begin
@@ -1489,6 +1538,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[6]+25,0,tempTRrw.DebVal/RepSpec.vals0,false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,"",false);
@@ -1505,6 +1557,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
+						end;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
@@ -1522,6 +1577,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[16]+25,0,tempTRrw.CredVal/RepSpec.vals0,false);
+						end;
 					end;
 				case "USD":
 					if terf then begin
@@ -1539,6 +1597,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[6]+25,0,tempTRrw.DebVal/RepSpec.vals0,false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,"",false);
@@ -1555,6 +1616,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
+						end;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
@@ -1572,6 +1636,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[16]+25,0,tempTRrw.CredVal/RepSpec.vals0,false);
+						end;
 					end;
 				case "TER":
 					if terf then begin
@@ -1589,6 +1656,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[6]+25,0,tempTRrw.DebVal/RepSpec.vals0,false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,tempTRrw.MyVal1,false);
@@ -1605,6 +1675,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
+						end;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal3,false);
 					if terf then begin
@@ -1622,6 +1695,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,tempTRrw.CredVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[16]+25,0,tempTRrw.CredVal/RepSpec.vals0,false);
+						end;
 					end;
 				case "IVV":
 					if terf then begin
@@ -1642,6 +1718,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[6],0,tempTRrw.DebVal,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[6]+25,0,tempTRrw.DebVal/RepSpec.vals0,false);
+						end;
 					end;
 					if terf then begin
 						OutString(tab[7],0,tempTRrw.MyVal5,false);
@@ -1661,6 +1740,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[11],0,tempTRrw.MyVal2,false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
+						end;
             convtotal5 = convtotal5 + tempTRrw.MyVal2;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal6,false);
@@ -1678,6 +1760,9 @@ begin
 					end;
 					if basef then begin
 						OutString(tab[16],0,"",false);
+						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+							OutString(tab[11]+25,0,"",false);
+						end;
 					end;
 			end;
 			BaseDeb = BaseDeb + tempTRrw.DebVal;
@@ -1717,6 +1802,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[6],0,BaseDeb,false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutMyString(tab[6]+25,0,BaseDeb/RepSpec.vals0,false);
+				end;
 			end;
 			if terf then begin
 				OutString(tab[7],0,convtotal1,false); 
@@ -1732,6 +1820,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[11],0,convtotal5,false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutMyString(tab[11]+25,0,convtotal5/RepSpec.vals0,false);
+				end;
 			end;
 			OutString(tab[111],0,kursovaya,false);
 			if terf then begin
@@ -1748,6 +1839,9 @@ begin
 			end;
 			if basef then begin
 				OutString(tab[16],0,BaseCred,false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutMyString(tab[16]+25,0,BaseCred/RepSpec.vals0,false);
+				end;
 			end;
 		EndFormat;
 		Gray_Divider(0,1)
@@ -1758,11 +1852,21 @@ begin
 			OutString(0,0,"",false);
 			OutString(15,0,"Оборот AZN:",false);
 			OutString(44,0,BaseDeb,false);
-			OutString(69,0,"",false);
-			OutString(93,0,"",false);
-			OutString(118,0,"",false);
+			if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+				OutString(69,0,"В USD по курсу: " & RepSpec.vals0,false);
+				OutMyString(93,0,BaseDeb/RepSpec.vals0,false);
+				OutString(118,0,"",false);
+			end else begin
+				OutString(69,0,"",false);
+				OutString(93,0,"",false);
+				OutString(118,0,"",false);
+			end;
 			OutString(142,0,"Расход AZN:",false);
 			OutString(167,0,BaseCred,false);
+			if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+				OutString(180,0,"В USD по курсу: " & RepSpec.vals0,false);
+				OutMyString(200,0,BaseCred/RepSpec.vals0,false);
+			end;
 		EndFormat;
 		StartFormat(15);
 		EndFormat;
@@ -1774,11 +1878,18 @@ begin
 			OutString(15,0,"Касса",false);
 			OutString(44,0,"Сумма",false);
 			OutString(69,0,"Валюта",false);
-			OutString(93,0,"",false);
+			if(RepSpec.vals0!=0)then begin
+				OutString(93,0,"В USD по курсу: " & RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Терминал",false);
 			OutString(167,0,"Сумма",false);
 			OutString(191,0,"Валюта",false);
+			if(RepSpec.vals0!=0)then begin
+				OutString(200,0,"В USD по курсу: " & RepSpec.vals0,false);
+			end;
 		EndFormat;
 		Black_Divider(15,93);
 		Black_Divider(142,216);
@@ -1787,11 +1898,18 @@ begin
 			OutString(15,0,"Приход",false);// Касса - Приход
 			OutString(44,0,BaseDeb - AZNTermDeb,false);
 			OutString(69,0,"AZN",false);
-			OutString(93,0,"",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(93,0,(BaseDeb - AZNTermDeb)/RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Приход",false);
 			OutString(167,0,AZNTermDeb,false);
 			OutString(191,0,"AZN",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(200,0,(AZNTermDeb)/RepSpec.vals0,false);
+			end;
 		EndFormat;
 		Gray_Divider(15,93);
 		Gray_Divider(142,216);
@@ -1800,11 +1918,18 @@ begin
 			OutString(15,0,"Расход",false);// Касса - Расход
 			OutString(44,0,BaseCred - AZNTermCred,false);
 			OutString(69,0,"AZN",false);
-			OutString(93,0,"",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(93,0,(BaseCred - AZNTermCred)/RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Расход",false);
 			OutString(167,0,AZNTermCred,false);
 			OutString(191,0,"AZN",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(200,0,(AZNTermCred)/RepSpec.vals0,false);
+			end;
 		EndFormat;
 		Gray_Divider(15,93);
 		Gray_Divider(142,216);
@@ -1814,11 +1939,18 @@ begin
 			OutString(15,0,"Конв/банк",false);
 			OutString(44,0,convtotal2,false);
 			OutString(69,0,"AZN",false);
-			OutString(93,0,"",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(93,0,(convtotal2)/RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Конв/банк",false);
 			OutString(167,0,convtotal1,false);
 			OutString(191,0,"AZN",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(200,0,(convtotal1)/RepSpec.vals0,false);
+			end;
 		EndFormat;
 		Gray_Divider(15,93);
 		StartFormat(15);
@@ -1826,11 +1958,18 @@ begin
 			OutString(15,0,"Сдано",false);
 			OutString(44,0,handed53,false);
 			OutString(69,0,"AZN",false);
-			OutString(93,0,"",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(93,0,(handed53)/RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Остаток",false);
 			OutString(167,0,SaldoEndPeriod51,false);
 			OutString(191,0,"AZN",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(200,0,(SaldoEndPeriod51)/RepSpec.vals0,false);
+			end;
 		EndFormat;
 		Black_Divider(142,216);
 		if (compf) or (BalItem1 != 0) then begin
@@ -1840,6 +1979,11 @@ begin
 				OutString(15,0,"Приход за товар",false);
 				OutString(44,0,BalItem1,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin
+					OutMyString(93,0,(BalItem1)/RepSpec.vals0,false);
+				end else begin
+					OutString(93,0,"",false);
+				end;
 			EndFormat;
 		end;
 		if (compf) or (BalItem2 != 0) then begin
@@ -1849,6 +1993,11 @@ begin
 				OutString(15,0,"Расход за товар",false);
 				OutString(44,0,BalItem2,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin
+					OutMyString(93,0,(BalItem2)/RepSpec.vals0,false);
+				end else begin
+					OutString(93,0,"",false);
+				end;
 			EndFormat;
 		end;
 		Black_Divider(15,93);
@@ -1863,12 +2012,22 @@ begin
 				OutString(15,0,"К сдаче",false);
 				OutString(44,0,SaldoEndPeriod50n51 - kursovaya,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin
+					OutMyString(93,0,(SaldoEndPeriod50n51 - kursovaya)/RepSpec.vals0,false);
+				end else begin
+					OutString(93,0,"",false);
+				end;
 			EndFormat;
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"Курсовая",false);
 				OutString(44,0,kursovaya,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin
+					OutMyString(93,0,(kursovaya)/RepSpec.vals0,false);
+				end else begin
+					OutString(93,0,"",false);
+				end;
 			EndFormat;
 			Black_Divider(15,93);
 		end;
@@ -1877,6 +2036,11 @@ begin
 			OutString(15,0,"К сдаче",false);
 			OutString(44,0,SaldoEndPeriod50n51,false);
 			OutString(69,0,"AZN",false);
+			if(RepSpec.vals0!=0)then begin
+				OutMyString(93,0,(SaldoEndPeriod50n51)/RepSpec.vals0,false);
+			end else begin
+				OutString(93,0,"",false);
+			end;
 		EndFormat;
 		
 		StartFormat(15);
@@ -1965,6 +2129,10 @@ begin
 				OutString(25,0,"Сумма в осн. вал.",false);
 				OutString(44,0,SaldoEndPeriod53,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+					OutMyString(160,0,(SaldoEndPeriod53)/RepSpec.vals0,false);
+				end;
 			EndFormat;
 			Gray_Divider(25,90);
 			StartFormat(15);
@@ -1972,6 +2140,10 @@ begin
 				OutString(25,0,"Курсовая",false);
 				OutString(44,0,kursovaya53,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin
+					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+					OutMyString(160,0,(kursovaya53)/RepSpec.vals0,false);
+				end;
 			EndFormat;
 			Gray_Divider(25,90);
 			StartFormat(15);
@@ -2010,6 +2182,10 @@ begin
 				OutString(25,0,"Сумма в осн. вал.",false);
 				OutString(44,0,SaldoEndPeriod50n51 + SaldoEndPeriod53,false);
 				OutString(69,0,"AZN",false);
+				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+					OutMyString(160,0,(SaldoEndPeriod50n51 + SaldoEndPeriod53)/	,false);
+				end;
 			EndFormat;
 		end;
 	EndJob;
