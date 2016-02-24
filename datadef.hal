@@ -1919,6 +1919,7 @@ begin
   RecordField(LastRestAccNr,M4Long,0,0);
   RecordField(LastPONr,M4Long,0,0);
   RecordField(UserLocations,M4Str,200,0);// Edit ************************** Tuesday, 30 April 2013 10:04:03
+  RecordField(Brand,M4Str,200,0);//Edit----------------------Dima  24.02.2016
   ArrayBegin(Math,-,1);
   ArrayField(Code,M4Code,5,0);
   ArrayField(PRCode,M4Code,20,PRVc);
@@ -4408,6 +4409,17 @@ begin
   ArrayField(DiType,M4Str,255,0);
   EndArray;
   EndBlock; //Edit***************************Sasha2,12:13 02.11.2015 }
+  
+  
+  
+  //Virtual register is used to avoid using of many variables in the reports
+  //You can use and expand this register as much as you want
+  RecordBegin(TotalsRepVc,-,"TotalRep");		//Edit----------------------Dima  23.02.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(TotQuant,M4Val,0,0);
+  RecordField(TotCost,M4Val,0,0);
+  RecordField(TotPrice,M4Val,0,0); 
+  EndRecord;
 	
   return;  
 end;

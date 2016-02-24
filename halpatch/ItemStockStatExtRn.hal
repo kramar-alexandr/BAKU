@@ -17,7 +17,7 @@ begin
   integer oldrow,oldinvalid;
   record ItemStatusVc ISr;
   record SerBalVc SBr;
-  	
+  res = 0;
   	serialcost = 0;
   	if(idate>=currentdate)then begin
   		if(nonblank(location))then begin
@@ -67,10 +67,43 @@ begin
 				end;
 			end; 
 		end;
+		
+		
 		ItemQtyPerDate = res;
 		
 return;
 end;
+
+
+function boolean CheckIfContainForbiddenBrand(string brand,string field)
+begin
+integer pos;
+record DIVc DIr;
+string 30 classfind;
+boolean res;
+
+	if (blank(brand)) then begin
+		res = false;
+		goto L0101;
+	end;
+
+	pos = 0;
+	classfind = "";			
+	ExtractObj(field,pos,classfind);
+	while(nonblank(classfind)) begin
+		DIr.Code = classfind;
+		readfirstmain(DIr,1,true);
+		if(DIr.CType=="BRAND" and SetInSet2(classfind,brand)==false)then begin
+			res = true;
+		end;
+		ExtractObj(field,pos,classfind);
+	end;
+	
+L0101:;	
+CheckIfContainForbiddenBrand = res;	
+return;
+end;
+
 
 global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate)
 begin
@@ -953,6 +986,62 @@ begin
   return;
 end; //Edit***************************Sasha2,10:05 19.02.2016 }
 
+
+
+//Edit----------------------Dima  23.02.2016
+procedure CollectAndPrintData(record RcVc RepSpec,record INVc INr, var record TotalsRepVc Totals,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf)
+begin
+ record ItemStatusVc ISr;
+ record SerBalVc SBr;
+ boolean TrHs2,testf2;
+ date todate;
+ 
+  todate = RepSpec.d1;
+  if(blank(todate))then begin
+  	todate = currentdate;
+  end;
+  
+
+	ISr.Code = INr.Code;
+	TrHs2 = true;
+	while(loopmain(ISr,1,TrHs2)) begin
+		testf2 = true;
+		if(ISr.Code!=INr.Code)then begin testf2 = false; TrHs2 = false; end;
+		if(nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2)then begin testf2 = false; end;
+		if(ISr.Location==";;;")then begin testf2 = false; end;
+		if(testf2)then begin
+			SBr.CostPrice = 0;
+			ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+		end;
+		if(ISr.Instock<=0)then begin testf2 = false; end;
+	
+		if(testf2)then begin
+			if(INr.SerNrf==0)then begin
+				PrintInfo(INr,ISr,"",0,0,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf);
+			end else begin
+				SBr.Item = INr.Code;
+				SBr.Location = ISr.Location;
+				while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
+					if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
+						ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+						
+						if(ISr.Instock>0)then begin
+							PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf);
+						end;
+					end;
+				end;
+				resetloop(SBr);
+			end;
+			
+		end;
+		
+	end;
+
+end;
+
+
+
+
 global procedure ItemStockStatExtRn(record RcVc RepSpec)
 begin
   record ItemStatusVc ISr;
@@ -968,8 +1057,8 @@ begin
   string 50 uloc;
   record SerBalVc SBr;
   date todate;
-  val total_qty;
-  val total_cost,total_price;
+  //val total_qty;
+  //val total_cost,total_price;
   string 200 classfind,model,brand,basecur;
   record BaseCurBlock bascur;
   Boolean addclassf; //Edit***************************Sasha2,13:58 08.02.2016
@@ -980,6 +1069,27 @@ begin
   row DiCheckBlock DiCbw; //Edit***************************Sasha2,14:10 08.02.2016
   integer i,rwcnt,typescnt; //Edit***************************Sasha2,14:11 08.02.2016
   record CTypeVc CTyper; //Edit***************************Sasha2,14:13 08.02.2016
+	array integer companies;
+	record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+	integer oldcompany;
+	record TotalsRepVc Totals;
+	
+	
+	if (RepSpec.UsedOnly == 0) then begin
+		companies[0] = CurrentCompany;
+	end else begin			//All J&W companies
+		companies[0] = 3;
+		companies[1] = 17;
+		companies[2] = 19;
+		companies[3] = 20;
+		companies[4] = 21;
+		companies[5] = 22;
+	end;
+	
+	oldcompany = CurrentCompany;
+	BlockLoad(Compb);	
+
   
   BlockLoad(bascur);
   basecur = bascur.BaseCur1;
@@ -1043,6 +1153,10 @@ begin
     SortAndClearClassifications(typecode,typename,typescnt);
   end;
   
+  
+  startreportnoheaderjob(USetStr(31179));
+  
+  
   if(blank(todate))then begin
   	todate = currentdate;
   end;
@@ -1061,13 +1175,22 @@ begin
 				ExtractObj(User.UserLocations,pos,uloc);
 			end;
   	end;
+  	
+  	if (nonblank(User.Brand)) then begin		//Edit----------------------Dima  24.02.2016
+			if (blank(RepSpec.f4)) then begin
+				RepSpec.f4 = FirstInRange(User.Brand,40);
+			end;
+			if (SetInSet2(RepSpec.f4,User.Brand)==false or CheckIfContainForbiddenBrand(User.Brand,RepSpec.f3)) then begin
+					outstring(50,0,USetStr(35060),false);
+					goto LItemStockStatExtRn;
+			end;
+		end;
   end;
   
-  startreportnoheaderjob(USetStr(31179));
   
-  total_qty = 0;
-  total_cost = 0;
-  total_price = 0;
+  //total_qty = 0;
+  //total_cost = 0;
+  //total_price = 0;
   
   if(userlocation)then begin
   	startformat(15);
@@ -1145,43 +1268,24 @@ begin
 			
     		if(RepSpec.flags[1]==1 and INr.ConsgType==0)then begin TrHs = false; end;
     		if(RepSpec.flags[2]==1 and INr.ConsgType==1)then begin TrHs = false; end;
-    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin TrHs = false; end;			
-    	end;			
-			while(loopmain(ISr,1,TrHs)) begin
-				testf = true;
-				if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
-				if(ISr.Location==";;;")then begin testf = false; end;
-				if(nonblank(location) and location!=ISr.Location)then begin testf = false; end;
-				if(testf)then begin
-					ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
-				end;
-				if(ISr.Instock==0)then begin testf = false; end;
-			
-				if(testf)then begin
-					INr.Code = ISr.Code;
-					readfirstmain(INr,1,true);
-					if(INr.SerNrf==0)then begin
-						PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price,typeval,typecode,typescnt,addclassf);
-					end else begin
-						SBr.Item = INr.Code;
-						SBr.Location = ISr.Location;
-						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
-							if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-								ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
-								if(ISr.Instock>0)then begin
-									PrintInfo(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,total_qty,total_cost,total_price,typeval,typecode,typescnt,addclassf);
-								end;
+    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin TrHs = false; end;	
+    		
+    		if (TrHs) then begin
+						for (i=0;i<companies.length;i=i+1) begin
+							//MatRowGet(Compb,companies[i]-1,Comprw);  
+							if (SetCompany(companies[i],false)) then begin
+								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+							//	LogText(0,INr.Code & "    " & Comprw.ShortName );							
 							end;
 						end;
-						resetloop(SBr);
-					end;
-				end;
-			end;
-			resetloop(ISr);
+				end;   
+				
+    	end;			
 		end else begin
 			INr.DispGroups = "";//= RepSpec.f3;
 			class = RepSpec.f3;
 			TrHs1 = true;
+
 			while(loopkey("MyDispGroups",INr,1,TrHs1)) begin
 			
 				testf1 = true;
@@ -1201,7 +1305,7 @@ begin
 						pos = 0;
 						classfind = "";
 						ExtractObj(INr.DispGroups,pos,classfind);
-						while(nonblank(classfind))begin
+						while(nonblank(classfind)) begin
 							DIr.Code = classfind;
 							readfirstmain(DIr,1,true);
 							if(DIr.CType=="BRAND")then begin
@@ -1220,45 +1324,21 @@ begin
 						end;
 					end;
 				end;
-			
-				if(testf1)then begin
-					ISr.Code = INr.Code;
-					TrHs2 = true;
-					while(loopmain(ISr,1,TrHs2))begin
-						testf2 = true;
-						if(ISr.Code!=INr.Code)then begin testf2 = false; TrHs2 = false; end;
-						if(nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2)then begin testf2 = false; end;
-						if(ISr.Location==";;;")then begin testf2 = false; end;
-						if(testf2)then begin
-							SBr.CostPrice = 0;
-							ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
-						end;
-						if(ISr.Instock<=0)then begin testf2 = false; end;
-					
-						if(testf2)then begin
-							if(INr.SerNrf==0)then begin
-								PrintInfo(INr,ISr,"",0,0,todate,total_qty,total_cost,total_price,typeval,typecode,typescnt,addclassf);
-							end else begin
-								SBr.Item = INr.Code;
-								SBr.Location = ISr.Location;
-								while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location)))begin
-									if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
-										if(ISr.Instock>0)then begin
-											PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,total_qty,total_cost,total_price,typeval,typecode,typescnt,addclassf);
-										end;
-									end;
-								end;
-								resetloop(SBr);
+
+				if(testf1)then begin				
+						for (i=0;i<companies.length;i=i+1) begin
+							//MatRowGet(Compb,companies[i]-1,Comprw);  
+							if (SetCompany(companies[i],false)) then begin
+								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+							//	LogText(0,INr.Code & "    " & Comprw.ShortName );							
 							end;
 						end;
-					end;
-					resetloop(ISr);
+						ResetCompany(oldcompany);	
 				end;
 			end;
 			resetloop(INr);
 		end;
-		
+	
 		startformat(15);
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
@@ -1290,22 +1370,26 @@ begin
 			end; //Edit***************************Sasha2,16:37 18.02.2016
 			outstring(0,0,"",false);
 			outstring(0,0,USetStr(31074),false);
-			outstring(0,0,total_qty,false);
+			outstring(0,0,Totals.TotQuant,false);
 			outstring(0,0,"",false);
 			if(usercanaction("ViewCostPrice",true))then begin
 				outstring(0,0,"",false);
 				outstring(0,0,"",false);
 				outstring(0,0,USetStr(31075),false);
-				outstring(0,0,total_cost,false);
+				outstring(0,0,Totals.TotCost,false);
 			end;
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 			outstring(0,0,USetStr(31064) & basecur,false);
-			outstring(0,0,total_price,false);
+			outstring(0,0,Totals.TotPrice,false);
 		endformat;
 		
   end;
+  
+  LItemStockStatExtRn:;
+  
   endjob;
+  
   
 return;
 end;
