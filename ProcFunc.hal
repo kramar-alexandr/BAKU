@@ -726,7 +726,9 @@ begin
   end else begin
     tab[1]  = 0;
     tab[2]  = 20;
-		tab[3]  = 50; 
+		tab[3]  = 50;
+		tab[31] = 100; 
+    tab[32] = 130; 
 		tab[4]  = 190;
 		tab[5]  = 220;
 		tab[6]  = 270;
@@ -826,10 +828,8 @@ begin
 
      OutString(tab[2],0,USetStr(12501),false);
      OutString(tab[3],0,USetStr(8105),false);
-     if excelreport then begin
-       OutString(tab[31],0,USetStr(31044),false);
-       OutString(tab[32],0,USetStr(9131),false);
-     end;
+     OutString(tab[31],0,USetStr(31044),false);
+     OutString(tab[32],0,USetStr(9131),false);
      OutString(tab[4],0,USetStr(31121),false);
      
      if (excelreport) then begin
@@ -879,7 +879,7 @@ begin
     TrHs = true;
     curmachine = "";
     mark = 0;
-    rwnr = 0;
+    rwnr = 1;
     totqty = 0;
     totsum = 0;
     totqtyprice = 0;
@@ -1044,17 +1044,18 @@ begin
 							StartFormat(15);
 								if (!excelreport) then begin
                   OutString(tab[1],0,rwnr,false);
+                  rwnr = rwnr+1;
                 end;
-								rwnr = rwnr+1;
+								
 
 								OutString(tab[2],0,IVrw.ArtCode,false);
 								OutString(tab[3],0,IVrw.Spec,false);
-                if (excelreport) then begin                  
-                  GetClassifications(IVrw.ArtCode,brandname,classname);	//Edit----------------------Dima  19.02.2016
-                  
-                  OutString(tab[31],0,brandname,false);	//Brand
-                  OutString(tab[32],0,classname,false);	//Type
-                end;
+                
+                GetClassifications(IVrw.ArtCode,brandname,classname);	//Edit----------------------Dima  19.02.2016
+                
+                OutString(tab[31],0,brandname,false);	//Brand
+                OutString(tab[32],0,classname,false);	//Type
+
 								OutVal(tab[4],0,IVrw.Quant*cred,M4Val,false);
 								OutVal(tab[5],0,IVrw.Price*IVrw.Quant*cred,M4Val,false);
 								OutVal(tab[6],0,basesum*cred,M4Val,false);
@@ -1332,6 +1333,7 @@ begin
     StartFormat(15);
     if !excelreport then begin
       OutString(tab[1],0,USetStr(8330),false);
+      OutString(tab[3],0,"",false);
     end else begin
       OutString(tab[2],0,USetStr(8330),false);
     end;
@@ -1353,7 +1355,9 @@ begin
 		end else begin	
     	if (totalCurrencySum>0) then begin
 				OutVal(tab[7],0,totalCurrencySum,M4Val,false);	//Edit----------------------Dima  11.11.2015
-			end;		
+			end else begin	
+				OutString(tab[7],0,"",false);
+			end;
 		end;	
 		
     //OutVal(tab[7],0,totqtypricesum,M4Val,false);
