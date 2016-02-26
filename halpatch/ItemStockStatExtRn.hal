@@ -1461,7 +1461,7 @@ begin
   array integer companies;
   
   
-	if (RepSpec.UsedOnly == 0) then begin
+	if (RepSpec.UsedOnly == 1) then begin
 		companies[0] = CurrentCompany;
 	end else begin			//All J&W companies
 		companies[0] = 3;

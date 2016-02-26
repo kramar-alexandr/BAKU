@@ -1273,3 +1273,22 @@ begin
   EditField(150,10,140,"Валюта",Normal,f1,false,CurncyCodeSClass);
   EndWindow;
 end; ///Edit***************************Sasha2,14:46 21.01.2016 }
+
+
+
+window HistoricalRClass:1			//Edit----------------------Dima  26.02.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real v,vs,h;
+WindowBegin("Определите исторический отчет",HistoricalRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"Период");
+  EditField(h,v+=vs,120,"Товар",Normal,f1,false,INSClass);
+  EditFieldTL(h,v+=vs,120,"Магазин",M4Str,Normal,41,f2,false,LocationSClass);
+  
+  ButtonFrame(h,v+=40,150,2,"Отображать статистику");		
+  RadioButton(h,v,0,1,"для текущей компании",UsedOnly);
+  RadioButton(h,v+=20,1,0,"для всех J&W компаний",UsedOnly);  
+  EndWindow;
+end;

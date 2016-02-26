@@ -1,0 +1,220 @@
+external procedure ExtractObj(string,var Integer,var string);
+external function Boolean SetInSet2(string,string);
+
+
+function boolean CheckIfContainForbiddenBrand(string brand,string field)
+begin
+integer pos;
+record DIVc DIr;
+string 30 classfind;
+boolean res;
+
+	if (blank(brand)) then begin
+		res = false;
+		goto L0101;
+	end;
+
+	pos = 0;
+	classfind = "";			
+	ExtractObj(field,pos,classfind);
+	while(nonblank(classfind)) begin
+		DIr.Code = classfind;
+		readfirstmain(DIr,1,true);
+		if(DIr.CType=="BRAND" and SetInSet2(classfind,brand)==false)then begin
+			res = true;
+		end;
+		ExtractObj(field,pos,classfind);
+	end;
+	
+L0101:;	
+CheckIfContainForbiddenBrand = res;	
+return;
+end;
+
+
+
+
+global procedure HistoricalRn(record RcVc RepSpec)
+begin
+	record ItemHistVc IHr;
+	record UserVc User;
+	record INVc INr;
+	integer rw,i;
+	array integer companies,tab;
+	record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+	integer oldcompany;
+	string 50 key,item,location;
+	integer loop;
+	val restQty,restCost;
+	val totalQty,totalCost;
+	date startDate,endDate,tempDate;
+	boolean TrHs,testf;
+	
+
+	rw = 1;
+	item = RepSpec.f1;
+	location = RepSpec.f2;
+	startDate = RepSpec.sStartDate;
+	endDate = RepSpec.sEndDate;
+
+	StartReportJob(USetStr(35061));
+		Header(rw,USetStr(31116) & ": " & item,1);
+	EndHeader;
+	
+	
+		if (RepSpec.UsedOnly == 0) then begin
+			companies[0] = CurrentCompany;
+		end else begin			//All J&W companies
+			companies[0] = 3;
+			companies[1] = 17;
+			companies[2] = 19;
+			companies[3] = 20;
+			companies[4] = 21;
+			companies[5] = 22;
+		end;
+		
+		oldcompany = CurrentCompany;
+		BlockLoad(Compb);
+		
+		
+		tab[1] = 30;
+		tab[2] = 100;
+		tab[3] = 160;
+		tab[4] = 250;
+		tab[5] = 320;
+		tab[6] = 400;
+		tab[7] = 30;
+		tab[8] = 30;
+		
+		StartFormat(15);
+			OutString(tab[1],0,USetStr(35064),false);	//Date
+			OutString(tab[2],0,USetStr(35065),false);	//Type
+			OutString(tab[3],0,USetStr(35066),false);	//Document
+			OutString(tab[4],0,USetStr(35067),false);	//Location
+			OutString(tab[5],0,USetStr(35068),false);	//Quantity
+			OutString(tab[6],0,USetStr(35069),false);	//Cost			
+		EndFormat; 		
+		Black_Divider(0,1);
+	
+	
+	
+		StartFormat(15);
+		
+		if (blank(item)) then begin
+			OutString(0,0,USetStr(35062),false);
+			EndFormat;
+			goto LHistoricalRn;
+		end;
+		
+		User.Code = CurrentUser;
+		ReadFirstMain(User,1,true);
+		
+		INr.Code = item;
+		if (ReadFirstMain(INr,1,true)) then begin
+			if (nonblank(User.Brand) and CheckIfContainForbiddenBrand(User.Brand,INr.DispGroups)) begin 
+				OutString(0,0,USetStr(35063),false);
+				EndFormat;
+				goto LHistoricalRn;
+			end;	
+		end;		
+
+		
+		
+		for(i=0;i<companies.length;i=i+1) begin
+			if (SetCompany(companies[i],false)) then begin
+				IHr.ArtCode = item;
+				if (blank(location)) then begin
+						key = "ArtCode";
+						loop = 2;
+				end else begin	
+						key = "ArtCodeLoc";
+						loop = 3;
+						IHr.Location = location;
+				end;
+						
+				TrHs = true;
+				While(LoopKey(key,IHr,loop,TrHs)) begin
+					testf = true;
+					if (IHr.ArtCode!=item) then begin TrHs = false; testf = false; end;
+					if (IHr.TransDate >= startDate) then begin TrHs = false; testf = false; end;
+					if (IHr.StockAffectf==0) then begin testf = false; end;
+					if (testf) then begin	
+							restQty = restQty + IHr.Qty;
+							restCost = restCost + IHr.TotCostPrice;		
+					end;	
+				end;
+				ResetLoop(IHr);
+			end;	
+		end;
+		
+		totalQty = totalQty + restQty;
+		totalCost = totalCost + restCost;
+		OutString(tab[2],0,USetStr(35070),false);
+		OutString(tab[5],0,restQty,false);
+		OutString(tab[6],0,restCost,false);
+		EndFormat;
+		EndFormat;
+		
+		
+		tempDate = startDate;
+		
+		While(tempDate<=endDate) begin
+		
+			for(i=0;i<companies.length;i=i+1) begin
+				if (SetCompany(companies[i],false)) then begin
+						IHr.ArtCode = item;
+						IHr.TransDate = tempDate;
+						if (blank(location)) then begin
+								key = "ArtCode";
+								loop = 2;
+						end else begin	
+								key = "ArtCodeLoc";
+								loop = 3;
+								IHr.Location = location;
+						end;
+    	
+						
+						TrHs = true;
+						While(LoopKey(key,IHr,loop,TrHs)) begin
+							testf = true;
+							if (IHr.ArtCode!=item) then begin TrHs = false;  testf = false; end;
+							if (IHr.TransDate != tempDate) then begin TrHs = false; testf = false; end;
+							if (IHr.StockAffectf==0) then begin testf = false; end;
+							if (testf) then begin
+
+									totalQty = totalQty + IHr.Qty;
+									totalCost = totalCost + IHr.TotCostPrice;	
+									
+									StartFormat(15);
+									OutDate(tab[1],0,IHr.TransDate,false);
+									OutString(tab[2],0,IHr.FileName,false);
+									OutString(tab[3],0,IHr.TransNr,false);
+									OutString(tab[4],0,IHr.Location,false);
+									OutString(tab[5],0,IHr.Qty,false);
+									OutString(tab[6],0,IHr.TotCostPrice,false);
+									EndFormat;										
+		
+							end;	
+						end;
+						ResetLoop(IHr);		
+			
+				end;
+			end;
+			ResetCompany(oldcompany);
+			tempDate = AddDay(tempDate,1);
+			LogText(0,tempDate);
+		end;		
+			
+
+		Black_Divider(0,1);
+									OutString(tab[5],0,totalQty,false);
+									OutString(tab[6],0,totalCost,false);
+									EndFormat;
+				
+	EndJob;
+
+	LHistoricalRn:;
+end;
+
+ 

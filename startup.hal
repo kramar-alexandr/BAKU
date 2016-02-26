@@ -165,6 +165,7 @@ begin
   Report("Повторяющиеся штрих-коды",SameBarCodesRClass,SameBarCodesRn,0,modIN);	//Edit----------------------Dima  18.09.2015
   Report("Ошибки в начальных сальдо",FBErrRClass,FBErrRn,0,modNL);
   Report("Количество счет-фактур по складам",IVbyLocRClass,IVbyLocRn,0,modDBMain);//Edit-------------------Vitalii 17:49 13.01.2016
+  Report("Исторический отчет по товарам",HistoricalRClass,HistoricalRn,0,modIN);	//Edit----------------------Dima  26.02.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -572,7 +573,20 @@ begin
   SString(35052,"Итого (по курсу)"); 
   SString(35053,"Пред.год (по курсу)");
   
-  SString(35060,"Вам не разрешен отчет по данному бренду, выберите пожалуйста ваш бренд"); 
+  SString(35060,"Вам не разрешен отчет по данному бренду, выберите пожалуйста ваш бренд");
+  
+  //HistoricalRn
+  SString(35061,"Исторический отчет по товарам");
+  SString(35062,"Выберите товар для отчета");
+  SString(35063,"Вам не разрешена информация по данному товару. Бренд");
+  SString(35064,"Дата");
+  SString(35065,"Тип");
+  SString(35066,"Документ");
+  SString(35067,"Склад");
+  SString(35068,"Кол-во");
+  SString(35069,"Стоимость");
+  SString(35070,"На начало периода");
+   
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */

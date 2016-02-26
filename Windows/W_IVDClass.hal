@@ -5915,8 +5915,9 @@ begin
   EditFieldTL(h,v+=20,100,"Модель",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
   
   ButtonFrame(h2,v=100,150,2,"Отображать статистику");		
-  RadioButton(h2,v,0,1,"для текущей компании",UsedOnly);
-  RadioButton(h2,v+=20,1,0,"для всех J&W компаний",UsedOnly);
+  RadioButton(h2,v,0,0,"для всех J&W компаний",UsedOnly);
+  RadioButton(h2,v+=20,1,0,"для текущей компании",UsedOnly);
+  
     
   //EditField(h,v+=vs,-100,"IP",Normal,f6,false,0);
 	//HalPushButton(-90,v,-10,v+20,"OstatkiSKartinkamiRn","Запуск");
