@@ -1166,6 +1166,13 @@ LkInvoiceTypeCredit:;
     end;
     if (((IVp.InvType==kInvoiceTypeCash) or (ARAccb.NoOverPayIV!=0)) and (TouchScreenInterface)) then begin//is POS client
       testf = false;
+      
+      
+      rnd.decimals = 0;// Edit ************************** Friday, 26 February 2016 10:04:07
+			rnd.step = kRoundingStepNone;
+			rnd.mode = kRoundingModeHalfUp;
+			cash = round(cash,rnd);
+      
       if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin// Edit ************************** Friday, 22 March 2013 17:45:30
 				rnd.decimals = 0;
 				rnd.step = kRoundingStep5;
