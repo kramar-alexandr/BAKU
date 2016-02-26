@@ -1268,7 +1268,9 @@ begin
 			
     		if(RepSpec.flags[1]==1 and INr.ConsgType==0)then begin TrHs = false; end;
     		if(RepSpec.flags[2]==1 and INr.ConsgType==1)then begin TrHs = false; end;
-    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin TrHs = false; end;	
+    		if(RepSpec.flags[3]==1 and INr.ConsgType==2)then begin TrHs = false; end;
+
+    		if (nonblank(User.Brand) and CheckIfContainForbiddenBrand(User.Brand,INr.DispGroups)) begin TrHs = false; end;	
     		
     		if (TrHs) then begin
 						for (i=0;i<companies.length;i=i+1) begin
@@ -1448,13 +1450,29 @@ begin
   integer findint;
   record UserVc User;
   boolean userlocation;
-  integer pos;
+  integer pos,i;
   string 50 uloc;
   record SerBalVc SBr;
   date todate;
   string 200 classfind,model,brand;
   roundmode rnd; //Edit***************************Sasha2,15:45 21.04.2015
   record BaseCurBlock bcur; //Edit***************************Sasha2,14:02 27.04.2015
+  integer oldcompany;
+  array integer companies;
+  
+  
+	if (RepSpec.UsedOnly == 0) then begin
+		companies[0] = CurrentCompany;
+	end else begin			//All J&W companies
+		companies[0] = 3;
+		companies[1] = 17;
+		companies[2] = 19;
+		companies[3] = 20;
+		companies[4] = 21;
+		companies[5] = 22;
+	end;
+	
+	oldcompany = CurrentCompany;  
   
   item = RepSpec.f1;
   location = RepSpec.f2;
@@ -1463,6 +1481,21 @@ begin
   if(blank(todate))then begin
   	todate = currentdate;
   end;
+
+
+  User.Code = currentuser;
+  if(readfirstmain(User,1,true))then begin  	
+  	if (nonblank(User.Brand)) then begin		//Edit----------------------Dima  24.02.2016
+			if (blank(RepSpec.f4)) then begin
+				RepSpec.f4 = FirstInRange(User.Brand,40);
+			end;
+			if (SetInSet2(RepSpec.f4,User.Brand)==false or CheckIfContainForbiddenBrand(User.Brand,RepSpec.f3)) then begin
+					messagebox(0,USetStr(35060));
+					goto LItemStockStatExtWebRn;
+			end;
+		end;
+  end;  
+  
   
   BlockLoad(bcur); //Edit***************************Sasha2,14:03 27.04.2015
   rnd = DefaultValRoundoff; //Edit***************************Sasha2,15:47 21.04.2015
@@ -1471,7 +1504,7 @@ begin
 	rnd.mode = kRoundingModeHalfUp; //Edit***************************Sasha2,15:47 21.04.2015
   
   userlocation = false;
-  User.Code = currentuser;
+
   
 	ExportString("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 	ExportString("<html xmlns=\"http://www.w3.org/1999/xhtml\">");
@@ -1501,45 +1534,59 @@ begin
 		ExportString("<td>" & USetStr(31170) & "</td>");
 		ExportString("</tr>");
 		if(nonblank(item))then begin
-			ISr.Code = item;
-			TrHs = true;
-			while(loopmain(ISr,1,TrHs)) begin
-				testf = true;
-				if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
-				if(ISr.Location==";;;")then begin testf = false; end;
-				if(nonblank(location) and location!=ISr.Location)then begin testf = false; end;
-				if(testf)then begin
-					ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
-				end;
-				if(ISr.Instock==0)then begin testf = false; end;
-			
-				if(testf)then begin
-					INr.Code = ISr.Code;
-					readfirstmain(INr,1,true);
-					if(INr.SerNrf==0)then begin
-						PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:48 21.04.2015
-					end else begin
-						SBr.Item = INr.Code;
-						SBr.Location = ISr.Location;
-						while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
-							if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-								ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
-								if(ISr.Instock>0)then begin
-									PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:48 21.04.2015
+		
+			for (i=0;i<companies.length;i=i+1) begin	//Edit----------------------Dima  25.02.2016
+		  	if (SetCompany(companies[i],false)) then begin			
+							ISr.Code = item;
+							TrHs = true;
+							while(loopmain(ISr,1,TrHs)) begin
+								testf = true;
+								INr.Code = ISr.Code;								
+								if (readfirstmain(INr,1,true)) then begin
+									if (nonblank(User.Brand) and CheckIfContainForbiddenBrand(User.Brand,INr.DispGroups)) begin TrHs = false; end;
+								end;
+																
+								if(ISr.Code!=item)then begin TrHs = false; testf = false; end;
+								if(ISr.Location==";;;")then begin testf = false; end;
+								if(nonblank(location) and location!=ISr.Location)then begin testf = false; end;
+								if(testf)then begin
+									ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+								end;
+								if(ISr.Instock==0)then begin testf = false; end;
+							
+								if(testf)then begin
+									INr.Code = ISr.Code;
+									readfirstmain(INr,1,true);
+									if(INr.SerNrf==0)then begin
+										PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:48 21.04.2015
+									end else begin
+										SBr.Item = INr.Code;
+										SBr.Location = ISr.Location;
+										while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
+											if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
+												ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+												if(ISr.Instock>0)then begin
+													PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit*********************Sasha2,15:48 21.04.		**	20	****15
+												end;
+											end;
+										end;
+										resetloop(SBr);
+									end;
 								end;
 							end;
-						end;
-						resetloop(SBr);
-					end;
-				end;
+							resetloop(ISr);
+				end;			
 			end;
-			resetloop(ISr);
+			
+			
 		end else begin
+		
+			
 		
 			INr.DispGroups = "";//= RepSpec.f3;
 			class = RepSpec.f3;
 			TrHs1 = true;
-			while(loopkey("MyDispGroups",INr,1,TrHs1))begin
+			while(loopkey("MyDispGroups",INr,1,TrHs1)) begin
 				testf1 = true;
 				testf1 = SetInSet2(class,INr.DispGroups);
 				if(INr.Terminated!=0)then begin testf1 = false; end;
@@ -1575,38 +1622,45 @@ begin
 				end;
 				
 				if(testf1)then begin
-					ISr.Code = INr.Code;
-					TrHs2 = true;
-					while(loopmain(ISr,1,TrHs2))begin
-						testf2 = true;
-						if(ISr.Code!=INr.Code)then begin testf2 = false; TrHs2 = false; end;
-						if(nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2)then begin testf2 = false; end;
-						if(ISr.Location==";;;")then begin testf2 = false; end;
-						if(testf2)then begin
-							SBr.CostPrice = 0;
-							ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
-						end;
-						if(ISr.Instock<=0)then begin testf2 = false; end;
-					
-						if(testf2)then begin
-							if(INr.SerNrf==0)then begin
-								PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:49 21.04.2015
-							end else begin
-								SBr.Item = INr.Code;
-								SBr.Location = ISr.Location;
-								while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location)))begin
-									if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
-										if(ISr.Instock>0)then begin
-											PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:49 21.04.2015
+				
+					for (i=0;i<companies.length;i=i+1) begin
+						if (SetCompany(companies[i],false)) then begin
+								ISr.Code = INr.Code;
+								TrHs2 = true;
+								while(loopmain(ISr,1,TrHs2)) begin
+									testf2 = true;
+									if(ISr.Code!=INr.Code)then begin testf2 = false; TrHs2 = false; end;
+									if(nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2)then begin testf2 = false; end;
+									if(ISr.Location==";;;")then begin testf2 = false; end;
+									if(testf2)then begin
+										SBr.CostPrice = 0;
+										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+									end;
+									if(ISr.Instock<=0)then begin testf2 = false; end;
+								
+									if(testf2)then begin
+										if(INr.SerNrf==0)then begin
+											PrintInfoWeb(INr,ISr,"",0,0,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit***************************Sasha2,15:49 21.04.2015
+										end else begin
+											SBr.Item = INr.Code;
+											SBr.Location = ISr.Location;
+											while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
+												if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
+													ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+													if(ISr.Instock>0)then begin
+														PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit****	**********	**********	***Sasha2,15:49 21.04.2015
+													end;
+												end;
+											end;
+											resetloop(SBr);
 										end;
 									end;
 								end;
-								resetloop(SBr);
-							end;
+								resetloop(ISr);
 						end;
 					end;
-					resetloop(ISr);
+					ResetCompany(oldcompany);	
+					
 				end;
 			end;
 			resetloop(INr);
@@ -1616,6 +1670,8 @@ begin
 		ExportString("</body>");
 		ExportString("</html>");
   end;
+  
+  LItemStockStatExtWebRn:;
   
 return;
 end;

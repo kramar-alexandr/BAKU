@@ -5905,7 +5905,7 @@ begin
   vs = 20;
   h=100;h2=250;
   EditFieldTL(h,v+=20,100,"Дата",M4Date,Normal,41,d1,false,PasteCurDate);//carefull we run ARRn
-  ButtonFrame(h2,vm=35,123,6,"Выводить в валюте"); //Edit***************************Sasha2,13:32 27.04.2015 {
+  ButtonFrame(h2,vm=35,150,6,"Выводить в валюте"); //Edit***************************Sasha2,13:32 27.04.2015 {
   RadioButton(h2,vm,0,0,"Послед.пост.",ArtMode);
   RadioButton(h2,vm+=16,1,0,"Базовой",ArtMode); //Edit***************************Sasha2,13:32 27.04.2015 }
   EditFieldTL(h,v+=20,100,"Товар",M4UStr,Normal,41,f1,false,INSClass);//carefull we run ARRn
@@ -5913,6 +5913,11 @@ begin
   EditFieldTL(h,v+=20,100,"Классификация",M4UStr,Normal,41,f3,false,DISClass);//carefull we run ARRn
   EditFieldTL(h,v+=20,100,"Бренд",M4UStr,Normal,41,f4,false,DI2SClass);//carefull we run ARRn
   EditFieldTL(h,v+=20,100,"Модель",M4UStr,Normal,41,f5,false,DI3SClass);//carefull we run ARRn
+  
+  ButtonFrame(h2,v=100,150,2,"Отображать статистику");		
+  RadioButton(h2,v,0,1,"для текущей компании",UsedOnly);
+  RadioButton(h2,v+=20,1,0,"для всех J&W компаний",UsedOnly);
+    
   //EditField(h,v+=vs,-100,"IP",Normal,f6,false,0);
 	//HalPushButton(-90,v,-10,v+20,"OstatkiSKartinkamiRn","Запуск");
   EndWindow;
