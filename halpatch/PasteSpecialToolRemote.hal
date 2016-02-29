@@ -15,6 +15,7 @@ external function Boolean GetCOSAcc(string,string,string,record AccBlock,record 
 external procedure CreateSBString(Integer,string,string,string,val,Boolean,val,Boolean,var string);
 external function val GetORRowReserv(LongInt,string,string,var val,var string,var string,Boolean);
 external function val GetIntORRowReserv(LongInt,string,string,var val,var string,var string,var string,Boolean);
+external procedure GetJWCompanies(integer ,var array integer);//Edit----------------------Dima  29.02.2016
 
 
 global
@@ -284,6 +285,39 @@ BEGIN
     end;
     RESETCOMPANY(curcomp);
   end;
+  
+  RETURN;
+END;
+
+
+
+
+global
+procedure CompLocation2SClassGetArray(var Array string aLocations,integer allcompanies)		//Edit----------------------Dima  29.02.2016
+BEGIN
+  record LocationVc Locationr;
+  Integer i,rwcnt,oldcompany;
+  array integer companies;
+  vector boolean checkLocations;
+  
+  GetJWCompanies(allcompanies,companies);
+  oldcompany = CurrentCompany;
+  
+  for(i=0;i<companies.length;i=i+1) begin
+  	if (SetCompany(companies[i],false)) then begin
+  	  Locationr.Code = "";
+  	  while (LoopMain(Locationr,1,true)) begin
+  	  
+  	    if (checkLocations[Locationr.Code]==false) then begin
+  	    	aLocations[aLocations.length] = Left(Locationr.Code & "    ",14)  & Locationr.Name;
+  	    	checkLocations[Locationr.Code] = true;
+  	    end;
+  	  end;
+  	  ResetLoop(Locationr);
+  	end;
+  end;
+  ResetCompany(oldcompany);
+  
   
   RETURN;
 END;

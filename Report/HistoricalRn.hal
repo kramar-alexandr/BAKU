@@ -32,17 +32,86 @@ return;
 end;
 
 
+global procedure GetJWCompanies(integer allcompanies,var array integer companies)
+begin
+ 		if (allcompanies == 0) then begin
+			companies[0] = CurrentCompany;
+		end else begin			//All J&W companies
+			companies[0] = 3;
+			companies[1] = 17;
+			companies[2] = 19;
+			companies[3] = 20;
+			companies[4] = 21;
+			companies[5] = 22;
+		end; 
+end;
 
 
-global procedure HistoricalRn(record RcVc RepSpec)
+function string 255 GetDescriptionOfCompanies(array integer companies)
+begin
+  record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+	integer i;
+	string 255 list;
+	BlockLoad(Compb);
+	
+
+	for(i=0;i<companies.length;i=i+1) begin
+		MatRowGet(Compb,companies[i]-1,Comprw);
+		list = list & Comprw.CompName & ",";
+	end;
+	
+	list = Left(list,Len(list)-1);
+	
+GetDescriptionOfCompanies = list;
+return;		
+end;
+
+
+function string 50 GetRegisterDescription(string filename)
+begin
+string 50 description;
+integer strid;
+	
+	switch(filename) begin
+    case "IVVc": strid = 5004; 
+    case "IVCashVc": strid = 11675;
+    case "INTransferVc": strid = 5040;
+    case "ProdVc": strid = 5016; 
+    case "ProdOperationVc": strid = 11674;
+    case "PUVc": strid = 5002; 
+    case "RetPUVc": strid = 5058;
+    case "RetVc": strid = 5029;
+    case "SDVc": strid = 5020; 
+    case "SRVc": strid = 11676;
+    case "SHVc": strid = 5003; 
+    case "StockMovVc": strid = 5012; 
+    case "WSVc": strid = 7650;
+    case "Fut2ProdOrderInVc": strid = 5057; 
+    case "Fut2ProdInVc": strid = 5037;  
+    case "Fut3ORVc": strid = 5035; 
+    case "Fut1POVc": strid = 5036;
+	end;
+	
+	if (strid>0) then begin
+		description = USetStr(strid);
+	end;
+
+GetRegisterDescription = description;
+return;
+end;
+
+
+
+
+
+global procedure HistoricalRn(record RcVc RepSpec)		//Edit----------------------Dima  29.02.2016
 begin
 	record ItemHistVc IHr;
 	record UserVc User;
 	record INVc INr;
-	integer rw,i;
+	integer rw,i,sign;
 	array integer companies,tab;
-	record CompaniesBlock Compb;
-	row CompaniesBlock Comprw;
 	integer oldcompany;
 	string 50 key,item,location;
 	integer loop;
@@ -57,26 +126,20 @@ begin
 	location = RepSpec.f2;
 	startDate = RepSpec.sStartDate;
 	endDate = RepSpec.sEndDate;
+	sign = 1;
+	
+	GetJWCompanies(RepSpec.UsedOnly,companies);
+	oldcompany = CurrentCompany;	
+	
 
 	StartReportJob(USetStr(35061));
+		Header(rw,USetStr(35072) & GetDescriptionOfCompanies(companies),1);
+		rw = rw + 1;
+		Header(rw,USetStr(31102) & RepSpec.Period2Str ,1);
+		rw = rw + 1;
 		Header(rw,USetStr(31116) & ": " & item,1);
 	EndHeader;
-	
-	
-		if (RepSpec.UsedOnly == 0) then begin
-			companies[0] = CurrentCompany;
-		end else begin			//All J&W companies
-			companies[0] = 3;
-			companies[1] = 17;
-			companies[2] = 19;
-			companies[3] = 20;
-			companies[4] = 21;
-			companies[5] = 22;
-		end;
-		
-		oldcompany = CurrentCompany;
-		BlockLoad(Compb);
-		
+			
 		
 		tab[1] = 30;
 		tab[2] = 100;
@@ -84,8 +147,7 @@ begin
 		tab[4] = 250;
 		tab[5] = 320;
 		tab[6] = 400;
-		tab[7] = 30;
-		tab[8] = 30;
+
 		
 		StartFormat(15);
 			OutString(tab[1],0,USetStr(35064),false);	//Date
@@ -101,6 +163,7 @@ begin
 	
 		StartFormat(15);
 		
+		//---Check input parameters-------------------------------------------
 		if (blank(item)) then begin
 			OutString(0,0,USetStr(35062),false);
 			EndFormat;
@@ -120,7 +183,7 @@ begin
 		end;		
 
 		
-		
+		//Collect remain quantity,cost in the beginning of period----------------
 		for(i=0;i<companies.length;i=i+1) begin
 			if (SetCompany(companies[i],false)) then begin
 				IHr.ArtCode = item;
@@ -140,8 +203,9 @@ begin
 					if (IHr.TransDate >= startDate) then begin TrHs = false; testf = false; end;
 					if (IHr.StockAffectf==0) then begin testf = false; end;
 					if (testf) then begin	
+							if (IHr.Qty<0) then begin sign = -1; end else begin sign = 1; end;
 							restQty = restQty + IHr.Qty;
-							restCost = restCost + IHr.TotCostPrice;		
+							restCost = restCost + IHr.TotCostPrice*sign;		
 					end;	
 				end;
 				ResetLoop(IHr);
@@ -154,13 +218,17 @@ begin
 		OutString(tab[5],0,restQty,false);
 		OutString(tab[6],0,restCost,false);
 		EndFormat;
+		Gray_Divider(0,1);
 		EndFormat;
 		
 		
+		
+		//Output the records from every company, during Period
+		//records sorted only by date, not by time---------------------------------
 		tempDate = startDate;
 		
 		While(tempDate<=endDate) begin
-		
+			
 			for(i=0;i<companies.length;i=i+1) begin
 				if (SetCompany(companies[i],false)) then begin
 						IHr.ArtCode = item;
@@ -183,16 +251,18 @@ begin
 							if (IHr.StockAffectf==0) then begin testf = false; end;
 							if (testf) then begin
 
+									if (IHr.Qty<0) then begin sign = -1; end else begin sign = 1; end;
+
 									totalQty = totalQty + IHr.Qty;
-									totalCost = totalCost + IHr.TotCostPrice;	
+									totalCost = totalCost + IHr.TotCostPrice*sign;	
 									
 									StartFormat(15);
 									OutDate(tab[1],0,IHr.TransDate,false);
-									OutString(tab[2],0,IHr.FileName,false);
+									OutString(tab[2],0,GetRegisterDescription(IHr.FileName),false);
 									OutString(tab[3],0,IHr.TransNr,false);
 									OutString(tab[4],0,IHr.Location,false);
 									OutString(tab[5],0,IHr.Qty,false);
-									OutString(tab[6],0,IHr.TotCostPrice,false);
+									OutString(tab[6],0,IHr.TotCostPrice*sign,false);
 									EndFormat;										
 		
 							end;	
@@ -203,14 +273,15 @@ begin
 			end;
 			ResetCompany(oldcompany);
 			tempDate = AddDay(tempDate,1);
-			LogText(0,tempDate);
+			
 		end;		
 			
-
+	
 		Black_Divider(0,1);
-									OutString(tab[5],0,totalQty,false);
-									OutString(tab[6],0,totalCost,false);
-									EndFormat;
+		OutString(tab[2],0,USetStr(35071),false);
+		OutString(tab[5],0,totalQty,false);
+		OutString(tab[6],0,totalCost,false);
+		EndFormat;
 				
 	EndJob;
 

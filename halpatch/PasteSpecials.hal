@@ -138,6 +138,7 @@ external procedure PLVc_SerialNrSClass(Integer,Integer,Integer,var Array string,
 external procedure PasteFromSysList(Integer,Integer);// Edit ************************** Wednesday, 26 June 2013 17:23:07
 remote   procedure CLCorspVc_TRObjSClass(record CLCorspVc,var record RcVc);// Edit ************************** Thursday, 30 October 2014 10:24:27
 remote procedure CompLocationSClassArrayOnOpen(var Array string,var Integer,integer); //Edit***************************Sasha2,10:51 07.04.2015
+remote procedure CompLocation2SClassGetArray(var Array string,integer);//Edit----------------------Dima  29.02.2016
 
 global
 Function Boolean OcupResSClassOnOpenWindow(Integer wn)
@@ -1298,6 +1299,36 @@ begin
   CompLocationSClassOnOpenWindow = false;
   return;
 end; //Edit***************************Sasha2,10:50 07.04.2015 }
+
+
+
+
+global 
+function Boolean CompLocation2SClassOnOKWindow(Integer wn)
+begin
+  PasteFromSysList(wn,-2);
+  CompLocation2SClassOnOKWindow = false;
+  return;
+end;
+
+
+global
+function Boolean CompLocation2SClassOnOpenWindow(Integer wn)	//Edit----------------------Dima  29.02.2016
+begin
+  Array string 255 aLocations;
+  Integer i,acnt,mwn;
+  record RcVc RepSpec;
+  
+  mwn = MotherWindow(wn);
+  GetWindowRecord(mwn,RepSpec); 
+  CompLocation2SClassGetArray(aLocations,RepSpec.UsedOnly);
+  for (i=0;i<aLocations.length;i=i+1) begin
+    SetListString(wn,len(aLocations[i]),aLocations[i],false);    
+  end;
+  CompLocation2SClassOnOpenWindow = false;
+  return;
+end;
+
 
 global
 Function Boolean ObjStoreSClassOnOpenWindow(Integer wn)

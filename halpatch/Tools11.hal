@@ -1112,3 +1112,23 @@ begin
   DurationToVal = resv;
   return;
 end;
+
+
+
+global procedure RemoveDuplicatesInArray(var array string list)		//Edit----------------------Dima  29.02.2016
+begin
+  integer i;
+  string 255 prevValue;
+  
+  SortStringArray(list);
+  
+  for (i=1;i<list.length;i=i+1) begin
+  	prevValue = list[i-1];
+		if (list[i]==prevValue) then begin
+			list[i-1] = "";
+		end;
+	end;
+	
+	SortStringArray(list);
+	
+end;
