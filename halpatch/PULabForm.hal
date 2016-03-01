@@ -183,18 +183,20 @@ BEGIN
 		tstr = "";
 		readfirstmain(PLDr,1,true);
 		tstr = PLDr.CurncyCode;
-		if(blank(tstr))then begin
+	  if(blank(tstr))then begin
+	  	PLr.PLCode = "RRP";
+			PLr.ArtCode = INr.Code;
+			if(readfirstmain(PLr,2,true))then begin
+				if(nonblank(PLr.CurncyCode))then begin
+					tstr = PLr.CurncyCode;
+				end;
+			end;
+	  end;
+	  if(blank(tstr))then begin
 			blockload(BCb);
 			tstr = BCb.BaseCur1;
 		end;
-	  PLr.PLCode = "RRP";
-	  PLr.ArtCode = INr.Code;
-	  if(readfirstmain(PLr,2,true))then begin
-	  	if(nonblank(PLr.CurncyCode) and PLr.CurncyCode!=tstr)then begin
-	  		tstr = PLr.CurncyCode;
-	  	end;
-			OUTFORMFIELD("F_MYRETAILCURNCY",tstr);// Edit ************************** Tuesday, 1 April 2014 13:15:56
-	  end;
+	  OUTFORMFIELD("F_MYRETAILCURNCY",tstr);// Edit ************************** Tuesday, 1 April 2014 13:15:56
 	end;
 	
 	if (FIELDINFORM("F_MYRETAILCURNCY1")) then begin

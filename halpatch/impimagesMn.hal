@@ -2616,7 +2616,12 @@ begin
   	//pechat stikerov s 5/1/16 tolko v u.e. vo vseh company // Edit ************************** Tuesday, 5 January 2016 10:44:24
   	
     price = blankval;
-    printcur = "";
+    //printcur = "";
+    printcur = "y.e.";
+    if(currentcompany==16)then begin
+			printcur = stockcur;
+    end;
+    
     switch (switchf) begin
       case 0:
         PLr.PLCode = "RRP";
@@ -2643,6 +2648,7 @@ begin
     			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
     				rnd.step = kRoundingStep5;
     			end;
+    			
     			if(cur!=stockcur and nonblank(stockcur))then begin// Edit ************************** Tuesday, 5 January 2016 10:46:17
     			  printcur = stockcur;
     			  CurValToOtherCur(CurrentDate,cur,PLr.ExVatPrice,printcur,price,rnd); 
@@ -2652,7 +2658,11 @@ begin
     			end;
     	  end;
     end;
-  printcur = "y.e.";
+  	
+  	if(currentcompany!=16)then begin
+			printcur = "y.e.";
+    end;
+  	
   Get_Zebra_Price = price;
   return;
 end;
@@ -2786,6 +2796,9 @@ begin
 		  	
 		    //stockcur = basecur;
 		    stockcur = "";
+		    if(currentcompany==16)then begin
+		    	stockcur = basecur;
+		    end;
 		    caratf = true;
 		end;
 		switch (fromplace) begin
