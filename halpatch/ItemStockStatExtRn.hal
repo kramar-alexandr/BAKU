@@ -1097,8 +1097,17 @@ begin
   location = RepSpec.f2;
   todate = RepSpec.d1;
   
-  if (currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20) then begin
-    addclassf = true; //Edit***************************Sasha2,14:00 08.02.2016
+  switch (CurrentCompany) begin
+    case 3: addclassf=true;
+    case 17: addclassf=true;
+    case 19: addclassf=true;
+    case 20: addclassf=true;
+    case 21: addclassf=true;
+    case 22: addclassf=true;
+    otherwise addclassf=false;
+  end;
+  
+  if (addclassf) then begin
     typescnt = 0;
 	  BlockLoad(DiCb);
     rwcnt = MatRowCnt(DiCb);  

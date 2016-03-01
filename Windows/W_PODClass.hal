@@ -2294,6 +2294,8 @@ begin
     case 17: toggleview=true;
     case 19: toggleview=true;
     case 20: toggleview=true;
+    case 21: toggleview=true;
+    case 22: toggleview=true;
     otherwise toggleview=false;
   end;
   
