@@ -2291,6 +2291,7 @@ begin
   
   switch (CurrentCompany) begin
     case 3: toggleview=true;
+    case 17: toggleview=true;
     case 19: toggleview=true;
     case 20: toggleview=true;
     otherwise toggleview=false;
