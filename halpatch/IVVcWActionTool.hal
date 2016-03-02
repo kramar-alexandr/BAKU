@@ -63,6 +63,7 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
                                                 var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
                                                 string,Boolean,var Boolean,string,var string,var val,string,string,var string);
 external function Boolean INVc_AllowSales(record INVc,var LongInt);
+external function val CollectItemsQtyBySameCode(record IVVc,row IVVc );	//Edit----------------------Dima  02.03.2016
 
 global
 function Integer VATCalcRule(string VATCode)
@@ -283,6 +284,7 @@ global
 procedure IVVc_PasteQuant(var record IVVc IVr,Integer rownr,Boolean calcuntiqf,var Boolean chsum,string defreturnlocation)
 BEGIN
   val t,s,price,vreb,baseprice,temp,tax2prc;
+  val prevRebate,sumQtyForDiscount;
   record FreightBlock FreightRec;
   record INVc INr;
   row IVVc IVrw;
@@ -298,13 +300,16 @@ BEGIN
   if (blank(location)) then begin
     location = IVr.Location;
   end;
-  vreb = IVrw.vRebate;  
+  vreb = IVrw.vRebate;
+  prevRebate =  vreb;//Edit----------------------Dima  02.03.2016 
   price = IVrw.Price;
   exportflag = IVr.ExportFlag;
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) then begin
     exportflag = exportflag + AddPortugueseType;
-  end;  
-  if (GetItemPriceDiscount3(IVrw.ArtCode,IVrw.Quant,INr,IVr.CurncyCode,
+  end;
+  
+  sumQtyForDiscount =  CollectItemsQtyBySameCode(IVr,IVrw); //Edit----------------------Dima  02.03.2016
+  if (GetItemPriceDiscount3(IVrw.ArtCode,sumQtyForDiscount,INr,IVr.CurncyCode,
                             IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,
                             IVr.LangCode,IVr.CustCat,IVr.PriceList,IVr.RebCode,
                             price,tstr,vreb,dummystr,baseprice,dummystr,
@@ -384,10 +389,18 @@ BEGIN
       end;
     end;
   end;
+   
+  
   if (IVDchrsum(IVr,rownr)) then begin
     IVDchsum(IVr,rownr);
   end;
   AddMultiBuyDiscountItems_IVVc(IVr);
+  
+  //discount recalculates for all rows, not only for current
+  if (prevRebate!=vreb) then begin		//Edit----------------------Dima  02.03.2016
+		IVDUpdatePrices(IVr,false);
+	end;   
+  
   RETURN;    
 END;    
 

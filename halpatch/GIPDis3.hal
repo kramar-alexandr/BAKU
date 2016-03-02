@@ -20,6 +20,7 @@ external function Boolean GetRebate(record INVc,var val,var val,string,string,va
 external procedure GetStructureCostPrice(string,var val);
 external function Boolean GetFirstItem(var string,var record INVc);
 external procedure SetDefProjectUnit(string,var string);
+external procedure GetItemGroup(string,var string);	//Edit----------------------Dima  02.03.2016
 
 /*  This code will calculate the price if the price is not in the prices register, I don't think it should work that way
 function Boolean GetPurchaseItem(string artcode,var record PIVc PIp)
@@ -256,6 +257,71 @@ begin
   PriceListforDateTime = pldeffound;
   return;
 end;
+
+
+//function collects all items from invoice by the same code/group
+//for correct discount
+global function val CollectItemsQtyBySameCode(record IVVc IVr,row IVVc IVrw)		//Edit----------------------Dima  02.03.2016
+begin
+	record RebVc Rebr;
+	row RebVc Rebrw;
+	row IVVc IVrw2;
+	integer i,j;
+	val qty;
+	string 20 typeCollection,byCode,byGroup,itemgroupCurrent,itemgroupTemp;
+	
+	byCode = "byCode";
+	byGroup = "byGroup";
+	
+	if (blank(IVr.RebCode)) then begin
+		qty = IVrw.Quant;
+		goto LCollectItemsQtyBySameCode;
+	end;	
+	
+	Rebr.Code = IVr.RebCode;
+	if (ReadFirstMain(Rebr,1,true)) then begin
+		GetItemGroup(IVrw.ArtCode,itemgroupCurrent);
+		for(j=0;j<MatRowCnt(Rebr);j=j+1) begin
+				MatRowGet(Rebr,j,Rebrw);
+				if (Rebrw.ITCode == itemgroupCurrent) then begin
+					typeCollection = byGroup;
+				end;
+		end;				
+		if (blank(typeCollection)) then begin	
+			for(j=0;j<MatRowCnt(Rebr);j=j+1) begin
+				MatRowGet(Rebr,j,Rebrw);
+				if (Rebrw.ITCode == IVrw.ArtCode) then begin
+					typeCollection = byCode;
+				end;
+			end;
+		end;		
+	end;
+	
+	if (blank(typeCollection)) then begin
+		qty = IVrw.Quant;
+		goto LCollectItemsQtyBySameCode;
+	end;		
+	
+	for(i=0;i<MatRowCnt(IVr);i=i+1) begin
+		MatRowGet(IVr,i,IVrw2);
+		switch(typeCollection) begin
+			case "byCode":
+				if (IVrw2.ArtCode == IVrw.ArtCode) then begin qty = qty + IVrw2.Quant; end;
+			case "byGroup":
+				GetItemGroup(IVrw2.ArtCode,itemgroupTemp);
+				if (itemgroupTemp == itemgroupCurrent) then begin qty = qty + IVrw2.Quant; end;				
+		end;
+	end;
+	
+
+
+LCollectItemsQtyBySameCode:;
+CollectItemsQtyBySameCode = qty;
+return;
+end;
+
+
+
 
 global
 function Boolean GetItemPriceDiscount3(string item,val qtp,var record INVc INr,string crncycode,

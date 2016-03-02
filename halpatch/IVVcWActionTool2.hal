@@ -32,6 +32,7 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
 external function Boolean FindLastInvoiceRowForSerial(LongInt,string ,string,var row IVVc);
 external function Boolean ReadFirstItem(string,var record INVc,Boolean,Boolean);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external function val CollectItemsQtyBySameCode(record IVVc,row IVVc );	//Edit----------------------Dima  02.03.2016
 
 procedure NormalRowPasteSum(var record IVVc IVp,Integer rownr,var Boolean chsum)
 BEGIN
@@ -935,7 +936,7 @@ BEGIN
   record INVc INr;
   Boolean calcprice;
   string 255 tstr;
-  val t,s,price,vreb,baseprice,temp,tax2prc;
+  val t,s,price,vreb,baseprice,temp,tax2prc,sumQtyForDiscount;
   string 255 curitemname,salesacc,vatcode,tax2code,location,taxtemplatecode;
   Boolean dummyf;
 		
@@ -953,7 +954,8 @@ BEGIN
         location = IVr.Location;
       end;
       vreb = blankval;// Edit ************************** Wednesday, 4 September 2013 10:01:49
-      if (GetItemPriceDiscount3(IVrw.ArtCode,IVrw.Quant,INr,IVr.CurncyCode,
+      sumQtyForDiscount =  CollectItemsQtyBySameCode(IVr,IVrw); //Edit----------------------Dima  02.03.2016
+      if (GetItemPriceDiscount3(IVrw.ArtCode,sumQtyForDiscount,INr,IVr.CurncyCode,
                               IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,
                               IVr.LangCode,IVr.CustCat,IVr.PriceList,IVr.RebCode,
                               price,curitemname,vreb,vatcode,baseprice,salesacc,
