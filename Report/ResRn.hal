@@ -987,7 +987,7 @@ BEGIN
     end;
     SetRepCol(6,15);
   end;
-  if (nonblank(RepSpec.vals3)) then begin	//Out by rate	//Edit----------------------Dima  23.02.2016
+  if (((RepSpec.Comparison==0) and nonblank(RepSpec.vals3)) or ((RepSpec.Comparison==1) and nonblank(RepSpec.vals4))) then begin	//Out by rate	//Edit----------------------Dima  23.02.2016
   	SetRepCol(3,220);
     SetRepCol(4,280);
     SetRepCol(5,340);
@@ -1032,7 +1032,7 @@ BEGIN
       end;
     end;
     if (RepSpec.Comparison==1) then begin
-			if (blank(RepSpec.vals3)) then begin
+			if (blank(RepSpec.vals4)) then begin
         tstr = USetStr(3158);
         tstr = tstr & notstr;
         OutString(3,0,tstr,true);

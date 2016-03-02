@@ -1105,8 +1105,11 @@ BEGIN
   end;
   
   rate = 1;
-  if (nonblank(RepSpec.vals3)) then begin		//Edit----------------------Dima  23.02.2016
+  if ((RepSpec.Comparison==0) and nonblank(RepSpec.vals3)) then begin		//Edit----------------------Dima  23.02.2016
 		rate = RepSpec.vals3;     		
+	end;
+	if ((RepSpec.Comparison==1) and nonblank(RepSpec.vals4)) then begin		//Edit***************************Sasha2,16:38 02.03.2016
+		rate = RepSpec.vals4;     		
 	end;
   
   switch (RepSpec.AccSpec) begin

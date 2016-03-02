@@ -6922,6 +6922,7 @@ begin
   EditFieldTL(h,v+=20,150,"Искл. объект",M4UStr,Normal,60,f6,false,ObjSClass);
   end;
   EditFieldTL(345,v+=25,70,"Отображать отчет по курсу",M4Val,Normal,0,vals3,false,0);	//Edit----------------------Dima  04.02.2016
+  EditFieldTL(345,v+=20,70,"Отображать отчет по курсу на пред.год",M4Val,Normal,0,vals4,false,0);	//Edit***************************Sasha2,16:12 02.03.2016
   EditFieldTL(345,6,120,"Заголовок",M4Str,Normal,60 ,f1,false,0);
   ButtonFrame(h=30,vm=(v+=41),123,5,"Счета");
   RadioButton(h,v,0,0,"все",AccSpec);
@@ -6958,7 +6959,7 @@ begin
   RadioButton(h,v+=16,1,0,"В осн. валюте 2",basecurncy);
   end;
   if (IsEnterprise) then begin
-    CheckBox(h=30,v=270,0,"Включая симуляции",SimVerf);
+    CheckBox(h=30,v=(v+=20),0,"Включая симуляции",SimVerf);
   CheckBox(h,v+=16,0,"Список номеров записей операций",flags[4]);
   CheckBox(h,v+=16,0,"Без заголовка",flags[5]);
 end;
