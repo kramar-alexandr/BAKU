@@ -2,18 +2,18 @@ external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function string 255 MonthName(Date);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external procedure XmlXlsxWorkBegin(string,string);
-external procedure CreateSheetsXLSX(integer,array string,string,integer);
+external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
 external procedure EndSheet(integer,string,integer);
-external procedure SetSheetsCols(integer,array val,string);
+external procedure SetSheetsCols(integer,array val,array integer,string);
 external procedure BeginSheetData(integer,string);
 external procedure EndSheetData(integer,string);
-external procedure BeginRow(integer,string,integer);
+external procedure BeginRow(integer,string,integer,integer,val);
 external procedure EndRow(integer,string,var integer);
 external procedure StringCell(integer,string,var integer,integer,integer,string,var array string,var integer,var integer);
 external procedure NumericCell(integer,string,var integer,integer,integer,val);
 external procedure EmptyCell(integer,string,var integer,integer,integer,integer);
 external procedure MergeCells(integer,string,array string,integer);
-external procedure FillSharedStrings(string,array string,integer,integer);
+external procedure FillSharedStrings(string,array string,integer,integer,array string);
 external procedure ConvertToXLSX(string);
 
 SetLangMode(LangRussian,"RUS",0);
@@ -37,7 +37,7 @@ begin
 			tmpdaymonth = MonthName(tmpdate);
 			style = 4;
 			colnum = 2;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,tmpdaymonth,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 				style = 7;
 				NumericCell(sheetnum,fileToSave,colnum,rownum,style,turnover);
@@ -65,7 +65,7 @@ begin
 		end else begin
 			style = 18;
 			colnum = 2;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				NumericCell(sheetnum,fileToSave,colnum,rownum,style,intMonth);
 				style = 16;
 				NumericCell(sheetnum,fileToSave,colnum,rownum,style,turnover);
@@ -96,7 +96,7 @@ begin
 	end else begin
 		style = 4;
 		colnum = 2;
-		BeginRow(sheetnum,fileToSave,rownum);
+		BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 			qtyOfEmpStr = 1;
 			EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 			style = 13;
@@ -151,6 +151,8 @@ begin
 	array string 100 SharedStrings;
 	integer numOfUniqueSharedStrings,numOfSharedStrings,qtyMergeCell;
 	string 6 reportName;
+  array string 255 mas;
+  array integer lvlArray;
 	
 	setexportcodepage("UTF8");
 	
@@ -181,7 +183,7 @@ begin
 	numOfUniqueSharedStrings = 0;
 	numOfSharedStrings = 0;
 	XmlXlsxWorkBegin(fileToSave,reportName);
-	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,0);
+	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,0,false);
 	sheetnum = 1;
 	
 	BlockLoad(bascur);
@@ -200,13 +202,13 @@ begin
 		curmonth = GetMonth(curdate);
 		if (prevday==0) then begin
 			sheetnum = sheetnum + 1;
-			SetSheetsCols(sheetnum,sheetColls,fileToSave);
+			SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
 			BeginSheetData(sheetnum,fileToSave);
 			rownum = 1;
 			style = 19;
 			colnum = 2;
 			rownum = rownum + 1;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,MonthName(curdate),SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 				style = 20;
 				qtyOfEmpStr = 1;
@@ -215,7 +217,7 @@ begin
 			style = 1;
 			colnum = 2;
 			rownum = rownum + 1;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,"День",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 				style = 2;
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,"Оборот",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
@@ -230,7 +232,7 @@ begin
 			EndRow(sheetnum,fileToSave,rownum);
 			style = 4;
 			colnum = 2;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				qtyOfEmpStr = 1;
 				EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 				style = 5;
@@ -253,7 +255,7 @@ begin
 			itemsqty = 0;
 			style = 9;
 			colnum = 2;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				qtyOfEmpStr = 1;
 				EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 				style = 10;
@@ -267,13 +269,13 @@ begin
 			MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
 			EndSheet(sheetnum,fileToSave,0);
 			sheetnum = sheetnum + 1;
-			SetSheetsCols(sheetnum,sheetColls,fileToSave);
+			SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
 			BeginSheetData(sheetnum,fileToSave);
 			rownum = 1;
 			style = 19;
 			colnum = 2;
 			rownum = rownum + 1;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,MonthName(curdate),SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 				style = 20;
 				qtyOfEmpStr = 1;
@@ -282,7 +284,7 @@ begin
 			style = 1;
 			colnum = 2;
 			rownum = rownum + 1;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,"День",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 				style = 2;
 				StringCell(sheetnum,fileToSave,colnum,rownum,style,"Оборот",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
@@ -297,7 +299,7 @@ begin
 			EndRow(sheetnum,fileToSave,rownum);
 			style = 4;
 			colnum = 2;
-			BeginRow(sheetnum,fileToSave,rownum);
+			BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 				qtyOfEmpStr = 1;
 				EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 				style = 5;
@@ -368,7 +370,7 @@ begin
 	printstrings("",totturnover[prevmonth],totcheckqty[prevmonth],totitemsqty[prevmonth],false,sheetnum,fileToSave,rownum,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 	style = 9;
 	colnum = 2;
-	BeginRow(sheetnum,fileToSave,rownum);
+	BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 		qtyOfEmpStr = 1;
 		EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 		style = 10;
@@ -382,13 +384,13 @@ begin
 	MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
 	EndSheet(sheetnum,fileToSave,0);
 	sheetnum = 1;
-	SetSheetsCols(sheetnum,sheetColls,fileToSave);
+	SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
 	BeginSheetData(sheetnum,fileToSave);
 	rownum = 1;
 	style = 19;
 	colnum = 2;
 	rownum = rownum + 1;
-	BeginRow(sheetnum,fileToSave,rownum);
+	BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 		StringCell(sheetnum,fileToSave,colnum,rownum,style,"КПД за год",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 		style = 20;
 		qtyOfEmpStr = 1;
@@ -397,7 +399,7 @@ begin
 	style = 1;
 	colnum = 2;
 	rownum = rownum + 1;
-	BeginRow(sheetnum,fileToSave,rownum);
+	BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 		StringCell(sheetnum,fileToSave,colnum,rownum,style,"Месяц",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
 		style = 2;
 		StringCell(sheetnum,fileToSave,colnum,rownum,style,"Оборот",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
@@ -410,7 +412,7 @@ begin
 	EndRow(sheetnum,fileToSave,rownum);
 	style = 4;
 	colnum = 2;
-	BeginRow(sheetnum,fileToSave,rownum);
+	BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 		qtyOfEmpStr = 1;
 		EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 		style = 5;
@@ -425,7 +427,7 @@ begin
 	end;
 	style = 9;
 	colnum = 2;
-	BeginRow(sheetnum,fileToSave,rownum);
+	BeginRow(sheetnum,fileToSave,rownum,0,blankval);
 		qtyOfEmpStr = 1;
 		EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
 		style = 10;
@@ -438,7 +440,7 @@ begin
 	EndSheetData(sheetnum,fileToSave);
 	MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
 	EndSheet(sheetnum,fileToSave,0);
-	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
 	ConvertToXLSX(fileToSave);
 	MilliSleep(2000);
 	addfiletoarea(fileToSave,areatofile,false);

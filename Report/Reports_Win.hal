@@ -785,3 +785,17 @@ begin
 		SetWRect(20,80,440,340);
 	EndWindow;
 end;
+
+window ImagesExcelRClass:1	//Edit-------------------Vitalii 11:25 02.03.2016
+	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real h,v,vs;
+	WindowBegin("Определите отчет с картинками",ImagesExcelRClass,CGother,RcType);
+	SetWRect(20,80,400,250);
+	v = 6; vs = 20; h = 130;
+	//EditFieldTL(h,v,70,"Год",M4Str,Normal,41,f1,false,0);
+	
+	HalPushButton(h=50,v+=20,h+110,v+=20,"RunImagesExcelRn","Запуск");
+	
+EndWindow;
+end;
