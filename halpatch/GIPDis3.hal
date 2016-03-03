@@ -259,6 +259,52 @@ begin
 end;
 
 
+procedure GetCurRebate(string rebcode1, var record RebVc Rebr, date tdp)
+begin
+	
+	Boolean res;
+	record CCatVc CCatr;
+	row RebVc Rebrw;
+	Integer rwcnt;
+	Integer i;
+	string 5 rebcode;
+	Boolean rebfound;
+	string 20 temprebcode;// Edit ************************** Friday, 30 August 2013 11:45:23
+	boolean findreb;
+	integer checkin;
+	
+	rebcode = rebcode1;
+	
+	if (nonblank(rebcode)) then begin
+    temprebcode  = rebcode;
+    findreb = true;
+    checkin = 0;
+    while(findreb)begin
+			if (GetYear(tdp)>0) then begin
+				Rebr.Replaces = rebcode;
+				Rebr.FromDate = tdp;
+				rebfound = ReadLastKey("Replaces",Rebr,2,false); 
+				if (Rebr.Replaces<>rebcode) then begin rebfound = false; end;
+				if (DateInRange(tdp,Rebr.FromDate,Rebr.ToDate)==false) then begin rebfound = false; end;
+				if (rebfound) then begin rebcode = Rebr.Code; end;
+			end;  
+			if (rebfound==false) then begin
+				Rebr.Code = rebcode;
+				rebfound = ReadFirstMain(Rebr,1,true);
+				findreb = false;
+			end; 
+			
+			checkin = checkin + 1;
+			If(checkin>20) then begin
+				findreb  = false;
+			end; 
+    end;
+  end;
+	
+return;
+end;
+
+
 //function collects all items from invoice by the same code/group
 //for correct discount
 global function val CollectItemsQtyBySameCode(record IVVc IVr,row IVVc IVrw)		//Edit----------------------Dima  02.03.2016
@@ -272,14 +318,18 @@ begin
 	
 	byCode = "byCode";
 	byGroup = "byGroup";
-	
+		
 	if (blank(IVr.RebCode)) then begin
 		qty = IVrw.Quant;
 		goto LCollectItemsQtyBySameCode;
 	end;	
 	
 	Rebr.Code = IVr.RebCode;
-	if (ReadFirstMain(Rebr,1,true)) then begin
+	
+	
+	
+	if (nonblank(IVr.RebCode)) then begin
+		GetCurRebate(IVr.RebCode,Rebr,IVr.InvDate);
 		GetItemGroup(IVrw.ArtCode,itemgroupCurrent);
 		for(j=0;j<MatRowCnt(Rebr);j=j+1) begin
 				MatRowGet(Rebr,j,Rebrw);
@@ -312,10 +362,10 @@ begin
 				if (itemgroupTemp == itemgroupCurrent) then begin qty = qty + IVrw2.Quant; end;				
 		end;
 	end;
-	
 
 
 LCollectItemsQtyBySameCode:;
+
 CollectItemsQtyBySameCode = qty;
 return;
 end;

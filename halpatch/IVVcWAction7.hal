@@ -68,6 +68,7 @@ external remote procedure GetTwoStrings(string,string,string,var string,var stri
 remote procedure IVVc_PasteLocation(var record IVVc,Integer);// Edit ************************** Wednesday, 17 September 2014 14:55:33
 external updating procedure CreatePUfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
 external updating procedure CreateSDfromIVDsm(String,String); //Edit***************************Sasha2,10:56 11.12.2014
+remote procedure IVDUpdatePrices(var record IVVc,Boolean);
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -1042,6 +1043,7 @@ begin
         GetWindowRecord(wn,IVr);
   //      matrowix = GetSelectedPOSItemRowIndex(wn); // Why again? On windows, the selection is cleared between the calls to this function, can't figure out why.
         MatRowDelete(IVr,matrowix);
+        IVDUpdatePrices(IVr,false);// Edit ************************** Thursday, 3 March 2016 10:44:29
         IVSumup(IVr,true);
         PutWindowRecord(wn,IVr);
         if (GuiType==kGuiCocoa) then begin
