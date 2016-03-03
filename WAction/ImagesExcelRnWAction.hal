@@ -4,7 +4,7 @@ SetLangMode(LangRussian,"RUS",0);
 
 global
 procedure RunImagesExcelRn() begin
-	string 250 filename;
+	string 250 filename,tstr;
 	area fileToSave;
 	record RcVc RepSpec;
 	integer wn;
@@ -12,8 +12,22 @@ procedure RunImagesExcelRn() begin
 	wn = curwindow;
 	deselectwindow(wn,true);
 	getwindowrecord(wn,RepSpec);
-	filename = SaveFileDialog("Test","","xlsx");
-	if ((filename!="Test") and nonblank(filename)) then begin
+  tstr = "Ћстатки по складам с картинками";
+  if nonblank(RepSpec.f1) or nonblank(RepSpec.f2) then begin
+    tstr = tstr & " (";
+    if nonblank(RepSpec.f1) then begin
+      tstr = tstr & "Ѓренд - " & RepSpec.f1;
+    end;
+    if nonblank(RepSpec.f2) then begin
+      if nonblank(RepSpec.f1) then begin
+        tstr = tstr & ", ";
+      end;
+      tstr = tstr & "‘клад - " & RepSpec.f2;
+    end;
+    tstr = tstr & ")";
+  end;
+	filename = SaveFileDialog(tstr,"","xlsx");
+	if ((filename!=tstr) and nonblank(filename)) then begin
 		ImagesExcelRn(RepSpec,fileToSave);
 		if(fileexists(filename))then begin
 			delete_file(filename);

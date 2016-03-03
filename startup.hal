@@ -166,7 +166,7 @@ begin
   Report("Ошибки в начальных сальдо",FBErrRClass,FBErrRn,0,modNL);
   Report("Количество счет-фактур по складам",IVbyLocRClass,IVbyLocRn,0,modDBMain);//Edit-------------------Vitalii 17:49 13.01.2016
   Report("Исторический отчет по товарам",HistoricalRClass,HistoricalRn,0,modIN);	//Edit----------------------Dima  26.02.2016
-  Report("Отчет с картинками",ImagesExcelRClass,ImagesExcelRn,0,modIN);//Edit-------------------Vitalii 11:21 02.03.2016
+  Report("Остатки по складам с картинками",ImagesExcelRClass,ImagesExcelRn,0,modIN);//Edit-------------------Vitalii 11:21 02.03.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -590,8 +590,7 @@ begin
   SString(35071,"На конец периода");
   SString(35072,"Отчет по компаниям: ");
   
-  SString(35073,"Засчитана скидка по акции ");
-   
+  SString(35073,"Засчитана скидка по акции ");   
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
