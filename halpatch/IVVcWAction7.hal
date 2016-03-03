@@ -1171,10 +1171,11 @@ begin
 				end;
 			end; 
 			points = salesval; 
+			
+			if((IVr.Sum4-salesval)<salesval)then begin
+				points = IVr.Sum4-salesval;
+			end;  
 			MessageBox(0,USetStr(35073) & points & " AZN");
-			if(IVr.Sum4<amount)then begin
-				points = IVr.Sum4;
-			end;   
 			ClearRow(IVr,IVrw,kInvoiceRowTypeLoyaltyPointsPayment); 
 			IVrw.Points = points;// Edit ************************** Wednesday, 6 March 2013 12:08:33
 			IVrw.Sum = points;// Edit ************************** Wednesday, 6 March 2013 12:08:34
