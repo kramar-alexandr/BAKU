@@ -396,6 +396,10 @@ BEGIN
       res = -1; 
       goto LNewINVcRecordCheck;
 	  end;
+	  
+	  
+	  if (newINr.OKFlag==1) then begin		//Edit----------------------Dima  09.03.2016
+	  
 	  upd = false;
 	  INr.Code = newINrw.Code;
 	  if(readfirstmain(INr,1,true))then begin
@@ -899,7 +903,7 @@ BEGIN
       goto LNewINVcRecordCheck;
 	  end;
 	  
-	  if (newINr.OKFlag==1) then begin
+	  //if (newINr.OKFlag==1) then begin
   	  if(nonblank(newINr.Name))then begin INr.Name=newINr.Name;  end; if(nonblank(newINrw.Name))then begin INr.Name=newINrw.Name;  end;
   		if(nonblank(newINr.Unittext))then begin INr.Unittext=newINr.Unittext;  end; if(nonblank(newINrw.Unittext))then begin INr.Unittext=newINrw.Unittext;  end;
   		//if(nonblank(newINr.MinLevel))then begin INr.MinLevel=newINr.MinLevel;  end; if(nonblank(newINrw.MinLevel))then begin INr.MinLevel=newINrw.MinLevel;  end;
@@ -1061,7 +1065,7 @@ BEGIN
   		//if(nonblank(newINr.SVOContractCostAcc))then begin INr.SVOContractCostAcc=newINr.SVOContractCostAcc;  end; if(nonblank(newINrw.SVOContractCostAcc))then begin INr.SVOContractCostAcc=newINrw.SVOContractCostAcc;  end;
   		//if(nonblank(newINr.SVOGoodwillCostAcc))then begin INr.SVOGoodwillCostAcc=newINr.SVOGoodwillCostAcc;  end; if(nonblank(newINrw.SVOGoodwillCostAcc))then begin INr.SVOGoodwillCostAcc=newINrw.SVOGoodwillCostAcc;  end;
 	    res = nINVcRecordCheck(INr,IN2r,stat1,long41,i);
-	  end;
+	  //end;
 
 		
 		if(res==0)then begin
@@ -1094,6 +1098,9 @@ BEGIN
       //res = -1; 
       goto LNewINVcRecordCheck;
 		end;
+		
+		end;
+		
 	end; 
 	
 	if (newINr.SerNr==-1) then begin
