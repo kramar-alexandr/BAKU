@@ -2,6 +2,7 @@ external procedure ExtractObj(string,var Integer,var string);
 remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean SetInSet2(string,string);
 external function roundmode SetRoundMode(Integer,Integer,Integer,Integer);
+external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 
@@ -375,8 +376,8 @@ procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val s
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
-	integer pos,cnt,i;
-  string 50 uloc,pricecur;
+	integer pos,cnt,i,pos1;
+  string 50 uloc,pricecur,uloc1;
   val fr,to1,to2,br1,br2;
   val baseprice,cur,price,baseprice5;
   record INConsVc INCr;
@@ -388,8 +389,9 @@ begin
   record IVVc IVr;
   row IVVc IVrw;
   roundmode rmode5;
-  string 255 brand,model;
-
+  string 255 brand,model,tstr;
+  Boolean collf,metalf;
+  string 20 collstr,metalstr;
   
   rmode5 = SetRoundMode(0,kRoundingDirectionToFromPosInf,kRoundingModeHalfUp,kRoundingStep5);	//Edit----------------------Dima  17.04.2015
   
@@ -443,6 +445,89 @@ begin
 				    end;
 				  end else begin
 				    typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+				    switch (Left(UpperCase(INr.MainDisp),1)) begin //if classifications in custom separate fields {
+				      case "A":
+				        if (NonBlank(INr.Reference)) then begin
+				          collf = true;
+				          collstr = "COLL_A";
+				        end;
+				        if (NonBlank(INr.Metal)) then begin
+				          metalf = true;
+				          metalstr = "MATERIAL_A";
+				        end;
+				      case "J":
+				        if (NonBlank(INr.Reference)) then begin
+				          collf = true;
+				          collstr = "COLL_J";
+				        end;
+				        if (NonBlank(INr.Metal)) then begin
+				          metalf = true;
+				          metalstr = "MATERIAL_J";
+				        end;
+				        if (NonBlank(INr.RowWeight)) then begin
+				          tstr = typeval["WEIGHT"];
+    			        pos1 = 0;
+    			        ExtractObj(tstr,pos1,uloc1);
+    			        if (uloc1==INr.Code) then begin
+    			          ExtractObj(tstr,pos1,uloc1);
+    			          if (blank(uloc1)) then begin
+    			            typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+    			          end;
+    			        end else begin
+    			          typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+    			        end;
+				        end;
+				        if (NonBlank(INr.MajStoneDet)) then begin
+				          tstr = typeval["D_CARAT"];
+    			        pos1 = 0;
+    			        ExtractObj(tstr,pos1,uloc1);
+    			        if (uloc1==INr.Code) then begin
+    			          ExtractObj(tstr,pos1,uloc1);
+    			          if (blank(uloc1)) then begin
+    			            typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+    			          end;
+    			        end else begin
+    			          typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+    			        end;
+				        end;
+				      case "W":
+				        if (NonBlank(INr.Reference)) then begin
+				          collf = true;
+				          collstr = "COLL_W";
+				        end;
+				        if (NonBlank(INr.Metal)) then begin
+				          metalf = true;
+				          metalstr = "MATERIAL_W";
+				        end;
+				    end; 
+				    if (collf) then begin
+				      tstr = typeval[collstr];
+			        pos1 = 0;
+			        ExtractObj(tstr,pos1,uloc1);
+			        if (uloc1==INr.Code) then begin
+			          ExtractObj(tstr,pos1,uloc1);
+			          if (blank(uloc1)) then begin
+			            typeval[collstr] = INr.Code & ";" & INr.Reference;
+			          end;
+			        end else begin
+			          typeval[collstr] = INr.Code & ";" & INr.Reference;
+			        end;  
+				      collf = false;
+				    end;
+				    if (metalf) then begin
+		          tstr = typeval[metalstr];
+			        pos1 = 0;
+			        ExtractObj(tstr,pos1,uloc1);
+			        if (uloc1==INr.Code) then begin
+			          ExtractObj(tstr,pos1,uloc1);
+			          if (blank(uloc1)) then begin
+			            typeval[metalstr] = INr.Code & ";" & INr.Metal;
+			          end;
+			        end else begin
+			          typeval[metalstr] = INr.Code & ";" & INr.Metal;
+			        end;
+				      metalf = false;
+				    end;//if classifications in custom separate fields }
 				  end;
 				end; //Edit***************************Sasha2,14:30 08.02.2016 }
 		  end;
@@ -471,10 +556,10 @@ begin
 		
 		outstring(0,0,INr.Name,false);
 		if (addclassf==false) then begin //Edit***************************Sasha2,16:36 18.02.2016
-  		outstring(0,0,INr.Reference,false);
-  		outstring(0,0,INr.Metal,false);
-  		outstring(0,0,INr.RowWeight,false);
-  		outstring(0,0,INr.MajStoneDet,false);
+  		outstring(0,0,INr.Reference,false); //Kollectsia
+  		outstring(0,0,INr.Metal,false); //Tip metalla
+  		outstring(0,0,INr.RowWeight,false); //Ves
+  		outstring(0,0,INr.MajStoneDet,false);  //Karatnoct
   		/*if(addclassf)then begin
   			outstring(0,0,INr.BrcStr,false);
   			outstring(0,0,INr.Gender,false);
@@ -487,9 +572,9 @@ begin
   	end else begin
   	  for (i=0;i<30;i=i+1) begin //if you change "30" do it in other places having "For" loop 
 		    pos = 0;
-		    ExtractObj(typeval[typecode[i]],pos,uloc);
+		    ExtractObjWithSeparator(";",typeval[typecode[i]],true,pos,uloc);
 		    if (uloc==INr.Code) then begin
-		      ExtractObj(typeval[typecode[i]],pos,uloc);
+		      ExtractObjWithSeparator(";",typeval[typecode[i]],true,pos,uloc);
           outstring(0,0,uloc,false);
         end else begin
           outstring(0,0,"",false);
@@ -624,9 +709,9 @@ begin
 		if (addclassf) then begin //Edit***************************Sasha2,14:37 08.02.2016 {
 		  for (i=30;i<typescnt;i=i+1) begin //if you change "30" do it in other places having "For" loop 
 		    pos = 0;
-		    ExtractObj(typeval[typecode[i]],pos,uloc);
+		    ExtractObjWithSeparator(";",typeval[typecode[i]],true,pos,uloc);
 		    if (uloc==INr.Code) then begin
-		      ExtractObj(typeval[typecode[i]],pos,uloc);
+		      ExtractObjWithSeparator(";",typeval[typecode[i]],true,pos,uloc);
           outstring(0,0,uloc,false);
         end else begin
           outstring(0,0,"",false);
