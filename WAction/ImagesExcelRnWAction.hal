@@ -18,17 +18,16 @@ procedure RunImagesExcelRn() begin
 	getwindowrecord(wn,RepSpec);
   tstr = "Stock_report_by_locations_with_images";
   if nonblank(RepSpec.f1) or nonblank(RepSpec.f2) then begin
-    tstr = tstr & "_(";
+    tstr = tstr & "_";
     if nonblank(RepSpec.f1) then begin
       tstr = tstr & "Brand_-_" & RepSpec.f1;
     end;
     if nonblank(RepSpec.f2) then begin
       if nonblank(RepSpec.f1) then begin
-        tstr = tstr & ",_";
+        tstr = tstr & "_";
       end;
       tstr = tstr & "Loc_-_" & RepSpec.f2;
     end;
-    tstr = tstr & ")";
   end;
   BlockLoad(Compb);
   MatRowGet(Compb,currentcompany-1,Comprw);
