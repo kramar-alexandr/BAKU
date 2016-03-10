@@ -354,556 +354,13 @@ BEGIN
   RETURN;
 END;
 
-
-global
-updating function LongInt NewINVcRecordCheck(var record NewINVc newINr,record NewINVc newIN2r,LongInt stat,LongInt long4)
-BEGIN
-  LongInt res;
-  row NewINVc newINrw;
-  record INVc INr,IN2r;
-  record ITVc ITr;
-  integer mtrw,i; //Edit***************************Sasha2,17:50 07.12.2015
-  string 20 codestring;
-  LongInt stat1,long41;
-  string 200 rawclass,uloc;
-  integer pos;
-  record DIVc DIr;
-  boolean upd;
-  record DiCheckBlock DiCb; //Edit***************************Sasha2,16:52 07.12.2015
-  row DiCheckBlock DiCbw; //Edit***************************Sasha2,16:52 07.12.2015
-  vector string 255 diCheckTypes; //Edit***************************Sasha2,17:22 07.12.2015
-  string 255 newdispstr,foundtypes,outdisps,mes; //Edit***************************Sasha2,17:37 07.12.2015
-  string 20 type; //Edit***************************Sasha2,10:34 08.12.2015
+//Edit***************************Sasha2,9:23 10.03.2016 {
+procedure FullFillINVc(var record INVc INr,record NewINVc newINr,row NewINVc newINrw,string group,string type)
+begin
   
-  res = 0;
-  
-  BlockLoad(DiCb); //Edit***************************Sasha2,16:53 07.12.2015 {
-  mtrw = MatRowCnt(DiCb);
-  if (mtrw>0) then begin
-    for (i=0;i<mtrw;i=i+1) begin
-      MatRowGet(DiCb,i,DiCbw);
-      if (NonBlank(DiCbw.DiCode) and NonBlank(DiCbw.DiType)) then begin
-        diCheckTypes[DiCbw.DiCode] = DiCbw.DiType;
-      end;
-    end;
-  end; //Edit***************************Sasha2,16:53 07.12.2015 }
-  
-  mtrw = matrowcnt(newINr);
-  For(i=0;i<mtrw;i=i+1) begin
-	  matrowget(newINr,i,newINrw);
-	  if(blank(newINrw.Code))then begin
-	  	RecordCheckError(1058,"",i,"Code");      
-      res = -1; 
-      goto LNewINVcRecordCheck;
-	  end;
-	  
-	  
-	  if (newINr.OKFlag==1) then begin		//Edit----------------------Dima  09.03.2016
-	  
-	  upd = false;
-	  INr.Code = newINrw.Code;
-	  if(readfirstmain(INr,1,true))then begin
-	  	recordcopy(IN2r,INr);
-	  	upd = true;
-	  	if(blank(newINr.Name) and blank(newINrw.Name))then begin
-	  		newINrw.Name = INr.Name;
-	  		matrowput(newINr,i,newINrw);
-	  	end;
-	  end else begin
-	  	codestring = newINrw.Code;
-	  	NormalizeCodeName(codestring);
-	  	newINrw.Code = codestring;
-	  	matrowput(newINr,i,newINrw);
-	  	recordnew(INr);
-	  	upd = false;
-	  	INr.Code = codestring;
-	  end;
-	  
-	  if(nonblank(newINr.DispGroups))then begin
-			pos = 0;
-			rawclass = newINr.DispGroups;
-			newINr.DispGroups = "";
-			ExtractObj(rawclass,pos,uloc);
-			while(nonblank(uloc)) begin
-				DIr.Code = uloc;
-				if(readfirstmain(DIr,1,true))then begin
-					newINr.DispGroups = newINr.DispGroups & DIr.Code & ",";
-				end else begin
-					DIr.Name = uloc;
-					if(readfirstkey("Name",DIr,1,true))then begin
-						newINr.DispGroups = newINr.DispGroups & DIr.Code & ",";
-					end else begin
-						newINr.DispGroups = newINr.DispGroups & uloc & ",";
-					end;
-				end;
-				ExtractObj(rawclass,pos,uloc);
+      if (NonBlank(group)) then begin
+				INr.Group = group;
 			end;
-			if(len(newINr.DispGroups)>0)then begin
-				if(mid(newINr.DispGroups,len(newINr.DispGroups)-1,1)==",")then begin
-					newINr.DispGroups = mid(newINr.DispGroups,0,len(newINr.DispGroups)-1);
-				end;			
-			end;
-		end;
-		
-		type = ""; //Edit***************************Sasha2,17:53 07.12.2015 { Special classifications for CATALOQUE
-	  if (nonblank(newINrw.Type) and len(diCheckTypes[newINrw.Type])>0) then begin 
-      newdispstr = "";
-      foundtypes = "";
-
-			if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Type,outdisps,ReturnFieldDIType("Type",false),mes)) then begin
-        RecordCheckError(9588,". " & mes,i,"Type");      
-        res = -1; 
-        goto LNewINVcRecordCheck;
-      end else begin
-        newINrw.Type = outdisps;
-      end;
-      type = newINrw.Type;
-      
-      if (NonBlank(newINr.Brand) and SetInSet(ReturnFieldDIType("Brand",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINr.Brand,outdisps,ReturnFieldDIType("Brand",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,-1,"Brand"); 
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          if (newINr.Brand!=outdisps) then begin
-           newINr.Brand = outdisps; 
-          end;
-        end;
-        HandleTypeField("Brand",newINr.Brand,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Collection) and SetInSet(ReturnFieldDIType("Collection",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Collection,outdisps,ReturnFieldDIType("Collection",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Collection");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Collection = outdisps;
-        end;
-        HandleTypeField("Collection",newINrw.Collection,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Style) and SetInSet(ReturnFieldDIType("Style",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Style,outdisps,ReturnFieldDIType("Style",false),mes)) then begin
-          RecordCheckError(9588,". " & ". " & mes,i,"Style");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Style = outdisps;
-        end;
-        HandleTypeField("Style",newINrw.Style,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //WatchType -> Warranty Card;
-      if (NonBlank(newINrw.WatchType) and SetInSet(ReturnFieldDIType("WatchType",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WatchType,outdisps,ReturnFieldDIType("WatchType",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"WatchType");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.WatchType = outdisps;
-        end;
-        HandleTypeField("WatchType",newINrw.WatchType,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.GenderSC) and SetInSet(ReturnFieldDIType("GenderSC",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.GenderSC,outdisps,ReturnFieldDIType("GenderSC",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"GenderSC");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.GenderSC = outdisps;
-        end;
-        HandleTypeField("GenderSC",newINrw.GenderSC,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Dial) and SetInSet(ReturnFieldDIType("Dial",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Dial,outdisps,ReturnFieldDIType("Dial",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Dial");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Dial = outdisps;
-        end;
-        HandleTypeField("Dial",newINrw.Dial,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Strap) and SetInSet(ReturnFieldDIType("Strap",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Strap,outdisps,ReturnFieldDIType("Strap",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Strap");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Strap = outdisps;
-        end;
-        HandleTypeField("Strap",newINrw.Strap,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Material) and SetInSet(ReturnFieldDIType("Material",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Material,outdisps,ReturnFieldDIType("Material",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Material");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Material = outdisps;
-        end;
-        HandleTypeField("Material",newINrw.Material,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //PrecStones -> Comment
-      if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecStones,outdisps,ReturnFieldDIType("PrecStones",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"PrecStones");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.PrecStones = outdisps;
-        end;
-        HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-
-      if (NonBlank(newINrw.SerNrf) and SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
-        HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Mechanism) and SetInSet(ReturnFieldDIType("Mechanism",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Mechanism,outdisps,ReturnFieldDIType("Mechanism",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Mechanism");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Mechanism = outdisps;
-        end;
-        HandleTypeField("Mechanism",newINrw.Mechanism,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Function) and SetInSet(ReturnFieldDIType("Function",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Function,outdisps,ReturnFieldDIType("Function",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Function");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Function = outdisps;
-        end;
-        HandleTypeField("Function",newINrw.Function,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //WaterResist -> SAP
-      if (NonBlank(newINrw.WaterResist) and SetInSet(ReturnFieldDIType("WaterResist",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WaterResist,outdisps,ReturnFieldDIType("WaterResist",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"WaterResist");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.WaterResist = outdisps;
-        end;
-        HandleTypeField("WaterResist",newINrw.WaterResist,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Diameter) and SetInSet(ReturnFieldDIType("Diameter",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diameter,outdisps,ReturnFieldDIType("Diameter",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Diameter");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Diameter = outdisps;
-        end;
-        HandleTypeField("Diameter",newINrw.Diameter,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Category) and SetInSet(ReturnFieldDIType("Category",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Category,outdisps,ReturnFieldDIType("Category",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Category");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Category = outdisps;
-        end;
-        HandleTypeField("Category",newINrw.Category,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Division) and SetInSet(ReturnFieldDIType("Division",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Division,outdisps,ReturnFieldDIType("Division",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Division");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Division = outdisps;
-        end;
-        HandleTypeField("Division",newINrw.Division,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.WeightOfMat) and SetInSet(ReturnFieldDIType("WeightOfMat",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WeightOfMat,outdisps,ReturnFieldDIType("WeightOfMat",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"WeightOfMat");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.WeightOfMat = outdisps;
-        end;
-        HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //Diamonds -> Category_A
-      if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diamonds,outdisps,ReturnFieldDIType("Diamonds",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Diamonds");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Diamonds = outdisps;
-        end;
-        HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.DiamondsCarat) and SetInSet(ReturnFieldDIType("DiamondsCarat",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.DiamondsCarat,outdisps,ReturnFieldDIType("DiamondsCarat",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"DiamondsCarat");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.DiamondsCarat = outdisps;
-        end;
-        HandleTypeField("DiamondsCarat",newINrw.DiamondsCarat,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.SolidStones05) and SetInSet(ReturnFieldDIType("SolidStones05",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.SolidStones05,outdisps,ReturnFieldDIType("SolidStones05",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"SolidStones05");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.SolidStones05 = outdisps;
-        end;
-        HandleTypeField("SolidStones05",newINrw.SolidStones05,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.PrecAndSemiPrec) and SetInSet(ReturnFieldDIType("PrecAndSemiPrec",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecAndSemiPrec,outdisps,ReturnFieldDIType("PrecAndSemiPrec",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"PrecAndSemiPrec");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.PrecAndSemiPrec = outdisps;
-        end;
-        HandleTypeField("PrecAndSemiPrec",newINrw.PrecAndSemiPrec,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.RingSizes) and SetInSet(ReturnFieldDIType("RingSizes",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.RingSizes,outdisps,ReturnFieldDIType("RingSizes",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"RingSizes");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.RingSizes = outdisps;
-        end;
-        HandleTypeField("RingSizes",newINrw.RingSizes,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Carat) and SetInSet(ReturnFieldDIType("Carat",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Carat,outdisps,ReturnFieldDIType("Carat",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Carat");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Carat = outdisps;
-        end;
-        HandleTypeField("Carat",newINrw.Carat,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.ClaritySC) and SetInSet(ReturnFieldDIType("ClaritySC",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ClaritySC,outdisps,ReturnFieldDIType("ClaritySC",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"ClaritySC");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.ClaritySC = outdisps;
-        end;
-        HandleTypeField("ClaritySC",newINrw.ClaritySC,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Color) and SetInSet(ReturnFieldDIType("Color",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Color,outdisps,ReturnFieldDIType("Color",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Color");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Color = outdisps;
-        end;
-        HandleTypeField("Color",newINrw.Color,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.ColorOfMat) and SetInSet(ReturnFieldDIType("ColorOfMat",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ColorOfMat,outdisps,ReturnFieldDIType("ColorOfMat",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"ColorOfMat");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.ColorOfMat = outdisps;
-        end;
-        HandleTypeField("ColorOfMat",newINrw.ColorOfMat,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.ShapeCut) and SetInSet(ReturnFieldDIType("ShapeCut",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ShapeCut,outdisps,ReturnFieldDIType("ShapeCut",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"ShapeCut");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.ShapeCut = outdisps;
-        end;
-        HandleTypeField("ShapeCut",newINrw.ShapeCut,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Description) and SetInSet(ReturnFieldDIType("Description",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Description,outdisps,ReturnFieldDIType("Description",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Description");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Description = outdisps;
-        end;
-        HandleTypeField("Description",newINrw.Description,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      if (NonBlank(newINrw.Art) and SetInSet(ReturnFieldDIType("Art",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Art,outdisps,ReturnFieldDIType("Art",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"Art");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.Art = outdisps;
-        end;
-        HandleTypeField("Art",newINrw.Art,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //classif30 -> Coll_W
-      if (NonBlank(newINrw.classif30) and SetInSet(ReturnFieldDIType("classif30",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif30,outdisps,ReturnFieldDIType("classif30",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"classif30");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.classif30 = outdisps;
-        end;
-        HandleTypeField("classif30",newINrw.classif30,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //classif31 -> Coll_A
-      if (NonBlank(newINrw.classif31) and SetInSet(ReturnFieldDIType("classif31",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif31,outdisps,ReturnFieldDIType("classif31",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"classif31");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.classif31 = outdisps;
-        end;
-        HandleTypeField("classif31",newINrw.classif31,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //classif32 -> Style_A
-      if (NonBlank(newINrw.classif32) and SetInSet(ReturnFieldDIType("classif32",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif32,outdisps,ReturnFieldDIType("classif32",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"classif32");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.classif32 = outdisps;
-        end;
-        HandleTypeField("classif32",newINrw.classif32,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //classif33 -> Material_W
-      if (NonBlank(newINrw.classif33) and SetInSet(ReturnFieldDIType("classif33",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif33,outdisps,ReturnFieldDIType("classif33",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"classif33");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.classif33 = outdisps;
-        end;
-        HandleTypeField("classif33",newINrw.classif33,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      //classif34 -> Material_A
-      if (NonBlank(newINrw.classif34) and SetInSet(ReturnFieldDIType("classif34",false),diCheckTypes[type])) then begin
-        if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif34,outdisps,ReturnFieldDIType("classif34",false),mes)) then begin
-          RecordCheckError(9588,". " & mes,i,"classif34");      
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end else begin
-          newINrw.classif34 = outdisps;
-        end;
-        HandleTypeField("classif34",newINrw.classif34,diCheckTypes[type],newdispstr,foundtypes);
-      end;
-      
-      pos = 0;
-      rawclass = diCheckTypes[type];
-      ExtractObj(rawclass,pos,uloc);
-      while(nonblank(uloc)) begin
-        if (!SetInSet(uloc,foundtypes)) then begin
-          if (uloc=="BRAND") then begin
-            RecordCheckError(1854,"",-1,"Brand");  
-          end else begin
-            RecordCheckError(1854,"",i,ReturnFieldDIType(uloc,true));
-          end;   
-          res = -1; 
-          goto LNewINVcRecordCheck;
-        end;
-        ExtractObj(rawclass,pos,uloc);
-			end;
-			newINrw.DispGroups = type & "," & newdispstr;
-			matrowput(newINr,i,newINrw);
-			if (NonBlank(newINr.Brand)) then begin
-			  DIr.Code = newINr.Brand;
-				readfirstmain(DIr,1,true);
-				ITr.Comment = DIr.Name;
-				if(readlastkey("Comment",ITr,1,true))then begin
-					INr.Group = ITr.Code;
-				end;
-			end;
-	  end else begin; //Edit***************************Sasha2,17:53 07.12.2015 }
-  	  if(nonblank(newINrw.DispGroups))then begin
-  			pos = 0;
-  			rawclass = newINrw.DispGroups;
-  			newINrw.DispGroups = "";
-  			ExtractObj(rawclass,pos,uloc);
-  			while(nonblank(uloc)) begin
-  				CheckAndCreateClassification(uloc,"",false);
-  				DIr.Code = uloc;
-  				if(readfirstmain(DIr,1,true))then begin
-  					newINrw.DispGroups = newINrw.DispGroups & DIr.Code & ",";
-  				end else begin
-  					DIr.Name = uloc;
-  					if(readfirstkey("Name",DIr,1,true))then begin
-  						newINrw.DispGroups = newINrw.DispGroups & DIr.Code & ",";
-  					end else begin
-  						newINrw.DispGroups = newINrw.DispGroups & uloc & ",";
-  					end;
-  				end;
-  				ExtractObj(rawclass,pos,uloc);
-  			end;
-  			if(len(newINrw.DispGroups)>0)then begin
-  				if(mid(newINrw.DispGroups,len(newINrw.DispGroups)-1,1)==",")then begin
-  					newINrw.DispGroups = mid(newINrw.DispGroups,0,len(newINrw.DispGroups)-1);
-  				end;			
-  			end;
-  			matrowput(newINr,i,newINrw);
-  		end;
-		end;
-	  
-	  if(blank(newINrw.Name) and blank(newINr.Name))then begin
-	  	RecordCheckError(1058,"",i,"Name");      
-      res = -1; 
-      goto LNewINVcRecordCheck;
-	  end;
-	  if(blank(newINrw.VATCode) and blank(newINr.VATCode))then begin
-	  	RecordCheckError(1058,"",i,"VATCode");      
-      res = -1; 
-      goto LNewINVcRecordCheck;
-	  end;
-	  
-	  //if (newINr.OKFlag==1) then begin
   	  if(nonblank(newINr.Name))then begin INr.Name=newINr.Name;  end; if(nonblank(newINrw.Name))then begin INr.Name=newINrw.Name;  end;
   		if(nonblank(newINr.Unittext))then begin INr.Unittext=newINr.Unittext;  end; if(nonblank(newINrw.Unittext))then begin INr.Unittext=newINrw.Unittext;  end;
   		//if(nonblank(newINr.MinLevel))then begin INr.MinLevel=newINr.MinLevel;  end; if(nonblank(newINrw.MinLevel))then begin INr.MinLevel=newINrw.MinLevel;  end;
@@ -1064,15 +521,609 @@ BEGIN
   		//if(nonblank(newINr.SVOWarrantyCostAcc))then begin INr.SVOWarrantyCostAcc=newINr.SVOWarrantyCostAcc;  end; if(nonblank(newINrw.SVOWarrantyCostAcc))then begin INr.SVOWarrantyCostAcc=newINrw.SVOWarrantyCostAcc;  end;
   		//if(nonblank(newINr.SVOContractCostAcc))then begin INr.SVOContractCostAcc=newINr.SVOContractCostAcc;  end; if(nonblank(newINrw.SVOContractCostAcc))then begin INr.SVOContractCostAcc=newINrw.SVOContractCostAcc;  end;
   		//if(nonblank(newINr.SVOGoodwillCostAcc))then begin INr.SVOGoodwillCostAcc=newINr.SVOGoodwillCostAcc;  end; if(nonblank(newINrw.SVOGoodwillCostAcc))then begin INr.SVOGoodwillCostAcc=newINrw.SVOGoodwillCostAcc;  end;
-	    res = nINVcRecordCheck(INr,IN2r,stat1,long41,i);
-	  //end;
+  		
+  return;
+end; //Edit***************************Sasha2,9:23 10.03.2016 }
 
-		
-		if(res==0)then begin
+global
+updating function LongInt NewINVcRecordCheck(var record NewINVc newINr,record NewINVc newIN2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  row NewINVc newINrw;
+  record INVc INr,IN2r;
+  record ITVc ITr;
+  integer mtrw,i,insertmode,updatemode; //Edit***************************Sasha2,17:50 07.12.2015
+  string 20 codestring;
+  LongInt stat1,long41;
+  string 200 rawclass,uloc,group;
+  integer pos;
+  record DIVc DIr;
+  boolean upd;
+  record DiCheckBlock DiCb; //Edit***************************Sasha2,16:52 07.12.2015
+  row DiCheckBlock DiCbw; //Edit***************************Sasha2,16:52 07.12.2015
+  vector string 255 diCheckTypes; //Edit***************************Sasha2,17:22 07.12.2015
+  string 255 newdispstr,foundtypes,outdisps,mes; //Edit***************************Sasha2,17:37 07.12.2015
+  string 20 type; //Edit***************************Sasha2,10:34 08.12.2015
+  
+  res = 0;
+  insertmode = 1;
+  updatemode = 2;
+  
+  
+  if (newINr.OKFlag==1) then begin		//Edit----------------------Dima  09.03.2016
+    
+    BlockLoad(DiCb); //Edit***************************Sasha2,16:53 07.12.2015 {
+    mtrw = MatRowCnt(DiCb);
+    if (mtrw>0) then begin
+      for (i=0;i<mtrw;i=i+1) begin
+        MatRowGet(DiCb,i,DiCbw);
+        if (NonBlank(DiCbw.DiCode) and NonBlank(DiCbw.DiType)) then begin
+          diCheckTypes[DiCbw.DiCode] = DiCbw.DiType;
+        end;
+      end;
+    end; //Edit***************************Sasha2,16:53 07.12.2015 }
+    
+    group = "";
+  	if (NonBlank(newINr.Brand)) then begin
+  	  DIr.Code = newINr.Brand;
+  		readfirstmain(DIr,1,true);
+  		ITr.Comment = DIr.Name;
+  		if(readlastkey("Comment",ITr,1,true))then begin
+  			group = ITr.Code;
+  	  end;
+  	end;
+    
+    mtrw = matrowcnt(newINr);
+    For(i=0;i<mtrw;i=i+1) begin
+  	  matrowget(newINr,i,newINrw);
+  	  
+  	  if(blank(newINrw.Code))then begin
+  	  	RecordCheckError(1058,"",i,"Code");      
+        res = -1; 
+        goto LNewINVcRecordCheck;
+  	  end;
+	 
+  	  upd = false;
+  	  INr.Code = newINrw.Code;
+  	  if(readfirstmain(INr,1,true))then begin
+  	  	recordcopy(IN2r,INr);
+  	  	upd = true;
+  	  	stat1 = updatemode;
+  	  	long41 = 1;
+  	  	if(blank(newINr.Name) and blank(newINrw.Name))then begin
+  	  		newINrw.Name = INr.Name;
+  	  		matrowput(newINr,i,newINrw);
+  	  		matrowget(newINr,i,newINrw);
+  	  	end;
+  	  end else begin
+  	  	codestring = newINrw.Code;
+  	  	NormalizeCodeName(codestring);
+  	  	newINrw.Code = codestring;
+  	  	matrowput(newINr,i,newINrw);
+  	  	matrowget(newINr,i,newINrw);
+  	  	recordnew(INr);
+  	  	upd = false;
+  	  	stat1 = insertmode;
+        long41 = 1;
+  	  	INr.Code = codestring;
+  	  end;
+  	  
+  	  if(nonblank(newINr.DispGroups))then begin
+  			pos = 0;
+  			rawclass = newINr.DispGroups;
+  			newINr.DispGroups = "";
+  			ExtractObj(rawclass,pos,uloc);
+  			while(nonblank(uloc)) begin
+  				DIr.Code = uloc;
+  				if(readfirstmain(DIr,1,true))then begin
+  					newINr.DispGroups = newINr.DispGroups & DIr.Code & ",";
+  				end else begin
+  					DIr.Name = uloc;
+  					if(readfirstkey("Name",DIr,1,true))then begin
+  						newINr.DispGroups = newINr.DispGroups & DIr.Code & ",";
+  					end else begin
+  						newINr.DispGroups = newINr.DispGroups & uloc & ",";
+  					end;
+  				end;
+  				ExtractObj(rawclass,pos,uloc);
+  			end;
+  			if(len(newINr.DispGroups)>0)then begin
+  				if(mid(newINr.DispGroups,len(newINr.DispGroups)-1,1)==",")then begin
+  					newINr.DispGroups = mid(newINr.DispGroups,0,len(newINr.DispGroups)-1);
+  				end;			
+  			end;
+  		end;
+  		
+  		type = ""; //Edit***************************Sasha2,17:53 07.12.2015 { Special classifications for CATALOQUE
+  	  if (nonblank(newINrw.Type) and len(diCheckTypes[newINrw.Type])>0) then begin 
+        newdispstr = "";
+        foundtypes = "";
+  
+  			if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Type,outdisps,ReturnFieldDIType("Type",false),mes)) then begin
+          RecordCheckError(9588,". " & mes,i,"Type");      
+          res = -1; 
+          goto LNewINVcRecordCheck;
+        end else begin
+          newINrw.Type = outdisps;
+        end;
+        type = newINrw.Type;
+        
+        if (NonBlank(newINr.Brand) and SetInSet(ReturnFieldDIType("Brand",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINr.Brand,outdisps,ReturnFieldDIType("Brand",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,-1,"Brand"); 
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            if (newINr.Brand!=outdisps) then begin
+             newINr.Brand = outdisps; 
+            end;
+          end;
+          HandleTypeField("Brand",newINr.Brand,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Collection) and SetInSet(ReturnFieldDIType("Collection",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Collection,outdisps,ReturnFieldDIType("Collection",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Collection");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Collection = outdisps;
+          end;
+          HandleTypeField("Collection",newINrw.Collection,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Style) and SetInSet(ReturnFieldDIType("Style",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Style,outdisps,ReturnFieldDIType("Style",false),mes)) then begin
+            RecordCheckError(9588,". " & ". " & mes,i,"Style");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Style = outdisps;
+          end;
+          HandleTypeField("Style",newINrw.Style,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //WatchType -> Warranty Card;
+        if (NonBlank(newINrw.WatchType) and SetInSet(ReturnFieldDIType("WatchType",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WatchType,outdisps,ReturnFieldDIType("WatchType",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"WatchType");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.WatchType = outdisps;
+          end;
+          HandleTypeField("WatchType",newINrw.WatchType,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.GenderSC) and SetInSet(ReturnFieldDIType("GenderSC",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.GenderSC,outdisps,ReturnFieldDIType("GenderSC",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"GenderSC");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.GenderSC = outdisps;
+          end;
+          HandleTypeField("GenderSC",newINrw.GenderSC,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Dial) and SetInSet(ReturnFieldDIType("Dial",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Dial,outdisps,ReturnFieldDIType("Dial",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Dial");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Dial = outdisps;
+          end;
+          HandleTypeField("Dial",newINrw.Dial,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Strap) and SetInSet(ReturnFieldDIType("Strap",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Strap,outdisps,ReturnFieldDIType("Strap",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Strap");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Strap = outdisps;
+          end;
+          HandleTypeField("Strap",newINrw.Strap,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Material) and SetInSet(ReturnFieldDIType("Material",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Material,outdisps,ReturnFieldDIType("Material",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Material");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Material = outdisps;
+          end;
+          HandleTypeField("Material",newINrw.Material,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //PrecStones -> Comment
+        if (NonBlank(newINrw.PrecStones) and SetInSet(ReturnFieldDIType("PrecStones",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecStones,outdisps,ReturnFieldDIType("PrecStones",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"PrecStones");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.PrecStones = outdisps;
+          end;
+          HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+  
+        if (NonBlank(newINrw.SerNrf) and SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
+          HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Mechanism) and SetInSet(ReturnFieldDIType("Mechanism",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Mechanism,outdisps,ReturnFieldDIType("Mechanism",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Mechanism");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Mechanism = outdisps;
+          end;
+          HandleTypeField("Mechanism",newINrw.Mechanism,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Function) and SetInSet(ReturnFieldDIType("Function",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Function,outdisps,ReturnFieldDIType("Function",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Function");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Function = outdisps;
+          end;
+          HandleTypeField("Function",newINrw.Function,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //WaterResist -> SAP
+        if (NonBlank(newINrw.WaterResist) and SetInSet(ReturnFieldDIType("WaterResist",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WaterResist,outdisps,ReturnFieldDIType("WaterResist",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"WaterResist");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.WaterResist = outdisps;
+          end;
+          HandleTypeField("WaterResist",newINrw.WaterResist,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Diameter) and SetInSet(ReturnFieldDIType("Diameter",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diameter,outdisps,ReturnFieldDIType("Diameter",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Diameter");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Diameter = outdisps;
+          end;
+          HandleTypeField("Diameter",newINrw.Diameter,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Category) and SetInSet(ReturnFieldDIType("Category",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Category,outdisps,ReturnFieldDIType("Category",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Category");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Category = outdisps;
+          end;
+          HandleTypeField("Category",newINrw.Category,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Division) and SetInSet(ReturnFieldDIType("Division",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Division,outdisps,ReturnFieldDIType("Division",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Division");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Division = outdisps;
+          end;
+          HandleTypeField("Division",newINrw.Division,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.WeightOfMat) and SetInSet(ReturnFieldDIType("WeightOfMat",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.WeightOfMat,outdisps,ReturnFieldDIType("WeightOfMat",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"WeightOfMat");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.WeightOfMat = outdisps;
+          end;
+          HandleTypeField("WeightOfMat",newINrw.WeightOfMat,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //Diamonds -> Category_A
+        if (NonBlank(newINrw.Diamonds) and SetInSet(ReturnFieldDIType("Diamonds",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Diamonds,outdisps,ReturnFieldDIType("Diamonds",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Diamonds");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Diamonds = outdisps;
+          end;
+          HandleTypeField("Diamonds",newINrw.Diamonds,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.DiamondsCarat) and SetInSet(ReturnFieldDIType("DiamondsCarat",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.DiamondsCarat,outdisps,ReturnFieldDIType("DiamondsCarat",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"DiamondsCarat");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.DiamondsCarat = outdisps;
+          end;
+          HandleTypeField("DiamondsCarat",newINrw.DiamondsCarat,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.SolidStones05) and SetInSet(ReturnFieldDIType("SolidStones05",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.SolidStones05,outdisps,ReturnFieldDIType("SolidStones05",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"SolidStones05");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.SolidStones05 = outdisps;
+          end;
+          HandleTypeField("SolidStones05",newINrw.SolidStones05,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.PrecAndSemiPrec) and SetInSet(ReturnFieldDIType("PrecAndSemiPrec",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.PrecAndSemiPrec,outdisps,ReturnFieldDIType("PrecAndSemiPrec",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"PrecAndSemiPrec");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.PrecAndSemiPrec = outdisps;
+          end;
+          HandleTypeField("PrecAndSemiPrec",newINrw.PrecAndSemiPrec,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.RingSizes) and SetInSet(ReturnFieldDIType("RingSizes",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.RingSizes,outdisps,ReturnFieldDIType("RingSizes",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"RingSizes");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.RingSizes = outdisps;
+          end;
+          HandleTypeField("RingSizes",newINrw.RingSizes,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Carat) and SetInSet(ReturnFieldDIType("Carat",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Carat,outdisps,ReturnFieldDIType("Carat",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Carat");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Carat = outdisps;
+          end;
+          HandleTypeField("Carat",newINrw.Carat,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.ClaritySC) and SetInSet(ReturnFieldDIType("ClaritySC",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ClaritySC,outdisps,ReturnFieldDIType("ClaritySC",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"ClaritySC");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.ClaritySC = outdisps;
+          end;
+          HandleTypeField("ClaritySC",newINrw.ClaritySC,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Color) and SetInSet(ReturnFieldDIType("Color",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Color,outdisps,ReturnFieldDIType("Color",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Color");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Color = outdisps;
+          end;
+          HandleTypeField("Color",newINrw.Color,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.ColorOfMat) and SetInSet(ReturnFieldDIType("ColorOfMat",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ColorOfMat,outdisps,ReturnFieldDIType("ColorOfMat",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"ColorOfMat");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.ColorOfMat = outdisps;
+          end;
+          HandleTypeField("ColorOfMat",newINrw.ColorOfMat,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.ShapeCut) and SetInSet(ReturnFieldDIType("ShapeCut",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.ShapeCut,outdisps,ReturnFieldDIType("ShapeCut",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"ShapeCut");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.ShapeCut = outdisps;
+          end;
+          HandleTypeField("ShapeCut",newINrw.ShapeCut,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Description) and SetInSet(ReturnFieldDIType("Description",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Description,outdisps,ReturnFieldDIType("Description",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Description");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Description = outdisps;
+          end;
+          HandleTypeField("Description",newINrw.Description,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        if (NonBlank(newINrw.Art) and SetInSet(ReturnFieldDIType("Art",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.Art,outdisps,ReturnFieldDIType("Art",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Art");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Art = outdisps;
+          end;
+          HandleTypeField("Art",newINrw.Art,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //classif30 -> Coll_W
+        if (NonBlank(newINrw.classif30) and SetInSet(ReturnFieldDIType("classif30",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif30,outdisps,ReturnFieldDIType("classif30",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"classif30");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.classif30 = outdisps;
+          end;
+          HandleTypeField("classif30",newINrw.classif30,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //classif31 -> Coll_A
+        if (NonBlank(newINrw.classif31) and SetInSet(ReturnFieldDIType("classif31",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif31,outdisps,ReturnFieldDIType("classif31",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"classif31");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.classif31 = outdisps;
+          end;
+          HandleTypeField("classif31",newINrw.classif31,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //classif32 -> Style_A
+        if (NonBlank(newINrw.classif32) and SetInSet(ReturnFieldDIType("classif32",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif32,outdisps,ReturnFieldDIType("classif32",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"classif32");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.classif32 = outdisps;
+          end;
+          HandleTypeField("classif32",newINrw.classif32,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //classif33 -> Material_W
+        if (NonBlank(newINrw.classif33) and SetInSet(ReturnFieldDIType("classif33",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif33,outdisps,ReturnFieldDIType("classif33",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"classif33");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.classif33 = outdisps;
+          end;
+          HandleTypeField("classif33",newINrw.classif33,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        //classif34 -> Material_A
+        if (NonBlank(newINrw.classif34) and SetInSet(ReturnFieldDIType("classif34",false),diCheckTypes[type])) then begin
+          if (!DIsWithTypeExistsOrCreateSpecific(newINrw.classif34,outdisps,ReturnFieldDIType("classif34",false),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"classif34");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.classif34 = outdisps;
+          end;
+          HandleTypeField("classif34",newINrw.classif34,diCheckTypes[type],newdispstr,foundtypes);
+        end;
+        
+        pos = 0;
+        rawclass = diCheckTypes[type];
+        ExtractObj(rawclass,pos,uloc);
+        while(nonblank(uloc)) begin
+          if (!SetInSet(uloc,foundtypes)) then begin
+            if (uloc=="BRAND") then begin
+              RecordCheckError(1854,"",-1,"Brand");  
+            end else begin
+              RecordCheckError(1854,"",i,ReturnFieldDIType(uloc,true));
+            end;   
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end;
+          ExtractObj(rawclass,pos,uloc);
+  			end;
+  			newINrw.DispGroups = type & "," & newdispstr;
+  			matrowput(newINr,i,newINrw);
+  	  end else begin; //Edit***************************Sasha2,17:53 07.12.2015 }
+    	  if(nonblank(newINrw.DispGroups))then begin
+    			pos = 0;
+    			rawclass = newINrw.DispGroups;
+    			newINrw.DispGroups = "";
+    			ExtractObj(rawclass,pos,uloc);
+    			while(nonblank(uloc)) begin
+    				CheckAndCreateClassification(uloc,"",false);
+    				DIr.Code = uloc;
+    				if(readfirstmain(DIr,1,true))then begin
+    					newINrw.DispGroups = newINrw.DispGroups & DIr.Code & ",";
+    				end else begin
+    					DIr.Name = uloc;
+    					if(readfirstkey("Name",DIr,1,true))then begin
+    						newINrw.DispGroups = newINrw.DispGroups & DIr.Code & ",";
+    					end else begin
+    						newINrw.DispGroups = newINrw.DispGroups & uloc & ",";
+    					end;
+    				end;
+    				ExtractObj(rawclass,pos,uloc);
+    			end;
+    			if(len(newINrw.DispGroups)>0)then begin
+    				if(mid(newINrw.DispGroups,len(newINrw.DispGroups)-1,1)==",")then begin
+    					newINrw.DispGroups = mid(newINrw.DispGroups,0,len(newINrw.DispGroups)-1);
+    				end;			
+    			end;
+    			matrowput(newINr,i,newINrw);
+    		end;
+  		end;
+  	  
+  	  if(blank(newINrw.Name) and blank(newINr.Name))then begin
+  	  	RecordCheckError(1058,"",i,"Name");      
+        res = -1; 
+        goto LNewINVcRecordCheck;
+  	  end;
+  	  if(blank(newINrw.VATCode) and blank(newINr.VATCode))then begin
+  	  	RecordCheckError(1058,"",i,"VATCode");      
+        res = -1; 
+        goto LNewINVcRecordCheck;
+  	  end;
+  	  
+  	  FullFillINVc(INr,newINr,newINrw,group,type);
+
+	    res = nINVcRecordCheck(INr,IN2r,stat1,long41,i);
+	    if (res!=0) then begin
+        res = -1; 
+        goto LNewINVcRecordCheck;
+	    end;  
+		end;
+
+		For(i=0;i<mtrw;i=i+1) begin
+  	  matrowget(newINr,i,newINrw);
+  	  type = newINrw.Type;
+  	  upd = false;
+  	  INr.Code = newINrw.Code;
+  	  if(readfirstmain(INr,1,true))then begin
+  	  	recordcopy(IN2r,INr);
+  	  	upd = true;
+  	  	/*if(blank(newINr.Name) and blank(newINrw.Name))then begin
+  	  		newINrw.Name = INr.Name;
+  	  		matrowput(newINr,i,newINrw);
+  	  	end;*/
+  	  end else begin
+  	  	codestring = newINrw.Code;
+  	  	/*NormalizeCodeName(codestring);
+  	  	newINrw.Code = codestring;
+  	  	matrowput(newINr,i,newINrw);*/
+  	  	recordnew(INr);
+  	  	upd = false;
+  	  	INr.Code = codestring;
+  	  end;
+  	  
+  	  FullFillINVc(INr,newINr,newINrw,group,type);
+  	  
 			if(stat==1)then begin
 				if(newINr.OKFlag==1)then begin
 					if(upd)then begin
-						recordupdate(IN2r,INr,true);
+						if (recordupdate(IN2r,INr,true)!=0) then begin
+						  res = -1; 
+							goto LNewINVcRecordCheck;
+						end;
 					end else begin
 						if(recordStore(INr,true)==false)then begin
 							res = -1; 
@@ -1084,7 +1135,10 @@ BEGIN
 			if(stat==2)then begin
 				if(newINr.OKFlag==1 and newIN2r.OKFlag==0)then begin
 					if(upd)then begin
-						recordupdate(IN2r,INr,true);
+						if (recordupdate(IN2r,INr,true)!=0) then begin
+						  res = -1; 
+							goto LNewINVcRecordCheck;
+						end;
 					end else begin
 						if(recordStore(INr,true)==false)then begin
 							res = -1; 
@@ -1093,14 +1147,7 @@ BEGIN
 					end;
 				end;
 			end;
-		end else begin
-			//RecordCheckError(1058,"",i,"Code");      
-      //res = -1; 
-      goto LNewINVcRecordCheck;
-		end;
-		
-		end;
-		
+  	end;
 	end; 
 	
 	if (newINr.SerNr==-1) then begin

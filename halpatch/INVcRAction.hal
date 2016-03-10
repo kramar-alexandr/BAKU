@@ -549,7 +549,7 @@ LVerifyClassification:;
   return; 
 end;
 
-global
+global //if change something do it in nINVcRecordCheck(...) also
 function LongInt INVcRecordCheck(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
@@ -691,7 +691,7 @@ BEGIN
       if (checkf) then begin
         lINr.BarCode = INr.BarCode;
         if (ReadFirstKey("BarCode",lINr,1,true)) then begin
-          RecordCheckError(1547," BarCode " & lINr.Code,-1,"BarCode");      
+          RecordCheckError(1547," BarCode in Item #" & lINr.Code,-1,"BarCode");      
           res = -1; 
           goto LINVcRecordCheck;
         end;
@@ -1281,7 +1281,7 @@ begin
 end;
 
 
-global
+global //if change something do it in INVcRecordCheck(...) also
 function LongInt nINVcRecordCheck(var record INVc INr,record INVc IN2r,LongInt stat,LongInt long4,integer rownr)
 BEGIN
   LongInt res;
@@ -1403,7 +1403,8 @@ BEGIN
       goto LnINVcRecordCheck;
     end;
   end;
-  if (ISb.UniqueBarCode!=0) then begin
+  //if (ISb.UniqueBarCode!=0) then begin// Edit ************************** Friday, 18 September 2015 11:22:39
+  if (true) then begin
     if (nonblank(INr.BarCode)) then begin
       if (stat==insertmode) then begin checkf = true; end;
       if (stat==updatemode) then begin
@@ -1413,7 +1414,7 @@ BEGIN
       if (checkf) then begin
         lINr.BarCode = INr.BarCode;
         if (ReadFirstKey("BarCode",lINr,1,true)) then begin
-          RecordCheckError(1547,"",rownr,"BarCode");      
+          RecordCheckError(1547," BarCode in Item #" & lINr.Code,rownr,"BarCode");      
           res = -1; 
           goto LnINVcRecordCheck;
         end;
