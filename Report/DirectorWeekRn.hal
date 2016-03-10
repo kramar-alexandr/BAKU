@@ -115,6 +115,8 @@ begin
 		case 20: compf = true;
     case 21: compf = true;
     case 22: compf = true;
+    case 23: compf = true;
+    case 24: compf = true;
 		otherwise
 			compf = false;
 	end;
@@ -792,7 +794,7 @@ begin
 	BaseDeb = 0;
 	BaseCred = 0;
 	
-	if (usdf or eurf) then begin
+  if (usdf or eurf) then begin
 		basef = true;
 	end;
 	aznf = true;
@@ -1390,73 +1392,138 @@ begin
 			if (tempTRrw.ReconDate <> tempDate) then begin
 				tempDate = tempTRrw.ReconDate;
 				Black_Divider(0,1);
-				StartFormat(15);
-					OutString(tab[1],0,tempDate,false);
-					if terf then begin
-						OutString(tab[2],0,"",false);
-					end;
-					if aznf then begin
-						OutString(tab[3],0,"",false);
-					end;
-					if eurf then begin
-						tempStr = "EUR";
-						GetFullCurncyRate(tempStr,tempDate,fr,to1EUR,to2,br1,br2);
-						OutString(tab[4],0,ValToMyString(to1EUR,5),false);
-					end;
-					if usdf then begin
-						tempStr = "USD";
-						GetFullCurncyRate(tempStr,tempDate,fr,to1USD,to2,br1,br2);
-						OutString(tab[5],0,ValToMyString(to1USD,5),false);
-					end;
-					if basef then begin
-						OutString(tab[6],0,"",false);
-						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
-							OutString(tab[6]+25,0,"",false);
-						end;
-					end;
-					if terf then begin
-						OutString(tab[7],0,"",false);
-					end;
-					if aznf then begin
-						OutString(tab[8],0,"",false); 
-					end;
-					if eurf then begin
-						OutString(tab[9],0,ValToMyString(to1EUR,5),false);
-					end;
-					if usdf then begin
-						OutString(tab[10],0,ValToMyString(to1USD,5),false);
-					end;
-					if basef then begin
-						OutString(tab[11],0,"",false);
-						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
-							OutString(tab[11]+25,0,"",false);
-						end;
-					end;
-					OutString(tab[111],0,"",false);
-					if terf then begin
-						OutString(tab[12],0,"",false);
-					end;
-					if aznf then begin
-						OutString(tab[13],0,"",false);
-					end;
-					if eurf then begin
-						OutString(tab[14],0,ValToMyString(to1EUR,5),false);
-					end;
-					if usdf then begin
-						OutString(tab[15],0,ValToMyString(to1USD,5),false);
-					end;
-					if basef then begin
-						OutString(tab[16],0,"",false);
-						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
-							OutString(tab[16]+25,0,"",false);
-						end;
-					end;
-					OutString(tab[17],0,"",false);
-					OutString(tab[18],0,"Љурс на " & tempDate,false);
-				EndFormat;
-				Gray_Divider(0,1);
-				StartFormat(15);
-				OutString(tab[1],0,"",false);
+        StartFormat(15);
+          OutString(tab[1],0,tempDate,false);
+          if eurf then begin
+            if terf then begin
+              OutString(tab[2],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[3],0,"",false);
+            end;
+            if eurf then begin
+              OutString(tab[4],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[5],0,"",false);
+            end;
+            if basef then begin
+              tempStr = "EUR";
+              GetFullCurncyRate(tempStr,tempDate,fr,to1EUR,to2,br1,br2);
+              OutString(tab[6],0,"EUR: " & ValToMyString(to1EUR,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[6]+25,0,"",false);
+              end;
+            end;
+            if terf then begin
+              OutString(tab[7],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[8],0,"",false); 
+            end;
+            if eurf then begin
+              OutString(tab[9],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[10],0,"",false);
+            end;
+            if basef then begin
+              OutString(tab[11],0,"EUR: " & ValToMyString(to1EUR,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[11]+25,0,"",false);
+              end;
+            end;
+            OutString(tab[111],0,"",false);
+            if terf then begin
+              OutString(tab[12],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[13],0,"",false);
+            end;
+            if eurf then begin
+              OutString(tab[14],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[15],0,"",false);
+            end;
+            if basef then begin
+              OutString(tab[16],0,"EUR: " & ValToMyString(to1EUR,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[16]+25,0,"",false);
+              end;
+            end;
+            OutString(tab[17],0,"",false);
+            OutString(tab[18],0,"Љурс на " & tempDate,false);
+          EndFormat;
+          Gray_Divider(0,1);
+          StartFormat(15);
+            OutString(tab[1],0,"",false);
+        end;
+        if usdf then begin
+            if terf then begin
+              OutString(tab[2],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[3],0,"",false);
+            end;
+            if eurf then begin
+              OutString(tab[4],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[5],0,"",false);
+            end;
+            if basef then begin
+              tempStr = "USD";
+              GetFullCurncyRate(tempStr,tempDate,fr,to1USD,to2,br1,br2);
+              OutString(tab[6],0,"USD: " & ValToMyString(to1USD,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[6]+25,0,"",false);
+              end;
+            end;
+            if terf then begin
+              OutString(tab[7],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[8],0,"",false); 
+            end;
+            if eurf then begin
+              OutString(tab[9],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[10],0,"",false);
+            end;
+            if basef then begin
+              OutString(tab[11],0,"USD: " & ValToMyString(to1USD,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[11]+25,0,"",false);
+              end;
+            end;
+            OutString(tab[111],0,"",false);
+            if terf then begin
+              OutString(tab[12],0,"",false);
+            end;
+            if aznf then begin
+              OutString(tab[13],0,"",false);
+            end;
+            if eurf then begin
+              OutString(tab[14],0,"",false);
+            end;
+            if usdf then begin
+              OutString(tab[15],0,"",false);
+            end;
+            if basef then begin
+              OutString(tab[16],0,"USD: " & ValToMyString(to1USD,5),false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(tab[16]+25,0,"",false);
+              end;
+            end;
+            OutString(tab[17],0,"",false);
+            OutString(tab[18],0,"Љурс на " & tempDate,false);
+          EndFormat;
+          Gray_Divider(0,1);
+          StartFormat(15);
+          OutString(tab[1],0,"",false);
+        end;
 			end else begin
 				Gray_Divider(0,1);
 				StartFormat(15);
