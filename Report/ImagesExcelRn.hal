@@ -1,5 +1,6 @@
 external function string 255 MonthName(Date);
 external procedure ExtractObj(string,var Integer,var string);
+external procedure CopyFile(string,string);
 
 external procedure XmlXlsxWorkBegin(string,string);
 external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
@@ -19,6 +20,7 @@ external procedure ConvertToXLSX(string);
 external procedure PrepToAddImgToAllSheet(integer,string);
 external procedure AddImageOnCurrentSheet(integer,string,string,integer,integer,integer,integer,integer,longint,longint,longint,longint);
 external procedure EndToAddImgToAllSheet(integer,string);
+
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -77,7 +79,7 @@ begin
   record CTypeVc CTyper;
   string 100 inrcode;
   string 50 uloc,brand,brandcode,pricecur;
-  integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt;
+  integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt,mtrw,curcomp;
   boolean TrHs,testf,test2f;
   val price;
   vector boolean stockInArr;
@@ -89,10 +91,13 @@ begin
 	
 	reportName = "ImagesExcelRn";
 	if (windowsmode==1) then begin
-		fileToSave = "tmpxlsx.xlsx";
+		//fileToSave = "tmpxlsx.xlsx";
+    fileToSave = RepSpec.f6;
 	end else begin
-		fileToSave = "/tmpxlsx.xlsx";
+		//fileToSave = "/tmpxlsx.xlsx";
+    fileToSave = "/" & RepSpec.f6;
 	end;
+  delete_file(fileToSave);
 	deletefolder(Left(fileToSave,(len(fileToSave) - 5)));
 	sheetNames[qtyOfSheets] = "Test";
 	qtyOfSheets = qtyOfSheets + 1;
@@ -113,7 +118,11 @@ begin
   fromrow = 3;
   torow = 11;
 	
-	numOfUniqueSharedStrings = 0;
+  blockload(Compb);
+	mtrw = matrowcnt(Compb);
+  curcomp = CurrentCompany;
+	
+  numOfUniqueSharedStrings = 0;
 	numOfSharedStrings = 0;
 	XmlXlsxWorkBegin(fileToSave,reportName);
 	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,1,false);
@@ -130,24 +139,28 @@ begin
       ClearStocksStuff(SQi,stockInArr,stocks,stockQty);
       ClearClassifStuff(TSi,typeClassif,classif);
 //collect stocks
-      ISr.Code = INr.Code;
-      TrHs = true;
-      while(loopmain(ISr,1,TrHs)) begin
-        testf = true;
-        if (ISr.Code!=INr.Code) then begin testf = false; TrHs = false; end;
-        if (nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2) then begin testf = false; end;
-        if (ISr.Location==";;;") then begin testf = false; end;
-        if (ISr.Instock==0) then begin testf = false; end;
-        if (testf) then begin
-          if !stockInArr[ISr.Location] then begin
-            stockInArr[ISr.Location] = true;
-            stocks[SQi] = ISr.Location;
-            SQi = SQi + 1;
+			For(i=0;i<mtrw;i=i+1) begin
+				setcompany(i+1,false);
+        ISr.Code = INr.Code;
+        TrHs = true;
+        while(loopmain(ISr,1,TrHs)) begin
+          testf = true;
+          if (ISr.Code!=INr.Code) then begin testf = false; TrHs = false; end;
+          if (nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2) then begin testf = false; end;
+          if (ISr.Location==";;;") then begin testf = false; end;
+          if (ISr.Instock==0) then begin testf = false; end;
+          if (testf) then begin
+            if !stockInArr[ISr.Location] then begin
+              stockInArr[ISr.Location] = true;
+              stocks[SQi] = ISr.Location;
+              SQi = SQi + 1;
+            end;
+            stockQty[ISr.Location] = stockQty[ISr.Location] + ISr.Instock;
           end;
-          stockQty[ISr.Location] = stockQty[ISr.Location] + ISr.Instock;
         end;
-      end;
-      resetloop(ISr);
+        resetloop(ISr);
+			end; 
+      resetcompany(curcomp);
       if nonblank(stocks[0]) then begin
 //find brand and collect classifications
         brand = "";
@@ -191,7 +204,7 @@ begin
           resetloop(PLr);
           price = price/cnt;
 //path to image
-          BlockLoad(Compb);
+          //BlockLoad(Compb);
           MatRowGet(Compb,currentcompany-1,Comprw);
           if (currentcompany==9) then begin
             inrcode = INr.AlternativeCode;
@@ -455,11 +468,6 @@ begin
             if nonblank(typeClassif[Ccntr]) then begin test2f = true; end;
           end;
           imgCounter = imgCounter + 1;
-          if INr.Code=="4965552631BB6A" then begin
-          //messagebox(0,fromrow);
-          //messagebox(0,torow);
-          //messagebox(0,rowcnt);
-          end;
           AddImageOnCurrentSheet(sheetnum,fileToSave,pathToImg,imgCounter,fromcol,tocol,fromrow,torow,fromcoloff,tocoloff,fromrowoff,torowoff);
           fromrow = fromrow + rowcnt;
           torow = torow + rowcnt;
@@ -481,7 +489,197 @@ begin
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
 	ConvertToXLSX(fileToSave);
 	MilliSleep(2000);
-	addfiletoarea(fileToSave,areatofile,false);
-	delete_file(fileToSave);
+  CopyFile(fileToSave,"webcust" & fileToSave);
+  delete_file(fileToSave);
+  //addfiletoarea(fileToSave,areatofile,false);
+return;
+end;
+
+global 
+procedure ImagesExcel2Rn(record RcVc RepSpec,var area areatofile)
+begin
+	
+	array string 50 sheetNames;
+	array val sheetColls;
+	array string 21 mergeCell;
+	string 255 fileToSave,pathToImg;
+	integer qtyOfSheets,sheetnum,rownum,colnum,style,qtyOfEmpStr;
+	array string 100 SharedStrings;
+	integer numOfUniqueSharedStrings,numOfSharedStrings,qtyMergeCell;
+	string 6 reportName;
+  array string 255 mas;
+  array integer lvlArray;
+  longint fromcoloff1,tocoloff1,fromrowoff1,torowoff1,fromcoloff2,tocoloff2,fromrowoff2,torowoff2,fromcoloff3,tocoloff3,fromrowoff3,torowoff3;
+  integer fromcol1,tocol1,fromrow1,torow1,fromco2l,tocol2,fromrow2,torow2,fromcol3,tocol3,fromrow3,torow3;
+  integer imgCounter;
+	
+  record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+  record DIVc DIr;
+  record PLVc PLr;
+  record PLDefVc PLDefr;
+  record ItemStatusVc ISr;
+  record INVc INr;
+  record CTypeVc CTyper;
+  string 100 inrcode;
+  string 50 uloc,brand,brandcode,pricecur;
+  integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt;
+  boolean TrHs,testf,test2f;
+  val price;
+  vector boolean stockInArr;
+  vector integer stockQty;
+  array string 100 classif;
+  
+  
+  integer INCi,TCi;
+  array string 100 typeClassif,INCodes;
+  array string 20 stocks;
+  vector string 255 alldata;
+  vector boolean TCInArr;
+  
+	setexportcodepage("UTF8");
+	
+	reportName = "ImagesExcel2Rn";
+	if (windowsmode==1) then begin
+    fileToSave = RepSpec.f6;
+	end else begin
+    fileToSave = "/" & RepSpec.f6;
+	end;
+  delete_file(fileToSave);
+	deletefolder(Left(fileToSave,(len(fileToSave) - 5)));
+	sheetNames[qtyOfSheets] = "Sheet 1";
+	qtyOfSheets = qtyOfSheets + 1;
+	sheetColls[0] = 0.625;
+	sheetColls[1] = 21.375;
+	sheetColls[2] = 10.125;
+	sheetColls[3] = 26.875;
+	sheetColls[4] = 13.125;
+	sheetColls[5] = 20;
+	sheetColls[6] = 29.5;
+
+  fromcoloff1 = 457200;
+  fromrowoff1 = 333375;
+  tocoloff1 = 5627;
+  torowoff1 = 51820;
+  
+  fromcol1 = 3;
+  tocol1 = 4;
+  fromrow1 = 3;
+  torow1 = 11;
+	
+  INr.Code = "";
+  INCi = 0;
+  while loopmain(INr,1,true) begin
+    INCodes[INCi] = INr.Code;
+    INCi = INCi + 1;
+    alldata[INr.Code & ":name"] = INr.Name;
+    pos = 0;
+    uloc = "";
+    ExtractObj(INr.DispGroups,pos,uloc); 
+    while (nonblank(uloc)) begin
+      DIr.Code = uloc;
+      readfirstmain(DIr,1,true);
+      if (DIr.CType!="BRAND")then begin
+        CTyper.Code = DIr.CType;
+        readfirstmain(CTyper,1,true);
+        if !TCInArr[CTyper.Comment] then begin
+          TCInArr[CTyper.Comment] = true;
+          typeClassif[TCi] = CTyper.Comment;
+          TCi = TCi + 1;
+        end;
+        alldata[INr.Code & ":" & CTyper.Comment] = DIr.Name;
+      end else begin
+        alldata[INr.Code & ":brand"] = DIr.Name;
+        brandcode = DIr.Code;
+      end;
+      ExtractObj(INr.DispGroups,pos,uloc);
+    end;
+    
+    if brandcode==RepSpec.f1 or blank(RepSpec.f1) then begin
+      ISr.Code = INr.Code;
+      TrHs = true;
+      while(loopmain(ISr,1,TrHs)) begin
+        testf = true;
+        if (ISr.Code!=INr.Code) then begin testf = false; TrHs = false; end;
+        if (nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2) then begin testf = false; end;
+        if (ISr.Location==";;;") then begin testf = false; end;
+        if (ISr.Instock==0) then begin testf = false; end;
+        if (testf) then begin
+          if !stockInArr[ISr.Location] then begin
+            stockInArr[ISr.Location] = true;
+            stocks[SQi] = ISr.Location;
+            SQi = SQi + 1;
+          end;
+          //alldata[INr.Code & ":" & ISr.Location] = alldata[INr.Code & ":" & ISr.Location] + ISr.Instock;
+          //alldata[INr.Code & ":allstocksqty"] = alldata[INr.Code & ":allstocksqty"] + ISr.Instock;
+        end;
+      end;
+      resetloop(ISr);
+      cnt = 0;
+      price = 0;
+      PLr.ArtCode = INr.Code;
+      PLr.PLCode = "RRP";
+      while(loopmain(PLr,2,(PLr.ArtCode==INr.Code)))begin
+        if(PLr.ArtCode==INr.Code)then begin
+          price = price + PLr.ExVatPrice;
+          cnt = cnt + 1;
+          if(nonblank(PLr.CurncyCode))then begin
+            pricecur = PLr.CurncyCode;
+          end else begin
+            PLDefr.Code = "RRP";
+            readfirstmain(PLDefr,1,true);
+            pricecur = PLDefr.CurncyCode;
+          end;
+        end;
+      end;
+      resetloop(PLr);
+      alldata[INr.Code & ":retail"] = price/cnt;
+      alldata[INr.Code & ":cur"] = pricecur;
+      alldata[INr.Code & ":cost"] = INr.LastPurchPrice2;
+      alldata[INr.Code & ":date"] = INr.LastPriceChange;
+      BlockLoad(Compb);
+      MatRowGet(Compb,currentcompany-1,Comprw);
+      if (currentcompany==9) then begin
+        inrcode = INr.AlternativeCode;
+      end else begin
+        inrcode = INr.Code;
+      end;
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+        alldata[INr.Code & "pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
+      end;
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+        alldata[INr.Code & "pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".png";
+      end;
+    end;
+
+  end;
+  
+  
+	numOfUniqueSharedStrings = 0;
+	numOfSharedStrings = 0;
+	XmlXlsxWorkBegin(fileToSave,reportName);
+	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,1,false);
+  PrepToAddImgToAllSheet(qtyOfSheets,fileToSave);
+	sheetnum = 1;
+	SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
+  BeginSheetData(sheetnum,fileToSave);
+    
+    if rowcnt<>0 then begin
+      BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+        colnum = 2;
+        style = 18;
+        qtyOfEmpStr = 6;
+        EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+      EndRow(sheetnum,fileToSave,rownum);
+    end;
+	EndSheetData(sheetnum,fileToSave);
+  MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
+	EndSheet(sheetnum,fileToSave,sheetnum);
+  EndToAddImgToAllSheet(qtyOfSheets,fileToSave);
+	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
+	ConvertToXLSX(fileToSave);
+	//
+  //CopyFile(fileToSave,"webcust" & fileToSave);
+  //delete_file(fileToSave);
 return;
 end;
