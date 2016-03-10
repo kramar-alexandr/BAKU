@@ -239,7 +239,12 @@ begin
       PutWindowRecord(wn,IVr);    
     end;
   end;
-LIVDClassDeleteRowTest:;  
+LIVDClassDeleteRowTest:; 
+
+	if(currentuser=="SA1")then begin
+		res = true;	
+	end;
+	
   IVDClassDeleteRowTest = res;
   return;
 end;

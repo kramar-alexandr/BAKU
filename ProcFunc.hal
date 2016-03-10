@@ -586,8 +586,8 @@ begin
   			if (!excelreport) then begin
   			  OutString(tab[1],0,"Ü",false);
   			end;
-  			OutString(tab[2],0,SMrw.ArtCode,false);
-  			OutString(tab[3],0,SMrw.Spec,false);
+  			OutString(tab[2],0,SDrw.ArtCode,false);
+  			OutString(tab[3],0,SDrw.Spec,false);
   			if (excelreport) then begin
   			  OutString(tab[31],0,brandname,false);
   			  OutString(tab[32],0,classname,false);

@@ -2420,6 +2420,8 @@ begin
   Integer wn,mwn,line,rownr;
   record RcVc RepSpec;
   record IVVc IVr;
+  record IVVc prevIVr;
+  row IVVc IVrw;
   string 255 tstr;
   Boolean testf;
   
@@ -2433,12 +2435,47 @@ begin
     RepSpec.long1 = GetSelectedPOSItemRowIndex(mwn)+1;
     if(currentcompany==4)then begin
 			RepSpec.f1 = "‘умма товаров по акции 1+1";// Edit ************************** Wednesday, 2 March 2016 15:31:36
+			
+			//ProceedSubtotalLineNPTSSClass;// Edit ************************** Wednesday, 2 March 2016 15:32:28
+			
+			switch (WindowState(mwn)) begin
+				case Rs_update:
+					GetPrevWindowRecord(mwn,prevIVr);
+					if (prevIVr.OKFlag!=0) then begin
+						CloseWindow(wn);
+						goto LIVDClassTouchScreenSubtotalLine;
+					end;
+					if (prevIVr.Invalid!=0) then begin
+						CloseWindow(wn);
+						goto LIVDClassTouchScreenSubtotalLine;
+					end;
+				case Rs_normal:
+					GetWindowRecord(mwn,prevIVr);
+					if (prevIVr.OKFlag!=0) then begin
+						CloseWindow(wn);
+						goto LIVDClassTouchScreenSubtotalLine;
+					end;
+					if (prevIVr.Invalid!=0) then begin
+						CloseWindow(wn);
+						goto LIVDClassTouchScreenSubtotalLine;
+					end;
+        end;
+        if (RepSpec.long1<0) then begin goto LIVDClassTouchScreenSubtotalLine; end;
+        ClearRow(IVr,IVrw,9);
+        IVrw.Spec = RepSpec.f1;
+        MatRowInsert(IVr,RepSpec.long1,IVrw);
+        RecalcIVSubtotal(IVr);
+        PutWindowRecord(mwn,IVr);
+        IVDClass_RefreshStringList(mwn,IVr);
+        WindowFieldGoto(mwn,IVr,-1,"ivcashcommand",true);
+			
+    end else begin
+			wn = OpenWindow("SubtotalLineNPTSSClass",0,mwn,"","",RepSpec);
+			WindowFieldGoto(wn,RepSpec,-1,"f1",false);
     end;
-    wn = OpenWindow("SubtotalLineNPTSSClass",0,mwn,"","",RepSpec);
-    WindowFieldGoto(wn,RepSpec,-1,"f1",false);   
-    if(currentcompany==4)then begin 
-			ProceedSubtotalLineNPTSSClass;// Edit ************************** Wednesday, 2 March 2016 15:32:28
-    end;
+
+LIVDClassTouchScreenSubtotalLine:;
+
   end;
   return;
 end;
