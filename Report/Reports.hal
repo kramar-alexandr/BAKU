@@ -1331,7 +1331,7 @@ begin
 					MatRowGet(SDr,i,SDrw);
 					ExtractClassificationsFromINVc(SDrw.ArtCode,type,brand);
 
-					PLr.PLCode = "FOB17";
+					PLr.PLCode = "FOB36";
 					PLr.ArtCode = SDrw.ArtCode;
 					ReadFirstMain(PLr,2,true);
 					sum = PLr.ExVatPrice * SDrw.Qty;

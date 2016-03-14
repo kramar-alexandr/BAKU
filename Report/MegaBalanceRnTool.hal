@@ -1984,7 +1984,7 @@ begin
 			if(testf and IHr.FileName=="IVVc")then begin
 				IVr.SerNr = IHr.TransNr;
 				if(readfirstmain(IVr,1,true))then begin
-					if(IVr.CustCode!="FOB17")then begin
+					if(IVr.CustCode!="FOB36")then begin
 						testf = false;
 					end;
 				end;
@@ -1992,7 +1992,7 @@ begin
 			if(testf and IHr.FileName=="RetVc")then begin
 				Retr.SerNr = IHr.TransNr;
 				if(readfirstmain(Retr,1,true))then begin
-					if(Retr.CustCode!="FOB17")then begin
+					if(Retr.CustCode!="FOB36")then begin
 						testf = false;
 					end;
 				end;

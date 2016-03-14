@@ -256,7 +256,7 @@ already checked in IVVcRecordCheckRows
     end;
   end;
   
-  if(IVp.CustCode=="FOB17")then begin// Edit ************************** Wednesday, 3 February 2016 17:46:53
+  if(IVp.CustCode=="FOB36")then begin// Edit ************************** Wednesday, 3 February 2016 17:46:53
   	revacc = 76;
   end;
   

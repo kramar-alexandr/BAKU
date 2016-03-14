@@ -51,11 +51,6 @@ array val aBrandsCCUSD;
 val BrandsCCUSDtotal;
 array val aBrandPercent;
 
-array val aBrandsRetFOB17EUR;
-array val aBrandsRetFOB17CHF;
-array val aBrandsRetFOB17USD;
-val BrandsRetFOB17USDtotal;
-
 val BrandsCLOutAZN;
 val BrandsCLOutEUR;
 val BrandsCLOutCHF;

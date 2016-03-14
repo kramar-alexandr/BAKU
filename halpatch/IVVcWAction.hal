@@ -104,7 +104,7 @@ BEGIN
     DeselectWindow(wn,false);
     GetWindowRecord(wn,IVr);
     if (WindowState(wn)==0 and (IVr.OKFlag==1)) then begin 
-      if (IVr.PriceList=="FOB17" and IVr.UpdStockFlag!=0) then begin
+      if (IVr.PriceList=="FOB36" and IVr.UpdStockFlag!=0) then begin
         RECORDNEW(RepSpec);
         RepSpec.long1 = IVr.SerNr;
         RepSpec.flags[0] = CurrentCompany;
