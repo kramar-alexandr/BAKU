@@ -167,6 +167,8 @@ begin
   Report("Количество счет-фактур по складам",IVbyLocRClass,IVbyLocRn,0,modDBMain);//Edit-------------------Vitalii 17:49 13.01.2016
   Report("Исторический отчет по товарам",HistoricalRClass,HistoricalRn,0,modIN);	//Edit----------------------Dima  26.02.2016
   Report("Остатки по складам с картинками",ImagesExcelRClass,ImagesExcelRn,0,modIN);//Edit-------------------Vitalii 11:21 02.03.2016
+  Report("Отчет по акции 1+1",SpecialOffer1_1RClass,SpecialOffer1_1Rn,0,modIN);
+  
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -591,6 +593,18 @@ begin
   SString(35072,"Отчет по компаниям: ");
   
   SString(35073,"Засчитана скидка по акции ");   
+  SString(35074,"Отчет по акции 1+1");
+  SString(35075,"Сч/ф");
+  SString(35076,"Дата");
+  SString(35077,"Код товара");
+  SString(35078,"Магазин");
+  SString(35079,"Бренд");
+  SString(35080,"Сумма");
+  SString(35081,"Оплачено баллами");
+  SString(35082,"%");
+  SString(35083,"Разница");
+  SString(35084,"Наименование");
+     
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */

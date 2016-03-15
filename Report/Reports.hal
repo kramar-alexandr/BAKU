@@ -12,177 +12,10 @@ external procedure YcToStr(Integer,var string);
 external function Boolean CorspTRTest(record TRVc,record AccVc,Integer,var val,var val);
 external procedure ReadCorspTRRowSums(record TRVc,record AccVc,record AccVc,var val,var val,string);
 external procedure GetObjs(string,string,var string);
+external inner procedure ExtractObj(string,var Integer,var string);
 
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
-
-/*
-///////Перенесено в файл  MiddleInvoiceRn.hal ---------Dima  09.12.2014
-global procedure MiddleInvoiceRn(record RcVc RepSpec)
-begin
-	record IVVc IVr;
-	row IVVc IVrw;
-	integer i,mtrw;
-	boolean TrHs,testf,first;
-	string 50 key;
-	integer fl;
-	record CYBlock CYb;
-	val day,total,dayqty,totalqty;
-	integer invday,invtotal;
-	date curdat;
-	val fr,to1,to2,br1,br2,ivfr,ivto;
-  string 20 curncy;
-	Array string 50 acrncy;// Edit ************************** Tuesday, 19 March 2013 15:48:06
-  Array Boolean achangecrncyf;// Edit ************************** Tuesday, 19 March 2013 15:48:52
-  Integer acrncnt;// Edit ************************** Tuesday, 19 March 2013 15:48:51
-
-	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Wednesday, 19 June 2013 13:59:15
-	curncy = acrncy[0];// Edit ************************** Wednesday, 19 June 2013 13:59:14
-
-
-	blockload(CYb);
-
-	startreportnoheaderjob(USetStr(31117));
-
-	startformat(15);
-		outstring(0,0,"",false);
-		outstring(100,0,USetStr(31101),false);
-		outstring(150,0,RepSpec.sStartDate & USetStr(31116) & RepSpec.sEndDate,false);
-	endformat;
-	startformat(15);
-	endformat;
-	startformat(15);
-		outstring(0,0,getyear(RepSpec.sStartDate),false);
-		outstring(50,0,"",false);
-		outstring(100,0,CYb.BusinessName,false);
-		outstring(150,0,RepSpec.f1,false);
-		outstring(190,0,USetStr(31118),false);
-		if(nonblank(RepSpec.f2))then begin
-			outstring(240,0,RepSpec.f2,false);
-			outstring(300,0,USetStr(31119),false);
-		end;
-	endformat;
-	black_divider(0,1);
-	startformat(15);
-	endformat;
-	startformat(15);//Edit -----Dima-----------09.12.2014
-		outstring(0,0,USetStr(31120),false);	//date
-		outstring(50,0,USetStr(31121),false);	//quantity of receipts
-		outstring(120,0,USetStr(31122),false);	//in total
-		outstring(170,0,USetStr(31123),false);	//check's average cost
-		outstring(240,0,USetStr(31124),false);	//total quantity per day
-	endformat;
-	startformat(15);
-	endformat;
-
-	key = "TransDate";
-	fl = 1;
-	if(nonblank(RepSpec.f1))then begin
-		key = "MachineName";
-		IVr.MachineName = RepSpec.f1;
-		fl = 2;
-	end;
-
-	IVr.TransDate = RepSpec.sStartDate;
-	TrHs = true;
-	curdat = stringtodate("1/1/2000");
-	day = 0;
-	dayqty = 0;
-	total = 0;
-	totalqty = 0;
-	invday = 0;
-	invtotal = 0;
-	first = true;
-	while(loopkey(key,IVr,fl,TrHs))begin
-		if(first)then begin
-			curdat = IVr.TransDate;
-			first = false;
-		end;
-		if(curdat!=IVr.TransDate and invday>0)then begin
-			startformat(15);
-				outstring(0,0,curdat,false);
-				outstring(50,0,invday,false);
-				outstring(120,0,day,false);
-				outstring(170,0,day/invday,false);
-				outstring(240,0,dayqty,false);
-			endformat;
-			invday = 0;
-			day = 0;
-			dayqty = 0;
-			curdat = IVr.TransDate;
-		end;
-		testf = true;
-		if(IVr.TransDate<RepSpec.sStartDate or IVr.TransDate>RepSpec.sEndDate)then begin TrHs = false; testf = false; end;
-		if(nonblank(RepSpec.f1) and IVr.MachineName!=RepSpec.f1)then begin
-			testf = false;
-			if(key=="MachineName")then begin
-				TrHs = false;
-			end;
-		end;
-		if(nonblank(RepSpec.f2) and RepSpec.f2!=IVr.SalesMan)then begin testf = false; end;
-		if(IVr.OKFlag==0)then begin testf = false; end;
-		if(IVr.Invalid==1)then begin testf = false; end;
-		//if(IVr.Sum4<0)then begin testf = false; end;
-
-		if(testf)then begin
-			ivfr = 1; ivto = 1;
-			fr = 1; to1 = 1;
-			if(IVr.CurncyCode!=curncy)then begin
-				ivfr = IVr.FrRate;
-				ivto = IVr.ToRateB1;
-				if(ivfr==0 or ivto==0)then begin
-					ivfr = 1;	ivto = 1;
-				end;
-				GetFullCurncyRate(curncy,IVr.TransDate,fr,to1,to2,br1,br2);
-				if(fr==0 or to1==0)then begin
-					fr = 1;	to1 = 1;
-				end;
-			end;
-			invday = invday + 1;
-			invtotal = invtotal + 1;
-			day = day + IVr.Sum4/ivfr*ivto*fr/to1;
-
-			mtrw = matrowcnt(IVr);
-			For(i=0;i<mtrw;i=i+1) begin
-	  		matrowget(IVr,i,IVrw);
-	  		if(IVrw.stp==kInvoiceRowTypeNormal and IVrw.Quant!=0)then begin
-	  			dayqty = dayqty + 1;
-	  			totalqty = totalqty + 1;
-	  		end;
-			end;
-
-			total = total + IVr.Sum4/ivfr*ivto*fr/to1;
-		end;
-	end;
-	if(invday>0)then begin
-		startformat(15);
-			outstring(0,0,curdat,false);
-			outstring(50,0,invday,false);
-			outstring(120,0,day,false);
-			outstring(170,0,day/invday,false);
-			outstring(240,0,dayqty,false);
-		endformat;
-		invday = 0;
-		day = 0;
-		dayqty = 0;
-		curdat = IVr.TransDate;
-	end;
-	gray_divider(0,1);
-	startformat(15);
-	endformat;
-	startformat(15);
-		outstring(0,0,"Всего:",false);
-		outstring(50,0,invtotal,false);
-		outstring(120,0,total,false);
-		outstring(170,0,total/invtotal,false);
-		outstring(240,0,totalqty,false);
-	endformat;
-
-	endjob;
-
-return;
-end;//////////////////////////////////Перенесено в файл  MiddleInvoiceRn.hal ---------Dima  09.12.2014/
-*/
 
 global procedure MiddleInvoiceOrderRn(record RcVc RepSpec)
 begin
@@ -1829,4 +1662,136 @@ end;
 
 
 
+
+
+global function string 100 GetBrand(string artcode)		//Edit----------------------Dima  15.03.2016
+begin
+string 50 brand,classCode;
+record INVc INr;
+record DIVc DIr;
+integer pos;
+
+	brand = "";
+	INr.Code = artcode;
+	if (ReadFirstMain(INr,1,true)) then begin
+		if (nonblank(INr.DispGroups)) then begin
+			ExtractObj(INr.DispGroups,pos,classCode);
+			while (NonBlank(classCode)) begin
+			  DIr.Code = classCode;
+			  if (readfirstmain(DIr,1,true)) then begin
+			    if (DIr.CType=="Brand") then begin
+			      brand = DIr.Name;
+			    end;
+			  end;
+			  ExtractObj(INr.DispGroups,pos,classCode);
+			end;   
+		end;
+	end;
+	
+GetBrand = brand;
+return;
+end;
+
+
+
+function boolean  CheckInvoiceIsSpecial1_1(record IVVc IVr,var val subSum, var val loySum)
+begin
+row IVVc IVrw;
+integer i;
+boolean res;
+	res = false;
+	for(i=0;i<MatRowCnt(IVr);i=i+1) begin
+		MatRowGet(IVr,i,IVrw);
+		if (IVrw.stp==9) then begin			//Special offer 1+1
+			res = true;
+			i = MatRowCnt(IVr);
+			subSum = IVrw.Sum;
+			loySum = IVr.Sum4 - subSum;
+		end;
+	end; 
+
+CheckInvoiceIsSpecial1_1 = res;
+return;	 
+end;
+
+
+
+global procedure SpecialOffer1_1Rn(record RcVc RepSpec)		//Edit----------------------Dima  15.03.2016
+begin
+record IVVc IVr;
+row IVVc IVrw;
+integer rw,i;
+val subSum,loySum,coef;
+string 100 tstr,brand;
+boolean TrHs,testf,loyaltyRows;
+
+	StartReportJob(USetStr(35074));	
+  rw=1;
+  Header(rw,USetStr(31102) & RepSpec.sStartDate & "-" & RepSpec.sEndDate,1);
+  rw = rw + 1;
+  HeaderLocations(RepSpec.f1,tstr);
+  Header(rw,tstr,1);
+  rw = rw + 1;  
+  if(nonblank(RepSpec.f2)) then begin
+  	Header(rw,USetStr(31226) & ": " & RepSpec.f2,1);
+  	rw = rw + 1;	
+  end;
+	EndHeader;
+
+	
+	
+	OutString(0,0,USetStr(35075),false);	//Inovoice
+	OutString(30,0,USetStr(35076),false);	//date
+	OutString(70,0,USetStr(35078),false);	//location
+	OutString(120,0,USetStr(35077),false);//artcode
+	OutString(170,0,USetStr(35084),false);//name
+	OutString(280,0,USetStr(35079),false);//brand
+	OutString(350,0,USetStr(35080),false);//sum
+	OutString(390,0,USetStr(35081),false);//loypints
+	OutString(430,0,USetStr(35082),false);//%
+	OutString(460,0,USetStr(35083),false);//difference
+	
+	
+	TrHs = true;
+	IVr.TransDate = RepSpec.sStartDate;
+	While(LoopKey("TransDate",IVr,1,TrHs)) begin
+		testf = true;
+		if (IVr.TransDate > RepSpec.sEndDate) then begin TrHs = false; testf=false; end;
+		if (nonblank(RepSpec.f1) and IVr.Location!=RepSpec.f1) then begin testf=false; end;
+		if (CheckInvoiceIsSpecial1_1(IVr,subSum,loySum)==false) then begin testf = false; end;
+		
+		if (testf) then begin
+			loyaltyRows = false;
+  		for(i=0;i<MatRowCnt(IVr);i=i+1) begin
+  			MatRowGet(IVr,i,IVrw);
+  			brand = GetBrand(IVrw.ArtCode);
+  			if (IVrw.stp==kInvoiceRowTypeNormal and loyaltyRows) then begin
+  				if ((nonblank(RepSpec.f2) and RepSpec.f2==brand)  or blank(RepSpec.f2)) then begin
+  			
+  					coef = subSum/loySum;
+  					if (coef>1) then begin coef = 1; end;
+  			
+						OutString(0,0,IVr.SerNr,false);	
+						OutString(30,0,IVr.TransDate,false);	
+						OutString(70,0,IVr.Location,false);	
+						OutString(120,0,IVrw.ArtCode,false);
+						OutString(170,0,IVrw.Spec,false);
+						OutString(280,0,GetBrand(IVrw.ArtCode),false);
+						OutString(350,0,IVrw.Sum,false);
+						OutString(390,0,IVrw.Sum*coef,false);
+						OutString(430,0,coef*100 & "%",false);
+						OutString(460,0,IVrw.Sum-IVrw.Sum*coef,false);		
+  				end;
+  			end;
+  			
+  			if (IVrw.stp==9) then begin 
+  				loyaltyRows = true; 
+  			end;	
+			end;
+		end;
+	end;	
+	
+	EndJob;
+  
+end;
 
