@@ -1724,6 +1724,7 @@ integer rw,i;
 val subSum,loySum,coef;
 string 100 tstr,brand;
 boolean TrHs,testf,loyaltyRows;
+val totalSum,totalLoySum;
 
 	StartReportJob(USetStr(35074));	
   rw=1;
@@ -1739,7 +1740,7 @@ boolean TrHs,testf,loyaltyRows;
 	EndHeader;
 
 	
-	
+	startformat(15);
 	OutString(0,0,USetStr(35075),false);	//Inovoice
 	OutString(30,0,USetStr(35076),false);	//date
 	OutString(70,0,USetStr(35078),false);	//location
@@ -1747,10 +1748,11 @@ boolean TrHs,testf,loyaltyRows;
 	OutString(170,0,USetStr(35084),false);//name
 	OutString(280,0,USetStr(35079),false);//brand
 	OutString(350,0,USetStr(35080),false);//sum
-	OutString(390,0,USetStr(35081),false);//loypints
+	OutString(390,0,USetStr(35081),false);//loypoints
 	OutString(430,0,USetStr(35082),false);//%
 	OutString(460,0,USetStr(35083),false);//difference
-	
+	endformat;
+	Black_Divider(0,1);
 	
 	TrHs = true;
 	IVr.TransDate = RepSpec.sStartDate;
@@ -1770,7 +1772,8 @@ boolean TrHs,testf,loyaltyRows;
   			
   					coef = subSum/loySum;
   					if (coef>1) then begin coef = 1; end;
-  			
+  					
+  					startformat(15);
 						OutString(0,0,IVr.SerNr,false);	
 						OutString(30,0,IVr.TransDate,false);	
 						OutString(70,0,IVr.Location,false);	
@@ -1780,7 +1783,11 @@ boolean TrHs,testf,loyaltyRows;
 						OutString(350,0,IVrw.Sum,false);
 						OutString(390,0,IVrw.Sum*coef,false);
 						OutString(430,0,coef*100 & "%",false);
-						OutString(460,0,IVrw.Sum-IVrw.Sum*coef,false);		
+						OutString(460,0,IVrw.Sum-IVrw.Sum*coef,false);	
+						endformat;
+						
+						totalSum = totalSum + IVrw.Sum;
+						totalLoySum = totalLoySum + IVrw.Sum*coef;
   				end;
   			end;
   			
@@ -1789,7 +1796,22 @@ boolean TrHs,testf,loyaltyRows;
   			end;	
 			end;
 		end;
-	end;	
+	end;
+	
+	
+	if (totalSum>0) then begin
+		Black_Divider(0,1);
+		OutString(0,0,"",false);
+		OutString(0,0,"",false);
+		OutString(0,0,"",false);
+		OutString(0,0,"",false);
+		OutString(0,0,"",false);
+		OutString(280,0,USetStr(31211),false);
+		OutString(350,0,totalSum,false);
+		OutString(390,0,totalLoySum,false);
+		OutString(430,0,"",false);
+		OutString(460,0,totalSum-totalLoySum,false);
+	end;		
 	
 	EndJob;
   
