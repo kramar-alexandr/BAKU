@@ -16,10 +16,11 @@ external procedure NumericCell(integer,string,var integer,integer,integer,val);
 external procedure EmptyCell(integer,string,var integer,integer,integer,integer);
 external procedure MergeCells(integer,string,array string,integer);
 external procedure FillSharedStrings(string,array string,integer,integer,array string);
-external procedure ConvertToXLSX(string);
+external procedure ConvertToXLSX(string,boolean);
 external procedure PrepToAddImgToAllSheet(integer,string);
-external procedure AddImageOnCurrentSheet(integer,string,string,integer,integer,integer,integer,integer,longint,longint,longint,longint);
+external procedure AddImageOnCurrentSheet(integer,string,string,integer,integer,integer,integer,integer,longint,longint,longint,longint,integer,longint,longint);
 external procedure EndToAddImgToAllSheet(integer,string);
+external function string 10 GetStringCellNum(integer,integer);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -468,7 +469,7 @@ begin
             if nonblank(typeClassif[Ccntr]) then begin test2f = true; end;
           end;
           imgCounter = imgCounter + 1;
-          AddImageOnCurrentSheet(sheetnum,fileToSave,pathToImg,imgCounter,fromcol,tocol,fromrow,torow,fromcoloff,tocoloff,fromrowoff,torowoff);
+          AddImageOnCurrentSheet(sheetnum,fileToSave,pathToImg,imgCounter,fromcol,tocol,fromrow,torow,fromcoloff,tocoloff,fromrowoff,torowoff,2,0,0);
           fromrow = fromrow + rowcnt;
           torow = torow + rowcnt;
         end;
@@ -487,10 +488,10 @@ begin
 	EndSheet(sheetnum,fileToSave,sheetnum);
   EndToAddImgToAllSheet(qtyOfSheets,fileToSave);
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
-	ConvertToXLSX(fileToSave);
-	MilliSleep(2000);
-  CopyFile(fileToSave,"webcust" & fileToSave);
-  delete_file(fileToSave);
+	ConvertToXLSX(fileToSave,true);
+	//MilliSleep(10000);
+  //CopyFile(fileToSave,"webcust" & fileToSave);
+  //delete_file(fileToSave);
   //addfiletoarea(fileToSave,areatofile,false);
 return;
 end;
@@ -503,14 +504,15 @@ begin
 	array val sheetColls;
 	array string 21 mergeCell;
 	string 255 fileToSave,pathToImg;
-	integer qtyOfSheets,sheetnum,rownum,colnum,style,qtyOfEmpStr;
+	integer qtyOfSheets,sheetnum,rownum,colnum,style,qtyOfEmpStr,maslen;
 	array string 100 SharedStrings;
 	integer numOfUniqueSharedStrings,numOfSharedStrings,qtyMergeCell;
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
-  longint fromcoloff1,tocoloff1,fromrowoff1,torowoff1,fromcoloff2,tocoloff2,fromrowoff2,torowoff2,fromcoloff3,tocoloff3,fromrowoff3,torowoff3;
-  integer fromcol1,tocol1,fromrow1,torow1,fromco2l,tocol2,fromrow2,torow2,fromcol3,tocol3,fromrow3,torow3;
+  array longint fromcoloff,tocoloff,fromrowoff,torowoff;
+  longint ext1,ext2;
+  array integer fromcol,tocol,fromrow,torow;
   integer imgCounter;
 	
   record CompaniesBlock Compb;
@@ -523,7 +525,7 @@ begin
   record CTypeVc CTyper;
   string 100 inrcode;
   string 50 uloc,brand,brandcode,pricecur;
-  integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt;
+  integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt,j,INInRow,k;
   boolean TrHs,testf,test2f;
   val price;
   vector boolean stockInArr;
@@ -532,7 +534,7 @@ begin
   
   
   integer INCi,TCi;
-  array string 100 typeClassif,INCodes;
+  array string 100 typeClassif,tempINCodes,INCodes;
   array string 20 stocks;
   vector string 255 alldata;
   vector boolean TCInArr;
@@ -549,28 +551,39 @@ begin
 	deletefolder(Left(fileToSave,(len(fileToSave) - 5)));
 	sheetNames[qtyOfSheets] = "Sheet 1";
 	qtyOfSheets = qtyOfSheets + 1;
-	sheetColls[0] = 0.625;
-	sheetColls[1] = 21.375;
-	sheetColls[2] = 10.125;
-	sheetColls[3] = 26.875;
-	sheetColls[4] = 13.125;
-	sheetColls[5] = 20;
-	sheetColls[6] = 29.5;
-
-  fromcoloff1 = 457200;
-  fromrowoff1 = 333375;
-  tocoloff1 = 5627;
-  torowoff1 = 51820;
+	sheetColls[0] = 14.28515625;
+	sheetColls[1] = 17;
+	sheetColls[2] = 12.42578125;
+	sheetColls[3] = 14.28515625;
+	sheetColls[4] = 17;
+	sheetColls[5] = 12.42578125;
+	sheetColls[6] = 14.28515625;
+	sheetColls[7] = 17;
+	sheetColls[8] = 12.42578125;
+	
+  fromcoloff[0] = 13138;
+  fromrowoff[0] = 81400;
+  fromcoloff[1] = 13138;
+  fromrowoff[1] = 81400;
+  fromcoloff[2] = 13138;
+  fromrowoff[2] = 81400;
   
-  fromcol1 = 3;
-  tocol1 = 4;
-  fromrow1 = 3;
-  torow1 = 11;
+  fromcol[0] = 1;
+  fromrow[0] = 0;
+	fromcol[1] = 4;
+  fromrow[1] = 0;
+	fromcol[2] = 7;
+  fromrow[2] = 0;
+  
+  ext1 = 1116000;
+  ext2 = 1116000;
+  
+  INInRow = 3;
 	
   INr.Code = "";
   INCi = 0;
   while loopmain(INr,1,true) begin
-    INCodes[INCi] = INr.Code;
+    tempINCodes[INCi] = INr.Code;
     INCi = INCi + 1;
     alldata[INr.Code & ":name"] = INr.Name;
     pos = 0;
@@ -610,8 +623,8 @@ begin
             stocks[SQi] = ISr.Location;
             SQi = SQi + 1;
           end;
-          //alldata[INr.Code & ":" & ISr.Location] = alldata[INr.Code & ":" & ISr.Location] + ISr.Instock;
-          //alldata[INr.Code & ":allstocksqty"] = alldata[INr.Code & ":allstocksqty"] + ISr.Instock;
+          alldata[INr.Code & ":" & ISr.Location] = (StringToInt(alldata[INr.Code & ":" & ISr.Location]) + ISr.Instock) & "";
+          alldata[INr.Code & ":allstocksqty"] = (StringToInt(alldata[INr.Code & ":allstocksqty"]) + ISr.Instock) & "";
         end;
       end;
       resetloop(ISr);
@@ -645,17 +658,23 @@ begin
         inrcode = INr.Code;
       end;
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
-        alldata[INr.Code & "pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
+        alldata[INr.Code & ":pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
       end;
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
-        alldata[INr.Code & "pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".png";
+        alldata[INr.Code & ":pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".png";
       end;
     end;
-
   end;
   
+  j = 0;
+  for (i=0;i<tempINCodes.length;i=i+1) begin
+    if nonblank(alldata[tempINCodes[i] & ":allstocksqty"]) then begin 
+      INCodes[j] = tempINCodes[i];
+      j = j + 1;
+    end;
+  end;
   
-	numOfUniqueSharedStrings = 0;
+  numOfUniqueSharedStrings = 0;
 	numOfSharedStrings = 0;
 	XmlXlsxWorkBegin(fileToSave,reportName);
 	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,1,false);
@@ -663,22 +682,97 @@ begin
 	sheetnum = 1;
 	SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
   BeginSheetData(sheetnum,fileToSave);
-    
-    if rowcnt<>0 then begin
-      BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-        colnum = 2;
-        style = 18;
-        qtyOfEmpStr = 6;
-        EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+    rownum = 1;
+    i = 0;
+    while (i < INCodes.length) begin
+    logtext(0,"while begin");
+    logtext(0,INCodes.length);
+    logtext(0,i);
+    logtext(0,INInRow);
+      if ((INCodes.length - mod((INCodes.length - i),INInRow))/i == 1) then begin
+        INInRow = INCodes.length - i;
+      end;
+      logtext(0,"if2");
+      if (INCodes.length<INInRow) then begin
+        INInRow = INCodes.length;
+      end;
+      BeginRow(sheetnum,fileToSave,rownum,0,60.75);
+        colnum = 1;
+        for (k=0;k<INInRow;k=k+1) begin
+          
+          style = 1;
+            mas[maslen] = "<rPr><b" & Chr(47) & "><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t xml:space=" & Chr(34) & "preserve" & Chr(34) & ">" & INCodes[i + k] & Chr(13) & Chr(10);
+            maslen = maslen + 1;
+            mas[maslen] = "<" & Chr(47) & "t><" & Chr(47) & "r><r><rPr><b" & Chr(47) & "><i" & Chr(47) & "><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t>" & alldata[INCodes[i + k] & ":name"];
+            maslen = maslen + 1;
+            mas[maslen] = "<" & Chr(47) & "t><" & Chr(47) & "r><r><rPr><b" & Chr(47) & "><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t xml:space=" & Chr(34) & "preserve" & Chr(34) & ">" & Chr(13) & Chr(10) & "<" & Chr(47) & "t><" & Chr(47) & "r><r><rPr><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & ">";
+            maslen = maslen + 1;
+            mas[maslen] = "<rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t>Бренд: " & alldata[INCodes[i + k] & ":brand"] & Chr(13) & Chr(10) & "Ритейл: " & alldata[INCodes[i + k] & ":retail"] & Chr(13) & Chr(10) & "Себестоимость: " & alldata[INCodes[i + k] & ":cost"] & Chr(13) & Chr(10) & "Валюта: " & alldata[INCodes[i + k] & ":cur"] & Chr(13) & Chr(10) & "Дата посл. пост.: " & alldata[INCodes[i + k] & ":date"] & "<" & Chr(47) & "t>";
+            maslen = maslen + 1;
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,",,,b" & maslen,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          style = 2;
+          qtyOfEmpStr = 1;
+          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+          style = 5;
+            mas[maslen] = "<rPr><b" & Chr(47) & "><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t>Классификация<" & Chr(47) & "t><" & Chr(47) & "r><r><rPr><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & ">";
+            maslen = maslen + 1;
+            mas[maslen] = "<charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t xml:space=" & Chr(34) & "preserve" & Chr(34) & ">";
+            maslen = maslen + 1;
+            for (j=0;j<typeClassif.length;j=j+1) begin
+              if nonblank(alldata[INCodes[i + k] & ":" & typeClassif[j]]) then begin
+                mas[maslen] = Chr(13) & Chr(10) & typeClassif[j] & ": " & alldata[INCodes[i + k] & ":" & typeClassif[j]];
+                maslen = maslen + 1;
+              end;
+            end;
+            mas[maslen] = "<" & Chr(47) & "t>";
+            maslen = maslen + 1;
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,",,,b" & maslen,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+        end;
       EndRow(sheetnum,fileToSave,rownum);
+      
+      BeginRow(sheetnum,fileToSave,rownum,0,39.75);
+        colnum = 1;
+        for (k=0;k<INInRow;k=k+1) begin
+          style = 3;
+            mas[maslen] = "<rPr><b" & Chr(47) & "><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t>Остатки на складах<" & Chr(47) & "t><" & Chr(47) & "r><r><rPr><sz val=" & Chr(34) & "6" & Chr(34) & Chr(47) & "><color theme=" & Chr(34) & "1" & Chr(34) & Chr(47) & ">";
+            maslen = maslen + 1;
+            mas[maslen] = "<rFont val=" & Chr(34) & "Times New Roman" & Chr(34) & Chr(47) & "><family val=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><charset val=" & Chr(34) & "204" & Chr(34) & Chr(47) & "><" & Chr(47) & "rPr><t xml:space=" & Chr(34) & "preserve" & Chr(34) & ">";
+            maslen = maslen + 1;
+            for (j=0;j<stocks.length;j=j+1) begin
+              if nonblank(alldata[INCodes[i + k] & ":" & stocks[j]]) then begin
+                mas[maslen] = Chr(13) & Chr(10) & stocks[j] & ": " & alldata[INCodes[i + k] & ":" & stocks[j]];
+                maslen = maslen + 1;
+              end;
+            end;
+            mas[maslen] = "<" & Chr(47) & "t>";
+            maslen = maslen + 1;
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,",,,b" & maslen,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          style = 4;
+          qtyOfEmpStr = 1;
+          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+          mergeCell[qtyMergeCell] = GetStringCellNum(colnum,rownum - 1) & ":" & GetStringCellNum(colnum,rownum);
+          qtyMergeCell = qtyMergeCell + 1;
+          style = 6;
+          qtyOfEmpStr = 1;
+          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+          imgCounter = imgCounter + 1;
+          AddImageOnCurrentSheet(sheetnum,fileToSave,alldata[INCodes[i + k] & ":pathToImg"],imgCounter,fromcol[k],tocol[k],fromrow[k],torow[k],fromcoloff[k],tocoloff[k],fromrowoff[k],torowoff[k],1,ext1,ext2);
+          fromrow[k] = fromrow[k] + 2;
+        end;
+      EndRow(sheetnum,fileToSave,rownum);
+      
+      i = i + INInRow;
+    logtext(0,"while end");
     end;
+    
+    
 	EndSheetData(sheetnum,fileToSave);
   MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
 	EndSheet(sheetnum,fileToSave,sheetnum);
   EndToAddImgToAllSheet(qtyOfSheets,fileToSave);
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
-	ConvertToXLSX(fileToSave);
-	//
+	ConvertToXLSX(fileToSave,true);
+	//MilliSleep(10000);
   //CopyFile(fileToSave,"webcust" & fileToSave);
   //delete_file(fileToSave);
 return;

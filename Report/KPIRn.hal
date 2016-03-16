@@ -14,7 +14,7 @@ external procedure NumericCell(integer,string,var integer,integer,integer,val);
 external procedure EmptyCell(integer,string,var integer,integer,integer,integer);
 external procedure MergeCells(integer,string,array string,integer);
 external procedure FillSharedStrings(string,array string,integer,integer,array string);
-external procedure ConvertToXLSX(string);
+external procedure ConvertToXLSX(string,boolean);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -441,7 +441,7 @@ begin
 	MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
 	EndSheet(sheetnum,fileToSave,0);
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
-	ConvertToXLSX(fileToSave);
+	ConvertToXLSX(fileToSave,false);
 	MilliSleep(2000);
 	addfiletoarea(fileToSave,areatofile,false);
 	delete_file(fileToSave);

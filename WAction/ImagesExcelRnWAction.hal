@@ -31,12 +31,14 @@ procedure RunImagesExcelRn() begin
   end;
   BlockLoad(Compb);
   MatRowGet(Compb,currentcompany-1,Comprw);
-  tstr = tstr & "_" & Comprw.ShortName & "_" & CurrentUser;
+  tstr = tstr & "_" & CurrentUser;
   filename = tstr & ".xlsx";
   RepSpec.f6 = filename;
 	//filename = SaveFileDialog(tstr,"","xlsx");
 	//if ((filename!=tstr) and nonblank(filename)) then begin
 		if RepSpec.flags[1]==1 then begin
+      ImagesExcel2Rn(RepSpec,fileToSave);
+      //MilliSleep(10000);
     end else begin
       ImagesExcelRn(RepSpec,fileToSave);
       MilliSleep(10000);

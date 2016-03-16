@@ -458,7 +458,7 @@ BEGIN
         AddTextToArea("<t>",tempArea);
       end;
       for (mi=first;mi<last;mi=mi+1) begin
-        AddTextToArea(mas[mi],tempArea);
+        AddTextToArea(StrReplace(mas[mi],"&","&amp;"),tempArea);
       end;
       first = mi;
       if boldf then begin
@@ -477,7 +477,7 @@ BEGIN
 END;
 
 global
-procedure ConvertToXLSX(string pathToXLSX)
+procedure ConvertToXLSX(string pathToXLSX, boolean towebcust)
 BEGIN
 	string 225 path, fileName;
 	area tempArea;
@@ -507,8 +507,12 @@ BEGIN
 		if(fileexists("/" & path & "/xl/.DS_Store"))then begin
 			delete_file("/" & path & "/xl/.DS_Store");
 		end;
-		RunProgram("jar","-cf0M /Volumes/SSD/HansaWorld64RU/webcust/" & path & ".xlsx -C /" & path & "/ .");
-    logtext(0,"RunProgram jar");
+    if towebcust then begin
+      RunProgram("jar","-cf0M /Volumes/SSD/HansaWorld64RU/webcust" & path & ".xlsx -C " & path & "/ .");
+      logtext(0,"RunProgram jar " & "-cf0M /Volumes/SSD/HansaWorld64RU/webcust" & path & ".xlsx -C " & path & "/ .");
+    end else begin
+      RunProgram("jar","-cf0M " & path & ".xlsx -C " & path & "/ .");
+    end;
 	end;
 	RETURN;
 END;
@@ -543,7 +547,7 @@ BEGIN
 END;
 
 global
-procedure AddImageOnCurrentSheet(integer SheetNum, string pathToXLSX, string pathToImg, integer imgNum, integer fromcol, integer tocol, integer fromrow, integer torow, longint fromcoloff, longint tocoloff, longint fromrowoff, longint torowoff)
+procedure AddImageOnCurrentSheet(integer SheetNum, string pathToXLSX, string pathToImg, integer imgNum, integer fromcol, integer tocol, integer fromrow, integer torow, longint fromcoloff, longint tocoloff, longint fromrowoff, longint torowoff, integer CellAnchor, longint ext1, longint ext2)
 BEGIN
 	area tempArea;
 	string 225 path,copyfilepath;
@@ -553,16 +557,12 @@ BEGIN
     copyfilepath = "image" & imgNum &  Right(pathToImg,4);
   //---/xl/drawings/drawing1 ... n.xml
     SetAreaZeroSize(tempArea);
-    AddTextToArea("<xdr:twoCellAnchor editAs=" & Chr(34) & "oneCell" & Chr(34) & "><xdr:from><xdr:col>" & fromcol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & fromcoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & fromrow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & fromrowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:from><xdr:to><xdr:col>" & tocol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & tocoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & torow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & torowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:to><xdr:pic><xdr:nvPicPr><xdr:cNvPr id=" & Chr(34) & imgNum & Chr(34) & " name=" & Chr(34) & "Picture " & imgNum & Chr(34) & Chr(47) & "><xdr:cNvPicPr><a:picLocks noChangeAspect=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><" & Chr(47) & "xdr:cNvPicPr><" & Chr(47) & "xdr:nvPicPr><xdr:blipFill><a:blip xmlns:r=" & Chr(34) & "http:" & Chr(47) & Chr(47) & "schemas.openxmlformats.org" & Chr(47) & "officeDocument" & Chr(47) & "2006" & Chr(47) & "relationships" & Chr(34) & " r:embed=" & Chr(34) & "rId" & imgNum & Chr(34) & Chr(47) & "><a:stretch><a:fillRect" & Chr(47) & "><" & Chr(47) & "a:stretch><" & Chr(47) & "xdr:blipFill><xdr:spPr><a:prstGeom prst=" & Chr(34) & "rect" & Chr(34) & "><a:avLst" & Chr(47) & "><" & Chr(47) & "a:prstGeom><" & Chr(47) & "xdr:spPr><" & Chr(47) & "xdr:pic><xdr:clientData" & Chr(47) & "><" & Chr(47) & "xdr:twoCellAnchor>",tempArea);
-    /*AddTextToArea("<xdr:twoCellAnchor editAs=" & Chr(34) & "oneCell" & Chr(34) & "><xdr:from><xdr:col>" & fromcol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & fromcoloff & "<" & Chr(47) & "xdr:colOff>",tempArea);
-    AddTextToArea("<xdr:row>" & fromrow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & fromrowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:from><xdr:to><xdr:col>" & tocol & "<" & Chr(47) & "xdr:col>",tempArea);
-    AddTextToArea("<xdr:colOff>" & tocoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & torow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & torowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:to>",tempArea);
-    AddTextToArea("<xdr:pic><xdr:nvPicPr><xdr:cNvPr id=" & Chr(34) & imgNum & Chr(34) & " name=" & Chr(34) & "Picture " & imgNum & Chr(34) & Chr(47) & ">",tempArea);
-    AddTextToArea("<xdr:cNvPicPr><a:picLocks noChangeAspect=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><" & Chr(47) & "xdr:cNvPicPr><" & Chr(47) & "xdr:nvPicPr><xdr:blipFill>",tempArea);
-    AddTextToArea("<a:blip xmlns:r=" & Chr(34) & "http:" & Chr(47) & Chr(47) & "schemas.openxmlformats.org" & Chr(47) & "officeDocument" & Chr(47) & "2006" & Chr(47) & "relationships" & Chr(34) & " r:embed=" & Chr(34) & "rId" & imgNum & Chr(34) & Chr(47) & ">",tempArea);
-    AddTextToArea("<a:stretch><a:fillRect" & Chr(47) & "><" & Chr(47) & "a:stretch><" & Chr(47) & "xdr:blipFill><xdr:spPr><a:prstGeom prst=" & Chr(34) & "rect" & Chr(34) & "><a:avLst" & Chr(47) & ">",tempArea);
-    AddTextToArea("<" & Chr(47) & "a:prstGeom><" & Chr(47) & "xdr:spPr><" & Chr(47) & "xdr:pic><xdr:clientData" & Chr(47) & "><" & Chr(47) & "xdr:twoCellAnchor>",tempArea);
-    */
+    switch (CellAnchor) begin
+      case 1:
+        AddTextToArea("<xdr:oneCellAnchor><xdr:from><xdr:col>" & fromcol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & fromcoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & fromrow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & fromrowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:from><xdr:ext cx=" & Chr(34) & ext1 & Chr(34) & " cy=" & Chr(34) & ext2 & Chr(34) & Chr(47) & "><xdr:pic><xdr:nvPicPr><xdr:cNvPr id=" & Chr(34) & imgNum & Chr(34) & " name=" & Chr(34) & "Picture " & imgNum & Chr(34) & Chr(47) & "><xdr:cNvPicPr><a:picLocks noChangeAspect=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><" & Chr(47) & "xdr:cNvPicPr><" & Chr(47) & "xdr:nvPicPr><xdr:blipFill><a:blip xmlns:r=" & Chr(34) & "http:" & Chr(47) & Chr(47) & "schemas.openxmlformats.org" & Chr(47) & "officeDocument" & Chr(47) & "2006" & Chr(47) & "relationships" & Chr(34) & " r:embed=" & Chr(34) & "rId" & imgNum & Chr(34) & Chr(47) & "><a:stretch><a:fillRect" & Chr(47) & "><" & Chr(47) & "a:stretch><" & Chr(47) & "xdr:blipFill><xdr:spPr><a:prstGeom prst=" & Chr(34) & "rect" & Chr(34) & "><a:avLst" & Chr(47) & "><" & Chr(47) & "a:prstGeom><" & Chr(47) & "xdr:spPr><" & Chr(47) & "xdr:pic><xdr:clientData" & Chr(47) & "><" & Chr(47) & "xdr:oneCellAnchor>",tempArea);
+      case 2:
+        AddTextToArea("<xdr:twoCellAnchor editAs=" & Chr(34) & "oneCell" & Chr(34) & "><xdr:from><xdr:col>" & fromcol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & fromcoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & fromrow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & fromrowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:from><xdr:to><xdr:col>" & tocol & "<" & Chr(47) & "xdr:col><xdr:colOff>" & tocoloff & "<" & Chr(47) & "xdr:colOff><xdr:row>" & torow & "<" & Chr(47) & "xdr:row><xdr:rowOff>" & torowoff & "<" & Chr(47) & "xdr:rowOff><" & Chr(47) & "xdr:to><xdr:pic><xdr:nvPicPr><xdr:cNvPr id=" & Chr(34) & imgNum & Chr(34) & " name=" & Chr(34) & "Picture " & imgNum & Chr(34) & Chr(47) & "><xdr:cNvPicPr><a:picLocks noChangeAspect=" & Chr(34) & "1" & Chr(34) & Chr(47) & "><" & Chr(47) & "xdr:cNvPicPr><" & Chr(47) & "xdr:nvPicPr><xdr:blipFill><a:blip xmlns:r=" & Chr(34) & "http:" & Chr(47) & Chr(47) & "schemas.openxmlformats.org" & Chr(47) & "officeDocument" & Chr(47) & "2006" & Chr(47) & "relationships" & Chr(34) & " r:embed=" & Chr(34) & "rId" & imgNum & Chr(34) & Chr(47) & "><a:stretch><a:fillRect" & Chr(47) & "><" & Chr(47) & "a:stretch><" & Chr(47) & "xdr:blipFill><xdr:spPr><a:prstGeom prst=" & Chr(34) & "rect" & Chr(34) & "><a:avLst" & Chr(47) & "><" & Chr(47) & "a:prstGeom><" & Chr(47) & "xdr:spPr><" & Chr(47) & "xdr:pic><xdr:clientData" & Chr(47) & "><" & Chr(47) & "xdr:twoCellAnchor>",tempArea);
+    end;
     WriteAreaToFile(tempArea,path & "/xl/drawings/drawing" & SheetNum & ".xml",1);
   //---/xl/drawings/_rels/drawing1 ... n.xml.rels
     SetAreaZeroSize(tempArea);

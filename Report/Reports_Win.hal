@@ -795,6 +795,7 @@ begin
 	v = 6; vs = 20; h = 130;
 	EditFieldTL(h,v,70,"Бренд",M4Str,Normal,41,f1,false,DI2SClass);
   EditFieldTL(h,v+=vs,70,"Склад",M4Str,Normal,41,f2,false,LocationSClass);
+  CheckBox(h,v+=20,0,"для печати",flags[1]);
 	
 	HalPushButton(h=50,v+=20,h+110,v+=20,"RunImagesExcelRn","Запуск");
 	
