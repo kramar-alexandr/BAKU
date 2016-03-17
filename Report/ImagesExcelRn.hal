@@ -52,8 +52,7 @@ integer i;
 return;
 end;
 
-global 
-procedure ImagesExcelRn(record RcVc RepSpec,var area areatofile)
+procedure ImagesExcel(record RcVc RepSpec)
 begin
 	
 	array string 50 sheetNames;
@@ -89,7 +88,6 @@ begin
   array string 100 typeClassif,classif;
   
 	setexportcodepage("UTF8");
-	
 	reportName = "ImagesExcelRn";
 	if (windowsmode==1) then begin
 		//fileToSave = "tmpxlsx.xlsx";
@@ -489,15 +487,21 @@ begin
   EndToAddImgToAllSheet(qtyOfSheets,fileToSave);
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
 	ConvertToXLSX(fileToSave,true);
-	//MilliSleep(10000);
+	MilliSleep(5000);
   //CopyFile(fileToSave,"webcust" & fileToSave);
   //delete_file(fileToSave);
   //addfiletoarea(fileToSave,areatofile,false);
-return;
+  
+  
+  StartReportNoHeaderJob("Ћстатки по складам с картинками");
+		StartFormat(15);
+			OutString(0,0,"",false);
+    EndFormat;
+  EndJob;
+  return;
 end;
 
-global 
-procedure ImagesExcel2Rn(record RcVc RepSpec,var area areatofile)
+procedure ImagesExcel2(record RcVc RepSpec)
 begin
 	
 	array string 50 sheetNames;
@@ -685,14 +689,9 @@ begin
     rownum = 1;
     i = 0;
     while (i < INCodes.length) begin
-    logtext(0,"while begin");
-    logtext(0,INCodes.length);
-    logtext(0,i);
-    logtext(0,INInRow);
       if ((INCodes.length - mod((INCodes.length - i),INInRow))/i == 1) then begin
         INInRow = INCodes.length - i;
       end;
-      logtext(0,"if2");
       if (INCodes.length<INInRow) then begin
         INInRow = INCodes.length;
       end;
@@ -762,7 +761,6 @@ begin
       EndRow(sheetnum,fileToSave,rownum);
       
       i = i + INInRow;
-    logtext(0,"while end");
     end;
     
     
@@ -772,8 +770,54 @@ begin
   EndToAddImgToAllSheet(qtyOfSheets,fileToSave);
 	FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
 	ConvertToXLSX(fileToSave,true);
-	//MilliSleep(10000);
+	MilliSleep(5000);
   //CopyFile(fileToSave,"webcust" & fileToSave);
   //delete_file(fileToSave);
 return;
+end;
+
+
+global
+procedure ImagesExcelRn(record RcVc RepSpec)
+begin
+  string 250 filename,tstr;
+  record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+  record ProgramStatusBlock PSb;
+  
+  RepSpec.Media = mtScreen;
+  tstr = "Stock_report_by_locations_with_images";
+  if nonblank(RepSpec.f1) or nonblank(RepSpec.f2) then begin
+    tstr = tstr & "_";
+    if nonblank(RepSpec.f1) then begin
+      tstr = tstr & "Brand_-_" & RepSpec.f1;
+    end;
+    if nonblank(RepSpec.f2) then begin
+      if nonblank(RepSpec.f1) then begin
+        tstr = tstr & "_";
+      end;
+      tstr = tstr & "Loc_-_" & RepSpec.f2;
+    end;
+  end;
+  BlockLoad(Compb);
+  MatRowGet(Compb,currentcompany-1,Comprw);
+  tstr = tstr & "_" & CurrentUser;
+  filename = tstr & ".xlsx";
+  RepSpec.f6 = filename;
+  if RepSpec.flags[1]==1 then begin
+    ImagesExcel2(RepSpec);
+  end else begin
+    ImagesExcel(RepSpec);
+  end;
+  BlockLoad(Compb);
+  MatRowGet(Compb,currentcompany-1,Comprw);
+  blockload(PSb);
+  //OpenWebBrowser("http://" & Comprw.TCPIP & ":" & PSb.httpPort & "/" & filename);
+  StartReportNoHeaderJob("…женедельный отчет директоров");
+		StartFormat(15);
+			OutString(0,"DblImagesExcel","http://" & Comprw.TCPIP & ":" & PSb.httpPort & "/" & filename,false);
+    EndFormat;
+	EndJob;
+	
+  return;
 end;

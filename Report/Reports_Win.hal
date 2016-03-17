@@ -790,14 +790,14 @@ window ImagesExcelRClass:1	//Edit-------------------Vitalii 11:25 02.03.2016
 	wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 	real h,v,vs;
-	WindowBegin("Определите отчет Остатки по складам с картинками",ImagesExcelRClass,CGother,RcType);
+	WindowBegin("Определите отчет Остатки по складам с картинками",ImagesExcelRClass,CGRcW,RcType);
 	SetWRect(20,80,400,250);
 	v = 6; vs = 20; h = 130;
 	EditFieldTL(h,v,70,"Бренд",M4Str,Normal,41,f1,false,DI2SClass);
   EditFieldTL(h,v+=vs,70,"Склад",M4Str,Normal,41,f2,false,LocationSClass);
   CheckBox(h,v+=20,0,"для печати",flags[1]);
 	
-	HalPushButton(h=50,v+=20,h+110,v+=20,"RunImagesExcelRn","Запуск");
+	//HalPushButton(h=50,v+=20,h+110,v+=20,"RunImagesExcelRn","Запуск");
 	
 EndWindow;
 end;
