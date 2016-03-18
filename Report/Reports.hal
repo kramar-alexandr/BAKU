@@ -1744,10 +1744,11 @@ val totalSum,totalLoySum;
 	OutString(0,0,USetStr(35075),false);	//Inovoice
 	OutString(30,0,USetStr(35076),false);	//date
 	OutString(70,0,USetStr(35078),false);	//location
-	OutString(120,0,USetStr(35077),false);//artcode
-	OutString(170,0,USetStr(35084),false);//name
-	OutString(280,0,USetStr(35079),false);//brand
-	OutString(350,0,USetStr(35080),false);//sum
+	OutString(100,0,USetStr(35077),false);//artcode
+	OutString(150,0,USetStr(35084),false);//name
+	OutString(260,0,USetStr(35079),false);//brand
+	OutString(320,0,USetStr(31160),false);//cost
+	OutString(360,0,USetStr(35080),false);//sum
 	OutString(390,0,USetStr(35081),false);//loypoints
 	OutString(430,0,USetStr(35082),false);//%
 	OutString(460,0,USetStr(35083),false);//difference
@@ -1777,10 +1778,11 @@ val totalSum,totalLoySum;
 						OutString(0,0,IVr.SerNr,false);	
 						OutString(30,0,IVr.TransDate,false);	
 						OutString(70,0,IVr.Location,false);	
-						OutString(120,0,IVrw.ArtCode,false);
-						OutString(170,0,IVrw.Spec,false);
-						OutString(280,0,GetBrand(IVrw.ArtCode),false);
-						OutString(350,0,IVrw.Sum,false);
+						OutString(100,0,IVrw.ArtCode,false);
+						OutString(150,0,IVrw.Spec,false);
+						OutString(260,0,GetBrand(IVrw.ArtCode),false);
+						OutString(320,0,IVrw.FIFORowVal,false);
+						OutString(360,0,IVrw.Sum,false);
 						OutString(390,0,IVrw.Sum*coef,false);
 						OutString(430,0,coef*100 & "%",false);
 						OutString(460,0,IVrw.Sum-IVrw.Sum*coef,false);	
