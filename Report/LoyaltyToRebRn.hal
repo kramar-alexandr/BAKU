@@ -1,0 +1,51 @@
+
+global
+procedure LoyaltyToRebRn(record RcVc RepSpec)
+begin
+  record LCMLevelSetBlock LCMSB;
+  row LCMLevelSetBlock LCMSBw;
+  record LoyaltyCardVc LCr;
+  record CUVc CUr;
+  Integer pos,i,rwcnt;
+  boolean testf;
+
+  StartReportNoHeaderJob("Client rebate to loyalty card mismatch");
+	
+  pos = 0;
+	StartFormat(15);
+   OutString(pos,0,"Client ID",false);pos = pos + 70;
+   OutString(pos,0,"Current rebate",false); pos = pos + 70;
+   OutString(pos,0,"Loyalty rebate",false);
+  EndFormat;
+	
+  BlockLoad(LCMSB);
+  rwcnt = MatRowCnt(LCMSB);
+  CUr.Code = "";
+  while (LoopMain(CUr,1,true)) begin
+    testf = false;
+    LCr.CustCode = CUr.Code;
+    testf = ReadFirstKey("CustCode",LCr,1,true);
+    if (testf) then begin
+      testf = false;
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(LCMSB,i,LCMSBw);
+        if (LCr.PointsBalance>=LCMSBw.FromPoints and LCr.PointsBalance<=LCMSBw.ToPoints and LCMSBw.RebCode!=CUr.RebCode) then begin
+          testf = true;
+          i = rwcnt;  
+        end;
+      end;
+    end;
+    if (testf) then begin
+      pos = 0;
+    	StartFormat(15);
+       OutString(pos,0,CUr.Code,false);pos = pos + 70;
+       OutString(pos,0,CUr.RebCode,false); pos = pos + 70;
+       OutString(pos,0,LCMSBw.RebCode,false);
+      EndFormat;
+    end;
+  end;
+	
+	EndJob;
+
+return;
+end;

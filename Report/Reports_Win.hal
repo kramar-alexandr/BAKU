@@ -815,3 +815,18 @@ begin
   EditFieldTL(h,v+=20,150,"Бренд",M4UStr,Normal,41,f2,false,DI2SClass);
   EndWindow;
 end;
+
+//Edit***************************Sasha2,12:19 18.03.2016 {
+window LoyaltyToRebRClass:1
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm;
+  WindowBegin("Несовпадение скидки клиента с картой лояльности",LoyaltyToRebRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+  //PeriodField(h=100,v=6,"Date");
+  /*EditFieldTL(h,v=6,150,"Date",M4Date,Normal,0,d1,false,PasteCurDate);
+  EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
+  EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);*/
+  EndWindow;
+end; //Edit***************************Sasha2,12:20 18.03.2016 }

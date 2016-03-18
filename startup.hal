@@ -138,7 +138,7 @@ begin
   Report("Stan Magazynu",StanMagazynuRClass,StanMagazynuRn,0,modIN); //Edit***************************Sasha2,11:15 02.04.2015
   Report("Для внесения начального сальдо по объектам",ObjInitBalRClass,ObjInitBalRn,0,modNL); //Edit-------------------Vitalii 16:56 21.12.2015
 	
-	 Report("ПРоверка целостности склада",OrderStatusRClass,CheckItemHistErrorRn,0,modDBMain);// Edit ************************** Monday, 25 May 2015 15:32:06
+	 Report("Проверка целостности склада",OrderStatusRClass,CheckItemHistErrorRn,0,modDBMain);// Edit ************************** Monday, 25 May 2015 15:32:06
 	
   Report("Brand & Stock Correlation",BrandStockCorrelRClass,BrandsAndStockCorrelationRn,0,modIN);
   //Report("TESTTESTTEST",UnPayPORClass,TESTRn,0,modTC);
@@ -168,7 +168,7 @@ begin
   Report("Исторический отчет по товарам",HistoricalRClass,HistoricalRn,0,modIN);	//Edit----------------------Dima  26.02.2016
   Report("Остатки по складам с картинками",ImagesExcelRClass,ImagesExcelRn,0,modIN);//Edit-------------------Vitalii 11:21 02.03.2016
   Report("Отчет по акции 1+1",SpecialOffer1_1RClass,SpecialOffer1_1Rn,0,modIN);
-  
+  Report("Отчет несовпадения скидки клиента с картой лояльности",LoyaltyToRebRClass,LoyaltyToRebRn,0,modMYCRM); //Edit***************************Sasha2,12:24 18.03.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
