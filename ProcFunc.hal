@@ -452,21 +452,26 @@ begin
 	row StockMovVc SMrw;
 	record SDVc SDr;
 	row SDVc SDrw;
-	boolean TrHs,excelreport,recordsExist;
+	boolean TrHs,newreport,recordsExist;
 	string 100 brandname,classname;
 	integer qty,i,count;
 	val cost;
 	
 	
 	if (RepSpec.flags[29]!=0) then begin	
-		excelreport = true; //new MatReport
+		newreport = true; //new MatReport
 	end;
 	
 	SMr.FrLocation = RepSpec.f2;
 	SMr.OKFlag = 1;
 	SMr.TransDate = RepSpec.d1;
 	if (ReadFirstKey("FrLocOK",SMr,3,true)==false) then begin
-		goto LPrintSMovementsAndDeprecation1;
+		SMr.ToLocation = RepSpec.f2;
+		SMr.OKFlag = 1;
+		SMr.TransDate = RepSpec.d1;	
+		if (ReadFirstKey("ToLocOK",SMr,3,true)==false) then begin
+			goto LPrintSMovementsAndDeprecation1;
+		end;	
 	end;	
 	
 	StartFormat(15);
@@ -474,12 +479,12 @@ begin
 		OutString(tab[3],0,RepSpec.d1,false);
 	EndFormat;
   StartFormat(15);
-  if !excelreport then begin
+  if !newreport then begin
     OutString(tab[1],0,"Ü",false);
   end;
   OutString(tab[2],0,USetStr(12501),false);
   OutString(tab[3],0,USetStr(8105),false);
-  if excelreport then begin
+  if (newreport) then begin
     OutString(tab[31],0,USetStr(31044),false);
     OutString(tab[32],0,USetStr(9131),false);
   end;
@@ -512,12 +517,12 @@ begin
 				end;				
 				
   			StartFormat(15);
-  			if (!excelreport) then begin
+  			if (!newreport) then begin
   			  OutString(tab[1],0,"Ü",false);
   			end;
   			OutString(tab[2],0,SMrw.ArtCode,false);
   			OutString(tab[3],0,SMrw.Spec,false);
-  			if (excelreport) then begin
+  			if (newreport) then begin
   			  OutString(tab[31],0,brandname,false);
   			  OutString(tab[32],0,classname,false);
   			end;
@@ -536,7 +541,47 @@ begin
 				
 			end;	
 		end;
-	end;
+	end;ResetLoop(SMr);
+	
+	SMr.ToLocation = RepSpec.f2;
+	SMr.OKFlag = 1;
+	SMr.TransDate = RepSpec.d1;
+	TrHs = true;
+	While(LoopKey("ToLocOK",SMr,3,TrHs)) begin
+		if (SMr.TransDate!=RepSpec.d1 or SMr.OKFlag==0 or SMr.ToLocation!=RepSpec.f2) then begin TrHs = false; end;
+		if (TrHs) then begin
+			for(i=0;i<MatRowCnt(SMr);i=i+1) begin
+				MatRowGet(SMr,i,SMrw);
+				GetClassifications(SMrw.ArtCode,brandname,classname);				 
+					qty = SMrw.Quant;
+					cost = SMrw.FIFORowVal; 		
+				
+  			StartFormat(15);
+  			if (!newreport) then begin
+  			  OutString(tab[1],0,"Ü",false);
+  			end;
+  			OutString(tab[2],0,SMrw.ArtCode,false);
+  			OutString(tab[3],0,SMrw.Spec,false);
+  			if (newreport) then begin
+  			  OutString(tab[31],0,brandname,false);
+  			  OutString(tab[32],0,classname,false);
+  			end;
+  			OutString(tab[4],0,-qty,false);
+  			if (UserCanAction("ViewCostPrice",true)==true) then begin    
+  				OutString(tab[5],0,-cost/qty,false);
+  				OutString(tab[6],0,-cost,false); 
+  			end else begin
+  				OutString(tab[5],0,"",false);
+  				OutString(tab[6],0,"",false);
+				end;
+				OutString(tab[7],0,"",false);
+  			OutString(tab[8],0,SMr.SerNr,false);
+  			OutString(tab[10],0,SMr.Comment,false); 			
+				EndFormat;					
+				
+			end;	
+		end;
+	end;	
 	EndFormat;
 	
 	LPrintSMovementsAndDeprecation1:;
@@ -553,12 +598,12 @@ begin
 		OutString(tab[3],0,RepSpec.d1,false);
 	EndFormat;
   StartFormat(15);
-  if !excelreport then begin
+  if !newreport then begin
     OutString(tab[1],0,"Ü",false);
   end;
   OutString(tab[2],0,USetStr(12501),false);
   OutString(tab[3],0,USetStr(8105),false);
-  if excelreport then begin
+  if newreport then begin
     OutString(tab[31],0,USetStr(31044),false);
     OutString(tab[32],0,USetStr(9131),false);
   end;
@@ -583,12 +628,12 @@ begin
 				GetClassifications(SDrw.ArtCode,brandname,classname);										
 				
   			StartFormat(15);
-  			if (!excelreport) then begin
+  			if (!newreport) then begin
   			  OutString(tab[1],0,"Ü",false);
   			end;
   			OutString(tab[2],0,SDrw.ArtCode,false);
   			OutString(tab[3],0,SDrw.Spec,false);
-  			if (excelreport) then begin
+  			if (newreport) then begin
   			  OutString(tab[31],0,brandname,false);
   			  OutString(tab[32],0,classname,false);
   			end;
@@ -673,7 +718,7 @@ begin
 	//record UserVc User;
 	string 10 baseCurcny;
 	record IVVc IVrF,IVrU;
-  boolean excelreport,vertestf;
+  boolean newreport,vertestf;
   array integer tab;
   string 50 class,classname,brandname,brand;
   //record DIVc DIr;
@@ -685,7 +730,7 @@ begin
 
   
 	if (RepSpec.flags[29]!=0) then begin	
-		excelreport = true; //new MatReport
+		newreport = true; //new MatReport
 	end;
 	
 
@@ -698,7 +743,7 @@ begin
   PayModesValues[4] = "TRM";	//by Terminal
 	PayModesValues[5] = "LOY";	//by Loyalty cards
     
-  if excelreport then begin
+  if newreport then begin
     //tab[1]  = 0;
     tab[2]  = 0;
     tab[3]  = 30; 
@@ -789,7 +834,7 @@ begin
 			
     EndFormat; 
     
-    if (excelreport) then begin
+    if (newreport) then begin
     	currencies[0] = "USD";
     	currencies[1] = "USDB";
     	currencies[2] = "EUR";   
@@ -822,7 +867,7 @@ begin
      StartFormat(15);
      EndFormat;
      StartFormat(15);
-     if !excelreport then begin
+     if !newreport then begin
        OutString(tab[1],0,"Ü",false);
      end;
 
@@ -832,7 +877,7 @@ begin
      OutString(tab[32],0,USetStr(9131),false);
      OutString(tab[4],0,USetStr(31121),false);
      
-     if (excelreport) then begin
+     if (newreport) then begin
      
      OutString(tab[5],0,USetStr(35043),false);
      OutString(tab[6],0,USetStr(35044),false);
@@ -928,7 +973,7 @@ begin
      // end;
       
       if testf then begin
-        if excelreport then begin //Collect payment modes
+        if newreport then begin //Collect payment modes
 
           ClearPayModesVector(PayModes);
 					payrows = true;
@@ -1042,7 +1087,7 @@ begin
             		CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,IVrw.Price,baseCurcny,IVrw.Price,DefaultCurRoundOff);            		       	
             		            	
 							StartFormat(15);
-								if (!excelreport) then begin
+								if (!newreport) then begin
                   OutString(tab[1],0,rwnr,false);
                   rwnr = rwnr+1;
                 end;
@@ -1060,7 +1105,7 @@ begin
 								OutVal(tab[5],0,IVrw.Price*IVrw.Quant*cred,M4Val,false);
 								OutVal(tab[6],0,basesum*cred,M4Val,false);
 					
-								if (excelreport) then begin
+								if (newreport) then begin
 										if ((IVr.PayDeal=="PP" or IVr.PayDeal=="F" or IVr.PayDeal=="U") and IVrw.Quant>0) then begin
 											OutString(tab[20],0,USetStr(9134),false);
 										end else begin
@@ -1331,7 +1376,7 @@ begin
 	end;//Edit  End---------------------------------------------				
 
     StartFormat(15);
-    if !excelreport then begin
+    if !newreport then begin
       OutString(tab[1],0,USetStr(8330),false);
       OutString(tab[3],0,"",false);
     end else begin
@@ -1346,7 +1391,7 @@ begin
     OutVal(tab[6],0,totsum,M4Val,false);
 	//debt = totsum; //Edit-------------------Vitalii 16:32 18.12.2015
 
-		if (excelreport) then begin
+		if (newreport) then begin
 			OutString(tab[20],0,"",false);
 			for(i=0;i<PayModesValues.length;i=i+1) begin  //output: USD AZN EUR terminal...
 				OutString(tab[60],0,"",false);
@@ -1527,7 +1572,7 @@ begin
     StartFormat(15);
 		endformat;
 
-		if (!excelreport) then begin 
+		if (!newreport) then begin 
 			if (debt!=0) then begin		//Edit------------Dima 22.01.2015
 				OutString(tab[1],0,USetStr(31308),false);
     		OutString(tab[5],0,debt,false);
@@ -1557,7 +1602,7 @@ begin
 		StartFormat(15);
 		endformat;
 		
-		if (excelreport) then begin
+		if (newreport) then begin
 			PrintSMovementsAndDeprecation(RepSpec,tab);
 		end;
 			
