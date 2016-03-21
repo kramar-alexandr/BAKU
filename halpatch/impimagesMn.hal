@@ -2117,6 +2117,7 @@ begin
             PUSumUp(PUr);
           end;
           if (RECORDSTORE(PUr,false)) then begin
+            RECORDNEW(VIr);
             PastePUInVI(PUr,VIr,warning,false,false,false,false,false,false,false,IVr.PriceList); //Edit***************************Sasha2,17:13 18.03.2016
             if (VIr.SerNr<=0) then begin
               newnr = GetCurUserLastNr("VIVc");
