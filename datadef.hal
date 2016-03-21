@@ -4420,6 +4420,13 @@ begin
   RecordField(TotCost,M4Val,0,0);
   RecordField(TotPrice,M4Val,0,0); 
   EndRecord;
+  
+  
+  
+  BlockBegin(CoinSettingsBlock,-,""); 
+  RecordField(ClientCode,M4Str,100,0);
+  EndBlock;  
+  
 	
   return;  
 end;

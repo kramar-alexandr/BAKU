@@ -1307,3 +1307,14 @@ WindowBegin("Определите исторический отчет",HistoricalRClass,CGRcW,RcType);
 end;
 
 
+window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real v;
+  WindowBegin("Настройки Cruppo Coin",CoinSettingsTClass,CGSbl,-);
+  SetWRect(20,80,400,100);
+  SetBlid(CoinSettingsBlock);
+  Sizeable(-1,-1,0,0);
+	EditField(150,10,140,"Client code",Normal,ClientCode,false,0);
+  EndWindow;
+end;
