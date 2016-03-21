@@ -520,7 +520,7 @@ END;
 global
 updating function LongInt PastePUInVI(record PUVc PUp,var record VIVc VIp,var string errmsg,
                                       Boolean customsf,Boolean freightf,Boolean cost1f,Boolean cost2f,
-                                      Boolean cost3f,Boolean cost4f,Boolean cost5f)
+                                      Boolean cost3f,Boolean cost4f,Boolean cost5f,string pricelist) //Edit***************************Sasha2,17:13 18.03.2016
 BEGIN
   LongInt res;
   Integer i,rwcnt,vatcnt;
@@ -777,6 +777,9 @@ BEGIN
     if (PUrw.PONr>0) or (PUp.PONr>0) then begin
       purowsum = PUrw.Quant*PUrw.UPrice;
     end;
+    if (pricelist=="FOB36") then begin //Edit***************************Sasha2,17:08 18.03.2016 {
+      purowsum =  PUrw.Quant*PUrw.CostPrice;
+    end; //Edit***************************Sasha2,17:08 18.03.2016 }
     sum = FindVAT(VIrw.VATCode,purowsum,PUp.InclVAT,PUp.NoTAXonVAT);
     if (PUp.InclVAT!=0) then begin
       sum = purowsum - sum;
