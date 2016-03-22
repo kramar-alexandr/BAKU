@@ -4359,7 +4359,7 @@ begin
   end else begin
   if (HasModIN) then begin
     if (UserCanReport("INInfoRn","",true)) then begin 
-    SpecialMenu("Справка по товару",'I',0,"INStatusINLsm");
+    SpecialMenu("Справка по товару",'I',0,"StocKCountGC");
     end;
     SpecialMenu("Статус товара",' ',1,"ItemStatusINLsm"); 
   end;
