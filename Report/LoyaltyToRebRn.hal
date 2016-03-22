@@ -19,7 +19,8 @@ begin
    OutString(pos,0,"Loyalty rebate",false); pos = pos + 50;
    OutString(pos,0,"Points",false); pos = pos + 50;
    OutString(pos,0,"Location",false); pos = pos + 50;
-   OutString(pos,0,"Comment",false); pos = pos + 70;
+   OutString(pos,0,"Comment1",false); pos = pos + 100;
+   OutString(pos,0,"Comment2",false); pos = pos + 70;
   EndFormat;
 	
   BlockLoad(LCMSB);
@@ -48,6 +49,7 @@ begin
        OutString(pos,0,LCMSBw.RebCode,false); pos = pos + 50;
        OutString(pos,0,LCr.PointsBalance,false); pos = pos + 50;
        OutString(pos,0,CUr.CreateLocation,false); pos = pos + 50;
+       OutString(pos,0,CUr.Comment0,false); pos = pos + 100;
        OutString(pos,0,CUr.CreateComment,false); pos = pos + 70;
       EndFormat;
     end;
