@@ -7,7 +7,7 @@ begin
   record LoyaltyCardVc LCr;
   record CUVc CUr;
   Integer pos,i,rwcnt;
-  boolean testf;
+  boolean testf,testf1;
 
   StartReportNoHeaderJob("Client rebate to loyalty card mismatch");
 	
@@ -33,10 +33,12 @@ begin
     if (testf) then begin
       testf = false;
       for (i=0;i<rwcnt;i=i+1) begin
+        testf1 = true;
         MatRowGet(LCMSB,i,LCMSBw);
-        if (LCr.PointsBalance>=LCMSBw.FromPoints and LCr.PointsBalance<=LCMSBw.ToPoints and LCMSBw.RebCode!=CUr.RebCode) then begin
+        if (RepSpec.flags[1]==0 and (LCr.PointsBalance<LCMSBw.FromPoints or LCr.PointsBalance>LCMSBw.ToPoints or LCMSBw.RebCode==CUr.RebCode)) then begin testf1=false; end;
+        if (testf1) then begin
           testf = true;
-          i = rwcnt;  
+          i = rwcnt; 
         end;
       end;
     end;

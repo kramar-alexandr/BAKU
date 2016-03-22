@@ -825,7 +825,10 @@ begin
   real h,v,vm;
   WindowBegin("Несовпадение скидки клиента с картой лояльности",LoyaltyToRebRClass,CGRcW,RcType);
   SetWRect(20,80,440,150);
-  h=100;
+  h=50;
+  ButtonFrame(h,vm=(v+=40),200,2,"Выводить");
+  RadioButton(h,v,0,0,"Клиентов с несовпадением скидки с картой лоял.",flags[1]);
+  RadioButton(h,v+=16,1,0,"Всех клиентов с картой лояльности",flags[1]);
   //PeriodField(h=100,v=6,"Date");
   /*EditFieldTL(h,v=6,150,"Date",M4Date,Normal,0,d1,false,PasteCurDate);
   EditFieldTL(h,v+=20,150,"Location",M4UStr,Normal,41,f1,false,LocationSClass);
