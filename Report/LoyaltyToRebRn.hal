@@ -13,9 +13,13 @@ begin
 	
   pos = 0;
 	StartFormat(15);
-   OutString(pos,0,"Client ID",false);pos = pos + 70;
-   OutString(pos,0,"Current rebate",false); pos = pos + 70;
-   OutString(pos,0,"Loyalty rebate",false);
+	 OutString(pos,0,"Card date",false);pos = pos + 40;
+   OutString(pos,0,"Client ID",false);pos = pos + 50;
+   OutString(pos,0,"Current rebate",false); pos = pos + 50;
+   OutString(pos,0,"Loyalty rebate",false); pos = pos + 50;
+   OutString(pos,0,"Points",false); pos = pos + 50;
+   OutString(pos,0,"Location",false); pos = pos + 50;
+   OutString(pos,0,"Comment",false); pos = pos + 70;
   EndFormat;
 	
   BlockLoad(LCMSB);
@@ -38,9 +42,13 @@ begin
     if (testf) then begin
       pos = 0;
     	StartFormat(15);
-       OutString(pos,0,CUr.Code,false);pos = pos + 70;
-       OutString(pos,0,CUr.RebCode,false); pos = pos + 70;
-       OutString(pos,0,LCMSBw.RebCode,false);
+    	 OutString(pos,0,CUr.DateCreated,false);pos = pos + 40;
+       OutString(pos,0,CUr.Code,false);pos = pos + 50;
+       OutString(pos,0,CUr.RebCode,false); pos = pos + 50;
+       OutString(pos,0,LCMSBw.RebCode,false); pos = pos + 50;
+       OutString(pos,0,LCr.PointsBalance,false); pos = pos + 50;
+       OutString(pos,0,CUr.CreateLocation,false); pos = pos + 50;
+       OutString(pos,0,CUr.CreateComment,false); pos = pos + 70;
       EndFormat;
     end;
   end;
