@@ -1318,3 +1318,38 @@ begin
 	EditField(150,10,140,"Client code",Normal,ClientCode,false,0);
   EndWindow;
 end;
+
+
+global
+function string 60 GruppoCoinSalesEClassDefaultFileName(record RcVc RepSpec)
+begin
+	record CoinSettingsBlock CoinSettingsb;
+	string 100 name;
+	date transdate;
+	
+	BlockLoad(CoinSettingsb);
+	transdate = RepSpec.d1;
+	if (BlankDate(transdate)) then begin
+		transdate = CurrentDate;
+	end;
+		
+	name = "PSL" & CoinSettingsb.ClientCode & "_" & DateToString(transdate,"YYYYMMDD");
+	name = name & ".TXT";
+	
+	
+  GruppoCoinSalesEClassDefaultFileName = name;
+  return;
+end;
+
+
+window GruppoCoinSalesEClass:1			//Edit----------------------Dima  22.03.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите перечень склада",GruppoCoinSalesEClass,CGEcW,RcType);
+  SetWRect(20,80,400,290);
+  vs=20;
+  EditFieldTL(100,v+=vs, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+
+  EndWindow;
+end;
