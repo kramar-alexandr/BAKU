@@ -47,6 +47,34 @@ external procedure ExtractObj(string,var Integer,var string);// Edit ***********
 
 SetLangMode(LangRussian,"RUS",0);
 
+//Edit***************************Sasha2,14:44 23.03.2016 {
+procedure NoLimitExtractObj(string ostr,var Integer pos,var string rstr)
+BEGIN
+  string 1 c1;
+
+  rstr = "";
+L47:;
+  if (pos>=len(ostr)) then begin goto L999; end;
+  c1 = Mid(ostr,pos,1); 
+  pos = pos + 1;
+  if ((c1==",") or (c1==".") or (c1==";")) then begin
+    if (len(rstr)==0) then begin 
+      goto L47; 
+    end;
+    goto L888;
+  end;
+  rstr = rstr & c1;
+  goto L47;
+L888:;
+  if (pos>len(ostr)) then begin goto L999; end;
+  c1 = Mid(ostr,pos,1);  
+  pos = pos + 1;
+  if ((c1==",") or (c1==".")) then begin goto L888; end;
+  pos = pos - 1;
+L999:;
+  RETURN;
+END; //Edit***************************Sasha2,14:45 23.03.2016 }
+
 procedure SetPOAcceptanceFlag(var record POVc POr,record POVc prevPOr,LongInt stat)
 begin
   val bc1v;
@@ -1842,10 +1870,10 @@ begin
 						
 						lenth = 0; //Edit***************************Sasha2,16:02 29.01.2016 {
 						k = 0;
-						ExtractObj(fullclass,lenth,tclass);
+						NoLimitExtractObj(fullclass,lenth,tclass);
 						while (nonblank(tclass)) begin
 						  lenth2 = lenth;
-						  ExtractObj(fullclass,lenth2,tclass2);
+						  NoLimitExtractObj(fullclass,lenth2,tclass2);
 						  if (nonblank(tclass2)) then begin
 						    if (k==0) then begin
   							  switch (currentcompany) begin 
@@ -1903,7 +1931,7 @@ begin
 								end;
 							end;
 							k = k + 1;
-							ExtractObj(fullclass,lenth,tclass);
+							NoLimitExtractObj(fullclass,lenth,tclass);
 						end; //Edit***************************Sasha2,16:02 29.01.2016 }
 
 						lenth = len(POrw.xClassification);
