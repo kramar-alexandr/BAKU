@@ -37,6 +37,33 @@ external procedure VISumup(record VIVc,var val); //Edit*************************
 
 SetLangMode(LangRussian,"RUS",0);
 
+
+//Edit***************************Sasha2,12:12 18.12.2015 {
+function string 10 PrepareDICode(string indisp)
+begin
+  string 10 res,newdisp;
+  integer i,lenth;
+  string 1 c;
+  
+    res = "";
+    newdisp = left(indisp,10);
+    lenth = len(newdisp); 
+    if (lenth>0) then begin
+      for (i=0;i<lenth;i=i+1) begin
+        c= Mid(newdisp,i,1);
+        if (c==" " or c=="." or c==",") then begin
+          res = res & "_";
+        end else begin
+          res = res & c;
+        end;
+      end;
+      res = UpperCase(res);
+    end;
+    
+  PrepareDICode = res;
+  return;
+end; //Edit***************************Sasha2,12:12 18.12.2015 }
+
 global //Edit***************************Sasha2,14:00 16.12.2015 {
 procedure HandleNewINDClassmCode(var record NewINVc newINr, integer rownr)
 begin
@@ -3563,4 +3590,164 @@ LAggregateDataToJWMn:;
 
 return;
 end; //Edit***************************Sasha2,14:28 19.02.2016 }
+
+
+global //Edit***************************Sasha2,15:52 23.03.2016 {
+updating procedure AggregateDispsJWMn(record RcVc RepSpec)
+begin
+	record INVc INr;
+	record DIVc DIr;
+	Boolean savef,foundf,collf,metalf;
+	string 20 maindi,curdisp,collstr,metalstr;
+	string 255 dispbuildstr,postfix;
+	Integer pos;
+   
+  INr.Code = "";
+  While(LoopMain(INr,1,true)) begin
+  	if (NonBlank(INr.Reference) or NonBlank(INr.Metal) or NonBlank(INr.RowWeight) or NonBlank(INr.MajStoneDet)) then begin
+      foundf = false;
+      maindi = "";
+      if (blank(INr.MainDisp)) then begin
+        pos = 0;
+      	ExtractObj(INr.DispGroups,pos,curdisp);
+      	while (NonBlank(curdisp)) begin
+          DIr.Code = curdisp;
+          if (ReadFirstMain(DIr,1,true) and DIr.CType=="TYPE") then begin
+            maindi = curdisp;
+            pos = len(INr.DispGroups);
+            foundf = true;
+          end;
+      	  ExtractObj(INr.DispGroups,pos,curdisp);
+      	end;
+      end else begin
+        maindi = INr.MainDisp;
+        foundf = true;
+      end;
+      if (foundf) then begin
+        collf = false;
+        metalf = false;
+        savef = false;
+        dispbuildstr = "";
+        postfix = "";
+        switch (maindi) begin
+          case "ACCESSORIE":
+            if (NonBlank(INr.Reference)) then begin
+		          savef = true;
+		          collf = true;
+		          collstr = "COLL_A";
+		          postfix = " Accessories";
+		        end;
+		        if (NonBlank(INr.Metal)) then begin
+		          savef = true;
+		          metalf = true;
+		          metalstr = "MATERIAL_A";
+		          postfix = " Accessories";
+		        end;
+          case "JEWELLERY":
+            if (NonBlank(INr.Reference)) then begin
+		          savef = true;
+		          collf = true;
+		          collstr = "COLL_J";
+		          postfix = " Jewellery";
+		        end;
+		        if (NonBlank(INr.Metal)) then begin
+		          savef = true;
+		          metalf = true;
+		          metalstr = "MATERIAL_J";
+		          postfix = " Jewellery";
+		        end;
+		        if (NonBlank(INr.RowWeight)) then begin
+		          savef = true;
+		          DIr.Code = PrepareDICode("WM" & INr.RowWeight);
+		          DIr.CType = "WEIGHT";
+		          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+		            DIr.Code = PrepareDICode("WM" & INr.RowWeight);
+		            DIr.Name = INr.RowWeight;
+		            DIr.CType = "WEIGHT";
+		            RECORDSTORE(DIr,true);
+		          end;
+		          if (blank(dispbuildstr)) then begin
+         	      dispbuildstr = DIr.Code;
+         	    end else begin
+          	    dispbuildstr = dispbuildstr & "," & DIr.Code;
+          	  end;
+		        end;
+		        if (NonBlank(INr.MajStoneDet)) then begin
+		          savef = true;
+		          DIr.Code = PrepareDICode("DC" & INr.MajStoneDet);
+		          DIr.CType = "D_CARAT";
+		          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+		            DIr.Code = PrepareDICode("DC" & INr.MajStoneDet);
+		            DIr.Name = INr.MajStoneDet;
+		            DIr.CType = "D_CARAT";
+		            RECORDSTORE(DIr,true);
+		          end;
+		          if (blank(dispbuildstr)) then begin
+         	      dispbuildstr = DIr.Code;
+         	    end else begin
+          	    dispbuildstr = dispbuildstr & "," & DIr.Code;
+          	  end;
+		        end;
+          case "WATCH":
+            if (NonBlank(INr.Reference)) then begin
+		          savef = true;
+		          collf = true;
+		          collstr = "COLL_W";
+		          postfix = " Watch";
+		        end;
+		        if (NonBlank(INr.Metal)) then begin
+		          savef = true;
+		          metalf = true;
+		          metalstr = "MATERIAL_W";
+		          postfix = " Watch";
+		        end;
+        end;
+        if (collf) then begin
+          savef = true;
+          DIr.Code = PrepareDICode(INr.Reference);
+          DIr.CType = collstr;
+          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+            DIr.Code = PrepareDICode(INr.Reference);
+            DIr.Name = INr.Reference & postfix;
+            DIr.CType = collstr;
+            RECORDSTORE(DIr,true);
+          end;
+          if (blank(dispbuildstr)) then begin
+     	      dispbuildstr = DIr.Code;
+     	    end else begin
+      	    dispbuildstr = dispbuildstr & "," & DIr.Code;
+      	  end;
+		    end;
+		    if (metalf) then begin
+          savef = true;
+          DIr.Code = PrepareDICode(INr.Metal);
+          DIr.CType = metalstr;
+          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+            DIr.Code = PrepareDICode(INr.Metal);
+            DIr.Name = INr.Metal & postfix;
+            DIr.CType = metalstr;
+            RECORDSTORE(DIr,true);
+          end;
+          if (blank(dispbuildstr)) then begin
+     	      dispbuildstr = DIr.Code;
+     	    end else begin
+      	    dispbuildstr = dispbuildstr & "," & DIr.Code;
+      	  end;
+		    end;
+        if (savef and NonBlank(dispbuildstr)) then begin
+          if (NonBlank(INr.DispGroups)) then begin
+      	    INr.DispGroups = INr.DispGroups & "," & dispbuildstr;
+      	  end else begin
+      	    INr.DispGroups = dispbuildstr;
+      	  end;
+      	  RECORDSTORE(INr,true); LogText(0,INr.Code);
+        end;
+      end; 	  
+  	end;
+  end;
+   
+LAggregateDispsJWMn:;   
+
+return;
+end; //Edit***************************Sasha2,15:52 23.03.2016 }
 
