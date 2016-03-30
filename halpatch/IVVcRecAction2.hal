@@ -870,7 +870,7 @@ BEGIN
   
   
   if (MatRowCnt(IV2r)!=MatRowCnt(IVr)) then begin	//Edit----------------------Dima  02.03.2016.  //will transfer to general function
-		if (nonblank(IVr.RebCode)) then begin
+		if (nonblank(IVr.RebCode) and blank(IVr.OrderNr)) then begin
 			IVDUpdatePrices(IVr,false);
 		end;
 	end; 
