@@ -1311,7 +1311,7 @@ begin
   				outstring(0,0,USetStr(31050),false); //Tsvet tsyferblata
   			end;*/
   			if(currentcompany==13)then begin		//Edit-----------------------------Dima  30.04.2015
-  				outstring(0,0,USetStr(31320),false); //Tsvet
+  				outstring(0,0,USetStr(31254),false); //Tsvet
   				outstring(0,0,USetStr(35007),false); //Kvadratura
   			end;		
   			outstring(0,0,USetStr(31177),false); //Dopolnitelno	
