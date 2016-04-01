@@ -420,124 +420,131 @@ begin
 		pos = 0;
 		brand = "";
 		model = "";
-		ExtractObj(INr.DispGroups,pos,uloc);
-		while (NonBlank(uloc)) begin
-		  DIr.Code = uloc;
-		  if (readfirstmain(DIr,1,true)) then begin
-		    if (DIr.CType=="BRAND") then begin
-		      brand = DIr.Name;
-		    end;
-		    if (DIr.CType=="MODEL") then begin
-		      model = DIr.Name;
-		    end;
-		    if (addclassf and NonBlank(DIr.CType)) then begin //Edit***************************Sasha2,14:30 08.02.2016 {
-				  if (DIr.CType=="GENDER") then begin
-				    switch (Left(UpperCase(INr.MainDisp),1)) begin
-				      case "A":
-      				  DIr.CType = DIr.CType & "_A";
-      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
-				      case "J":
-				        DIr.CType = DIr.CType & "_J";
-      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
-				      case "W":
-				        DIr.CType = DIr.CType & "_W";
-      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
-				    end;
-				  end else begin
-				    typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
-				    switch (Left(UpperCase(INr.MainDisp),1)) begin //if classifications in custom separate fields {
-				      case "A":
-				        if (NonBlank(INr.Reference)) then begin
-				          collf = true;
-				          collstr = "COLL_A";
-				        end;
-				        if (NonBlank(INr.Metal)) then begin
-				          metalf = true;
-				          metalstr = "MATERIAL_A";
-				        end;
-				      case "J":
-				        if (NonBlank(INr.Reference)) then begin
-				          collf = true;
-				          collstr = "COLL_J";
-				        end;
-				        if (NonBlank(INr.Metal)) then begin
-				          metalf = true;
-				          metalstr = "MATERIAL_J";
-				        end;
-				        if (NonBlank(INr.RowWeight)) then begin
-				          tstr = typeval["WEIGHT"];
-    			        pos1 = 0;
-    			        ExtractObj(tstr,pos1,uloc1);
-    			        if (uloc1==INr.Code) then begin
-    			          ExtractObj(tstr,pos1,uloc1);
-    			          if (blank(uloc1)) then begin
-    			            typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
-    			          end;
-    			        end else begin
-    			          typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
-    			        end;
-				        end;
-				        if (NonBlank(INr.MajStoneDet)) then begin
-				          tstr = typeval["D_CARAT"];
-    			        pos1 = 0;
-    			        ExtractObj(tstr,pos1,uloc1);
-    			        if (uloc1==INr.Code) then begin
-    			          ExtractObj(tstr,pos1,uloc1);
-    			          if (blank(uloc1)) then begin
-    			            typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
-    			          end;
-    			        end else begin
-    			          typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
-    			        end;
-				        end;
-				      case "W":
-				        if (NonBlank(INr.Reference)) then begin
-				          collf = true;
-				          collstr = "COLL_W";
-				        end;
-				        if (NonBlank(INr.Metal)) then begin
-				          metalf = true;
-				          metalstr = "MATERIAL_W";
-				        end;
-				    end; 
-				    if (collf) then begin
-				      tstr = typeval[collstr];
-			        pos1 = 0;
-			        ExtractObj(tstr,pos1,uloc1);
-			        if (uloc1==INr.Code) then begin
-			          ExtractObj(tstr,pos1,uloc1);
-			          if (blank(uloc1)) then begin
-			            typeval[collstr] = INr.Code & ";" & INr.Reference;
-			          end;
-			        end else begin
-			          typeval[collstr] = INr.Code & ";" & INr.Reference;
-			        end;  
-				      collf = false;
-				    end;
-				    if (metalf) then begin
-		          tstr = typeval[metalstr];
-			        pos1 = 0;
-			        ExtractObj(tstr,pos1,uloc1);
-			        if (uloc1==INr.Code) then begin
-			          ExtractObj(tstr,pos1,uloc1);
-			          if (blank(uloc1)) then begin
-			            typeval[metalstr] = INr.Code & ";" & INr.Metal;
-			          end;
-			        end else begin
-			          typeval[metalstr] = INr.Code & ";" & INr.Metal;
-			        end;
-				      metalf = false;
-				    end;//if classifications in custom separate fields }
-				  end;
-				end; //Edit***************************Sasha2,14:30 08.02.2016 }
-		  end;
+		if (CurrentCompany!=13) then begin
+  		ExtractObj(INr.DispGroups,pos,uloc);
+  		while (NonBlank(uloc)) begin
+  		  DIr.Code = uloc;
+  		  if (readfirstmain(DIr,1,true)) then begin
+  		    if (DIr.CType=="BRAND") then begin
+  		      brand = DIr.Name;
+  		    end;
+  		    if (DIr.CType=="MODEL") then begin
+  		      model = DIr.Name;
+  		    end;
+  		    if (addclassf and NonBlank(DIr.CType)) then begin //Edit***************************Sasha2,14:30 08.02.2016 {
+  				  if (DIr.CType=="GENDER") then begin
+  				    switch (Left(UpperCase(INr.MainDisp),1)) begin
+  				      case "A":
+        				  DIr.CType = DIr.CType & "_A";
+        				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+  				      case "J":
+  				        DIr.CType = DIr.CType & "_J";
+        				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+  				      case "W":
+  				        DIr.CType = DIr.CType & "_W";
+        				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+  				    end;
+  				  end else begin
+  				    typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+  				    switch (Left(UpperCase(INr.MainDisp),1)) begin //if classifications in custom separate fields {
+  				      case "A":
+  				        if (NonBlank(INr.Reference)) then begin
+  				          collf = true;
+  				          collstr = "COLL_A";
+  				        end;
+  				        if (NonBlank(INr.Metal)) then begin
+  				          metalf = true;
+  				          metalstr = "MATERIAL_A";
+  				        end;
+  				      case "J":
+  				        if (NonBlank(INr.Reference)) then begin
+  				          collf = true;
+  				          collstr = "COLL_J";
+  				        end;
+  				        if (NonBlank(INr.Metal)) then begin
+  				          metalf = true;
+  				          metalstr = "MATERIAL_J";
+  				        end;
+  				        if (NonBlank(INr.RowWeight)) then begin
+  				          tstr = typeval["WEIGHT"];
+      			        pos1 = 0;
+      			        ExtractObj(tstr,pos1,uloc1);
+      			        if (uloc1==INr.Code) then begin
+      			          ExtractObj(tstr,pos1,uloc1);
+      			          if (blank(uloc1)) then begin
+      			            typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+      			          end;
+      			        end else begin
+      			          typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+      			        end;
+  				        end;
+  				        if (NonBlank(INr.MajStoneDet)) then begin
+  				          tstr = typeval["D_CARAT"];
+      			        pos1 = 0;
+      			        ExtractObj(tstr,pos1,uloc1);
+      			        if (uloc1==INr.Code) then begin
+      			          ExtractObj(tstr,pos1,uloc1);
+      			          if (blank(uloc1)) then begin
+      			            typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+      			          end;
+      			        end else begin
+      			          typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+      			        end;
+  				        end;
+  				      case "W":
+  				        if (NonBlank(INr.Reference)) then begin
+  				          collf = true;
+  				          collstr = "COLL_W";
+  				        end;
+  				        if (NonBlank(INr.Metal)) then begin
+  				          metalf = true;
+  				          metalstr = "MATERIAL_W";
+  				        end;
+  				    end; 
+  				    if (collf) then begin
+  				      tstr = typeval[collstr];
+  			        pos1 = 0;
+  			        ExtractObj(tstr,pos1,uloc1);
+  			        if (uloc1==INr.Code) then begin
+  			          ExtractObj(tstr,pos1,uloc1);
+  			          if (blank(uloc1)) then begin
+  			            typeval[collstr] = INr.Code & ";" & INr.Reference;
+  			          end;
+  			        end else begin
+  			          typeval[collstr] = INr.Code & ";" & INr.Reference;
+  			        end;  
+  				      collf = false;
+  				    end;
+  				    if (metalf) then begin
+  		          tstr = typeval[metalstr];
+  			        pos1 = 0;
+  			        ExtractObj(tstr,pos1,uloc1);
+  			        if (uloc1==INr.Code) then begin
+  			          ExtractObj(tstr,pos1,uloc1);
+  			          if (blank(uloc1)) then begin
+  			            typeval[metalstr] = INr.Code & ";" & INr.Metal;
+  			          end;
+  			        end else begin
+  			          typeval[metalstr] = INr.Code & ";" & INr.Metal;
+  			        end;
+  				      metalf = false;
+  				    end;//if classifications in custom separate fields }
+  				  end;
+  				end; //Edit***************************Sasha2,14:30 08.02.2016 }
+  		  end;
+  		  ExtractObj(INr.DispGroups,pos,uloc);
+  		end;
+  		outstring(0,0,brand,false); //Edit***************************Sasha2,16:37 18.02.2016
+  		if (addclassf==false) then begin
+  		  outstring(0,0,model,false);
+  		end; //Edit***************************Sasha2,16:37 18.02.2016
+		end else begin
 		  ExtractObj(INr.DispGroups,pos,uloc);
+		  DIr.Code = uloc;
+		  readfirstmain(DIr,1,true)
+		  outstring(0,0,DIr.Name,false);
 		end;
-		outstring(0,0,brand,false); //Edit***************************Sasha2,16:37 18.02.2016
-		if (addclassf==false) then begin
-		  outstring(0,0,model,false);
-		end; //Edit***************************Sasha2,16:37 18.02.2016
-
+		
 		/*ExtractObj(INr.DispGroups,pos,uloc);
 		if(currentcompany==9)then begin
 			if(uloc=="GOODS")then begin
@@ -1296,10 +1303,14 @@ begin
 			outstring(0,0,USetStr(31043),false); //Kod postavshchika
 			outstring(0,0,"EAN code",false);
 			outstring(0,0,USetStr(31103),false); //Sklad
-			outstring(0,0,USetStr(31044),false); //brand
-			if (addclassf==false) then begin //Edit***************************Sasha2,16:37 18.02.2016
-			  outstring(0,0,USetStr(31120),false); //model
-			end; //Edit***************************Sasha2,16:37 18.02.2016
+			if (CurrentCompany!=13) then begin
+  			outstring(0,0,USetStr(31044),false); //brand
+  			if (addclassf==false) then begin //Edit***************************Sasha2,16:37 18.02.2016
+  			  outstring(0,0,USetStr(31120),false); //model
+  			end; //Edit***************************Sasha2,16:37 18.02.2016  
+			end else begin
+			  outstring(0,0,USetStr(6679),false); //Klassifikatsia
+			end;
 			outstring(0,0,USetStr(31204),false); //name
 			if (addclassf==false) then begin //Edit***************************Sasha2,16:37 18.02.2016
   			outstring(0,0,USetStr(31045),false); //Kollectsia
