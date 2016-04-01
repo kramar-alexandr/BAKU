@@ -706,8 +706,8 @@ begin
 			end;	
 		end;
 		
-		outstring(0,0,price,false);
-		outstring(0,0,baseprice5,false);
+		outval(0,0,price,m4val,false);
+		outval(0,0,baseprice5,m4val,false);
 		//outstring(0,0,baseprice,false);
 		outstring(0,0,price*instock,false);
 		outstring(0,0,baseprice*instock,false);
@@ -1377,14 +1377,17 @@ begin
 
     		if (nonblank(User.Brand) and CheckIfContainForbiddenBrand(User.Brand,INr.DispGroups)) begin TrHs = false; end;	
     		
-    		if (TrHs) then begin
+    		if (TrHs) then begin						
+					if(companies.length>1)then begin			
 						for (i=0;i<companies.length;i=i+1) begin
-							//MatRowGet(Compb,companies[i]-1,Comprw);  
 							if (SetCompany(companies[i],false)) then begin
 								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
-							//	LogText(0,INr.Code & "    " & Comprw.ShortName );							
 							end;
 						end;
+						ResetCompany(oldcompany);	
+					end else begin
+							CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+					end;
 				end;   
 				
     	end;			
@@ -1432,15 +1435,18 @@ begin
 					end;
 				end;
 
-				if(testf1)then begin				
-						for (i=0;i<companies.length;i=i+1) begin
-							//MatRowGet(Compb,companies[i]-1,Comprw);  
-							if (SetCompany(companies[i],false)) then begin
-								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
-							//	LogText(0,INr.Code & "    " & Comprw.ShortName );							
+				if(testf1)then begin	
+						if(companies.length>1)then begin			
+							for (i=0;i<companies.length;i=i+1) begin
+								if (SetCompany(companies[i],false)) then begin
+									CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+								end;
 							end;
+							ResetCompany(oldcompany);	
+						end else begin
+								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
 						end;
-						ResetCompany(oldcompany);	
+						
 				end;
 			end;
 			resetloop(INr);
