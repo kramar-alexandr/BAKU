@@ -34,6 +34,7 @@ external function Boolean GetAccName(string,var string,Integer); //Edit*********
 external function Boolean PUVc_PasteVECode(var record PUVc); //Edit***************************Sasha2,9:42 10.02.2016
 external procedure VICalcVals(var record VIVc); //Edit***************************Sasha2,11:43 10.02.2016
 external procedure VISumup(record VIVc,var val); //Edit***************************Sasha2,12:09 10.02.2016
+external procedure PUVc_PasteCostPrice(var record PUVc,Integer); //Edit***************************Sasha2,11:38 04.04.2016
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -2029,7 +2030,6 @@ begin
         if (PUr.SerNr<=0) then begin
            PUr.SerNr = NextSerNr("PUVc",PUr.TransDate,-1,false,"");
         end;
-        totpucost = 0;
         totivsum = 0;
         RESETCOMPANY(curcomp);
         tocompf = true;
@@ -2042,6 +2042,7 @@ begin
           if (NonBlank(IVrw.ArtCode)) then begin
             //ClearStringArray(arrClass);
         		//ClearStringArray(arrClassName);
+        		
         		acNum = 0;
         		groupCode = "";
         		groupComment = "";
@@ -2091,7 +2092,7 @@ begin
         						ReadFirstMain(PFormr,1,true);
         				end;
         			end;
-        		end; 		
+        		end;
     		
             if (SetCompanyCode("" & RepSpec.flags[0],false)) then begin
             	AddFormulaToPricelist(groupCode,PFormr);	//Edit----------------------Dima  14.09.2015
@@ -2117,10 +2118,12 @@ begin
               PUrw.CostPrice = p;
               PUrw.Sum = s;*/
               PUrw.CostPrice = IVrw.FIFO;
+              MatRowPut(PUr,i,PUrw);
+              PUVc_PasteCostPrice(PUr,i);
+              MatRowGet(PUr,i,PUrw);
               s = IVrw.FIFO*IVrw.Quant;
               PUrw.Sum = s;
-              totpucost = totpucost + s;
-              totivsum = totivsum + IVrw.Sum;
+              totivsum = totivsum + Round(IVrw.Sum,DefaultRoundMode);
               chsum = true;
               MatRowPut(PUr,i,PUrw);
               RESETCOMPANY(curcomp);
@@ -2155,6 +2158,12 @@ begin
             end;  
             if (VIr.SerNr<=0) then begin goto LCreatePufromIVforPLHandle; end;  
             if (MatRowCnt(VIr)>0) then begin
+              rwcnt = MatRowCnt(VIr);
+              totpucost = 0;
+              for (i=0;i<rwcnt;i=i+1) begin
+                matrowget(VIr,i,VIrw);
+                totpucost = totpucost + VIrw.Sum;
+              end;
               diffval = totivsum - totpucost;
               if (diffval!=0) then begin
                 ClearRow(VIr,VIrw,1);
@@ -2697,7 +2706,7 @@ return;
 end;
 
 
-function val Get_Zebra_Price(integer switchf,string code,string basecur,string stockcur,var string printcur)
+function val Get_Zebra_Price(integer switchf,string code,string basecur,var string stockcur,var string printcur)
 begin
   record PLVc PLr;// Edit ************************** Tuesday, 1 April 2014 13:12:18
 	record PLDefVc PLDr;// Edit ************************** Tuesday, 1 April 2014 13:17:21
@@ -2711,9 +2720,15 @@ begin
   	
     price = blankval;
     //printcur = "";
-    printcur = "y.e.";
-    if(currentcompany==16)then begin
-			printcur = stockcur;
+    switch(currentcompany)begin
+      case 2: stockcur = basecur; printcur = "AZN";
+      case 5: stockcur = basecur; printcur = "AZN";
+      case 6: stockcur = basecur; printcur = "AZN";
+      case 7: stockcur = basecur; printcur = "AZN";
+      case 8: stockcur = basecur; printcur = "AZN";
+      case 15: stockcur = basecur; printcur = "AZN";
+      case 16: stockcur = basecur; printcur = stockcur;
+      otherwise printcur = "y.e.";
     end;
     
     switch (switchf) begin
@@ -2743,7 +2758,7 @@ begin
     				rnd.step = kRoundingStep5;
     			end;
     			
-    			if(cur!=stockcur and nonblank(stockcur))then begin// Edit ************************** Tuesday, 5 January 2016 10:46:17
+    			if(cur!=stockcur and nonblank(stockcur))then begin // Edit ************************** Tuesday, 5 January 2016 10:46:17
     			  printcur = stockcur;
     			  CurValToOtherCur(CurrentDate,cur,PLr.ExVatPrice,printcur,price,rnd); 
     			end else begin
@@ -2753,8 +2768,15 @@ begin
     	  end;
     end;
   	
-  	if(currentcompany!=16)then begin
-			printcur = "y.e.";
+  	switch(currentcompany)begin
+      case 2:;
+      case 5:;
+      case 6:;
+      case 7:;
+      case 8:;
+      case 15:;
+      case 16:;
+      otherwise printcur = "y.e.";
     end;
   	
   Get_Zebra_Price = price;
@@ -2890,9 +2912,6 @@ begin
 		  	
 		    //stockcur = basecur;
 		    stockcur = "";
-		    if(currentcompany==16)then begin
-		    	stockcur = basecur;
-		    end;
 		    caratf = true;
 		end;
 		switch (fromplace) begin
