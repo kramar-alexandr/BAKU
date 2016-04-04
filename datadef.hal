@@ -2216,6 +2216,14 @@ begin
   
   RecordField(SuprDate,M4Date,0,0);// Edit ************************** Wednesday, 16 December 2015 11:36:34
   RecordField(WedDate,M4Date,0,0);// Edit ************************** Wednesday, 16 December 2015 11:36:35
+  RecordField(ItaldizainSite,M4Int,0,0);		//Edit----------------------Dima  01.04.2016
+  RecordField(OtherInformation,M4Int,0,0);
+  RecordField(Instagram,M4Int,0,0);
+  RecordField(Facebook,M4Int,0,0);
+  RecordField(Advertising,M4Int,0,0);
+  RecordField(Radio,M4Int,0,0);				
+  RecordField(OtherInformationSource,M4Str,200,0);//Edit----------------------Dima  01.04.2016
+  RecordField(AllowWhatsApp,M4Int,0,0);			//Edit----------------------Dima  01.04.2016
   
   MainKeyBegin(Code,1);
   StoreInBaseKey;

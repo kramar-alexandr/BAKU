@@ -21,6 +21,105 @@ string 200 res;
 return;
 end;
 
+
+//return string representation from CUvc
+global function string 50 GetGender(integer gender)
+begin
+string 50 res;
+	switch (gender) begin
+		case 0: res = USetStr(35090);
+		case 1: res = USetStr(35091);
+		case 2: res = USetStr(35092);
+	end;
+	
+GetGender = res;
+return;	  
+end;
+
+
+global function string 50 GetMaritalStatus(integer marstatus)
+begin
+string 50 res;
+	switch (marstatus) begin
+		case 0: res = USetStr(35093);
+		case 1: res = USetStr(35094);
+		case 2: res = USetStr(35095);
+		case 3: res = USetStr(35096);
+	end;
+	
+GetMaritalStatus = res;
+return;	  
+end;
+
+global function string 255 GetInformationSource(record CUVc CUr)
+begin
+string 255 res;
+string 5 delimiter;
+
+	delimiter = ", ";
+
+	if (CUr.ItaldizainSite!=0) then begin
+		res =  "www.italdizain.az";
+	end;
+	if (CUr.Instagram!=0) then begin
+		res = res & delimiter & "Instagram";
+	end;
+	if (CUr.Facebook!=0) then begin
+		res = res & delimiter & "Facebook";
+	end;
+	if (CUr.Advertising!=0) then begin
+		res = res & delimiter & "Наружная реклама";
+	end;
+	if (CUr.Radio!=0) then begin
+		res = res & delimiter & "Радио";
+	end;
+	if (nonblank(CUr.OtherInformationSource)) then begin
+		res = res & delimiter & CUr.OtherInformationSource;
+	end;				
+	
+	if (Left(res,Len(delimiter))==delimiter) then begin
+		res = Right(res,Len(res)-Len(delimiter));
+	end;
+
+GetInformationSource = res;
+return;
+end;
+
+
+
+global function string 255 GetCommunicationMethods(record CUVc CUr)
+begin
+string 255 res;
+string 5 delimiter;
+
+	delimiter = ", ";
+	
+	if (CUr.AllowSendSMS) then begin
+		res = "SMS";
+	end;	
+	if (CUr.AllowSendeMail) then begin
+		res = res & delimiter & "E-Mail";
+	end;	
+	if (CUr.AllowSendCall) then begin
+		res = res & delimiter & "Phone";
+	end;	
+	if (CUr.AllowWhatsApp) then begin
+		res = res & delimiter & "WhatsApp";
+	end;	
+	if (CUr.AllowSendkMail) then begin
+		res = res & delimiter & "Post";
+	end;	
+	
+	if (Left(res,Len(delimiter))==delimiter) then begin
+		res = Right(res,Len(res)-Len(delimiter));
+	end;				
+
+GetCommunicationMethods = res;
+return;
+end;
+
+
+
 global procedure CustInfoCRMRn(record RcVc RepSpec)
 begin
 	record CUVc CUr;
@@ -61,6 +160,8 @@ begin
 
 	StartReportNoheaderJob("Информация о клиентах");
 	
+	
+/* old structure	
 	startformat(15);
 		OutString(0,0,"Код",false);
 		OutString(130,0,"Наименование",false);
@@ -77,7 +178,34 @@ begin
 		OutString(300,0,"Отключен от рассылки",false);
 		OutString(300,0,"Статус",false);
 		OutString(300,0,"Адрес",false);
+	endformat;
+*/	
+	
+	
+	
+	startformat(15);
+		OutString(0,0,"Код",false);
+		OutString(130,0,"Пол",false);
+		OutString(300,0,"Компания",false);
+		OutString(300,0,"Имя",false);
+		OutString(300,0,"Род занятий",false);
+		OutString(300,0,"Дата рождения",false);
+		OutString(300,0,"Семейное положение",false);
+		OutString(300,0,"Дата рождения супруга(ги)",false);
+		OutString(300,0,"Дата свадьбы",false);
+		OutString(300,0,"Улица",false);
+		OutString(300,0,"№ дома",false);
+		OutString(300,0,"№ квартиры",false);
+		OutString(300,0,"Почтовый индекс",false);
+		OutString(300,0,"Телефон",false);
+		OutString(300,0,"Мобильный телефон",false);
+		OutString(300,0,"E-mail",false);
+		OutString(300,0,"Источник информации",false);
+		OutString(300,0,"Место",false);
+		OutString(300,0,"Дата",false);
+		OutString(300,0,"Способ связи с контактом",false);
 	endformat;	
+		
 		
 	
 	
@@ -149,37 +277,37 @@ begin
 		end;
 		
 		if(testf)then begin
-			
+		
+		
+		
 			startformat(15);
 				OutString(0,0,CUr.Code,false);
-				OutString(130,0,prepareStr(CUr.Name),false);
-				OutString(300,0,CUr.Phone,false);
-				OutString(300,0,CUr.AltPhone,false);
+				OutString(300,0, GetGender(CUr.Gender),false);
+				OutString(300,0,CUr.Comment,false);
+				OutString(300,0,prepareStr(CUr.Name),false);
+				OutString(300,0,CUr.Profesion,false);
+				OutString(300,0,CUr.BirthDate,false);
+				OutString(300,0,GetMaritalStatus(CUr.MarStatus),false);
+				OutString(300,0,CUr.SuprDate,false);
+				OutString(300,0,CUr.WedDate,false);
+				
+				OutString(300,0,prepareStr(CUr.InvAddr0),false);	//Street
+				OutString(300,0,prepareStr(CUr.InvAddr1),false);	//House
+				OutString(300,0,prepareStr(CUr.InvAddr2),false);	//Apartment №
+				OutString(300,0,prepareStr(CUr.InvAddr2),false);	//Post index
+				
+				OutString(300,0,CUr.Phone & "  " CUr.AltPhone ,false);
 				OutString(300,0,CUr.Mobile,false);
 				OutString(300,0,CUr.eMail,false);
-				OutString(300,0,prepareStr(CUr.RebCode),false);
-				OutString(300,0,CUr.DateCreated,false);
+				
+				OutString(300,0,GetInformationSource(CUr),false);
+				
 				OutString(300,0,CUr.CreateLocation,false);
-				GLocr.Code = CUr.CreateLocation;
-				if(readfirstmain(GLocr,1,true))then begin
-					OutString(300,0,GLocr.Name,false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				OutString(300,0,prepareStr(CUr.CreateComment),false);
-				OutString(300,0,prepareStr(CUr.Comment0),false);
-				if(CUr.NoLetterPosting>0)then begin
-					OutString(300,0,"Отключен",false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				if(CUr.blockedFlag==1)then begin
-					OutString(300,0,"Закрыт",false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				OutString(300,0,prepareStr(CUr.InvAddr0),false);
-			endformat;		
+				OutString(300,0,CUr.DateCreated,false);
+				OutString(300,0,GetCommunicationMethods(CUr),false);
+			EndFormat;	
+
+					
 		end;
 	end;
 
