@@ -283,8 +283,7 @@ begin
 			end; 
 		end;
 		
-		if(testf)then begin
-		
+		if(testf)then begin		
 		
 		
 			startformat(15);
@@ -321,12 +320,6 @@ begin
 				OutString(300,0,CUr.DateCreated,false);
 				OutString(300,0,GetCommunicationMethods(CUr),false);
 				
-				GLocr.Code = CUr.CreateLocation;
-				if(readfirstmain(GLocr,1,true))then begin
-					OutString(300,0,GLocr.Name,false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
 				OutString(300,0,prepareStr(CUr.CreateComment),false);
 				OutString(300,0,prepareStr(CUr.Comment0),false);
 				if(CUr.NoLetterPosting>0)then begin
@@ -338,39 +331,8 @@ begin
 					OutString(300,0,"Закрыт",false);
 				end else begin
 					OutString(300,0,"",false);
-				end;				
+				end;			
 				
-				
-			/*	
-				OutString(0,0,CUr.Code,false);
-				OutString(130,0,prepareStr(CUr.Name),false);
-				OutString(300,0,CUr.Phone,false);
-				OutString(300,0,CUr.AltPhone,false);
-				OutString(300,0,CUr.Mobile,false);
-				OutString(300,0,CUr.eMail,false);
-				OutString(300,0,prepareStr(CUr.RebCode),false);
-				OutString(300,0,CUr.DateCreated,false);
-				OutString(300,0,CUr.CreateLocation,false);
-				GLocr.Code = CUr.CreateLocation;
-				if(readfirstmain(GLocr,1,true))then begin
-					OutString(300,0,GLocr.Name,false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				OutString(300,0,prepareStr(CUr.CreateComment),false);
-				OutString(300,0,prepareStr(CUr.Comment0),false);
-				if(CUr.NoLetterPosting>0)then begin
-					OutString(300,0,"Отключен",false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				if(CUr.blockedFlag==1)then begin
-					OutString(300,0,"Закрыт",false);
-				end else begin
-					OutString(300,0,"",false);
-				end;
-				OutString(300,0,prepareStr(CUr.InvAddr0),false);				
-			*/	
 				
 			EndFormat;	
 
