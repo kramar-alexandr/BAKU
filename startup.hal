@@ -126,7 +126,7 @@ begin
   Report("Статус заказов клиентов",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
   Report("Задолженности сотрудников по компаниям",CustDebByCompRClass,CustDebByCompRn,0,modSL);
   Report("Задолженности сотрудников по счетам",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
-  Report("Информация о клиетах",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
+  Report("Информация о клиентах",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
   Report("Активные клиенты за период",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
   Report("Поиск контактных лиц",SearchContactRClass,SearchContactRn,0,modMYCRM);
   Report("Отчет активности покупок",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
@@ -608,17 +608,8 @@ begin
   SString(35082,"%");
   SString(35083,"Разница");
   SString(35084,"Наименование");
-  
-  SString(35090,"Мужской");
-  SString(35091,"Женский");
-  SString(35092,"Компания");
-  SString(35093,"Не женат");
-  SString(35094,"Замужем");
-  SString(35095,"В разводе");  
-  SString(35096,"Вдовa/-ец");
      
   
-
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
