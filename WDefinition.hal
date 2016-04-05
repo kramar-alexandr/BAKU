@@ -735,23 +735,23 @@ begin
   SetBlid(WebSyncBlock);
   SetWRect(64,80,430,140);
   v=10;vs = 20; h = 70; h2 = 250; h3 = 380;
-  EditField(h,v,82,"Items1",ViewOnly,Items1,false,"");
-  EditField(h,v+=vs,82,"Brands1",ViewOnly,Brands1,false,"");
-  EditField(h,v+=vs,82,"Types1",ViewOnly,Types1,false,"");
-  EditField(h,v+=vs,82,"Collections1",ViewOnly,Collections1,false,"");
-  EditField(h,v+=vs*2,82,"Items2",ViewOnly,Items2,false,"");
-  EditField(h,v+=vs,82,"Brands2",ViewOnly,Brands2,false,"");
-  EditField(h,v+=vs,82,"Types2",ViewOnly,Types2,false,"");
-  EditField(h,v+=vs,82,"Collections2",ViewOnly,Collections2,false,"");
+  EditField(h,v,82,"Items1",normal,Items1,false,"");
+  EditField(h,v+=vs,82,"Brands1",normal,Brands1,false,"");
+  EditField(h,v+=vs,82,"Types1",normal,Types1,false,"");
+  EditField(h,v+=vs,82,"Collections1",normal,Collections1,false,"");
+  EditField(h,v+=vs*2,82,"Items2",normal,Items2,false,"");
+  EditField(h,v+=vs,82,"Brands2",normal,Brands2,false,"");
+  EditField(h,v+=vs,82,"Types2",normal,Types2,false,"");
+  EditField(h,v+=vs,82,"Collections2",normal,Collections2,false,"");
 
-  EditField(h2,v=10,82,"ItemsTemp1",ViewOnly,ItemsTemp1,false,"");
-  EditField(h2,v+=vs,82,"BrandsTemp1",ViewOnly,BrandsTemp1,false,"");
-  EditField(h2,v+=vs,82,"TypesTemp1",ViewOnly,TypesTemp1,false,"");
-  EditField(h2,v+=vs,82,"CollectionsTemp1",ViewOnly,CollectionsTemp1,false,"");
-  EditField(h2,v+=vs*2,82,"ItemsTemp2",ViewOnly,ItemsTemp2,false,"");
-  EditField(h2,v+=vs,82,"BrandsTemp2",ViewOnly,BrandsTemp2,false,"");
-  EditField(h2,v+=vs,82,"TypesTemp2",ViewOnly,TypesTemp2,false,"");
-  EditField(h2,v+=vs,82,"CollectionsTemp2",ViewOnly,CollectionsTemp2,false,"");
+  EditField(h2,v=10,82,"ItemsTemp1",normal,ItemsTemp1,false,"");
+  EditField(h2,v+=vs,82,"BrandsTemp1",normal,BrandsTemp1,false,"");
+  EditField(h2,v+=vs,82,"TypesTemp1",normal,TypesTemp1,false,"");
+  EditField(h2,v+=vs,82,"CollectionsTemp1",normal,CollectionsTemp1,false,"");
+  EditField(h2,v+=vs*2,82,"ItemsTemp2",normal,ItemsTemp2,false,"");
+  EditField(h2,v+=vs,82,"BrandsTemp2",normal,BrandsTemp2,false,"");
+  EditField(h2,v+=vs,82,"TypesTemp2",normal,TypesTemp2,false,"");
+  EditField(h2,v+=vs,82,"CollectionsTemp2",normal,CollectionsTemp2,false,"");
   EndWindow;
 end; //Edit***************************Sasha2,13:29 12.01.2015 }
 
@@ -1307,7 +1307,7 @@ WindowBegin("Определите исторический отчет",HistoricalRClass,CGRcW,RcType);
 end;
 
 
-window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
+/*window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real v,vs;
@@ -1320,10 +1320,10 @@ begin
 	EditField(100,v+=vs,140,"Locations",Normal,Locations,false,LocationSClass);
 	StaticText(250,v+12,"(separated by comma)",false);
   EndWindow;
-end;
+end;*/
 
 
-global
+/*global
 function string 60 GruppoCoinSalesEClassDefaultFileName(record RcVc RepSpec)
 begin
 	record CoinSettingsBlock CoinSettingsb;
@@ -1342,9 +1342,9 @@ begin
 	
   GruppoCoinSalesEClassDefaultFileName = name;
   return;
-end;
+end;*/
 
-
+/*
 window GruppoCoinSalesEClass:1			//Edit----------------------Dima  22.03.2016
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -1355,4 +1355,4 @@ begin
   EditFieldTL(100,v+=vs, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
 
   EndWindow;
-end;
+end;*/
