@@ -129,7 +129,7 @@ begin
   	rnd.decimals = -4;
   end;
   rnd.mode = kRoundingModeHalfDown;
-	if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+	if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
 		cur = "AZN";
 		if (GetFullCurncyPurchaseRate(cur,CurrentDate,invfr,invto1,to2,br1,br2)==false) then begin// Edit ************************** Monday, 25 March 2013 17:43:29
 			GetFullCurncyRate(cur,CurrentDate,invfr,invto1,to2,br1,br2);// Edit ************************** Monday, 25 March 2013 17:43:28
@@ -167,7 +167,7 @@ begin
       RepSpec.long1 = sernr;
       RepSpec.long2 = rownr;
       RepSpec.CurncyCode = cur;
-			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+			if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
 				
 			end;
       if (blank(RepSpec.CurncyCode)) then begin

@@ -380,7 +380,7 @@ begin
 	string 20 tempcur,tempdi;
 	Boolean checkctypef; //Edit***************************Sasha2,11:37 09.02.2016
   
-  if (currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20) then begin
+  if (currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24)) then begin
     checkctypef = true; //Edit***************************Sasha2,11:38 09.02.2016
   end;
   spi = 1;

@@ -22,7 +22,7 @@ begin
   if(currentcompany==11 or currentcompany==12)then begin
 		rnd.decimals = -4;
   end;
-  if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+  if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
   	rnd.decimals = 0;
 		rnd.step = kRoundingStep5;
   end;
@@ -84,12 +84,12 @@ begin
   if(currentcompany==11 or currentcompany==12)then begin
 		rnd.decimals = -4;
   end;
-	if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+	if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
 		rnd.step = kRoundingStep5;
   end;
   
   for (i=0;i<acrncnt;i=i+1) begin
-  	if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+  	if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
   		acashreceived[i] = round(acashreceived[i],rnd);
   	end;
   end;

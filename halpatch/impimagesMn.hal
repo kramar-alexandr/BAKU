@@ -2754,7 +2754,7 @@ begin
     			rnd = DefaultValRoundoff;
     			rnd.decimals = 0;
     			rnd.mode = kRoundingModeHalfDown;
-    			if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin
+    			if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
     				rnd.step = kRoundingStep5;
     			end;
     			

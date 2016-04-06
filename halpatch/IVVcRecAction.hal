@@ -1173,7 +1173,7 @@ LkInvoiceTypeCredit:;
 			rnd.mode = kRoundingModeHalfUp;
 			cash = round(cash,rnd);
       
-      if(currentcompany==3 or currentcompany==17 or currentcompany==19 or currentcompany==20)then begin// Edit ************************** Friday, 22 March 2013 17:45:30
+      if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin// Edit ************************** Friday, 22 March 2013 17:45:30
 				rnd.decimals = 0;
 				rnd.step = kRoundingStep5;
 				rnd.mode = kRoundingModeHalfUp;
