@@ -46,11 +46,11 @@ begin
                                  totb1changedue,totb1changegiven,totb1amountdue,totb1cashreceived);
 
   for (i=0;i<acrncnt;i=i+1) begin
-    PutWindowString(wn,"NPTSCashPaymentCashReceived" & i,ValToString(acashreceived[i],M4Val,SFb.thousSep,SFb.decimalPt,0));
-    PutWindowString(wn,"NPTSCashPaymentChangeGiven" & i,ValToString(achangegiven[i],M4Val,SFb.thousSep,SFb.decimalPt,0));
+    PutWindowString(wn,"NPTSCashPaymentCashReceived" & i,ValToString(acashreceived[i],M4Val,"",SFb.decimalPt,0));
+    PutWindowString(wn,"NPTSCashPaymentChangeGiven" & i,ValToString(achangegiven[i],M4Val,"",SFb.decimalPt,0));
 
-    PutWindowString(wn,"NPTSCashPaymentCashAmountDue" & i,ValToString(aamountdue[i],M4Val,SFb.thousSep,SFb.decimalPt,0));
-    PutWindowString(wn,"NPTSCashPaymentChangeDue" & i,ValToString(achangedue[i],M4Val,SFb.thousSep,SFb.decimalPt,0));
+    PutWindowString(wn,"NPTSCashPaymentCashAmountDue" & i,ValToString(aamountdue[i],M4Val,"",SFb.decimalPt,0));
+    PutWindowString(wn,"NPTSCashPaymentChangeDue" & i,ValToString(achangedue[i],M4Val,"",SFb.decimalPt,0));
   end;
   
   

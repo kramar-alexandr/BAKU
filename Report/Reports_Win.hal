@@ -607,7 +607,7 @@ end;
 
 //Edit***************************Sasha2,11:13 02.04.2015 {
 window StanMagazynuRClass:1
-  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vm;
   WindowBegin("Stan magazynu",StanMagazynuRClass,CGRcW,RcType);
@@ -622,7 +622,7 @@ end; //Edit***************************Sasha2,11:13 02.04.2015 }
 
 //Edit***************************Sasha2,17:43 31.07.2015 {
 window PaperPlanesRClass:1
-  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vm;
   WindowBegin("Paper Planes",PaperPlanesRClass,CGRcW,RcType);
@@ -820,7 +820,7 @@ end;
 
 //Edit***************************Sasha2,12:19 18.03.2016 {
 window LoyaltyToRebRClass:1
-  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vm;
   WindowBegin("Несовпадение скидки клиента с картой лояльности",LoyaltyToRebRClass,CGRcW,RcType);

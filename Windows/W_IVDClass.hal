@@ -5365,112 +5365,6 @@ begin
   EndWindow;
 end;
 
-window IVDClass:1
-  wtag("language","ENG"), wtag("product","TravellingSaleman"), wtag("productcode","MobileSalesman"), wtag("device","iPad")
-begin
-  real h,h1,h2,h3,h4,hof,hs,l,l2,l3,t,v,vm,vs;
-  WindowBegin("Invoice",IVDClass,CGview,-);
-  SetWRect(20,80,560,350);
-  Sizeable(-1,-1,0,0);
-  UseView(IVVc);
-  ActiveFieldOnNew("CustCode");    
-  //CommunicateButton;
-  Tile(0,74,false,"",CustCode);
-  vs = 40; h1 = 15;  
-  EditField(h1,vm=(v=6),180,"No.",Normal,SerNr,false,TSerSClass);
-  EditField(h1,v+=vs,180,"Customer1",Normal,CustCode,false,CUSClass);
-  EnterSkip(PayDeal);
-  EditField(h=225,v=vm,150,"Official No.",Normal,OfficialSerNr,false,LegalInvNrSClass);
-  CheckBox(-112,v+2,0,"Disputed",DisputedFlag);
-  EditField(h=225,vm=(v+=vs),-20,"Name",Normal,Addr0,false,0);
-
-  h2 = 290; h3 = 550; h4 = -132; l = 240; l2 = 225; l3 = 200;
-  EditField(h1,vm=(v+=vs+20),l,"Invoice Date",Normal,InvDate,false,PasteCurDate);
-  EditField(h1,v+=vs,l,"Payment Terms",Normal,PayDeal,false,PDSClass);
-  EditField(h1,v+=vs,l,"Due Date",Normal,PayDate,false,PasteCurDate);
-  EditField(h1,v+=vs,l,"Trans. Date",Normal,TransDate,false,PasteCurDate);
-  EditField(h2,v=vm,l2,"Our Reference",Normal,OurContact,false,0);
-  EditField(h2,v+=vs,l2,"Attention",Normal,ClientContact,false,ContactSClass);
-  EditField(h2,v+=vs,l2,"Objects",Normal,Objects,false,ObjSClass);
-  EditField(h2,v+=vs,l2,"Reference",Normal,RefStr,false,0);
-  EditField(h2,v+=vs,l2,"Cust. Ord. No.",Normal,CustOrdNr,false,0);
-  EditField(h3,v=vm,l3,"#Salesman#",Normal,SalesMan,false,UserSClass);
-  EditField(h3,v+=vs,l3,"Project",Normal,PRCode,false,PRSClass);
-  v = v + vs + vs + vs;
-  
-  h1 = 20; hof = 105; hs = hof + 20; 
-  ColourPushButton(h1,v=v+vs+20,h1+hof,v+45,"IVDClassOpenCurrency","Currency",4);
-  ColourPushButton(h1+=hs,v,h1+hof,v+45,"IVDClassOpenDelTerms","Delivery Terms",4);
-  ColourPushButton(h1+=hs,v,h1+hof,v+45,"IVDClassOpenIdentifiers","Identifiers",4);
-  ColourPushButton(h1+=hs,v,h1+hof,v+45,"IVDClassOpenPriceList","Price List",4);
-  ColourPushButton(h1+=hs,v,h1+hof,v+45,"IVDClassOpenInvAddress","Invoice Address",4);
-  ColourPushButton(h1+=hs,v,h1+hof,v+45,"IVDClassOpenDelAddress","Delivery Address",4);
-  MatrixBegin(0,v=v+=vs+vs,-1,-100,-,200);
-  MatTypedRow(stp);
-  t = kInvoiceRowTypeNormal;
-  //F0
-  MatCell(t,10,6,90,19,ArtCode,false,12,patM4black);
-  MatCell(t,100,6,150,19,Quant,false,12,patM4black);
-  //F1
-  MatCell(t,160,6,430,19,Spec,false,12,patM4black);
-  MatCell(t,10,26,90,39,Price,true,12,patM4black);
-  MatCell(t,100,26,240,39,vRebate,true,12,patM4black);
-  MatCell(t,250,26,370,39,Sum,true,12,patM4black);
-  InsertRowTest;
-  DeleteRowTest;
-  EndMatrix;
-  l = 130;
-  EditField(15,v=-87,l+15,"Currency",Normal,CurncyCode,false,CurncyCodeSClass);
-  CheckBox(67,v+vs+2,0,"OK",OKFlag);
-  if (UserCanAction("ViewCostPrice",true)) then begin
-    //EditField(175,v,l,"GP %",Normal,GPProc,true,0);
-    EditField(175,v+vs,l,"Total GP",ViewOnly,TotGP,false,0);
-  end;
-  EditField(320,v,l,"TAX2",ViewOnly,TAX2Sum,true,0);
-  EditField(320,v+vs,l,"Ext. Tax",ViewOnly,TAX1Sum,true,0);
-  EditField(465,v,l,"#VAT#",ViewOnly ,Sum3,true,0);
-  EditField(465,v+vs,l,"Base",ViewOnly,BaseSum4,true,0);
-  EditField(-150,v,l,"Subtotal",ViewOnly,Sum1,true,0);
-  EditField(-150,v+vs,l,"TOTAL",ViewOnly,Sum4,true,0);
-  SpecialMenu("Item Status",'I',0,"ItemStatusIVDsm");
-//  SpecialMenu("Item Search",'f',1,"ItemSearchDsm");
-  SpecialMenu("Invoice Status",'r',2,"IVInfoIVDsm");
-//  SpecialMenu("Previous Sales Prices",' ',15,"IVLastSPrsm");
-//  SpecialMenu("Add Header Line",' ',12,"HeaderLineIVDsm");
-//  SpecialMenu("Add Hidden Line",' ',12,"HiddenLineIVDsm");
-//  SpecialMenu("Add Environment Tax",' ',19,"RepaIVsm");
-//  SpecialMenu("Add Retention",' ',25,"RetentionLineIVDsm"); 
-//  SpecialMenu("Add Subtotal",' ',12,"SubTotalLineIVDsm");
-  SpecialMenu("Send for Approval",' ',6,"IVSendforAcceptanceIVDsm");
-  SpecialMenu("Cancel Approval Request",' ',2,"CancelApprovalRequestDsm");
-//  SpecialMenu("Change to Base 1",' ',14,"SwitchToBase1IVDsm");
-  SpecialMenu("Connect to Prepayment",' ',4,"ConnectToPrepayIVDsm");
-  SpecialMenu("Recalculate Discount",' ',11,"RecalcDiscountIVDsm");
-  SpecialMenu("Recalculate Weight and Volume",' ',10,"RecalcWeightIVDsm");
-//  SpecialMenu("Update Currency Price List Items",' ',5,"UpdatePricesIVDsm");
-//  SpecialMenu("Print Cash IN-OUT",' ',7,"PrintCashInOutIVDsm");
-//  SpecialMenu("Print Proforma Invoice",' ',3,"PrintProformaIVDsm");
-//  SpecialMenu("Send to Fiscal Device",' ',19,"PrintToFiscPrntIVDsm");
-  SpecialMenu("Credit Card Payment",' ',22,"CCPayIVDsm");
-  SpecialMenu("Edit #Instalments#",' ',24,"EditInstalmentIVDsm");
-//  SpecialMenu("Resend E-Invoice",' ',21,"ResendEIVDsm");
-//  SpecialMenu("Send/Resend Argentinian E-Invoice",'a',17,"SendArgEInvIVDsm");
-  SpecialMenu("Open #NL# Transaction",'t',8,"OpenTRFromIV");
-  SpecialMenu("Create Cash In",' ',1,"DoCLInFromIVD");
-  SpecialMenu("Create #Credit Note#",' ',20,"CreateCreditNoteIVDsm");
-//  SpecialMenu("Create Credit Agreement",' ',25,"CreateCredManIVsm");
-  SpecialMenu("Create Contract",' ',13,"COFromIVDsm");
-  SpecialMenu("Create Correction Invoice",' ',16,"CorrectionIVsm");
-//  SpecialMenu("Create EDI Invoice",' ',9,"DoEDIInvFromIVD");
-//  SpecialMenu("Create E-Mail",'m',23,"CreateMailFromIVDsm");
-//  SpecialMenu("Create First Event",' ',18,"FirstEventIVDsm");
-//  SpecialMenu("Create #Instalment# Receipts",' ',6,"CreateInstalmentsIVDsm");
-//  SpecialMenu("Create #VAT# Correction #S/L#",' ',17,"VATCorrectionIVsm");
-//  SpecialMenu("Manager's Discount Override",' ',24,"MgrsDiscOverrideIVDsm"); 
-//  SpecialMenu("Open TAX Matrix",' ',25,"TestVatMatrixIVDsm"); 
-////  SpecialMenu("Test Mex E-Invoices",'1',0,"TestMexEInvoices");
-  EndWindow;
-end;
 
 window IV1LClass:8 //Edit***************************Sasha2,15:52 23.12.2014 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
@@ -5853,7 +5747,7 @@ begin
 end;
 
 window StockMovSClass:1
-  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   WindowBegin("“кажите перемещение",StockMovSClass,CGslist,-);
   SpawnClass(StockMovDClass);

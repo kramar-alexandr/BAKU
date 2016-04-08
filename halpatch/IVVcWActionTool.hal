@@ -397,7 +397,7 @@ BEGIN
   AddMultiBuyDiscountItems_IVVc(IVr);
   
   //discount recalculates for all rows, not only for current
-  if (prevRebate!=vreb) then begin		//Edit----------------------Dima  02.03.2016
+  if (prevRebate!=vreb and IVr.OrderNr==-1) then begin		//Edit----------------------Dima  02.03.2016
 		IVDUpdatePrices(IVr,false);
 	end;   
   

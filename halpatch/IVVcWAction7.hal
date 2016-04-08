@@ -1043,7 +1043,9 @@ begin
         GetWindowRecord(wn,IVr);
   //      matrowix = GetSelectedPOSItemRowIndex(wn); // Why again? On windows, the selection is cleared between the calls to this function, can't figure out why.
         MatRowDelete(IVr,matrowix);
-        IVDUpdatePrices(IVr,false);// Edit ************************** Thursday, 3 March 2016 10:44:29
+        if (IVr.OrderNr==-1) then begin	// Edit ************************** Thursday, 7 April 2016 12:16:37
+        	IVDUpdatePrices(IVr,false);// Edit ************************** Thursday, 3 March 2016 10:44:29
+        end;
         IVSumup(IVr,true);
         PutWindowRecord(wn,IVr);
         if (GuiType==kGuiCocoa) then begin
