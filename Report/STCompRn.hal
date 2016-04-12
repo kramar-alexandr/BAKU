@@ -18,7 +18,7 @@ external procedure HTCustClassType(string,var string);
 external function Boolean SetInSet2(string,string);
 external procedure ItemClassTypef(string,string,var Boolean);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Friday, 4 April 2014 13:15:40
-
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 procedure FindLastST(record RcVc RepSpec,string item,Integer SerNrf,Date fromdate,var Date lastdatep,var val unitsp,var val instock,var val unitprice,string variety)
 BEGIN
@@ -492,7 +492,7 @@ BEGIN
         ItemClassTypef(RepSpec.f5,INr.DispGroups,testf);
       end;
     end;
-    if (CurrentCompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24)) then begin
+    if (CompanyIsJWLikeCompany(currentcompany)) then begin
     	if(RepSpec.flags[6]==1 and INr.ConsgType==0)then begin testf = false; end;	//Edit----------------------Dima 11:50 28.05.2015
     	if(RepSpec.flags[7]==1 and INr.ConsgType==1)then begin testf = false; end;
     	if(RepSpec.flags[8]==1 and INr.ConsgType==2)then begin testf = false; end;  //Edit----------------------Dima  28.05.2015  

@@ -3,6 +3,9 @@ remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var 
 external function Boolean SetInSet2(string,string);
 external function roundmode SetRoundMode(Integer,Integer,Integer,Integer);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
+remote function boolean CompanyIsJWLikeCompany(Integer);
+
+
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 
@@ -1188,16 +1191,12 @@ begin
   item = RepSpec.f1;
   location = RepSpec.f2;
   todate = RepSpec.d1;
-  
-  switch (CurrentCompany) begin
-    case 3: addclassf=true;
-    case 17: addclassf=true;
-    case 19: addclassf=true;
-    case 20: addclassf=true;
-    case 21: addclassf=true;
-    case 22: addclassf=true;
-    otherwise addclassf=false;
-  end;
+
+  if (CompanyIsJWLikeCompany(CurrentCompany)) then begin
+	  addclassf = true;
+	end else begin
+	  addclassf = false;
+	end;
   
   if (addclassf) then begin
     typescnt = 0;

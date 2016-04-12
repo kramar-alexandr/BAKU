@@ -3,6 +3,7 @@ external procedure RestAccCurUserTabs();
 remote procedure CntNPTSPaymentCurrenciesRemote(string,var Array string,var Array string,var Array Integer,var Array string,var Integer);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
 external function Boolean GetFullCurncyPurchaseRate (var string,Date,var val,var val,var val,var val,var val);
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 global 
 procedure OpenNPTSPaymentTClass(Integer mwn,LongInt sernr,val change,val tot,string curncy)
@@ -129,7 +130,7 @@ begin
   	rnd.decimals = -4;
   end;
   rnd.mode = kRoundingModeHalfDown;
-	if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+	if(CompanyIsJWLikeCompany(currentcompany))then begin
 		cur = "AZN";
 		if (GetFullCurncyPurchaseRate(cur,CurrentDate,invfr,invto1,to2,br1,br2)==false) then begin// Edit ************************** Monday, 25 March 2013 17:43:29
 			GetFullCurncyRate(cur,CurrentDate,invfr,invto1,to2,br1,br2);// Edit ************************** Monday, 25 March 2013 17:43:28
@@ -167,7 +168,7 @@ begin
       RepSpec.long1 = sernr;
       RepSpec.long2 = rownr;
       RepSpec.CurncyCode = cur;
-			if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+			if(CompanyIsJWLikeCompany(currentcompany))then begin
 				
 			end;
       if (blank(RepSpec.CurncyCode)) then begin

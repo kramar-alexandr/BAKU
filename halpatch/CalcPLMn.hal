@@ -3,6 +3,7 @@ external procedure CheckFlush(var Integer,Integer);
 external function val DivWithRateToBase1(string,Date,val,roundmode);
 external function val MulWithRateToBase1(var string,Date,val,roundmode);
 external function Boolean GetPurchaseItem(string,string,var record PIVc);
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 procedure GetPurchItemPrice(string ItemCode,var val newprp)
 begin
@@ -145,7 +146,7 @@ begin
     newpr = Round(newpr + PFr.Add1Val,SetRoundModeD(PFr.RndTo));
     
     
-    if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+    if(CompanyIsJWLikeCompany(currentcompany))then begin
     	newpr = Round(newpr + PFr.Add2Val,rnd);// Edit ************************** Friday, 24 May 2013 14:08:31
     end else begin
 			newpr = Round(newpr + PFr.Add2Val,SetRoundModeD(roundof));

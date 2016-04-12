@@ -5,6 +5,7 @@ external procedure ReadCorspTRRowSums(record TRVc,record AccVc,record AccVc,var 
 external procedure GetObjs(string,string,var string);
 external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);
 external function string 200 ValToMyString(val,integer);
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -108,17 +109,10 @@ begin
 	basef = false;
 	
 	compf = false;
-	switch (CurrentCompany) begin
-		case 3:  compf = true;
-		case 17: compf = true;
-		case 19: compf = true;
-		case 20: compf = true;
-    case 21: compf = true;
-    case 22: compf = true;
-    case 23: compf = true;
-    case 24: compf = true;
-		otherwise
-			compf = false;
+	if (CompanyIsJWLikeCompany(CurrentCompany)) then begin
+	  compf = true;
+	end else begin
+	  compf = false;
 	end;
 	
 	curi = 0;

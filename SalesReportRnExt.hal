@@ -4,6 +4,7 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 external inner function roundmode SetRoundModeD(Integer);
 external inner function Boolean SetInSet2(string,string);
 external inner function val AbsoluteVal(val);
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 function string 200 prepareStr(string input)
 begin
@@ -385,7 +386,7 @@ begin
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
-		if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+		if(CompanyIsJWLikeCompany(currentcompany))then begin
 			outstring(0,0,"",false);
 			outstring(0,0,"",false);
 		end;
@@ -618,7 +619,7 @@ begin
 					outstring(0,0,USetStr(31047),false);
 					outstring(0,0,USetStr(14533),false);
 					outstring(0,0,USetStr(31048),false);
-					if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+					if(CompanyIsJWLikeCompany(currentcompany))then begin
 						outstring(0,0,USetStr(31049),false);
 						outstring(0,0,USetStr(31050),false);
 					end;
@@ -828,7 +829,7 @@ begin
 											outstring(0,0,INr.Metal,false);
 											outstring(0,0,INr.RowWeight,false);
 											outstring(0,0,INr.MajStoneDet,false);
-											if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+											if(CompanyIsJWLikeCompany(currentcompany))then begin
 												outstring(0,0,INr.BrcStr,false);
 												outstring(0,0,INr.Gender,false);
 											end;
@@ -871,7 +872,7 @@ begin
 												arrstrs[strscnt] = INr.Metal; strscnt = strscnt + 1; 
 												arrstrs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
-												if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+												if(CompanyIsJWLikeCompany(currentcompany))then begin
 													arrstrs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
 													arrstrs[strscnt] = INr.Gender; strscnt = strscnt + 1;
 												end;
@@ -1108,7 +1109,7 @@ begin
 							outstring(8,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
 							outstring(9,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
 							outstring(10,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
-							if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+							if(CompanyIsJWLikeCompany(currentcompany))then begin
 								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
 								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
 							end;
@@ -1170,11 +1171,11 @@ begin
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+					if(CompanyIsJWLikeCompany(currentcompany))then begin
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
 					end;
-					if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin	//Edit----------------------Dima  30.04.2015
+					if(CompanyIsJWLikeCompany(currentcompany))then begin	//Edit----------------------Dima  30.04.2015
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
 					end;					

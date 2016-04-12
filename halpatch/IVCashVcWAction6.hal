@@ -55,6 +55,7 @@ external function Integer OpenCCPayWindow(string,longint,integer,val,val,val,str
 remote procedure FindLoyaltyCardRemote(string,var record LoyaltyCardVc,var boolean);
 remote procedure IVVc_PasteSerialNr(var record IVVc,Integer,Boolean);
 external function val AbsoluteVal(val); //Edit***************************Sasha2,17:41 16.04.2015
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 procedure SetPOSWindowDisplay_PaymentRow(string spec,val v)
 begin
@@ -175,7 +176,7 @@ begin
             end;
         end;
         BlockLoad(LMb);
-        if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+        if(CompanyIsJWLikeCompany(currentcompany))then begin
 					cur = "AZN";
 					if (GetFullCurncyPurchaseRate(cur,CurrentDate,invfr,invto1,mto2,mbr1,mbr2)==false) then begin// Edit ************************** Monday, 25 March 2013 17:43:29
 						GetFullCurncyRate(cur,CurrentDate,invfr,invto1,mto2,mbr1,mbr2);// Edit ************************** Monday, 25 March 2013 17:43:28

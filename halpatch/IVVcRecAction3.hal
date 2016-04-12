@@ -34,6 +34,7 @@ external function Boolean GetItemPriceDiscount3(string,val,var record INVc,strin
                                                 var val,var string,var val,var string,var val,var string,Integer,var Boolean,Date,Time,
                                                 string,Boolean,var Boolean,string,var string,var val,string,string,var string);
 external function Boolean INVc_AllowSales(record INVc,var LongInt);
+remote function boolean CompanyIsJWLikeCompany(Integer);
                                                 
 function Boolean CheckLoanInv(record IVVc IVp)/*check if this works*/
 BEGIN
@@ -669,7 +670,7 @@ LkInvoiceRowTypeNormal2:;
         // Edit Start ---------------------------------------------- Edit Start
 	//Wednesday, 17 September 2014 09:23:40
 	
-        if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+        if(CompanyIsJWLikeCompany(currentcompany))then begin
         	if (MSb.requireLocation!=0) then begin            
             if (nonblank(IVrw.ArtCode)) then begin
               if (blank(IVp.Location)) and (blank(IVrw.Location)) then begin

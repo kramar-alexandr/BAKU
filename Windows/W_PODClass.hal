@@ -1754,6 +1754,7 @@ external function Boolean HasModSVO();
 external function Boolean HasModTS();
 
 external function string 255 GetINImageAttach();
+remote function boolean CompanyIsJWLikeCompany(Integer); //Edit***************************Sasha2,15:02 12.04.2016
 
 //##ii
 procedure dummy() //##ii
@@ -2266,7 +2267,7 @@ begin
   SpecialMenu("Резервирования",' ',6,"POReservPODsm");
   //SpecialMenu("Открыть нал. матрицу",' ',25,"OpenVatMatrixPODsm"); 
   end;
-  if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+  if(CompanyIsJWLikeCompany(currentcompany))then begin
   	SpecialMenu("Просмотреть расчитанные розничные цены",' ',25,"ShowRRPPricesDsm"); // Edit ************************** Tuesday, 28 May 2013 10:23:02
   end;
   if(currentcompany==10)then begin
@@ -2289,15 +2290,7 @@ begin
   
   WindowBegin("Новые товары",NewINDClass,CGview,-);
   
-  switch (CurrentCompany) begin
-    case 3: toggleview=true;
-    case 17: toggleview=true;
-    case 19: toggleview=true;
-    case 20: toggleview=true;
-    case 21: toggleview=true;
-    case 22: toggleview=true;
-    otherwise toggleview=false;
-  end;
+  toggleview = CompanyIsJWLikeCompany(CurrentCompany);
   
   if (toggleview) then begin //Edit***************************Sasha2,10:40 16.12.2015 {
     matrixwidth = 1230;

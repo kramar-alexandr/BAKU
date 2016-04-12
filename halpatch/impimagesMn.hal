@@ -38,6 +38,26 @@ external procedure PUVc_PasteCostPrice(var record PUVc,Integer); //Edit*********
 
 SetLangMode(LangRussian,"RUS",0);
 
+global //Edit***************************Sasha2,14:53 12.04.2016 {
+function boolean CompanyIsJWLikeCompany(Integer curcomp)
+begin
+  Boolean res;
+  
+    res = false;
+    switch (curcomp) begin
+      case 3: res=true;
+      case 17: res=true;
+      case 19: res=true;
+      case 20: res=true;
+      case 21: res=true;
+      case 22: res=true;
+      case 23: res=true;
+      case 24: res=true;
+    end;
+  
+    CompanyIsJWLikeCompany = res;
+  return
+end; //Edit***************************Sasha2,14:53 12.04.2016 ]
 
 //Edit***************************Sasha2,12:12 18.12.2015 {
 function string 10 PrepareDICode(string indisp)
@@ -2754,7 +2774,7 @@ begin
     			rnd = DefaultValRoundoff;
     			rnd.decimals = 0;
     			rnd.mode = kRoundingModeHalfDown;
-    			if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin
+    			if(CompanyIsJWLikeCompany(currentcompany))then begin
     				rnd.step = kRoundingStep5;
     			end;
     			
@@ -3528,12 +3548,13 @@ begin
     	MatRowGet(Compb,j,Comprw);
     	includecompf = false;
     	switch (StringToInt(Comprw.CompCode)) begin //Нужно включить необходимые компании.
-    	  case 17: includecompf = true;
-    	  case 19: includecompf = true;
-        case 20: includecompf = true;
-        case 21: includecompf = true;
-        case 22: includecompf = true;
-    	  otherwise includecompf = false;
+    	  case 3: includecompf = false;
+    	  otherwise 
+    	    if (CompanyIsJWLikeCompany(StringToInt(Comprw.CompCode))) then begin
+    	      includecompf = true;
+    	    end else begin
+    	      includecompf = false;
+    	    end;
     	end;
     	if (includecompf) then begin
       	if (SetCompanyCode(Comprw.CompCode,false) and Comprw.ActiveStatus==0) then begin

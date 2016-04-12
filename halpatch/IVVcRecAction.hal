@@ -60,7 +60,7 @@ external function boolean ShouldSendArgEinvoice(record IVVc);
 remote function boolean ArgEInvoiceBeingSentRemote(longint,string);
 external function boolean RoyaltyRecordExistsForCN(record IVVc);
 external function Boolean HasModNL();
-
+remote function boolean CompanyIsJWLikeCompany(Integer);
 
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
 begin
@@ -1173,7 +1173,7 @@ LkInvoiceTypeCredit:;
 			rnd.mode = kRoundingModeHalfUp;
 			cash = round(cash,rnd);
       
-      if(currentcompany==3 or currentcompany==17 or (currentcompany>=19 and currentcompany<=24))then begin// Edit ************************** Friday, 22 March 2013 17:45:30
+      if(CompanyIsJWLikeCompany(currentcompany))then begin// Edit ************************** Friday, 22 March 2013 17:45:30
 				rnd.decimals = 0;
 				rnd.step = kRoundingStep5;
 				rnd.mode = kRoundingModeHalfUp;
