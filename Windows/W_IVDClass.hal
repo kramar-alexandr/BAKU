@@ -4654,6 +4654,7 @@ begin
 	CheckBox(h5,v+=16,0,"Разрешить eMail",AllowSendeMail);
 	CheckBox(h5,v+=16,0,"Разрешить звонок",AllowSendCall);
 	CheckBox(h5,v+=16,0,"Разрешить куръерскую почту",AllowSendkMail); 
+	CheckBox(h5,v+=16,0,"Разрешить WhatsApp",AllowWhatsApp); //Edit----------------------Dima  01.04.2016
   
   
   Tile(4,110,false,"4",PLCode);
@@ -4670,7 +4671,7 @@ begin
   RadioButton(h5,v+=16,1,0,"на дату заплан. отгрузки",PriceBasedOn);
   RadioButton(h5,v+=16,2,0,"на дату отправки",PriceBasedOn);  
   Tile(5,180,false,"5",Comment);
-  EditField(h,v=6,-20,"Комментарий",Normal,Comment,false,0);
+  EditField(h,v=6,-20,"Наимен. компании",Normal,Comment,false,0);		//Edit----------------------Dima  01.04.2016
   EditField(h,v+=vs,-20,"Предупр. (кл.)",Normal,WarnText1,false,0);
   EditField(h,v+=vs,-20,"Предупр. (пост.)",Normal,VEWarnText1,false,0);
   EditField(h,v+=vs,  50,"Язык",Normal,LangCode,false,LangSClass);
@@ -4716,6 +4717,14 @@ begin
   EditField(h,v+=vs,-20,"Обращение 1",Normal,Salutation1,false,0);
   EditField(h,v+=vs,-20,"Обращение 2",Normal,Salutation2,false,0);
   EditField(h,v+=vs,-20,"Обращение 3",Normal,Salutation3,false,0);
+  ButtonFrame(h3,v+=vs+20,260,6,"Источник информации");						//Edit----------------------Dima  01.04.2016
+  CheckBox(h3,v,0,"www.italdizain.az",ItaldizainSite);
+  CheckBox(h3,v+=17,0,"Instagram",Instagram);
+  CheckBox(h3,v+=17,0,"Facebook",Facebook);
+  CheckBox(h3,v+=17,0,"Наружная реклама",Advertising);
+  CheckBox(h3,v+=17,0,"Радио",Radio);
+  CheckBox(h3,v+=17,0,"Другое",OtherInformation);
+  EditField(h3+90,v,180,"",Normal,OtherInformationSource,false,0);  
   Tile(9,250,false,"9",DocType);
   EditField(h,v=6,100,"Тип документа",Normal,DocType,false,0);
   EditField(h2,v,-20,"№ паспорта",Normal,PassportNr,false,0);
@@ -4742,7 +4751,7 @@ begin
   CheckBox(h2+130,v=vm+20,0,"Курит",Smoking);
   CheckBox(h2+130,v+=17,0,"В черном списке",Blacklist);
   
-  ButtonFrame(h2,vm=(v+=40),100,4,"Семейное положение");
+  ButtonFrame(h2,vm=(v+=50),100,4,"Семейное положение");
   RadioButton(h2,v,0,0,"Не женат",MarStatus);
   RadioButton(h2,v+=17,1,0,"Замужем",MarStatus);
   RadioButton(h2,v+=17,2,0,"В разводе",MarStatus);
