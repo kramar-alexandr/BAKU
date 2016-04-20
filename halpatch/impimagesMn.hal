@@ -35,6 +35,7 @@ external function Boolean PUVc_PasteVECode(var record PUVc); //Edit*************
 external procedure VICalcVals(var record VIVc); //Edit***************************Sasha2,11:43 10.02.2016
 external procedure VISumup(record VIVc,var val); //Edit***************************Sasha2,12:09 10.02.2016
 external procedure PUVc_PasteCostPrice(var record PUVc,Integer); //Edit***************************Sasha2,11:38 04.04.2016
+external function Boolean IsDigit(string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -2706,6 +2707,8 @@ begin
 	
 return;
 end;
+
+
 global updating procedure PasteCategoryToCUMn()	//Edit by Victor 14.07.15
 begin
 	record CUVc CUr;
@@ -2725,9 +2728,26 @@ begin
 return;
 end;
 
+//Edit***************************Sasha2,10:39 20.04.2016 {
+function string 255 ExtractNumericFromString(string s)
+begin
+  integer i;
+  string 255 res;
+  
+  res = "";
+  for (i=0;i<len(s);i=i+1) begin
+    if (IsDigit(mid(s,i,1))==true) then begin
+      res = res & mid(s,i,1);
+    end;
+  end;
+  
+  ExtractNumericFromString = res;
+  return;
+end; //Edit***************************Sasha2,10:39 20.04.2016 }
 
 function val Get_Zebra_Price(integer switchf,string code,string basecur,var string stockcur,var string printcur)
 begin
+  record INVc INr;
   record PLVc PLr;// Edit ************************** Tuesday, 1 April 2014 13:12:18
 	record PLDefVc PLDr;// Edit ************************** Tuesday, 1 April 2014 13:17:21
   val fr,to1,to2,br1,br2;// Edit ************************** Friday, 17 April 2015 18:53:45
@@ -2795,7 +2815,12 @@ begin
       case 7:;
       case 8:;
       case 15:;
-      case 16:;
+      case 16:
+        INr.Code = code;
+        if (ReadFirstMain(INr,1,true) and NonBlank(INr.CPSCode)) then begin
+          printcur = "PP " & ExtractNumericFromString(INr.CPSCode);
+          price = blankval;
+        end;
       otherwise printcur = "y.e.";
     end;
   	
@@ -3125,12 +3150,15 @@ begin
           addtexttoarea(newPUrw.SerialNr & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.VEItemCode & chr(13) & chr(10),aLabel);
           addtexttoarea(newPUrw.Comment & chr(13) & chr(10),aLabel);
-          if(right(ValToString(newPUrw.UPrice,M4Val,"",".",0),2)=="00")then begin
-          	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",1) & chr(13) & chr(10),aLabel); 
+          if (newPUrw.UPrice==0 or newPUrw.UPrice==BlankVal) then begin
+            addtexttoarea("" & chr(13) & chr(10),aLabel);    
           end else begin
-          	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",0) & chr(13) & chr(10),aLabel); 
+            if(right(ValToString(newPUrw.UPrice,M4Val,"",".",0),2)=="00")then begin
+            	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",1) & chr(13) & chr(10),aLabel); 
+            end else begin
+            	addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",0) & chr(13) & chr(10),aLabel); 
+            end;
           end;
-          //addtexttoarea(ValToString(newPUrw.UPrice,M4Val,"",".",0) & chr(13) & chr(10),aLabel); 
           addtexttoarea("1" & chr(13) & chr(10),aLabel);
           addtexttoarea(chr(13) & chr(10),aLabel);
         end;
