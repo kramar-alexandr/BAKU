@@ -873,6 +873,9 @@ begin
 			newINr.Colour = POrw.Colour;
 			newINr.MajStoneDet = POrw.MajStoneDet;
 			newINr.BrcStr = POrw.BrcStr;		//Edit by Victor 18.06.15
+			if(POrw.PPNum>0)then begin// Edit ************************** Wednesday, 20 April 2016 11:07:38
+				newINr.CPSCode = POrw.PPNum;
+			end;
 			
 			newINr.InPrice = round(POrw.Price/frrate*torate,SetRoundModeD(2));
 			recordStore(newINr,true);
@@ -931,6 +934,10 @@ begin
 		if(nonblank(POrw.MajStoneDet) and INr.MajStoneDet!=POrw.MajStoneDet)then begin
 			changef = true;
 			INr.MajStoneDet = POrw.MajStoneDet;
+		end;
+		if(POrw.PPNum>0 and stringtoint(INr.CPSCode)!=POrw.PPNum)then begin
+			changef = true;
+			INr.CPSCode = POrw.PPNum;
 		end;
 		
 		if(POrw.ConsgType>0 and INr.ConsgType!=POrw.ConsgType)then begin// Edit ************************** Wednesday, 17 December 2014 09:40:07

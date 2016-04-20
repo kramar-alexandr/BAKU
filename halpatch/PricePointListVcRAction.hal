@@ -87,13 +87,15 @@ BEGIN
         if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0)then begin
           i = StringToInt(INr.CPSCode);
           if(i<=mtrw)then begin
-            matrowget(PPLr,i-1,PPLrw);
-            if(foundfVEitem)then begin
-              PIr.PurPrice = PPLrw.Cost;
-              INr.InPrice = PPLrw.Cost/PIr.PIFactor;
-              RecordStore(PIr,true);
-            end else begin
-              INr.InPrice = PPLrw.Cost;
+          	if(PPLrw.Cost>0)then begin
+							matrowget(PPLr,i-1,PPLrw);
+							if(foundfVEitem)then begin
+								PIr.PurPrice = PPLrw.Cost;
+								INr.InPrice = PPLrw.Cost/PIr.PIFactor;
+								RecordStore(PIr,true);
+							end else begin
+								INr.InPrice = PPLrw.Cost;
+							end;
             end;
             RecordStore(INr,true);
             PLr.PLCode  = "RRP";
@@ -178,12 +180,14 @@ BEGIN
           i = StringToInt(INr.CPSCode);
           if(i<=mtrw)then begin
             matrowget(PPLr,i-1,PPLrw);
-            if(foundfVEitem)then begin
-              PIr.PurPrice = PPLrw.Cost;
-              INr.InPrice = PPLrw.Cost/PIr.PIFactor;
-              RecordStore(PIr,true);
-            end else begin
-              INr.InPrice = PPLrw.Cost;
+            if(PPLrw.Cost>0)then begin
+							if(foundfVEitem)then begin
+								PIr.PurPrice = PPLrw.Cost;
+								INr.InPrice = PPLrw.Cost/PIr.PIFactor;
+								RecordStore(PIr,true);
+							end else begin
+								INr.InPrice = PPLrw.Cost;
+							end;
             end;
             RecordStore(INr,true);
             PLr.PLCode  = "RRP";
@@ -195,6 +199,7 @@ BEGIN
                 end else begin
                   PLr.ExVatPrice = PPLrw.Price;
                 end;
+                PLr.CurncyCode = "";
                 recordStore(PLr,true);
               end;
             end else begin

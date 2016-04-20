@@ -3296,7 +3296,7 @@ begin
   CheckBox(-100,v,0,"ОК",OKFlag);
   CheckBox(-100,v+=20,0,"Закрыто",Closed);
   
-  MatrixBegin(3,v+=40,-20,-20,0,1599);
+  MatrixBegin(3,v+=40,-20,-20,0,5000);
   //MatCol(t=1,32,"Num",0,Num,false,0);
   MatCol(t=1,32,"Cost",0,Cost,false,0);
   MatCol(t,150,"Price",0,Price,true,0);
