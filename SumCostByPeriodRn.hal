@@ -1,7 +1,7 @@
 external inner procedure ExtractObj(string,var Integer,var string);
 external inner procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);
 external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, 19 June 2013 13:43:37
-remote function boolean CompanyIsJWLikeCompany(Integer);
+external inner function boolean CompanyIsJWLikeCompany(Integer);
 
 
 procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,

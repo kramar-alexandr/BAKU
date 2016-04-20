@@ -4,7 +4,7 @@ external inner procedure GetFullCurncyRate (var string,Date,var val,var val,var 
 external inner function roundmode SetRoundModeD(Integer);
 external inner function Boolean SetInSet2(string,string);
 external inner function val AbsoluteVal(val);
-remote function boolean CompanyIsJWLikeCompany(Integer);
+external inner function boolean CompanyIsJWLikeCompany(Integer);
 
 function string 200 prepareStr(string input)
 begin

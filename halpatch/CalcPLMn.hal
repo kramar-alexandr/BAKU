@@ -183,6 +183,10 @@ begin
 	record PLDefVc PLDr;// Edit ************************** Wednesday, 22 May 2013 11:43:06
   string 20 plcurcode;// Edit ************************** Wednesday, 22 May 2013 11:43:07
   record PFormVc PFr;// Edit ************************** Tuesday, 14 October 2014 18:11:52
+	record PricePointListVc PPLr;// Edit ************************** Wednesday, 20 April 2016 10:23:11
+  row PricePointListVc PPLrw;// Edit ************************** Wednesday, 20 April 2016 10:23:14
+	integer pmtrw;
+	val ppprice;
   
   PFr.Code = formula;// Edit ************************** Tuesday, 14 October 2014 18:12:06
   ReadFirstMain(PFr,1,true);// Edit ************************** Tuesday, 14 October 2014 18:12:05
@@ -190,6 +194,17 @@ begin
   PLDr.Code = pricelist;// Edit ************************** Wednesday, 22 May 2013 11:43:43
 	readfirstmain(PLDr,1,true);// Edit ************************** Wednesday, 22 May 2013 11:43:44
 	plcurcode = PLDr.CurncyCode;// Edit ************************** Wednesday, 22 May 2013 11:43:44
+  
+  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0)then begin// Edit ************************** Wednesday, 20 April 2016 10:33:53
+		PPLr.TransDate = CurrentDate;
+		loopbackkey("TransDate",PPLr,1,true);
+		pmtrw = matrowcnt(PPLr);
+		if(stringtoint(INr.CPSCode)<=pmtrw)then begin
+			matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
+			ppprice = PPLrw.Price;
+		end;
+  end;// Edit ************************** Wednesday, 20 April 2016 10:33:54
+  
   
   infr2 = FirstInRange(itemcodes,20);
   into2 = LastInRange(itemcodes,20);
@@ -249,6 +264,12 @@ begin
 										PLr.CurncyCode = plcurcode;// Edit ************************** Tuesday, 14 October 2014 18:13:54
 									end;
 								end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
+								
+								if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+                	PLr.ExVatPrice = ppprice;
+                	PLr.CurncyCode = "";
+                end;
+								
                 if (changed) then begin
                   if (plfound) then begin
                     ires = RecordUpdate(oldPLr,PLr,true); // Amazing logic !!!! We HAVE to rewrite the RecordUpdate
@@ -273,9 +294,21 @@ begin
 								end;
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
               exvatpr = PLr.ExVatPrice;
+              
+              if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+								PLr.ExVatPrice = ppprice;
+								PLr.CurncyCode = "";
+							end;
+              
               changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
               if (AddPricef==true) then begin
                 PLr.ExVatPrice = exvatpr;
+                
+                if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+                	PLr.ExVatPrice = ppprice;
+                	PLr.CurncyCode = "";
+                end;
+                
                 bres = RecordStore(PLr,true);
                 CheckFlush(flushcnt,10);
               end;
@@ -365,6 +398,10 @@ begin
   string 50 keystring;
 	record PFormVc PFr;// Edit ************************** Tuesday, 14 October 2014 18:11:52
 	string 100 agroup,aclass;
+	record PricePointListVc PPLr;// Edit ************************** Wednesday, 20 April 2016 10:23:11
+  row PricePointListVc PPLrw;// Edit ************************** Wednesday, 20 April 2016 10:23:14
+	integer pmtrw;
+	val ppprice;
 	
 	agroup = firstinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
 	aclass = lastinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
@@ -380,6 +417,22 @@ begin
 	readfirstmain(PLDr,1,true);// Edit ************************** Wednesday, 22 May 2013 11:43:44
 	plcurcode = PLDr.CurncyCode;// Edit ************************** Wednesday, 22 May 2013 11:43:44
   INr.Group = agroup;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 20 April 2016 10:27:30
+	
+  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0)then begin
+		PPLr.TransDate = CurrentDate;
+		loopbackkey("TransDate",PPLr,1,true);
+		pmtrw = matrowcnt(PPLr);
+		if(stringtoint(INr.CPSCode)<=pmtrw)then begin
+			matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
+			ppprice = PPLrw.Price;
+		end;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+	
+  
   // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 15 August 2013 15:41:47
 	keys = 1;
@@ -457,6 +510,16 @@ begin
 								end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
                 changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
                 PLr.ExVatPrice = exvatpr;
+                // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 20 April 2016 10:31:34
+	
+                if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+                	PLr.ExVatPrice = ppprice;
+                	PLr.CurncyCode = "";
+                end;
+                
+	// Edit End ---------------------------------------------- Edit End
+	
                 if (changed) then begin
                   if (plfound) then begin
                     ires = RecordUpdate(oldPLr,PLr,true); // Amazing logic !!!! We HAVE to rewrite the RecordUpdate
@@ -487,6 +550,16 @@ begin
                 bres = RecordStore(PLr,true);
                 CheckFlush(flushcnt,10);
               end;
+              // Edit Start ---------------------------------------------- Edit Start
+	//Wednesday, 20 April 2016 10:31:20
+	
+              if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+								PLr.ExVatPrice = ppprice;
+								PLr.CurncyCode = "";
+							end;
+              
+	// Edit End ---------------------------------------------- Edit End
+	
             end;
           case 2:
             CalcItemPrices(RepSpec,pricelist,RepSpec.f2,formula,deppr,flushcnt);
