@@ -2817,8 +2817,8 @@ begin
       case 15:;
       case 16:
         INr.Code = code;
-        if (ReadFirstMain(INr,1,true) and NonBlank(INr.CPSCode)) then begin
-          printcur = "PP " & ExtractNumericFromString(INr.CPSCode);
+        if (ReadFirstMain(INr,1,true) and stringtoint(INr.CPSCode)>0) then begin
+          printcur = "PP " & stringtoint(INr.CPSCode);
           price = blankval;
         end;
       otherwise printcur = "y.e.";
