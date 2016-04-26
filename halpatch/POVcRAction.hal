@@ -45,6 +45,7 @@ remote updating procedure CheckAndCreateClassification(var string,string,boolean
 external function LongInt TimeDiffInSeconds(Time,Time);
 external procedure ExtractObj(string,var Integer,var string);// Edit ************************** Friday, 27 March 2015 10:53:32
 remote function boolean CompanyIsJWLikeCompany(Integer);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -833,7 +834,7 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  val frrate,torate;
+  val frrate,torate,price;
 	
 	frrate = fr;
 	torate = to1;
@@ -895,7 +896,7 @@ begin
 	if(found==true)then begin
 		recordcopy(IN2r,INr);
 		changef = false;
-		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+		if(nonblank(POrw.xClassification) and (INr.DispGroups!=POrw.xClassification or blank(INr.Group)))then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
 			FindINGroupViaClass(INr); //Edit***************************Sasha2,10:54 21.01.2016
@@ -953,13 +954,16 @@ begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
-			POrw.Price = round(INr.InPrice*frrate/torate,SetRoundModeD(2));
+			if(POr.CurncyCode==INr.LastPurchCurncyCode)then begin
+				POrw.Price = INr.LastPurchPrice2;
+			end else begin
+				CurValToOtherCur(POr.TransDate,INr.LastPurchCurncyCode,INr.LastPurchPrice2,POr.CurncyCode,price,SetRoundModeD(2));
+				POrw.Price = round(price,SetRoundModeD(2));
+			end;
 			matrowput(POr,i,POrw);
 		end;
 		POVc_PastePrice(POr,i);
 		
-		//matrowput(POr,i,POrw);
-
 	end;
 return;
 end;
@@ -976,12 +980,9 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  val frrate,torate;
+  val frrate,torate,price;
   integer nextNo;
-  //val	fr,to1,to2,br1,br2;
   		
-	//GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
-
 	frrate = fr;
 	torate = to1;
 	
@@ -1055,7 +1056,12 @@ begin
 				recordupdate(IN2r,INr,true);
 			end;	
 			if(POrw.Price==0)then begin
-				POrw.Price = round(INr.InPrice*frrate/torate,SetRoundModeD(2));
+				if(POr.CurncyCode==INr.LastPurchCurncyCode)then begin
+					POrw.Price = INr.LastPurchPrice2;
+				end else begin
+					CurValToOtherCur(POr.TransDate,INr.LastPurchCurncyCode,INr.LastPurchPrice2,POr.CurncyCode,price,SetRoundModeD(2));
+					POrw.Price = round(price,SetRoundModeD(2));
+				end;
 				matrowput(POr,i,POrw);
 			end;
 			POVc_PastePrice(POr,i);
@@ -1076,11 +1082,8 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  val frrate,torate;
-  //val	fr,to1,to2,br1,br2;
+  val frrate,torate,price;
   		
-	//GetFullCurncyRate(POr.CurncyCode,currentdate,fr,to1,to2,br1,br2);
-
 	frrate = fr;
 	torate = to1;
 	
@@ -1146,7 +1149,7 @@ begin
 		if (blank(POrw.EAN13Code) or (INr.BarCode == POrw.EAN13Code) or (nonblank(POrw.EAN13Code) and blank(INr.BarCode))) then begin
 				recordcopy(IN2r,INr);
 				changef = false;
-				if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+				if(nonblank(POrw.xClassification) and (INr.DispGroups!=POrw.xClassification or blank(INr.Group)))then begin
 					changef = true;
 					INr.DispGroups = POrw.xClassification;
 					FindINGroupViaClass(INr); //Edit***************************Sasha2,10:55 21.01.2016
@@ -1210,7 +1213,12 @@ begin
 					//recordStore(INr,true);
 				end;	
 				if(POrw.Price==0)then begin
-					POrw.Price = round(INr.InPrice*frrate/torate,SetRoundModeD(2));
+					if(POr.CurncyCode==INr.LastPurchCurncyCode)then begin
+						POrw.Price = INr.LastPurchPrice2;
+					end else begin
+						CurValToOtherCur(POr.TransDate,INr.LastPurchCurncyCode,INr.LastPurchPrice2,POr.CurncyCode,price,SetRoundModeD(2));
+						POrw.Price = round(price,SetRoundModeD(2));
+					end;
 					matrowput(POr,i,POrw);
 				end;
 				POVc_PastePrice(POr,i);
@@ -1293,7 +1301,7 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  val frrate,torate;
+  val frrate,torate,price;
   
 	frrate = fr;
 	torate = to1;
@@ -1347,7 +1355,7 @@ begin
 			changef = true;
 			INr.Name = POrw.Spec;
 		end;
-		if(nonblank(POrw.xClassification) and INr.DispGroups!=POrw.xClassification)then begin
+		if(nonblank(POrw.xClassification) and (INr.DispGroups!=POrw.xClassification or blank(INr.Group)))then begin
 			changef = true;
 			INr.DispGroups = POrw.xClassification;
 			FindINGroupViaClass(INr); //Edit***************************Sasha2,10:51 21.01.2016	
@@ -1375,7 +1383,12 @@ begin
 			recordupdate(IN2r,INr,true);
 		end;	
 		if(POrw.Price==0)then begin
-			POrw.Price = round(INr.InPrice*frrate/torate,SetRoundModeD(2));
+			if(POr.CurncyCode==INr.LastPurchCurncyCode)then begin
+				POrw.Price = INr.LastPurchPrice2;
+			end else begin
+				CurValToOtherCur(POr.TransDate,INr.LastPurchCurncyCode,INr.LastPurchPrice2,POr.CurncyCode,price,SetRoundModeD(2));
+				POrw.Price = round(price,SetRoundModeD(2));
+			end;
 			matrowput(POr,i,POrw);
 		end;
 		POVc_PastePrice(POr,i);
@@ -1398,7 +1411,7 @@ begin
   boolean changef;
   record DIVc DIr;
   row POVc chPOrw;
-  val qty;
+  val qty,price;
   	
   	rwcnt = matrowcnt(POr);
 		matrowget(POr,i,POrw);
@@ -1536,7 +1549,15 @@ begin
 			if ((changef)/* and (INr.LastPriceChange<=POr.TransDate)*/) then begin
 				recordupdate(IN2r,INr,true);
 			end;
-			POrw.Price = INr.InPrice/POrw.VEQuant*POrw.Quant;
+			if(POrw.Price==0)then begin
+				if(POr.CurncyCode==INr.LastPurchCurncyCode)then begin
+					POrw.Price = INr.LastPurchPrice2;
+				end else begin
+					CurValToOtherCur(POr.TransDate,INr.LastPurchCurncyCode,INr.LastPurchPrice2,POr.CurncyCode,price,SetRoundModeD(2));
+					POrw.Price = round(price,SetRoundModeD(2));
+				end;
+				matrowput(POr,i,POrw);
+			end;
 			matrowput(POr,i,POrw);
 			POVc_PastePrice(POr,i);
 			For(po=0;po<i;po=po+1) begin// Edit ************************** Friday, 15 February 2013 10:11:45// Edit ************************** Friday, 15 February 2013 10:11:45

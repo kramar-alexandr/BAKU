@@ -1228,7 +1228,7 @@ BEGIN
   record PLDefVc PLDr;// Edit ************************** Thursday, 21 February 2013 09:45:29
 
   if(currentcompany!=1)then begin
-		if(IN2r.LastPurchPrice2!=INr.LastPurchPrice2 or IN2r.InPrice!=INr.InPrice or IN2r.LastPurchCurncyCode!=INr.LastPurchCurncyCode or IN2r.Group!=INr.Group)then begin
+		if(IN2r.LastPurchPrice2!=INr.LastPurchPrice2 or IN2r.InPrice!=INr.InPrice or IN2r.LastPurchCurncyCode!=INr.LastPurchCurncyCode or IN2r.Group!=INr.Group or IN2r.CPSCode!=INr.CPSCode)then begin
 			PLDr.Code="";
 			While(loopmain(PLDr,1,true))begin
 				RepSpec.f1 = PLDr.Code;

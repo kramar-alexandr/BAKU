@@ -835,3 +835,16 @@ begin
   EditFieldTL(h,v+=20,150,"Classification",M4UStr,Normal,41,f2,false,DISClass);*/
   EndWindow;
 end; //Edit***************************Sasha2,12:20 18.03.2016 }
+
+
+
+window CalcINVcLastPurchPriceRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v;
+  WindowBegin("Разница цены последнего поступления товара",CalcINVcLastPurchPriceRClass,CGRcW,RcType);
+  SetWRect(20,80,440,150);
+  h=100;
+
+  EndWindow;
+end;

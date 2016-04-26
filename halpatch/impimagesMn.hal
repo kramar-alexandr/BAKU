@@ -1406,7 +1406,7 @@ end;
 global //Edit***************************Sasha2,11:22 06.03.2015 {
 updating procedure CalcINVcLastPurchPriceMn(record RcVc RepSpec)
 begin
-	record INVc INr;
+	record INVc INr,oldINr;
 	record ItemHistVc IHr;
   val from,to1,to2,base1,base2,cost;
   date td;
@@ -1419,20 +1419,27 @@ begin
 	
 	INr.Code = "";
 	while (loopmain(INr,1,true)) begin
-    /*IHr.ArtCode = INr.Code;
+    IHr.ArtCode = INr.Code;
     IHr.FileName = "PUVc";
-    if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code) then begin
+    if (ReadLastKey("FNArtCode",IHr,2,true) and IHr.ArtCode==INr.Code and IHr.FileName=="PUVc") then begin
       cost = IHr.TotCostPrice/IHr.Qty;
       if (cost<0) then begin
         cost = cost * (-1);
       end;
-      if (cost!=0) then begin
-        INr.InPrice = cost;
+      
+      if(IHr.CurncyCode==INr.LastPurchCurncyCode and INr.LastPurchPrice2<IHr.TotCostPriceCurncy/IHr.Qty)then begin
+      	recordcopy(oldINr,INr);
+      	INr.LastPurchPrice2 = IHr.TotCostPriceCurncy/IHr.Qty;
+      	
+      	recordupdate(oldINr,INr,true);
       end;
-    end;
+      /*if (cost!=0) then begin
+        INr.InPrice = cost;
+      end;*/
+    /*end;
     if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
-      if (from!=0 and to1!=0) then begin*/
-    INr.LastPurchCurncyCode = eurcurncy;/*
+      if (from!=0 and to1!=0) then begin
+    		INr.LastPurchCurncyCode = eurcurncy;
         INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
         //changef = true;
       end;
@@ -1449,12 +1456,73 @@ begin
       //changef = true;
     end;*/
     //if (changef) then begin
-      RECORDSTORE(INr,true);
-    //end;
+      
+    end;
 	end;
 	
 return;
 end; //Edit***************************Sasha2,11:22 06.03.2015 }
+
+
+global
+updating procedure CalcINVcLastPurchPriceRn(record RcVc RepSpec)
+begin
+	record INVc INr,oldINr;
+	record ItemHistVc IHr;
+  val from,to1,to2,base1,base2,cost;
+  date td;
+  boolean changef;
+  string 20 eurcurncy;
+  record ItemStatusVc ISr;
+	
+	startreportnoheaderjob("Wrong Last Purch price. report");
+		
+	eurcurncy = "EUR";
+	td = CurrentDate;
+	GetFullCurncyRate(eurcurncy,td,from,to1,to2,base1,base2);
+	
+	startformat(15);
+		outstring(0,0,"Item Code",false);
+		outstring(70,0,"Item Name",false);
+		outstring(140,0,"Current Purchase price",false);
+		outstring(200,0,"Current Currency",false);
+		outstring(260,0,"Last Purchase price",false);
+		outstring(300,0,"Last Currency",false);
+		outstring(350,0,"Diff",false);
+	endformat;
+	
+	INr.Code = "";
+	while (loopmain(INr,1,true)) begin
+    IHr.ArtCode = INr.Code;
+    IHr.FileName = "PUVc";
+    if (ReadLastKey("FNArtCode",IHr,2,false) and IHr.ArtCode==INr.Code and IHr.FileName=="PUVc") then begin
+    	ISr.Code = IHr.ArtCode;
+    	ISr.Location = ";;;";
+    	if(readfirstmain(ISr,1,true) and ISr.Instock>0)then begin
+				cost = IHr.TotCostPriceCurncy/IHr.Qty;
+			
+				if(IHr.CurncyCode!=INr.LastPurchCurncyCode or round(INr.LastPurchPrice2,defaultcurroundoff)<round(cost,defaultcurroundoff))then begin				
+					startformat(15);
+						outstring(0,0,INr.Code,false);
+						outstring(70,0,INr.Name,false);
+						outstring(140,0,INr.LastPurchPrice2,false);
+						outstring(200,0,INr.LastPurchCurncyCode,false);
+						outstring(260,0,cost,false);
+						outstring(300,0,IHr.CurncyCode,false);
+						outstring(350,0,cost - INr.LastPurchPrice2,false);
+					endformat;
+				
+				end;
+      end;
+
+      
+    end;
+	end;
+	
+	endjob;
+	
+return;
+end;
 
 
 

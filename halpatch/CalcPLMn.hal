@@ -32,7 +32,7 @@ begin
   Integer theroundof;
   string 20 plcurcode;
   roundmode rnd
-  
+    
   rnd = DefaultCurRoundoff;
   rnd.decimals = 0;
   rnd.step = kRoundingStep5;
@@ -195,16 +195,6 @@ begin
 	readfirstmain(PLDr,1,true);// Edit ************************** Wednesday, 22 May 2013 11:43:44
 	plcurcode = PLDr.CurncyCode;// Edit ************************** Wednesday, 22 May 2013 11:43:44
   
-  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0)then begin// Edit ************************** Wednesday, 20 April 2016 10:33:53
-		PPLr.TransDate = CurrentDate;
-		loopbackkey("TransDate",PPLr,1,true);
-		pmtrw = matrowcnt(PPLr);
-		if(stringtoint(INr.CPSCode)<=pmtrw)then begin
-			matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
-			ppprice = PPLrw.Price;
-		end;
-  end;// Edit ************************** Wednesday, 20 April 2016 10:33:54
-  
   
   infr2 = FirstInRange(itemcodes,20);
   into2 = LastInRange(itemcodes,20);
@@ -244,6 +234,18 @@ begin
         testf = false;
       end;
       if (testf) then begin
+      	
+      	
+      	  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin// Edit ************************** Wednesday, 20 April 2016 10:33:53
+						PPLr.TransDate = CurrentDate;
+						loopbackkey("TransDate",PPLr,1,true);
+						pmtrw = matrowcnt(PPLr);
+						if(stringtoint(INr.CPSCode)<=pmtrw)then begin
+							matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
+							ppprice = PPLrw.Price;
+						end;
+					end;// Edit ************************** Wednesday, 20 April 2016 10:33:54
+      	
         switch (deppr) begin
           case 0:
             PLr.PLCode = pricelist;
@@ -268,6 +270,7 @@ begin
 								if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
                 	PLr.ExVatPrice = ppprice;
                 	PLr.CurncyCode = "";
+                	changed = true;
                 end;
 								
                 if (changed) then begin
@@ -295,23 +298,31 @@ begin
               end;// Edit ************************** Wednesday, 22 May 2013 11:43:21
               exvatpr = PLr.ExVatPrice;
               
+              
+              
+              changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
+              
               if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
 								PLr.ExVatPrice = ppprice;
 								PLr.CurncyCode = "";
+								changed = true;
+								AddPricef = true;
 							end;
               
-              changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
               if (AddPricef==true) then begin
                 PLr.ExVatPrice = exvatpr;
                 
                 if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
                 	PLr.ExVatPrice = ppprice;
                 	PLr.CurncyCode = "";
+                	changed = true;
                 end;
-                
                 bres = RecordStore(PLr,true);
                 CheckFlush(flushcnt,10);
               end;
+              
+              
+              
             end;
           case 1:
             PLQr.PLCode = pricelist;
@@ -403,6 +414,7 @@ begin
 	integer pmtrw;
 	val ppprice;
 	
+	
 	agroup = firstinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
 	aclass = lastinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
 	
@@ -418,20 +430,7 @@ begin
 	plcurcode = PLDr.CurncyCode;// Edit ************************** Wednesday, 22 May 2013 11:43:44
   INr.Group = agroup;
   // Edit Start ---------------------------------------------- Edit Start
-	//Wednesday, 20 April 2016 10:27:30
-	
-  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0)then begin
-		PPLr.TransDate = CurrentDate;
-		loopbackkey("TransDate",PPLr,1,true);
-		pmtrw = matrowcnt(PPLr);
-		if(stringtoint(INr.CPSCode)<=pmtrw)then begin
-			matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
-			ppprice = PPLrw.Price;
-		end;
-  end;
-  
-	// Edit End ---------------------------------------------- Edit End
-	
+
   
   // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 15 August 2013 15:41:47
@@ -490,6 +489,20 @@ begin
       end;
       if (testf) then begin
       
+      		//Wednesday, 20 April 2016 10:27:30
+					if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin
+						PPLr.TransDate = CurrentDate;
+						loopbackkey("TransDate",PPLr,1,true);
+						pmtrw = matrowcnt(PPLr);
+						if(stringtoint(INr.CPSCode)<=pmtrw)then begin
+							matrowget(PPLr,stringtoint(INr.CPSCode)-1,PPLrw);
+							ppprice = PPLrw.Price;
+						end;
+					end;
+	
+					// Edit End ---------------------------------------------- Edit End
+	
+      	
         switch (deppr) begin
           case 0:
             PLr.PLCode = pricelist;
@@ -516,6 +529,7 @@ begin
                 if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
                 	PLr.ExVatPrice = ppprice;
                 	PLr.CurncyCode = "";
+                	changed = true;
                 end;
                 
 	// Edit End ---------------------------------------------- Edit End
@@ -547,19 +561,16 @@ begin
               changed = CalcItemPrice(RepSpec,PLr.PLCode,exvatpr,INr,formula,3,AddPricef);
               if (AddPricef==true) then begin
                 PLr.ExVatPrice = exvatpr;
+                
+                if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
+                	PLr.ExVatPrice = ppprice;
+                	PLr.CurncyCode = "";
+                	changed = true;
+                end;
+                
                 bres = RecordStore(PLr,true);
                 CheckFlush(flushcnt,10);
               end;
-              // Edit Start ---------------------------------------------- Edit Start
-	//Wednesday, 20 April 2016 10:31:20
-	
-              if(ppprice>0 and left(PLr.PLCode,3)=="RRP")then begin
-								PLr.ExVatPrice = ppprice;
-								PLr.CurncyCode = "";
-							end;
-              
-	// Edit End ---------------------------------------------- Edit End
-	
             end;
           case 2:
             CalcItemPrices(RepSpec,pricelist,RepSpec.f2,formula,deppr,flushcnt);
