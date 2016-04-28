@@ -1501,7 +1501,7 @@ begin
     	if(readfirstmain(ISr,1,true) and ISr.Instock>0)then begin
 				cost = IHr.TotCostPriceCurncy/IHr.Qty;
 			
-				if(IHr.CurncyCode!=INr.LastPurchCurncyCode or round(INr.LastPurchPrice2,defaultcurroundoff)<round(cost,defaultcurroundoff))then begin				
+				if(IHr.CurncyCode!=INr.LastPurchCurncyCode or round(INr.LastPurchPrice2,defaultcurroundoff)!=round(cost,defaultcurroundoff))then begin				
 					startformat(15);
 						outstring(0,0,INr.Code,false);
 						outstring(70,0,INr.Name,false);
@@ -3000,6 +3000,9 @@ begin
   row PUVc PUrw;
   record StockMovVc SMr;
   row StockMovVc SMrw;
+  record ZebraPrinterBlock ZPb;
+  
+  blockload(ZPb);// Edit ************************** Thursday, 28 April 2016 11:52:14
     
     k=0;
     recordnew(newPUr);
@@ -3185,7 +3188,16 @@ begin
       addtexttoarea("q592" & chr(13) & chr(10),aLabel); //Set Label Width 74 mm
       //addtexttoarea("q432" & chr(13) & chr(10),aLabel); //Set Label Width 54 mm
       addtexttoarea("Q76,16" & chr(13) & chr(10),aLabel); //Set Label Height 10mm
-      addtexttoarea("D15" & chr(13) & chr(10),aLabel); //print density
+      if(ZPb.ParamIn1>0)then begin
+      	if(ZPb.ParamIn1<16)then begin
+      		addtexttoarea("D" & ZPb.ParamIn1 & chr(13) & chr(10),aLabel); //print density
+      	end else begin
+      		addtexttoarea("D15" & chr(13) & chr(10),aLabel); //print density
+      	end;
+      end else begin
+				addtexttoarea("D15" & chr(13) & chr(10),aLabel); //print density
+      end;
+      
       addtexttoarea("I8,C" & chr(13) & chr(10),aLabel); //appropriate character set for printing and display (KDU) "C": Wi1n2d5o1ws Cyrillic
       addtexttoarea("FK\"1\"" & chr(13) & chr(10),aLabel); //iDelete forms from memory
       addtexttoarea("FS\"1\"" & chr(13) & chr(10),aLabel); // Store Form

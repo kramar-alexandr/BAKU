@@ -1009,6 +1009,7 @@ begin
     EditField(h,v+=vs,f,"Название принтера",Normal,PrinterNameWin,false,0); 
     StaticText(h,v+=2*vs,"Для Mac OS ______________",false);
     EditField(h,v+=6,f,"Название принтера",Normal,PrinterNameMac,false,0);
+    EditField(h+30,v+=24,f-30,"Интенсивность печати 1-15",Normal,ParamIn1,false,0);
   EndWindow;
 end; //Edit***************************Sasha2,16:12 25.09.2014 }
 
