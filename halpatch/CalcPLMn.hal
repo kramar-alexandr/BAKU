@@ -235,7 +235,7 @@ begin
       end;
       if (testf) then begin
       	
-      	
+      		ppprice = 0;
       	  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin// Edit ************************** Wednesday, 20 April 2016 10:33:53
 						PPLr.TransDate = CurrentDate;
 						loopbackkey("TransDate",PPLr,1,true);
@@ -490,6 +490,7 @@ begin
       if (testf) then begin
       
       		//Wednesday, 20 April 2016 10:27:30
+      		ppprice = 0;
 					if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin
 						PPLr.TransDate = CurrentDate;
 						loopbackkey("TransDate",PPLr,1,true);

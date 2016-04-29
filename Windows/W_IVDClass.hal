@@ -5043,6 +5043,7 @@ begin
   RlCol(180,180,"Клиент",CustCode,false);
   RlColKey(240,240, "Сер.ном.",SerialNr,false,SerialNr);
   RlColKey(300,300, "Комментарий",Comment,false,Comment);
+  RlCol(-110,-80,"Вал.",CurncyCode,true);
   RlCol(-80,-30,"Цена",ExVatPrice,true);
   SearchField("Найти");
   EndWindow;
