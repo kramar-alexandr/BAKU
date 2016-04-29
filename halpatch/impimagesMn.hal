@@ -2982,7 +2982,7 @@ begin
 end;
 
 global //Edit***************************Sasha2,16:59 08.07.2015 {
-updating procedure Handle_Zebra_Printing(record RcVc RepSpec,var area aLabel,var integer K,string fromplace)
+updating procedure Handle_Zebra_Printing(record RcVc RepSpec,var area aLabel,var integer K,string fromplace,record ZebraPrinterBlock ZPb)
 begin
   record PUVc newPUr;
   record INVc INr;
@@ -3000,10 +3000,7 @@ begin
   row PUVc PUrw;
   record StockMovVc SMr;
   row StockMovVc SMrw;
-  record ZebraPrinterBlock ZPb;
-  
-  blockload(ZPb);// Edit ************************** Thursday, 28 April 2016 11:52:14
-    
+      
     k=0;
     recordnew(newPUr);
     blockload(BCb);

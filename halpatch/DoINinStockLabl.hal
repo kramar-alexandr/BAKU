@@ -21,7 +21,7 @@ external function roundmode SetRoundModeD(Integer);
 external procedure CreateEAN128(var string);
 external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
-remote updating procedure Handle_Zebra_Printing(record RcVc,var area,var integer,string); //Edit***************************Sasha2,17:01 08.07.2015
+remote updating procedure Handle_Zebra_Printing(record RcVc,var area,var integer,string,record ZebraPrinterBlock); //Edit***************************Sasha2,17:01 08.07.2015
 remote function boolean CompanyIsJWLikeCompany(Integer);
 
 procedure PrintINinStockLabel(record INVc INr,record DocVc Docr)
@@ -192,7 +192,7 @@ begin
   
     blockload(ZPb);
     
-    Handle_Zebra_Printing(RepSpec,aLabel,K,"FromStock");
+    Handle_Zebra_Printing(RepSpec,aLabel,K,"FromStock",ZPb);
     if (k>0) then begin
       filename = "ZebraPrint.epl";
       CreateFile(filename);
