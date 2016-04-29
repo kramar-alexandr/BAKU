@@ -2888,6 +2888,8 @@ begin
         if (ReadFirstMain(INr,1,true) and stringtoint(INr.CPSCode)>0) then begin
           printcur = "PP " & stringtoint(INr.CPSCode);
           price = blankval;
+        end else begin
+          printcur = "";
         end;
       otherwise printcur = "y.e.";
     end;
