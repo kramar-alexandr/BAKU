@@ -2890,6 +2890,7 @@ begin
           price = blankval;
         end else begin
           printcur = "";
+          price = blankval;
         end;
       otherwise printcur = "y.e.";
     end;
