@@ -2992,7 +2992,8 @@ begin
   record ItemStatusVc ISr;
   record BaseCurBlock BCb;// Edit ************************** Tuesday, 1 April 2014 13:17:21
   row PUVc newPUrw;
-  integer i,mtrw,lenth,h,j,rwcnt;
+  record DIVc DIr;
+  integer i,mtrw,lenth,h,j,rwcnt,pos;
   boolean TrHs,testf,caratf;
   string 50 frin,toin;
   longint qty;
@@ -3070,12 +3071,25 @@ begin
               newPUrw.ArtCode = INr.Code; 
               newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
               newPUrw.Comment = printcur;
-              if (caratf) then begin
-                newPUrw.SerialNr = INr.MajStoneDet;
-              end else begin
-                newPUrw.SerialNr = "";
+              pos = 0;
+              ExtractObj(INr.DispGroups,pos,tstr);
+              while (NonBlank(tstr)) begin
+                DIr.Code = tstr;
+                ReadFirstMain(DIr,1,true);
+                if (caratf and DIr.CType=="D_CARAT") then begin
+                  newPUrw.SerialNr = DIr.Name;
+                end;
+                if (DIr.CType=="WEIGHT") then begin
+                  newPUrw.VEItemCode = DIr.Name;
+                end;
+                ExtractObj(INr.DispGroups,pos,tstr);
               end;
-              newPUrw.VEItemCode = INr.RowWeight;
+              if (caratf and Blank(newPUrw.SerialNr)) then begin
+                newPUrw.SerialNr = INr.MajStoneDet;
+              end;
+              if (Blank(newPUrw.VEItemCode)) then begin
+                newPUrw.VEItemCode = INr.RowWeight;
+              end;
               matrowput(newPUr,k,newPUrw);
               k=k+1;
     				end;
@@ -3120,12 +3134,25 @@ begin
                   newPUrw.ArtCode = INr.Code;
                   newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
                   newPUrw.Comment = printcur;
-                  if (caratf) then begin
-                    newPUrw.SerialNr = INr.MajStoneDet;
-                  end else begin
-                    newPUrw.SerialNr = "";
+                  pos = 0;
+                  ExtractObj(INr.DispGroups,pos,tstr);
+                  while (NonBlank(tstr)) begin
+                    DIr.Code = tstr;
+                    ReadFirstMain(DIr,1,true);
+                    if (caratf and DIr.CType=="D_CARAT") then begin
+                      newPUrw.SerialNr = DIr.Name;
+                    end;
+                    if (DIr.CType=="WEIGHT") then begin
+                      newPUrw.VEItemCode = DIr.Name;
+                    end;
+                    ExtractObj(INr.DispGroups,pos,tstr);
                   end;
-                  newPUrw.VEItemCode = INr.RowWeight;
+                  if (caratf and Blank(newPUrw.SerialNr)) then begin
+                    newPUrw.SerialNr = INr.MajStoneDet;
+                  end;
+                  if (Blank(newPUrw.VEItemCode)) then begin
+                    newPUrw.VEItemCode = INr.RowWeight;
+                  end;
                   matrowput(newPUr,k,newPUrw);
                   k=k+1;
                 end;
@@ -3166,12 +3193,25 @@ begin
                   newPUrw.ArtCode = INr.Code;
                   newPUrw.UPrice = Get_Zebra_Price(1,INr.Code,basecur,stockcur,printcur);
                   newPUrw.Comment = printcur;
-                  if (caratf) then begin
-                    newPUrw.SerialNr = INr.MajStoneDet;
-                  end else begin
-                    newPUrw.SerialNr = "";
+                  pos = 0;
+                  ExtractObj(INr.DispGroups,pos,tstr);
+                  while (NonBlank(tstr)) begin
+                    DIr.Code = tstr;
+                    ReadFirstMain(DIr,1,true);
+                    if (caratf and DIr.CType=="D_CARAT") then begin
+                      newPUrw.SerialNr = DIr.Name;
+                    end;
+                    if (DIr.CType=="WEIGHT") then begin
+                      newPUrw.VEItemCode = DIr.Name;
+                    end;
+                    ExtractObj(INr.DispGroups,pos,tstr);
                   end;
-                  newPUrw.VEItemCode = INr.RowWeight;
+                  if (caratf and Blank(newPUrw.SerialNr)) then begin
+                    newPUrw.SerialNr = INr.MajStoneDet;
+                  end;
+                  if (Blank(newPUrw.VEItemCode)) then begin
+                    newPUrw.VEItemCode = INr.RowWeight;
+                  end;
                   matrowput(newPUr,k,newPUrw);
                   k=k+1;
                 end;
