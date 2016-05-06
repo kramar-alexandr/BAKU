@@ -2085,8 +2085,10 @@ begin
 	case 16:
 				Flip(flipnr); flipnr = flipnr + 1;
 				MatCol(1,194,"Наименование",0,Spec,false,0);
+				MatCol(1,-250,"PP №",0,PPNum,false,0);
 				MatCol(1,-160,"Размер",0,Size,false,0);
-				MatCol(1,-90,"PP №",0,PPNum,false,0);				
+				MatCol(1,-100,"Цвет",0,Colour,false,0);
+								
 	case 17:
 				Flip(flipnr); flipnr = flipnr + 1;
 				MatCol(1,194,"Наименование",0,Spec,false,0);
