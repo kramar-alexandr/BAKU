@@ -779,7 +779,7 @@ BEGIN
   if (nonblank(INr.DispGroups)) then begin
     errcode = VerifyClassification(INr.DispGroups,tstr);
     if (errcode!=0) then begin
-      RecordCheckError(errcode," " & tstr,-1,"DispGroups");//change type     
+      RecordCheckError(errcode," " & tstr & " " & INr.Code,-1,"DispGroups");//change type     
       res = -1; 
       goto LINVcRecordCheck;
     end;
@@ -1502,7 +1502,7 @@ BEGIN
   if (nonblank(INr.DispGroups)) then begin
     errcode = VerifyClassification(INr.DispGroups,tstr);
     if (errcode!=0) then begin
-      RecordCheckError(errcode," " & tstr,rownr,"DispGroups");//change type     
+      RecordCheckError(errcode," " & tstr & " " & INr.Code,rownr,"DispGroups");//change type     
       res = -1; 
       goto LnINVcRecordCheck;
     end;
