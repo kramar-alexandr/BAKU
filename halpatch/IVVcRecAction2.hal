@@ -93,7 +93,7 @@ external function Boolean EInvoiceWithPDFFileTest(string,string,var record EInvC
 external updating procedure RoyaltyIVRemoved(record IVVc);
 external function Boolean FindSubString( string, string); //Edit----------------------Dima  27.02.2015
 external updating procedure UnOk_IVVc(var record IVVc);	//Edit----------------------Dima  24.12.2015
-external procedure IVDUpdatePrices(var record IVVc,Boolean);
+//external procedure IVDUpdatePrices(var record IVVc,Boolean);
 
 procedure SetIVAcceptanceFlag(var record IVVc IVr,record IVVc prevIVr,LongInt stat)
 begin
@@ -868,12 +868,15 @@ BEGIN
   Boolean ihef,testf;
   record EInvCUVc EInvCUr;
   
-  
+  /*//Edit----------------------Dima  06.05.2016
+  //recalculation of rebates for all rows
+  //temparary canceled
   if (MatRowCnt(IV2r)!=MatRowCnt(IVr)) then begin	//Edit----------------------Dima  02.03.2016.  //will transfer to general function
 		if (nonblank(IVr.RebCode) and IVr.OrderNr==-1) then begin
 			IVDUpdatePrices(IVr,false);
 		end;
-	end; 
+	end;
+	*/ 
   
   SetIVAcceptanceFlag(IVr,IV2r,stat);
   SetFinRef(IVr);
