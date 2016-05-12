@@ -2534,7 +2534,7 @@ begin
   		MatCol(1,pos+=wdth,"Mechanism",0,Mechanism,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Function",0,Function,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Diameter",0,Diameter,false,TypeDISClass);
-  		MatCol(1,pos+=wdth,"Serial number",0,SerNrf,false,SetSClass);
+  		MatCol(1,pos+=wdth,"Serial allowance",0,SerNrf,false,SetSClass);
   		MatCol(1,pos+=wdth,"WarrCard",0,WatchType,false,TypeDISClass);
   		MatCol(1,pos+=wdth,"Type",0,Type,false,TypeDISClass);
   		Flip(flipnr); flipnr = flipnr + 1;

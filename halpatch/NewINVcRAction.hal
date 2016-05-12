@@ -751,8 +751,17 @@ BEGIN
           HandleTypeField("PrecStones",newINrw.PrecStones,diCheckTypes[type],newdispstr,foundtypes);
         end;
   
-        if (NonBlank(newINrw.SerNrf) and SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
-          HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);
+        if (NonBlank(newINrw.SerNrf)) then begin
+          if (SetInSet(ReturnFieldDIType("SerNrf",false),diCheckTypes[type]) and newINrw.SerNrf==1) then begin
+            HandleTypeField("SerNrf",newINrw.SerNrf,diCheckTypes[type],newdispstr,foundtypes);
+          end else begin
+            if (newINrw.SerNrf<0 or newINrw.SerNrf>1) then begin
+              RecordCheckError(15093,". Should be \"1\" or \"0\" (\"Yes\" or \"No\")",i,"SerNrf");
+              res = -1; 
+              goto LNewINVcRecordCheck;
+            end;
+          end;
+          
         end;
         
         if (NonBlank(newINrw.Mechanism) and SetInSet(ReturnFieldDIType("Mechanism",false),diCheckTypes[type])) then begin
