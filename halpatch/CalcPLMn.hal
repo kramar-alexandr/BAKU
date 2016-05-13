@@ -629,6 +629,24 @@ begin
       end;
     end;
   end;
+  
+  if(PLr.Code=="RRP")then begin
+  	if(nonblank(RepSpec.f2))then begin
+  		INr.Code = RepSpec.f2;
+			if(readfirstmain(INr,1,true) and INr.Group==PLDefrw.ItemCode and stringtoint(INr.CPSCode)>0)begin
+				CalcItemPrices(RepSpec,PLr.Code,PLDefrw.ItemCode,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+			end;
+  	end else begin
+  		INr.Code = "";
+  		while(loopmain(INr,1,true) and stringtoint(INr.CPSCode)>0)begin
+  			RepSpec.f2 = INr.Code;
+  			CalcItemPrices(RepSpec,PLr.Code,RepSpec.f2,PLDefrw.Formula,PLr.DepPrice,flushcnt);
+  		end;
+  	end;
+  end;// Edit ************************** Thursday, 12 May 2016 12:40:17
+  
+  
+  
   for (i=0;i<rwcnt;i=i+1) begin
     MatRowGet(PLr,i,PLDefrw);
     	

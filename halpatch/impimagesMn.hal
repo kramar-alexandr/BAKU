@@ -1412,6 +1412,7 @@ begin
   date td;
   boolean changef;
   string 20 eurcurncy;
+  record ItemStatusVc ISr;
 	
 	eurcurncy = "EUR";
 	td = CurrentDate;
@@ -1422,41 +1423,20 @@ begin
     IHr.ArtCode = INr.Code;
     IHr.FileName = "PUVc";
     if (ReadLastKey("FNArtCode",IHr,2,true) and IHr.ArtCode==INr.Code and IHr.FileName=="PUVc") then begin
-      cost = IHr.TotCostPrice/IHr.Qty;
+      cost = IHr.TotCostPriceCurncy/IHr.Qty;
       if (cost<0) then begin
         cost = cost * (-1);
       end;
-      
-      if(IHr.CurncyCode==INr.LastPurchCurncyCode and INr.LastPurchPrice2<IHr.TotCostPriceCurncy/IHr.Qty)then begin
-      	recordcopy(oldINr,INr);
-      	INr.LastPurchPrice2 = IHr.TotCostPriceCurncy/IHr.Qty;
-      	
-      	recordupdate(oldINr,INr,true);
+      ISr.Code = IHr.ArtCode;
+    	ISr.Location = ";;;";
+    	if(readfirstmain(ISr,1,true) and ISr.Instock>0)then begin
+				if(IHr.CurncyCode==INr.LastPurchCurncyCode and round(INr.LastPurchPrice2,defaultcurroundoff)<round(cost,defaultcurroundoff))then begin
+					recordcopy(oldINr,INr);
+					INr.LastPurchPrice2 = IHr.TotCostPriceCurncy/IHr.Qty;
+					logtext(0,INr.Code & "_" & INr.LastPurchPrice2);
+					recordupdate(oldINr,INr,true);
+				end;
       end;
-      /*if (cost!=0) then begin
-        INr.InPrice = cost;
-      end;*/
-    /*end;
-    if (blank(INr.LastPurchCurncyCode) and INr.InPrice!=0) then begin
-      if (from!=0 and to1!=0) then begin
-    		INr.LastPurchCurncyCode = eurcurncy;
-        INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
-        //changef = true;
-      end;
-    end;
-    if (nonblank(INr.LastPurchCurncyCode) and INr.InPrice!=0 and INr.LastPurchPrice2==0) then begin
-    	td = CurrentDate;
-			GetFullCurncyRate(INr.LastPurchCurncyCode,td,from,to1,to2,base1,base2);
-      if (from!=0 and to1!=0) then begin
-        INr.LastPurchPrice2 = (INr.InPrice*from)/to1;
-      end;
-    end;
-    if (INr.LastPurchCurncyCode=="AZN") then begin
-      INr.LastPurchCurncyCode = eurcurncy;
-      //changef = true;
-    end;*/
-    //if (changef) then begin
-      
     end;
 	end;
 	
@@ -1501,7 +1481,7 @@ begin
     	if(readfirstmain(ISr,1,true) and ISr.Instock>0)then begin
 				cost = IHr.TotCostPriceCurncy/IHr.Qty;
 			
-				if(IHr.CurncyCode!=INr.LastPurchCurncyCode or round(INr.LastPurchPrice2,defaultcurroundoff)!=round(cost,defaultcurroundoff))then begin				
+				if(IHr.CurncyCode==INr.LastPurchCurncyCode and round(INr.LastPurchPrice2,defaultcurroundoff)<round(cost,defaultcurroundoff))then begin				
 					startformat(15);
 						outstring(0,0,INr.Code,false);
 						outstring(70,0,INr.Name,false);
