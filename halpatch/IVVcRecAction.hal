@@ -1212,7 +1212,7 @@ LkInvoiceTypeCredit:;
 					testf = false;       
 				end;  
 			end;// Edit ************************** Wednesday, 18 February 2015 16:29:28
-      if (testf) then begin
+      if (testf and round(cash/IVp.Sum4,rnd)!=1) then begin
       logtext(0,cash & " " & IVp.Sum4);
       messagebox(0,cash & " " & IVp.Sum4);
         RecordCheckError(24177,"",MatRowCnt(IVp),"Sum");      

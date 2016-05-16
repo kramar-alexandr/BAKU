@@ -324,18 +324,63 @@ weboutstring("</select>");
 end;
 resetcompany(curc);
 
-//	weboutstring("<button type=\"button\" onclick=\"myFunction()\">Submit</button>");
 
 weboutstring("<p id=\"demo\"></p>");
 
 //weboutstring("<img id=\"demo1\" src=\"\" alt=\"\" style=\"width:304px;height:228px;\">");
 
+//weboutstring("<input type=\"file\" accept=\"image/*\" capture=\"camera\" id=\"capture\"> ");
+
+weboutstring("<video id=\"video\" width=\"640\" height=\"480\" autoplay></video>");
+weboutstring("<button id=\"snap\">Snap Photo</button>");
+weboutstring("<canvas id=\"canvas\" width=\"640\" height=\"480\"></canvas>");
+
+
 weboutstring("<script>");
 
+
+weboutstring("window.addEventListener(\"DOMContentLoaded\", function() {");
+weboutstring("			var canvas = document.getElementById(\"canvas\"),");
+weboutstring("				context = canvas.getContext(\"2d\"),");
+weboutstring("				video = document.getElementById(\"video\"),");
+weboutstring("				videoObj = { \"video\": true },");
+weboutstring("				errBack = function(error) {");
+weboutstring("					console.log(\"Video capture error: \", error.code); ");
+weboutstring("				};");
+weboutstring("			if(navigator.getUserMedia) { // Standard");
+weboutstring("				navigator.getUserMedia(videoObj, function(stream) {");
+weboutstring("					video.src = stream;");
+weboutstring("					video.play();");
+weboutstring("				}, errBack);");
+weboutstring("			} else if(navigator.webkitGetUserMedia) { // WebKit-prefixed");
+weboutstring("				navigator.webkitGetUserMedia(videoObj, function(stream){");
+weboutstring("					video.src = window.webkitURL.createObjectURL(stream);");
+weboutstring("					video.play();");
+weboutstring("				}, errBack);");
+weboutstring("			} else if(navigator.mozGetUserMedia) { // WebKit-prefixed");
+weboutstring("				navigator.mozGetUserMedia(videoObj, function(stream){");
+weboutstring("					video.src = window.URL.createObjectURL(stream);");
+weboutstring("					video.play();");
+weboutstring("				}, errBack);");
+weboutstring("			}");
+weboutstring("			document.getElementById(\"snap\").addEventListener(\"click\", function() {");
+weboutstring("				context.drawImage(video, 0, 0, 640, 480);");
+weboutstring("			});");
+weboutstring("		}, false);");
+
+weboutstring("</script>");
+weboutstring("<script>");
+
+weboutstring("function onFail(message) {");
+weboutstring("    alert('Failed because: ' + message);");
+weboutstring("}");
 
 weboutstring("document.getElementById('numb').onkeypress = function(e){");
 weboutstring("    var x, text,loc;");
 weboutstring("		var xhr = new XMLHttpRequest();");
+
+weboutstring("		var videoFile = $('#reviewVideoCapture').get(0).files[0];");
+
 weboutstring("    x = document.getElementById(\"numb\").value;");
 weboutstring("    loc = document.getElementById(\"location\").value;");
 weboutstring("    if (!e) e = window.event;");

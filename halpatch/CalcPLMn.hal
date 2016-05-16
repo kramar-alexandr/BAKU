@@ -415,8 +415,11 @@ begin
 	val ppprice;
 	
 	
+	
+	
 	agroup = firstinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
 	aclass = lastinrange(agroup1,10);// Edit ************************** Thursday, 20 August 2015 14:01:14
+	
 	
 	if(agroup==aclass)then begin
 		aclass = "";// Edit ************************** Thursday, 20 August 2015 14:01:54
