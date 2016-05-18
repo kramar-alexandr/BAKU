@@ -39,7 +39,7 @@ begin
 	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403,Accr76,Accr7505,Accr53,Accr601;
 	array string 5 CurList;
 	integer i,j,k,l,rwcnt,rwcnt2,curi;
-	boolean TrHs,testf,done;
+	boolean TrHs,testf,done,f;
 	Date tempDate;
 	val BeginBalance50, BeginBalance51, BeginBalance53,
 		SaldoEndPeriod53,
@@ -153,32 +153,60 @@ begin
 			if (ReadFirstMain(TRr,2,true)) then begin
 				if (mainr.TransDate == TRr.TransDate) then begin
 					rwcnt = MatRowCnt(TRr);
-					for (i=0;i<rwcnt;i=i+1) begin
+					switch (TRr.IntYc) begin
+            case IVYc:
+              IVr.SerNr = TRr.Number;
+              if (ReadFirstMain(IVr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case IPYc:
+              IPr.SerNr = TRr.Number;
+              if (ReadFirstMain(IPr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case CLInYc:
+              CLInr.SerNr = TRr.Number;
+              if (ReadFirstMain(CLInr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case CLOutYc:
+              CLOutr.SerNr = TRr.Number;
+              if (ReadFirstMain(CLOutr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+          end;
+          for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
 						done = false;
 						if ((TRrw.AccNumber == "50") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 							switch (TRr.IntYc) begin
 								case IVYc:
-									IVr.SerNr = TRr.Number;
-									if (ReadFirstMain(IVr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "ëó/äã." & IVr.SerNr;
 										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case IPYc:
-									IPr.SerNr = TRr.Number;
-									if (ReadFirstMain(IPr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "èã/äã." & IPr.SerNr;
 										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case CLInYc:
-									CLInr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLInr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "èäé." & CLInr.SerNr;
 										rwcnt2 = MatRowCnt(CLInr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
-											if (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
+											if nonblank(CLInrw.Comment) and (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLInrw.Comment;
+                        CLInrw.Comment = "";
 											end;
 										end;
 										if blank(tempTRrw.ExtraComment) then begin
@@ -186,14 +214,14 @@ begin
 										end;
 									end;
 								case CLOutYc:
-									CLOutr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLOutr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "êäé." & CLOutr.SerNr;
 										rwcnt2 = MatRowCnt(CLOutr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
-											if (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
+											if nonblank(CLInrw.Comment) and (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLOutrw.Comment;
+                        CLOutrw.Comment = "";
 											end;
 										end;
 										if blank(tempTRrw.ExtraComment) then begin
@@ -453,31 +481,59 @@ begin
 			if (ReadFirstMain(TRr,2,true)) then begin
 				if (mainr.TransDate == TRr.TransDate) then begin
 					rwcnt = MatRowCnt(TRr);
+          switch (TRr.IntYc) begin
+            case IVYc:
+              IVr.SerNr = TRr.Number;
+              if (ReadFirstMain(IVr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case IPYc:
+              IPr.SerNr = TRr.Number;
+              if (ReadFirstMain(IPr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case CLInYc:
+              CLInr.SerNr = TRr.Number;
+              if (ReadFirstMain(CLInr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+            case CLOutYc:
+              CLOutr.SerNr = TRr.Number;
+              if (ReadFirstMain(CLOutr,1,true)) then begin
+                f = true;
+              end else begin
+                f = false;
+              end;
+          end;
 					for (i=0;i<rwcnt;i=i+1) begin
 						MatRowGet(TRr,i,TRrw);
 						if ((TRrw.AccNumber == "51") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 							switch (TRr.IntYc) begin
 								case IVYc:
-									IVr.SerNr = TRr.Number;
-									if (ReadFirstMain(IVr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "ëó/äã." & IVr.SerNr;
 										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case IPYc:
-									IPr.SerNr = TRr.Number;
-									if (ReadFirstMain(IPr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "èã/äã." & IPr.SerNr;
 										tempTRrw.ExtraComment = TRr.Comment;
 									end;
 								case CLInYc:
-									CLInr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLInr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "èäé." & CLInr.SerNr;
 										rwcnt2 = MatRowCnt(CLInr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLInr,k,CLInrw);
-											if (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
+											if nonblank(CLInrw.Comment) and (((CLInrw.Sum == TRrw.CurDebVal) or (CLInrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLInrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLInrw.Objects,TRrw.Objects)) or (blank(CLInrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLInrw.Comment;
+                        CLInrw.Comment = "";
 											end;
 										end;
 										if blank(tempTRrw.ExtraComment) then begin
@@ -485,14 +541,14 @@ begin
 										end;
 									end;
 								case CLOutYc:
-									CLOutr.SerNr = TRr.Number;
-									if (ReadFirstMain(CLOutr,1,true)) then begin
+									if (f) then begin
 										tempTRrw.Comment = "êäé." & CLOutr.SerNr;
 										rwcnt2 = MatRowCnt(CLOutr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
-											if (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
+											if nonblank(CLInrw.Comment) and (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
 												tempTRrw.ExtraComment = CLOutrw.Comment;
+                        CLOutrw.Comment = "";
 											end;
 										end;
 										if blank(tempTRrw.ExtraComment) then begin
