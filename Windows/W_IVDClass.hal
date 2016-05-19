@@ -3792,7 +3792,8 @@ begin
   MatCol(1,-350,"Склад",0,Location,false,LocationSClass);
   MatCol(1,-280,"Серийный номер",0,SerialNr,false,SerialNrSClass);
   MatCol(1,-150,"Срок годности",0,BestBefore,false,0);
-  MatCol(1,-60,"Статус партии",0,BatchStatus,false,BatchStatusSClass);
+  //MatCol(1,-60,"Статус партии",0,BatchStatus,false,BatchStatusSClass);
+  MatCol(1,-60,"Кол.печати",0,PrintQuant,false,0); //Edit***************************Sasha2,11:37 19.05.2016
     Flip(flipnr); flipnr = flipnr + 1;
   MatCol(1,144,"Наим.",0,Spec,false,0);
   MatColTL(1,-404,"Стоимость товара",0,-1,ViewOnly,-1,InPrice,false,0);
@@ -4024,7 +4025,8 @@ window PasteRetItemTClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 	real h,v;
-  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGother,RcType); 
+	Integer tilenr;
+  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGother,-); 
   DynamicWindow;
   SetWRect(0,10,700,300);
   UseView(RcVc);
@@ -4053,6 +4055,42 @@ begin
   
   
   StringList(9,120,-24,-10);
+  
+  /*UseView(SHVc);
+  
+  Tile(0,110,false,"",DelAddrCode);
+  EditField(100,20,150,"Товар",Normal,DelAddrCode,false,INSClass);
+  if(currentcompany==1)then begin
+  	EditField(100,40,100,"Дата продажи",Normal,ShipDate,false,PasteCurDate);
+  end;
+  HalPushButton(100,70,180,90,"SearchRetItems","Поиск товара");
+  HalPushButton(230,70,350,90,"PasteRetItems","Вставить возврат");
+  
+  StaticText(29+h,110,"Товар",false);
+  h=5;
+  if(currentcompany>1)then begin
+  	h=50;
+  	StaticText(29+h,110,"Дата",false);
+  	h=80;
+  end;
+  
+  tilenr = 1;
+  TileButton(tilenr,"Товары"); 
+  Tile(tilenr,220,true,tilenr,Math); 
+  v = 24;
+  MatrixBegin(4,v,-50,-10,-,200);
+  Flip(0);
+  MatColTL(1,h=30,"Товар",0,-1,ViewOnly,0,ArtCode,true,0);
+  MatColTL(1,h+=100,"Дата",0,-1,ViewOnly,0,BestBefore,true,0);
+  MatColTL(1,h+=80,"К-во",0,-1,ViewOnly,0,Ship,true,0);
+  MatColTL(1,h+=50,"Цена",0,-1,ViewOnly,0,BasePrice,true,0);
+  MatColTL(1,h+=60,"Скидка",0,-1,ViewOnly,0,PosCode,true,0);
+  MatColTL(1,h+=60,"Сумма",0,-1,ViewOnly,0,TAX2Reb,true,0);
+  MatColTL(1,h+=60,"Склад",0,-1,ViewOnly,0,Location,true,0);
+  MatColTL(1,-110,"Клиент",0,-1,ViewOnly,0,CustArtCode,true,0);
+  InsertRowTest;
+  DeleteRowTest;
+  EndMatrix;*/
   
   EndWindow;
 end;

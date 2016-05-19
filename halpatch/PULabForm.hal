@@ -336,7 +336,7 @@ BEGIN
   Integer dwcnt,di;
   LongInt frlab,tolab;
   string 255 frin, toin;
-  Boolean test;
+  Boolean test,onlyPrintQuantf;
   record INVc INr;
   record ItemStatusVc ISr;
   record SerBalVc SBr;
@@ -376,11 +376,27 @@ BEGIN
 		
 		
     if (test) then begin
+      onlyPrintQuantf = false; //Edit***************************Sasha2,11:48 19.05.2016 {
       rwcnt = MatRowCnt(PUr);
       for (i=0;i<rwcnt;i=i+1) begin
         MatRowGet(PUr,i,PUrw);
-        if (nonblank(PUrw.ArtCode)) then begin  
-          vquant = PUrw.Quant;
+        if (PUrw.PrintQuant>0) then begin
+          onlyPrintQuantf = true;
+          i = rwcnt;
+        end;
+      end; //Edit***************************Sasha2,11:48 19.05.2016 }
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(PUr,i,PUrw);
+        test = true;
+        if(onlyPrintQuantf and PUrw.PrintQuant==0) then begin test = false; end; //Edit***************************Sasha2,11:55 19.05.2016
+        if(blank(PUrw.ArtCode)) then begin test = false; end; //Edit***************************Sasha2,11:55 19.05.2016
+        if (test) then begin
+          if (onlyPrintQuantf and PUrw.PrintQuant>0) then begin //Edit***************************Sasha2,11:59 19.05.2016 {
+            vquant = PUrw.PrintQuant;
+          end else begin
+            vquant = PUrw.Quant;
+          end; //Edit***************************Sasha2,12:34 19.05.2016 ]
+          //vquant = PUrw.Quant;
           quant = vquant;
           vquant = vquant - quant;
           if (vquant>0) then begin
