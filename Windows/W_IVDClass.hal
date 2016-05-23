@@ -2172,8 +2172,8 @@ if (HasTouchScreenLook==false) then begin
     Flip(7);
     CurFIFOFlip = true;
     MatCol(t=kInvoiceRowTypeNormal,144,"Наименование",0,Spec,false,0);
-    MatCol(t,-380,"Из сч/ф",0,IVForRetNr,true,0);
-    MatCol(t,-330,"Из комп.",0,RetFromComp,true,0);
+    MatColTL(t,-380,"Из сч/ф",0,-1,ViewOnly,0,IVForRetNr,true,0); 
+    MatColTL(t,-330,"Из комп.",0,-1,ViewOnly,0,RetFromComp,true,0); 
     MatCol(t,-280,"FIFO вал.за ед.",0,FIFOCur,true,0);
     MatCol(t,-190,"FIFO вал.по стр.",0,FIFORowValCur,true,0);
     MatCol(t,-100,"FIFO вал.валюта",0,CurncyCodeCur,true,0);
