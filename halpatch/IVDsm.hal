@@ -67,6 +67,8 @@ external procedure IVDClass_RefreshStringList(Integer,record IVVc);
 external function Boolean IVDClassvRebateEFAfter(Integer,Integer,Integer,Integer);
 remote updating procedure CreatePOfromOR(record ORVc);// Edit ************************** Thursday, 12 September 2013 09:21:48
 remote function boolean CheckPOFromOR(record ORVc);// Edit ************************** Thursday, 12 September 2013 14:45:12
+remote procedure FindReItemsMatrix(var record SHVc); //Edit***************************Sasha2,12:58 19.05.2016
+external function val AbsoluteVal(val);
 
 //SetLangMode(LangRussian,"RUS",0);
 
@@ -132,9 +134,11 @@ end;
 
 global procedure PasteRetItems()
 begin
-integer wn,i,mtrw,mwn,cnt,length;
+integer wn,i,mtrw,mwn,cnt,length,rn;
 record IVVc IVr,IV2r; //Edit***************************Sasha2,13:56 03.07.2015
 row IVVc IVrw,IV2rw; //Edit***************************Sasha2,13:59 03.07.2015
+record SHVc SHr;
+row SHVc SHrw;
 string 100 artcode,art;
 val price,rebate,sum,qty;
 array string 100 params;
@@ -148,7 +152,44 @@ string 20 tstr,transnr,rowstr;
   getwindowrecord(mwn,IVr);
   if(IVr.OKFlag==0 and IVr.Invalid==0)then begin
     
-    artcode = getliststring(wn,selectedlistline(wn));
+    rn = WindowActiveRow(wn);
+    if (rn>-1) then begin
+      getwindowrecord(wn,SHr);
+      MatRowGet(SHr,rn,SHrw);
+      
+      mtrw = matrowcnt(IVr);
+      ClearRow(IVr,IVrw,1);
+      IVrw.ArtCode = SHrw.ArtCode;
+      matrowput(IVr,mtrw,IVrw);
+      IVVc_PasteArtCode(IVr,mtrw,inwarning,warning,false,sernrf);
+      matrowget(IVr,mtrw,IVrw);
+      IVrw.Quant = -AbsoluteVal(SHrw.Ship);
+      IVrw.Price = SHrw.BasePrice;
+      
+      IVrw.Sum = -AbsoluteVal(SHrw.TAX2Reb);
+      matrowput(IVr,mtrw,IVrw);
+      IVVc_PasteSum(IVr,mtrw,chsum,1);
+      
+      matrowget(IVr,mtrw,IVrw);
+      IVrw.vRebate = evaltoval(mid(SHrw.PosCode,0,len(SHrw.PosCode)-1));
+      matrowput(IVr,mtrw,IVrw);
+      
+      matrowget(IVr,mtrw,IVrw);
+      IVrw.FIFO = AbsoluteVal(SHrw.FIFO/SHrw.Ship);
+      IVrw.FIFORowVal = SHrw.FIFO;
+      IVrw.FIFOCur = AbsoluteVal(SHrw.FIFORowVal/SHrw.Ship);
+      IVrw.FIFORowValCur = SHrw.FIFORowVal;
+      IVrw.CurncyCodeCur = SHrw.TAX2Code;
+      IVrw.IVForRetNr = SHrw.OrdRow;
+      IVrw.RetFromComp = SHrw.Source;
+      matrowput(IVr,mtrw,IVrw);
+      
+      putwindowrecord(mwn,IVr);
+      updatebrowses(mwn);
+      IVDClass_RefreshStringList(mwn,IVr);
+    end;
+    
+    /*artcode = getliststring(wn,selectedlistline(wn));
     mtrw = matrowcnt(IVr);
     getVarsFromString(artcode,params,cnt);
     k=0;
@@ -194,7 +235,7 @@ string 20 tstr,transnr,rowstr;
     putwindowrecord(mwn,IVr);
     updatebrowses(mwn);
     
-    IVDClass_RefreshStringList(mwn,IVr);
+    IVDClass_RefreshStringList(mwn,IVr);*/
     
   end;
   
@@ -206,24 +247,25 @@ begin
 integer wn,i,mtrw,nwn,rownr;
 record IVVc IVr;
 row IVVc IVrw;
+record SHVc SHr;
 record RcVc RepSpec;
 
-  recordNew(RepSpec);
+  recordNew(SHr);
   
   wn = curwindow;
   getwindowrecord(wn,IVr);
   deselectwindow(wn,false);
-  RepSpec.ArtMode = wn;
+  SHr.PRCode = wn;
   rownr = GetWindowCurRow(wn);
   if (rownr>=0) then begin
     matrowget(IVr,rownr,IVrw);
     if(nonblank(IVrw.ArtCode))then begin
-      RepSpec.ObjStr = IVrw.ArtCode;
+      SHr.DelAddrCode = IVrw.ArtCode;
     end;
   end;
   
-  nwn = OpenWindow("PasteRetItemTClass",0,wn,"","",RepSpec);
-  putwindowrecord(nwn,RepSpec);
+  nwn = OpenWindow("PasteRetItemTClass",0,wn,"","",SHr);
+  putwindowrecord(nwn,SHr);
   //selectwindow(nwn);
   
 return;
@@ -266,15 +308,34 @@ global procedure SearchRetItems()
 begin
 integer wn;
 record RcVc RepSpec;
+record SHVc SHr;
+row SHVc SHrw;
 integer counter,i;
 array string 100 artcodes;
-
+ 
+  
   wn = curwindow;
+  deselectwindow(wn,false);
+  getwindowrecord(wn,SHr); 
+  
+  if(currentcompany!=1)then begin
+  	SHr.ShipDate = addyear(currentdate,-2);
+  end;
+  if(nonblank(SHr.DelAddrCode) and nonblank(SHr.ShipDate))then begin
+    FindReItemsMatrix(SHr);
+    if(MatRowCnt(SHr)>0)then begin
+      putwindowrecord(wn,SHr);
+    end;
+  end else begin
+    //messagebox(0,"Beda!!!!");
+  end;
+  selectwindow(wn);
+  
+  /*wn = curwindow;
   deselectwindow(wn,false);
   getwindowrecord(wn,RepSpec); //Edit***************************Sasha2,16:21 20.05.2015
   
   ClearStringList(wn);
-  //updatebrowses(wn);
   
   if(currentcompany!=1)then begin
   	RepSpec.sStartDate = addyear(currentdate,-2);// Edit ************************** Wednesday, 13 May 2015 16:24:17
@@ -283,19 +344,17 @@ array string 100 artcodes;
     FindReItems(RepSpec.ObjStr,RepSpec.sStartDate,artcodes,counter);
 
     if(counter>0)then begin
-    for(i=0;i<counter;i=i+1)begin
-      SetListString(wn,60,artcodes[i],false);
+      for(i=0;i<counter;i=i+1) begin
+        SetListString(wn,60,artcodes[i],false);
+      end;
+  
+      putwindowrecord(wn,RepSpec);
     end;
-
-    putwindowrecord(wn,RepSpec);
-
-    //updatebrowses(wn);
-  end;
-    
   end else begin
     //messagebox(0,"Beda!!!!");
   end;
-  selectwindow(wn);
+  selectwindow(wn);*/
+  
 return;
 end;
 

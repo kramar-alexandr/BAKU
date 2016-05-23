@@ -1555,7 +1555,28 @@ BEGIN
               IVrw.FIFO = IVrw.FIFO*(-1);
             end;
             IVrw.FIFORowVal = absoluteval(IVrw.FIFO*IVrw.Quant);
-            LookForCurFIFOifIVQuantIsNegative(INr,IVp,IVrw,i,fifocurIVr);
+            
+            if (IVrw.FIFOCur<0) then begin //Edit***************************Sasha2,17:54 19.05.2016 {
+              IVrw.FIFOCur = IVrw.FIFOCur*(-1);
+            end;
+            if (IVrw.FIFOCur>0) then begin
+              IVrw.FIFORowValCur = AbsoluteVal(IVrw.FIFOCur*IVrw.Quant);
+              if (MatRowCnt(fifocurIVr)>i) then begin 
+                MatRowGet(fifocurIVr,i,fifocurIVrw);
+                if (nonblank(fifocurIVrw.Spec) and fifocurIVrw.Spec!=IVrw.CurncyCodeCur) then begin
+                  //Maybe unnecessary
+                end;
+              end else begin
+                ClearRow(fifocurIVr,fifocurIVrw,1);
+                fifocurIVrw.Spec = IVrw.CurncyCodeCur;
+                fifocurIVrw.FrRate = BlankVal;
+                fifocurIVrw.BaseRate1 = 1;
+              end; 
+              fifocurIVrw.FIFO = fifocurIVrw.FIFO + IVrw.FIFORowValCur; 
+              MatRowPut(fifocurIVr,i,fifocurIVrw);
+            end else begin //Edit***************************Sasha2,17:54 19.05.2016 }
+              LookForCurFIFOifIVQuantIsNegative(INr,IVp,IVrw,i,fifocurIVr);
+            end;
             goto L80SKIPROWIVUpdateFIFO;
           end; //Edit***************************Sasha2,15:00 03.07.2015 }
           IVrw.FIFO = blankval;

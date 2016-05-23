@@ -23,6 +23,7 @@ external function Boolean ExpandStructItem(string,string,val,var record SHVc);
 external procedure PrintItemHistLine(record ItemHistVc,val);
 external function val FindCostPriceWA(Integer,record INVc,string);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode); //Edit***************************Sasha2,15:16 18.03.2015
+external function val AbsoluteVal(val); //Edit***************************Sasha2,12:46 20.05.2016
 
 // adjustqty = Quantities from lines above with the same item number, indicates how many IHr will be skipped until first will be used
 // takenqty = How many quantities was used from the qty
@@ -1738,44 +1739,51 @@ begin
   								  matrowget(IVr,IHr.Row,IVrw);
 										curncy = INr.LastPurchCurncyCode;
 										if (IVrw.Quant<0) then begin //Edit-------------------Vitalii 13:18 15.01.2016
-										  //totcostpricecurncy = IVrw.FIFO * IHr.Qty;
-										  oldIHr.ArtCode = artcode;
-										  oldIHr.FileName = "IVVc";
-										  qty1 = IVrw.Quant;
-										  ResetLoop(oldIHr);
-										  TrHs = true;
-										  findfcurcost = false;
-										  while (LoopBackKey("FNArtCode",oldIHr,2,TrHs)) begin
-                        if (oldIHr.ArtCode<>artcode) then begin TrHs = false; end;
-                        if (qty1>=0) then begin TrHs = false; end;
-                        if (TrHs) then begin
-                          testf = true;
-                          if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
-                          if (oldIHr.StockAffectf==0) then begin testf = false; end;
-                          //if (oldIHr.Qty>0) then begin testf = false; end;
-                          if (oldIHr.Location<>location) then begin testf = false; end;
-                          if (oldIHr.TransNr>transnr) then begin testf = false; end;
-                          if (testf) then begin
-                            if (oldIHr.Qty<qty1) then begin
-                              totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy/oldIHr.Qty*qty1;
-                              findfcurcost = true;
-                              qty1 = 0;
-                            end else begin
-                              if (oldIHr.Qty>0) then begin
-                                totcostpricecurncy = totcostpricecurncy - oldIHr.TotCostPriceCurncy;
+										  if (IVrw.FIFOCur>0) then begin //Edit***************************Sasha2,12:47 20.05.2016 {
+										    totcostpricecurncy = AbsoluteVal(IVrw.FIFOCur*IVrw.Quant);
+										    curncy = IVrw.CurncyCodeCur;
+										    findfcurcost = true;
+										  end else begin //Edit***************************Sasha2,12:47 20.05.2016 }
+  										  //totcostpricecurncy = IVrw.FIFO * IHr.Qty;
+  										  oldIHr.ArtCode = artcode;
+  										  oldIHr.FileName = "IVVc";
+  										  qty1 = IVrw.Quant;
+  										  ResetLoop(oldIHr);
+  										  TrHs = true;
+  										  findfcurcost = false;
+  										  while (LoopBackKey("FNArtCode",oldIHr,2,TrHs)) begin
+                          if (oldIHr.ArtCode<>artcode) then begin TrHs = false; end;
+                          if (qty1>=0) then begin TrHs = false; end;
+                          if (TrHs) then begin
+                            testf = true;
+                            if (oldIHr.FileName<>"IVVc") then begin testf = false; end;
+                            if (oldIHr.StockAffectf==0) then begin testf = false; end;
+                            //if (oldIHr.Qty>0) then begin testf = false; end;
+                            if (oldIHr.Location<>location) then begin testf = false; end;
+                            if (oldIHr.TransNr>transnr) then begin testf = false; end;
+                            if (testf) then begin
+                              if (oldIHr.Qty<qty1) then begin
+                                totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy/oldIHr.Qty*qty1;
                                 findfcurcost = true;
+                                qty1 = 0;
                               end else begin
-                                totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy;
-                                findfcurcost = true;
+                                if (oldIHr.Qty>0) then begin
+                                  totcostpricecurncy = totcostpricecurncy - oldIHr.TotCostPriceCurncy;
+                                  findfcurcost = true;
+                                end else begin
+                                  totcostpricecurncy = totcostpricecurncy + oldIHr.TotCostPriceCurncy;
+                                  findfcurcost = true;
+                                end;
+                                qty1 = qty1 - oldIHr.Qty;
                               end;
-                              qty1 = qty1 - oldIHr.Qty;
-                            end;
-                            if (qty1==0) then begin
-                              TrHs = false;
+                              if (qty1==0) then begin
+                                TrHs = false;
+                              end;
                             end;
                           end;
-                        end;
+  										  end;  
 										  end;
+										  
 										  if(findfcurcost==false)then begin
 										  	totcostpricecurncy = INr.LastPurchPrice2 * IHr.Qty;
 										  end;

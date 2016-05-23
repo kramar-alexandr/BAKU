@@ -11,24 +11,149 @@ external function Integer GetIntYc(Date);
 external function val MulWithRateToBase1(var string,Date,val,roundmode);
 external function string 255 GetNextValue(var string);
 external function string 255 AddStr(string,string,string);
+external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function val AbsoluteVal(val);
+external function boolean CompanyIsJWLikeCompany(Integer);
 
 //SetLangMode(LangRussian,"RUS",0);// Edit ************************** Wednesday, 5 November 2014 13:30:47
 
-global procedure FindReItems(string artcode, date todate,var array string artcodes,var integer counter)
+procedure MakeReItemsMatrixFind(var record SHVc SHr, Boolean clearRows)
 begin
-record RcVc RepSpec;
-integer wn;
+  record IVVc IVr;
+  row IVVc IVrw;
+  row SHVc SHrw;
+  record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
+  boolean TrHs,testf,insertf;
+  record ItemHistVc IHr;
+  string 100 tstr,artcode,compname,compnr;
+  date todate;
+  Integer rwcnt,lastRowPos,i;
+  val tval;
+
+  artcode = SHr.DelAddrCode;
+  todate = SHr.ShipDate;
+  
+  BlockLoad(Compb);
+  rwcnt = MatRowCnt(Compb);
+  for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(Compb,i,Comprw);
+    if (StringToInt(Comprw.CompCode)==CurrentCompany) then begin
+      compnr = Comprw.CompCode;
+      compname = Comprw.CompName;
+      i = rwcnt;
+    end;
+  end;
+  
+  if (clearRows) then begin
+    rwcnt = MatRowCnt(SHr);
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowDelete(SHr,i);
+      rwcnt = MatRowCnt(SHr);
+      i = i-1;
+    end;
+  end;
+  
+  IHr.FileName = "IVVc";
+  IHr.ArtCode = artcode;
+  IHr.TransDate = todate;
+  TrHs = true;
+  while(loopkey("FNArtCode",IHr,3,TrHs)) begin
+  	testf = true;
+  	if(currentcompany==1)then begin
+			if(IHr.TransDate!=todate)then begin TrHs = false; testf = false; end;
+  	end else begin
+			if(IHr.TransDate<todate)then begin TrHs = false; testf = false; end;
+  	end;
+  	if(IHr.ArtCode!=artcode or IHr.FileName!="IVVc")then begin TrHs = false; testf = false; end;
+  	if(IHr.Invalid==1)then begin testf=false; end;
+  	if(IHr.StockAffectf!=1) then begin testf = false; end; //Edit***************************Sasha2,15:25 20.05.2015
+  	if(IHr.Qty>=0) then begin testf = false; end; //Edit***************************Sasha2,10:51 23.05.2016
+  	if(testf)then begin
+  		
+			IVr.SerNr = IHr.TransNr;
+			if(readfirstmain(IVr,1,true))then begin
+				matrowget(IVr,IHr.Row,IVrw);
+				if(IVrw.ArtCode==artcode)then begin
+				  rwcnt = MatRowCnt(SHr);
+				  lastRowPos = rwcnt-1;
+				  insertf = true;
+				  if (MatRowCnt(SHr)==0) then begin
+				    ClearRow(SHr,SHrw,1);
+				  end else begin
+				    matrowget(SHr,lastRowPos,SHrw);
+				    if (SHrw.stp==IHr.Row and SHrw.OrdRow==IHr.TransNr) then begin
+				      insertf = false;
+				    end else begin
+				      ClearRow(SHr,SHrw,1);
+				    end;
+				  end;
+					SHrw.ArtCode = artcode;
+					if(currentcompany>1)then begin
+						SHrw.BestBefore = IHr.TransDate;
+					end;
+					SHrw.Ship = SHrw.Ship + AbsoluteVal(IHr.Qty);
+					SHrw.BasePrice = IVrw.Price;
+					if (IVrw.vRebate>0) then begin
+					  SHrw.PosCode = 0+IVrw.vRebate & "%";
+					end;
+					SHrw.TAX2Reb = SHrw.TAX2Reb + (IVrw.Sum/IVrw.Quant)*AbsoluteVal(IHr.Qty);
+					SHrw.Location = IHr.Location;
+					SHrw.CustArtCode = IVr.CustCode;
+					SHrw.Spec = IVr.Addr0;
+					SHrw.OrdRow = IHr.TransNr;
+					SHrw.FIFO = SHrw.FIFO + IHr.TotCostPrice;
+					if (NonBlank(SHrw.TAX2Code) and SHrw.TAX2Code!=IHr.CurncyCode) then begin
+					  CurValToOtherCur(IHr.InDate,IHr.CurncyCode,IHr.TotCostPriceCurncy,SHrw.TAX2Code,tval,DefaultCurRoundOff);
+					  SHrw.FIFORowVal = SHrw.FIFORowVal + tval;
+					  SHrw.TAX2Code = IHr.CurncyCode;
+					end else begin
+					  SHrw.FIFORowVal = SHrw.FIFORowVal + IHr.TotCostPriceCurncy;
+					  SHrw.TAX2Code = IHr.CurncyCode;
+					end;
+					SHrw.stp = IHr.Row;
+					SHrw.VARList = compname;
+					SHrw.Source = compnr;
+					if (insertf) then begin
+					  MatRowInsert(SHr,rwcnt,SHrw);
+					end else begin
+					  MatRowPut(SHr,lastRowPos,SHrw);
+					end;
+        end;
+			end;
+  	end;
+  end; RESETLOOP(IHr);
+    
+      
+  return;
+end;
+
+global 
+procedure FindReItemsMatrix(var record SHVc SHr)
+begin
+  integer oldcomp;
+  
+    oldcomp = CurrentCompany;
+    MakeReItemsMatrixFind(SHr,true);
+    if (CompanyIsJWLikeCompany(oldcomp) and oldcomp!=3) then begin
+      if (SetCompanyCode("3",false)) then begin
+        MakeReItemsMatrixFind(SHr,false);
+        RESETCOMPANY(oldcomp);
+      end;
+    end;
+  
+return;
+end;
+
+global 
+procedure FindReItems(string artcode, date todate,var array string artcodes,var integer counter)
+begin
 record IVVc IVr;
 row IVVc IVrw;
-integer i,mtrw;
 boolean TrHs,testf;
 record ItemHistVc IHr;
 string 100 tstr;
-//array string 100 artcodes;
-//integer counter;
 
-  wn = curwindow;
-  
   counter = 0;
   IHr.FileName = "IVVc";
   IHr.ArtCode = artcode;

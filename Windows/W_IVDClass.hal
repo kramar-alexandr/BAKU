@@ -1804,6 +1804,7 @@ window IVDClass:2
 begin
   real h,h1,h2,h3,h4,hm,hs,t,v,v2,v3,vm,vs;
   string 255 label,tstr;// Edit ************************** Tuesday, 4 December 2012 10:28:40
+  Boolean CurFIFOFlip;
   WindowBegin("Счет-фактура клиенту",IVDClass,CGview,-);
   Sizeable(-1,-1,0,0);
   UseView(IVVc);
@@ -1811,6 +1812,7 @@ if (HasTouchScreenLook==false) then begin
   ActiveFieldOnNew("CustCode");  
   SetWRect(20,80,750,460);
   CommunicateButton;
+  CurFIFOFlip = false; //Edit***************************Sasha2,11:03 23.05.2016
   Tile(0,74,false,"",CustCode);
   EditField(75,vm=(v=6),95,"Номер",Normal,SerNr,false,TSerSClass);
   EditField(75,v+=20,95,"Клиент",Normal,CustCode,false,CUSClass);
@@ -2166,6 +2168,16 @@ if (HasTouchScreenLook==false) then begin
   MatCol(t,-70,"Налог на окр. ср.",0,RepaExVAT,true,0); 
   MatCol(t=kInvoiceRowTypeCorrection,144,"Наименование",0,Spec,false,0);
   MatCol(t,-80,"Нал.на окр.среду",0,RepaExVAT,true,0);
+  if (UserCanAction("ViewCostPrice",true)) then begin //Edit***************************Sasha2,11:03 23.05.2016 {
+    Flip(7);
+    CurFIFOFlip = true;
+    MatCol(t=kInvoiceRowTypeNormal,144,"Наименование",0,Spec,false,0);
+    MatCol(t,-380,"Из сч/ф",0,IVForRetNr,true,0);
+    MatCol(t,-330,"Из комп.",0,RetFromComp,true,0);
+    MatCol(t,-280,"FIFO вал.за ед.",0,FIFOCur,true,0);
+    MatCol(t,-190,"FIFO вал.по стр.",0,FIFORowValCur,true,0);
+    MatCol(t,-100,"FIFO вал.валюта",0,CurncyCodeCur,true,0);
+  end; //Edit***************************Sasha2,11:03 23.05.2016 }
   InsertRowTest;
   DeleteRowTest;
   EndMatrix;
@@ -2176,6 +2188,9 @@ if (HasTouchScreenLook==false) then begin
   v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,4,"D");
   v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,5,"E");
   v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,6,"F");
+  if (CurFIFOFlip) then begin
+    v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,7,"G"); //Edit***************************Sasha2,11:03 23.05.2016
+  end;
   Tile(3,70,false,"3",FrRate);
   vs = 20;
   EditField(h1,v=6,50,"Валюта",Normal,CurncyCode,false,CurncyCodeSClass);
@@ -4021,15 +4036,15 @@ begin
   EndWindow;
 end;
 
-window PasteRetItemTClass:1
+window PasteRetItemTClass:1 //embcauo009
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-	real h,v;
-	Integer tilenr;
-  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGother,-); 
+	real h,v,vs;
+	Integer tilenr,flipnr,f;
+  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGslist,-); 
   DynamicWindow;
-  SetWRect(0,10,700,300);
-  UseView(RcVc);
+  SetWRect(0,10,800,300);
+  /*UseView(RcVc);
   //Modality(2);
   
   EditField(100,20,100,"Товар",Normal,ObjStr,false,INSClass);
@@ -4054,9 +4069,9 @@ begin
   StaticText(339+h,110,"Клиент",false);
   
   
-  StringList(9,120,-24,-10);
+  StringList(9,120,-24,-10);*/
   
-  /*UseView(SHVc);
+  UseView(SHVc);
   
   Tile(0,110,false,"",DelAddrCode);
   EditField(100,20,150,"Товар",Normal,DelAddrCode,false,INSClass);
@@ -4078,19 +4093,39 @@ begin
   TileButton(tilenr,"Товары"); 
   Tile(tilenr,220,true,tilenr,Math); 
   v = 24;
-  MatrixBegin(4,v,-50,-10,-,200);
+  EnterSkip(Math);
+  MatrixBegin(4,v,-40,-30,-,200);
   Flip(0);
-  MatColTL(1,h=30,"Товар",0,-1,ViewOnly,0,ArtCode,true,0);
-  MatColTL(1,h+=100,"Дата",0,-1,ViewOnly,0,BestBefore,true,0);
-  MatColTL(1,h+=80,"К-во",0,-1,ViewOnly,0,Ship,true,0);
-  MatColTL(1,h+=50,"Цена",0,-1,ViewOnly,0,BasePrice,true,0);
-  MatColTL(1,h+=60,"Скидка",0,-1,ViewOnly,0,PosCode,true,0);
-  MatColTL(1,h+=60,"Сумма",0,-1,ViewOnly,0,TAX2Reb,true,0);
-  MatColTL(1,h+=60,"Склад",0,-1,ViewOnly,0,Location,true,0);
-  MatColTL(1,-110,"Клиент",0,-1,ViewOnly,0,CustArtCode,true,0);
+  MatColTL(1,h=30,"Товар",0,-1,ViewOnly,0,ArtCode,false,0);
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatColTL(1,h+=100,"Дата",0,-1,ViewOnly,0,BestBefore,false,0);
+  MatColTL(1,h+=80,"К-во",0,-1,ViewOnly,0,Ship,false,0);
+  MatColTL(1,h+=50,"Цена",0,-1,ViewOnly,0,BasePrice,false,0);
+  MatColTL(1,h+=60,"Скидка",0,-1,ViewOnly,0,PosCode,false,0);
+  MatColTL(1,h+=60,"Сумма",0,-1,ViewOnly,0,TAX2Reb,false,0);
+  MatColTL(1,h+=60,"Склад",0,-1,ViewOnly,0,Location,false,0);
+  MatColTL(1,h+=60,"Клиент",0,-1,ViewOnly,0,CustArtCode,false,0);
+  MatColTL(1,-110,"Компания",0,-1,ViewOnly,0,VARList,false,0);  
+  if (CurrentUser=="SA" or CurrentUser=="SA1") then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    MatColTL(1,h=130,"FIFO строка",0,-1,ViewOnly,0,FIFO,false,0);
+    MatColTL(1,h+=70,"FIFO строка вал.",0,-1,ViewOnly,0,FIFORowVal,false,0);
+    MatColTL(1,h+=100,"Валюта FIFO",0,-1,ViewOnly,0,TAX2Code,false,0);
+    MatColTL(1,h+=70,"Сч/ф №",0,-1,ViewOnly,0,OrdRow,false,0);
+    MatColTL(1,h+=70,"Сч/ф row",0,-1,ViewOnly,0,stp,false,0);
+  end;
   InsertRowTest;
   DeleteRowTest;
-  EndMatrix;*/
+  EndMatrix;
+  vs = 20;
+  v = 18; 
+  if (flipnr>2) then begin
+    for (f=1;f<flipnr;f=f+1) begin
+      VTab(-25,v,-6,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
+      v = v + vs;
+    end;
+  end;
   
   EndWindow;
 end;
