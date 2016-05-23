@@ -2237,16 +2237,20 @@ end;
 window PasteRetItemTClass:1
   wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-	real h,v;
+	real h,v,vs;
+	Integer tilenr,flipnr,f;
   WindowBegin("Paste Item for return",PasteRetItemTClass,CGother,RcType); 
   DynamicWindow;
   SetWRect(0,10,700,300);
-  UseView(RcVc);
+  /*UseView(RcVc);
   //Modality(2);
   
   EditField(100,20,100,"Item",Normal,ObjStr,false,INSClass);
-  HalPushButton(100,70,180,90,"SearchRetItems","Item search");
-  HalPushButton(230,70,350,90,"PasteRetItems","Insert return");
+  if(currentcompany==1)then begin
+  	EditField(100,40,100,"Sale Date",Normal,sStartDate,false,PasteCurDate);
+  end;
+  HalPushButton(100,70,180,90,"SearchRetItems","Поиск товара");
+  HalPushButton(230,70,350,90,"PasteRetItems","Вставить возврат");
   
   StaticText(29+h,110,"Item",false);
   h=5;
@@ -2255,13 +2259,71 @@ begin
   	StaticText(29+h,110,"Date",false);
   	h=80;
   end;
-  StaticText(85+h,110,"Qty",false);
+  StaticText(85+h,110,"Qty.",false);
   StaticText(119+h,110,"Price",false);
   StaticText(169+h,110,"Discount",false);
   StaticText(219+h,110,"Sum",false);
   StaticText(279+h,110,"Location",false);
   StaticText(339+h,110,"Customer",false);
-  StringList(9,120,-24,-10);
+  
+  
+  StringList(9,120,-24,-10);*/
+  
+  UseView(SHVc);
+  
+  Tile(0,110,false,"",DelAddrCode);
+  EditField(100,20,150,"Item",Normal,DelAddrCode,false,INSClass);
+  if(currentcompany==1)then begin
+  	EditField(100,40,100,"Sale Date",Normal,ShipDate,false,PasteCurDate);
+  end;
+  HalPushButton(100,70,180,90,"SearchRetItems","Поиск товара");
+  HalPushButton(230,70,350,90,"PasteRetItems","Вставить возврат");
+  
+  StaticText(29+h,110,"Item",false);
+  h=5;
+  if(currentcompany>1)then begin
+  	h=50;
+  	StaticText(29+h,110,"Date",false);
+  	h=80;
+  end;
+  
+  tilenr = 1;
+  TileButton(tilenr,"Items"); 
+  Tile(tilenr,220,true,tilenr,Math); 
+  v = 24;
+  EnterSkip(Math);
+  MatrixBegin(4,v,-40,-30,-,200);
+  Flip(0);
+  MatColTL(1,h=30,"Item",0,-1,ViewOnly,0,ArtCode,false,0);
+  flipnr = 1;
+  Flip(flipnr); flipnr = flipnr + 1;
+  MatColTL(1,h+=100,"Date",0,-1,ViewOnly,0,BestBefore,false,0);
+  MatColTL(1,h+=80,"Qty.",0,-1,ViewOnly,0,Ship,false,0);
+  MatColTL(1,h+=50,"Price",0,-1,ViewOnly,0,BasePrice,false,0);
+  MatColTL(1,h+=60,"Discount",0,-1,ViewOnly,0,PosCode,false,0);
+  MatColTL(1,h+=60,"Sum",0,-1,ViewOnly,0,TAX2Reb,false,0);
+  MatColTL(1,h+=60,"Location",0,-1,ViewOnly,0,Location,false,0);
+  MatColTL(1,h+=60,"Клиент",0,-1,ViewOnly,0,CustArtCode,false,0);
+  MatColTL(1,-110,"Customer",0,-1,ViewOnly,0,VARList,false,0);  
+  if (CurrentUser=="SA" or CurrentUser=="SA1") then begin
+    Flip(flipnr); flipnr = flipnr + 1;
+    MatColTL(1,h=130,"FIFO row",0,-1,ViewOnly,0,FIFO,false,0);
+    MatColTL(1,h+=70,"FIFO row cur.",0,-1,ViewOnly,0,FIFORowVal,false,0);
+    MatColTL(1,h+=100,"Currency FIFO",0,-1,ViewOnly,0,TAX2Code,false,0);
+    MatColTL(1,h+=70,"Invoice №",0,-1,ViewOnly,0,OrdRow,false,0);
+    MatColTL(1,h+=70,"Invoice row",0,-1,ViewOnly,0,stp,false,0);
+  end;
+  InsertRowTest;
+  DeleteRowTest;
+  EndMatrix;
+  vs = 20;
+  v = 18; 
+  if (flipnr>2) then begin
+    for (f=1;f<flipnr;f=f+1) begin
+      VTab(-25,v,-6,v+vs,ToolFlip,f,chr(asc("A") + f - 1)); 
+      v = v + vs;
+    end;
+  end;
   
   EndWindow;
 end;
