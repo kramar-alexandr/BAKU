@@ -2482,7 +2482,7 @@ window PasteRetItemTClass:1
 begin
 	real h,v,vs;
 	Integer tilenr,flipnr,f;
-  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGother,RcType); 
+  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGslist,-); 
   DynamicWindow;
   SetWRect(0,10,700,300);
   /*UseView(RcVc);

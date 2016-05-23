@@ -2239,7 +2239,7 @@ window PasteRetItemTClass:1
 begin
 	real h,v,vs;
 	Integer tilenr,flipnr,f;
-  WindowBegin("Paste Item for return",PasteRetItemTClass,CGother,RcType); 
+  WindowBegin("Paste Item for return",PasteRetItemTClass,CGslist,-); 
   DynamicWindow;
   SetWRect(0,10,700,300);
   /*UseView(RcVc);
