@@ -69,7 +69,6 @@ begin
 	boolean TrHs,TrHs2;
 	integer index;
 	
-	LogText(0,IHr.SerNr & " __");
 	IHnext.Source = IHr.SerNr;
 	TrHs = true;
 	
@@ -89,12 +88,10 @@ begin
 					IHtemp.Row = IHnext.Row;
 					TrHs2 = true;
 					While(LoopKey("FNTransNr",IHtemp,3,TrHs2)) begin
-						//LogText(0,IHtemp.SerNr & "   IHtemp");
 						if (IHtemp.Row != IHnext.Row or IHtemp.TransNr != IHnext.TransNr) then begin TrHs2=false; end;
 						if (IHtemp.Qty > 0 and TrHs2) then begin
 							TrHs2 = false;
 							IHnext = IHtemp;
-							//LogText(0,IHtemp.SerNr & "   IHtemp correct");
 						end;					
 					end;
 				end;
@@ -111,9 +108,6 @@ begin
 	remainQty[index] = remainQty[index] + IHr.RemQty;
 	remainCost[index] = remainCost[index] + IHr.RemCostPrice;
 	remainCostCurncy[index] = remainCostCurncy[index] + IHr.RemCostPriceCurncy;
-	
-	//LogText(0,index & "   " & IHr.SerNr & "    " & IHr.Location & "   " & IHr.RemQty);
-		
 	
 
 return;
@@ -223,8 +217,8 @@ begin
 					if((nonblank(location) and (location==getLocationByIndex[i])) or blank(location)) then begin 
 							
 						StartFormat(15);
-							Outstring(20,0,IHr.ArtCode,false);
-							Outstring(80,0,IHr.SerNr,false);
+							Outstring(20,0,IHr.SerNr,false);
+							Outstring(80,0,IHr.ArtCode,false);
 							Outstring(150,0,getLocationByIndex[i],false); // ‘клад остатка, не сч/ф
 							Outstring(220,0,remainQty[i],false);
 							Outstring(300,0,remainCost[i],false);
