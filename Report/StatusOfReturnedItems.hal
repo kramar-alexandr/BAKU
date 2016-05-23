@@ -1,0 +1,251 @@
+external procedure HT2Per(Date,Date,var string);
+external procedure HTLocations(string, string, var string);
+
+
+SetLangMode(LangRussian,"RUS",0);
+
+
+
+
+/*
+
+function longint GetRemainQty(record ItemHistVc IHr)		//Edit----------------------Dima  19.05.2016
+begin
+	record ItemHistVc IHnext,IHtemp;
+	longint remQty;
+	boolean TrHs,TrHs2;
+
+	IHnext.Source = IHr.SerNr;
+	remQty = 0;
+	TrHs = true;
+	
+	While(LoopKey("Source",IHnext,1,TrHs)) begin
+		if (IHnext.Source!=IHr.SerNr) then begin TrHs=false; end;
+	
+		if (TrHs) then begin			
+				
+				if (IHnext.FileName == "StockMovVc") then begin
+					IHtemp.FileName = "StockMovVc";
+					IHtemp.TransNr = IHnext.TransNr;
+					IHtemp.Row = IHnext.Row;
+					TrHs2 = true;
+					While(LoopKey("FNTransNr",IHtemp,3,TrHs2)) begin
+						if (IHtemp.Row != IHnext.Row or IHtemp.TransNr != IHnext.TransNr) then begin TrHs2=false; end;
+						if (IHtemp.Qty > 0 and TrHs2) then begin
+							TrHs2 = false;
+							IHnext = IHtemp;
+						end;					
+					end;
+				end;
+				
+				remQty = remQty + GetRemainQty(IHnext);
+		end;
+	end;
+	
+
+GetRemainQty = remQty + IHr.RemQty; 
+return;
+end;
+
+
+*/
+
+
+
+
+
+
+
+
+
+//Рекурсивная функция для поиска остатков на складе
+//Принимается запись ItemHistVc о возврате товара из сч/фактуры 
+//функция суммирует остатки  всех записей, по соответствующим складам, для которых входящая запись была источником
+//в Hansa 6.4 нет возможности нормально работать с var vector register, поэтому накопление данных сделано в массивах
+
+procedure GetRemainQty(record ItemHistVc IHr,vector integer allLocations ,var array val remainQty, var array val remainCost,var array val remainCostCurncy)		//Edit----------------------Dima  19.05.2016
+begin
+	record ItemHistVc IHnext,IHtemp;
+	boolean TrHs,TrHs2;
+	integer index;
+	
+	LogText(0,IHr.SerNr & " __");
+	IHnext.Source = IHr.SerNr;
+	TrHs = true;
+	
+	While(LoopKey("Source",IHnext,1,TrHs)) begin
+		if (IHnext.Source!=IHr.SerNr) then begin TrHs=false; end;
+	
+		if (TrHs) then begin				
+		
+				//Перемещение (StockMovVc) отображается в ItemHistVc двумя записями списание/поступление
+				//запись поступление не содержит источник, --> необходимо найти 
+				//соответствующее поступление для соответствующего списания, и дальше продолжить
+				//рекурсивный поиск
+				
+				if (IHnext.FileName == "StockMovVc") then begin
+					IHtemp.FileName = "StockMovVc";
+					IHtemp.TransNr = IHnext.TransNr;
+					IHtemp.Row = IHnext.Row;
+					TrHs2 = true;
+					While(LoopKey("FNTransNr",IHtemp,3,TrHs2)) begin
+						//LogText(0,IHtemp.SerNr & "   IHtemp");
+						if (IHtemp.Row != IHnext.Row or IHtemp.TransNr != IHnext.TransNr) then begin TrHs2=false; end;
+						if (IHtemp.Qty > 0 and TrHs2) then begin
+							TrHs2 = false;
+							IHnext = IHtemp;
+							//LogText(0,IHtemp.SerNr & "   IHtemp correct");
+						end;					
+					end;
+				end;
+				
+				GetRemainQty(IHnext,allLocations,remainQty,remainCost,remainCostCurncy);
+
+		end;
+	end;
+	
+	//чтобы избежать пролистывания цикла по массиву,
+	//вектор 	allLocations хранит индекс каждого склада
+	index = allLocations[IHr.Location];
+	
+	remainQty[index] = remainQty[index] + IHr.RemQty;
+	remainCost[index] = remainCost[index] + IHr.RemCostPrice;
+	remainCostCurncy[index] = remainCostCurncy[index] + IHr.RemCostPriceCurncy;
+	
+	//LogText(0,index & "   " & IHr.SerNr & "    " & IHr.Location & "   " & IHr.RemQty);
+		
+	
+
+return;
+end;
+
+
+
+procedure ClearMyArray(var array val arr)
+begin
+integer i;
+
+	for(i=0;i<arr.length;i=i+1) begin
+		arr[i] = 0;
+	end;
+end;
+
+
+
+
+
+//отчет показывает кол-во оставшихся товаров (среди возвращенных товаров)
+
+global procedure StatusOfReturnedItemsRn(record RcVc RepSpec)
+begin
+  record IVVc IVr;
+  row IVVc IVrw;
+	record ItemHistVc IHr;
+  longint count,totals,tick1,tick2;
+  integer i,rw;
+  date startDate,endDate;
+  boolean TrHs,testf;
+  string 20 location;
+  string 255 tstr;
+  record LocationVc Locr;
+  vector integer allLocations;
+  vector string 100 getLocationByIndex;
+  array val remainQty;
+  array val remainCost;
+  array val remainCostCurncy;
+
+  
+  count = 0;
+  totals = 0;
+  startDate = RepSpec.sStartDate;
+  endDate = RepSpec.sEndDate;
+  location = RepSpec.f3;
+
+  
+  i=0;
+  //индексы для складов, чтобы избежать постоянного поиска в циклах
+  While(LoopMain(Locr,1,true)) begin
+		allLocations[Locr.Code] = i;
+		getLocationByIndex[i] = Locr.Code;
+		i = i + 1;
+	end;
+
+	  
+  
+  StartReportJob("Статус возвращенных товаров");
+    rw = 1;
+  	HT2Per(RepSpec.sStartDate,RepSpec.sEndDate,tstr);
+  	Header(rw,tstr,1);rw=rw+1;
+  	HTLocations(location,location,tstr);
+  	Header(rw,tstr,1);
+  
+  EndHeader;
+  
+  
+	StartFormat(15);
+		Outstring(20,0,"Сч/ф возврата",false);
+		Outstring(80,0,"Код товара",false);
+		Outstring(150,0,"Склад",false);
+		Outstring(220,0,"Кол-во",false);
+		Outstring(300,0,"Себестоимость",false);
+		Outstring(350,0,"Себестоимость в вал.",false);
+		Outstring(420,0,"Валюта",false);
+			
+	EndFormat;  
+	
+
+
+  
+  IHr.FileName = "IVVc";
+  IHr.TransDate = startDate;
+  TrHs = true;
+  
+  While(LoopKey("FNTransDate",IHr,2,TrHs)) begin
+	  testf = true;
+		if (IHr.FileName!="IVVc") then begin TrHs = false; testf = false; end;
+		if (IHr.TransDate > endDate) then begin TrHs = false; testf = false; end;
+		if (IHr.StockAffectf == 0) then begin testf = false; end;
+		if (IHr.Qty < 0) then begin testf = false; end;
+		
+		if (testf) then begin
+		
+			ClearMyArray(remainQty);ClearMyArray(remainCost);			
+			ClearMyArray(remainCostCurncy);
+			
+			 
+			GetRemainQty(IHr,allLocations,remainQty,remainCost,remainCostCurncy);
+			
+			
+			for(i=0;i<remainQty.length;i=i+1) begin
+			
+				if (remainQty[i] > 0) then begin	
+				
+					if((nonblank(location) and (location==getLocationByIndex[i])) or blank(location)) then begin 
+							
+						StartFormat(15);
+							Outstring(20,0,IHr.ArtCode,false);
+							Outstring(80,0,IHr.SerNr,false);
+							Outstring(150,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
+							Outstring(220,0,remainQty[i],false);
+							Outstring(300,0,remainCost[i],false);
+							Outstring(350,0,remainCostCurncy[i],false);
+							Outstring(420,0,IHr.CurncyCode,false);			
+						EndFormat;
+					
+					end;
+				
+				end;
+
+			end;
+		end; 
+	end;  
+
+ 
+  EndJob;
+  
+
+
+
+  
+  
+end;  

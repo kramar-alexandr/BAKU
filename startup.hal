@@ -172,7 +172,8 @@ begin
   Report("Отчет по акции 1+1",SpecialOffer1_1RClass,SpecialOffer1_1Rn,0,modIN);
   Report("Отчет несовпадения скидки клиента с картой лояльности",LoyaltyToRebRClass,LoyaltyToRebRn,0,modMYCRM); //Edit***************************Sasha2,12:24 18.03.2016
   
-   Report("Отчет несовпадения цены последнего поступления",CalcINVcLastPurchPriceRClass,CalcINVcLastPurchPriceRn,0,modIN); // Edit ************************** Tuesday, 26 April 2016 10:38:30
+  Report("Отчет несовпадения цены последнего поступления",CalcINVcLastPurchPriceRClass,CalcINVcLastPurchPriceRn,0,modIN); // Edit ************************** Tuesday, 26 April 2016 10:38:30
+  Report("Остатки возвращенных товаров",ItemStatusOfReturnedRClass,StatusOfReturnedItemsRn,0,modIN);//Edit----------------------Dima  18.05.2016
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
