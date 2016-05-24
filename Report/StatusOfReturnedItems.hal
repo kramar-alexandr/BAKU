@@ -1,6 +1,6 @@
 external procedure HT2Per(Date,Date,var string);
 external procedure HTLocations(string, string, var string);
-
+external function string 100 GetBrand(string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -141,6 +141,7 @@ begin
   boolean TrHs,testf;
   string 20 location;
   string 255 tstr;
+  string 200 prevArtCode, brand;
   record LocationVc Locr;
   vector integer allLocations;
   vector string 100 getLocationByIndex;
@@ -179,11 +180,12 @@ begin
 	StartFormat(15);
 		Outstring(20,0,"Сч/ф возврата",false);
 		Outstring(80,0,"Код товара",false);
-		Outstring(150,0,"Склад",false);
-		Outstring(220,0,"Кол-во",false);
-		Outstring(300,0,"Себестоимость",false);
-		Outstring(350,0,"Себестоимость в вал.",false);
-		Outstring(420,0,"Валюта",false);
+		Outstring(150,0,"Бренд",false);
+		Outstring(200,0,"Склад",false);
+		Outstring(275,0,"Кол-во",false);
+		Outstring(330,0,"Себестоимость",false);
+		Outstring(380,0,"Себестоимость в вал.",false);
+		Outstring(440,0,"Валюта",false);
 			
 	EndFormat;  
 	
@@ -208,22 +210,27 @@ begin
 			
 			 
 			GetRemainQty(IHr,allLocations,remainQty,remainCost,remainCostCurncy);
-			
+			brand = "";
 			
 			for(i=0;i<remainQty.length;i=i+1) begin
 			
-				if (remainQty[i] > 0) then begin	
+				if (remainQty[i] > 0) then begin
 				
 					if((nonblank(location) and (location==getLocationByIndex[i])) or blank(location)) then begin 
+						
+						if (blank(brand)) then begin 
+								brand = GetBrand(IHr.ArtCode); 
+						end;
 							
 						StartFormat(15);
 							Outstring(20,0,IHr.SerNr,false);
 							Outstring(80,0,IHr.ArtCode,false);
-							Outstring(150,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
-							Outstring(220,0,remainQty[i],false);
-							Outstring(300,0,remainCost[i],false);
-							Outstring(350,0,remainCostCurncy[i],false);
-							Outstring(420,0,IHr.CurncyCode,false);			
+							Outstring(150,0,brand,false);
+							Outstring(200,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
+							Outstring(275,0,remainQty[i],false);
+							Outstring(330,0,remainCost[i],false);
+							Outstring(380,0,remainCostCurncy[i],false);
+							Outstring(440,0,IHr.CurncyCode,false);			
 						EndFormat;
 					
 					end;

@@ -1681,6 +1681,7 @@ integer pos;
 			  if (readfirstmain(DIr,1,true)) then begin
 			    if (DIr.CType=="Brand") then begin
 			      brand = DIr.Name;
+			      goto LbreakGetBrand;
 			    end;
 			  end;
 			  ExtractObj(INr.DispGroups,pos,classCode);
@@ -1688,6 +1689,7 @@ integer pos;
 		end;
 	end;
 	
+LbreakGetBrand:;	
 GetBrand = brand;
 return;
 end;
