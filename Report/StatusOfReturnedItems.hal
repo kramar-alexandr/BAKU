@@ -132,13 +132,14 @@ end;
 
 global procedure StatusOfReturnedItemsRn(record RcVc RepSpec)
 begin
-  record IVVc IVr;
+  record IVVc IVr,IV1r;
   row IVVc IVrw;
 	record ItemHistVc IHr;
   longint count,totals,tick1,tick2;
-  integer i,rw;
+  integer i,rw,rwcnt;
   date startDate,endDate;
-  boolean TrHs,testf;
+  boolean TrHs,testf,TrHs2;
+  boolean remainsFounded;
   string 20 location;
   string 255 tstr;
   string 200 prevArtCode, brand;
@@ -211,19 +212,20 @@ begin
 			 
 			GetRemainQty(IHr,allLocations,remainQty,remainCost,remainCostCurncy);
 			brand = "";
+			remainsFounded = false;
 			
 			for(i=0;i<remainQty.length;i=i+1) begin
 			
-				if (remainQty[i] > 0) then begin
-				
+				if (remainQty[i] > 0) then begin				
 					if((nonblank(location) and (location==getLocationByIndex[i])) or blank(location)) then begin 
 						
+						remainsFounded = true;
 						if (blank(brand)) then begin 
 								brand = GetBrand(IHr.ArtCode); 
 						end;
-							
+													
 						StartFormat(15);
-							Outstring(20,0,IHr.SerNr,false);
+							Outstring(20,0,IHr.TransNr,false);
 							Outstring(80,0,IHr.ArtCode,false);
 							Outstring(150,0,brand,false);
 							Outstring(200,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
@@ -232,12 +234,46 @@ begin
 							Outstring(380,0,remainCostCurncy[i],false);
 							Outstring(440,0,IHr.CurncyCode,false);			
 						EndFormat;
-					
-					end;
-				
+					end;				
 				end;
 
 			end;
+			
+			
+
+			
+			if (remainsFounded) then begin
+						IV1r.SerNr = IHr.TransNr;
+						if (ReadFirstMain(IV1r,1,true)) then begin						
+							EndFormat;
+							Outstring(50,0,"Список сч/ф покупки:",false);
+							Outstring(215,0,"Клиент",false);
+							Outstring(250,0, IV1r.CustCode,false);
+							Outstring(300,0, IV1r.Addr0,false);
+							EndFormat;						
+						
+							IVr.CustCode = IV1r.CustCode;
+							TrHs2 = true;
+							While(LoopKey("CustCode",IVr,1,TrHs2)) begin
+								if (IVr.CustCode != IV1r.CustCode) then begin TrHs2=false; end;
+								if (TrHs2) then begin
+									rwcnt = MatRowCnt(IVr);
+									for(i=0;i<rwcnt;i=i+1) begin
+										MatRowGet(IVr,i,IVrw);
+										if (IVrw.stp==kInvoiceRowTypeNormal and IVrw.ArtCode==IHr.ArtCode and IVrw.Quant>0) then begin
+											i = rwcnt;
+											Outstring(130,0,IVr.SerNr,false);
+										end;
+									end;
+								end;
+							end;
+							ResetLoop(IVr);
+						end;			
+			end;
+			EndFormat;
+			Gray_Divider(0,1);
+			
+			
 		end; 
 	end;  
 
