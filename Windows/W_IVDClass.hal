@@ -4071,6 +4071,7 @@ begin
   
   StringList(9,120,-24,-10);*/
   
+  SpawnClass("");
   UseView(SHVc);
   
   Tile(0,110,false,"",DelAddrCode);
@@ -4090,11 +4091,11 @@ begin
   end;
   
   tilenr = 1;
+  //EnterSkip(Math);
   TileButton(tilenr,"Товары"); 
   Tile(tilenr,220,true,tilenr,Math); 
   v = 24;
-  EnterSkip(Math);
-  MatrixBegin(4,v,-40,-30,-,200);
+  MatrixBegin(4,v,-40,-30,-,999);
   Flip(0);
   MatColTL(1,h=30,"Товар",0,-1,ViewOnly,0,ArtCode,false,0);
   flipnr = 1;

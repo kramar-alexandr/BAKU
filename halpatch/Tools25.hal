@@ -76,7 +76,7 @@ begin
 				matrowget(IVr,IHr.Row,IVrw);
 				if(IVrw.ArtCode==artcode)then begin
 				  rwcnt = MatRowCnt(SHr);
-				  lastRowPos = rwcnt-1;
+				  lastRowPos = 0 /*rwcnt-1*/;
 				  insertf = true;
 				  if (MatRowCnt(SHr)==0) then begin
 				    ClearRow(SHr,SHrw,1);
@@ -115,7 +115,7 @@ begin
 					SHrw.VARList = compname;
 					SHrw.Source = compnr;
 					if (insertf) then begin
-					  MatRowInsert(SHr,rwcnt,SHrw);
+					  MatRowInsert(SHr,0/*rwcnt*/,SHrw);
 					end else begin
 					  MatRowPut(SHr,lastRowPos,SHrw);
 					end;
