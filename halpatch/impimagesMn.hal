@@ -148,8 +148,20 @@ Boolean foundf;
               newINrw.Collection = diTypes[ReturnFieldDIType("Collection",false)];
             end;
             
+            if (NonBlank(diTypes[ReturnFieldDIType("classif30",false)])) then begin
+              newINrw.classif30 = diTypes[ReturnFieldDIType("classif30",false)];
+            end;
+            
+            if (NonBlank(diTypes[ReturnFieldDIType("classif31",false)])) then begin
+              newINrw.classif31 = diTypes[ReturnFieldDIType("classif31",false)];
+            end;
+            
             if (NonBlank(diTypes[ReturnFieldDIType("Style",false)])) then begin
               newINrw.Style = diTypes[ReturnFieldDIType("Style",false)];
+            end;
+            
+            if (NonBlank(diTypes[ReturnFieldDIType("classif32",false)])) then begin
+              newINrw.classif32 = diTypes[ReturnFieldDIType("classif32",false)];
             end;
             
             if (NonBlank(diTypes[ReturnFieldDIType("WatchType",false)])) then begin
@@ -170,6 +182,14 @@ Boolean foundf;
             
             if (NonBlank(diTypes[ReturnFieldDIType("Material",false)])) then begin
               newINrw.Material = diTypes[ReturnFieldDIType("Material",false)];
+            end;
+            
+            if (NonBlank(diTypes[ReturnFieldDIType("classif33",false)])) then begin
+              newINrw.classif33 = diTypes[ReturnFieldDIType("classif33",false)];
+            end;
+            
+            if (NonBlank(diTypes[ReturnFieldDIType("classif34",false)])) then begin
+              newINrw.classif34 = diTypes[ReturnFieldDIType("classif34",false)];
             end;
             
             if (NonBlank(diTypes[ReturnFieldDIType("PrecStones",false)])) then begin
