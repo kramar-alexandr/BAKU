@@ -36,6 +36,8 @@ external procedure VICalcVals(var record VIVc); //Edit**************************
 external procedure VISumup(record VIVc,var val); //Edit***************************Sasha2,12:09 10.02.2016
 external procedure PUVc_PasteCostPrice(var record PUVc,Integer); //Edit***************************Sasha2,11:38 04.04.2016
 external function Boolean IsDigit(string);
+external procedure IVDchsum(var record IVVc,Integer); //Edit***************************Sasha2,16:45 01.06.2016
+external function Boolean IVDchrsum(var record IVVc,Integer); //Edit***************************Sasha2,16:46 01.06.2016
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -3991,8 +3993,10 @@ begin
             MatRowGet(IVr,rwcnt-1,IVrw);
             if (SetInSet(IVrw.ArtCode,artList) and (saboSum-IVrw.Sum)>=300) then begin
               IVrw.vRebate = 100;
-              IVrw.Sum = 0;
               MatRowPut(IVr,rwcnt-1,IVrw);
+              if (IVDchrsum(IVr,rwcnt-1)) then begin
+                IVDchsum(IVr,rwcnt-1);
+              end;
             end else begin
               res = "Promotional bracelet could be gifted";
             end;
