@@ -4,12 +4,18 @@ external function string 100 GetBrand(string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+/*	//Edit----------------------Dima  01.06.2016
+*	отчет выводит список счет-фактур с возвратом товара
+* отображаются только те сч/ф, возвращенный товар которых, еще есть на складе в конце указанного периода!!!
+* далее выводится список вероятных сч/ф, с которых могла быть сделана покупка (проверяется клиент и код товара)
+* если цена продажи==цене возврата, сч/ф помечается "галочкой"
+*/
 
 
 
 
 
-//функция для возврата данных в материнскую запись (в индекс соответсутвующим Location)
+//функция для возврата данных в материнскую запись (в индекс с соответсутвующим Location)
 //если изменения были после исследуемого в отчете периода
 procedure ReturnChangesBackToTheMotherRecord(record ItemHistVc IHr,integer index ,var array val remainQty, var array val remainCost,var array val remainCostCurncy)
 begin
@@ -103,6 +109,35 @@ end;
 
 
 
+procedure GetCostValuesFromIHistory(longint serNr, string artcode, var val cost, var val costCurncy,var val quantity, var string curncyCode)
+begin
+	record ItemHistVc IHr;
+	boolean TrHs,testf;
+	cost = 0;
+	costCurncy = 0;
+	quantity = 0;
+	curncyCode = "";
+	
+	
+	IHr.TransNr = serNr;
+	IHr.FileName = "IVVc";
+	TrHs = true;
+	While(LoopKey("FNTransNr",IHr,2,TrHs)) begin
+		testf = true;
+		if (IHr.ArtCode != artcode) then begin testf = false; end;
+		if (IHr.Qty > 0) then begin testf = false; end;
+		if (IHr.TransNr != serNr or IHr.FileName != "IVVc") then begin TrHs=false; testf=false; end;
+		if (testf) then begin
+			cost = cost + IHr.TotCostPrice;
+			costCurncy = costCurncy + IHr.TotCostPriceCurncy;
+			quantity = quantity - IHr.Qty; //with "-" sign
+			curncyCode = IHr.CurncyCode;
+		end;
+	end;  
+end;
+
+
+
 
 
 //отчет показывает кол-во оставшихся товаров (среди возвращенных товаров)
@@ -110,16 +145,18 @@ end;
 global procedure StatusOfReturnedItemsRn(record RcVc RepSpec)
 begin
   record IVVc IVr,IV1r;
-  row IVVc IVrw;
+  row IVVc IVrw,IV1rw;
 	record ItemHistVc IHr;
   longint count,totals,tick1,tick2;
   integer i,rw,rwcnt;
   date startDate,endDate;
-  boolean TrHs,testf,TrHs2;
+  boolean TrHs,testf,TrHs2,testf2;
   boolean remainsFounded;
-  string 20 location;
+  string 20 location,invCurCode;
   string 255 tstr;
   string 200 prevArtCode, brand;
+  string 10 okChar;
+  val invCost, invCostCurncy, invQty;
   record LocationVc Locr;
   vector integer allLocations;
   vector string 100 getLocationByIndex;
@@ -133,6 +170,8 @@ begin
   startDate = RepSpec.sStartDate;
   endDate = RepSpec.sEndDate;
   location = RepSpec.f3;
+  
+  okChar = UChr(10003);
 
   
   i=0;
@@ -151,7 +190,7 @@ begin
   	Header(rw,tstr,1);rw=rw+1;
   	HTLocations(location,location,tstr);
   	Header(rw,tstr,1);
-  
+  	Header(rw,okChar & " - означает точное совпадение",0);
   EndHeader;
   
   
@@ -163,9 +202,9 @@ begin
 		Outstring(275,0,"Кол-во",false);
 		Outstring(330,0,"Себестоимость",false);
 		Outstring(380,0,"Себестоимость в вал.",false);
-		Outstring(440,0,"Валюта",false);
-			
-	EndFormat;  
+		Outstring(440,0,"Валюта",false);			
+	EndFormat;
+	Black_Divider(0,1);  
 	
 
 
@@ -201,9 +240,9 @@ begin
 								brand = GetBrand(IHr.ArtCode); 
 						end;
 													
-						StartFormat(15);
-							Outstring(20,0,IHr.TransNr,false);
-							Outstring(80,0,IHr.ArtCode,false);
+						StartFormat(15);							
+							Outstring(20,"DblIVVc",IHr.TransNr,false);
+							Outstring(80,"DblINVc",IHr.ArtCode,false);
 							Outstring(150,0,brand,false);
 							Outstring(200,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
 							Outstring(275,0,remainQty[i],false);
@@ -218,12 +257,18 @@ begin
 			
 			
 
-			
+			// получаем список возможных сч/фактур
 			if (remainsFounded) then begin
 						IV1r.SerNr = IHr.TransNr;
-						if (ReadFirstMain(IV1r,1,true)) then begin						
+						if (ReadFirstMain(IV1r,1,true)) then begin
+							for(i=0;i<MatRowCnt(IV1r);i=i+1) begin
+								MatRowGet(IV1r,i,IV1rw);						
+								if (IV1rw.stp==kInvoiceRowTypeNormal and IV1rw.ArtCode==IHr.ArtCode and IV1rw.Quant<0) then begin
+									i = MatRowCnt(IV1r); //row with returned item was found
+								end;
+							end;	
 							EndFormat;
-							Outstring(50,0,"Список сч/ф покупки:",false);
+							Outstring(30,0,"Список возможных сч/ф покупки:",false);
 							Outstring(215,0,"Клиент",false);
 							Outstring(250,0, IV1r.CustCode,false);
 							Outstring(300,0, IV1r.Addr0,false);
@@ -232,23 +277,34 @@ begin
 							IVr.CustCode = IV1r.CustCode;
 							TrHs2 = true;
 							While(LoopKey("CustCode",IVr,1,TrHs2)) begin
-								if (IVr.CustCode != IV1r.CustCode) then begin TrHs2=false; end;
-								if (TrHs2) then begin
+								testf2 = true;
+								if (IVr.CustCode != IV1r.CustCode) then begin TrHs2=false; testf2=false; end;
+								if (IVr.InvDate > IV1r.InvDate) then begin testf2=false; end;
+								if (testf2) then begin
 									rwcnt = MatRowCnt(IVr);
 									for(i=0;i<rwcnt;i=i+1) begin
-										MatRowGet(IVr,i,IVrw);
+										MatRowGet(IVr,i,IVrw);										
 										if (IVrw.stp==kInvoiceRowTypeNormal and IVrw.ArtCode==IHr.ArtCode and IVrw.Quant>0) then begin
 											i = rwcnt;
-											Outstring(130,0,IVr.SerNr,false);
+											GetCostValuesFromIHistory(IVr.SerNr,IVrw.ArtCode,invCost, invCostCurncy, invQty, invCurCode);
+											if (IV1rw.Price==IVrw.Price) then begin
+												Outstring(120,0,okChar,false);
+											end;											
+											Outstring(130,"DblIVVc",IVr.SerNr,false);
+											Outstring(275,0,invQty,false);
+											Outstring(330,0,invCost,false);
+											Outstring(380,0,invCostCurncy,false);
+											Outstring(440,0,invCurCode,false);												
 										end;
 									end;
 								end;
 							end;
 							ResetLoop(IVr);
-						end;			
+						end;
+						EndFormat;
+						Gray_Divider(0,1);			
 			end;
-			EndFormat;
-			Gray_Divider(0,1);
+
 			
 			
 		end; 
