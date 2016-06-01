@@ -3991,6 +3991,7 @@ begin
             MatRowGet(IVr,rwcnt-1,IVrw);
             if (SetInSet(IVrw.ArtCode,artList) and (saboSum-IVrw.Sum)>=300) then begin
               IVrw.vRebate = 100;
+              IVrw.Sum = 0;
               MatRowPut(IVr,rwcnt-1,IVrw);
             end else begin
               res = "Promotional bracelet could be gifted";
