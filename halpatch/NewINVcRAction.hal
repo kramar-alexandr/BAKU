@@ -170,7 +170,7 @@ begin
                   DIr.Code = newdisp;
                   DIr.Name = classname;
                   DIr.CType = type;
-                  if (RECORDSTORE(DIr,false)==false) then begin
+                  if (RECORDSTORE(DIr,true)==false) then begin
                     res = false;
                     mes = " Can not store " & newdisp & " with type " & type & ".";
                     goto LDIsWithTypeExistsOrCreateSpecific;
@@ -198,10 +198,11 @@ begin
                   TrHs = Readfirstkey("CType",DIr,2,true);
                 end;
                 if (TrHs==false) then begin
+                	recordnew(DIr);
                   DIr.Code = newdisp;
                   DIr.Name = classname;
                   DIr.CType = type;
-                  if (RECORDSTORE(DIr,false)==false) then begin
+                  if (RECORDSTORE(DIr,true)==false) then begin
                     res = false;
                     mes = " Can not store " & newdisp & "with type " & type & ".";
                     goto LDIsWithTypeExistsOrCreateSpecific;

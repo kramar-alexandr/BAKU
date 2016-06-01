@@ -1849,6 +1849,7 @@ begin
 		res = true;
 	end;
 	if (res==false) then begin
+		recordnew(DIr);
 		DIr.Code = class;
 		DIr.Name = classname;
 		DIr.CType = classtype;
@@ -3863,6 +3864,7 @@ begin
 		          DIr.Code = PrepareDICode("WM" & INr.RowWeight);
 		          DIr.CType = "WEIGHT";
 		          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+		          	recordnew(DIr);
 		            DIr.Code = PrepareDICode("WM" & INr.RowWeight);
 		            DIr.Name = INr.RowWeight;
 		            DIr.CType = "WEIGHT";
@@ -3879,6 +3881,7 @@ begin
 		          DIr.Code = PrepareDICode("DC" & INr.MajStoneDet);
 		          DIr.CType = "D_CARAT";
 		          if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+		          	recordnew(DIr);
 		            DIr.Code = PrepareDICode("DC" & INr.MajStoneDet);
 		            DIr.Name = INr.MajStoneDet;
 		            DIr.CType = "D_CARAT";
@@ -3909,6 +3912,7 @@ begin
           DIr.Code = PrepareDICode(INr.Reference);
           DIr.CType = collstr;
           if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+          	recordnew(DIr);
             DIr.Code = PrepareDICode(INr.Reference);
             DIr.Name = INr.Reference & postfix;
             DIr.CType = collstr;
@@ -3925,6 +3929,7 @@ begin
           DIr.Code = PrepareDICode(INr.Metal);
           DIr.CType = metalstr;
           if (ReadFirstKey("CType",DIr,2,true)==false) then begin
+          	recordnew(DIr);
             DIr.Code = PrepareDICode(INr.Metal);
             DIr.Name = INr.Metal & postfix;
             DIr.CType = metalstr;
