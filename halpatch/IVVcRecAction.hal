@@ -61,6 +61,7 @@ remote function boolean ArgEInvoiceBeingSentRemote(longint,string);
 external function boolean RoyaltyRecordExistsForCN(record IVVc);
 external function Boolean HasModNL();
 remote function boolean CompanyIsJWLikeCompany(Integer);
+remote function string 255 SaboPromotion(var record IVVc,string); //Edit***************************Sasha2,13:19 01.06.2016
 
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
 begin
@@ -300,6 +301,13 @@ BEGIN
     end;  
   end;
   
+  tstr = SaboPromotion(IVp,"check");
+  if (NonBlank(tstr)) then begin
+    RecordCheckError(15093,". " & tstr,-1,"Sum4");      
+    res = -1; 
+    goto L99;
+  end;
+  
   BlockLoad(ARAccb);
   BlockLoad(MSb);
   BlockLoad(SRRec);
@@ -310,6 +318,9 @@ BEGIN
   if ((stat==insertmode) or ((stat==updatemode) and (IV2p.OKFlag==0))) then begin
     IVSumup(IVp,true); // Don't think this is needed at all.
   end;
+  
+  
+  
   if (check) then begin  
     switch (stat) begin
       case Rs_update:

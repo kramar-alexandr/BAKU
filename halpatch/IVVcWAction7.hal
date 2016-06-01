@@ -69,6 +69,7 @@ remote procedure IVVc_PasteLocation(var record IVVc,Integer);// Edit ***********
 external updating procedure CreatePUfromIVDsm(); //Edit***************************Sasha2,10:56 11.12.2014
 external updating procedure CreateSDfromIVDsm(String,String); //Edit***************************Sasha2,10:56 11.12.2014
 remote procedure IVDUpdatePrices(var record IVVc,Boolean);
+remote function string 255 SaboPromotion(var record IVVc,string); //Edit***************************Sasha2,13:19 01.06.2016
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -327,7 +328,7 @@ begin
   record IVVc prevIVr;
   record IVVc IVr;
   row IVVc IVrw;
-  string 255 location;
+  string 255 location,tstr;
   Integer rownr;
   LongInt printrownr;
   record LocalMachineBlock LMb;
@@ -363,6 +364,10 @@ begin
       IVrw.Quant = 1;
       IVrw.SerialNr = val001;
       MatRowPut(IVr,rownr,IVrw);
+      tstr = SaboPromotion(IVr,"paste"); //Edit***************************Sasha2,13:36 01.06.2016 {
+      if (NonBlank(tstr)) then begin
+        MessageBox(0,tstr);
+      end; //Edit***************************Sasha2,13:36 01.06.2016 }
       IVVc_PasteQuantity(IVr,rownr);
       MatRowGet(IVr,rownr,IVrw);
       PutWindowString(wn,"touchscreenitemname",IVrw.Spec);
@@ -1022,6 +1027,7 @@ updating procedure IVDClassTouchScreenDeleteItem()
 begin
   Integer wn,matrowix;
   record IVVc IVr;
+  string 255 tstr;
 		
   wn = CurWindow;
   if (SelectedListLine(wn)>=0) then begin
@@ -1046,6 +1052,10 @@ begin
         if (IVr.OrderNr==-1) then begin	// Edit ************************** Thursday, 7 April 2016 12:16:37
         	IVDUpdatePrices(IVr,false);// Edit ************************** Thursday, 3 March 2016 10:44:29
         end;
+        tstr = SaboPromotion(IVr,"deletedrow"); //Edit***************************Sasha2,13:36 01.06.2016 {
+        if (NonBlank(tstr)) then begin
+          MessageBox(0,tstr);
+        end; //Edit***************************Sasha2,13:36 01.06.2016 }
         IVSumup(IVr,true);
         PutWindowRecord(wn,IVr);
         if (GuiType==kGuiCocoa) then begin

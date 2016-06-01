@@ -3958,3 +3958,55 @@ LAggregateDispsJWMn:;
 return;
 end; //Edit***************************Sasha2,15:52 23.03.2016 }
 
+global //Edit***************************Sasha2,13:44 01.06.2016 {
+function string 255 SaboPromotion(var record IVVc IVr,string opearation)
+begin
+  string 255 res,artList;
+  record INVc INr;
+  row IVVc IVrw;
+  integer i,rwcnt;
+  val saboSum;
+  Boolean foundBrasletf;
+  
+    res = "";
+    artList = "KA0001-001-12-L16,KA0001-001-12-L17,KA0001-001-12-L18,KA0001-001-12-L19,KA0001-001-12-L20,KA0001-001-12-L21,KA0001-001-12-L22,KA0001-001-12-L23";
+    if (CurrentCompany==16 and CurrentDate >= StringToDate("2/06/2016") and CurrentDate <= StringToDate("12/06/2016")) then begin
+      rwcnt = MatRowCnt(IVr);
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVr,i,IVrw);
+        if (NonBlank(IVrw.ArtCode)) then begin
+          INr.Code = IVrw.ArtCode;
+          if (ReadFirstMain(INr,1,true) and INr.Group=="TH_SA") then begin
+            if (SetInSet(IVrw.ArtCode,artList) and IVrw.vRebate==100) then begin
+              foundBrasletf = true;
+            end else begin
+              saboSum = saboSum + IVrw.Sum;
+            end;
+          end;
+        end;
+      end;
+      switch (opearation) begin
+        case "paste":
+          if (saboSum>=300 and foundBrasletf==false) then begin
+            MatRowGet(IVr,rwcnt-1,IVrw);
+            if (SetInSet(IVrw.ArtCode,artList) and (saboSum-IVrw.Sum)>=300) then begin
+              IVrw.vRebate = 100;
+              MatRowPut(IVr,rwcnt-1,IVrw);
+            end else begin
+              res = "Promotional bracelet could be gifted";
+            end;
+          end;  
+        case "check":
+          if (saboSum<300 and foundBrasletf==true) then begin
+            res = "\"Thomas Sabo\" total is less than 300 AZN for promotional bracelet";
+          end;
+        case "deletedrow":
+          if (saboSum>=300 and foundBrasletf==false) then begin
+            res = "Verify \"Thomas Sabo\" items for promotional bracelet";
+          end;
+      end;
+    end;
+  
+  SaboPromotion = res;
+  return;
+end; //Edit***************************Sasha2,13:44 01.06.2016 }
