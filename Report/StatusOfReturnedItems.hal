@@ -142,7 +142,7 @@ end;
 
 //отчет показывает кол-во оставшихся товаров (среди возвращенных товаров)
 
-global procedure StatusOfReturnedItemsRn(record RcVc RepSpec)
+global procedure StatusOfReturnedItemsRn(record RcVc RepSpec)		//Edit----------------------Dima  01.06.2016
 begin
   record IVVc IVr,IV1r;
   row IVVc IVrw,IV1rw;
@@ -196,9 +196,10 @@ begin
   
 	StartFormat(15);
 		Outstring(20,0,"Сч/ф возврата",false);
-		Outstring(80,0,"Код товара",false);
-		Outstring(150,0,"Бренд",false);
-		Outstring(200,0,"Склад",false);
+		Outstring(60,0,"Дата",false);
+		Outstring(100,0,"Код товара",false);
+		Outstring(160,0,"Бренд",false);
+		Outstring(210,0,"Склад",false);
 		Outstring(275,0,"Кол-во",false);
 		Outstring(330,0,"Себестоимость",false);
 		Outstring(380,0,"Себестоимость в вал.",false);
@@ -240,10 +241,12 @@ begin
 								brand = GetBrand(IHr.ArtCode); 
 						end;
 													
-						StartFormat(15);							
+						StartFormat(15);
+							EndFormat;							
 							Outstring(20,"DblIVVc",IHr.TransNr,false);
-							Outstring(80,"DblINVc",IHr.ArtCode,false);
-							Outstring(150,0,brand,false);
+							Outstring(60,0,IHr.TransDate,false);
+							Outstring(100,"DblINVc",IHr.ArtCode,false);
+							Outstring(160,0,brand,false);
 							Outstring(200,0,getLocationByIndex[i],false); // Склад остатка, не сч/ф
 							Outstring(275,0,remainQty[i],false);
 							Outstring(330,0,remainCost[i],false);
@@ -291,6 +294,7 @@ begin
 												Outstring(120,0,okChar,false);
 											end;											
 											Outstring(130,"DblIVVc",IVr.SerNr,false);
+											Outstring(185,0,IVr.InvDate,false);
 											Outstring(275,0,invQty,false);
 											Outstring(330,0,invCost,false);
 											Outstring(380,0,invCostCurncy,false);
