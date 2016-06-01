@@ -3970,7 +3970,7 @@ begin
   
     res = "";
     artList = "KA0001-001-12-L16,KA0001-001-12-L17,KA0001-001-12-L18,KA0001-001-12-L19,KA0001-001-12-L20,KA0001-001-12-L21,KA0001-001-12-L22,KA0001-001-12-L23";
-    if (CurrentCompany==16 and CurrentDate >= StringToDate("2/06/2016") and CurrentDate <= StringToDate("12/06/2016")) then begin
+    if (CurrentCompany==16 and ((CurrentDate >= StringToDate("2/06/2016") and CurrentDate <= StringToDate("12/06/2016")) or CurrentUser == "SA" or CurrentUser == "SA1")) then begin
       rwcnt = MatRowCnt(IVr);
       for (i=0;i<rwcnt;i=i+1) begin
         MatRowGet(IVr,i,IVrw);
