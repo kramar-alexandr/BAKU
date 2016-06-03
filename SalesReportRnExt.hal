@@ -5,6 +5,7 @@ external inner function roundmode SetRoundModeD(Integer);
 external inner function Boolean SetInSet2(string,string);
 external inner function val AbsoluteVal(val);
 external inner function boolean CompanyIsJWLikeCompany(Integer);
+external inner procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
 
 function string 200 prepareStr(string input)
 begin
@@ -368,9 +369,10 @@ begin
 end; //Edit***************************Sasha2,17:32 19.11.2014 }
 
 
-procedure PrintGftSertSold(record IVVc IVr,integer rownr,var val total_price,string bcur,string azn)
+procedure PrintGftSertSold(record IVVc IVr,integer rownr,var val total_price,string bcur,string azn,Boolean addclassf)
 begin
 	row IVVc IVrw;
+	integer j;
 
 	matrowget(IVr,rownr,IVrw);
 	total_price = total_price + IVrw.Sum;
@@ -380,17 +382,28 @@ begin
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);
-		outstring(0,0,"",false);
-		outstring(0,0,"",false);
-		outstring(0,0,"",false);//Reference
-		outstring(0,0,"",false);
-		outstring(0,0,"",false);
-		outstring(0,0,"",false);
-		if(CompanyIsJWLikeCompany(currentcompany))then begin
-			outstring(0,0,"",false);
+		if (addclassf==false) then begin
+		  outstring(0,0,"",false);
+		end;
+		if(currentcompany==9)then begin
 			outstring(0,0,"",false);
 		end;
 		outstring(0,0,"",false);
+		if (addclassf==false) then begin
+		  outstring(0,0,"",false);
+			outstring(0,0,"",false);
+			outstring(0,0,"",false);
+			outstring(0,0,"",false);
+			if(currentcompany==13)then begin
+				outstring(0,0,"",false);
+				outstring(0,0,"",false);
+			end;
+		end else begin
+		  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+		    outstring(0,0,"",false);
+		  end;
+		end;
+		outstring(0,0,"",false); //seriinii nomer
 		outstring(0,0,"",false);
 		outstring(0,0,"",false);//EKNCode
 		outstring(0,0,"",false);
@@ -434,6 +447,73 @@ begin
 	endformat;
 return;
 end;
+//Edit***************************Sasha2,10:05 19.02.2016 {
+procedure SortAndClearClassifications(var array string typecode,var vector string typename,val typescnt)
+begin
+  vector val typelevel;
+  val level,val1,val2;
+  string 20 code;
+  String 200 name;
+  Integer i,j;
+  
+    if (typescnt>1) then begin
+      level = 1;
+      typelevel["TYPE"] = level; level = level + 1;
+      typelevel["COLL_W"] = level; level = level + 1;
+      typelevel["MATERIAL_W"] = level; level = level + 1;
+      typelevel["GENDER_W"] = level; level = level + 1; ///////
+      typelevel["DIAL"] = level; level = level + 1;
+      typelevel["STRAP"] = level; level = level + 1;
+      typelevel["MECHANISM"] = level; level = level + 1;
+      typelevel["FUNCTIONS"] = level; level = level + 1;
+      typelevel["DIAMETER"] = level; level = level + 1;
+      typelevel["COLL_J"] = level; level = level + 1;
+      typelevel["CATEGORY_J"] = level; level = level + 1;
+      typelevel["MATERIAL_J"] = level; level = level + 1;
+      typelevel["WEIGHT"] = level; level = level + 1;
+      typelevel["D_CARAT"] = level; level = level + 1;
+      typelevel["CENT_ST"] = level; level = level + 1;
+      typelevel["PR_STONES"] = level; level = level + 1;
+      typelevel["STYLE_J"] = level; level = level + 1;
+      typelevel["R_SIZE"] = level; level = level + 1;
+      typelevel["DIVISION"] = level; level = level + 1;
+      typelevel["GENDER_J"] = level; level = level + 1; //////
+      typelevel["CARAT"] = level; level = level + 1;
+      typelevel["CLARITY"] = level; level = level + 1;
+      typelevel["C_S"] = level; level = level + 1;
+      typelevel["SHAPE_CUT"] = level; level = level + 1;
+      typelevel["COLL_A"] = level; level = level + 1;
+      typelevel["CATEGORY_A"] = level; level = level + 1;
+      typelevel["MATERIAL_A"] = level; level = level + 1;
+      typelevel["STYLE_A"] = level; level = level + 1;
+      typelevel["C_M"] = level; level = level + 1;
+      typelevel["GENDER_A"] = level; level = level + 1; //////
+      typelevel["WARCARD"] = level; level = level + 1;
+      typelevel["ART"] = level; level = level + 1;
+      typelevel["SAP"] = level; level = level + 1;
+      
+      for (i=0;i<typescnt-1;i=i+1) begin
+        for (j=0;j<typescnt-1;j=j+1) begin
+          if (typelevel[typecode[j]]<1) then begin
+            typename[typecode[j]] = "";
+            typecode[j] = "";
+          end;
+          val1 = typelevel[typecode[j]];
+          val2 = typelevel[typecode[j+1]];
+          if ((val1>0 and val2>0 and val1>val2) or (val1<1 and val2>0)) then begin
+            code = typecode[j];
+            name = typename[typecode[j]];
+            typecode[j] = typecode[j+1];
+            typename[typecode[j]] = typename[typecode[j+1]];
+            typecode[j+1] = code;
+            typename[typecode[j+1]] = name;
+          end;
+        end;
+      end;
+    end;
+  
+  return;
+end; //Edit***************************Sasha2,10:05 19.02.2016 }
 
 //Edit***************************Sasha2,14:42 11.11.2015 {
 procedure MyClearVector(var vector string vect1,array string arr,integer cnt)
@@ -468,10 +548,10 @@ begin
   val ivfr,ivto1;
   val basesum,curcusm,curprice,fifob1;
   boolean testf1,userlocation;
-  string 50 location,tstr;
+  string 255 location,tstr;
   record UserVc User;
   integer pos,headrow;
-  string 50 uloc;
+  string 50 uloc,uloc1;
   boolean updst,modef;
 	val total_rebate,total_rebate_qty;//Edit***********************Vitalii 14:28 26.08.2014
   val total_qty;
@@ -487,12 +567,21 @@ begin
   array string 20 arrstrs; //Edit***************************Sasha2,10:46 20.11.2014
   integer valscnt,strscnt,rangeval,rangecnt,arrsize; //Edit***************************Sasha2,12:11 20.11.2014
   val itemoccurrences; //Edit***************************Sasha2,12:11 20.11.2014
-  boolean iteminf;
+  boolean iteminf,addclassf;
   integer cred;
   Record CTypeVc CTyper; //Edit***************************Sasha2,12:23 11.11.2015
   integer ctypecnt,m; //Edit***************************Sasha2,12:24 11.11.2015
   array string 10 typeindex; //Edit***************************Sasha2,14:08 11.11.2015
   vector string 255 dispnames; //Edit***************************Sasha2,14:08 11.11.2015
+  
+  vector string 20 typeval; //Edit***************************Sasha2,14:11 08.02.2016
+  array string 20 typecode; //Edit***************************Sasha2,14:11 08.02.2016
+  vector string 200 typename; //Edit***************************Sasha2,14:11 08.02.2016
+  record DiCheckBlock DiCb; //Edit***************************Sasha2,14:10 08.02.2016
+  row DiCheckBlock DiCbw; //Edit***************************Sasha2,14:10 08.02.2016
+  integer rwcnt,typescnt,pos1; //Edit***************************Sasha2,14:11 08.02.2016
+  Boolean collf,metalf; //Edit***************************Sasha2,14:09 02.06.2016
+  string 20 collstr,metalstr; //Edit***************************Sasha2,14:09 02.06.2016
   
   blockload(BCb);
   bcur = BCb.BaseCur1;
@@ -546,13 +635,73 @@ begin
   	
   	EndHeader; //Edit***************************Sasha2,16:57 19.11.2014 }
   	
+  	if (CompanyIsJWLikeCompany(CurrentCompany)) then begin //Edit***************************Sasha2,11:27 02.06.2016 {
+  	  addclassf = true;
+  	end else begin
+  	  addclassf = false;
+  	end; 
+
+  	if (addclassf) then begin
+      typescnt = 0;
+  	  BlockLoad(DiCb);
+      rwcnt = MatRowCnt(DiCb);  
+      for (j=0;j<rwcnt;j=j+1) begin
+        MatRowGet(DiCb,j,DiCbw);
+        if (NonBlank(DiCbw.DiType)) then begin
+          DIr.Code = DiCbw.DiCode;
+          ReadFirstMain(DIr,1,true);
+          DiCbw.DiType = DIr.CType & "," & DiCbw.DiType;
+          pos = 0;
+    			ExtractObj(DiCbw.DiType,pos,uloc);
+    			while (nonblank(uloc)) begin
+    				if (blank(typeval[uloc])) then begin
+      				CTyper.Code = uloc;
+      				if (ReadFirstMain(CTyper,1,true)) then begin
+      				  if (CTyper.Code=="GENDER") then begin
+      				    switch (UpperCase(Left(DiCbw.DiCode,1))) begin
+      				      case "A":
+      				        if (blank(typeval[CTyper.Code & "_A"])) then begin
+        				        typeval[CTyper.Code & "_A"] = ".";
+              				  typecode[typescnt] = CTyper.Code & "_A";
+              				  typename[typecode[typescnt]] = "ACCESSORIES " & CTyper.Comment;
+              				  typescnt = typescnt + 1;  
+      				        end;
+      				      case "J":
+      				        if (blank(typeval[CTyper.Code & "_J"])) then begin
+        				        typeval[CTyper.Code & "_J"] = ".";
+              				  typecode[typescnt] = CTyper.Code & "_J";
+              				  typename[typecode[typescnt]] = "JEWELRY " & CTyper.Comment;
+              				  typescnt = typescnt + 1;  
+      				        end;
+      				      case "W":
+      				        if (blank(typeval[CTyper.Code & "_W"])) then begin
+        				        typeval[CTyper.Code & "_W"] = ".";
+              				  typecode[typescnt] = CTyper.Code & "_W";
+              				  typename[typecode[typescnt]] = "WATCH " & CTyper.Comment;
+              				  typescnt = typescnt + 1;
+      				        end;
+      				    end;
+      				  end else begin
+        				  typeval[CTyper.Code] = ".";
+        				  typecode[typescnt] = CTyper.Code;
+        				  typename[CTyper.Code] = CTyper.Comment;
+        				  typescnt = typescnt + 1;  
+      				  end;
+      				end;
+    				end;
+    				ExtractObj(DiCbw.DiType,pos,uloc);
+    			end;
+        end;
+      end;
+      SortAndClearClassifications(typecode,typename,typescnt);
+    end;//Edit***************************Sasha2,11:27 02.06.2016 }
+
   	if (RepSpec.ArtMode==0) then begin
   		modef = true;
   	end else begin
   		modef = false;
   		RECORDNEW(IV2r);
   	end;
-
   
 		userlocation = false;
 		User.Code = currentuser;
@@ -608,26 +757,34 @@ begin
 				startformat(15);
 					outstring(0,0,USetStr(31042),false);
 					outstring(0,0,USetStr(31043),false);
-					outstring(0,0,USetStr(12815),false);
-					outstring(0,0,USetStr(31044),false);
-					outstring(0,0,USetStr(19357),false);
+					outstring(0,0,USetStr(12815),false); //Sklad
+					outstring(0,0,USetStr(31044),false); //Brand
+					if (addclassf==false) then begin //Edit***************************Sasha2,13:15 02.06.2016
+					  outstring(0,0,USetStr(19357),false); //Klassificatsia
+					end;
 					if(currentcompany==9)then begin
-						outstring(0,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015
+						outstring(0,0,USetStr(9131),false);		//Edit----------------------Dima  20.03.2015 //categoria
 					end;
-					outstring(0,0,USetStr(12713),false);
-					outstring(0,0,USetStr(31045),false);//Reference
-					outstring(0,0,USetStr(31047),false);
-					outstring(0,0,USetStr(14533),false);
-					outstring(0,0,USetStr(31048),false);
-					if(CompanyIsJWLikeCompany(currentcompany))then begin
-						outstring(0,0,USetStr(31049),false);
-						outstring(0,0,USetStr(31050),false);
+					outstring(0,0,USetStr(12713),false); //Naimenovanie
+					if (addclassf==false) then begin //Edit***************************Sasha2,13:17 02.06.2016 {
+  					outstring(0,0,USetStr(31045),false);//Reference //Kollectsia
+  					outstring(0,0,USetStr(31047),false); //Tip metalla
+  					outstring(0,0,USetStr(14533),false); //Ves
+  					outstring(0,0,USetStr(31048),false); //Karatnost
+  					//if(CompanyIsJWLikeCompany(currentcompany))then begin
+  						//outstring(0,0,USetStr(31049),false); //Braslet/Remeshok
+  						//outstring(0,0,USetStr(31050),false); //Tsvet tsyferblata
+  					//end;
+  					if(currentcompany==13)then begin		//Edit-----------------------------Dima  30.04.2015
+  						outstring(0,0,USetStr(31320),false); //Tsvet
+  						outstring(0,0,USetStr(35007),false); //Kvadratura
+  					end;					
+					end else begin //Edit***************************Sasha2,13:17 02.06.2016 }
+					  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+      		    outstring(0,0,typename[typecode[j]],false);
+      		  end;
 					end;
-					if(currentcompany==13)then begin		//Edit-----------------------------Dima  30.04.2015
-						outstring(0,0,USetStr(31320),false);
-						outstring(0,0,USetStr(35007),false);
-					end;					
-					outstring(0,0,USetStr(31051),false);
+					outstring(0,0,USetStr(31051),false); //seriinii nomer
 					outstring(0,0,"EAN code",false);
 					outstring(0,0,USetStr(13199),false);//EKNCode
 					outstring(0,0,USetStr(31052),false);
@@ -680,16 +837,22 @@ begin
   					end;
   					outstring(0,0,USetStr(31073),false);
 					end;
-					ctypecnt = 0; //Edit***************************Sasha2,14:10 11.11.2015 {
+					if (addclassf) then begin //Edit***************************Sasha2,14:00 08.02.2016 {
+    			  for (j=30;j<typescnt;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+      		    outstring(0,0,typename[typecode[j]],false);
+      		  end;
+    			end; //Edit***************************Sasha2,14:01 08.02.2016 }
+					
+					/*ctypecnt = 0; //Edit***************************Sasha2,14:10 11.11.2015 { 
 					CTyper.Code = "";
 					while (LoopMain(CTyper,1,true)) begin
 					  typeindex[ctypecnt] = CTyper.Code;
 					  dispnames[typeindex[ctypecnt]] = "";
 					  outstring(0,0,CTyper.Code,false);
 					  ctypecnt = ctypecnt + 1;
-					end;//Edit***************************Sasha2,14:10 11.11.2015 }	
+					end;*///Edit***************************Sasha2,14:10 11.11.2015 }	
 				endformat;
-				
+
 				total_rebate = 0;//Edit***********************Vitalii 14:28 26.08.2014
 				total_rebate_qty = 0;
 				total_qty = 0;
@@ -702,7 +865,8 @@ begin
 				rangecnt = 0; //Edit***************************Sasha2,11:41 20.11.2014
 				arrsize = 20; 
 				
-				arrsize = arrsize + ctypecnt; //Edit***************************Sasha2,16:49 11.11.2015
+				//arrsize = arrsize + ctypecnt; //Edit***************************Sasha2,16:49 11.11.2015
+				arrsize = arrsize + typescnt;
 				
 				IVr.TransDate = sd;
 				keyi = 1;
@@ -745,7 +909,7 @@ begin
 						For(i=0;i<mtrw;i=i+1) begin
 							matrowget(IVr,i,IVrw);
 							if(IVrw.stp==kInvoiceRowTypeGiftVoucherSold and blank(RepSpec.f4) and blank(RepSpec.f5) and blank(RepSpec.f2))then begin
-								PrintGftSertSold(IVr,i,total_price,bcur,azn);
+								PrintGftSertSold(IVr,i,total_price,bcur,azn,addclassf);
 							end;
 							if(IVrw.stp==kInvoiceRowTypeNormal and nonblank(IVrw.ArtCode))then begin
 								INr.Code = IVrw.ArtCode;
@@ -784,6 +948,124 @@ begin
 								end;
 								
 								if(testf1) then begin
+								  pos = 0;
+              		brand = "";
+              		model = "";
+              		if (addclassf) then begin //Edit***************************Sasha2,14:05 02.06.2016 {
+                		ExtractObj(INr.DispGroups,pos,uloc);
+                		while (NonBlank(uloc)) begin
+                		  DIr.Code = uloc;
+                		  if (readfirstmain(DIr,1,true)) then begin
+                		    if (DIr.CType=="BRAND") then begin
+                		      brand = DIr.Name;
+                		    end;
+                		    if (DIr.CType=="MODEL") then begin
+                		      model = DIr.Name;
+                		    end;
+                		    if (NonBlank(DIr.CType)) then begin 
+                				  if (DIr.CType=="GENDER") then begin
+                				    switch (Left(UpperCase(INr.MainDisp),1)) begin
+                				      case "A":
+                      				  DIr.CType = DIr.CType & "_A";
+                      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+                				      case "J":
+                				        DIr.CType = DIr.CType & "_J";
+                      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+                				      case "W":
+                				        DIr.CType = DIr.CType & "_W";
+                      				  typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+                				    end;
+                				  end else begin
+                				    typeval[DIr.CType] = INr.Code & ";" & DIr.Name;
+                				    switch (Left(UpperCase(INr.MainDisp),1)) begin //if classifications in custom separate fields {
+                				      case "A":
+                				        if (NonBlank(INr.Reference)) then begin
+                				          collf = true;
+                				          collstr = "COLL_A";
+                				        end;
+                				        if (NonBlank(INr.Metal)) then begin
+                				          metalf = true;
+                				          metalstr = "MATERIAL_A";
+                				        end;
+                				      case "J":
+                				        if (NonBlank(INr.Reference)) then begin
+                				          collf = true;
+                				          collstr = "COLL_J";
+                				        end;
+                				        if (NonBlank(INr.Metal)) then begin
+                				          metalf = true;
+                				          metalstr = "MATERIAL_J";
+                				        end;
+                				        if (NonBlank(INr.RowWeight)) then begin
+                				          tstr = typeval["WEIGHT"];
+                    			        pos1 = 0;
+                    			        ExtractObj(tstr,pos1,uloc1);
+                    			        if (uloc1==INr.Code) then begin
+                    			          ExtractObj(tstr,pos1,uloc1);
+                    			          if (blank(uloc1)) then begin
+                    			            typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+                    			          end;
+                    			        end else begin
+                    			          typeval["WEIGHT"] = INr.Code & ";" & INr.RowWeight;
+                    			        end;
+                				        end;
+                				        if (NonBlank(INr.MajStoneDet)) then begin
+                				          tstr = typeval["D_CARAT"];
+                    			        pos1 = 0;
+                    			        ExtractObj(tstr,pos1,uloc1);
+                    			        if (uloc1==INr.Code) then begin
+                    			          ExtractObj(tstr,pos1,uloc1);
+                    			          if (blank(uloc1)) then begin
+                    			            typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+                    			          end;
+                    			        end else begin
+                    			          typeval["D_CARAT"] = INr.Code & ";" & INr.MajStoneDet;
+                    			        end;
+                				        end;
+                				      case "W":
+                				        if (NonBlank(INr.Reference)) then begin
+                				          collf = true;
+                				          collstr = "COLL_W";
+                				        end;
+                				        if (NonBlank(INr.Metal)) then begin
+                				          metalf = true;
+                				          metalstr = "MATERIAL_W";
+                				        end;
+                				    end; 
+                				    if (collf) then begin
+                				      tstr = typeval[collstr];
+                			        pos1 = 0;
+                			        ExtractObj(tstr,pos1,uloc1);
+                			        if (uloc1==INr.Code) then begin
+                			          ExtractObj(tstr,pos1,uloc1);
+                			          if (blank(uloc1)) then begin
+                			            typeval[collstr] = INr.Code & ";" & INr.Reference;
+                			          end;
+                			        end else begin
+                			          typeval[collstr] = INr.Code & ";" & INr.Reference;
+                			        end;  
+                				      collf = false;
+                				    end;
+                				    if (metalf) then begin
+                		          tstr = typeval[metalstr];
+                			        pos1 = 0;
+                			        ExtractObj(tstr,pos1,uloc1);
+                			        if (uloc1==INr.Code) then begin
+                			          ExtractObj(tstr,pos1,uloc1);
+                			          if (blank(uloc1)) then begin
+                			            typeval[metalstr] = INr.Code & ";" & INr.Metal;
+                			          end;
+                			        end else begin
+                			          typeval[metalstr] = INr.Code & ";" & INr.Metal;
+                			        end;
+                				      metalf = false;
+                				    end;//if classifications in custom separate fields }
+                				  end;
+                				end;
+                		  end; //Edit***************************Sasha2,14:05 02.06.2016 }
+                		  ExtractObj(INr.DispGroups,pos,uloc);
+                		end;
+                	end;
 									if (modef) then begin
 										startformat(15);
 									end;
@@ -792,51 +1074,70 @@ begin
 											outstring(0,0,INr.AlternativeCode,false);
 											outstring(0,0,IVr.Location,false);
 											
-											classname = "";
-											k=0;
-											ExtractObj(INr.DispGroups,k,classcode);
-											DIr.Code = classcode;
-											readfirstmain(DIr,1,true);
-											classname = DIr.Name;
-											outstring(0,0,classname,false);
-											dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+											if (addclassf==false) then begin
+  											classname = "";
+  											k=0;
+  											ExtractObj(INr.DispGroups,k,classcode);
+  											DIr.Code = classcode;
+  											readfirstmain(DIr,1,true);
+  											classname = DIr.Name;
+  											outstring(0,0,classname,false);
+  											//dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+  											
+  											classname2 = "";
+  											ExtractObj(INr.DispGroups,k,classcode);
+  											DIr.Code = classcode;
+  											readfirstmain(DIr,1,true);
+  											classname2 = DIr.Name;
+  											if(currentcompany==9) then begin
+  												category = DIr.CCat;	//Edit----------------------Dima  20.03.2015
+  											end;											
+  											outstring(0,0,classname2,false);
+  											//dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+											end else begin //Edit***************************Sasha2,14:11 02.06.2016 {
+											  outstring(0,0,brand,false);
+											end; //Edit***************************Sasha2,14:11 02.06.2016 ]
 											
-											classname2 = "";
-											ExtractObj(INr.DispGroups,k,classcode);
-											DIr.Code = classcode;
-											readfirstmain(DIr,1,true);
-											classname2 = DIr.Name;
-											if(currentcompany==9) then begin
-												category = DIr.CCat;	//Edit----------------------Dima  20.03.2015
-											end;											
-											outstring(0,0,classname2,false);
-											dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
 											
-											ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
+											/*ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
 											while (NonBlank(classcode)) begin
 											  DIr.Code = classcode;
 											  if (readfirstmain(DIr,1,true)) then begin
 											    dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ",";
 											  end;
 											  ExtractObj(INr.DispGroups,k,classcode);
-											end; //Edit***************************Sasha2,14:52 11.11.2015 }
+											end;*/ //Edit***************************Sasha2,14:52 11.11.2015 }
 											
 											if(currentcompany==9) then begin
 												outstring(0,0,category,false);
 											end;
 											outstring(0,0,prepareStr(IVrw.Spec),false);
-											outstring(0,0,INr.Reference,false);
-											outstring(0,0,INr.Metal,false);
-											outstring(0,0,INr.RowWeight,false);
-											outstring(0,0,INr.MajStoneDet,false);
-											if(CompanyIsJWLikeCompany(currentcompany))then begin
-												outstring(0,0,INr.BrcStr,false);
-												outstring(0,0,INr.Gender,false);
-											end;
-											if(currentcompany==13)then begin		//Edit----------------------Dima  30.04.2015
-												outstring(0,0,INr.Size,false);
-												outstring(0,0,INr.Colour,false);											
-											end;
+											if (addclassf==false) then begin //Edit***************************Sasha2,14:21 02.06.2016 {
+  											outstring(0,0,INr.Reference,false);
+  											outstring(0,0,INr.Metal,false);
+  											outstring(0,0,INr.RowWeight,false);
+  											outstring(0,0,INr.MajStoneDet,false);
+  											//if(CompanyIsJWLikeCompany(currentcompany))then begin
+  												//outstring(0,0,INr.BrcStr,false);
+  												//outstring(0,0,INr.Gender,false);
+  											//end;
+  											if(currentcompany==13)then begin		//Edit----------------------Dima  30.04.2015
+  												outstring(0,0,INr.Size,false);
+  												outstring(0,0,INr.Colour,false);											
+  											end;  
+                  		end else begin
+                  		  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+                  		    pos = 0;
+                  		    ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                  		    if (uloc==INr.Code) then begin
+                  		      ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                            outstring(0,0,uloc,false);
+                          end else begin
+                            outstring(0,0,"",false);
+                  		    end;
+                  		  end;
+											end; //Edit***************************Sasha2,14:21 02.06.2016 }
+											
 											outstring(0,0,IVrw.SerialNr,false);
 											outstring(0,0,INr.BarCode,false);
 											outstring(0,0,INr.EKNCode,false);
@@ -850,53 +1151,75 @@ begin
 												arrstrs[strscnt] = INr.AlternativeCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = IVr.Location; strscnt = strscnt + 1;
 												
-												classname = "";
-												k=0;
-												ExtractObj(INr.DispGroups,k,classcode);
-												DIr.Code = classcode;
-												readfirstmain(DIr,1,true);
-												classname = DIr.Name;
-												dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
-												arrstrs[strscnt] = classname; strscnt = strscnt + 1;
-												
-												classname2 = "";
-												ExtractObj(INr.DispGroups,k,classcode);
-												DIr.Code = classcode;
-												readfirstmain(DIr,1,true);
-												classname2 = DIr.Name;
-												dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
-												arrstrs[strscnt] = classname2; strscnt = strscnt + 1;
+												if (addclassf==false) then begin
+  												classname = "";
+  												k=0;
+  												ExtractObj(INr.DispGroups,k,classcode);
+  												DIr.Code = classcode;
+  												readfirstmain(DIr,1,true);
+  												classname = DIr.Name;
+  												//dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+  												arrstrs[strscnt] = classname; strscnt = strscnt + 1;
+  												
+  												classname2 = "";
+  												ExtractObj(INr.DispGroups,k,classcode);
+  												DIr.Code = classcode;
+  												readfirstmain(DIr,1,true);
+  												classname2 = DIr.Name;
+  												//dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ","; //Edit***************************Sasha2,14:50 11.11.2015
+  												arrstrs[strscnt] = classname2; strscnt = strscnt + 1;
+												end else begin //Edit***************************Sasha2,14:23 02.06.2016 {
+												  arrstrs[strscnt] = brand; strscnt = strscnt + 1;
+												end; //Edit***************************Sasha2,14:23 02.06.2016 }
 												
 												arrstrs[strscnt] = prepareStr(IVrw.Spec); strscnt = strscnt + 1;
-												arrstrs[strscnt] = INr.Reference; strscnt = strscnt + 1; 
-												arrstrs[strscnt] = INr.Metal; strscnt = strscnt + 1; 
-												arrstrs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
-												arrstrs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
-												if(CompanyIsJWLikeCompany(currentcompany))then begin
-													arrstrs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
-													arrstrs[strscnt] = INr.Gender; strscnt = strscnt + 1;
-												end;
-												if(currentcompany==13)then begin	//Edit----------------------Dima  30.04.2015
-													arrstrs[strscnt] = INr.Size; strscnt = strscnt + 1; 
-													arrstrs[strscnt] = INr.Colour; strscnt = strscnt + 1;
-												end;												
+												if (addclassf==false) then begin //Edit***************************Sasha2,14:21 02.06.2016 {
+    											arrstrs[strscnt] = INr.Reference; strscnt = strscnt + 1; 
+  												arrstrs[strscnt] = INr.Metal; strscnt = strscnt + 1; 
+  												arrstrs[strscnt] = INr.RowWeight;strscnt = strscnt + 1;
+  												arrstrs[strscnt] = INr.MajStoneDet; strscnt = strscnt + 1;
+  												//if(CompanyIsJWLikeCompany(currentcompany))then begin
+  													//arrstrs[strscnt] = INr.BrcStr; strscnt = strscnt + 1; 
+  													//arrstrs[strscnt] = INr.Gender; strscnt = strscnt + 1;
+  												//end;
+  												if(currentcompany==13)then begin	//Edit----------------------Dima  30.04.2015
+  													arrstrs[strscnt] = INr.Size; strscnt = strscnt + 1; 
+  													arrstrs[strscnt] = INr.Colour; strscnt = strscnt + 1;
+  												end;	  
+                    		end else begin
+                    		  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+                    		    pos = 0;
+                    		    ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                    		    if (uloc==INr.Code) then begin
+                    		      ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                              arrstrs[strscnt] = uloc; strscnt = strscnt + 1;
+                            end else begin
+                              arrstrs[strscnt] = ""; strscnt = strscnt + 1;
+                    		    end;
+                    		  end;
+  											end; //Edit***************************Sasha2,14:21 02.06.2016 }
+												//arrstrs[strscnt] = ""; strscnt = strscnt + 1;											
 												arrstrs[strscnt] = INr.BarCode; strscnt = strscnt + 1;
 												arrstrs[strscnt] = INr.EKNCode; strscnt = strscnt + 1;
-												
-												ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
+                    		
+												/*ExtractObj(INr.DispGroups,k,classcode); //Edit***************************Sasha2,14:52 11.11.2015 {
   											while (NonBlank(classcode)) begin
   											  DIr.Code = classcode;
   											  if (readfirstmain(DIr,1,true)) then begin
   											    dispnames[DIr.CType] = dispnames[DIr.CType] & classcode & ",";
   											  end;
   											  ExtractObj(INr.DispGroups,k,classcode);
-  											end; //Edit***************************Sasha2,14:52 11.11.2015 }
+  											end; *///Edit***************************Sasha2,14:52 11.11.2015 }
 												
 											end else begin
-												if(currentcompany==3 or currentcompany==13)then begin
-													strscnt = strscnt + 14;
+												if(addclassf)then begin
+													strscnt = strscnt + 7 + typescnt;
 												end else begin
-													strscnt = strscnt + 12;
+												  if (currentcompany==13) then begin
+												    strscnt = strscnt + 14;
+												  end else begin
+												    strscnt = strscnt + 12;
+												  end;
 												end;
 											end;
 											arrvals[valscnt] = arrvals[valscnt] + IVrw.Quant; valscnt = valscnt + 1;
@@ -1059,10 +1382,22 @@ begin
 												arrvals[valscnt] = arrvals[valscnt] + (IVrw.Sum - fifob1*IVrw.Quant)*cred; valscnt = valscnt + 1;
 											end;
 											arrstrs[strscnt] = brandcur; strscnt = strscnt + 1;
-                      for (m=0;m<ctypecnt;m=m+1) begin 
+											if (addclassf) then begin //Edit***************************Sasha2,14:37 08.02.2016 {
+                  		  for (j=30;j<typescnt;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+                  		    pos = 0;
+                  		    ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                  		    if (uloc==INr.Code) then begin
+                  		      ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                            arrstrs[strscnt] = uloc; strscnt = strscnt + 1;
+                          end else begin
+                            arrstrs[strscnt] = ""; strscnt = strscnt + 1;
+                  		    end;
+                  		  end;
+                  		end; //Edit***************************Sasha2,14:37 08.02.2016 }
+                      /*for (m=0;m<ctypecnt;m=m+1) begin 
 											  arrstrs[strscnt] = dispnames[typeindex[m]]; strscnt = strscnt + 1;
 											end; 
-											MyClearVector(dispnames,typeindex,ctypecnt);
+											MyClearVector(dispnames,typeindex,ctypecnt);*/
 										end; //Edit***************************Sasha2,11:17 20.11.2014 }
 										
 										if (modef) then begin //Edit***************************Sasha2,11:17 20.11.2014	
@@ -1076,10 +1411,22 @@ begin
 												end;
 											end;
 											outstring(0,0,tstr,false);
-											for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,15:28 11.11.2015 {
+											if (addclassf) then begin //Edit***************************Sasha2,14:37 08.02.2016 {
+                  		  for (j=30;j<typescnt;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+                  		    pos = 0;
+                  		    ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                  		    if (uloc==INr.Code) then begin
+                  		      ExtractObjWithSeparator(";",typeval[typecode[j]],true,pos,uloc);
+                            outstring(0,0,uloc,false);
+                          end else begin
+                            outstring(0,0,"",false);
+                  		    end;
+                  		  end;
+                  		end; //Edit***************************Sasha2,14:37 08.02.2016 }
+											/*for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,15:28 11.11.2015 {
 											  outstring(0,0,Left(dispnames[typeindex[m]],len(dispnames[typeindex[m]])-1),false);
 											end; 
-											MyClearVector(dispnames,typeindex,ctypecnt); //Edit***************************Sasha2,15:28 11.11.2015 }
+											MyClearVector(dispnames,typeindex,ctypecnt);*/ //Edit***************************Sasha2,15:28 11.11.2015 }
 										end;
 										
 									if (modef) then begin	//Edit***************************Sasha2,11:12 20.11.2014								
@@ -1103,20 +1450,28 @@ begin
 							outstring(2,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.AlternativeCode
 							outstring(3,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //IVr.Location
 							outstring(4,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //classname
-							outstring(5,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //classname2
+							if (addclassf==false) then begin //Edit***************************Sasha2,17:43 02.06.2016 {
+							  outstring(5,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //classname2
+							end; //Edit***************************Sasha2,17:43 02.06.2016 }
 							outstring(6,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //prepareStr(IVrw.Spec)
-							outstring(7,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Reference
-							outstring(8,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
-							outstring(9,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
-							outstring(10,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
-							if(CompanyIsJWLikeCompany(currentcompany))then begin
-								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
-								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
-							end;
-							if(currentcompany==13)then begin			//Edit----------------------Dima  30.04.2015
-								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Size
-								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Colour
-							end;							
+							if (addclassf==false) then begin
+  							outstring(7,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Reference
+  							outstring(8,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Metal
+  							outstring(9,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.RowWeight
+  							outstring(10,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.MajStoneDet
+  							//if(CompanyIsJWLikeCompany(currentcompany))then begin
+  								//outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BrcStr
+  								//outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Gender
+  							//end;
+  							if(currentcompany==13)then begin			//Edit----------------------Dima  30.04.2015
+  								outstring(11,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Size
+  								outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.Colour
+  							end;	
+							end else begin  //Edit***************************Sasha2,17:43 02.06.2016 {
+							  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+          		    outstring(12,0,arrstrs[strscnt],false); strscnt = strscnt + 1;
+          		  end;
+							end;	//Edit***************************Sasha2,17:43 02.06.2016 }
 							outstring(13,0,"",false); //IVrw.SerialNr
 							outstring(13,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.BarCode
 							outstring(14,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //INr.EKNCode
@@ -1157,9 +1512,14 @@ begin
 								outstring(30,0,arrvals[valscnt],false); valscnt = valscnt + 1; //IVrw.Sum - fifob1*IVrw.Quant
 							end;
 							outstring(31,0,arrstrs[strscnt],false); strscnt = strscnt + 1; //brandcur
-							for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,16:15 11.11.2015 {
+							if (addclassf) then begin //Edit***************************Sasha2,14:37 08.02.2016 {
+          		  for (j=30;j<typescnt;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+          		    outstring(32,0,arrstrs[strscnt],false); strscnt = strscnt + 1;
+          		  end;
+          		end; //Edit***************************Sasha2,14:37 08.02.2016 }
+							/*for (m=0;m<ctypecnt;m=m+1) begin //Edit***************************Sasha2,16:15 11.11.2015 {
 							  outstring(32,0,Left(arrstrs[strscnt],len(arrstrs[strscnt])-1),false); strscnt = strscnt + 1; //disp types
-							end; //Edit***************************Sasha2,16:15 11.11.2015 }
+							end;*/ //Edit***************************Sasha2,16:15 11.11.2015 }
 						endformat;
 					end;
 				end;
@@ -1169,20 +1529,27 @@ begin
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
-					outstring(0,0,"",false);
-					outstring(0,0,"",false);
-					if(CompanyIsJWLikeCompany(currentcompany))then begin
-						outstring(0,0,"",false);
-						outstring(0,0,"",false);
+					if (addclassf==false) then begin
+					  outstring(0,0,"",false);
 					end;
-					if(CompanyIsJWLikeCompany(currentcompany))then begin	//Edit----------------------Dima  30.04.2015
+					if (currentcompany==9) then begin
+					  outstring(0,0,"",false);
+					end;
+					outstring(0,0,"",false);
+					if (addclassf==false) then begin
+					  outstring(0,0,"",false);
 						outstring(0,0,"",false);
 						outstring(0,0,"",false);
-					end;					
-					outstring(0,0,"",false);
-					outstring(0,0,"",false);
-					outstring(0,0,"",false);
-					outstring(0,0,"",false);
+						outstring(0,0,"",false);
+						if (currentcompany==13) then begin
+						  outstring(0,0,"",false);
+						  outstring(0,0,"",false);
+						end;
+					end else begin
+					  for (j=0;j<30;j=j+1) begin //if you change "30" do it in other places having "For" loop 
+      		    outstring(0,0,"",false);
+      		  end;
+					end;				
 					outstring(0,0,"",false);
 					outstring(0,0,"",false);
 					outstring(0,0,USetStr(31074),false);
@@ -1190,11 +1557,10 @@ begin
 					if(bcur!=azn)then begin
 						outstring(0,0,"",false);
 					end;
-					outstring(0,0,"",false);
 					if(bcur==azn)then begin
 						outstring(0,0,"",false);
 					end;
-					
+					outstring(0,0,"",false);
 					outstring(0,0,USetStr(31075),false);
 					if(bcur==azn)then begin
 						outstring(0,0,total_cost,false);
