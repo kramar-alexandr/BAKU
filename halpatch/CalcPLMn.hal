@@ -32,7 +32,8 @@ begin
   Integer theroundof;
   string 20 plcurcode;
   roundmode rnd
-    
+  
+  
   rnd = DefaultCurRoundoff;
   rnd.decimals = 0;
   rnd.step = kRoundingStep5;
@@ -147,7 +148,15 @@ begin
     
     
     if(CompanyIsJWLikeCompany(currentcompany))then begin
-    	newpr = Round(newpr + PFr.Add2Val,rnd);// Edit ************************** Friday, 24 May 2013 14:08:31
+    	if((newpr + PFr.Add2Val)>5)then begin
+    		newpr = Round(newpr + PFr.Add2Val,rnd);// Edit ************************** Friday, 24 May 2013 14:08:31
+    	end else begin
+    		/*rnd = DefaultCurRoundoff;
+				rnd.decimals = 0;
+				rnd.step = kRoundingStepNone;
+				rnd.mode = kRoundingModeHalfUp;*/
+				newpr = 5;// Edit ************************** Thursday, 2 June 2016 15:21:35
+    	end;
     end else begin
 			newpr = Round(newpr + PFr.Add2Val,SetRoundModeD(roundof));
     end;
