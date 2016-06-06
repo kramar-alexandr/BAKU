@@ -4015,3 +4015,24 @@ begin
   SaboPromotion = res;
   return;
 end; //Edit***************************Sasha2,13:44 01.06.2016 }
+
+
+
+global updating procedure FixLocalMachineMn()
+begin
+	record IVVc IVr;
+	
+	while(loopmain(IVr,1,true))begin
+		if(IVr.MachineName=="KASSA1")then begin
+			IVr.MachineName = "CC1";
+			recordstore(IVr,true);
+		end;
+		if(IVr.MachineName=="KASSA2")then begin
+			IVr.MachineName = "CC2";
+			recordstore(IVr,true);
+		end;
+	end;
+	
+
+return;
+end;

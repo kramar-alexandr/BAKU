@@ -88,6 +88,10 @@ begin
 	Maintenance("Удалить первичные документы",CleaningVClass,CleaningMn,modDBMain);												//Edit----------------------Dima  26.05.2015
 	Maintenance("Сч/ф клиенту: InvalidDate = InvDate",CleaningVClass,SetInvoiceInvalidDateMn,modDBMain);	//Edit***************************Sasha2,14:03 26.05.2015	
 	
+	Maintenance("Заменить KASSA на СС",FIXVClass,FixLocalMachineMn,modSL);		//Edit----------------------Dima  13.05.2015
+
+	
+	
 	Maintenance("Проставить клиентам категорию NONAME",FIXVClass,PasteCategoryToCUMn,modDBMain);	//Edit by Victor 14.07.15
 	Maintenance("Заполнить курсы основных валют из курса обмена",CurrencyRateToBase1RateVClass,CurrencyRateToBase1RateMn,modDBMain); //Edit***************************Sasha2,14:50 21.01.2016
 	Maintenance("Поменять местами курсы основных валют из курса обмена",FIXVClass,BaseERToggleMn,modDBMain); //Edit***************************Sasha2,16:32 26.01.2016
