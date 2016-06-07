@@ -3909,6 +3909,7 @@ begin
 		          postfix = " Watch";
 		        end;
         end;
+        postfix = ""; //Edit***************************Sasha2,17:47 07.06.2016
         if (collf) then begin
           savef = true;
           DIr.Code = PrepareDICode(INr.Reference);
