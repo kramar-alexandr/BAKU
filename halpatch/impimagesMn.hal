@@ -4037,3 +4037,40 @@ begin
 
 return;
 end;
+
+global 
+updating procedure RemovePostfixInDispMn()
+begin
+	record DIVc Dir;
+	integer lenA,lenJ,lenW;
+	
+	 lenA = len(" Accessories");
+	 lenJ = len(" Jewellery");
+	 lenW = len(" Watch");
+	
+  	while(loopmain(Dir,1,true))begin
+  	  if (len(Dir.Name)>lenA and (Dir.CType=="COLL_A" or Dir.CType=="MATERIAL_A")) then begin
+  	    if (Right(Dir.Name,lenA)==" Accessories") then begin
+  	      Dir.Name = left(Dir.Name,len(Dir.Name) - lenA);
+  	      RECORDSTORE(Dir,true);
+  	    end;
+  	  end else begin
+  	    if (len(Dir.Name)>lenJ and (Dir.CType=="COLL_J" or Dir.CType=="MATERIAL_J")) then begin
+  	      if (Right(Dir.Name,lenJ)==" Jewellery") then begin
+    	      Dir.Name = left(Dir.Name,len(Dir.Name) - lenJ);
+    	      RECORDSTORE(Dir,true);
+    	    end;
+  	    end else begin
+  	      if (len(Dir.Name)>lenW and (Dir.CType=="COLL_W" or Dir.CType=="MATERIAL_W")) then begin
+  	        if (Right(Dir.Name,lenW)==" Watch") then begin
+      	      Dir.Name = left(Dir.Name,len(Dir.Name) - lenW);
+      	      RECORDSTORE(Dir,true);
+      	    end;
+  	      end;
+  	    end;
+  	  end;
+  	end;
+	
+
+return;
+end;
