@@ -446,7 +446,13 @@ begin
           
           ParseClassification(INr.DispGroups);
           if(RepSpec.flags[0]==0)then begin// Edit ************************** Thursday, July 3, 2014 at 16:50:19
-            OutString(50,0,INr.InPrice,false);
+            //OutString(50,0,INr.InPrice,false);
+            
+            if(qty_start>0)then begin
+							OutString(50,0,cost_start/qty_start,false);
+            end else begin
+            	OutString(50,0,INr.InPrice,false);
+            end;
           end;
           // Edit Start ---------------------------------------------- Edit Start
 	//Tuesday, 30 October 2012 16:22:25
