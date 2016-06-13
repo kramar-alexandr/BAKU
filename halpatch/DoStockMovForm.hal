@@ -348,11 +348,11 @@ LBREAKStockMov:;
         end else begin
           OUTFORMFIELD("F_COPYTYPE",USetStr(18631));
         end;
-        if ((StockMovr.OKFlag!=0) or (StockMovr.SentOKFlag!=0)) then begin
+        /*if ((StockMovr.OKFlag!=0) or (StockMovr.SentOKFlag!=0)) then begin
           if (StockMovr.Prntdf!=0) then begin
             FormWaterMark(1118,-1);
           end;
-        end;
+        end;*/
         CloseForm;
       end else begin
         printf = false;
