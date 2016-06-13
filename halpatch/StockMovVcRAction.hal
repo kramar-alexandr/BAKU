@@ -47,6 +47,7 @@ external procedure FindStockValue(string,string,var record ItemStatusVc);
 external function Boolean Date2Test(string,Date,string,Integer);
 external function Boolean SerNrTestStockMovVc(LongInt,Date,var Boolean);
 external function string 20 GetNextOfficialSerNr(string, date);	//Edit----------------------Dima  01.04.2015
+external function Boolean SetInSet2(string,string);
 
 function Integer CheckStockMovRowToPosition(record StockMovVc SMp,row StockMovVc StockMovrw,record LocationVc LocToRec,record INVc INr,
                                             Integer rownr,Boolean disperrf)
@@ -435,6 +436,7 @@ BEGIN
   record SHVc SHr;
   row SHVc SHrw;
   record StockMovVc fifocurSMr; //Edit***************************Sasha2,11:34 18.03.2015
+  record UserVc Userr; //Edit***************************Sasha2,12:10 13.06.2016
 
   res = 0;
   insertmode = 1;//Rs_insert
@@ -665,7 +667,43 @@ BEGIN
     res = -1;
     goto LCheckStockMovRecord;
   end; //Edit***************************Sasha2,10:17 16.02.2016 }
-
+  Userr.Code = CurrentUser;
+  if (ReadFirstMain(Userr,1,true) and SetInSet2("OWNLO",Userr.AccessGroup)) then begin
+    if (NonBlank(Userr.Location)) then begin
+      if (stat==insertmode) then begin
+        if (SMp.OrdFlag!=0 and frlocation!=Userr.Location) then begin
+          if (disperrf) then begin
+            RecordCheckError(35097,SMp.FrLocation,-1,"FrLocation");      
+          end;
+          res = -1;
+          goto LCheckStockMovRecord;
+        end;
+        if (SMp.OKFlag!=0 and tolocation!=Userr.Location) then begin
+          if (disperrf) then begin
+            RecordCheckError(35098,SMp.ToLocation,-1,"ToLocation");      
+          end;
+          res = -1;
+          goto LCheckStockMovRecord;
+        end;
+      end;
+      if (stat==updatemode) then begin
+        if (SM2p.OrdFlag==0 and SMp.OrdFlag!=0 and frlocation!=Userr.Location) then begin
+          if (disperrf) then begin
+            RecordCheckError(35097,SMp.FrLocation,-1,"FrLocation");      
+          end;
+          res = -1;
+          goto LCheckStockMovRecord;
+        end;
+        if (SM2p.OKFlag==0 and SMp.OKFlag!=0 and tolocation!=Userr.Location) then begin
+          if (disperrf) then begin
+            RecordCheckError(35098,SMp.ToLocation,-1,"ToLocation");      
+          end;
+          res = -1;
+          goto LCheckStockMovRecord;
+        end;
+      end;
+    end;
+  end;
   if (nonblank(SMp.ThrouLocation)) then begin
     if (SMp.FrLocation==SMp.ThrouLocation) then begin
       if (disperrf) then begin

@@ -624,8 +624,8 @@ begin
   SString(35095,"В разводе");  
   SString(35096,"Вдовa/-ец"); 
   
-  SString(35097,"Нельзя подтвердить не свой склад");   
-     
+  SString(35097,"Нельзя подтвердить не свой склад ");   
+  SString(35098,"Нельзя отправить не на свой склад ");     
   
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
