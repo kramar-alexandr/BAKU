@@ -9,6 +9,28 @@ external procedure INrsRClassReportDef(var record RcVc);
 external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
 remote procedure CntDiTypesForIn(string,var Array string,var Integer,var Integer); //Edit***************************Sasha2,11:35 03.11.2015
 external procedure ExtractObj(string,var Integer,var string); //Edit***************************Sasha2,11:36 03.11.2015
+remote function boolean CompanyIsJWLikeCompany(Integer); //Edit***************************Sasha2,17:46 14.06.2016
+
+global //Edit***************************Sasha2,16:45 14.06.2016 {
+function string 20 ReturnFieldDITypeNotJW(string fieldname)
+begin
+  string 20 res;
+  
+    switch (fieldname) begin
+      case "BrandSC": res = "BRAND";
+      case "classif30": res = "MODEL";
+      case "Category": res = "CATEGORY";
+      case "classif31": res = "TYPE";
+      case "Collection": res = "COLLECTION";
+      case "Metal": res = "METAL";
+      case "WeightOfMat": res = "WEIGHT";
+      case "Carat": res = "CARAT";
+      otherwise res = "";
+    end;
+    
+    ReturnFieldDITypeNotJW = res;
+  return;
+end;//Edit***************************Sasha2,16:45 14.06.2016 }
 
 global //Edit***************************Sasha2,15:46 07.12.2015 {
 function string 20 ReturnFieldDIType(string fieldname,boolean reversef)
@@ -1401,7 +1423,11 @@ begin
         end;
         fname = Mid(fieldname,0,lenf-index);
       case "NewINVc":
-        fname = ReturnFieldDIType(fieldname,false);
+        if (CompanyIsJWLikeCompany(currentcompany)) then begin
+          fname = ReturnFieldDIType(fieldname,false);
+        end else begin
+          fname = ReturnFieldDITypeNotJW(fieldname);
+        end;
     end;
   end;
   
