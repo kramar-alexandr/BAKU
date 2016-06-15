@@ -128,12 +128,12 @@ begin
       classname = mid(classname,0,i+1); 
       
       if(nonblank(classname))then begin
-        DIr.Code = classname;
+        DIr.Code = UpperCase(classname);
         if (ReadFirstMain(DIr,1,true) and blank(DIr.CType)) then begin
           DIr.CType = type;
           RECORDSTORE(DIr,true);
         end;
-        DIr.Code = classname;
+        DIr.Code = UpperCase(classname);
         DIr.CType = type;
         if (!readfirstkey("CType",DIr,2,true)) then begin
           DIr.Name = classname;
@@ -150,23 +150,20 @@ begin
             newdisp = PrepareDICode(classname);
             if (NonBlank(newdisp)) then begin
               DIr.Code = newdisp;
-              DIr.CType = type;
-              TrHs = Readfirstkey("CType",DIr,2,true);
+              TrHs = ReadfirstMain(DIr,1,true);
               if (TrHs) then begin
                 j = 1;
                 newdisp = left(newdisp,len(newdisp) - len(j)) & j;
                 DIr.Code = newdisp;
-                DIr.CType = type;
-                TrHs = Readfirstkey("CType",DIr,2,true);  
+                TrHs = ReadfirstMain(DIr,1,true);  
               end;
               while (TrHs) begin
                 j = j + 1;
                 newdisp = left(newdisp,len(newdisp) - len(j)) & j;
                 DIr.Code = newdisp;
-                DIr.CType = type;
-                TrHs = Readfirstkey("CType",DIr,2,true);
+                TrHs = ReadfirstMain(DIr,1,true); 
               end;
-              if (TrHs==false) then begin
+              if (TrHs==false) then begin 
               	recordnew(DIr);
                 DIr.Code = newdisp;
                 DIr.Name = classname;
@@ -258,7 +255,7 @@ begin
       classname = mid(classname,0,i+1); 
       
       if(nonblank(classname))then begin
-        DIr.Code = classname;
+        DIr.Code = UpperCase(classname);
         DIr.CType = type;
         if (!readfirstkey("CType",DIr,2,true)) then begin
           DIr.Name = classname;
@@ -331,21 +328,18 @@ begin
               newdisp = PrepareDICode(classname);
               if (NonBlank(newdisp)) then begin
                 DIr.Code = newdisp;
-                DIr.CType = type;
-                TrHs = Readfirstkey("CType",DIr,2,true);
+                TrHs = ReadfirstMain(DIr,1,true);
                 if (TrHs) then begin
                   j = 1;
                   newdisp = left(newdisp,len(newdisp) - len(j)) & j;
                   DIr.Code = newdisp;
-                  DIr.CType = type;
-                  TrHs = Readfirstkey("CType",DIr,2,true);
+                  TrHs = ReadfirstMain(DIr,1,true);
                 end;
                 while (TrHs) begin
                   j = j + 1;
                   newdisp = left(newdisp,len(newdisp) - len(j)) & j;
                   DIr.Code = newdisp;
-                  DIr.CType = type;
-                  TrHs = Readfirstkey("CType",DIr,2,true);
+                  TrHs = ReadfirstMain(DIr,1,true);
                 end;
                 if (TrHs==false) then begin
                 	recordnew(DIr);
