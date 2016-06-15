@@ -25,6 +25,7 @@ begin
       case "Metal": res = "METAL";
       case "WeightOfMat": res = "WEIGHT";
       case "Carat": res = "CARAT";
+      case "RingSizes": res = "RINGSIZE";
       otherwise res = "";
     end;
     
