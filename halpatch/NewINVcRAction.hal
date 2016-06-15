@@ -129,6 +129,11 @@ begin
       
       if(nonblank(classname))then begin
         DIr.Code = classname;
+        if (ReadFirstMain(DIr,1,true) and blank(DIr.CType)) then begin
+          DIr.CType = type;
+          RECORDSTORE(DIr,true);
+        end;
+        DIr.Code = classname;
         DIr.CType = type;
         if (!readfirstkey("CType",DIr,2,true)) then begin
           DIr.Name = classname;
