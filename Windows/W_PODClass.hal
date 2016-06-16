@@ -2614,7 +2614,7 @@ begin
   		MatCol(1,pos+=70,"Коллекция",0,Collection,false,TypeDISClass);
   		MatCol(1,pos+=70,"Металл",0,Metal,false,TypeDISClass);
   		MatCol(1,pos+=70,"Вес",0,WeightOfMat,true,TypeDISClass);
-  		MatCol(1,pos+=70,"Размер кольца",0,RingSizes,true,TypeDISClass);
+  		MatCol(1,pos+=70,"Размер",0,Size,true,TypeDISClass);
   		MatCol(1,-70,"Каратность",0,Carat,false,TypeDISClass);
   		Flip(flipnr); flipnr = flipnr + 1;
   		MatCol(1,130,"Наименование",0,Name,false,0);

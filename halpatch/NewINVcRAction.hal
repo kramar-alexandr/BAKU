@@ -1289,6 +1289,17 @@ BEGIN
             newdispstr = newdispstr & outdisps & ",";
           end;
         end;
+        //
+        if (NonBlank(newINrw.Size)) then begin
+          if (!CheckDispAndCreateIfNeeded(newINrw.Size,outdisps,ReturnFieldDITypeNotJW("Size"),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Size");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Size = outdisps;
+            newdispstr = newdispstr & outdisps & ",";
+          end;
+        end;
   			
   			newINrw.DispGroups = newdispstr;
   			if(len(newINrw.DispGroups)>0)then begin
