@@ -26,6 +26,7 @@ begin
       case "WeightOfMat": res = "WEIGHT";
       case "Carat": res = "CARAT";
       case "Size": res = "SIZE";
+      case "Colour": res = "COLOUR";
       otherwise res = "";
     end;
     

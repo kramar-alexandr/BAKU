@@ -1300,6 +1300,17 @@ BEGIN
             newdispstr = newdispstr & outdisps & ",";
           end;
         end;
+        //
+        if (NonBlank(newINrw.Colour)) then begin
+          if (!CheckDispAndCreateIfNeeded(newINrw.Colour,outdisps,ReturnFieldDITypeNotJW("Colour"),mes)) then begin
+            RecordCheckError(9588,". " & mes,i,"Colour");      
+            res = -1; 
+            goto LNewINVcRecordCheck;
+          end else begin
+            newINrw.Colour = outdisps;
+            newdispstr = newdispstr & outdisps & ",";
+          end;
+        end;
   			
   			newINrw.DispGroups = newdispstr;
   			if(len(newINrw.DispGroups)>0)then begin
