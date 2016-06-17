@@ -119,14 +119,17 @@ begin
       lenth = len(classname);
       testf = true;
       i=lenth;
-      while(testf and i>0) begin //cuts whitespaces in the end
-      	if(mid(classname,i,1)!=" ")then begin
+      while(testf and i>=0) begin //cuts whitespaces in the end
+      	if(mid(classname,i,1)!=" " and mid(classname,i,1)!="")then begin
       		testf = false;
       	end;
       	i=i-1;
       end;
-      classname = mid(classname,0,i+1); 
-      
+      classname = mid(classname,0,i+2); 
+        if (len(classname)==1 and mid(classname,i,1)==" ") then begin
+        classname = "";
+      end;
+          
       if(nonblank(classname))then begin
         DIr.Code = UpperCase(classname);
         if (ReadFirstMain(DIr,1,true) and blank(DIr.CType)) then begin
@@ -246,13 +249,16 @@ begin
       lenth = len(classname);
       testf = true;
       i=lenth;
-      while(testf and i>0) begin //cuts whitespaces in the end
-      	if(mid(classname,i,1)!=" ")then begin
+      while(testf and i>=0) begin //cuts whitespaces in the end
+      	if(mid(classname,i,1)!=" " and mid(classname,i,1)!="")then begin
       		testf = false;
       	end;
       	i=i-1;
       end;
-      classname = mid(classname,0,i+1); 
+      classname = mid(classname,0,i+2); 
+      if (len(classname)==1 and mid(classname,i,1)==" ") then begin
+        classname = "";
+      end;
       
       if(nonblank(classname))then begin
         DIr.Code = UpperCase(classname);
