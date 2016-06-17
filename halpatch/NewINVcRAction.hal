@@ -7,7 +7,7 @@ remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var 
 remote function string 20 ReturnFieldDIType(string,boolean); //Edit***************************Sasha2,10:55 08.12.2015
 remote function boolean SkipCheckDIType(string); //Edit***************************Sasha2,16:35 25.12.2015
 remote function string 20 ReturnFieldDITypeNotJW(string); //Edit***************************Sasha2,16:50 14.06.2016
-
+external function string 255 ReplaceCharByString(string,string,string);
 
 //Edit***************************Sasha2,18:12 07.12.2015 {
 procedure HandleTypeField(string fieldname,string fieldcontent,string comptostring,var String outdispstr, var String outtypesstr) 
@@ -103,6 +103,7 @@ begin
     outdisps = "";
     mes = "";
     pos = 0;
+    prepdisps = ReplaceCharByString(prepdisps,";",",");
     ExtractObjWithSeparator(",",prepdisps,true,pos,classname);
 		while (nonblank(classname)) begin
 			lenth = len(classname);
@@ -232,6 +233,7 @@ begin
     outdisps = "";
     mes = "";
     pos = 0;
+    prepdisps = ReplaceCharByString(prepdisps,";",",");
     ExtractObjWithSeparator(",",prepdisps,true,pos,classname);
 		while (nonblank(classname)) begin
 		
