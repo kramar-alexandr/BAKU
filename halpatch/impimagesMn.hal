@@ -301,9 +301,9 @@ Boolean foundf;
           newINrw.Collection = diTypes[ReturnFieldDITypeNotJW("Collection")];
           newINrw.Metal = diTypes[ReturnFieldDITypeNotJW("Metal")];
           newINrw.WeightOfMat = diTypes[ReturnFieldDITypeNotJW("WeightOfMat")];
-          if (NonBlank(diTypes[ReturnFieldDITypeNotJW("Carat")])) then begin
-            newINrw.Carat = diTypes[ReturnFieldDITypeNotJW("Carat")];
-          end;
+          newINrw.Carat = diTypes[ReturnFieldDITypeNotJW("Carat")];
+          newINrw.Size = diTypes[ReturnFieldDITypeNotJW("Size")];
+          newINrw.Colour = diTypes[ReturnFieldDITypeNotJW("Colour")];
   			end;
   		end;
   		

@@ -15,7 +15,7 @@ global //Edit***************************Sasha2,16:45 14.06.2016 {
 function string 20 ReturnFieldDITypeNotJW(string fieldname)
 begin
   string 20 res;
-  
+    //if here smth is updated than update function "HandleNewINDClassmCode" too
     switch (fieldname) begin
       case "BrandSC": res = "BRAND";
       case "classif30": res = "MODEL";
