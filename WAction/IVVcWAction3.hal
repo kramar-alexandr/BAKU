@@ -1414,3 +1414,21 @@ LIVDClassvRebateEFAfter:;
   IVDClassvRebateEFAfter = true;
   return;
 end;
+
+global //Edit***************************Sasha2,10:12 21.06.2016 {
+function Boolean PasteRetItemTClassOnClose(Integer wn,Integer wn2)
+begin
+  DeselectWindow(wn,false);
+  WindowDoCancel(wn);
+  PasteRetItemTClassOnClose = false;
+  return;
+end; //Edit***************************Sasha2,10:12 21.06.2016 }
+
+global  //Edit***************************Sasha2,10:12 21.06.2016 {
+procedure PasteRetItemTClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
+begin
+  duplOK = false;
+  newOK = false;
+  saveOK = false;
+  return;
+end; //Edit***************************Sasha2,10:12 21.06.2016 }

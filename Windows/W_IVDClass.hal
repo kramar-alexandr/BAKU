@@ -4041,7 +4041,7 @@ window PasteRetItemTClass:1 //embcauo009
 begin
 	real h,v,vs;
 	Integer tilenr,flipnr,f;
-  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGslist,-); 
+  WindowBegin("Вставить товар для возврата",PasteRetItemTClass,CGview,-); 
   DynamicWindow;
   SetWRect(0,10,800,300);
   /*UseView(RcVc);
@@ -4071,7 +4071,6 @@ begin
   
   StringList(9,120,-24,-10);*/
   
-  SpawnClass("");
   UseView(SHVc);
   
   Tile(0,110,false,"",DelAddrCode);

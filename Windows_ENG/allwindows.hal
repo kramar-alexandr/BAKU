@@ -3380,7 +3380,7 @@ window PasteRetItemTClass:1
 begin
 	real h,v,vs;
 	Integer tilenr,flipnr,f;
-  WindowBegin("Insert items to return",PasteRetItemTClass,CGslist,-); 
+  WindowBegin("Insert items to return",PasteRetItemTClass,CGview,-); 
   DynamicWindow;
   SetWRect(0,10,700,300);
   /*UseView(RcVc);
