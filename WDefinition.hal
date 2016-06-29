@@ -1308,7 +1308,7 @@ WindowBegin("Определите исторический отчет",HistoricalRClass,CGRcW,RcType);
 end;
 
 
-/*window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
+window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real v,vs;
@@ -1321,7 +1321,7 @@ begin
 	EditField(100,v+=vs,140,"Locations",Normal,Locations,false,LocationSClass);
 	StaticText(250,v+12,"(separated by comma)",false);
   EndWindow;
-end;*/
+end;
 
 
 /*global
@@ -1357,3 +1357,17 @@ begin
 
   EndWindow;
 end;*/
+
+window GruppoCoinManualVClass:1			//Edit----------------------Dima  22.03.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите перечень склада",GruppoCoinManualVClass,CGMnt,RcType);
+  SetWRect(20,80,400,290);
+  vs=20;
+  CheckBox(50,v+=vs,0,"Продажи",flags[1]);
+  EditFieldTL(180,v, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  CheckBox(50,v+=vs,0,"Остатки",flags[2]);
+
+  EndWindow;
+end;

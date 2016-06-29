@@ -4434,14 +4434,11 @@ begin
   RecordField(TotCost,M4Val,0,0);
   RecordField(TotPrice,M4Val,0,0); 
   EndRecord;
-  
-  
-  
+
   BlockBegin(CoinSettingsBlock,-,""); 
-  RecordField(ClientCode,M4Str,100,0);
+  RecordField(ClientCode,M4Int,100,0);
   RecordField(Locations,M4Str,255,0);
   EndBlock;  
-  
 	
   return;  
 end;
