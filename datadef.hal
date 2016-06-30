@@ -4436,7 +4436,7 @@ begin
   EndRecord;
 
   BlockBegin(CoinSettingsBlock,-,""); 
-  RecordField(ClientCode,M4Int,100,0);
+  RecordField(ClientCode,M4Int,0,0);
   RecordField(Locations,M4Str,255,0);
   EndBlock;  
 	
