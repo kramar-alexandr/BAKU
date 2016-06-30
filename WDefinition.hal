@@ -1371,3 +1371,27 @@ begin
 
   EndWindow;
 end;
+
+window ReplaceBarCodeIClass:1 //Edit***************************Sasha2,10:09 30.06.2016 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Импорт штрих-кодов кодов",ReplaceBarCodeIClass,CGIcW,-);
+  SetWRect(20,80,470,320);
+  i=1; //номер колонки
+  h=10;  v=15;
+  StaticText(h,v,"Формат импорта",false);
+  h=20;  v=40;
+  StaticText(h,v,"Список колонок:",false);
+  v=v+30; vs=25;
+  StaticText(h,v,i &". Код товара",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+  StaticText(h,v+=vs,i &". Штрих-код",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+  h=10;
+  StaticText(h,v+=45,"Примечание:   Все столбцы разделены <Tab>",false);
+
+  EndWindow;
+end; //Edit***************************Sasha2,10:09 30.06.2016 }
