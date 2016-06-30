@@ -6,6 +6,9 @@ begin
   Import("€мпорт прайсового рассписаниЯ",ImportPLClass,ImportPLIn,modDI);
   Import("Њзменение скидок клиентов",ImportDiskTableLClass,ImportDiskTableIn,modDI);
   Import("€мпорт товаров",ImportMyINClass,ImportMyINIn,modIN);
+  
+  Import("€мпорт баркодов",ImportMyINClass,ImportBarCodesIn,modIN);
+  
   Import("CLOutImport",ImportMyINClass,ImpCLOut,modCL);
   Import("€мпорт форм документов",ImportMyINClass,ImpDocVc,modSY);
 

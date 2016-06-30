@@ -492,7 +492,6 @@ BEGIN
   goto LLoadVATRates_POSNETProtocol;
 L66LoadVATRates_POSNETProtocol:;
   res = 12405;
-  MessageBox(0,res);
 LLoadVATRates_POSNETProtocol:;
   LoadVATRates_POSNETProtocol = res;
   RETURN;

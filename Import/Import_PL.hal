@@ -525,3 +525,41 @@ string 50 registerVc;
 
   RETURN;
 END;
+
+
+Global updating procedure ImportBarCodesIn()
+begin
+	record INVc INr;
+	record RebVc Rebr;
+	record ITVc ITr;
+	integer i;
+	string 255 artcode,barcode;
+		
+	while (TestEOF()==false) begin
+		artcode = ImportField;
+		barcode = ImportField;
+		if(nonblank(artcode) and nonblank(barcode))then begin
+			INr.Code = artcode;
+			if(readfirstmain(INr,1,true))then begin
+				if(nonblank(INr.BarCode) and INr.BarCode!=barcode)then begin
+					INr.BarCode = barcode;
+					INr.AlternativeCode = barcode;
+					INr.EKNCode = barcode;
+					logtext(0,INr.Code);
+					recordstore(INr,true);
+				end else begin
+					if(blank(INr.BarCode) and nonblank(INr.AlternativeCode) and INr.AlternativeCode!=barcode)then begin
+						INr.BarCode = barcode;
+						INr.AlternativeCode = barcode;
+						INr.EKNCode = barcode;
+						logtext(0,INr.Code);
+						recordstore(INr,true);
+					end;
+				end;
+			end;
+		end;
+		
+		NextImportLine(true);
+	end;
+	return;
+end;
