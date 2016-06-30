@@ -1233,7 +1233,7 @@ LkInvoiceTypeCredit:;
 			end;
       if (testf and AbsoluteVal(cash-IVp.Sum4)>delta) then begin
       logtext(0,cash & " " & IVp.Sum4);
-      messagebox(0,cash & " " & IVp.Sum4);
+      //messagebox(0,cash & " " & IVp.Sum4);
         RecordCheckError(24177,"",MatRowCnt(IVp),"Sum");      
         res = -1; 
         goto L99;

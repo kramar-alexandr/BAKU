@@ -9,9 +9,7 @@ BEGIN
   boolean testf,TrHs;
   
   
-  CUr.Code = "";
-  messagebox(0,1);
-  
+  CUr.Code = "";  
   while(loopmain(CUr,1,true))begin
 		testf = true;
 		if(CUr.CreateCompany>0/* and nonblank(CUr.CreateLocation)*/)then begin testf = false; end;
