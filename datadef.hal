@@ -4439,6 +4439,67 @@ begin
   RecordField(ClientCode,M4Int,0,0);
   RecordField(Locations,M4Str,255,0);
   EndBlock;  
+  
+  RecordBegin(CoinPackListVc,-,"coinpacklist"); //Edit***************************Sasha2,12:07 01.07.2016 {
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(FileName,M4Str,200,0);
+  RecordField(ImpDate,M4Date,0,0);
+  RecordField(ImpTime,M4Time,0,0);
+  RecordField(TransDate,M4Date,0,0); //Date of document
+  RecordField(Handled,M4Mark,0,0); //packlist is handled for "Management of goods" and closed
+  RecordField(RecordType,M4Str,5,0); //DT or PK
+  RecordField(StoreID,M4Str,5,0) //Store number (deliverer)
+  RecordField(StoreID2,M4Str,5,0); //Store number (receiver). 
+  RecordField(TransportBill,M4Str,10,0); //delivery number
+  RecordField(TransportBillDate,M4Str,10,0); //delivery date
+  RecordField(RowNumber,M4Str,5,0);
+  RecordField(Deliverer,M4Str,70,0);
+  RecordField(Recipient,M4Str,70,0);
+  RecordField(Importer,M4Str,70,0);
+  RecordField(OviesseVATnum,M4Str,15,0);
+  RecordField(GoodsCollAddress,M4Str,95,0);
+  //
+  RecordField(PalletCode,M4Str,15,0); //for flat goods only
+  RecordField(DistribNum,M4Str,10,0); //Oviesse/Coin incoming goods number. <>0 only for flat goods
+  RecordField(PackGroupNum,M4Str,10,0); //for flat goods only; this value is present on the printable version of Packing List after the word PRG. This is the same number you find in the PK records
+  RecordField(NumOfPackages,M4Str,10,0);
+  RecordField(SKUNumber,M4Str,10,0); //(link to EANList.xls file)
+  RecordField(ItemDescription,M4Str,55,0);
+  RecordField(ItemComposition,M4Str,80,0);
+  RecordField(GenderDescription,M4Str,10,0);
+  RecordField(Fabric,M4Str,10,0);
+  RecordField(CountryOfOrigin,M4Str,5,0);
+  RecordField(CustomsCode,M4Str,10,0);
+  RecordField(Quantity,M4Str,10,0);
+  RecordField(GlobGrossWeight,M4Str,15,0); //Expressed in kilograms. This is the Unit Gross Weight multiplied by quantity
+  RecordField(GlobNetWeight,M4Str,15,0); //Expressed in kilograms
+  RecordField(UnitCostPrice,M4Str,15,0); //This is the same price used to create the invoice. 
+  RecordField(ExtraUE,M4Str,5,0); //S = U.E.; N= Extra U.E.
+  RecordField(ItalCustCode,M4Str,10,0);
+  RecordField(UnitGrossWeight,M4Str,15,0); //Expressed in kilograms. This is the gross weight calculated adding the gross weight of one item (composed by the weight of hook and nylon, for example) and the weight of the box divided by the number of items contained in it; consequently this value may change depending on how many items are in one box and on the type of box
+  RecordField(CostCurCode,M4Str,5,0); //ISO currency code
+  RecordField(InvoiceNum,M4Str,10,0);
+  RecordField(InvoiceDate,M4Str,10,0);
+  RecordField(EAN,M4Str,15,0); //(link to EANList.xls file)
+  RecordField(OtherPalletCodes,M4Str,15,0);
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(SerNr);
+  KeyBegin(TransportBill);
+  KeySegment(TransportBill);
+  KeySegment(SerNr);
+  KeyBegin(EAN);
+  KeySegment(EAN);
+  KeySegment(SerNr);
+  EndRecord; //Edit***************************Sasha2,12:07 01.07.2016 }
 	
   return;  
 end;
