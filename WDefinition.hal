@@ -1395,3 +1395,91 @@ Integer i;
 
   EndWindow;
 end; //Edit***************************Sasha2,10:09 30.06.2016 }
+
+
+window CoinPackListDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real v,vs,h,h1,h2;
+  WindowBegin("Pack list",CoinPackListDClass,CGview,-);
+  SetWRect(64,80,700,600);
+  Sizeable(-1,-1,0,0);
+  UseView(CoinPackListVc);
+  ActiveFieldOnNew("CustCode");
+  v = 6; vs = 20; h = 100; h1 = 300; h2 = 500;
+	EditField(h,v+=vs,100,"Номер",Normal,SerNr,false,0);
+	EditField(h,v+=vs,100,"Назв.файла",Normal,FileName,false,0)
+	EditField(h,v+=vs,100,"Дата док.",Normal,TransDate,false,0);
+	EditField(h,v+=vs,100,"Дата имп.",Normal,ImpDate,false,0);
+	EditField(h,v+=vs,100,"Время имп.",Normal,ImpTime,false,0);
+	EditField(h,v+=vs,500,"Deliverer",Normal,Deliverer,false,0);
+  EditField(h,v+=vs,500,"Recipient",Normal,Recipient,false,0);
+  EditField(h,v+=vs,500,"Importer",Normal,Importer,false,0);
+  EditField(h,v+=vs,500,"GoodsCollAddress",Normal,GoodsCollAddress,false,0);
+	v = 6;
+	EditField(h1,v+=vs,100,"Deliverer store",Normal,StoreID,false,0);
+	EditField(h1,v+=vs,100,"Receiver store",Normal,StoreID2,false,0);
+	EditField(h1,v+=vs,100,"Tr.bill",Normal,TransportBill,false,0);
+	EditField(h1,v+=vs,100,"Tr.bill date",Normal,TransportBillDate,false,0);
+  EditField(h1,v+=vs,100,"Oviesse VAT num",Normal,OviesseVATnum,false,0);
+  v = 6;
+  CheckBox(h2 + 100,v+=vs,70,"Обработано",Handled);
+  EditField(h2,v+=vs,100,"Тип",Normal,RecordType,false,0);
+  EditField(h2,v+=vs,100,"InvoiceNum",Normal,InvoiceNum,false,0);
+  EditField(h2,v+=vs,100,"InvoiceDate",Normal,InvoiceDate,false,0);
+  EditField(h2,v+=vs,100,"RowNumber",Normal,RowNumber,false,0);
+  
+  v = 200;
+  EditField(h,v+=vs,100,"PalletCode",Normal,PalletCode,false,0);
+  EditField(h,v+=vs,100,"DistribNum",Normal,DistribNum,false,0);
+  EditField(h,v+=vs,100,"PackGroupNum",Normal,PackGroupNum,false,0);
+  EditField(h,v+=vs,100,"NumOfPackages",Normal,NumOfPackages,false,0);
+  EditField(h,v+=vs,100,"Fabric",Normal,Fabric,false,0);
+  EditField(h,v+=vs,100,"CountryOfOrigin",Normal,CountryOfOrigin,false,0);
+  EditField(h,v+=vs,100,"CustomsCode",Normal,CustomsCode,false,0);
+  EditField(h,v+=vs,100,"ExtraUE",Normal,ExtraUE,false,0);
+  EditField(h,v+=vs,100,"ItalCustCode",Normal,ItalCustCode,false,0);
+  EditField(h,v+=vs,100,"CostCurCode",Normal,CostCurCode,false,0);
+  EditField(h,v+=vs,100,"OtherPalletCodes",Normal,OtherPalletCodes,false,0);
+  
+  v = 200;
+  EditField(h1,v+=vs,100,"SKUNumber",Normal,SKUNumber,false,0);
+  EditField(h1,v+=vs,100,"EAN",Normal,EAN,false,0);
+  EditField(h1,v+=vs,300,"ItemDescription",Normal,ItemDescription,false,0);
+	EditField(h1,v+=vs,300,"ItemComposition",Normal,ItemComposition,false,0);
+	EditField(h1,v+=vs,100,"Quantity",Normal,Quantity,false,0);
+	EditField(h1,v+=vs,100,"UnitCostPrice",Normal,UnitCostPrice,false,0);
+	EditField(h1,v+=vs,100,"GlobGrossWeight",Normal,GlobGrossWeight,false,0);
+  EditField(h1,v+=vs,100,"GlobNetWeight",Normal,GlobNetWeight,false,0);
+  EditField(h1,v+=vs,100,"UnitGrossWeight",Normal,UnitGrossWeight,false,0);
+  
+  EndWindow;
+end;
+
+
+window CoinPackListLClass:1 //Edit***************************Sasha2,15:18 01.07.2016 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("История плат. клиента",CoinPackListLClass,CGmlist,-);
+  SetWRect(64,80,550,298);
+  SpawnClass(CoinPackListDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(CoinPackListVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,2,"SerNr",SerNr,false,SerNr);
+  RlColKey(70,70,"TransDate",TransDate,false,TransDate);
+  RlColKey(140,140,"Transport bill",TransportBill,false,TransportBill);
+  RlCol(230,230, "Rec.Type",RecordType,false);
+  RlColKey(280,280,"EAN",EAN,false,EAN);
+  /*RlCol(200,200, "TransDate",TransDate,false);
+  RlCol(300,300, "CustDate",CustDate,false);
+  RlCol(400,400, "TransType",TransType,false);
+  RlCol(500,500, "IVNr",IVNr,false);
+  RlCol(600,600, "AccNr",AccNr,false);
+  RlCol(800,800, "CheckType",CheckType,false);
+  RlCol(900,900, "ChequeNr",ChequeNr,false);
+  RlCol(1000,1000, "IntYc",IntYc,false);
+  RlCol(1100,1100, "TransRow",TransRow,false);*/
+  SearchField("Search");
+  EndWindow;
+end; //Edit***************************Sasha2,15:18 01.07.2016 }
