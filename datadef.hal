@@ -4501,6 +4501,131 @@ begin
   KeySegment(SerNr);
   EndRecord; //Edit***************************Sasha2,12:07 01.07.2016 }
 	
+  RecordBegin(CoinEANCodeVc,-,"");//Edit-------------------Vitalii 12:08 01.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(FileName,M4Str,100,0);
+  RecordField(ImpDate,M4Date,0,0);
+  RecordField(ImpTime,M4Time,0,0);
+  RecordField(TransDate,M4Str,15,0);
+  RecordField(ProcedureName,M4Str,15,0);
+  RecordField(Action,M4Str,5,0);
+  RecordField(ItemNumber,M4Str,15,0);
+  RecordField(Size,M4Str,10,0);
+  RecordField(SizeDescription,M4Str,10,0);
+  RecordField(SKUNumber,M4Str,15,0);
+  RecordField(EANNumber,M4Str,20,0);
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(SerNr);
+  KeySegment(FileName);
+  KeyBegin(ImpDate);
+  KeySegment(SerNr);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeyBegin(TransDate);
+  KeySegment(SerNr);
+  KeySegment(TransDate);
+  KeyBegin(ItemNumber);
+  KeySegment(SerNr);
+  KeySegment(ItemNumber);
+  KeyBegin(SKUNumber);
+  KeySegment(SerNr);
+  KeySegment(SKUNumber);
+  KeyBegin(EANNumber);
+  KeySegment(SerNr);
+  KeySegment(EANNumber);
+  
+  EndRecord;
+  
+  //Edit-------------------Vitalii 14:14 01.07.2016
+  RecordBegin(CoinItemListVc,-,"");
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(ImpDate,M4Date,0,0);												//Real ReciveDate
+  RecordField(ImpTime,M4Time,0,0);												//Real ReciveDate
+  RecordField(TransDate,M4Str,10,0);                      //Date from header
+  RecordField(FileName,M4Str,50,0);                       //ImporFileName
+  
+  RecordField(ProcName,M4Str,10,0);												//Identification of file content ITEMLIST
+  RecordField(Action,M4Str,5,0);												  //A/U "Add/Update - The first time we send you a new item we send an ""A"" in the ""action"" flag for the item and its barcodes.If we change something to the item (e.g.. description, department, etc.) we will send you again the item; in this case the the ""action"" flag will contain a ""U""."
+  RecordField(ItemNumber,M4Str,10,0);										  //9 digit number (pls. see EANList.xls)
+  RecordField(ItemDescription,M4Str,50,0);
+  RecordField(GoodsType,M4Str,10,0);										  //Link to Oviesse/Coin
+  RecordField(Colour,M4Str,30,0);
+  RecordField(Composition,M4Str,80,0);
+  RecordField(VATCode,M4Str,5,0);					                //VAT code; only for stores belonging to the Joint Venture
+  RecordField(FunctionFamilyDescription,M4Str,30,0);
+  RecordField(SubdepartmentCode,M4Str,5,0);					      //Oviesse/Coin Classification: sub-department number
+  RecordField(SubdepartmentDescription,M4Str,30,0);
+  RecordField(DepartmentCode,M4Str,5,0);					        //Oviesse/Coin classification:  department number
+  RecordField(DepartmentDescription,M4Str,30,0);
+  RecordField(SeasonCodeGarmentWeight,M4Str,5,0);					//06' = Spring; '12' = Summer; '13' = Spring/Summer; '15' = Authumn/Winter; '18' = Christmas; '19' = White Fair; '20' = Summer White Fair; '30'= All Year (Basic goods); 40 = No Weight; '42' = Light Weight; '45' = Heavy Weight; '46' = Medium Weight; '50' = No Weight; '52' = Light Weight; '55' =  Heavy Weight; '56' = Medium Weight
+  RecordField(SeasonDescription,M4Str,30,0);
+  RecordField(Gender,M4Str,5,0);					                //D' = Ladies' , 'U' = Men's, 'B' = Babies', blank=Other
+  RecordField(GenderDescription,M4Str,20,0);
+  RecordField(CountryOfOrigin,M4Str,5,0);					        //ISO country code
+  RecordField(PriceValidityStartDate,M4Str,10,0);					//year(4)-month-day, effective date of price
+  RecordField(CurrencyCode1,M4Str,5,0);					          //your retail price currency - ISO code
+  RecordField(RetailPrice1,M4Str,15,0);					          //9,2 - Your retail price  (VAT included)
+  RecordField(CurrencyCode2,M4Str,5,0);					          //Italian retail price currency - ISO code
+  RecordField(RetailPrice2,M4Str,15,0);					          //9,2 - Italian retail price (VAT included)
+  RecordField(VAT,M4Str,10,0);					                  //3.2
+  RecordField(CustomsDescriptionOfGoods,M4Str,5,0);				//Link to Oviesse/Coin Classification
+  RecordField(CompositionCodeOld,M4Str,5,0);					    //Link to Composition file
+  RecordField(Year,M4Str,5,0);
+  RecordField(CategoryCode,M4Str,5,0);					          //Oviesse/Coin classification
+  RecordField(CategoryDescription,M4Str,30,0);
+  RecordField(ColourstoryPromoCoordination1,M4Str,5,0);   //prefix
+  RecordField(ColourstoryPromoCoordination2,M4Str,25,0);	//code
+  RecordField(ColourstoryPromoCoordination3,M4Str,30,0);	//description
+  RecordField(CommercialReference,M4Str,20,0);					  //Colourstory/Promo/Coordination code printed on the labels
+  RecordField(FunctionFamilyCode,M4Str,10,0);					    //Oviesse/Coin Classification: product family number
+  RecordField(SizeGroupCode1,M4Str,5,0);					        //future use 
+  RecordField(SizeGroupCode2,M4Str,5,0);					        //future use 
+  RecordField(ItalianCustomsCode,M4Str,10,0);
+  RecordField(NetWeight,M4Str,15,0);					            //8.3
+  RecordField(GrossWeight,M4Str,15,0);					          //8.3
+  RecordField(KnittedWoven,M4Str,5,0);					          //M=Knitted, T=Woven, blank=Other
+  RecordField(Kit,M4Str,10,0);					                  //future use (minimum size assorted pack)
+  RecordField(LocalMonth,M4Str,10,0);					            //planned in store month
+  RecordField(CompositionCode,M4Str,10,0);					      //Link to Composition file
+  RecordField(ItemMaster,M4Str,10,0);					            //9 digit number; future use
+  RecordField(DateReleaseForSale,M4Str,10,0);					    //year(4)-month-day; future use
+  RecordField(Period,M4Str,5,0);					                //future use
+  RecordField(BrandCode,M4Str,5,0);					              //4 digit number; future use
+  RecordField(BrandDescription,M4Str,30,0);					      //future use
+  RecordField(UnitCostPrice,M4Str,20,0);					        //9,6;  only for stores belonging to the Joint Venture; spaces for all the other stores
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(SerNr);
+  KeySegment(FileName);
+  KeyBegin(ImpDate);
+  KeySegment(SerNr);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeyBegin(TransDate);
+  KeySegment(SerNr);
+  KeySegment(TransDate);
+  KeyBegin(ItemNumber);
+  KeySegment(SerNr);
+  KeySegment(ItemNumber);
+  KeyBegin(GoodsType);
+  KeySegment(SerNr);
+  KeySegment(GoodsType);
+  KeyBegin(CustomsDescriptionOfGoods);
+  KeySegment(SerNr);
+  KeySegment(CustomsDescriptionOfGoods);
+  KeyBegin(CompositionCode);
+  KeySegment(SerNr);
+  KeySegment(CompositionCode);
+  KeyBegin(BrandCode);
+  KeySegment(SerNr);
+  KeySegment(BrandCode);
+  
+  EndRecord;
   return;  
 end;
 

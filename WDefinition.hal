@@ -1485,3 +1485,155 @@ begin
   SearchField("Search");
   EndWindow;
 end; //Edit***************************Sasha2,15:18 01.07.2016 }
+
+window CoinEANCodeDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Bar code",CoinEANCodeDClass,CGview,-);
+  SetWRect(20,80,512,639);
+  UseView(CoinEANCodeVc);
+  v = 6; vs = 20; h = 100;
+	EditField(h,v,100, "SerNr",Normal,SerNr,false,0);
+  h = 100;
+  EditField(h,v+=vs,100, "TransDate",Normal,TransDate,false,0);
+	EditField(h+=160,v,100, "FileName",Normal,FileName,false,0);
+	h = 100;
+	EditField(h,v+=vs,100, "ImpDate",Normal,ImpDate,false,0);
+	EditField(h+=160,v,100, "ImpTime",Normal,ImpTime,false,0);
+  v = v + 15;
+  h = 100;
+	EditField(h,v+=vs,100, "ProcedureName",Normal,ProcedureName,false,0);
+	EditField(h,v+=vs,100, "Action",Normal,Action,false,0);
+	EditField(h,v+=vs,100, "ItemNumber",Normal,ItemNumber,false,0);
+	EditField(h,v+=vs,100, "Size",Normal,Size,false,0);
+	EditField(h,v+=vs,100, "SizeDescription",Normal,SizeDescription,false,0);
+	EditField(h,v+=vs,100, "SKUNumber",Normal,SKUNumber,false,0);
+	EditField(h,v+=vs,100, "EANNumber",Normal,EANNumber,false,0);
+	EndWindow;
+end;
+
+window CoinEANCodeLClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Bar codes",CoinEANCodeLClass,CGmlist,-);
+    SetWRect(20,80,509,298);
+    SpawnClass(CoinEANCodeDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinEANCodeVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ItemNumber",ItemNumber,false,ItemNumber);
+    RlColKey(181,181,"SKUNumber",SKUNumber,false,SKUNumber);
+    RlColKey(281,281,"EANNumber",EANNumber,false,EANNumber);
+    SearchField("Search");
+  EndWindow;
+end;
+
+window CoinItemListDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,h2,v,vs;
+Integer i;
+  WindowBegin("ItemList",CoinItemListDClass,CGview,-);
+  SetWRect(20,80,650,639);
+  UseView(CoinItemListVc);
+  v = 6; vs = 20; h = 180; h2 = 450;
+	EditField(h,v,100,"SerNr",Normal,SerNr,false,0);
+  EditField(h2,v,100,"ImpDate",Normal,ImpDate,false,0);
+  EditField(h,v+=vs,100,"ImpTime",Normal,ImpTime,false,0);
+  EditField(h2,v,100,"TransDate",Normal,TransDate,false,0);
+  EditField(h,v+=vs,100,"FileName",Normal,FileName,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,100,"ProcName",Normal,ProcName,false,0);
+  EditField(h2,v,100,"Action",Normal,Action,false,0);
+  EditField(h,v+=vs,100,"ItemNumber",Normal,ItemNumber,false,0);
+  EditField(h2,v,100,"ItemDescription",Normal,ItemDescription,false,0);
+  EditField(h,v+=vs,100,"GoodsType",Normal,GoodsType,false,0);
+  EditField(h2,v,100,"Colour",Normal,Colour,false,0);
+  EditField(h,v+=vs,100,"Composition",Normal,Composition,false,0);
+  EditField(h2,v,100,"VATCode",Normal,VATCode,false,0);
+  EditField(h,v+=vs,100,"FunctionFamilyDescription",Normal,FunctionFamilyDescription,false,0);
+  EditField(h2,v,100,"SubdepartmentCode",Normal,SubdepartmentCode,false,0);
+  EditField(h,v+=vs,100,"SubdepartmentDescription",Normal,SubdepartmentDescription,false,0);
+  EditField(h2,v,100,"DepartmentCode",Normal,DepartmentCode,false,0);
+  EditField(h,v+=vs,100,"DepartmentDescription",Normal,DepartmentDescription,false,0);
+  EditField(h2,v,100,"SeasonCodeGarmentWeight",Normal,SeasonCodeGarmentWeight,false,0);
+  EditField(h,v+=vs,100,"SeasonDescription",Normal,SeasonDescription,false,0);
+  EditField(h2,v,100,"Gender",Normal,Gender,false,0);
+  EditField(h,v+=vs,100,"GenderDescription",Normal,GenderDescription,false,0);
+  EditField(h2,v,100,"CountryOfOrigin",Normal,CountryOfOrigin,false,0);
+  EditField(h,v+=vs,100,"PriceValidityStartDate",Normal,PriceValidityStartDate,false,0);
+  EditField(h2,v,100,"CurrencyCode1",Normal,CurrencyCode1,false,0);
+  EditField(h,v+=vs,100,"RetailPrice1",Normal,RetailPrice1,false,0);
+  EditField(h2,v,100,"CurrencyCode2",Normal,CurrencyCode2,false,0);
+  EditField(h,v+=vs,100,"RetailPrice2",Normal,RetailPrice2,false,0);
+  EditField(h2,v,100,"VAT",Normal,VAT,false,0);
+  EditField(h,v+=vs,100,"CustomsDescriptionOfGoods",Normal,CustomsDescriptionOfGoods,false,0);
+  EditField(h2,v,100,"CompositionCodeOld",Normal,CompositionCodeOld,false,0);
+  EditField(h,v+=vs,100,"Year",Normal,Year,false,0);
+  EditField(h2,v,100,"CategoryCode",Normal,CategoryCode,false,0);
+  EditField(h,v+=vs,100,"CategoryDescription",Normal,CategoryDescription,false,0);
+  EditField(h2,v,100,"ColourstoryPromoCoordination1",Normal,ColourstoryPromoCoordination1,false,0);
+  EditField(h,v+=vs,100,"ColourstoryPromoCoordination2",Normal,ColourstoryPromoCoordination2,false,0);
+  EditField(h2,v,100,"ColourstoryPromoCoordination3",Normal,ColourstoryPromoCoordination3,false,0);
+  EditField(h,v+=vs,100,"CommercialReference",Normal,CommercialReference,false,0);
+  EditField(h2,v,100,"FunctionFamilyCode",Normal,FunctionFamilyCode,false,0);
+  EditField(h,v+=vs,100,"SizeGroupCode1",Normal,SizeGroupCode1,false,0);
+  EditField(h2,v,100,"SizeGroupCode2",Normal,SizeGroupCode2,false,0);
+  EditField(h,v+=vs,100,"ItalianCustomsCode",Normal,ItalianCustomsCode,false,0);
+  EditField(h2,v,100,"NetWeight",Normal,NetWeight,false,0);
+  EditField(h,v+=vs,100,"GrossWeight",Normal,GrossWeight,false,0);
+  EditField(h2,v,100,"KnittedWoven",Normal,KnittedWoven,false,0);
+  EditField(h,v+=vs,100,"Kit",Normal,Kit,false,0);
+  EditField(h2,v,100,"LocalMonth",Normal,LocalMonth,false,0);
+  EditField(h,v+=vs,100,"CompositionCode",Normal,CompositionCode,false,0);
+  EditField(h2,v,100,"ItemMaster",Normal,ItemMaster,false,0);
+  EditField(h,v+=vs,100,"DateReleaseForSale",Normal,DateReleaseForSale,false,0);
+  EditField(h2,v,100,"Period",Normal,Period,false,0);
+  EditField(h,v+=vs,100,"BrandCode",Normal,BrandCode,false,0);
+  EditField(h2,v,100,"BrandDescription",Normal,BrandDescription,false,0);
+  EditField(h,v+=vs,100,"UnitCostPrice",Normal,UnitCostPrice,false,0);
+
+	EndWindow;
+end;
+
+window CoinItemListLClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("ItemList",CoinItemListClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinItemListDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinItemListVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ImpDate",ImpDate,false,ImpDate);
+    RlCol(181,181,"ImpTime",ImpTime,false);
+    RlColKey(281,281,"TransDate",TransDate,false,TransDate);
+    RlColKey(381,381,"FileName",FileName,false,FileName);
+    RlColKey(481,481,"ItemNumber",ItemNumber,false,ItemNumber);
+    RlCol(581,581,"ItemDescription",ItemDescription,false);
+    SearchField("Search");
+  EndWindow;
+end;
+
+//Edit-------------------Vitalii 17:06 04.07.2016
+window FIX2VClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("FIX2VClass",FIX2VClass,CGMnt,RcType);
+  SetWRect(20,80,400,240);
+  vs = 20;h = 130; v = 26;
+  ButtonFrame(h-20,v,200,3,"Chose type of file:");
+  RadioButton(h-20,v,0,0,"PackList",flags[1]);
+  RadioButton(h-20,v+=16,1,0,"EANCode",flags[1]);
+  RadioButton(h-20,v+=16,2,0,"ItemList",flags[1]);
+  EndWindow;
+end;
