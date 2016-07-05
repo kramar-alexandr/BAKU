@@ -113,7 +113,7 @@ begin
 	Maintenance("Перенести данные ювелирки в классификации товара",FIXVClass,AggregateDispsJWMn,modDBMain); //Edit***************************Sasha2,16:01 19.02.2016
 	Maintenance("Gruppo Coin manual export",GruppoCoinManualVClass,GruppoCoinManualMn,modIN);	//Edit----------------------Dima  21.03.2016
 	Maintenance("Gruppo Coin parse files",FIX2VClass,GruppoCoinSearchInputFiles,modIN);
-	Maintenance("Gruppo Coin delete all packlists",FIX2VClass,GruppoCoinDeletePackListsMn,modIN);
+	Maintenance("Gruppo Coin delete all packlists",FIX2VClass,GruppoCoinDeleteRecordsMn,modIN);
 	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
