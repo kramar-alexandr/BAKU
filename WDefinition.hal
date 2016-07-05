@@ -1370,6 +1370,7 @@ begin
   EditFieldTL(50,v+=20, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
   CheckBox(50,v+=vs,0,"Продажи",flags[1]);
   CheckBox(50,v+=vs,0,"Остатки",flags[2]);
+  CheckBox(50,v+=vs,0,"Корректность приемки",flags[3]);
 
   EndWindow;
 end;
