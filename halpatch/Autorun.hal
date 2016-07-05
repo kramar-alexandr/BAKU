@@ -1,6 +1,7 @@
 external function longint DateDiff(date,date);
 external procedure CreatePLActivityMn(record RcVc);
 remote function boolean CompanyIsJWLikeCompany(Integer);
+external updating procedure GruppoCoinParseAndReplaceInputFiles(string);
 
 global updating procedure AutoUnGroupIV()
 begin
@@ -221,11 +222,25 @@ begin
   end;
   if (SetCompany(CassaCoin,false)) then begin
 		AutoUnGroupIV;
-		ResetCompany(CassaCoin);  
+		ResetCompany(CassaCoin);
   end;
   
   
 	
 
 return;
+end;
+
+global updating procedure BackgroundOperations()
+begin
+  Time transmissionBegin,transmissionEnd;
+  
+  transmissionBegin = stringtotime("11:00:00");
+  transmissionEnd = stringtotime("18:00:00");
+  if (SetCompany(25,false)) then begin
+    if (CurrentTime >= transmissionBegin) and (CurrentTime <= transmissionEnd) then begin
+      GruppoCoinParseAndReplaceInputFiles("in\\");//  in\\ - path
+    end;
+    ResetCompany(25);  
+  end;
 end;
