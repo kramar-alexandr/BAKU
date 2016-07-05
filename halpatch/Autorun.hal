@@ -239,7 +239,7 @@ begin
   transmissionEnd = stringtotime("18:00:00");
   if (SetCompany(25,false)) then begin
     if (CurrentTime >= transmissionBegin) and (CurrentTime <= transmissionEnd) then begin
-      GruppoCoinParseAndReplaceInputFiles("in\\");//  in\\ - path
+      GruppoCoinParseAndReplaceInputFiles("/Volumes/coin/in/");
     end;
     ResetCompany(25);  
   end;
