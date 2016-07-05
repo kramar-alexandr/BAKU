@@ -1365,8 +1365,10 @@ begin
   WindowBegin("Определите перечень склада",GruppoCoinManualVClass,CGMnt,RcType);
   SetWRect(20,80,400,290);
   vs=20;
+  
+  PeriodField(50,v,"Период");
+  EditFieldTL(50,v+=20, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
   CheckBox(50,v+=vs,0,"Продажи",flags[1]);
-  EditFieldTL(180,v, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
   CheckBox(50,v+=vs,0,"Остатки",flags[2]);
 
   EndWindow;
