@@ -1462,7 +1462,7 @@ end;
 window CoinPackListLClass:1 //Edit***************************Sasha2,15:18 01.07.2016 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("История плат. клиента",CoinPackListLClass,CGmlist,-);
+  WindowBegin("Package list",CoinPackListLClass,CGmlist,-);
   SetWRect(64,80,550,298);
   SpawnClass(CoinPackListDClass);
   Sizeable(-1,-1,0,0);
