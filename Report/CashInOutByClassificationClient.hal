@@ -31,7 +31,7 @@ Begin
 			
 		end;	
 	end;
-	
+		
 GetItemsBrand = result;
 return;
 end;
@@ -63,8 +63,33 @@ Begin
 						result = DIr.Code;
 						//listOfClassifications[length] = result;
 						//length = length + 1;
-					end;			
+					end;		
+					
+					pos = 0;
+					ExtractObj(INr.DispGroups,pos,temp);
+					while(nonblank(temp))begin
+						DIr.Code = temp;
+						if(ReadFirstMain(DIr,1,true)) then begin
+							if(DIr.CType=="BRAND")then begin
+								classifications[INr.Code] = DIr.Code;
+								result = DIr.Code;
+							end;
+						end;
+						ExtractObj(INr.DispGroups,pos,temp);
+					end;
+						
 		end;	
+	end;
+	
+	
+	if(result=="Accessories")then begin
+		logtext(0,code);
+	end;
+	if(result=="Watch")then begin
+		logtext(0,code);
+	end;
+	if(result=="EmptyClassification")then begin
+		logtext(0,code);
 	end;
 	
 GetItemClassification = result;
