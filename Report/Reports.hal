@@ -1370,10 +1370,13 @@ begin
   record IVVc IVr;
   row	IVVc IVrw;
   record LocationVc Locr;
-  Integer rwcnt,i,wn;
+  Integer rwcnt,i,wn,curcomp;
   string 255 tstr;
+  string 5 cur;
   val noRebSum;
+  val fr,to1,to2,br1,br2;
   
+  curcomp = CurrentCompany;
   noRebSum=0;
   IVr.SerNr = RepSpec.long1;
   if (ReadFirstMain(IVr,1,true)) then begin	 
@@ -1426,11 +1429,24 @@ begin
 	  OutString(1,0,USetStr(12004),false);
 	  OutString(1,0,"",false);
 	  OutString(1,0,USetStr(12005),false);
+    if curcomp==13 then begin//Edit-------------------Vitalii 11:51 31.05.2016
+      OutString(1,0,USetStr(12005) & " " & USetStr(10524) & " USD",false);
+    end;
 	  OutString(1,0,USetStr(12006),false);
 	  OutString(1,0,USetStr(12448),false);
+    if curcomp==13 then begin//Edit-------------------Vitalii 11:51 31.05.2016
+      OutString(1,0,USetStr(12448) & " " & USetStr(10524) & " USD",false);
+    end;
 	  EndFormat;
   	rwcnt=MatRowCnt(IVr); 
-  	
+    if curcomp==13 then begin//Edit-------------------Vitalii 11:51 31.05.2016
+      fr=0; to1=0;
+      cur = "USD";
+      GetFullCurncyRate(cur,currentdate,fr,to1,to2,br1,br2);
+      if(fr==0 or to1==0)then begin
+        fr=1; to1=1;
+      end;
+    end;
   	for(i=0;i<rwcnt;i=i+1) begin
 			MatRowGet(IVr,i,IVrw);
 			if(IVrw.stp==kInvoiceRowTypeNormal) then begin
@@ -1443,18 +1459,25 @@ begin
 				OutString(1,0,IVrw.Quant,true);
 				OutString(1,0,"",false);
 				OutString(1,0,IVrw.Price,true);
+        if curcomp==13 then begin//Edit-------------------Vitalii 11:51 31.05.2016
+          OutString(1,0,IVrw.Price*fr/to1,true);
+        end;
 				OutString(1,0,IVrw.vRebate,true);
 				OutString(1,0,IVrw.Sum,true);
-				EndFormat;
+        if curcomp==13 then begin//Edit-------------------Vitalii 11:52 31.05.2016
+          OutString(1,0,IVrw.Sum*fr/to1,true);
+        end;
+        EndFormat;
 				noRebSum = noRebSum + IVrw.Price*IVrw.Quant;
 			end;	
 		end;
 		OutString(1,0,"__________________________________________________________________________________________________________________________________",false);
 		EndFormat;
-		OutString(1,0,"",false);	
+		StartFormat(15);
+    OutString(1,0,"",false);	
 		OutString(1,0,USetStr(12867),false);
 		OutString(1,0,noRebSum,true);
-	  OutString(1,0,"",false);
+    OutString(1,0,"",false);
 	  
 	  if (NonBlank(IVr.RebCode)) then begin
 	  	OutString(1,0,USetStr(31267),false);
@@ -1469,8 +1492,26 @@ begin
 		end;
  	  OutString(1,0,USetStr(24193) & ":",false);
 		OutString(1,0,IVr.Sum4,true);
+    OutString(1,0,IVr.Sum4*fr/to1,true);
 	  OutString(1,0,"",false);	
-	
+    EndFormat;
+    
+    if curcomp==13 then begin//Edit-------------------Vitalii 11:52 31.05.2016
+      StartFormat(15);
+      OutString(1,0,"",false);	
+      OutString(1,0,USetStr(12880) & " " & USetStr(10524) & " USD" & ":",false);
+      OutString(1,0,noRebSum*fr/to1,true);
+      OutString(1,0,"",false);
+      
+      OutString(1,0,"",false);
+      OutString(1,0,"",false);
+      OutString(1,0,"",false);
+      OutString(1,0,"",false);
+      OutString(1,0,USetStr(24193) & " " & USetStr(10524) & " USD" & ":",false);
+      OutString(1,0,IVr.Sum4*fr/to1,true);
+      OutString(1,0,"",false);
+      EndFormat;
+    end;
 	EndJob;
 	end;
 
