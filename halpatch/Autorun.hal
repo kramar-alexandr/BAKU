@@ -236,7 +236,7 @@ begin
   Time transmissionBegin,transmissionEnd;
   
   transmissionBegin = stringtotime("11:00:00");
-  transmissionEnd = stringtotime("18:00:00");
+  transmissionEnd = stringtotime("23:50:00");
   if (SetCompany(25,false)) then begin
     if (CurrentTime >= transmissionBegin) and (CurrentTime <= transmissionEnd) then begin
       GruppoCoinParseAndReplaceInputFiles("/Volumes/coin/in/");
