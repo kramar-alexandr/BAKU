@@ -4438,6 +4438,10 @@ begin
   BlockBegin(CoinSettingsBlock,-,""); 
   RecordField(ClientCode,M4Int,0,0);
   RecordField(Locations,M4Str,255,0);
+  RecordField(inDir,M4Str,255,0);
+  RecordField(outDir,M4Str,255,0);
+  RecordField(inDirBackUp,M4Str,255,0);
+  RecordField(outDirBackUp,M4Str,255,0);
   EndBlock;  
   
   RecordBegin(CoinPackListVc,-,"coinpacklist"); //Edit***************************Sasha2,12:07 01.07.2016 {
