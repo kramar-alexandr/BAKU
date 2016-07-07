@@ -4639,6 +4639,7 @@ begin
   RecordField(Handled,M4Mark,0,0); //packlist is handled for "Management of goods" and closed
   RecordField(TransportBill,M4Str,10,0); //delivery number
   RecordField(TransportBillDate,M4Str,10,0); //delivery date
+  RecordField(ReceiverStoreID,M4Str,5,0);
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
   KeyBegin(FileName);
