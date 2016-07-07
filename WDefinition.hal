@@ -1415,7 +1415,6 @@ begin
   SetWRect(64,80,700,600);
   Sizeable(-1,-1,0,0);
   UseView(CoinPackListVc);
-  ActiveFieldOnNew("CustCode");
   v = 6; vs = 20; h = 100; h1 = 300; h2 = 500;
 	EditField(h,v+=vs,100,"Номер",Normal,SerNr,false,0);
 	EditField(h,v+=vs,100,"Назв.файла",Normal,FileName,false,0)
@@ -1614,7 +1613,7 @@ window CoinItemListLClass:1//Edit-------------------Vitalii
 begin
 real h,v,vs;
 Integer i;
-  WindowBegin("ItemList",CoinItemListClass,CGmlist,-);
+  WindowBegin("ItemList",CoinItemListLClass,CGmlist,-);
     SetWRect(20,80,800,298);
     SpawnClass(CoinItemListDClass);
     Sizeable(-1,-1,0,0);
@@ -1662,5 +1661,47 @@ begin
   RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
   CheckBox(h+20,v+=vs,0,"С back up файлов",flags[2]);
   
+  EndWindow;
+end;
+
+window CoinPackListHistDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real v,vs,h,h1,h2;
+  WindowBegin("PackList History",CoinPackListHistDClass,CGview,-);
+  SetWRect(64,80,500,300);
+  Sizeable(-1,-1,0,0);
+  UseView(CoinPackListHistVc);
+  v = 6; vs = 20; h = 100; h1 = 300; h2 = 500;
+	EditField(h,v+=vs,100,"Номер",Normal,SerNr,false,0);
+	EditField(h,v+=vs,100,"Назв.файла",Normal,FileName,false,0)
+	EditField(h,v+=vs,100,"Дата док.",Normal,TransDate,false,0);
+	EditField(h,v+=vs,100,"Дата имп.",Normal,ImpDate,false,0);
+
+	v = 6;
+	EditField(h1,v+=vs,100,"Tr.bill",Normal,TransportBill,false,0);
+	EditField(h1,v+=vs,100,"Tr.bill date",Normal,TransportBillDate,false,0);
+	CheckBox(h1,v+=vs,70,"Обработано",Handled);
+
+  EndWindow;
+end;
+
+window CoinPackListHistLClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("PackList History",CoinPackListHistLClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinPackListHistDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinPackListHistVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,2,"SerNr",SerNr,false,SerNr);
+    RlColKey(70,70,"ImpDate",ImpDate,false,ImpDate);
+    RlColKey(150,150,"FileName",FileName,false,FileName);
+    RlColKey(350,350,"Transport bill",TransportBill,false,TransportBill);
+    RlCol(450,450,"Transport bill date",TransportBillDate,false);
+    SearchField("Search");
   EndWindow;
 end;

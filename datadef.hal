@@ -4630,6 +4630,31 @@ begin
   KeySegment(SerNr);
   
   EndRecord;
+  
+  RecordBegin(CoinPackListHistVc,-,"coinpacklisthistry"); //Edit***************************Sasha2,12:07 01.07.2016 {
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(FileName,M4Str,200,0);
+  RecordField(ImpDate,M4Date,0,0);
+  RecordField(TransDate,M4Date,0,0); //Date of document
+  RecordField(Handled,M4Mark,0,0); //packlist is handled for "Management of goods" and closed
+  RecordField(TransportBill,M4Str,10,0); //delivery number
+  RecordField(TransportBillDate,M4Str,10,0); //delivery date
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(SerNr);
+  KeyBegin(TransportBill);
+  KeySegment(TransportBill);
+  KeySegment(SerNr);
+  EndRecord; //Edit***************************Sasha2,12:07 01.07.2016 }
+  
   return;  
 end;
 

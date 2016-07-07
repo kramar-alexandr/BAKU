@@ -23,6 +23,7 @@ begin
   Register("PackList","PackList",CoinPackListVc,modDromos);
   Register("EANCode","EANCode",CoinEANCodeVc,modDromos);//Edit-------------------Vitalii 14:18 05.07.2016
   Register("ItemList","ItemList",CoinItemListVc,modDromos);//Edit-------------------Vitalii 14:18 05.07.2016
+  Register("PackList History","PackList History",CoinPackListHistVc,modDromos);
 
 	Setting("Новые товары",NewINLClass,modPO);
 	Setting("Import IN Images",ImportImagesTClass,modIN);
