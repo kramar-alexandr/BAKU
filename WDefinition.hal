@@ -1632,17 +1632,35 @@ Integer i;
 end;
 
 //Edit-------------------Vitalii 17:06 04.07.2016
-window FIX2VClass:1
+window GruppoCoinDeleteRecordsVClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  real h,v,vs;
-  WindowBegin("FIX2VClass",FIX2VClass,CGMnt,RcType);
+  real h,v,vs,v1;
+  WindowBegin("GruppoCoinDeleteRecords",GruppoCoinDeleteRecordsVClass,CGMnt,RcType);
   SetWRect(20,80,400,240);
-  vs = 20;h = 130; v = 26;
-  ButtonFrame(h-20,v,200,3,"Chose type of file:");
-  RadioButton(h-20,v,0,0,"PackList",flags[1]);
-  RadioButton(h-20,v+=16,1,0,"EANCode",flags[1]);
-  RadioButton(h-20,v+=16,2,0,"ItemList",flags[1]);
-  CheckBox(h,v+=vs,0,"С back up файлов",flags[2]);
+  vs = 20;h = 30; v = 26;
+  ButtonFrame(h,v,300,3,"Chose type of file:");
+  RadioButton(h,v,0,0,"PackList",flags[1]);
+  EditField(h+140,v,120,"Диапазон",Normal,f1,false,0);
+  StaticText(h+270,v+10,"(XXXX:XXXX)",false);
+  RadioButton(h,v+=16,1,0,"EANCode",flags[1]);
+  RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
+  
+  EndWindow;
+end;
+
+window GruppoCoinSearchInputFilesVClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs,v1;
+  WindowBegin("GruppoCoinSearchInputFiles",GruppoCoinSearchInputFilesVClass,CGMnt,RcType);
+  SetWRect(20,80,400,240);
+  vs = 20;h = 30; v = 26;
+  ButtonFrame(h,v,300,3,"Chose type of file:");
+  RadioButton(h,v,0,0,"PackList",flags[1]);
+  RadioButton(h,v+=16,1,0,"EANCode",flags[1]);
+  RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
+  CheckBox(h+20,v+=vs,0,"С back up файлов",flags[2]);
+  
   EndWindow;
 end;
