@@ -1682,7 +1682,7 @@ begin
 	EditField(h1,v+=vs,100,"Tr.bill",Normal,TransportBill,false,0);
 	EditField(h1,v+=vs,100,"Tr.bill date",Normal,TransportBillDate,false,0);
 	EditField(h1,v+=vs,100,"Receiver storeID",Normal,ReceiverStoreID,false,0);
-	CheckBox(h1,v+=vs,70,"Обработано",Handled);
+	CheckBox(h1,v+=vs,70,"Arrival confirmed",Handled);
 
   EndWindow;
 end;
@@ -1704,6 +1704,7 @@ Integer i;
     RlColKey(350,350,"Transport bill",TransportBill,false,TransportBill);
     RlCol(450,450,"Transport bill date",TransportBillDate,false);
     RlCol(550,550,"Receiver storeID",ReceiverStoreID,false);
+    RlCol(650,650,"Arrival conf.",Handled,false);
     SearchField("Search");
   EndWindow;
 end;
