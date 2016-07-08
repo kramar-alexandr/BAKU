@@ -1,5 +1,6 @@
 external procedure ExtractObj(string,var Integer,var string);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function roundmode SetRoundModeD(Integer);
 
 
 function string 50 GetItemsBrand(string code, var vector string classifications)		//Edit----------------------Dima  04.06.2015
@@ -109,7 +110,7 @@ begin
 	for(i=0;i<rwcnt;i=i+1) begin
 		MatRowGet(IVr,i,IVrw);
 		char = Left(IVrw.PayMode,1);
-		if ((IVrw.stp==kInvoiceRowTypeCashPayment) or (IVrw.stp==kInvoiceRowTypeCreditCardPayment and char=="T") or (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment)) then begin
+		if ((IVrw.stp==kInvoiceRowTypeCashPayment) or (IVrw.stp==kInvoiceRowTypeCreditCardPayment and (char=="T" or char=="B")) or (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment)) then begin
 			tempVal = IVrw.Sum;
 			if (IVrw.CurncyCode != IVr.CurncyCode) then begin	//for cash currency
 					CurValToOtherCur(IVr.TransDate,IVrw.CurncyCode,IVrw.Sum,IVr.CurncyCode,tempVal,DefaultCurRoundOff);
@@ -290,15 +291,18 @@ begin
 							end;	
 						end;	
 					end;
-					if (nonblank(IPrw.CUPNr)) then begin	//Collect payments
+					if (IPrw.InvoiceNr>-1) then begin	//Collect payments
 						IVr.SerNr = IPrw.InvoiceNr;
 						if (ReadFirstMain(IVr,1,true)) then begin
-							if (blank(RepSpec.f1) or (RepSpec.f1 == IVr.Location)) then begin 								
-								if (IPrw.RecCurncy==IVr.CurncyCode and IVr.OKFlag>0 and IVr.Invalid==0) then begin
+							if (blank(RepSpec.f1) or (RepSpec.f1 == IVr.Location)) then begin 				
+								if (IPrw.InvCurncy==IVr.CurncyCode and IVr.OKFlag>0 and IVr.Invalid==0) then begin
 									curncyCoef = 1;
 									if (currency != IVr.CurncyCode) then begin
 										CurValToOtherCur(IVr.TransDate,IVr.CurncyCode,1,currency,curncyCoef,DefaultCurRoundOff);
-									end;										
+									end;
+									if(IPrw.RecCurncy!=IVr.CurncyCode)then begin
+										CurValToOtherCur(IVr.TransDate,IPrw.RecCurncy,IPrw.RecVal,IVr.CurncyCode,IPrw.RecVal,DefaultCurRoundOff);
+									end;		
 									paymentCoef = IPrw.RecVal/IVr.Sum4;
 					//LogText(0,IVr.SerNr & "  pay  " & paymentCoef  & "    cur:  " & curncyCoef );
 									rwcnt2 = MatRowCnt(IVr);									
@@ -307,7 +311,7 @@ begin
 										if (IVrw.stp==kInvoiceRowTypeNormal) then begin
 											classification = GetItemClassification(IVrw.ArtCode,items);
 											if (IVrw.Quant>0) then begin
-												cashIn[classification] = cashIn[classification] +IVrw.Sum*paymentCoef*curncyCoef;
+												cashIn[classification] = cashIn[classification] +round(IVrw.Sum*paymentCoef*curncyCoef,SetRoundModeD(0));
 											end else begin 
 												cashOut[classification] = cashOut[classification] +IVrw.Sum*paymentCoef*curncyCoef;
 											end;			
