@@ -2,6 +2,7 @@ external function longint DateDiff(date,date);
 external procedure CreatePLActivityMn(record RcVc);
 remote function boolean CompanyIsJWLikeCompany(Integer);
 external updating procedure GruppoCoinParseAndReplaceInputFiles(string);
+external updating procedure GruppoCoinParseAndReplaceOutputFiles();
 
 global updating procedure AutoUnGroupIV()
 begin
@@ -233,13 +234,28 @@ end;
 
 global updating procedure BackgroundOperations()
 begin
-  Time transmissionBegin,transmissionEnd;
+  Time InTransmissionBegin,InTransmissionEnd,
+       OutTransmissionBegin,OutTransmissionEnd;
+  record CoinSettingsBlock CoinSb;
+  string 255 path;
   
-  transmissionBegin = stringtotime("11:00:00");
-  transmissionEnd = stringtotime("23:50:00");
-  if (SetCompany(25,false)) then begin
-    if (CurrentTime >= transmissionBegin) and (CurrentTime <= transmissionEnd) then begin
-      GruppoCoinParseAndReplaceInputFiles("/Volumes/coin/in/");
+  BlockLoad(CoinSb);
+  path = CoinSb.inDir;
+  InTransmissionBegin = stringtotime("11:25:00");
+  InTransmissionEnd = stringtotime("11:30:00");
+  OutTransmissionBegin = stringtotime("23:15:00");
+  OutTransmissionEnd = stringtotime("23:20:00");
+  
+  if (CurrentTime >= InTransmissionBegin) and (CurrentTime <= InTransmissionEnd) then begin
+    if (SetCompany(25,false)) then begin
+      GruppoCoinParseAndReplaceInputFiles(path);
+    end;
+    ResetCompany(25);  
+  end;
+  
+  if (CurrentTime >= OutTransmissionBegin) and (CurrentTime <= OutTransmissionEnd) then begin
+    if (SetCompany(25,false)) then begin
+      GruppoCoinParseAndReplaceOutputFiles;
     end;
     ResetCompany(25);  
   end;
