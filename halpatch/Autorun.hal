@@ -245,7 +245,7 @@ begin
   InTransmissionEnd = stringtotime("11:30:00");
   OutTransmissionBegin = stringtotime("23:15:00");
   OutTransmissionEnd = stringtotime("23:20:00");
-  
+    
   if (CurrentTime >= InTransmissionBegin) and (CurrentTime <= InTransmissionEnd) then begin
     if (SetCompany(25,false)) then begin
       GruppoCoinParseAndReplaceInputFiles(path);

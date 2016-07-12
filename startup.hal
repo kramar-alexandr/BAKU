@@ -118,6 +118,9 @@ begin
 	Maintenance("Gruppo Coin parse files",GruppoCoinSearchInputFilesVClass,GruppoCoinSearchInputFilesMn,modDromos);
 	Maintenance("Gruppo Coin delete all records",GruppoCoinDeleteRecordsVClass,GruppoCoinDeleteRecordsMn,modDromos);
 	
+	Maintenance("Группы и клас. для товаров",FIXVClass,UpdateItemToCoinEAN,modDromos);
+
+	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
   end;
