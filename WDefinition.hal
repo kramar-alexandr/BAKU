@@ -1235,6 +1235,16 @@ begin
   EndWindow;
 end; //Edit***************************Sasha2,15:02 06.11.2015 }
 
+window DeleteCertainDIVClass:1 //Edit***************************Sasha2,15:02 06.11.2015 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Удалить классификации в товаре",DeleteCertainDIVClass,CGMnt,RcType);
+  SetWRect(20,80,400,400);
+  EditField(150,10,140,"Классификации",Normal,f1,false,DISClass);
+  EndWindow;
+end; //Edit***************************Sasha2,15:02 06.11.2015 }
+
 window RenameCertainDI1VClass:1 //Edit***************************Sasha2,15:02 06.11.2015 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -1715,7 +1725,8 @@ begin
 real h,v,vs;
 Integer i;
   WindowBegin("Missing EAN",CoinEANCodeDClass,CGview,-);
-  SetWRect(20,80,512,639);
+  SetWRect(20,80,300,600);
+  Sizeable(-1,-1,0,0);
   UseView(CoinMissingEANVc);
   v = 6; vs = 20; h = 100;
 	EditField(h,v,100, "SerNr",Normal,SerNr,false,0);
