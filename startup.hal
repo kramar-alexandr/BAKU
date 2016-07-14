@@ -24,6 +24,7 @@ begin
   Register("EANCode","EANCode",CoinEANCodeVc,modDromos);//Edit-------------------Vitalii 14:18 05.07.2016
   Register("ItemList","ItemList",CoinItemListVc,modDromos);//Edit-------------------Vitalii 14:18 05.07.2016
   Register("PackList History","PackList History",CoinPackListHistVc,modDromos);
+  Register("Missing EANs","Missing EANs",CoinMissingEANVc,modDromos);//Edit-------------------Vitalii 16:40 13.07.2016
 
 	Setting("Новые товары",NewINLClass,modPO);
 	Setting("Import IN Images",ImportImagesTClass,modIN);

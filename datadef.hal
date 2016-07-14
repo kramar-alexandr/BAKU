@@ -4655,6 +4655,37 @@ begin
   KeySegment(TransportBill);
   KeySegment(SerNr);
   EndRecord; //Edit***************************Sasha2,12:07 01.07.2016 }
+
+  RecordBegin(CoinMissingEANVc,-,"");//Edit-------------------Vitalii 16:27 13.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(FileName,M4Str,100,0);
+  RecordField(ImpDate,M4Date,0,0);
+  RecordField(ImpTime,M4Time,0,0);
+  RecordField(TransDate,M4Str,15,0);
+  RecordField(StoreID,M4Str,10,0);
+  RecordField(Math,M4Matrix,0,0);
+  ArrayBegin(Math,-,1);
+  ArrayField(EANNumber,M4Str,20,0);
+  EndArray;
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(StoreID);
+  KeySegment(StoreID);
+  KeySegment(SerNr);
+  
+  EndRecord;
+  
   
   return;  
 end;

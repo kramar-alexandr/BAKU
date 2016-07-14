@@ -1708,3 +1708,46 @@ Integer i;
     SearchField("Search");
   EndWindow;
 end;
+
+window CoinMissingEANDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Missing EAN",CoinEANCodeDClass,CGview,-);
+  SetWRect(20,80,512,639);
+  UseView(CoinMissingEANVc);
+  v = 6; vs = 20; h = 100;
+	EditField(h,v,100, "SerNr",Normal,SerNr,false,0);
+  h = 100;
+  EditField(h,v+=vs,100, "TransDate",Normal,TransDate,false,0);
+	EditField(h+=160,v,100, "FileName",ViewOnly,FileName,false,0);
+	h = 100;
+	EditField(h,v+=vs,100, "ImpDate",Normal,ImpDate,false,0);
+	EditField(h+=160,v,100, "ImpTime",Normal,ImpTime,false,0);
+  v = v + 15;
+  h = 100;
+	EditField(h,v+=vs,100, "Store-ID",ViewOnly,StoreID,false,0);
+	MatrixBegin(10,v+50,-50,-10,-,99);
+    MatCol(1,h=30,"EANNumber",0,EANNumber,false,0);
+  EndMatrix;
+	EndWindow;
+end;
+
+window CoinMissingEANLClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Missing EANs",CoinMissingEANLClass,CGmlist,-);
+    SetWRect(20,80,509,298);
+    SpawnClass(CoinMissingEANDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinMissingEANVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"TransDate",TransDate,false,TransDate);
+    RlColKey(181,181,"FileName",FileName,false,FileName);
+    SearchField("Search");
+  EndWindow;
+end;
