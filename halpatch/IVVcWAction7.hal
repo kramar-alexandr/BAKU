@@ -1657,7 +1657,7 @@ begin
 						tstr1 = IVrw.ArtCode;
 					end;
 				end;
-				setwindowsubset(wn,"http://" & path & ":" & port & "/WebGetINImage.hal?image=" & tstr1 & "&curcomp=" & currentcompany);
+				setwindowsubset(wn,"http://" & path & ":" & port & "/WebGetINImage.hal?image=" & tstr1 & "&curcomp=" & currentcompany & "&user=" & currentuser);
 				ReRunWindowDef(wn);
 			end;
 		end;

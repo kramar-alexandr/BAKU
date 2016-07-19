@@ -23,18 +23,18 @@ begin
   LongInt ser;
   record Attach2Vc Attachr;
   string 100 imname,curcomp,nimname;
-  string 255 filename;
+  string 255 filename,user;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
   
   imname = WebGetArg	("image");
   curcomp = WebGetArg	("curcomp");
+  user = WebGetArg	("user");
   
 	//Edit-------------------Vitalii 14:19 25.12.2015
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
-	logtext(0,"webcust/" & Comprw.ShortName & "/" & imname & ".jpg");
-	logtext(0,"webcust/" & Comprw.ShortName & "/" & imname & ".png");
+	logtext(0,user & " webcust/" & Comprw.ShortName & "/" & imname & ".jpg curcomp=" & currentcompany & " curcomp " & curcomp);
 	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".jpg")) then begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".jpg","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".jpg");
@@ -51,138 +51,7 @@ begin
 	end;
 	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 	logtext(0,"<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-  /*switch(curcomp)begin
-  	case 1: if(fileexists("webcust/SWAROVSKI/" & imname & ".jpg"))then begin
-							filename = "SWAROVSKI/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/SWAROVSKI/" & imname & ".png"))then begin
-							filename = "SWAROVSKI/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		case 2: if(fileexists("webcust/LLADRO/" & imname & ".jpg"))then begin
-							filename = "LLADRO/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/LLADRO/" & imname & ".png"))then begin
-							filename = "LLADRO/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-  	
-  	case 3: if(fileexists("webcust/J&W/" & imname & ".jpg"))then begin
-							filename = "J&W/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/J&W/" & imname & ".png"))then begin
-							filename = "J&W/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		
-		case 4: if(fileexists("webcust/V&B/" & imname & ".jpg"))then begin
-							filename = "V&B/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/V&B/" & imname & ".png"))then begin
-							filename = "V&B/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		case 6: if(fileexists("webcust/BACCARAT/" & imname & ".jpg"))then begin
-							filename = "BACCARAT/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/BACCARAT/" & imname & ".png"))then begin
-							filename = "BACCARAT/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-											
-		case 7: if(fileexists("webcust/AMBIANCE/" & imname & ".jpg"))then begin
-							filename = "AMBIANCE/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/AMBIANCE/" & imname & ".png"))then begin
-							filename = "AMBIANCE/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		case 8: if(fileexists("webcust/YD/" & imname & ".jpg"))then begin
-							filename = "YD/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/YD/" & imname & ".png"))then begin
-							filename = "YD/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		case 9: if(fileexists("webcust/Creative/" & imname & ".jpg") or fileexists("webcust/Creative/" & urlencode(imname) & ".jpg"))then begin
-							if(imname!=urlencode(imname))then begin
-								renamefile("webcust/Creative/" & imname & ".jpg","webcust/Creative/" & urlencode(imname) & ".jpg");
-							end;
-							imname = urlencode(imname);
-							filename = "Creative/" & imname & ".jpg";
-							logtext(0,filename);
-						end;
-						if(fileexists("webcust/Creative/" & imname & ".png") or fileexists("webcust/Creative/" & urlencode(imname) & ".png"))then begin
-							if(imname!=urlencode(imname))then begin
-								renamefile("webcust/Creative/" & imname & ".png","webcust/Creative/" & urlencode(imname) & ".png");
-							end;
-							imname = urlencode(imname);
-							filename = "Creative/" & imname & ".png";
-							logtext(0,filename);
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-						
-		case 13: if(fileexists("webcust/Carpets/" & imname & ".jpg"))then begin
-							filename = "Carpets/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/Carpets/" & imname & ".png"))then begin
-							filename = "Carpets/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		case 14: if(fileexists("webcust/Cadenza/" & imname & ".jpg"))then begin
-							filename = "Cadenza/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/Cadenza/" & imname & ".png"))then begin
-							filename = "Cadenza/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		case 16: if(fileexists("webcust/Xtravaganz/" & imname & ".jpg"))then begin
-							filename = "Xtravaganz/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/Xtravaganz/" & imname & ".png"))then begin
-							filename = "Xtravaganz/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		case 17: if(fileexists("webcust/GRAFF/" & imname & ".jpg"))then begin
-							filename = "GRAFF/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/GRAFF/" & imname & ".png"))then begin
-							filename = "GRAFF/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		case 18: if(fileexists("webcust/IDGroup/" & imname & ".jpg"))then begin
-							filename = "IDGroup/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/IDGroup/" & imname & ".png"))then begin
-							filename = "IDGroup/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		case 19: if(fileexists("webcust/Cartier/" & imname & ".jpg"))then begin
-							filename = "Cartier/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/Cartier/" & imname & ".png"))then begin
-							filename = "Cartier/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-		case 20: if(fileexists("webcust/Elluxus/" & imname & ".jpg"))then begin
-							filename = "Elluxus/" & imname & ".jpg";
-						end;
-						if(fileexists("webcust/Elluxus/" & imname & ".png"))then begin
-							filename = "Elluxus/" & imname & ".png";
-						end;
-						weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-						
-		otherwise
-						WebSetContentType("image/jpeg");
-						WebOutAttachment(stringtoint(imname));
-  end;*/
-  
+    
   return;
 end;
 

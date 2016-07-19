@@ -167,7 +167,7 @@ end;
 
 global updating procedure TimeAutoRun()
 begin
-	integer SWAROVSKI,LLADRO,Jewelry,Villeroy,Rosental,Baccarat,Ambience,IvDelorme,Creative,CassaCoin;
+	integer SWAROVSKI,LLADRO,Jewelry,Villeroy,Rosental,Baccarat,Ambience,IvDelorme,Creative,CassaCoin,Xtravaganza;
 	record RcVc RepSpec;
 	
 	SWAROVSKI = 1;
@@ -180,6 +180,7 @@ begin
 	IvDelorme = 8;
 	Creative = 9;
 	CassaCoin = 25;
+	Xtravaganza = 16;
 	
 	if (SetCompany(SWAROVSKI,false)) then begin
 		AutoCetRebCodeCU;
@@ -224,6 +225,10 @@ begin
   if (SetCompany(CassaCoin,false)) then begin
 		AutoUnGroupIV;
 		ResetCompany(CassaCoin);
+  end;
+  if (SetCompany(Xtravaganza,false)) then begin
+		AutoUnGroupIV;
+		ResetCompany(Xtravaganza);
   end;
   
   
