@@ -1375,23 +1375,6 @@ begin
   EndWindow;
 end;*/
 
-window GruppoCoinManualVClass:1			//Edit----------------------Dima  22.03.2016
-  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
-begin
-  real h,v,vm,vs;
-  WindowBegin("Определите перечень склада",GruppoCoinManualVClass,CGMnt,RcType);
-  SetWRect(20,80,400,290);
-  vs=20;
-  v = 6;
-  PeriodField(50,v,"Период");
-  EditFieldTL(50,v+=20, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
-  CheckBox(50,v+=vs,0,"Продажи",flags[1]);
-  CheckBox(50,v+=vs,0,"Остатки",flags[2]);
-  CheckBox(50,v+=vs,0,"Корректность приемки",flags[3]);
-
-  EndWindow;
-end;
-
 window ReplaceBarCodeIClass:1 //Edit***************************Sasha2,10:09 30.06.2016 {
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -1648,12 +1631,14 @@ begin
   WindowBegin("GruppoCoinDeleteRecords",GruppoCoinDeleteRecordsVClass,CGMnt,RcType);
   SetWRect(20,80,400,240);
   vs = 20;h = 30; v = 26;
-  ButtonFrame(h,v,300,3,"Chose type of file:");
+  ButtonFrame(h,v,300,6,"Chose type of file:");
   RadioButton(h,v,0,0,"PackList",flags[1]);
   EditField(h+140,v,120,"Диапазон",Normal,f1,false,0);
   StaticText(h+270,v+10,"(XXXX:XXXX)",false);
+  CheckBox(h+20,v+=vs,0,"Очистить историю PackList",flags[2]);
   RadioButton(h,v+=16,1,0,"EANCode",flags[1]);
   RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
+  RadioButton(h,v+=16,3,0,"Missing EANs",flags[1]);
   
   EndWindow;
 end;
@@ -1671,6 +1656,24 @@ begin
   RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
   CheckBox(h+20,v+=vs,0,"С back up файлов",flags[2]);
   
+  EndWindow;
+end;
+
+window GruppoCoinManualVClass:1			//Edit----------------------Dima  22.03.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vm,vs;
+  WindowBegin("Определите перечень склада",GruppoCoinManualVClass,CGMnt,RcType);
+  SetWRect(20,80,400,290);
+  vs=20;
+  v = 6;
+  PeriodField(50,v,"Период");
+  EditFieldTL(50,v+=20, 100,"Дата",M4Date,Normal,0,d1,false,PasteCurDate);
+  CheckBox(50,v+=vs,0,"Продажи",flags[1]);
+  CheckBox(50,v+=vs,0,"Остатки",flags[2]);
+  CheckBox(50,v+=vs,0,"Корректность приемки",flags[3]);
+  CheckBox(50,v+=vs,0,"Недостающие EAN",flags[4]);
+
   EndWindow;
 end;
 
@@ -1723,22 +1726,28 @@ window CoinMissingEANDClass:1//Edit-------------------Vitalii
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 real h,v,vs;
-Integer i;
+Integer i,mode;
   WindowBegin("Missing EAN",CoinEANCodeDClass,CGview,-);
-  SetWRect(20,80,300,600);
+  SetWRect(20,80,200,400);
   Sizeable(-1,-1,0,0);
   UseView(CoinMissingEANVc);
   v = 6; vs = 20; h = 100;
+  if (CurrentUser=="SA" or CurrentUser=="SA1") then begin
+    mode = Normal;
+  end else begin
+    mode = ViewOnly;
+  end;
+  
 	EditField(h,v,100, "SerNr",Normal,SerNr,false,0);
   h = 100;
   EditField(h,v+=vs,100, "TransDate",Normal,TransDate,false,0);
-	EditField(h+=160,v,100, "FileName",ViewOnly,FileName,false,0);
+	EditField(h+=160,v,100, "FileName",mode,FileName,false,0);
 	h = 100;
 	EditField(h,v+=vs,100, "ImpDate",Normal,ImpDate,false,0);
 	EditField(h+=160,v,100, "ImpTime",Normal,ImpTime,false,0);
   v = v + 15;
   h = 100;
-	EditField(h,v+=vs,100, "Store-ID",ViewOnly,StoreID,false,0);
+	EditField(h,v+=vs,100, "Store-ID",mode,StoreID,false,0);
 	MatrixBegin(10,v+50,-50,-10,-,99);
     MatCol(1,h=30,"EANNumber",0,EANNumber,false,0);
   EndMatrix;
@@ -1760,5 +1769,22 @@ Integer i;
     RlColKey(81,81,"TransDate",TransDate,false,TransDate);
     RlColKey(181,181,"FileName",FileName,false,FileName);
     SearchField("Search");
+  EndWindow;
+end;
+
+window CoinPackListRClass:1			//Edit----------------------Dima  26.02.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real v,vs,h;
+WindowBegin("Определите отчет по PackLists",CoinPackListRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"Период");
+  /*EditField(h,v+=vs,120,"Товар",Normal,f1,false,INSClass);
+  EditFieldTL(h,v+=vs,120,"Магазин",M4Str,Normal,41,f2,false,CompLocation2SClass);
+  
+  ButtonFrame(h,v+=40,150,2,"Отображать статистику");		
+  RadioButton(h,v,0,1,"для текущей компании",UsedOnly);
+  RadioButton(h,v+=20,1,0,"для всех J&W компаний",UsedOnly);*/
   EndWindow;
 end;
