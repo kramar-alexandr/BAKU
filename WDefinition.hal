@@ -1750,6 +1750,7 @@ Integer i,mode;
 	EditField(h,v+=vs,100, "Store-ID",mode,StoreID,false,0);
 	MatrixBegin(10,v+50,-50,-10,-,99);
     MatCol(1,h=30,"EANNumber",0,EANNumber,false,0);
+  DeleteRowTest;
   EndMatrix;
 	EndWindow;
 end;
