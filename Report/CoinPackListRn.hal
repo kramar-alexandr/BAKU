@@ -13,7 +13,7 @@ begin
   integer rwcnt,i,pos,qty; 
   Boolean TrHs,TrHs1,testf;
   Date sd,ed;
-  
+  string 30 keyName;
   
     StartReportNoHeaderJob("Coin PackLists report");
     
@@ -51,12 +51,19 @@ begin
     EndFormat;
     black_divider(0,1);
     
-    CoinPackListHistr.ImpDate = sd;
+    if (NonBlank(RepSpec.f1)) then begin
+      keyName = "TransportBill";
+      CoinPackListHistr.TransportBill = RepSpec.f1;
+    end else begin
+      keyName = "TransDate";
+      CoinPackListHistr.ImpDate = sd;
+    end;
     TrHs = true;
-    while (LoopKey("TransDate",CoinPackListHistr,1,TrHs)) begin
+    while (LoopKey(keyName,CoinPackListHistr,1,TrHs)) begin
       testf = true;
-      if (CoinPackListHistr.ImpDate<sd) then begin testf = false; end;
-      if (CoinPackListHistr.ImpDate>ed) then begin testf = false; TrHs = false; end;
+      if (Blank(RepSpec.f1) and CoinPackListHistr.ImpDate<sd) then begin testf = false; end;
+      if (Blank(RepSpec.f1) and CoinPackListHistr.ImpDate>ed) then begin testf = false; TrHs = false; end;
+      if (NonBlank(RepSpec.f1) and RepSpec.f1!=CoinPackListHistr.TransportBill) then begin testf = false; TrHs = false; end;
       if (testf) then begin
         CoinPackListr.TransportBill = CoinPackListHistr.TransportBill;
         TrHs1 = true;

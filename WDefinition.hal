@@ -1773,6 +1773,20 @@ Integer i;
   EndWindow;
 end;
 
+window TransportBillSClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer,iPad")
+begin
+  WindowBegin("Опеределите PackList",TransportBillSClass,CGother,HBlRecType);;
+  SetWRect(240,80,640,298);
+  Sizeable(-1,-1,-1,0);
+  StaticText(9,15,"Transport bill",false);
+  StaticText(100,15,"Tr bill date",false);
+  StaticText(190,15,"Import date",false);
+  StringList(9,25,-23,-10);
+  SearchField("Поиск");
+  EndWindow;
+end;
+
 window CoinPackListRClass:1			//Edit----------------------Dima  26.02.2016
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
@@ -1781,8 +1795,8 @@ WindowBegin("Определите отчет по PackLists",CoinPackListRClass,CGRcW,RcType);
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 130;
   PeriodField(h,v,"Период");
-  /*EditField(h,v+=vs,120,"Товар",Normal,f1,false,INSClass);
-  EditFieldTL(h,v+=vs,120,"Магазин",M4Str,Normal,41,f2,false,CompLocation2SClass);
+  EditField(h,v+=vs,100,"PackList",Normal,f1,false,TransportBillSClass);
+  /*EditFieldTL(h,v+=vs,120,"Магазин",M4Str,Normal,41,f2,false,CompLocation2SClass);
   
   ButtonFrame(h,v+=40,150,2,"Отображать статистику");		
   RadioButton(h,v,0,1,"для текущей компании",UsedOnly);
