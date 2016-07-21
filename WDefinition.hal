@@ -1776,7 +1776,7 @@ end;
 window TransportBillSClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer,iPad")
 begin
-  WindowBegin("Опеределите PackList",TransportBillSClass,CGother,HBlRecType);;
+  WindowBegin("Определите PackList",TransportBillSClass,CGother,HBlRecType);;
   SetWRect(240,80,640,298);
   Sizeable(-1,-1,-1,0);
   StaticText(9,15,"Transport bill",false);
