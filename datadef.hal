@@ -2782,6 +2782,13 @@ begin
   RecordField(RegTime,M4Time,0,0);
   RecordField(LocalMachineCode,M4Code,5,0);
   RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
+  
+  RecordField(SentCoin,M4Int,0,0);//Edit-------------------Vitalii 12:11 26.07.2016
+  RecordField(TypeCoin,M4Int,0,0);
+  RecordField(SentDateCoin,M4Date,0,0);
+  RecordField(FileNameCoin,M4Str,255,0);
+  RecordField(PackListCoin,M4Long,0,CoinPackListVc);//Edit-------------------Vitalii 12:13 26.07.2016
+  
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
   ArrayField(Quant,M4UVal,0,0);
