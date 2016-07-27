@@ -874,7 +874,33 @@ begin
   return;
 end;
 
+global //Edit***************************Sasha2,17:41 26.07.2016 {
+function Boolean RetPUDClassSentCoinButtonAction(Integer wn,Integer value)
+BEGIN
+  Boolean res;
+  record RetPUVc RetPUr;
+  record RetPUVc RetPU2r;
+ 
+  res = true;
+  GetWindowRecord(wn,RetPUr);
+  if (WindowState(wn)==Rs_normal) then begin
+    if (NonBlank(RetPUr.FileNameCoin)) then begin
+      res = false;
+    end;
+  end;  
+  if (WindowState(wn)==Rs_insert) then begin  
+  end;  
+  if (WindowState(wn)==Rs_update) then begin
+    GetPrevWindowRecord(wn,RetPU2r);
+    if (NonBlank(RetPU2r.FileNameCoin)) then begin
+      res = false;
+    end;
+  end;  
 
+LRetPUDClassSentCoinButtonAction:;
+  RetPUDClassSentCoinButtonAction = res;
+  RETURN;
+END; //Edit***************************Sasha2,17:42 26.07.2016 }
 
 global
 function Boolean RetPUDClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
@@ -889,6 +915,10 @@ BEGIN
       res = false;
       switch (fieldname) begin
         case "Comment": res = true;
+        case "TransBillCoin":
+          if (blank(RetPUr.FileNameCoin)) then begin
+             res = true;
+          end;
       end;
     end;
   end;
@@ -904,6 +934,10 @@ BEGIN
       res = false;//ItemHistVc is updated with source cost price
     case "FIFORowVal": 
       res = false;//ItemHistVc is updated with source cost price
+    case "TransBillCoin": //Edit***************************Sasha2,17:39 26.07.2016
+      if (NonBlank(RetPUr.FileNameCoin)) then begin
+         res = false;
+      end;
   end;
   
   if(currentuser=="SA1")then begin// Edit ************************** Friday, 4 December 2015 16:06:58

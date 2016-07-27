@@ -2787,7 +2787,7 @@ begin
   RecordField(TypeCoin,M4Int,0,0);
   RecordField(SentDateCoin,M4Date,0,0);
   RecordField(FileNameCoin,M4Str,255,0);
-  RecordField(PackListCoin,M4Long,0,CoinPackListVc);//Edit-------------------Vitalii 12:13 26.07.2016
+  RecordField(TransBillCoin,M4Str,10,0);//Edit-------------------Vitalii 12:13 26.07.2016
   
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
@@ -4111,6 +4111,11 @@ begin
   RecordField(RegTime,M4Time,0,0);
   RecordField(LocalMachineCode,M4Code,5,0);
   RecordField(NotForReport,M4Mark,0,0);		//Edit----------------------Dima  14.04.2015
+  RecordField(SentCoin,M4Int,0,0);//Edit***************************Sasha2,14:38 26.07.2016 {
+  RecordField(TypeCoin,M4Int,0,0);
+  RecordField(SentDateCoin,M4Date,0,0);
+  RecordField(FileNameCoin,M4Str,255,0);
+  RecordField(TransBillCoin,M4Str,10,0); //Edit***************************Sasha2,14:38 26.07.2016 }
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
   ArrayField(Quant,M4UVal,0,0);
@@ -4135,7 +4140,8 @@ begin
   ArrayField(PURow,M4Long,0,0);
   ArrayField(Location,M4Code,10,0);
   ArrayField(PUCostPrice,M45Val,0,0);
-  ArrayField(PONr,M4Long,0,0);  
+  ArrayField(PONr,M4Long,0,0); 
+  ArrayField(BarCode,M4Code,20,0); //Edit***************************Sasha2,17:43 26.07.2016 
   EndArray;
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);

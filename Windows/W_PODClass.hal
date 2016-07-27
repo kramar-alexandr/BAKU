@@ -3514,7 +3514,7 @@ window RetPUDClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h1,h2,h3,h4,v,vm,vs;
-  Integer tilenr,f,flipnr;
+  Integer tilenr,f,flipnr,mode;
   
   WindowBegin("Возврат товаров поставщику",RetPUDClass,CGview,-);
   SetWRect(20,80,750,460);
@@ -3523,12 +3523,22 @@ begin
   FormName(RetPurchaseForm);
   Tile(0,74,false,"",SerNr);
   v = 6; vs = 20;
+  
+  if (CurrentUser=="SA" or CurrentUser=="SA1") then begin //Edit***************************Sasha2,17:40 26.07.2016
+    mode = Normal;
+  end else begin
+    mode = ViewOnly;
+  end;
+  
   EditField(75,vm=(v=6),95,"Но.",Normal,SerNr,false,TSerSClass);
   EditField(75,v+=20,95,"Поставщик",ViewOnly,VECode,false,0);
   EditField(h=255,v=vm,-40,"Наим.",ViewOnly,VEName,false,0);
   EditField(h,vm=(v+=20),135,"Офиц. номер",Normal,OfficialSerNr,false,LegalInvNrSClass); 
   v=v+20;
   CheckBox(h4=-100,v=vm,0,"OK",OKFlag);
+  if (CurrentCompany==25) then begin
+    CheckBox(h4=-100,v+=20,0,"Отправить Coin",SentCoin); //Edit***************************Sasha2,14:48 26.07.2016 
+  end;
   tilenr = 1;
   TileButton(tilenr,"Условия"); tilenr = tilenr + 1; 
   TileButton(tilenr,"Товары"); tilenr = tilenr + 1; 
@@ -3538,6 +3548,9 @@ begin
   TileButton(tilenr,"Адрес"); tilenr = tilenr + 1; 
   TileButton(tilenr,"Фрахт"); tilenr = tilenr + 1; 
   TileButton(tilenr,"Коммент."); tilenr = tilenr + 1; 
+  if (CurrentCompany==25) then begin
+    TileButton(tilenr,"Coin детали"); tilenr = tilenr + 1; //Edit***************************Sasha2,15:42 26.07.2016
+  end;
 //  TileButton(tilenr,"Extra Costs");
   tilenr = 1;
   Tile(tilenr,70,false,tilenr,TransDate); tilenr = tilenr + 1;
@@ -3577,13 +3590,14 @@ begin
   MatCol(1,-80,"Коэфф-нт",0,Coefficient,true,0);
   if (HasModNL or HasObjects) then begin
     Flip(flipnr); flipnr = flipnr + 1;
-    MatCol(1,174,"Описание",0,Spec,false,0); 
+    MatCol(1,174,"Описание",0,Spec,false,0);
+    MatCol(1,-320,"Штрих-код",0,BarCode,false,0); //Edit***************************Sasha2,17:44 26.07.2016 
     if (HasModNL) then begin
-  MatCol(1,-190,"Счет стоимости",0,CostAcc,false,0); 
-  MatCol(1,-130,"Счет покупки",0,CredAcc,false,0); 
+      MatCol(1,-190,"Счет стоимости",0,CostAcc,false,0); 
+      MatCol(1,-130,"Счет покупки",0,CredAcc,false,0); 
     end;
     if (HasObjects) then begin
-  MatCol(1,-60,"Объекты",0,Objects,false,ObjSClass); 
+      MatCol(1,-60,"Объекты",0,Objects,false,ObjSClass); 
     end;
   end;
   Flip(flipnr); flipnr = flipnr + 1;
@@ -3690,6 +3704,12 @@ begin
   EditField(h1,v+=vs,-20,"CMR",Normal,CMRText,false,0); // International transporting number
   Tile(tilenr,30,false,tilenr,Comment); tilenr = tilenr + 1;
   EditField(h1,v=6,-20,"Комментарий",Normal,Comment,false,0);
+  if (CurrentCompany==25) then begin //Edit***************************Sasha2,15:49 26.07.2016
+    Tile(tilenr,30,false,tilenr,TransBillCoin); tilenr = tilenr + 1;
+    EditField(h1,v=6,80,"PackList",Normal,TransBillCoin,false,TransportBillSClass);
+    EditFieldTL(h1,v+=vs,80,"Дата выгрузки",M4Date,mode,0,SentDateCoin,false,0);
+    EditFieldTL(h1,v+=vs,160,"Файл выгрузки",M4Str,mode,30,FileNameCoin,false,0);
+  end;
 /*  
   Tile(7,70,false,"7",Cost1);
   vs = 20;

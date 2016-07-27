@@ -1304,13 +1304,38 @@ what?
         end;
       end;                      
     end;
+    if (RetPUp.SentCoin>0) then begin //Edit***************************Sasha2,17:51 26.07.2016 {
+      if (Blank(RetPUrw.BarCode)) then begin
+        RecordCheckError(1854,"",i,"BarCode");      
+        res = -1;
+        goto LRetPUVcRecordCheck;
+      end;
+      if (len(RetPUrw.BarCode)!=13) then begin
+        RecordCheckError(20414,"",i,"BarCode");      
+        res = -1;
+        goto LRetPUVcRecordCheck;
+      end;
+    end; //Edit***************************Sasha2,17:51 26.07.2016 }
   end;  
 LDONOTCHECK:;  
   if (check>0) then begin
     if (RetPUp.UpdStockFlag!=0) then begin
       RetPUUpdateFIFO(RetPUp);
     end;
-  end;  
+  end; 
+  
+  if (RetPUp.SentCoin>0) then begin //Edit***************************Sasha2,17:58 26.07.2016 {
+    if (Blank(RetPUp.TransBillCoin)) then begin
+      RecordCheckError(1854,"",-1,"TransBillCoin");      
+      res = -1;
+      goto LRetPUVcRecordCheck;
+    end;
+    if (len(RetPUp.TransBillCoin)!=9) then begin
+      RecordCheckError(20414,"",-1,"TransBillCoin");      
+      res = -1;
+      goto LRetPUVcRecordCheck;
+    end;
+  end; //Edit***************************Sasha2,17:58 26.07.2016 }
 
   if (transf and RetPUp.UpdStockFlag!=0) then begin
     if (stat==updatemode) then begin
