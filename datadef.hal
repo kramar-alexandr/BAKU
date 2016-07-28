@@ -4699,6 +4699,122 @@ begin
   
   EndRecord;
   
+  RecordBegin(CoinItemGoodsDecriptVc,-,"coinitemgoodsdecr"); //Edit***************************Sasha2,14:35 27.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(ImpDate,M4Date,0,0);												//Real ReciveDate
+  RecordField(ImpTime,M4Time,0,0);												//Real ReciveDate
+  RecordField(TransDate,M4Str,10,0);                      //Date from header
+  RecordField(FileName,M4Str,50,0);                       //ImporFileName
+  RecordField(CustomsDescriptionOfGoods,M4Str,5,0);				//Link to CoinItemListVc
+  RecordField(Description,M4Str,100,0);
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(CustomsDescriptionOfGoods);
+  KeySegment(CustomsDescriptionOfGoods);
+  KeySegment(SerNr);
+  
+  EndRecord;
+  
+  RecordBegin(CoinComposDecriptVc,-,"coincomposdecr"); //Edit***************************Sasha2,14:35 27.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(ImpDate,M4Date,0,0);	       //Real ReciveDate
+  RecordField(ImpTime,M4Time,0,0);			   //Real ReciveDate
+  RecordField(TransDate,M4Str,10,0);       //Date from header
+  RecordField(FileName,M4Str,50,0);        //ImporFileName
+  RecordField(CompositionCode,M4Str,10,0); //Link to Item List
+  RecordField(Description,M4Str,100,0);
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(CompositionCode);
+  KeySegment(CompositionCode);
+  KeySegment(SerNr);
+  
+  EndRecord;
+  
+  RecordBegin(CoinGoodsTypesVc,-,"coingoodstypes"); //Edit***************************Sasha2,14:35 27.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(ImpDate,M4Date,0,0);	       //Real ReciveDate
+  RecordField(ImpTime,M4Time,0,0);			   //Real ReciveDate
+  RecordField(TransDate,M4Str,10,0);       //Date from header
+  RecordField(FileName,M4Str,50,0);        //ImporFileName
+  RecordField(GoodsType,M4Str,10,0);       //Link to Item List
+  RecordField(Description,M4Str,100,0);
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(GoodsType);
+  KeySegment(GoodsType);
+  KeySegment(SerNr);
+  
+  EndRecord;
+  
+  RecordBegin(CoinPriceChangesVc,-,"coinpricechanges"); //Edit***************************Sasha2,14:35 27.07.2016
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(ImpDate,M4Date,0,0);	       //Real ReciveDate
+  RecordField(ImpTime,M4Time,0,0);			   //Real ReciveDate
+  RecordField(TransDate,M4Str,10,0);       //Date from header
+  RecordField(FileName,M4Str,50,0);        //ImporFileName
+  RecordField(ItemNumber,M4Str,10,0);      //Link to Item List
+  RecordField(PriceStartDate,M4Str,10,0);  //year(4)-month-day, effective date of price
+  RecordField(CurCode1,M4Str,5,0);         //your retail price currency - ISO code
+  RecordField(NewRetailPrice1,M4Str,15,0); // 
+  RecordField(CurCode2,M4Str,5,0);         //our retail price currency - ISO code
+  RecordField(NewRetailPrice2,M4Str,15,0); //
+  RecordField(CurCode3,M4Str,5,0);         //your retail price currency - ISO code
+  RecordField(OldRetailPrice,M4Str,15,0);  //
+  RecordField(Causal,M4Str,5,0);           //only for e-commerce
+  RecordField(CausalDescript,M4Str,100,0); //only for e-commerce
+  RecordField(AddField,M4Str,15,0);           //no description
+  
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(FileName);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(ImpDate);
+  KeySegment(ImpDate);
+  KeySegment(ImpTime);
+  KeySegment(SerNr);
+  KeyBegin(TransDate);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(ItemNumber);
+  KeySegment(ItemNumber);
+  KeySegment(SerNr);
+  
+  EndRecord;
   
   return;  
 end;

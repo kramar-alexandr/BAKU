@@ -1639,6 +1639,10 @@ begin
   RadioButton(h,v+=16,1,0,"EANCode",flags[1]);
   RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
   RadioButton(h,v+=16,3,0,"Missing EANs",flags[1]);
+  RadioButton(h,v+=16,4,0,"Custom description of goods",flags[1]);
+  RadioButton(h,v+=16,5,0,"Composition descriptions",flags[1]);
+  RadioButton(h,v+=16,6,0,"Types of goods",flags[1]);
+  RadioButton(h,v+=16,7,0,"Price Changes",flags[1]);
   
   EndWindow;
 end;
@@ -1654,6 +1658,10 @@ begin
   RadioButton(h,v,0,0,"PackList",flags[1]);
   RadioButton(h,v+=16,1,0,"EANCode",flags[1]);
   RadioButton(h,v+=16,2,0,"ItemList",flags[1]);
+  RadioButton(h,v+=16,3,0,"Custom description of goods",flags[1]);
+  RadioButton(h,v+=16,4,0,"Composition descriptions",flags[1]);
+  RadioButton(h,v+=16,5,0,"Types of goods",flags[1]);
+  RadioButton(h,v+=16,6,0,"Price Changes",flags[1]);
   CheckBox(h+20,v+=vs,0,"С back up файлов",flags[2]);
   
   EndWindow;
@@ -1801,5 +1809,184 @@ WindowBegin("Определите отчет по PackLists",CoinPackListRClass,CGRcW,RcType);
   ButtonFrame(h,v+=40,150,2,"Отображать статистику");		
   RadioButton(h,v,0,1,"для текущей компании",UsedOnly);
   RadioButton(h,v+=20,1,0,"для всех J&W компаний",UsedOnly);*/
+  EndWindow;
+end;
+
+window CoinItemGoodsDecriptDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,h2,v,vs;
+Integer i;
+  WindowBegin("Customs description of Goods",CoinItemGoodsDecriptDClass,CGview,-);
+  SetWRect(20,80,450,639);
+  UseView(CoinItemGoodsDecriptVc);
+  v = 6; vs = 20; h = 100; h2 = 280;
+	EditField(h,v,100,"SerNr",Normal,SerNr,false,0);
+  EditField(h2,v,100,"ImpDate",Normal,ImpDate,false,0);
+  EditField(h,v+=vs,100,"ImpTime",Normal,ImpTime,false,0);
+  EditField(h2,v,100,"TransDate",Normal,TransDate,false,0);
+  EditField(h,v+=vs,200,"FileName",Normal,FileName,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,50,"Descript.Code",Normal,CustomsDescriptionOfGoods,false,0);
+  EditField(h,v+=vs,300,"Description",Normal,Description,false,0);
+
+	EndWindow;
+end;
+
+window CoinItemGoodsDecriptLClass:1 //Edit***************************Sasha2,14:56 27.07.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Customs description of Goods",CoinItemGoodsDecriptLClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinItemGoodsDecriptDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinItemGoodsDecriptVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ImpDate",ImpDate,false,ImpDate);
+    RlCol(181,181,"ImpTime",ImpTime,false);
+    RlColKey(281,281,"TransDate",TransDate,false,TransDate);
+    RlColKey(381,381,"FileName",FileName,false,FileName);
+    RlCol(481,481,"Description",Description,false);
+    SearchField("Search");
+  EndWindow;
+end;
+
+window CoinComposDecriptDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,h2,v,vs;
+Integer i;
+  WindowBegin("Composition descriptions",CoinComposDecriptDClass,CGview,-);
+  SetWRect(20,80,450,639);
+  UseView(CoinComposDecriptVc);
+  v = 6; vs = 20; h = 100; h2 = 280;
+	EditField(h,v,100,"SerNr",Normal,SerNr,false,0);
+  EditField(h2,v,100,"ImpDate",Normal,ImpDate,false,0);
+  EditField(h,v+=vs,100,"ImpTime",Normal,ImpTime,false,0);
+  EditField(h2,v,100,"TransDate",Normal,TransDate,false,0);
+  EditField(h,v+=vs,200,"FileName",Normal,FileName,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,50,"Descript.Code",Normal,CompositionCode,false,0);
+  EditField(h,v+=vs,300,"Description",Normal,Description,false,0);
+
+	EndWindow;
+end;
+
+window CoinComposDecriptLClass:1 //Edit***************************Sasha2,14:56 27.07.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Composition descriptions",CoinComposDecriptLClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinComposDecriptDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinComposDecriptVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ImpDate",ImpDate,false,ImpDate);
+    RlCol(181,181,"ImpTime",ImpTime,false);
+    RlColKey(281,281,"TransDate",TransDate,false,TransDate);
+    RlColKey(381,381,"FileName",FileName,false,FileName);
+    RlCol(481,481,"Description",Description,false);
+    SearchField("Search");
+  EndWindow;
+end;
+
+window CoinGoodsTypesDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,h2,v,vs;
+Integer i;
+  WindowBegin("Types of goods",CoinGoodsTypesDClass,CGview,-);
+  SetWRect(20,80,450,639);
+  UseView(CoinGoodsTypesVc);
+  v = 6; vs = 20; h = 100; h2 = 280;
+	EditField(h,v,100,"SerNr",Normal,SerNr,false,0);
+  EditField(h2,v,100,"ImpDate",Normal,ImpDate,false,0);
+  EditField(h,v+=vs,100,"ImpTime",Normal,ImpTime,false,0);
+  EditField(h2,v,100,"TransDate",Normal,TransDate,false,0);
+  EditField(h,v+=vs,200,"FileName",Normal,FileName,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,50,"Good type",Normal,GoodsType,false,0);
+  EditField(h,v+=vs,300,"Description",Normal,Description,false,0);
+
+	EndWindow;
+end;
+
+window CoinGoodsTypesLClass:1 //Edit***************************Sasha2,14:56 27.07.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Types of goods",CoinGoodsTypesLClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinGoodsTypesDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinGoodsTypesVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ImpDate",ImpDate,false,ImpDate);
+    RlCol(181,181,"ImpTime",ImpTime,false);
+    RlColKey(281,281,"TransDate",TransDate,false,TransDate);
+    RlColKey(381,381,"FileName",FileName,false,FileName);
+    RlCol(481,481,"Description",Description,false);
+    SearchField("Search");
+  EndWindow;
+end;
+
+window CoinPriceChangesDClass:1//Edit-------------------Vitalii 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,h2,v,vs;
+Integer i;
+  WindowBegin("Price Changes",CoinPriceChangesDClass,CGview,-);
+  SetWRect(20,80,500,639);
+  UseView(CoinPriceChangesVc);
+  v = 6; vs = 20; h = 100; h2 = 320;
+	EditField(h,v,100,"SerNr",Normal,SerNr,false,0);
+  EditField(h2,v,100,"ImpDate",Normal,ImpDate,false,0);
+  EditField(h,v+=vs,100,"ImpTime",Normal,ImpTime,false,0);
+  EditField(h2,v,100,"TransDate",Normal,TransDate,false,0);
+  EditField(h,v+=vs,200,"FileName",Normal,FileName,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,100,"ItemNumber",Normal,ItemNumber,false,0);
+  EditField(h2,v,100,"Price starting date",Normal,PriceStartDate,false,0);
+  EditField(h,v+=vs,100,"New retail price 1",Normal,NewRetailPrice1,false,0);
+  EditField(h2,v,100,"Currency code 1",Normal,CurCode1,false,0);
+  EditField(h,v+=vs,100,"New retail price 2",Normal,NewRetailPrice2,false,0);
+  EditField(h2,v,100,"Currency code 2",Normal,CurCode2,false,0);
+  EditField(h,v+=vs,100,"Old retail price",Normal,OldRetailPrice,false,0);
+  EditField(h2,v,100,"Currency code 3",Normal,CurCode3,false,0);
+  v = v + 15;
+  EditField(h,v+=vs,50,"Causal",Normal,Causal,false,0);
+  EditField(h,v+=vs,100,"Causal description",Normal,CausalDescript,false,0);
+  EditField(h,v+=vs,100,"Smth unknown",Normal,AddField,false,0);
+  
+	EndWindow;
+end;
+
+window CoinPriceChangesLClass:1 //Edit***************************Sasha2,14:56 27.07.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Price Changes",CoinPriceChangesLClass,CGmlist,-);
+    SetWRect(20,80,800,298);
+    SpawnClass(CoinPriceChangesDClass);
+    Sizeable(-1,-1,0,0);
+    UseView(CoinPriceChangesVc);
+    RecordList(4,17,-21,-39);
+    RlColKey(4,4,"SerNr",SerNr,false,SerNr);
+    RlColKey(81,81,"ImpDate",ImpDate,false,ImpDate);
+    RlCol(181,181,"ImpTime",ImpTime,false);
+    RlColKey(281,281,"TransDate",TransDate,false,TransDate);
+    RlColKey(381,381,"FileName",FileName,false,FileName);
+    RlCol(481,481,"ItemNumber",ItemNumber,false);
+    RlCol(620,620,"New price 1",NewRetailPrice1,false);
+    SearchField("Search");
   EndWindow;
 end;
