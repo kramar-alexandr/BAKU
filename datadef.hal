@@ -4796,7 +4796,7 @@ begin
   RecordField(OldRetailPrice,M4Str,15,0);  //
   RecordField(Causal,M4Str,5,0);           //only for e-commerce
   RecordField(CausalDescript,M4Str,100,0); //only for e-commerce
-  RecordField(AddField,M4Str,15,0);           //no description
+  RecordField(AddField,M4Str,15,0);        //no description
   
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
