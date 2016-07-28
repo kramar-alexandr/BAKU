@@ -252,7 +252,7 @@ begin
           IVr.SerNr = IHr.TransNr;
           if (ReadFirstMain(IVr,1,true)) then begin
             MatRowGet(IVr,IHr.Row,IVrw);
-            CurValToOtherCur(costdate,baseCur,IVrw.Sum,"PLN",costsum,DefaultCurRoundOff);
+            CurValToOtherCur(costdate,IVr.CurncyCode,IVrw.Sum,"PLN",costsum,DefaultCurRoundOff);
           end;
         end else begin
           CurValToOtherCur(costdate,baseCur,IHr.TotCostPrice,"PLN",costsum,DefaultCurRoundOff);
