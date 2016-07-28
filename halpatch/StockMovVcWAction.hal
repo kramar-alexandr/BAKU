@@ -362,6 +362,8 @@ BEGIN
     case "OrdTransDate": 
       if (StockMovr.OrdFlag!=0) then begin res = false; end;
     case "OfficialSerNr": res = true;		//Edit----------------------Dima  01.04.2015  
+    case "TransBillCoin": //Edit-------------------Vitalii 16:25 26.07.2016
+      if nonblank(StockMovr.FileNameCoin) then begin res = false; end;
     otherwise
       switch (wnst) begin
         case Rs_update:
@@ -524,4 +526,58 @@ begin
 	runreport(RepSpec,0);
 
 return;
+end;
+
+global
+function Boolean StockMovDClassTypeCoinButtonAction(Integer wn,Integer value)
+begin
+  Boolean res;
+  record StockMovVc SMr;
+  
+  res = true;
+  if (WindowState(wn)==Rs_normal) then begin
+    GetWindowRecord(wn,SMr);
+    if nonblank(SMr.FileNameCoin) then begin
+      res = false;
+    end;
+  end;
+  if (WindowState(wn)==Rs_update) then begin
+    GetPrevWindowRecord(wn,SMr);
+    if nonblank(SMr.FileNameCoin) then begin
+      res = false;
+    end;
+  end;  
+  StockMovDClassTypeCoinButtonAction = res;
+  RETURN;
+end;
+
+global
+function Boolean StockMovDClassSentCoinButtonAction(Integer wn,Integer value)
+begin
+  Boolean res;
+  record StockMovVc SMr,SM2r;
+  
+  res = true;
+  if (WindowState(wn)==Rs_normal) then begin
+    GetWindowRecord(wn,SMr);
+    if nonblank(SMr.FileNameCoin) then begin
+      res = false;
+    end;
+    if (SMr.TypeCoin==0) then begin
+      res = false;
+    end;
+  end;
+  if (WindowState(wn)==Rs_update) then begin
+    GetPrevWindowRecord(wn,SMr);
+    GetWindowRecord(wn,SM2r);
+    if nonblank(SMr.FileNameCoin) then begin
+      res = false;
+    end;
+    if (SM2r.TypeCoin==0) then begin
+      res = false;
+    end;
+  end;
+  
+  StockMovDClassSentCoinButtonAction = res;
+  RETURN;
 end;
