@@ -4553,7 +4553,6 @@ begin
   KeyBegin(EANNumber);
   KeySegment(EANNumber);
   KeySegment(SerNr);
-  
   EndRecord;
   
   //Edit-------------------Vitalii 14:14 01.07.2016
@@ -4563,7 +4562,6 @@ begin
   RecordField(ImpTime,M4Time,0,0);												//Real ReciveDate
   RecordField(TransDate,M4Str,10,0);                      //Date from header
   RecordField(FileName,M4Str,50,0);                       //ImporFileName
-  
   RecordField(ProcName,M4Str,10,0);												//Identification of file content ITEMLIST
   RecordField(Action,M4Str,5,0);												  //A/U "Add/Update - The first time we send you a new item we send an ""A"" in the ""action"" flag for the item and its barcodes.If we change something to the item (e.g.. description, department, etc.) we will send you again the item; in this case the the ""action"" flag will contain a ""U""."
   RecordField(ItemNumber,M4Str,10,0);										  //9 digit number (pls. see EANList.xls)
@@ -4641,7 +4639,6 @@ begin
   KeyBegin(BrandCode);
   KeySegment(BrandCode);
   KeySegment(SerNr);
-  
   EndRecord;
   
   RecordBegin(CoinPackListHistVc,-,"coinpacklisthistry"); //Edit***************************Sasha2,12:07 01.07.2016 {
@@ -4696,7 +4693,6 @@ begin
   KeyBegin(StoreID);
   KeySegment(StoreID);
   KeySegment(SerNr);
-  
   EndRecord;
   
   RecordBegin(CoinItemGoodsDecriptVc,-,"coinitemgoodsdecr"); //Edit***************************Sasha2,14:35 27.07.2016
@@ -4723,7 +4719,6 @@ begin
   KeyBegin(CustomsDescriptionOfGoods);
   KeySegment(CustomsDescriptionOfGoods);
   KeySegment(SerNr);
-  
   EndRecord;
   
   RecordBegin(CoinComposDecriptVc,-,"coincomposdecr"); //Edit***************************Sasha2,14:35 27.07.2016
@@ -4750,7 +4745,6 @@ begin
   KeyBegin(CompositionCode);
   KeySegment(CompositionCode);
   KeySegment(SerNr);
-  
   EndRecord;
   
   RecordBegin(CoinGoodsTypesVc,-,"coingoodstypes"); //Edit***************************Sasha2,14:35 27.07.2016
@@ -4777,7 +4771,6 @@ begin
   KeyBegin(GoodsType);
   KeySegment(GoodsType);
   KeySegment(SerNr);
-  
   EndRecord;
   
   RecordBegin(CoinPriceChangesVc,-,"coinpricechanges"); //Edit***************************Sasha2,14:35 27.07.2016
@@ -4813,7 +4806,6 @@ begin
   KeyBegin(ItemNumber);
   KeySegment(ItemNumber);
   KeySegment(SerNr);
-  
   EndRecord;
   
   return;  
