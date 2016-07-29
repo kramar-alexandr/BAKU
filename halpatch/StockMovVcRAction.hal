@@ -1116,6 +1116,18 @@ already checked few lines above
         goto LCheckStockMovRecord;
       end;
     end;
+    if (SMp.SentCoin>0) then begin //Edit***************************Sasha2,17:51 26.07.2016 {
+      if (Blank(StockMovrw.BarCode)) then begin
+        RecordCheckError(1854,"",i,"BarCode");      
+        res = -1;
+        goto LRetPUVcRecordCheck;
+      end;
+      if (len(StockMovrw.BarCode)!=13) then begin
+        RecordCheckError(20414,"",i,"BarCode");      
+        res = -1;
+        goto LCheckStockMovRecord;
+      end;
+    end;
   end;
   
   if (check!=0 and stat==updatemode) then begin
