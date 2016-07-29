@@ -1120,7 +1120,7 @@ already checked few lines above
       if (Blank(StockMovrw.BarCode)) then begin
         RecordCheckError(1854,"",i,"BarCode");      
         res = -1;
-        goto LRetPUVcRecordCheck;
+        goto LCheckStockMovRecord;
       end;
       if (len(StockMovrw.BarCode)!=13) then begin
         RecordCheckError(20414,"",i,"BarCode");      
