@@ -2815,6 +2815,7 @@ begin
   ArrayField(SentOldPrice,M45Val,0,0);
   ArrayField(SentFIFORowVal,M45Val,0,0);
   ArrayField(ThrouPosCode,M4Code,20,0);
+  ArrayField(BarCode,M4Code,20,0);//Edit-------------------Vitalii 14:47 28.07.2016
   EndArray;
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);

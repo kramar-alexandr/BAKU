@@ -621,6 +621,7 @@ begin
       RetPUrw.UnitXval = INr.Width;
       RetPUrw.UnitYval = INr.Height;
       RetPUrw.UnitZval = INr.Depth;
+      RetPUrw.BarCode = INr.BarCode;
       MatRowPut(RetPUp,rownr,RetPUrw);
       if (warnf) then begin
         if (INr.ItemType!=1) then begin
