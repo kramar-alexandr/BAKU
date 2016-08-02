@@ -55,6 +55,31 @@ external function Integer GetVATLaw();
 external function Integer CheckObjs(string,string,var string); //Edit***************************Sasha2,13:09 02.07.2015
 external procedure VerifyRowObjects(String,String,String,String,var Integer,var String,var Boolean,Array string,Array string,var Integer); //Edit***************************Sasha2,13:09 02.07.2015
 external updating procedure UnOk_RetPUVc(var record RetPUVc);//Edit----------------------Dima  20.01.2016
+external procedure CalcEANCHS(var string); //Edit***************************Sasha2,13:40 24.06.2016
+external procedure StringValIncrement(var string,Integer); //Edit***************************Sasha2,13:40 24.06.2016
+
+procedure GetNextPackageEANNumber(var string newEAN,string prewEAN)
+begin
+  Boolean proceedf;
+  string 15 tEAN;
+  
+    proceedf = true;
+    newEAN = "             ";
+    if (blank(prewEAN) or prewEAN<"2252300000008") then begin
+      newEAN = "2252300000008";
+      proceedf = false;
+    end;
+    if (proceedf) then begin
+      tEAN = mid(prewEAN,0,12);
+	    StringValIncrement(tEAN,1);
+	    CalcEANCHS(tEAN);
+	    if (tEAN<="2252399999993") then begin
+	      newEAN = tEAN;
+	    end;
+    end;
+
+return;  
+end;
 
 global
 function LongInt RetPUVcRecordDefaults(var record RetPUVc RetPUr,record RetPUVc RetPU2r,LongInt stat,LongInt long4)
@@ -804,7 +829,8 @@ BEGIN
   Array string 255 otcheckobjtyps; //Edit***************************Sasha2,13:11 02.07.2015
   Integer otcheckcnt; //Edit***************************Sasha2,13:11 02.07.2015
   Boolean initotcheckf; //Edit***************************Sasha2,13:11 02.07.2015
-	
+	record CoinSettingsBlock CoinB; //Edit***************************Sasha2,15:41 02.08.2016
+	string 15 nextPackageEAN;
 	
 	if(currentuser=="SA1")then begin
 		res = 0;
@@ -845,6 +871,7 @@ BEGIN
   BlockLoad(MainStockRec);
   BlockLoad(CAb);
   BlockLoad(SNrb);
+  BlockLoad(CoinB);
   if (RetPUp.SerNr<=0) then begin
     RetPUp.SerNr = NextSerNr("RetPUVc",RetPUp.TransDate,-1,false,"");  
   end;
@@ -1384,7 +1411,15 @@ LRetPUVcRecordCheck_GenTrans:;
           AddTTrans_RetPUVc(gTRp,RetPUp);
       end;
     end;    
-  end;
+  end; //Better to be directly before LRetPUVcRecordCheck:
+  if (RetPUp.SentCoin>0) then begin //Edit***************************Sasha2,15:38 02.08.2016 {
+    if (blank(RetPUp.PackageEANNum)) then begin
+      GetNextPackageEANNumber(nextPackageEAN,CoinB.LastPackageEANNum);
+      RetPUp.PackageEANNum = nextPackageEAN;
+      CoinB.LastPackageEANNum = nextPackageEAN;
+      BlockStore(CoinB);
+    end;
+  end; //Edit***************************Sasha2,15:39 02.08.2016 }
 LRetPUVcRecordCheck:;  
   if (res!=0) then begin
     RetPUp.SerNr = oldnr;

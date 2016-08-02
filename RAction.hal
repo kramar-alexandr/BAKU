@@ -1,6 +1,6 @@
 external inner function Boolean SetInSet2(string,string);
 external inner function roundmode SetRoundModeD(Integer);// Edit ************************** Tuesday, 1 April 2014 17:03:06
-
+remote inner procedure CalcEANCHS(var string); //Edit***************************Sasha2,14:24 02.08.2016
 
 
 global
@@ -202,35 +202,6 @@ begin
 return;
 end;
 
-
-
-procedure CalcEANCHS(var string str)
-begin
-integer c1,c2,lenth,i,chsum,litle;
-val sum;
-  sum = 0;
-  lenth = len(str);
-  if (lenth==12)then begin
-    for(i=0;i<12;i=i+2)begin
-      c1 = evaltoval(mid(str,i,1));
-      c2 = evaltoval(mid(str,i+1,1));
-      c2=c2*3;
-      sum = sum+c1+c2;
-    end;
-    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
-      litle = round(sum/10,SetRoundModeD(0))-1;
-    end else begin
-      litle = round(sum/10,SetRoundModeD(0));
-    end;
-    chsum  = 10-(10*(sum/10-litle));
-    if(chsum==10) then begin chsum = 0; end;
-    str = str & chsum;
-  end else begin
-    str = "";
-  end;
-  
-return;
-end;
 
 global updating procedure CreateLoyaltyCardRemote(record CUVc CUr,var record LoyaltyCardVc LCr)
 begin

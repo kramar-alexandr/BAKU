@@ -4116,7 +4116,8 @@ begin
   RecordField(TypeCoin,M4Int,0,0);
   RecordField(SentDateCoin,M4Date,0,0);
   RecordField(FileNameCoin,M4Str,255,0);
-  RecordField(TransBillCoin,M4Str,10,0); //Edit***************************Sasha2,14:38 26.07.2016 }
+  RecordField(TransBillCoin,M4Str,10,0); 
+  RecordField(PackageEANNum,M4Str,15,0); //Edit***************************Sasha2,14:38 26.07.2016 }
   ArrayBegin(Math,-,1);
   ArrayField(ArtCode,M4Code,20,INVc);
   ArrayField(Quant,M4UVal,0,0);
@@ -4456,6 +4457,7 @@ begin
   RecordField(outDir,M4Str,255,0);
   RecordField(inDirBackUp,M4Str,255,0);
   RecordField(outDirBackUp,M4Str,255,0);
+  RecordField(LastPackageEANNum,M4Str,15,0); //Edit***************************Sasha2,15:41 02.08.2016
   EndBlock;  
   
   RecordBegin(CoinPackListVc,-,"coinpacklist"); //Edit***************************Sasha2,12:07 01.07.2016 {

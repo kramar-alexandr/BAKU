@@ -1322,10 +1322,18 @@ window CoinSettingsTClass:1		//Edit----------------------Dima  21.03.2016
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real v,vs;
+  Integer mode;
   WindowBegin("Настройки Cruppo Coin",CoinSettingsTClass,CGSbl,-);
   SetWRect(20,80,400,300);
   SetBlid(CoinSettingsBlock);
   Sizeable(-1,-1,0,0);
+  
+  if (CurrentUser=="SA" or CurrentUser=="SA1") then begin //Edit***************************Sasha2,17:40 26.07.2016
+    mode = Normal;
+  end else begin
+    mode = ViewOnly;
+  end;
+  
   v=0; vs = 20;
 	EditField(100,v=6,140,"Client code",Normal,ClientCode,false,0);
 	EditField(100,v+=vs,140,"Locations",Normal,Locations,false,LocationSClass);
@@ -1336,6 +1344,7 @@ begin
 	v=v+6;
 	EditField(100,v+=vs,140,"In dir (back up)",Normal,inDirBackUp,false,0);
 	EditField(100,v+=vs,140,"Out dir (back up)",Normal,outDirBackUp,false,0);
+	EditFieldTL(100,v+=(vs+10),140,"Last Package EAN",M4Str,mode,15,LastPackageEANNum,false,0);
 	
   EndWindow;
 end;
