@@ -1038,6 +1038,7 @@ begin
         StopAlert(USetStr(1233));
         goto LIVDClassivcashcommandOnEnterKey1;
       end;
+      save_record = true;// Edit ************************** Monday, 1 August 2016 13:58:50
     case kPOSCommandsTypeCash:
       BlockLoad(DCb);
       prwcnt = MatRowCnt(POSBr);
@@ -1304,6 +1305,9 @@ begin
         PutWindowString(wn,"touchscreenitemserialnr",val001);// Edit ************************** Thursday, 11 October 2012 14:55:58
         DeselectWindow(wn,false);
         IVDClasstouchscreenitemEFAfter(wn,0,true);
+        if(currentcompany==25)then begin// Edit ************************** Monday, 1 August 2016 14:14:24
+					WindowDoOK(wn,0);// Edit ************************** Monday, 1 August 2016 14:12:20
+				end;
         goto LIVDClassivcashcommandOnEnterKey1;
       end else begin
         StopAlert(USetStr(1233));
