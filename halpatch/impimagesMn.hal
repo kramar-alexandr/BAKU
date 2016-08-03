@@ -43,6 +43,250 @@ external function Boolean SetInSet2(string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
+procedure Gen0EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+a;
+  i3 = asc(mid(str,3,1))+a;
+  i4 = asc(mid(str,4,1))+a;
+  i5 = asc(mid(str,5,1))+a;
+  i6 = asc(mid(str,6,1))+a;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen1EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+a;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+a;
+  i5 = asc(mid(str,5,1))+b;
+  i6 = asc(mid(str,6,1))+b;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen2EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+a;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+b;
+  i5 = asc(mid(str,5,1))+a;
+  i6 = asc(mid(str,6,1))+b;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen3EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+a;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+b;
+  i5 = asc(mid(str,5,1))+b;
+  i6 = asc(mid(str,6,1))+a;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen4EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+a;
+  i4 = asc(mid(str,4,1))+a;
+  i5 = asc(mid(str,5,1))+b;
+  i6 = asc(mid(str,6,1))+b;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen5EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+a;
+  i5 = asc(mid(str,5,1))+a;
+  i6 = asc(mid(str,6,1))+b;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen6EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+b;
+  i5 = asc(mid(str,5,1))+a;
+  i6 = asc(mid(str,6,1))+a;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen7EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+a;
+  i4 = asc(mid(str,4,1))+b;
+  i5 = asc(mid(str,5,1))+a;
+  i6 = asc(mid(str,6,1))+b;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen8EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+a;
+  i4 = asc(mid(str,4,1))+b;
+  i5 = asc(mid(str,5,1))+b;
+  i6 = asc(mid(str,6,1))+a;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+  res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+procedure Gen9EAN(string str, var string res)
+begin
+integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
+  i0 = asc(mid(str,0,1));
+  a=17;
+  b=27;
+  c=49;
+  res = res & chr(i0);
+  i1 = asc(mid(str,1,1))+a;
+  i2 = asc(mid(str,2,1))+b;
+  i3 = asc(mid(str,3,1))+b;
+  i4 = asc(mid(str,4,1))+a;
+  i5 = asc(mid(str,5,1))+b;
+  i6 = asc(mid(str,6,1))+a;
+  res = res & chr(i1) & chr(i2) & chr(i3) & chr(i4) & chr(i5) & chr(i6) & "*";
+  for(i=7;i<13;i=i+1) begin
+    res = res & chr(asc(mid(str,i,1))+c);
+  end;
+  res = res & "+";
+end;
+
+global 
+function CreateEAN13(var string str)
+begin
+integer lenth,i,c;
+string 5 c0,ci;
+string 20 res;
+boolean testf;
+  lenth = len(str);
+  testf = true;
+  if(lenth!=13) then begin testf = false; end;
+  for(i=0;i<lenth;i=i+1)begin
+    c=asc(mid(str,i,1));
+    if(c<48 or c>57) then begin testf = false; end;
+  end;
+  res = "";
+  if(testf) then begin
+    c0 = mid(str,0,1);
+    switch(c0) begin
+      case "0":Gen0EAN(str,res);
+      case "1":Gen1EAN(str,res);
+      case "2":Gen2EAN(str,res);
+      case "3":Gen3EAN(str,res);
+      case "4":Gen4EAN(str,res);
+      case "5":Gen5EAN(str,res);
+      case "6":Gen6EAN(str,res);
+      case "7":Gen7EAN(str,res);
+      case "8":Gen8EAN(str,res);
+      case "9":Gen9EAN(str,res);
+    end;
+  end;
+str = res;
+return
+end;
+
 global //Edit***************************Sasha2,14:27 02.08.2016 {
 procedure CalcEANCHS(var string str)
 begin
