@@ -322,11 +322,13 @@ LBREAK:;
           OutAddress("F_LEVADRESS",POr.ShipAddr0,POr.ShipAddr1,POr.ShipAddr2,POr.ShipAddr3,POr.DelAddr3,POr.DelAddr4);
           OUTFORMFIELD("F_SAFTHASHCONTROL",SAFTHashControl(RetPUr.Hash));
           OUTFORMFIELD("F_OFFICIALSERNO",RetPUr.OfficialSerNr);
-          if (FIELDINFORM("F_MYEAN13")) then begin
+          if (FIELDINFORM("F_MYEAN13")) then begin //Edit***************************Sasha2,11:15 03.08.2016 {
             tstr = RetPUr.PackageEANNum;
             CreateEAN13(tstr);
-            OUTFORMFIELD("F_MYEAN13",tstr); //Edit***************************Sasha2,10:37 03.08.2016
-          end; 
+            if (NonBlank(tstr)) then begin
+              OUTFORMFIELD("F_MYEAN13",tstr);
+            end;
+          end; //Edit***************************Sasha2,10:37 03.08.2016 }
           PrintRetPURows(RepSpec,RetPUr,LangNrr);
           CloseForm;        
       end else begin
