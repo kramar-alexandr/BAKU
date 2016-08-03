@@ -433,7 +433,7 @@ begin
   	While(LoopBackKey("SerNr",StockMovr,1,TrHs)) begin
       foundf = false;
   		testf = true;
-  		if (StockMovr.OrdFlag==0) then begin testf = false; end;
+  		if (StockMovr.OKFlag==0) then begin testf = false; end;
   		if (StockMovr.SentCoin==0 or NonBlank(StockMovr.FileNameCoin) or Blank(StockMovr.TransBillCoin)) then begin testf = false; end;
   		if (testf) then begin
   		  CoinPackListHistr.TransportBill = StockMovr.TransBillCoin;
@@ -462,6 +462,7 @@ begin
               case 2:
                 rowdata = rowdata & "0105";
             end;
+            
   				  intValue = StockMovrw.Quant;
   				  rowdata = rowdata & StockMovrw.BarCode & "+" & Right("000000" & intValue,6) & "+" & "0000";
   				  rowdata = rowdata & NewM4PadString(CoinPackListHistr.TransportBill,16,"0",true) & CoinPackListHistr.TransportBillDate;
