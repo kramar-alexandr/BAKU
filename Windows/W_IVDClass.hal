@@ -5277,8 +5277,11 @@ begin
   MatCol(1,-40,"Коэфф.",0,Coefficient,false,0);
   Flip(flipnr); flipnr = flipnr + 1;
   MatCol(1,86,"Наименование",0,Spec,false,0);
+  if (CurrentCompany==25) then begin
+    MatCol(1,-370,"Штрих-код",0,BarCode,false,0); 
+  end;
   if (HasSerialNumbers) then begin
-  MatCol(1,-280,"Серийный номер",0,SerialNr,false,SerialNrSClass);
+    MatCol(1,-280,"Серийный номер",0,SerialNr,false,SerialNrSClass);
   end;
   MatCol(1,-135,"Ширина",0,UnitXval,true,0);
   MatCol(1,-90,"Высота",0,UnitYval,true,0);

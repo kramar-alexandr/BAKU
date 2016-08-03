@@ -1116,7 +1116,7 @@ already checked few lines above
         goto LCheckStockMovRecord;
       end;
     end;
-    if (SMp.SentCoin>0) then begin //Edit***************************Sasha2,17:51 26.07.2016 {
+    if (SMp.SentCoin>0) then begin //Edit-------------------Vitalii 10:58 03.08.2016 {
       if (Blank(StockMovrw.BarCode)) then begin
         RecordCheckError(1854,"",i,"BarCode");      
         res = -1;
@@ -1128,6 +1128,18 @@ already checked few lines above
         goto LCheckStockMovRecord;
       end;
     end;
+    if (SMp.SentCoin>0) then begin
+    if (Blank(SMp.TransBillCoin)) then begin
+      RecordCheckError(1854,"",-1,"TransBillCoin");      
+      res = -1;
+      goto LRetPUVcRecordCheck;
+    end;
+    if (len(SMp.TransBillCoin)!=9) then begin
+      RecordCheckError(20414,"",-1,"TransBillCoin");      
+      res = -1;
+      goto LRetPUVcRecordCheck;
+    end;
+  end; //Edit-------------------Vitalii 10:58 03.08.2016 }
   end;
   
   if (check!=0 and stat==updatemode) then begin
