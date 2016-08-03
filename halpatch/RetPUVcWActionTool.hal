@@ -426,6 +426,7 @@ BEGIN
   RetPUrw.UnitZval = INr.Depth;
   RetPUrw.VATCode = "";
   RetPUrw.SerialNr = "";
+  RetPUrw.BarCode = INr.BarCode; //Edit***************************Sasha2,13:57 03.08.2016
   MatRowPut(RetPUp,retrw,RetPUrw);
   retrw = retrw + 1;
 LSKIPROW:;  
