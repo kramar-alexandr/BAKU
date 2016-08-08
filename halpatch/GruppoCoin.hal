@@ -518,7 +518,7 @@ begin
   string 20 curloc,datestring;
   array LongInt serNrs;
   integer pos,storenumber,storeID,i,rwcnt,serNrsLen;
-  boolean TrHs,testf,foundRowsf;
+  boolean TrHs,testf,foundRowsf,headerf;
   LongInt count;
   string 5 nextline;
     
@@ -536,13 +536,9 @@ begin
     
     datestring = DateToString(CurrentDate,"YYYYMMDD");
     filename = "BMA" & "10000" & storeID & "_" & datestring & ".TXT";
-  	CreateFile(path & filename);
-  	CloseFile;
     
     nextline = chr(13) & chr(10);
     count = 0;
-    //Header
-  	AddTextToArea("**INIT**MISSEAN*" & datestring & storeID & nextline, ames);
   	
   	TrHs = true;
   	CoinMissingEANr.FileName = "";
@@ -555,6 +551,11 @@ begin
   			for(i=0;i<rwcnt;i=i+1) begin
   				MatRowGet(CoinMissingEANr,i,CoinMissingEANrw);
   				if (len(CoinMissingEANrw.EANNumber)==13) then begin
+  				  if (headerf==false) then begin
+  				    headerf = true;
+  				    //Header
+  	          AddTextToArea("**INIT**MISSEAN*" & datestring & storeID & nextline, ames);
+  				  end;
     				AddTextToArea("MISSEAN*" & storeID & CoinMissingEANrw.EANNumber & nextline, ames);
     				foundRowsf = true;
     				count = count + 1;  
@@ -567,10 +568,9 @@ begin
   		end;
   	end;
   	
-  	//Trailer record
-  	AddTextToArea("**FINE**MISSEAN*" & datestring & storeID & Right("0000000" & count,7) & nextline, ames);
-  	
   	if (serNrsLen>0) then begin
+  	  //Trailer record
+  	  AddTextToArea("**FINE**MISSEAN*" & datestring & storeID & Right("0000000" & count,7) & nextline, ames);
     	WriteAreaToFile(ames,path & filename,0);
     	for (i=0;i<serNrsLen;i=i+1) begin
     	  CoinMissingEANr.SerNr = serNrs[i];
