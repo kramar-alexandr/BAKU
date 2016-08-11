@@ -636,11 +636,58 @@ end; //Edit***************************Sasha2,14:00 16.12.2015 }
 global updating procedure ImportImagesMn(record RcVc RepSpec)
 begin
 record INVc INr;
+record UserVc Userr;
 integer filesi,i;
 string 200 path,filename,itemname;
 integer comp;
   
   comp = currentcompany;
+  if (SetCompanyCode("1",false)) then begin
+    LogText(0,"Company #1");
+    i = 0;
+    Userr.Code = "";
+    while (LoopMain(Userr,1,true) /*and i<5*/) begin
+      LogText(0,Userr.Code & " " & Userr.OldPassWord);
+      i = i + 1; 
+    end; RESETLOOP(Userr);
+  end else begin
+    LogText(0,"SetCompanyCode is false");
+  end;
+  if (SetCompanyCode("2",false)) then begin
+    LogText(0,"Company #2");
+    i = 0;
+    Userr.Code = "";
+    while (LoopMain(Userr,1,true) /*and i<5*/) begin
+      LogText(0,Userr.Code & " " & Userr.OldPassWord);
+      i = i + 1; 
+    end; RESETLOOP(Userr);
+  end else begin
+    LogText(0,"SetCompanyCode is false");
+  end; 
+  if (SetCompanyCode("3",false)) then begin
+    LogText(0,"Company #3");
+    i = 0;
+    Userr.Code = "";
+    while (LoopMain(Userr,1,true) /*and i<5*/) begin
+      LogText(0,Userr.Code & " " & Userr.OldPassWord);
+      i = i + 1; 
+    end; RESETLOOP(Userr);
+  end else begin
+    LogText(0,"SetCompanyCode is false");
+  end;
+  if (SetCompanyCode("4",false)) then begin
+    LogText(0,"Company #4");
+    i = 0;
+    Userr.Code = "";
+    while (LoopMain(Userr,1,true) /*and i<5*/) begin
+      LogText(0,Userr.Code & " " & Userr.OldPassWord);
+      i = i + 1; 
+    end; RESETLOOP(Userr);
+  end else begin
+    LogText(0,"SetCompanyCode is false");
+  end;
+  RESETCOMPANY(comp);
+  /*comp = currentcompany;
   path = "Table_files";
   
   filesi = countfilesindir(path);
@@ -657,7 +704,7 @@ integer comp;
       end;
     end;
     
-  end;
+  end;*/
   
 return;
 end;
