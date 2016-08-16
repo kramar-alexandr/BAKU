@@ -296,7 +296,7 @@ BEGIN
               end; //logtext(0,"Acc 19 " & APAccb.RateGainAcc);
               AddEuroCurncyNomARTrRow(gTRp,APAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
             end else begin
               if (GetAccName(APAccb.RateLossAcc,tstr,60)==false) then begin
                 res = 1918;
@@ -304,7 +304,7 @@ BEGIN
               end; //logtext(0,"Acc 20 " & APAccb.RateLossAcc);
               AddEuroCurncyNomARTrRow(gTRp,APAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
-                                      blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
+                                      brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
             end;
           end;
           rgdc1 = false;
