@@ -1026,6 +1026,7 @@ begin
 					newIHr.InDate = IHr.InDate;
 					newIHr.InFileName = IHr.InFileName;
 					newIHr.TotCostPriceCurncy = IHr.TotCostPriceCurncy;
+					newIHr.RemCostPriceCurncy = IHr.TotCostPriceCurncy; //Edit***************************Sasha2,13:49 17.08.2016
 					recordstore(newIHr,true);
 				end;
 				

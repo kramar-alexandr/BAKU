@@ -99,7 +99,7 @@ begin
     PrintItemHistLine(printIHr,remcostprice);
   end;
   remcost = remcostprice - adjv*(Round(totcostprice/IHr.Qty,CostPriceDecimals));
-  remcost_curr = IHr.RemCostPriceCurncy - adjv*(Round(IHr.TotCostPriceCurncy/IHr.Qty,CostPriceDecimals)); //Edit***************************Sasha2,13:50 18.03.2015
+  remcost_curr = (IHr.TotCostPriceCurncy/IHr.Qty)*IHr.RemQty - adjv*(Round(IHr.TotCostPriceCurncy/IHr.Qty,CostPriceDecimals)); //Edit***************************Sasha2,13:50 18.03.2015
   if ((adjv - IHr.RemQty)<0) then begin
     t = IHr.RemQty - adjv;
     skippedqty = IHr.RemQty-t;
@@ -173,7 +173,7 @@ begin
       end;//Edit***************************Sasha2,14:44 18.03.2015 }
       if (IHr.RemQty==t) then begin
         res = res + remcostprice;
-        currcost = IHr.RemCostPriceCurncy; //Edit***************************Sasha2,14:42 18.03.2015
+        currcost = (IHr.TotCostPriceCurncy/IHr.Qty)*IHr.RemQty; //Edit***************************Sasha2,14:42 18.03.2015
       end else begin
         if (t==IHr.RemQty-skippedqty) then begin
           res = res + remcost;
