@@ -134,7 +134,7 @@ LStocKCountGC:;
 	  WriteAreaToFile(ames,path & filename,0);
 	  millisleep(100);
 	   
-	  if (FILEEXISTS(path & filename)) then begin
+	  if (/*FILEEXISTS(path & filename)*/ true) then begin
       backUpPath = CoinSb.outDirBackUp;
       if (nonblank(backUpPath)) then begin
         if (!DirExists(backUpPath)) then begin
@@ -254,7 +254,7 @@ begin
 	WriteAreaToFile(ames,path & filename,0);
 	millisleep(100);
 	
-	if (FILEEXISTS(path & filename)) then begin
+	if (/*FILEEXISTS(path & filename)*/ true) then begin
     backUpPath = CoinSb.outDirBackUp;
     if (nonblank(backUpPath)) then begin
       if (!DirExists(backUpPath)) then begin
@@ -325,7 +325,7 @@ begin
 	  WriteAreaToFile(ames,path & filename,0);  
     millisleep(100);
     
-    if (FILEEXISTS(path & filename)) then begin
+    if (/*FILEEXISTS(path & filename)*/ true) then begin
       backUpPath = CoinSb.outDirBackUp;
       if (nonblank(backUpPath)) then begin
         if (!DirExists(backUpPath)) then begin
@@ -491,7 +491,7 @@ begin
     	millisleep(100);
   	end;
   	
-  	if (FILEEXISTS(path & filename)) then begin
+  	if (/*FILEEXISTS(path & filename)*/ true) then begin
       backUpPath = CoinSb.outDirBackUp;
       if (nonblank(backUpPath)) then begin
         if (!DirExists(backUpPath)) then begin
@@ -584,7 +584,7 @@ begin
     	end;
     	//millisleep(100);
     	
-    	if (FILEEXISTS(path & filename)) then begin
+    	if (/*FILEEXISTS(path & filename)*/ true) then begin
         backUpPath = CoinSb.outDirBackUp;
         if (nonblank(backUpPath)) then begin
           if (!DirExists(backUpPath)) then begin
