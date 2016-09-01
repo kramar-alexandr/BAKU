@@ -1442,6 +1442,10 @@ BEGIN
               end;
             end;
   			  end;
+  			  
+  			  if (totcostpricecurncy<0) then begin // for case if there are no positive invoices (with qty>0). Just negative invoices (with qty<0).
+				    findfcur = false;
+				  end;
   			    			  
   			  if(findfcur==false)then begin
   			  	totcostpricecurncy = INr.LastPurchPrice2 * -IVrw.Quant;
