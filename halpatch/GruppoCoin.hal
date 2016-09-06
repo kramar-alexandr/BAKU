@@ -486,6 +486,11 @@ begin
   	end;
     //Edit-------------------Vitalii 14:33 27.07.2016 }
     
+  	if (GetAreaLength(ames)==0) then begin
+  	  AddTextToArea("**INIT**MERCTRAN" & datestring & storeID & nextline, ames);
+  	  AddTextToArea("**FINE**MERCTRAN" & datestring & storeID & "0000002" & nextline, ames);
+  	end;
+  	
   	if (GetAreaLength(ames)>0) then begin
     	WriteAreaToFile(ames,path & filename,0);
     	millisleep(100);
