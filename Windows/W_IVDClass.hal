@@ -2445,7 +2445,7 @@ end else begin
     
     
     
-    HalPushButton(280,350,380,680,"IVDClassUpdateWebBrowser","Показать картинку товара");
+    HalPushButton(480,350,680,680,"IVDClassUpdateWebBrowser","Показать картинку товара");
     SoftEditFieldTLX(20,380,650,"",M4Str,ViewOnly,100,10,patM4black,"CustomerDisplayData_Line3",false,0);
    	WebPage(20,400,700,-80,"$subset","");
     //WebPage(20,700,390,-80,"$HWStore","");
