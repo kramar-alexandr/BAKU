@@ -1432,3 +1432,53 @@ begin
   saveOK = false;
   return;
 end; //Edit***************************Sasha2,10:12 21.06.2016 }
+
+//Edit***************************Sasha2,11:39 09.09.2016 {
+function boolean DelAddrCodeAfterEdit(Integer wn,Integer changed)
+begin
+record SHVc SHr;
+record INVc INr;
+string 200 adr;
+Boolean testf;
+  
+  if(changed==1)then begin
+    getwindowrecord(wn,SHr);
+    if (nonblank(SHr.DelAddrCode)) then begin
+      INr.Code = SHr.DelAddrCode;
+      testf = Readfirstmain(INr,1,true);
+      if (testf==false) then begin
+        INr.AlternativeCode = SHr.DelAddrCode;
+        testf = ReadFirstKey("AlternativeCode",INr,1,true);
+        if (testf) then begin
+          SHr.DelAddrCode = INr.Code;
+        end;
+      end;
+      if (testf==false) then begin
+        INr.BarCode = SHr.DelAddrCode;
+        testf = ReadFirstKey("BarCode",INr,1,true);
+        if (testf) then begin
+          SHr.DelAddrCode = INr.Code;
+        end;
+      end;
+      if (testf) then begin
+        putwindowrecord(wn,SHr);   
+      end;
+    end;
+	end;
+  
+DelAddrCodeAfterEdit = true;
+return;
+end; //Edit***************************Sasha2,11:39 09.09.2016 }
+
+global //Edit***************************Sasha2,11:38 09.09.2016 {
+function Boolean PasteRetItemTClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
+BEGIN
+  Boolean res;
+  
+  switch (fieldname) begin
+    case "DelAddrCode": res = DelAddrCodeAfterEdit(wn,changed);
+        
+  end;
+  PasteRetItemTClassAfterEditField = res;
+  RETURN;
+END; //Edit***************************Sasha2,11:38 09.09.2016 }
