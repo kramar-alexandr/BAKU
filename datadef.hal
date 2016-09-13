@@ -4458,6 +4458,7 @@ begin
   RecordField(inDirBackUp,M4Str,255,0);
   RecordField(outDirBackUp,M4Str,255,0);
   RecordField(LastPackageEANNum,M4Str,15,0); //Edit***************************Sasha2,15:41 02.08.2016
+  RecordField(outDirBackUp2,M4Str,255,0); //Edit***************************Sasha2,17:08 13.09.2016
   EndBlock;  
   
   RecordBegin(CoinPackListVc,-,"coinpacklist"); //Edit***************************Sasha2,12:07 01.07.2016 {

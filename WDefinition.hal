@@ -1344,6 +1344,7 @@ begin
 	v=v+6;
 	EditField(100,v+=vs,140,"In dir (back up)",Normal,inDirBackUp,false,0);
 	EditField(100,v+=vs,140,"Out dir (back up)",Normal,outDirBackUp,false,0);
+	EditField(100,v+=vs,140,"Out dir2 (back up)",Normal,outDirBackUp2,false,0); //Edit***************************Sasha2,17:09 13.09.2016
 	EditFieldTL(100,v+=(vs+10),140,"Last Package EAN",M4Str,mode,15,LastPackageEANNum,false,0);
 	
   EndWindow;

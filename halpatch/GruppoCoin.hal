@@ -143,6 +143,14 @@ LStocKCountGC:;
         //MoveFile(filename,path,backUpPath);
         WriteAreaToFile(ames,backUpPath & filename,0);
       end;
+      backUpPath = CoinSb.outDirBackUp2;
+      if (nonblank(backUpPath)) then begin
+        if (!DirExists(backUpPath)) then begin
+          CreateFolder(backUpPath);
+        end;
+        //MoveFile(filename,path,backUpPath);
+        WriteAreaToFile(ames,backUpPath & filename,0);
+      end;
     end;
 	 
   return;
@@ -263,6 +271,14 @@ begin
       //MoveFile(filename,path,backUpPath);
       WriteAreaToFile(ames,backUpPath & filename,0); 
     end;
+    backUpPath = CoinSb.outDirBackUp2;
+    if (nonblank(backUpPath)) then begin
+      if (!DirExists(backUpPath)) then begin
+        CreateFolder(backUpPath);
+      end;
+      //MoveFile(filename,path,backUpPath);
+      WriteAreaToFile(ames,backUpPath & filename,0);
+    end;
   end;
 	
 LGruppoCoinSalesMn:;
@@ -333,6 +349,14 @@ begin
         end;
         //MoveFile(filename,path,backUpPath); 
         WriteAreaToFile(ames,backUpPath & filename,0); 
+      end;
+      backUpPath = CoinSb.outDirBackUp2;
+      if (nonblank(backUpPath)) then begin
+        if (!DirExists(backUpPath)) then begin
+          CreateFolder(backUpPath);
+        end;
+        //MoveFile(filename,path,backUpPath);
+        WriteAreaToFile(ames,backUpPath & filename,0);
       end;
     end;
 	  
@@ -505,6 +529,14 @@ begin
         //MoveFile(filename,path,backUpPath);
         WriteAreaToFile(ames,backUpPath & filename,0);
       end;
+      backUpPath = CoinSb.outDirBackUp2;
+      if (nonblank(backUpPath)) then begin
+        if (!DirExists(backUpPath)) then begin
+          CreateFolder(backUpPath);
+        end;
+        //MoveFile(filename,path,backUpPath);
+        WriteAreaToFile(ames,backUpPath & filename,0);
+      end;
     end;
 	  
 LGruppoCoinManageGoods:;
@@ -591,6 +623,14 @@ begin
     	
     	if (/*FILEEXISTS(path & filename)*/ true) then begin
         backUpPath = CoinSb.outDirBackUp;
+        if (nonblank(backUpPath)) then begin
+          if (!DirExists(backUpPath)) then begin
+            CreateFolder(backUpPath);
+          end;
+          //MoveFile(filename,path,backUpPath);
+          WriteAreaToFile(ames,backUpPath & filename,0);
+        end;
+        backUpPath = CoinSb.outDirBackUp2;
         if (nonblank(backUpPath)) then begin
           if (!DirExists(backUpPath)) then begin
             CreateFolder(backUpPath);
