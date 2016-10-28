@@ -197,6 +197,9 @@ begin
   Report("Отчет несовпадения цены последнего поступления",CalcINVcLastPurchPriceRClass,CalcINVcLastPurchPriceRn,0,modIN); // Edit ************************** Tuesday, 26 April 2016 10:38:30
   Report("Остатки возвращенных товаров",ItemStatusOfReturnedRClass,StatusOfReturnedItemsRn,0,modIN);//Edit----------------------Dima  18.05.2016
   Report("PackLists report",CoinPackListRClass,CoinPackListRn,0,modDromos);//Edit----------------------Dima  18.05.2016
+  if (currentcompany==16) then begin
+    Report("Статистика продаж",MyBIRClass,MyBIRn,0,modSL);//Edit-------------------Vitalii 17:21 26.10.2016
+  end;
   
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
