@@ -946,3 +946,35 @@ weboutstring("</FMPXMLRESULT>");*/
 	
 return;
 end;
+
+webpublic global procedure WebMainMenu()
+begin
+record LocationVc Locr;
+
+	weboutstring("CurrentUSer = " & currentuser);
+	weboutstring("<BR>");
+	weboutstring("CurrentCompany = " & currentcompany);
+	weboutstring("<BR>");
+	while(loopmain(Locr	,1,true))begin
+		weboutstring(Locr.Code & " " & Locr.Name);
+		weboutstring("<BR>");
+	end;
+	
+return;
+end;
+
+webpublic global procedure WebUnknownLogin()
+begin
+record LocationVc Locr;
+
+	weboutstring("CurrentUSer = " & currentuser);
+	weboutstring("<BR>");
+	weboutstring("CurrentCompany = " & currentcompany);
+	weboutstring("<BR>");
+	while(loopmain(Locr	,1,true))begin
+		weboutstring(Locr.Code & " " & Locr.Name);
+		weboutstring("<BR>");
+	end;
+	
+return;
+end;

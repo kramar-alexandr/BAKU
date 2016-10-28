@@ -2804,11 +2804,15 @@ begin
 
   wn = CurWindow;
   GetWindowRecord(wn,IVr);
-  RepSpec.Media = mtExcel;
-  RepSpec.repname = "ExportInvoiceToExcelRn";
-  RepSpec.flags[0] = wn;
-  RepSpec.long1 = IVr.SerNr;
-  RunReport(RepSpec,0);
+  if(WindowState(wn)==Rs_normal)then begin
+		RepSpec.Media = mtExcel;
+		RepSpec.repname = "ExportInvoiceToExcelRn";
+		RepSpec.flags[0] = wn;
+		RepSpec.long1 = IVr.SerNr;
+		RunReport(RepSpec,0);
+  end else begin
+  	messagebox(0,"Сохраните сч/ф перед выводом отчета");
+  end;
 
   
 return;
