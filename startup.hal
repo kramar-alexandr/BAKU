@@ -125,6 +125,8 @@ begin
 	Maintenance("Gruppo Coin delete all records",GruppoCoinDeleteRecordsVClass,GruppoCoinDeleteRecordsMn,modDromos);
 	
 	Maintenance("Группы и клас. для товаров",FIXVClass,UpdateItemToCoinEAN,modDromos);
+  Maintenance("Перенести классификации товаров из имени",FIXVClass,FixItemDIMn,modDBMain);
+  
 
 	
   if(currentcompany==1)then begin

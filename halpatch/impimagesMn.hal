@@ -4476,3 +4476,63 @@ begin
 
 return;
 end;
+
+global 
+updating procedure FixItemDIMn()
+begin
+  record INVc INr;
+  record DIVc DIr;
+  record LetVc Letr;
+  array string 50 aTypeCode,aTypeName;
+  integer pos,i,ln;
+  string 50 class;
+  boolean testf,TrHs;
+  
+  DIr.CType = "TYPE";
+  TrHs = true;
+  while (loopkey("CType",DIr,1,TrHs)) begin
+    if(DIr.CType!="TYPE")then begin TrHs = false; end;
+    if(TrHs)then begin
+      aTypeCode[i] = DIr.Code;
+      aTypeName[i] = DIr.Name;
+      i = i + 1;
+    end;
+  end;
+  ln = aTypeCode.length;
+  INr.Code = "";
+  while (loopmain(INr,1,true)) begin
+    testf = true;
+    pos = 0;
+    class = "";
+    ExtractObj(INr.DispGroups,pos,class);
+    while (nonblank(class)) begin
+      DIr.Code = class;
+      readfirstmain(DIr,1,true);
+      if (DIr.CType=="TYPE") then begin
+        testf = false;
+      end;
+      ExtractObj(INr.DispGroups,pos,class);
+      if (!testf) then begin
+        class = "";
+      end;
+    end;
+    if (testf) then begin
+      RecordClear(Letr);
+      AddToText(INr.Name,Letr);
+      for (i=0;i<ln;i=i+1) begin
+        if (StringInText(aTypeName[i],Letr)) then begin
+          if (right(INr.DispGroups,1) == ",") then begin
+            INr.DispGroups = INr.DispGroups & aTypeCode[i];
+          end else begin
+            INr.DispGroups = INr.DispGroups & "," & aTypeCode[i];
+          end;
+          i = ln;
+        end;
+      end;
+      RecordStore(INr,true);
+    end;
+  end;
+  
+  
+  return;
+end;
