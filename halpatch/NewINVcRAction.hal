@@ -508,8 +508,9 @@ BEGIN
 END;
 
 //Edit***************************Sasha2,9:23 10.03.2016 {
-procedure FullFillINVc(var record INVc INr,record NewINVc newINr,row NewINVc newINrw,string group,string type)
+procedure FullFillINVc(var record INVc INr,record NewINVc newINr,row NewINVc newINrw,string group,string type,Boolean insertDispNameNotCode)
 begin
+  record DIVc DIr;
   
       if (NonBlank(group)) then begin
 				INr.Group = group;
@@ -531,12 +532,114 @@ begin
   		if(nonblank(type))then begin INr.MainDisp=type;  end;	
   		if(nonblank(newINr.EKNCode))then begin INr.EKNCode=newINr.EKNCode;  end; if(nonblank(newINrw.EKNCode))then begin INr.EKNCode=newINrw.EKNCode;  end;
   		if(nonblank(newINr.NotForSales))then begin INr.NotForSales=newINr.NotForSales;  end; if(nonblank(newINrw.NotForSales))then begin INr.NotForSales=newINrw.NotForSales;  end;
-  		if(nonblank(newINr.MajStoneDet))then begin INr.MajStoneDet=newINr.MajStoneDet;  end; if(nonblank(newINrw.MajStoneDet))then begin INr.MajStoneDet=newINrw.MajStoneDet;  end;
-  		if(nonblank(newINr.Colour))then begin INr.Colour=newINr.Colour;  end; if(nonblank(newINrw.Colour))then begin INr.Colour=newINrw.Colour;  end;
-  		if(nonblank(newINr.Metal))then begin INr.Metal=newINr.Metal;  end; if(nonblank(newINrw.Metal))then begin INr.Metal=newINrw.Metal;  end;
-  		if(nonblank(newINr.RowWeight))then begin INr.RowWeight=newINr.RowWeight;  end; if(nonblank(newINrw.RowWeight))then begin INr.RowWeight=newINrw.RowWeight;  end;
-  		if(nonblank(newINr.Size))then begin INr.Size=newINr.Size;  end; if(nonblank(newINrw.Size))then begin INr.Size=newINrw.Size;  end;
-  		if(nonblank(newINr.Reference))then begin INr.Reference=newINr.Reference;  end; if(nonblank(newINrw.Reference))then begin INr.Reference=newINrw.Reference;  end;
+  		if(nonblank(newINr.MajStoneDet))then begin 
+  		  INr.MajStoneDet=newINr.MajStoneDet;  
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.MajStoneDet;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.MajStoneDet = DIr.Name;
+  		    end;
+  		  end;
+  		end; 
+  		if(nonblank(newINrw.MajStoneDet))then begin 
+  		  INr.MajStoneDet=newINrw.MajStoneDet;  
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.MajStoneDet;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.MajStoneDet = DIr.Name;
+  		    end;
+  		  end;
+  		end;
+  		if(nonblank(newINr.Colour))then begin 
+  		  INr.Colour=newINr.Colour;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.Colour;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Colour = DIr.Name;
+  		    end;
+  		  end;
+  		end; 
+  		if(nonblank(newINrw.Colour))then begin 
+  		  INr.Colour=newINrw.Colour; 
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.Colour;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Colour = DIr.Name;
+  		    end;
+  		  end; 
+  		end;
+  		if(nonblank(newINr.Metal))then begin 
+  		  INr.Metal=newINr.Metal;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.Metal;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Metal = DIr.Name;
+  		    end;
+  		  end;  
+  		end; 
+  		if(nonblank(newINrw.Metal))then begin 
+  		  INr.Metal=newINrw.Metal;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.Metal;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Metal = DIr.Name;
+  		    end;
+  		  end; 
+  		end;
+  		if(nonblank(newINr.RowWeight))then begin 
+  		  INr.RowWeight=newINr.RowWeight;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.RowWeight;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.RowWeight = DIr.Name;
+  		    end;
+  		  end;  
+  		end; 
+  		if(nonblank(newINrw.RowWeight))then begin 
+  		  INr.RowWeight=newINrw.RowWeight;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.RowWeight;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.RowWeight = DIr.Name;
+  		    end;
+  		  end; 
+  		end;
+  		if(nonblank(newINr.Size))then begin 
+  		  INr.Size=newINr.Size;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.Size;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Size = DIr.Name;
+  		    end;
+  		  end; 
+  		end; 
+  		if(nonblank(newINrw.Size))then begin 
+  		  INr.Size=newINrw.Size;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.Size;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Size = DIr.Name;
+  		    end;
+  		  end;
+  		end;
+  		if(nonblank(newINr.Reference))then begin 
+  		  INr.Reference=newINr.Reference;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINr.Reference;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Reference = DIr.Name;
+  		    end;
+  		  end;
+  		end; 
+  		if(nonblank(newINrw.Reference))then begin 
+  		  INr.Reference=newINrw.Reference;
+  		  if (insertDispNameNotCode) then begin
+  		    DIr.Code = newINrw.Reference;
+  		    if (ReadFirstMain(DIr,1,true)) then begin
+  		      INr.Reference = DIr.Name;
+  		    end;
+  		  end;
+  		end;
   		if(nonblank(newINr.CPSCode))then begin INr.CPSCode=newINr.CPSCode;  end; if(nonblank(newINrw.CPSCode))then begin INr.CPSCode=newINrw.CPSCode;  end;
   		//if(nonblank(newINr.MinLevel))then begin INr.MinLevel=newINr.MinLevel;  end; if(nonblank(newINrw.MinLevel))then begin INr.MinLevel=newINrw.MinLevel;  end;
   		//if(nonblank(newINr.SalesAcc))then begin INr.SalesAcc=newINr.SalesAcc;  end; if(nonblank(newINrw.SalesAcc))then begin INr.SalesAcc=newINrw.SalesAcc;  end;
@@ -691,7 +794,7 @@ BEGIN
   string 200 rawclass,uloc,group;
   integer pos;
   record DIVc DIr;
-  boolean upd;
+  boolean upd,insertDispNameNotCode;
   record DiCheckBlock DiCb; //Edit***************************Sasha2,16:52 07.12.2015
   row DiCheckBlock DiCbw; //Edit***************************Sasha2,16:52 07.12.2015
   vector string 255 diCheckTypes; //Edit***************************Sasha2,17:22 07.12.2015
@@ -704,6 +807,10 @@ BEGIN
   
   
   if (newINr.OKFlag==1) then begin		//Edit----------------------Dima  09.03.2016
+    
+    switch (CurrentCompany) begin
+		  case 9: insertDispNameNotCode = true;
+		end;
     
     BlockLoad(DiCb); //Edit***************************Sasha2,16:53 07.12.2015 {
     mtrw = MatRowCnt(DiCb);
@@ -1320,6 +1427,10 @@ BEGIN
           end;
         end;
   			
+  			switch (CurrentCompany) begin
+  			  case 9: newdispstr = "GOODS," & newdispstr;
+  			end;
+  			
   			newINrw.DispGroups = newdispstr;
   			if(len(newINrw.DispGroups)>0)then begin
   				if(Right(newINrw.DispGroups,1)==",")then begin
@@ -1340,7 +1451,7 @@ BEGIN
         goto LNewINVcRecordCheck;
   	  end;
   	  
-  	  FullFillINVc(INr,newINr,newINrw,group,type);
+  	  FullFillINVc(INr,newINr,newINrw,group,type,insertDispNameNotCode);
 
 	    res = nINVcRecordCheck(INr,IN2r,stat1,long41,i);
 	    if (res!=0) then begin
@@ -1371,7 +1482,7 @@ BEGIN
   	  	INr.Code = codestring;
   	  end;
   	  
-  	  FullFillINVc(INr,newINr,newINrw,group,type);
+  	  FullFillINVc(INr,newINr,newINrw,group,type,insertDispNameNotCode);
   	  
 			if(stat==1)then begin
 				if(newINr.OKFlag==1)then begin
