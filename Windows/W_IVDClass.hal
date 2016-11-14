@@ -7873,3 +7873,64 @@ begin
   EndWindow;
 end;
 
+window DemoMsgWClass:3
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  boolean haskey,isreg;
+  real h,l,v,vs;
+  string 255 regcode,regname;
+  WindowBegin(DemoMsgWClassTitle_RUS(isreg,haskey),DemoMsgWClass,CGother,RcType);
+  DynamicWindow;
+  SetWRect(20,80,620,360);
+  h = 30; v = 50; vs = 24; l = 180;
+  
+  if (DemoDays>0) then begin
+    if (haskey) then begin
+      StaticText(h,v=20,"Ключ будет обновляться автоматически. Текущий ключ действителен до " & DemoDays & " дня(-ей) (" & AddDay(CurrentDate,DemoDays) & ")",false);
+    end else begin
+      if (DemoDays>20) then begin
+        StaticText(h,v=20,"Эта база перейдет в ограниченный режим через " & DemoDays & " дня(-ей) (" & AddDay(CurrentDate,DemoDays) & ")",false);
+      end else begin
+        StaticText(h,v=20,"Это база данных перейдет в ограниченный режим через " & DemoDays & " дня(-ей) ",false);
+      end;
+    end;
+  end else begin
+    StaticText(h,v=20,"Эта база данных работает в ограниченном режиме",false);
+  end;
+    
+  /*if (isreg) then begin
+    HalPushButton(h,v+=vs,h + l,v + vs,"GetInternetEnabler","Получить новый ключ");
+    StaticText(h + l + 30,v + 14,"(Получить новый ключ, действительный в течение 3 месяцев)",false);
+  end;
+  
+  if (nonblank(regcode)) then begin
+    HalPushButton(h,v+=vs,h + l,v + vs,"ReRegisterInHWStep1","Обновить регистрацию");
+    if (nonblank(regname)) then begin
+      StaticText(h + l + 30,v + 14,"(Зарегистрировано как " & regname & ")",false);
+    end else begin
+      StaticText(h + l + 30,v + 14,"(Нет имени...)",false);
+    end;
+  end else begin
+    HalPushButton(h,v+=vs,h + l,v + vs,"RegisterInHWStep1","Зарегистрировать этот продукт");
+    StaticText(h + l + 30,v + 14,"(Не зарегистрирован)",false);
+  end;
+  
+  if (nonblank(regcode)) then begin
+    HalPushButton(h,v+=vs,h + l,v + vs,"OpenInternetEnablers","Конфигурировать Интернет-ключ");
+    if (isreg) then begin
+      StaticText(h + l + 30,v + 14,"(Уже сконфигурирован)",false);
+    end else begin
+      StaticText(h + l + 30,v + 14,"(Ещё не сконфигурирован)",false);
+    end;
+  end;*/
+  
+  /*if (isreg) then begin
+
+    PushButton(h,v+=vs,h + l,v + vs,ToolPayForRegistered,"Оплата");
+    StaticText(h + l + 30,v + 14,"(Открыть безопасный сайт, где Вы сможете оплатить продукт)",false);
+  end;*/
+
+  PushButton(h,v+=vs,h + l,v + vs,ToolClose,"Закрыть окно");
+
+  EndWindow;
+end;
