@@ -4536,3 +4536,181 @@ begin
   
   return;
 end;
+
+global updating procedure FixSomeIHCostMn()
+begin
+	record ItemHistVc IHr,sourceIHr;
+	record StockMovVc SMr;
+	row StockMovVc SMrw;
+	record SHVc SHr;
+	row SHVc SHrw;
+	record IVVc IVr;
+	row IVVc IVrw;
+	record SDVc SDr;
+	row SDVc SDrw;
+	record RetVc Retr;
+	row RetVc Retrw;
+	record ProdVc Prodr;
+	row ProdVc Prodrw;
+	record POVc POr;
+  row POVc POrw;
+  record PUVc PUr,PU2r;
+  row PUVc PUrw,PU2rw;
+	
+  boolean TrHs,testf;
+	val wrongSum,wrongcost,propercost,propercostcur,qty;
+	integer mtrw,mi;
+  area tmparea,tmparea1;
+  string 255 fn;
+	
+	PUr.SerNr = "448";
+  readfirstmain(PUr,1,true);
+  mtrw = matrowcnt(PUr);
+	for (mi=0;mi<mtrw;mi=mi+1) begin
+    matrowget(PUr,mi,PUrw);
+    if ((PUrw.Quant>1) and (PUrw.CostPrice>0)) then  begin
+      AddTextToArea("----- item " & PUrw.ArtCode & " -----" & chr(13) & chr(10),tmparea);
+      qty = PUrw.Quant;
+      wrongSum = PUrw.Sum;
+      wrongcost = PUrw.CostPrice;
+      propercost = PUrw.CostPrice/qty;
+      propercostcur = PUrw.UPrice/qty;
+      IHr.ArtCode = PUrw.ArtCode;
+      IHr.TransDate = PUr.TransDate;
+      TrHs = true;
+      resetloop(IHr);
+      while (loopkey("ArtCode",IHr,2,TrHs)) begin
+        testf = true;
+        if (IHr.ArtCode!=PUrw.ArtCode) then begin TrHs = false; testf = false; end;
+        if (IHr.TransDate<PUr.TransDate) then begin testf = false; end;
+        if ((IHr.TotCostPrice/IHr.Qty)!=wrongcost) and ((IHr.TotCostPrice/IHr.Qty)!=-wrongcost) and
+           ((IHr.TotCostPrice)!=wrongSum) and ((IHr.TotCostPrice)!=-wrongSum) then begin testf = false; end;
+        if (testf) then begin
+          if (IHr.Qty<0) then begin
+						IHr.TotCostPrice = -propercost*IHr.Qty;
+            IHr.TotCostPriceCurncy = -propercostcur*IHr.Qty;
+					end else begin
+						IHr.TotCostPrice = propercost*IHr.Qty;
+            IHr.TotCostPriceCurncy = propercostcur*IHr.Qty;
+					end;
+          if (nonblank(IHr.RemQty) and (IHr.RemQty!=0)) then begin
+            IHr.RemCostPrice = propercost*IHr.RemQty;
+            IHr.RemCostPriceCurncy = propercostcur*IHr.RemQty;
+          end;
+          switch(IHr.FileName)begin
+            case "PUVc":
+              PU2r.SerNr = IHr.TransNr;
+              if (readfirstmain(PU2r,1,true)) then begin
+                matrowget(PU2r,IHr.Row,PU2rw);
+                  PUrw.CostPrice = propercost;
+                  PUrw.UPrice = propercostcur;
+                  PUrw.Sum = propercost*qty;
+                  POr.SerNr = PUr.PONr;
+                  if (readfirstmain(POr,1,true)) then begin
+                    matrowget(POr,PUrw.OrdRow,POrw);
+                    POrw.Price = propercost;
+                    POrw.Sum = propercost*qty;
+                    matrowput(POr,PUrw.OrdRow,POrw);
+                    recordstore(POr,true);
+                    AddTextToArea("POVc - " & POr.SerNr & " " & PUrw.OrdRow & chr(13) & chr(10),tmparea);
+                  end;
+                matrowput(PU2r,IHr.Row,PU2rw);
+                recordstore(PU2r,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+						case "SHVc":
+              SHr.SerNr = IHr.TransNr;
+              if(readfirstmain(SHr,1,true))then begin
+                matrowget(SHr,IHr.Row,SHrw);
+                  SHrw.FIFO = propercost;
+                  SHrw.FIFORowVal = propercost * SHrw.Ship;
+                matrowput(SHr,IHr.Row,SHrw);
+                recordstore(SHr,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+						case "SDVc":
+              SDr.SerNr = IHr.TransNr;
+              if(readfirstmain(SDr,1,true))then begin
+                matrowget(SDr,IHr.Row,SDrw);
+                  SDrw.FIFO = propercost;
+                  SDrw.FIFORowVal = propercost * SDrw.Qty;
+                matrowput(SDr,sourceIHr.Row,SDrw);
+                recordstore(SDr,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+						case "RetVc":
+              Retr.SerNr = IHr.TransNr;
+              if(readfirstmain(Retr,1,true))then begin
+                matrowget(Retr,IHr.Row,Retrw);
+                  Retrw.UPrice = propercost;
+                  Retrw.CostPrice = propercost;
+                matrowput(Retr,sourceIHr.Row,Retrw);
+                recordstore(Retr,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+						case "IVVc":
+              IVr.SerNr = IHr.TransNr;
+              if(readfirstmain(IVr,1,true))then begin
+                matrowget(IVr,IHr.Row,IVrw);
+                  IVrw.BasePrice = propercost;
+                  IVrw.rowGP = -propercost;
+                  IVrw.FIFO = propercost;
+                  IVrw.FIFORowVal = propercost * IVrw.Quant;
+                matrowput(IVr,IHr.Row,IVrw);
+                recordstore(IVr,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+						case "StockMovVc":
+              AddTextToArea(IHr.TransNr & " " & IHr.Row & " item - " & PUrw.ArtCode & chr(13) & chr(10),tmparea1);
+              /*SMr.SerNr = IHr.TransNr;
+              if(readfirstmain(SMr,1,true))then begin
+                matrowget(SMr,sourceIHr.Row,SMrw);
+                  SMrw.OldPrice = propercost;
+                  SMrw.NewPrice = propercost;
+                  SMrw.FIFORowVal = propercost * SMrw.Quant;
+                matrowput(SMr,IHr.Row,SMrw);
+                recordstore(SMr,true);
+              end;*/
+						case "ProdVc":
+              Prodr.SerNr = IHr.TransNr;
+              if(readfirstmain(Prodr,1,true))then begin
+                matrowget(Prodr,IHr.Row,Prodrw);
+                  Prodrw.ItemCost = propercost;
+                  if(Prodrw.InQty>0)then begin
+                    Prodrw.FIFORowVal = propercost * Prodrw.InQty;
+                  end;
+                  if(Prodrw.OutQty>0)then begin
+                    Prodrw.FIFORowVal = propercost * Prodrw.OutQty;
+                  end;
+                matrowput(Prodr,IHr.Row,Prodrw);
+                recordstore(Prodr,true);
+                AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & IHr.Row & chr(13) & chr(10),tmparea);
+              end;
+            otherwise
+              AddTextToArea(IHr.FileName & " - " & IHr.TransNr & " " & " item - " & PUrw.ArtCode & IHr.Row & " otherwise" & chr(13) & chr(10),tmparea);
+					end;
+          recordstore(IHr,true);
+        end;
+      end;
+    end;
+  end;
+  if (windowsmode==1) then begin
+    fn = "FixSomeIHCostMn.log";
+  end else begin
+    fn = "/FixSomeIHCostMn.log";
+  end;
+  if (fileexists(fn)) then begin
+    delete_file(fn);
+  end;
+  writeareatofile(tmparea,fn,1);
+  if (windowsmode==1) then begin
+    fn = "StockMovTOFIX.log";
+  end else begin
+    fn = "/StockMovTOFIX.log";
+  end;
+  if (fileexists(fn)) then begin
+    delete_file(fn);
+  end;
+  writeareatofile(tmparea1,fn,1);
+  return;
+end;
