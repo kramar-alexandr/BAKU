@@ -4653,7 +4653,7 @@ begin
               if(readfirstmain(IVr,1,true))then begin
                 matrowget(IVr,IHr.Row,IVrw);
                   IVrw.BasePrice = propercost;
-                  IVrw.rowGP = -propercost;
+                  IVrw.rowGP = IVrw.Quant*IVrw.Price*(1-IVrw.vRebate/100) - propercost * IVrw.Quant;
                   IVrw.FIFO = propercost;
                   IVrw.FIFORowVal = propercost * IVrw.Quant;
                 matrowput(IVr,IHr.Row,IVrw);
