@@ -203,9 +203,9 @@ begin
   Report("Остатки возвращенных товаров",ItemStatusOfReturnedRClass,StatusOfReturnedItemsRn,0,modIN);//Edit----------------------Dima  18.05.2016
   Report("PackLists report",CoinPackListRClass,CoinPackListRn,0,modDromos);//Edit----------------------Dima  18.05.2016
   /*if (currentcompany==16) or (CompanyIsJWLikeCompany(currentcompany)) then begin
-    Report("Статистика продаж",MyBIRClass,MyBIRn,0,modSL);//Edit-------------------Vitalii 17:21 26.10.2016
   end;*/
-  
+  Report("Статистика продаж",MyBIRClass,MyBIRn,0,modSL);//Edit-------------------Vitalii 17:21 26.10.2016
+
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
   Document("Накопительные карточки",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
