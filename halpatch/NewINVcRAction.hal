@@ -833,6 +833,8 @@ BEGIN
   	  end;
   	end;
     
+    logtext(0,group);
+    
     mtrw = matrowcnt(newINr);
     For(i=0;i<mtrw;i=i+1) begin
   	  matrowget(newINr,i,newINrw);
