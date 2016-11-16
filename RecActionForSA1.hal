@@ -246,3 +246,18 @@ BEGIN
   SHDClassActiveEditField = res;
   RETURN;
 END;
+
+global
+function Boolean PODClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
+BEGIN
+  Boolean res;
+  Integer nwn;
+  
+  res = true;
+  if(currentuser!="SA1")then begin
+  	res = inner.PODClassActiveEditField(wn,fieldname,fn,wnst,rownr,changed);
+  end;
+  
+  PODClassActiveEditField = res;
+  RETURN;
+END;
