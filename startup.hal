@@ -198,9 +198,18 @@ begin
   Report("Отчет несовпадения цены последнего поступления",CalcINVcLastPurchPriceRClass,CalcINVcLastPurchPriceRn,0,modIN); // Edit ************************** Tuesday, 26 April 2016 10:38:30
   Report("Остатки возвращенных товаров",ItemStatusOfReturnedRClass,StatusOfReturnedItemsRn,0,modIN);//Edit----------------------Dima  18.05.2016
   Report("PackLists report",CoinPackListRClass,CoinPackListRn,0,modDromos);//Edit----------------------Dima  18.05.2016
-
-  Report("Статистика продаж",MyBIRClass,MyBIRn,0,modSL);//Edit-------------------Vitalii 17:21 26.10.2016
-
+  switch (currentcompany) begin //Edit-------------------Vitalii 14:12 29.11.2016
+    case 3: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 16: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 17: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 19: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 20: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 21: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 22: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 23: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+    case 24: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
+  end;
+  
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
   Document("Накопительные карточки",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
