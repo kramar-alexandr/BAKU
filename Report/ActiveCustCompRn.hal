@@ -27,7 +27,8 @@ BEGIN
   integer keyCount, pos,posGroup; 
   Boolean TS,testf1,print; 
   val finalSum,tempSum,compSum,ivfr,ivto,fr,to1,to2,br1,br2; 
-  Integer rwcnt,i,j,invCount,oldcomp;  
+  Integer rwcnt,i,j,oldcomp;  
+  longint invCount;
   string 20 curncy; 
   Array string 50 carncy;
   Array Boolean achangecrncyf;
@@ -142,11 +143,11 @@ BEGIN
 						key = "Location";
 						keyCount = 2;*/
 				
-						if (ReadFirstKey("CustDate",IVr,2,false)) then begin
-							if ((IVr.CustCode==CUr.Code and IVr.InvDate>=RepSpec.sStartDate and IVr.InvDate<=RepSpec.sEndDate)==false) then begin TS = false; end;
+						/*if (ReadFirstKey("CustDate",IVr,2,false)) then begin
+							if ((IVr.CustCode==CUr.Code and IVr.InvDate>=RepSpec.sStartDate and IVr.InvDate<=RepSpec.sEndDate)==false) then begin TS = true; end;
 						end else begin
 							TS = false;
-						end;
+						end;*/
 					//end;
 			
 						while (LoopKey(key,IVr,keyCount,TS)) begin
