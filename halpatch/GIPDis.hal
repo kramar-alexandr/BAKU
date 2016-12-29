@@ -252,6 +252,14 @@ BEGIN
       for (i=0;i<rwcnt;i=i+1) begin
         MatRowGet(Rebr,i,Rebrw);
         if (Rebrw.CodeType==0) then begin
+        	if(nonblank(INr.RebGroup))then begin
+        		if (INr.RebGroup==Rebrw.ITCode) then begin
+							GetStaffReb(INr,Rebrw.StaffCode,qtp,pricep,Rebr,i,rebvp,foundstaff);
+							res = true;
+							goto LGetRebate;
+						end;
+        	end;
+        
           if (INr.Group==Rebrw.ITCode) then begin
 //            GetStaffReb(INr,Rebrw.StaffCode,qtp,pricep,Rebr,rebvp,foundstaff);
             GetStaffReb(INr,Rebrw.StaffCode,qtp,pricep,Rebr,i,rebvp,foundstaff);

@@ -3350,6 +3350,7 @@ begin
   v = 6; vs = 20; h = 155; h1 = 300; h2 = 385; h3 = 395; h4 = 285; h5 = 433;
   EditField(h,v, 150,"Код товара",Normal,Code,false,0);
   EditField(h2,v,80,"Группа",Normal,Group,false,ITSClass);
+  EditField(h2+200,v,80,"Группа скидок",Normal,RebGroup,false,ITSClass);
   EditField(h,v+=vs,-40,"Наименование(ENG)",Normal,Name,false,0); //Edit***************************Sasha2,13:47 15.12.2014
   tilenr = 1;
   TileButton(tilenr,"Цена"); tilenr = tilenr + 1;

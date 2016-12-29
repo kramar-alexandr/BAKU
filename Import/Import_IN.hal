@@ -107,7 +107,7 @@ begin
 return;
 end;
 
-global
+/*global
 updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
 begin
   record INVc INr;
@@ -161,8 +161,36 @@ begin
 	end;		
 
 return;
-end;
+end;*/
 
+global
+updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
+begin
+  record INVc INr;
+	record ITVc ITr,ITr2;
+  string 70 code,discount;
+  string 3 ending;
+	boolean TrHs;
+
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			discount = ImportField;
+
+
+			if(nonblank(code) and nonblank(discount)) then begin
+
+				INr.Code = code;				
+				if (ReadFirstMain(INr,1,true)) then begin
+						INr.RebGroup = left(discount,20);
+						RecordStore(INr,true);
+				end;
+			end;
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
 
 
 

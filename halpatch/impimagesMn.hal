@@ -1590,7 +1590,7 @@ end; //Edit***************************Sasha2,16:29 12.02.2015 }
 
 
 
-global updating procedure RevertINGroups3050Mn()	//Edit----------------------Dima  13.02.2015
+/*global updating procedure RevertINGroups3050Mn()	//Edit----------------------Dima  13.02.2015
 begin
   record INVc INr;
 	record ITVc ITr,ITr2;
@@ -1609,6 +1609,21 @@ begin
 									end;
 						end;
 			end;		
+	end;
+	
+return;
+end;*/
+
+global updating procedure RevertINGroups3050Mn()	//Edit----------------------Dima  13.02.2015
+begin
+  record INVc INr;
+	record ITVc ITr,ITr2;
+
+	while (LoopMain(INr,1,true)) begin
+		if(nonblank(INr.RebGroup)) then begin
+			INr.RebGroup = "";
+			RecordStore(INr,true);
+		end;		
 	end;
 	
 return;

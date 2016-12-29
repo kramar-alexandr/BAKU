@@ -504,6 +504,7 @@ begin
   RecordField(SavedCount,M4Long,0,0); //Edit***************************Sasha2,10:22 01.12.2014
   RecordField(ConsgType,M4Set,900,0); //Edit***************************Sasha2,10:22 01.12.2014
   RecordField(MainDisp,M4UStr,10,DIVc); //Edit***************************Sasha2,15:37 04.11.2015
+  RecordField(RebGroup,M4UStr,20,ITVc); //Edit***************************Sasha2,15:37 04.11.2015
   ArrayBegin(Math,-,1);
   ArrayField(LangCode,M4Code,5,0);
   ArrayField(Text,M4Str,100,0);

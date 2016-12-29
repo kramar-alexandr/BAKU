@@ -80,7 +80,7 @@ begin
 	Maintenance("Удалить все старые операции",FIXVClass,RemoveOldTRVcRecordsMn,modNL);  							//Edit-----------------Dima 03.02.2015
 	Maintenance("Переместить коеф. курса EUR в документах",FIXVClass,TransferingCurValueBetweenFieldsMn,modDBMain);  				//Edit-----------------Dima 03.02.2015
 	Maintenance("Удалить ненужные товары в CreativeSystem",FIXVClass,RemoveNotValidItemsFromCreativeMn,modDBMain); //Edit***************************Sasha2,16:33 12.02.2015
-	Maintenance("Вернуть код группы товаров с 30%50% ",FIXVClass,RevertINGroups3050Mn,modDBMain);				//Edit----------------------Dima  13.02.2015
+	Maintenance("Отменить группы скидок товарам",FIXVClass,RevertINGroups3050Mn,modDI);			// Edit ************************** Tuesday, 20 December 2016 09:05:21
 	Maintenance("Заменить 84 счет в операциях на 84/01, 84/02",ReplaceAccount84VClass,Change84to8401and8402TRVcMn,modDBMain);//Edit----------------------Dima  17.02.2015
 	Maintenance("Проставить счет аванса клиентам и поставщикам",FIXVClass,CUADDCredOnACCMn,modDBMain);				//Edit----------------------Dima  13.02.2015
 	Maintenance("Пересчет себестоимости по курсу EUR для всех товаров",FIXVClass,RecalculateINVcCosts_EURMn,modDBMain);				//Edit----------------------Dima  26.02.2015
@@ -225,7 +225,7 @@ begin
 
 	Import("Обновление названий и классификаций товаров",INUpdatingIClass,INImportIn,modIN);	//Edit----------------------Dima  16.02.2015
 	Import("2_Обновление названий и классификаций товаров",INUpdatingIClass,INImport2In,modIN);//Edit----------------------Dima  16.02.2015
-	Import("Обновление групп товаров 30%, 50%",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modIN);//Edit----------------------Dima  16.02.2015
+	Import("Добавить группы скидок товарам",INUpdatingGroups3050IClass,INImportDiscountGroupIn,modDI);//Edit----------------------Dima  16.02.2015
 	Import("rebatechange",INUpdatingIClass,INImportDiscountGroupIn,modIN);
 	Import("Изменение себестоимости товаров",INUpdatingCostsIClass,INImportCostsIn,modIN);	//Edit----------------------Dima  26.02.2015
 	Import("Обновление цвета и размера товаров",INColorSizeUpdatingIClass,INColorSizeImportIn,modIN);	//Edit----------------------Dima  29.04.2015
