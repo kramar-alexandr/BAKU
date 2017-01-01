@@ -3224,8 +3224,9 @@ begin
     			end;
     			rnd = DefaultValRoundoff;
     			rnd.decimals = 0;
-    			rnd.mode = kRoundingModeHalfDown;
+    			rnd.mode = kRoundingModeHalfUp;
     			if(CompanyIsJWLikeCompany(currentcompany))then begin
+						rnd.mode = kRoundingModeHalfDown;
     				rnd.step = kRoundingStep5;
     			end;
     			
