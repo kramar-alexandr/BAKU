@@ -9,7 +9,7 @@ remote function boolean CompanyIsJWLikeCompany(Integer);
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 
-function val ItemQtyPerDate(string artcode, date idate,string location,string serial,var val serialcost)
+function val ItemQtyPerDate(string artcode, date idate,string location,string serial,var val serialcost,var integer acnt,var vector val cqty,var vector val ccost,var array string acur)
 begin
 	record ItemHistVc IHr;
 	val res;
@@ -21,6 +21,18 @@ begin
   integer oldrow,oldinvalid;
   record ItemStatusVc ISr;
   record SerBalVc SBr;
+  vector boolean vcur;
+  integer i;
+  //integer acnt;
+  //vector val cqty,ccost;
+  //array string 10 acur;
+  
+  For(i=0;i<acnt;i=i+1) begin
+	  cqty[acur[i]] = blankval;
+	  cqty[acur[i]] = blankval;
+	end; 
+  acnt = 0;
+      
   res = 0;
   	serialcost = 0;
   	if(idate>=currentdate)then begin
@@ -29,6 +41,43 @@ begin
   			ISr.Location = location;
   			readfirstmain(ISr,2,true);
   			res = ISr.Instock;
+  			IHr.ArtCode = artcode;
+				if(nonblank(location))then begin
+					IHr.Location = location;
+					key = "ArtCodeLoc";
+					keys = 2;
+				end else begin
+					key = "ArtCode";
+					keys = 1;
+				end;
+		
+				TrHs = true;
+				res = 0;
+				While(loopkey(key,IHr,keys,TrHs)) begin
+					testf = true;
+					if (IHr.ArtCode!=artcode or IHr.Location!=location or IHr.TransDate>idate) then begin testf = false; TrHs = false; end;
+					if(IHr.StockAffectf<1)then begin testf = false; end;
+					if(nonblank(serial) and IHr.SerialNr!=serial)then begin testf = false; end;
+			
+					if(testf)then begin
+						res = res + IHr.Qty;
+						cqty[IHr.CurncyCode] = cqty[IHr.CurncyCode] + IHr.Qty;
+						logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+						if(!vcur[IHr.CurncyCode])then begin
+							vcur[IHr.CurncyCode] = true;
+							acur[acnt] = IHr.CurncyCode;
+							acnt = acnt + 1;
+						end;
+						logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+						if(IHr.Qty>=0)then begin
+							serialcost = serialcost + IHr.TotCostPrice;
+							ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] + IHr.TotCostPrice;
+						end else begin
+							serialcost = serialcost - IHr.TotCostPrice;
+							ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] - IHr.TotCostPrice;
+						end;  	
+					end;
+				end; 
   		end else begin
   			ISr.Code = artcode;
   			ISr.Location = ";;;";
@@ -63,10 +112,20 @@ begin
 			
 				if(testf)then begin
 					res = res + IHr.Qty;
+					cqty[IHr.CurncyCode] = cqty[IHr.CurncyCode] + IHr.Qty;
+					logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+					if(!vcur[IHr.CurncyCode])then begin
+						vcur[IHr.CurncyCode] = true;
+						acur[acnt] = IHr.CurncyCode;
+						acnt = acnt + 1;
+					end;
+					logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
 					if(IHr.Qty>=0)then begin
 						serialcost = serialcost + IHr.TotCostPrice;
+						ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] + IHr.TotCostPrice;
 					end else begin
 						serialcost = serialcost - IHr.TotCostPrice;
+						ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] - IHr.TotCostPrice;
 					end;  	
 				end;
 			end; 
@@ -109,7 +168,7 @@ return;
 end;
 
 
-global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate)
+global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur)
 begin
 	record ItemHistVc IHr,IH2r;
 	record PUVc PUr;
@@ -135,7 +194,9 @@ begin
 			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
 			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
-		
+			if(curcode!=IHr.CurncyCode and nonblank(IHr.CurncyCode))then begin testf=false; end;
+			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
+			
 			if(testf)then begin
 				curcost = curcost + IHr.RemCostPriceCurncy;
 				curqty = curqty + IHr.RemQty;
@@ -153,7 +214,9 @@ begin
 			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
 			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
-		
+			if(curcode!=IHr.CurncyCode and nonblank(IHr.CurncyCode))then begin testf=false; end;
+			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
+			
 			if(testf)then begin
 				if(IHr.Qty>=0)then begin
 					curcost = curcost + IHr.TotCostPriceCurncy;
@@ -166,157 +229,11 @@ begin
 		curcost = curcost/curqty;
 	end;
 	
-	/*if(todate>=currentdate)then begin
-		curcost = 0;
-		curqty = 0;
-		IHr.ArtCode = artcode;
-		IHr.Location = location;
-		TrHs = true;
-		while(loopkey("ActiveLocQty",IHr,2,TrHs))begin
-			testf = true;
-			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
-			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
-		
-			if(testf)then begin
-				if(IHr.Source>0)then begin
-					lastsernr = IHr.Source;
-	LFind:;
-					IH2r.SerNr = lastsernr;
-					readfirstmain(IH2r,1,true);
-					if(IH2r.Source>0)then begin
-						lastsernr = IH2r.Source;
-						goto LFind;
-					end else begin
-						if(IH2r.FileName=="PUVc")then begin
-							PUr.SerNr = IH2r.TransNr;
-							readfirstmain(PUr,1,true);
-							matrowget(PUr,IH2r.Row,PUrw);
-							curcost = curcost + PUrw.UPrice * IHr.RemQty;
-							curqty = curqty + IHr.RemQty;
-						end else begin
-							IH2r.TransDate = IHr.FIFODate;
-							IH2r.ArtCode = IHr.ArtCode;
-							IH2r.FileName = "PUVc";
-							IH2r.SerNr = IHr.SerNr;
-							readlastkey("FNArtCode",IH2r,4,false);
-							PUr.SerNr = IH2r.TransNr;
-							readfirstmain(PUr,1,true);
-							matrowget(PUr,IH2r.Row,PUrw);
-							curcost = curcost + PUrw.UPrice * IHr.RemQty;
-							curqty = curqty + IHr.RemQty;
-						end;
-					end;
-				end else begin
-					if(IHr.FileName=="PUVc")then begin
-						PUr.SerNr = IHr.TransNr;
-						readfirstmain(PUr,1,true);
-						matrowget(PUr,IHr.Row,PUrw);
-						curcost = curcost + PUrw.UPrice * IHr.RemQty;
-						curqty = curqty + IHr.RemQty;
-					end else begin
-						if(IHr.FileName=="IVVc")then begin
-							IH2r.TransNr = IHr.TransNr;
-							IH2r.FileName = IHr.FileName;
-							IH2r.Row = IHr.Row;
-							if(readfirstkey("FNTransNr",IH2r,3,true))then begin
-								if(IH2r.Invalid>0)then begin
-									lastsernr = IH2r.Source;
-									goto LFind;
-								end else begin
-									goto LFind2;
-								end;
-							end;
-						end else begin
-	LFind2:;
-							IH2r.TransDate = IHr.FIFODate;
-							IH2r.ArtCode = IHr.ArtCode;
-							IH2r.FileName = "PUVc";
-							IH2r.SerNr = IHr.SerNr;
-							readlastkey("FNArtCode",IH2r,4,false);
-							PUr.SerNr = IH2r.TransNr;
-							readfirstmain(PUr,1,true);
-							matrowget(PUr,IH2r.Row,PUrw);
-							curcost = curcost + PUrw.UPrice * IHr.RemQty;
-							curqty = curqty + IHr.RemQty;
-						end;
-					end;
-				end;
-			end;
-		end;
-		curcost = curcost/curqty;
-	end else begin
-		curcost = 0;
-		curqty = 0;
-		IHr.ArtCode = artcode;
-		IHr.Location = location;
-		TrHs = true;
-		while(loopkey("ArtCodeLoc",IHr,2,TrHs))begin
-			
-			testf = true;
-			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
-			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
-			if(IHr.StockAffectf==0)then begin testf=false; end;
-		
-			if(testf)then begin
-				curval = curval + IHr.RemQty;
-				if(IHr.Source>0)then begin
-					lastsernr = IHr.Source;
-	LFind1:;
-					IH2r.SerNr = lastsernr;
-					readfirstmain(IH2r,1,true);
-					if(IH2r.Source>0)then begin
-						lastsernr = IH2r.Source;
-						goto LFind1;
-					end else begin
-						if(IH2r.FileName=="PUVc")then begin
-							PUr.SerNr = IH2r.TransNr;
-							readfirstmain(PUr,1,true);
-							matrowget(PUr,IH2r.Row,PUrw);
-							curcost = curcost + PUrw.UPrice * IHr.Qty;
-							curqty = curqty + IHr.Qty;
-						end else begin
-							IH2r.TransDate = IHr.FIFODate;
-							IH2r.ArtCode = IHr.ArtCode;
-							IH2r.FileName = "PUVc";
-							IH2r.SerNr = IHr.SerNr;
-							readlastkey("FNArtCode",IH2r,4,false);
-							PUr.SerNr = IH2r.TransNr;
-							readfirstmain(PUr,1,true);
-							matrowget(PUr,IH2r.Row,PUrw);
-							curcost = curcost + PUrw.UPrice * IHr.Qty;
-							curqty = curqty + IHr.Qty;
-						end;
-					end;
-				end else begin
-					if(IHr.FileName=="PUVc")then begin
-						PUr.SerNr = IHr.TransNr;
-						readfirstmain(PUr,1,true);
-						matrowget(PUr,IHr.Row,PUrw);
-						curcost = curcost + PUrw.UPrice * IHr.Qty;
-						curqty = curqty + IHr.Qty;
-					end else begin
-						IH2r.TransDate = IHr.FIFODate;
-						IH2r.ArtCode = IHr.ArtCode;
-						IH2r.FileName = "PUVc";
-						IH2r.SerNr = IHr.SerNr;
-						readlastkey("FNArtCode",IH2r,4,false);
-						PUr.SerNr = IH2r.TransNr;
-						readfirstmain(PUr,1,true);
-						matrowget(PUr,IH2r.Row,PUrw);
-						curcost = curcost + PUrw.UPrice * IHr.Qty;
-						curqty = curqty + IHr.Qty;
-					end;
-				end;
-			end;
-		end;
-		curcost = curcost/curqty;
-		resetloop(IHr);
-	end;*/
 	FindAwerageCostCur = curcost;
 return;
 end;
 
-global function val FindAwerageCost(string artcode, string location,date todate)
+global function val FindAwerageCost(string artcode, string location,string curcode,date todate,string realcur)
 begin
 	record ItemHistVc IHr,IH2r;
 	record PUVc PUr;
@@ -341,7 +258,9 @@ begin
 			if(IHr.ArtCode!=artcode)then begin TrHs=false; testf = false; end;
 			if(nonblank(location) and IHr.Location!=location)then begin testf = false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
-		
+			if(curcode!=IHr.CurncyCode and nonblank(IHr.CurncyCode))then begin testf=false; end;
+			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
+			
 			if(testf)then begin
 				curcost = curcost + IHr.RemCostPrice;
 				curqty = curqty + IHr.RemQty;
@@ -359,7 +278,9 @@ begin
 			if(IHr.ArtCode!=artcode or IHr.Location!=location)then begin TrHs=false; testf = false; end;
 			if(IHr.TransDate>todate)then begin TrHs=false; testf = false; end;
 			if(IHr.StockAffectf==0)then begin testf=false; end;
-		
+			if(curcode!=IHr.CurncyCode and nonblank(IHr.CurncyCode))then begin testf=false; end;
+			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
+			
 			if(testf)then begin
 				if(IHr.Qty>=0)then begin
 					curcost = curcost + IHr.TotCostPrice;
@@ -375,7 +296,7 @@ begin
 return;
 end;
 
-procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf)
+procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf,string realcur)
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
@@ -610,8 +531,8 @@ begin
 		
 		awercost = 0;
 		awercostcur = 0;
-		awercost = FindAwerageCost(INr.Code,ISr.Location,todate);
-		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate);
+		awercost = FindAwerageCost(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
+		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
 		if(costprice>0 and nonblank(serial) and INr.SerNrf>0)then begin
 			awercost = costprice;
 			IHr.ArtCode = INr.Code;
@@ -888,120 +809,7 @@ begin
 		if (fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png")) then begin
 			filename = "http://" & serverip & "/" & inrcode & ".png";
 		end;
-		/*switch(currentcompany)begin
-			case 1: if(fileexists("webcust/SWAROVSKI/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/SWAROVSKI/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-							
-			case 2: if(fileexists("webcust/LLADRO/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/LLADRO/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-							
-			case 3: if(fileexists("webcust/J&W/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/J&W/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			
-			case 4: if(fileexists("webcust/V&B/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/V&B/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 6: if(fileexists("webcust/BACCARAT/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/BACCARAT/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 7: if(fileexists("webcust/AMBIANCE/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/AMBIANCE/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 8: if(fileexists("webcust/YD/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/YD/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-							
-			case 9: if(fileexists("webcust/Creative/" & INr.AlternativeCode & ".jpg") or fileexists("webcust/Creative/" & urlencode(INr.AlternativeCode) & ".jpg"))then begin
-								if(INr.AlternativeCode!=urlencode(INr.AlternativeCode))then begin
-									renamefile("webcust/Creative/" & INr.AlternativeCode & ".jpg","webcust/Creative/" & urlencode(INr.AlternativeCode) & ".jpg");
-								end;
-								filename = "http://" & serverip & "/" & urlencode(INr.AlternativeCode) & ".jpg";
-							end;
-							if(fileexists("webcust/Creative/" & INr.AlternativeCode & ".png") or fileexists("webcust/Creative/" & urlencode(INr.AlternativeCode) & ".png"))then begin
-								if(INr.AlternativeCode!=urlencode(INr.AlternativeCode))then begin
-									renamefile("webcust/Creative/" & INr.AlternativeCode & ".png","webcust/Creative/" & urlencode(INr.AlternativeCode) & ".png");
-								end;
-								filename = "http://" & serverip & "/" & urlencode(INr.AlternativeCode) & ".png";
-							end;
-							
-			case 13: if(fileexists("webcust/Carpets/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/Carpets/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-							
-			case 14: if(fileexists("webcust/Cadenza/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/Cadenza/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 16: if(fileexists("webcust/Xtravaganz/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/Xtravaganz/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 17: if(fileexists("webcust/GRAFF/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/GRAFF/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 18: if(fileexists("webcust/IDGroup/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/IDGroup/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 19: if(fileexists("webcust/Cartier/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/Cartier/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-			case 20: if(fileexists("webcust/Elluxus/" & INr.Code & ".jpg"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".jpg";
-							end;
-							if(fileexists("webcust/Elluxus/" & INr.Code & ".png"))then begin
-								filename = "http://" & serverip & "/" & INr.Code & ".png";
-							end;
-							
-			otherwise
-				if(ReadRecordLink(INr,1,Attachr,RLr))then begin
-					res = Attachr.SerNr;
-					uid = Attachr.UUID;
-					if(nonblank(res) and nonblank(uid))then begin
-						filename = "http://" & serverip & "/" & Attachr.FileName;
-					end;	
-				end;
-		end;*/
-		
+				
 		if(nonblank(filename))then begin
 			ExportString("<td width=\"300\" height=\"300\" align=\"center\"><div align=\"justify\"><img src=\"" & filename & "\" width=\"100%\" height=\"100%\"/></div></td>");
 		end else begin
@@ -1088,9 +896,15 @@ procedure CollectAndPrintData(record RcVc RepSpec,record INVc INr, var record To
 begin
  record ItemStatusVc ISr;
  record SerBalVc SBr;
- boolean TrHs2,testf2;
+ boolean TrHs2,testf2,TrHs,testf;
  date todate;
- 
+ record ItemHistVc IHr;
+ integer acnt;
+ vector val cqty,ccost;
+ array string 10 acur;
+ integer i;
+ string 10 realcur;
+  
   todate = RepSpec.d1;
   if(blank(todate))then begin
   	todate = currentdate;
@@ -1098,43 +912,61 @@ begin
   
 
 	ISr.Code = INr.Code;
+	realcur = INr.LastPurchCurncyCode;
 	TrHs2 = true;
 	while(loopmain(ISr,1,TrHs2)) begin
 		testf2 = true;
 		if(ISr.Code!=INr.Code)then begin testf2 = false; TrHs2 = false; end;
 		if(nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2)then begin testf2 = false; end;
 		if(ISr.Location==";;;")then begin testf2 = false; end;
+		
 		if(testf2)then begin
 			SBr.CostPrice = 0;
-			ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+			ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
 		end;
 		if(ISr.Instock<=0)then begin testf2 = false; end;
-	
+		
+		logtext(0,INr.Code & " " & acnt);
+		
 		if(testf2)then begin
 			if(INr.SerNrf==0)then begin
-				PrintInfo(INr,ISr,"",0,0,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf);
+				For(i=0;i<acnt;i=i+1) begin
+					logtext(0,acur[i]);
+					if(INr.LastPurchCurncyCode==acur[i] and nonblank(INr.LastPurchCurncyCode))then begin
+						cqty[INr.LastPurchCurncyCode] = cqty[INr.LastPurchCurncyCode] + cqty[""];
+						ccost[INr.LastPurchCurncyCode] = ccost[INr.LastPurchCurncyCode] + ccost[""];
+						cqty[""] = blankval;
+						ccost[""] = blankval;
+					end;
+				end; 
+				
+				
+				For(i=0;i<acnt;i=i+1) begin
+					if(cqty[acur[i]]!=0)then begin
+						INr.LastPurchCurncyCode = acur[i];
+						ISr.Instock = cqty[acur[i]];
+						
+						PrintInfo(INr,ISr,"",0,0,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,realcur);
+					end;
+				end;
+				
 			end else begin
 				SBr.Item = INr.Code;
 				SBr.Location = ISr.Location;
 				while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 					if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-						ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+						ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
 						
 						if(ISr.Instock>0)then begin
-							PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf);
+							PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,INr.LastPurchCurncyCode);
 						end;
 					end;
 				end;
 				resetloop(SBr);
 			end;
-			
 		end;
-		
 	end;
-
 end;
-
-
 
 
 global procedure ItemStockStatExtRn(record RcVc RepSpec)
@@ -1286,11 +1118,6 @@ begin
 			end;
 		end;
   end;
-  
-  
-  //total_qty = 0;
-  //total_cost = 0;
-  //total_price = 0;
   
   if(userlocation)then begin
   	startformat(15);
@@ -1569,7 +1396,9 @@ begin
   record BaseCurBlock bcur; //Edit***************************Sasha2,14:02 27.04.2015
   integer oldcompany;
   array integer companies;
-  
+  integer acnt;
+  vector val cqty,ccost;
+  array string 10 acur;
   
 	if (RepSpec.UsedOnly == 1) then begin
 		companies[0] = CurrentCompany;
@@ -1660,7 +1489,7 @@ begin
 								if(ISr.Location==";;;")then begin testf = false; end;
 								if(nonblank(location) and location!=ISr.Location)then begin testf = false; end;
 								if(testf)then begin
-									ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+									ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
 								end;
 								if(ISr.Instock==0)then begin testf = false; end;
 							
@@ -1674,7 +1503,7 @@ begin
 										SBr.Location = ISr.Location;
 										while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 											if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-												ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+												ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
 												if(ISr.Instock>0)then begin
 													PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit*********************Sasha2,15:48 21.04.		**	20	****15
 												end;
@@ -1744,7 +1573,7 @@ begin
 									if(ISr.Location==";;;")then begin testf2 = false; end;
 									if(testf2)then begin
 										SBr.CostPrice = 0;
-										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice);
+										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
 									end;
 									if(ISr.Instock<=0)then begin testf2 = false; end;
 								
@@ -1756,7 +1585,7 @@ begin
 											SBr.Location = ISr.Location;
 											while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 												if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-													ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice);
+													ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
 													if(ISr.Instock>0)then begin
 														PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit****	**********	**********	***Sasha2,15:49 21.04.2015
 													end;
