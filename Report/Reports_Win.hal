@@ -669,6 +669,20 @@ begin
 	EndWindow;
 end;
 
+window OnCustomersBrandManagerRClass:1 //Edit***************************Sasha2,13:34 16.01.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+	real h,v,vs;
+	WindowBegin("Ћпределите отчет бренд-менеджера по клиентам",OnCustomersBrandManagerRClass,CGRcW,RcType);
+		SetWRect(20,80,410,340);
+		h = 160;
+		vs = 20;
+		PeriodField(h,v=6,"Џериод");
+		EditFieldTL(h,v+=vs,150,"Њагазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
+		
+	EndWindow;
+end;
+
 
 window CashInOutClientsByClassificationRClass:1	//Edit----------------------Dima  02.06.2015
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")

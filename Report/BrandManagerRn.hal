@@ -485,3 +485,349 @@ BEGIN
 
 	RETURN;
 END;
+
+procedure OnCustBMRnPrintAccHeader(string AccNumber,Boolean forBrand,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer tab9,integer tab10)
+BEGIN
+	string 20 head;
+	
+	switch (AccNumber) begin
+		case "63":
+			head = "Мы должны (сч. 63)";
+		case "62":
+			head = "Нам должны (сч. 62)";
+		case "75/02":
+			head = "Расчет с учредителями (сч. 75/02)";
+	end;
+	StartFormat(15);
+		OutString(tab1,0,"",false);
+		OutString(tab2,0,head,false);
+		OutString(tab3,0,"",false);
+		OutString(tab4,0,"",false);
+		OutString(tab5,0,"",false);
+		OutString(tab6,0,"",false);
+		OutString(tab7,0,"",false);
+		OutString(tab8,0,"",false);
+		OutString(tab9,0,"",false);
+		OutString(tab10,0,"",false);
+	EndFormat;
+	StartFormat(15);
+	EndFormat;
+	StartFormat(15);
+		OutString	(tab1,0,"",false);
+		OutString	(tab2,0,"",false);
+		OutStringCut(tab3,tab4 + 20,0,"На начало периода",true,0);
+		OutString	(tab5,0,"",false);
+		OutStringCut(tab5,tab6,0,"Счет/фактуры",true,0);
+		OutString	(tab7,0,"",false);
+		OutStringCut(tab7,tab8 + 20,0,"Платежи",true,0);
+		OutString	(tab9,0,"",false);
+		OutStringCut(tab9,tab10 + 20,0,"На конец периода",true,0);
+	EndFormat;
+	Black_Divider(tab3 + 1, tab5 - 1);
+	Black_Divider(tab5 + 1, tab7 - 1);
+	Black_Divider(tab7 + 1, tab9 - 1);
+	Black_Divider(tab9 + 1,1);
+	StartFormat(15);
+		if (forBrand) then begin
+			OutString(tab1,0,"№ документа",false);
+		end else begin
+			OutString(tab1,0,"Клиент",false);
+		end;
+		OutString(tab2,0,"Валюта",false);
+		OutString(tab3,0,"В валюте",false);
+		OutString(tab4,0,"В осн. вал.",false);
+		OutString(tab5,0,"В валюте",false);
+		OutString(tab6,0,"В осн. вал.",false);
+		OutString(tab7,0,"В валюте",false);
+		OutString(tab8,0,"В осн. вал.",false);
+		OutString(tab9,0,"В валюте",false);
+		OutString(tab10,0,"В осн. вал.",false);
+	EndFormat;
+	Black_Divider(0,1);
+	RETURN
+END;
+
+global
+procedure OnCustomersBrandManagerRn(record RcVc RepSpec)
+BEGIN
+	record MainVc mainr;
+	record TRVc TRr,tempTRr;
+	row TRVc TRrw,tempTRrw;
+	record FBVc FBr;
+	row FBVc FBrw;
+	record ObjVc Objr;
+	record CurncyCodeVc CCr;
+	record IVVc IVr;
+	integer i,j,k,l,rwcnt,acccount,customercount,curcount,arrCnt;
+	boolean TrHs;
+	integer tab1, tab2, tab3,
+			tab4, tab5, tab6,
+			tab7, tab8, tab9,
+			tab10;
+	Array string 100 CustomersList;
+	Array string 10 AccList;
+	Array string 10 CurencyList;
+	vector boolean ClientNonBlank;
+	vector val CustomerBeginBal,CustomerDebet,CustomerCredit,CustomerEndBal;
+	val TotBeginBal,TotDebet,TotCredit,TotEndBal;
+	val custEndBal,custBeginBal,custDebet,custCredit,custEndBalB,custBeginBalB,custDebetB,custCreditB;
+	string 30 customer, tempstr;
+	string 255 index;
+	
+	tab1 = 0;	 tab2 = 50;	  tab3 = 80;
+	tab4 = 130;  tab5 = 180;  tab6 = 230;
+	tab7 = 280;	 tab8 = 330;  tab9 = 380;
+	tab10 = 430;
+	
+	AccList[0] = "62"; //нам
+	AccList[1] = "63"; //мы
+	AccList[2] = "75/02";
+	acccount = 3;
+	TrHs = true;
+	curcount = 0;
+	
+	while (LoopMain(CCr,1,TrHs)) begin
+		if (TrHs) then begin
+			CurencyList[curcount] = CCr.CurncyCode;
+			curcount = curcount + 1;
+		end;
+	end;
+	
+	StartReportNoHeaderJob("Отчет бренд менеджера по клиентам");
+	StartFormat(15);
+		OutString(tab1,0,"Период:",false);
+		OutString(tab2,0,RepSpec.sStartDate & " - " & RepSpec.sEndDate,false);
+	EndFormat;
+	StartFormat(15);
+		OutString(tab1,0,"Магазин:",false);
+		OutString(tab2,0,RepSpec.ObjStr,false);
+	EndFormat;
+
+	Black_Divider(0,1);
+	StartFormat(15);
+	EndFormat;
+	//Objr.OTCode = "BRAND";
+	TrHs = true;
+	//customercount = 0;
+	/*while (LoopKey("OTCode",Objr,1,TrHs)) begin
+		if (TrHs) then begin
+			CustomersList[customercount] = Objr.Code;
+			customercount = customercount + 1;
+		end;
+	end;*/
+	CustomersList[0] = "BLANKCUSTOMER";
+	//customercount = customercount + 1;
+
+	for (i=0;i<acccount;i=i+1) begin
+		/*for (j=0;j<customercount;j=j+1) begin
+			ClientNonBlank[CustomersList[j]] = false;
+		end;
+		for (j=0;j<customercount;j=j+1) begin
+			for (k=0;k<curcount;k=k+1) begin
+				CustomerBeginBal[CustomersList[j] & ":" & CurencyList[k]] = blankval;
+				CustomerBeginBal[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+				CustomerDebet[CustomersList[j] & ":" & CurencyList[k]] = blankval;
+				CustomerDebet[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+				CustomerCredit[CustomersList[j] & ":" & CurencyList[k]] = blankval;
+				CustomerCredit[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+				CustomerEndBal[CustomersList[j] & ":" & CurencyList[k]] = blankval;
+				CustomerEndBal[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+			end;
+		end;*/
+		mainr.AccNumber = AccList[i];
+		TrHs = true;
+		while (LoopMain(mainr,1,TrHs)) begin
+			if ((mainr.AccNumber != AccList[i]) or (mainr.TransDate > RepSpec.sEndDate))  then begin
+				TrHs = false;	
+			end;
+			if (TrHs) then begin
+				if (mainr.FileName=="TRVc") then begin
+					TRr.Number = mainr.TransNr;
+					TRr.IntYc = mainr.IntYc;
+					if (ReadFirstMain(TRr,2,true)) then begin
+						if (mainr.TransDate == TRr.TransDate) then begin
+							if (TRr.IntYc==IVYc) then begin
+							  IVr.SerNr = TRr.IntYc;
+								ReadFirstMain(IVr,1,true);
+							end;
+							rwcnt = MatRowCnt(TRr);
+							for (j=0;j<rwcnt;j=j+1) begin
+								MatRowGet(TRr,j,TRrw);
+								if ((TRrw.AccNumber == AccList[i]) and (TRrw.ovst <> 1) and (TRrw.stp == 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+									customer = TRrw.CompCode;
+									if (blank(customer) and TRr.IntYc==IVYc) then begin
+									  customer = IVr.CustCode;
+									end;
+									if (blank(customer)) then begin
+									  customer = "BLANKCUSTOMER";
+									end;
+									if (ClientNonBlank[customer]==false) then begin
+									  CustomersList[CustomersList.length] = customer;
+									  ClientNonBlank[customer] = true;
+									end;								
+									index = customer & ":" & TRrw.Curncy;
+									if (mainr.TransDate >= RepSpec.sStartDate) then begin
+										CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
+										CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + TRrw.DebVal;
+										CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
+										CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
+									end else begin
+										if (AccList[i] <> "61") then begin
+											CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
+											CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+										end else begin
+											CustomerBeginBal[index] = CustomerBeginBal[index] - (TRrw.CurCredVal - TRrw.CurDebVal);
+											CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] - (TRrw.CredVal - TRrw.DebVal);
+										end;
+									end;
+									if (AccList[i] <> "61") then begin
+										CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
+										CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+									end else begin
+										CustomerEndBal[index] = CustomerEndBal[index] - (TRrw.CurCredVal - TRrw.CurDebVal);
+										CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] - (TRrw.CredVal - TRrw.DebVal);
+									end;
+								end;
+							end;
+						end;
+					end;
+				end;
+				if (mainr.FileName=="FBVc") then begin
+					FBr.SerNr = mainr.TransNr;
+					if (ReadFirstMain(FBr,1,true)) then begin
+						if (mainr.TransDate == FBr.TransDate) and SetInSet(RepSpec.ObjStr,FBr.Objects) then begin
+							customer = "BLANKCUSTOMER";
+							ClientNonBlank[customer] = true;
+							rwcnt = MatRowCnt(FBr);
+							for (j=0;j<rwcnt;j=j+1) begin
+								MatRowGet(FBr,j,FBrw);
+								if (FBrw.AccNumber == AccList[i]) then begin
+								  index = customer & ":" & FBrw.CurncyCode;
+								  
+									if (mainr.TransDate >= RepSpec.sStartDate) then begin
+										CustomerDebet[index] = CustomerDebet[index] + FBrw.CurDebVal;
+										CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + FBrw.DebVal;
+										CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
+										CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
+										/*if (customer != "BLANKCUSTOMER") then begin
+											CustomerDebet["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerDebet["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] - FBrw.CurDebVal;
+											CustomerDebet["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerDebet["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] - FBrw.DebVal;
+											CustomerCredit["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerCredit["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] - FBrw.CurCredVal;
+											CustomerCredit["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerCredit["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] - FBrw.CredVal;
+										end;*/
+									end else begin
+										if (AccList[i] <> "61") then begin
+											CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
+											CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+											/*if (customer != "BLANKCUSTOMER") then begin
+												CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] - (FBrw.CurCredVal - FBrw.CurDebVal);
+												CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] - (FBrw.CredVal - FBrw.DebVal);
+											end;*/
+										end else begin
+											CustomerBeginBal[index] = CustomerBeginBal[index] - (FBrw.CurCredVal - FBrw.CurDebVal);
+											CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] - (FBrw.CredVal - FBrw.DebVal);
+											/*if (customer != "BLANKCUSTOMER") then begin
+												CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] + (FBrw.CurCredVal - FBrw.CurDebVal);
+												CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerBeginBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+											end;*/
+										end;
+									end;
+									
+									if (AccList[i] <> "61") then begin
+										CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
+										CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+										/*if (customer != "BLANKCUSTOMER") then begin
+											CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] - (FBrw.CurCredVal - FBrw.CurDebVal);
+											CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] - (FBrw.CredVal - FBrw.DebVal);
+										end;*/
+									end else begin
+										CustomerEndBal[index] = CustomerEndBal[index] - (FBrw.CurCredVal - FBrw.CurDebVal);
+										CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] - (FBrw.CredVal - FBrw.DebVal);
+										/*if (customer != "BLANKCUSTOMER") then begin
+											CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] = CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode] + (FBrw.CurCredVal - FBrw.CurDebVal);
+											CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] = CustomerEndBal["BLANKCUSTOMER" & ":" & FBrw.CurncyCode & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+										end;*/
+									end;
+									
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+		ResetLoop(mainr);
+		
+		OnCustBMRnPrintAccHeader(AccList[i],false,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
+		
+		arrCnt = CustomersList.length;
+		for (j=0;j<arrCnt;j=j+1) begin
+			if (ClientNonBlank[CustomersList[j]]) then begin
+				for (k=0;k<curcount;k=k+1) begin
+				  index = CustomersList[j] & ":" & CurencyList[k];
+				  custEndBal = CustomerEndBal[index];
+				  custEndBalB = CustomerEndBal[index & ":BASE"];
+				  custBeginBal = CustomerBeginBal[index];
+				  custBeginBalB = CustomerBeginBal[index & ":BASE"];
+				  custDebet = CustomerDebet[index];
+				  custDebetB = CustomerDebet[index & ":BASE"];
+				  custCredit = CustomerCredit[index];
+				  custCreditB = CustomerCredit[index & ":BASE"];
+				  
+					if ((custEndBal <> 0) or (custEndBalB <> 0) or (custBeginBal <> 0) or (custBeginBalB <> 0) or 
+					  (custDebet <> 0) or (custDebetB <> 0) or (custCredit <> 0) or (custCreditB <> 0)) then begin
+						StartFormat(15);
+							if (CustomersList[j] == "BLANKCUSTOMER") then begin
+								OutString(tab1,0,"",false);
+							end else begin
+								//OutStringID(tab1,"DblBrand",CustomersList[j],false,AccList[i] & ":" & CurencyList[k]);
+								OutString(tab1,0,CustomersList[j],false);
+							end;
+							OutString(tab2,0,CurencyList[k],false);
+							if (CustomersList[j] == "BLANKCUSTOMER") then begin
+								OutString(tab3,0,custBeginBal,false);
+								OutString(tab4,0,custBeginBalB,false);
+							end else begin
+								//OutStringID(tab3,"DblBrandBeginBal",custBeginBal,false,AccList[i] & ":" & CustomersList[j]);
+								//OutStringID(tab4,"DblBrandBeginBal",custBeginBalB,false,AccList[i] & ":" & CustomersList[j]);
+								OutString(tab3,0,custBeginBal,false);
+								OutString(tab4,0,custBeginBalB,false);
+							end;
+							OutString(tab5,0,custDebet,false);
+							OutString(tab6,0,custDebetB,false);
+							OutString(tab7,0,custCredit,false);
+							OutString(tab8,0,custCreditB,false);
+							OutString(tab9,0,custEndBal,false);
+							OutString(tab10,0,custEndBalB,false);
+						EndFormat;
+						Gray_Divider(0,1);
+					end;
+					
+				end;
+			end;
+		end;
+		Black_Divider(0,1);
+		
+		RepSpec.f4 = AccList[i];
+		RepSpec.CurncyCode = "";
+		BrandManagerRnTool(RepSpec,TotDebet,TotCredit,TotBeginBal,TotEndBal);
+		StartFormat(15);
+			OutString(tab1,0,"Итого",false);
+			OutString(tab2,0,"",false);
+			OutString(tab3,0,"",false);
+			OutString(tab4,0,TotBeginBal,false);
+			OutString(tab5,0,"",false);
+			OutString(tab6,0,TotDebet,false);
+			OutString(tab7,0,"",false);
+			OutString(tab8,0,TotCredit,false);
+			OutString(tab9,0,"",false);
+			OutString(tab10,0,TotEndBal,false);
+		EndFormat;
+		StartFormat(15);
+		EndFormat;
+	end;
+
+	EndJob;
+
+	RETURN;
+END;
