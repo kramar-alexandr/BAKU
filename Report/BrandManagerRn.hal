@@ -558,7 +558,7 @@ BEGIN
 	record ObjVc Objr;
 	record CurncyCodeVc CCr;
 	record IVVc IVr;
-	integer i,j,k,l,rwcnt,acccount,customercount,curcount,arrCnt;
+	integer i,j,k,l,rwcnt,acccount,curcount,arrCnt;
 	boolean TrHs;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
@@ -567,7 +567,7 @@ BEGIN
 	Array string 100 CustomersList;
 	Array string 10 AccList;
 	Array string 10 CurencyList;
-	vector boolean ClientNonBlank;
+	vector boolean CustomerHasBalance,CustomerAddedToList;
 	vector val CustomerBeginBal,CustomerDebet,CustomerCredit,CustomerEndBal;
 	val TotBeginBal,TotDebet,TotCredit,TotEndBal;
 	val custEndBal,custBeginBal,custDebet,custCredit,custEndBalB,custBeginBalB,custDebetB,custCreditB;
@@ -606,34 +606,28 @@ BEGIN
 	Black_Divider(0,1);
 	StartFormat(15);
 	EndFormat;
-	//Objr.OTCode = "BRAND";
-	TrHs = true;
-	//customercount = 0;
-	/*while (LoopKey("OTCode",Objr,1,TrHs)) begin
-		if (TrHs) then begin
-			CustomersList[customercount] = Objr.Code;
-			customercount = customercount + 1;
-		end;
-	end;*/
+	
 	CustomersList[0] = "BLANKCUSTOMER";
-	//customercount = customercount + 1;
+	CustomerAddedToList["BLANKCUSTOMER"] = true;
 
 	for (i=0;i<acccount;i=i+1) begin
-		/*for (j=0;j<customercount;j=j+1) begin
-			ClientNonBlank[CustomersList[j]] = false;
-		end;
-		for (j=0;j<customercount;j=j+1) begin
+	  
+	  arrCnt = CustomersList.length;
+		for (j=0;j<arrCnt;j=j+1) begin
+		  CustomerHasBalance[CustomersList[j]] = false;
 			for (k=0;k<curcount;k=k+1) begin
-				CustomerBeginBal[CustomersList[j] & ":" & CurencyList[k]] = blankval;
-				CustomerBeginBal[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
-				CustomerDebet[CustomersList[j] & ":" & CurencyList[k]] = blankval;
-				CustomerDebet[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
-				CustomerCredit[CustomersList[j] & ":" & CurencyList[k]] = blankval;
-				CustomerCredit[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
-				CustomerEndBal[CustomersList[j] & ":" & CurencyList[k]] = blankval;
-				CustomerEndBal[CustomersList[j] & ":" & CurencyList[k] & ":BASE"] = blankval;
+			  index = CustomersList[j] & ":" & CurencyList[k];
+				CustomerBeginBal[index] = blankval;
+				CustomerBeginBal[index & ":BASE"] = blankval;
+				CustomerDebet[index] = blankval;
+				CustomerDebet[index & ":BASE"] = blankval;
+				CustomerCredit[index] = blankval;
+				CustomerCredit[index & ":BASE"] = blankval;
+				CustomerEndBal[index] = blankval;
+				CustomerEndBal[index & ":BASE"] = blankval;
 			end;
-		end;*/
+		end;  
+		
 		mainr.AccNumber = AccList[i];
 		TrHs = true;
 		while (LoopMain(mainr,1,TrHs)) begin
@@ -661,10 +655,11 @@ BEGIN
 									if (blank(customer)) then begin
 									  customer = "BLANKCUSTOMER";
 									end;
-									if (ClientNonBlank[customer]==false) then begin
+									if (CustomerAddedToList[customer]==false) then begin
 									  CustomersList[CustomersList.length] = customer;
-									  ClientNonBlank[customer] = true;
-									end;								
+									  CustomerAddedToList[customer] = true;
+									end;
+									CustomerHasBalance[customer] = true;
 									index = customer & ":" & TRrw.Curncy;
 									if (mainr.TransDate >= RepSpec.sStartDate) then begin
 										CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
@@ -697,7 +692,7 @@ BEGIN
 					if (ReadFirstMain(FBr,1,true)) then begin
 						if (mainr.TransDate == FBr.TransDate) and SetInSet(RepSpec.ObjStr,FBr.Objects) then begin
 							customer = "BLANKCUSTOMER";
-							ClientNonBlank[customer] = true;
+							CustomerHasBalance[customer] = true;
 							rwcnt = MatRowCnt(FBr);
 							for (j=0;j<rwcnt;j=j+1) begin
 								MatRowGet(FBr,j,FBrw);
@@ -762,7 +757,7 @@ BEGIN
 		
 		arrCnt = CustomersList.length;
 		for (j=0;j<arrCnt;j=j+1) begin
-			if (ClientNonBlank[CustomersList[j]]) then begin
+			if (CustomerHasBalance[CustomersList[j]]) then begin
 				for (k=0;k<curcount;k=k+1) begin
 				  index = CustomersList[j] & ":" & CurencyList[k];
 				  custEndBal = CustomerEndBal[index];
