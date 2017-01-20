@@ -614,18 +614,20 @@ BEGIN
 	  
 	  arrCnt = CustomersList.length;
 		for (j=0;j<arrCnt;j=j+1) begin
-		  CustomerHasBalance[CustomersList[j]] = false;
-			for (k=0;k<curcount;k=k+1) begin
-			  index = CustomersList[j] & ":" & CurencyList[k];
-				CustomerBeginBal[index] = blankval;
-				CustomerBeginBal[index & ":BASE"] = blankval;
-				CustomerDebet[index] = blankval;
-				CustomerDebet[index & ":BASE"] = blankval;
-				CustomerCredit[index] = blankval;
-				CustomerCredit[index & ":BASE"] = blankval;
-				CustomerEndBal[index] = blankval;
-				CustomerEndBal[index & ":BASE"] = blankval;
-			end;
+  		if (CustomerHasBalance[CustomersList[j]]==true) then begin
+    		CustomerHasBalance[CustomersList[j]] = false;
+  			for (k=0;k<curcount;k=k+1) begin
+  			  index = CustomersList[j] & ":" & CurencyList[k];
+  				CustomerBeginBal[index] = blankval;
+  				CustomerBeginBal[index & ":BASE"] = blankval;
+  				CustomerDebet[index] = blankval;
+  				CustomerDebet[index & ":BASE"] = blankval;
+  				CustomerCredit[index] = blankval;
+  				CustomerCredit[index & ":BASE"] = blankval;
+  				CustomerEndBal[index] = blankval;
+  				CustomerEndBal[index & ":BASE"] = blankval;
+  			end;
+  		end;
 		end;  
 		
 		mainr.AccNumber = AccList[i];
