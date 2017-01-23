@@ -7538,19 +7538,20 @@ begin
   end;
   if (HasMultiCurrency) then begin
     Flip(flipnr); flipnr = flipnr + 1;
-  MatCol(1,32,"‘чет",0,AccNumber,false,AccSClass);
-    if (HasObjects) then begin
-  MatCol(1,98,"Ћбъекты",0,Objects,false,ObjSClass);
-    end else begin
-      MatCol(1,-550,"Ћписание",0,Comment,false,0); 
-    end;
-    if (HasBase2) then begin
-  MatCol(1,-410,"Ћсн.1 „т",0,DebVal,true,0);
-  MatCol(1,-330,"Ћсн.1 Љт",0,CredVal,true,0);
-    end else begin
-      MatCol(1,-410,"„ебет",0,DebVal,true,0); 
-      MatCol(1,-330,"Љредит",0,CredVal,true,0); 
-    end;
+    MatCol(1,32,"‘чет",0,AccNumber,false,AccSClass);
+  if (HasObjects) then begin
+    MatCol(1,98,"Ћбъекты",0,Objects,false,ObjSClass);
+  end else begin
+    MatCol(1,-550,"Ћписание",0,Comment,false,0); 
+  end;
+  MatCol(1,-480,"Љлиент",0,CustCode,true,CUSClass); //Edit***************************Sasha2,12:16 23.01.2017
+  if (HasBase2) then begin
+    MatCol(1,-410,"Ћсн.1 „т",0,DebVal,true,0);
+    MatCol(1,-330,"Ћсн.1 Љт",0,CredVal,true,0);
+  end else begin
+    MatCol(1,-410,"„ебет",0,DebVal,true,0); 
+    MatCol(1,-330,"Љредит",0,CredVal,true,0); 
+  end;
   MatCol(1,-250,"‚алюта",0,Curncy,false,CurncyCodeSClass);
   MatCol(1,-200,"„т в валюте",0,CurDebVal,true,0);
   MatCol(1,-100,"Љт в валюте",0,CurCredVal,true,0);

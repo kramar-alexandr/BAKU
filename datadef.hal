@@ -4381,6 +4381,7 @@ begin
   ArrayField(MyVal4,M4Val,0,0);
   ArrayField(MyVal5,M4Val,0,0);
   ArrayField(MyVal6,M4Val,0,0);
+  ArrayField(CustCode,M4Code,20,CUVc);//Edit***************************Sasha2,12:10 23.01.2017
   
   EndArray;
   MainKeyBegin(Number,0);
