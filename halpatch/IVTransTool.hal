@@ -1451,7 +1451,6 @@ L22AddIVCostRow:;
                 t1 = Round(IVrw.FIFORowVal,DefaultRoundMode);
                 MatRowGet(fifocurIVr,rownr,fifocurIVrw); //Edit***************************Sasha2,11:25 17.03.2015 {
                 t1_curr = fifocurIVrw.FIFO; 
-                messagebox(0,t1_curr);// Edit ************************** Wednesday, 17 August 2016 09:45:51
                 currstr = fifocurIVrw.Spec;
                 if (fifocurIVrw.FrRate!=0) then begin
                   histfrrate = fifocurIVrw.FrRate;
