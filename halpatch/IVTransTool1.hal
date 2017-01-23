@@ -487,6 +487,7 @@ BEGIN
   val rateloss,rateloss2;
   record BaseCurBlock bascur;
   Boolean accf;
+  val paymentV;
 
   BlockLoad(bascur);
   errstrno = 1085; // Transaction could not be generated
@@ -558,9 +559,18 @@ BEGIN
                             IVp.CustCode,IVp.SerNr,1,blankval,IVp.PayDate,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,taccnumber,"","");//0
   end else begin
 */  
+    paymentV = IVrw.Sum; //Edit***************************Sasha2,11:09 23.01.2017 {
+    if (IVp.CurncyCode!=IVrw.CurncyCode) then begin
+      if (IVp.CurncyCode==bascur.BaseCur1) then begin
+        paymentV = ors;
+      end else begin
+        CurValToOtherCur(IVp.InvDate,IVrw.CurncyCode,IVrw.Sum,IVp.CurncyCode,paymentV,DefaultCurRoundOff);
+      end;
+    end; //Edit***************************Sasha2,11:09 23.01.2017 }
+    
     AddEuroCurncyTrRow(gTRp,IVp.ARAcc,lcuobj,"",tstr,ors,true,dc2,TotSum,
                        IVp.CurncyCode,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,
-                       IVp.BaseRate2,IVrw.Sum,blankval,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,taccnumber);//0
+                       IVp.BaseRate2,/*IVrw.Sum*/ paymentV,blankval,-1,IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,taccnumber);//0 //Edit***************************Sasha2,11:25 23.01.2017 
 //  end;
 
   if (IVrw.stp==kInvoiceRowTypeCashPayment) then begin
