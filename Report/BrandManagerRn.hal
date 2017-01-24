@@ -692,11 +692,11 @@ BEGIN
 												CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
 												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
 											end else begin
-												CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
-												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+												CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);/////
+												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 											end;
-											CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+											CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 									  otherwise
 									    customer = TRrw.CompCode;
 									    if (blank(customer)) then begin
@@ -720,11 +720,11 @@ BEGIN
 												CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
 												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
 											end else begin
-													CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
-													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+													CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 											end;
-										  CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurCredVal - TRrw.CurDebVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.CredVal - TRrw.DebVal);
+										  CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 								  end;
 									
 								end;
@@ -764,11 +764,11 @@ BEGIN
 												CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
 												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
 											end else begin
-													CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
-													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+													CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 											end;
-											CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+											CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 										otherwise
 										  index = customer & ":" & FBrw.CurncyCode;
 											if (mainr.TransDate >= RepSpec.sStartDate) then begin
@@ -777,11 +777,11 @@ BEGIN
 												CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
 												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
 											end else begin
-												CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
-												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+												CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 											end;
-											CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurCredVal - FBrw.CurDebVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.CredVal - FBrw.DebVal);
+											CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 								  end;
 								end;
 							end;
