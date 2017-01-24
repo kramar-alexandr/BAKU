@@ -692,7 +692,7 @@ BEGIN
 												CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
 												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
 											end else begin
-												CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);/////
+												CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
 												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 											end;
 											CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
