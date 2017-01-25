@@ -741,7 +741,13 @@ BEGIN
 					if (ReadFirstMain(FBr,1,true)) then begin
 					  testf = true;
 					  if (mainr.TransDate!=FBr.TransDate or !SetInSet(RepSpec.ObjStr,FBr.Objects)) then begin testf = false; end;
-					  if (testf and objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  switch(AccList[i])begin
+					  	case"75/02":
+					  		if (testf and objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  	otherwise 
+					  		if (testf and objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  end;
+					  //if (testf and objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
 						if (testf) then begin
 							customer = "BLANKCUSTOMER";
 							CustomerHasBalance[customer] = true;
@@ -815,8 +821,9 @@ BEGIN
 				  custCredit = CustomerCredit[index];
 				  custCreditB = CustomerCredit[index & ":BASE"];
 				  
-					if ((custEndBal <> 0) or (custEndBalB <> 0) or (custBeginBal <> 0) or (custBeginBalB <> 0) or 
-					  (custDebet <> 0) or (custDebetB <> 0) or (custCredit <> 0) or (custCreditB <> 0)) then begin
+					/*if ((custEndBal <> 0) or (custEndBalB <> 0) or (custBeginBal <> 0) or (custBeginBalB <> 0) or 
+					  (custDebet <> 0) or (custDebetB <> 0) or (custCredit <> 0) or (custCreditB <> 0)) then begin*/
+					if ((custEndBal <> 0) or (custEndBalB <> 0)) then begin
 						StartFormat(15);
 							if (CustomersList[j] == "BLANKCUSTOMER") then begin
 								OutString(tab1,0,"",false);
