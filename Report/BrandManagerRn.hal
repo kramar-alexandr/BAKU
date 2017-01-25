@@ -489,7 +489,7 @@ BEGIN
 	RETURN;
 END;
 
-procedure OnCustBMRnPrintAccHeader(string AccNumber,Boolean forBrand,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer tab9,integer tab10)
+procedure OnCustBMRnPrintAccHeader(string AccNumber,Boolean forBrand,integer tab1,integer tab2,integer tab3,integer tab4,integer tab5,integer tab6,integer tab7,integer tab8,integer tab9,integer tab10,integer tabname)
 BEGIN
 	string 20 head;
 	
@@ -503,6 +503,7 @@ BEGIN
 	end;
 	StartFormat(15);
 		OutString(tab1,0,"",false);
+		OutString(tabname,0,"",false);
 		OutString(tab2,0,head,false);
 		OutString(tab3,0,"",false);
 		OutString(tab4,0,"",false);
@@ -511,12 +512,13 @@ BEGIN
 		OutString(tab7,0,"",false);
 		OutString(tab8,0,"",false);
 		OutString(tab9,0,"",false);
-		OutString(tab10,0,"",false);
+		OutString(tab10,0,"",true);
 	EndFormat;
 	StartFormat(15);
 	EndFormat;
 	StartFormat(15);
 		OutString	(tab1,0,"",false);
+		OutString(tabname,0,"",false);
 		OutString	(tab2,0,"",false);
 		OutStringCut(tab3,tab4 + 20,0,"На начало периода",true,0);
 		OutString	(tab5,0,"",false);
@@ -524,7 +526,7 @@ BEGIN
 		OutString	(tab7,0,"",false);
 		OutStringCut(tab7,tab8 + 20,0,"Платежи",true,0);
 		OutString	(tab9,0,"",false);
-		OutStringCut(tab9,tab10 + 20,0,"На конец периода",true,0);
+		OutStringCut(tab10,tab10,0,"На конец периода",true,0);
 	EndFormat;
 	Black_Divider(tab3 + 1, tab5 - 1);
 	Black_Divider(tab5 + 1, tab7 - 1);
@@ -536,6 +538,7 @@ BEGIN
 		end else begin
 			OutString(tab1,0,"Клиент",false);
 		end;
+		OutString(tabname,0,"Имя",false);
 		OutString(tab2,0,"Валюта",false);
 		OutString(tab3,0,"В валюте",false);
 		OutString(tab4,0,"В осн. вал.",false);
@@ -544,7 +547,7 @@ BEGIN
 		OutString(tab7,0,"В валюте",false);
 		OutString(tab8,0,"В осн. вал.",false);
 		OutString(tab9,0,"В валюте",false);
-		OutString(tab10,0,"В осн. вал.",false);
+		OutString(tab10,0,"В осн. вал.",true);
 	EndFormat;
 	Black_Divider(0,1);
 	RETURN
@@ -566,7 +569,7 @@ BEGIN
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
 			tab7, tab8, tab9,
-			tab10;
+			tab10,tabname;
 	Array string 100 CustomersList;
 	Array string 10 AccList,CurencyList;
 	vector boolean CustomerHasBalance,CustomerAddedToList;
@@ -577,11 +580,12 @@ BEGIN
 	string 255 index,curObjs;
 	vector boolean founderflag;
 	vector string 100 foundercode,foundername;
+	record CUVc CUr;
 	
-	tab1 = 0;	 tab2 = 50;	  tab3 = 80;
-	tab4 = 130;  tab5 = 180;  tab6 = 230;
-	tab7 = 280;	 tab8 = 330;  tab9 = 380;
-	tab10 = 430;
+	tab1 = 0;	tabname = 60; tab2 = 160;	  tab3 = 190;
+	tab4 = 230;  tab5 = 270;  tab6 = 310;
+	tab7 = 350;	 tab8 = 380;  tab9 = 420;
+	tab10 = 1;
 	
 	AccList[0] = "62"; //нам
 	AccList[1] = "63"; //мы
@@ -610,7 +614,7 @@ BEGIN
 		end;
 	end;
 	
-	StartReportNoHeaderJob("Отчет бренд менеджера по клиентам");
+	StartReportNoHeaderJob("Отчет долгов по клиентам");
 	StartFormat(15);
 		OutString(tab1,0,"Период:",false);
 		OutString(tab2,0,RepSpec.sStartDate & " - " & RepSpec.sEndDate,false);
@@ -737,7 +741,7 @@ BEGIN
 					if (ReadFirstMain(FBr,1,true)) then begin
 					  testf = true;
 					  if (mainr.TransDate!=FBr.TransDate or !SetInSet(RepSpec.ObjStr,FBr.Objects)) then begin testf = false; end;
-					  if (testf and objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  if (testf and objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
 						if (testf) then begin
 							customer = "BLANKCUSTOMER";
 							CustomerHasBalance[customer] = true;
@@ -752,23 +756,26 @@ BEGIN
 											if (blank(customer) or founderflag[customer]==false) then begin
 												customer = "BLANKCUSTOMER";
 											end;
-											if (CustomerAddedToList[customer]==false) then begin
-												CustomersList[CustomersList.length] = customer;
-												CustomerAddedToList[customer] = true;
+											if(customer!="BLANKCUSTOMER")then begin
+												if (CustomerAddedToList[customer]==false) then begin
+													CustomersList[CustomersList.length] = customer;
+													CustomerAddedToList[customer] = true;
+												end;
+												CustomerHasBalance[customer] = true;
+												index = customer & ":" & FBrw.CurncyCode;
+											
+												if (mainr.TransDate >= RepSpec.sStartDate) then begin
+													CustomerDebet[index] = CustomerDebet[index] + FBrw.CurDebVal;
+													CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + FBrw.DebVal;
+													CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
+													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
+												end else begin
+														CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+														CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
+												end;
+												CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
+												CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 											end;
-											CustomerHasBalance[customer] = true;
-								  		index = customer & ":" & FBrw.CurncyCode;
-											if (mainr.TransDate >= RepSpec.sStartDate) then begin
-												CustomerDebet[index] = CustomerDebet[index] + FBrw.CurDebVal;
-												CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + FBrw.DebVal;
-												CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
-												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
-											end else begin
-													CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
-													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
-											end;
-											CustomerEndBal[index] = CustomerEndBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 										otherwise
 										  index = customer & ":" & FBrw.CurncyCode;
 											if (mainr.TransDate >= RepSpec.sStartDate) then begin
@@ -792,7 +799,7 @@ BEGIN
 		end;
 		ResetLoop(mainr);
 		
-		OnCustBMRnPrintAccHeader(AccList[i],false,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10);
+		OnCustBMRnPrintAccHeader(AccList[i],false,tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8,tab9,tab10,tabname);
 		
 		arrCnt = CustomersList.length;
 		for (j=0;j<arrCnt;j=j+1) begin
@@ -817,6 +824,19 @@ BEGIN
 								//OutStringID(tab1,"DblBrand",CustomersList[j],false,AccList[i] & ":" & CurencyList[k]);
 								OutString(tab1,0,CustomersList[j],false);
 							end;
+							
+							CUr.Code = CustomersList[j];
+							if(readfirstmain(CUr,1,true))then begin
+								OutString(tabname,0,CUr.Name,false);
+							end else begin
+								Objr.Code = CustomersList[j];
+								if(readfirstmain(Objr,1,true))then begin
+									OutString(tabname,0,Objr.Comment,false);
+								end else begin
+									OutString(tabname,0,"",false);
+								end;
+							end;
+							
 							OutString(tab2,0,CurencyList[k],false);
 							if (CustomersList[j] == "BLANKCUSTOMER") then begin
 								OutString(tab3,0,custBeginBal,false);
@@ -832,7 +852,7 @@ BEGIN
 							OutString(tab7,0,custCredit,false);
 							OutString(tab8,0,custCreditB,false);
 							OutString(tab9,0,custEndBal,false);
-							OutString(tab10,0,custEndBalB,false);
+							OutString(tab10,0,custEndBalB,true);
 						EndFormat;
 						Gray_Divider(0,1);
 					end;
@@ -847,6 +867,7 @@ BEGIN
 		BrandManagerRnTool(RepSpec,TotDebet,TotCredit,TotBeginBal,TotEndBal);
 		StartFormat(15);
 			OutString(tab1,0,"Итого",false);
+			OutString(tabname,0,"",false);
 			OutString(tab2,0,"",false);
 			OutString(tab3,0,"",false);
 			OutString(tab4,0,TotBeginBal,false);
@@ -855,7 +876,7 @@ BEGIN
 			OutString(tab7,0,"",false);
 			OutString(tab8,0,TotCredit,false);
 			OutString(tab9,0,"",false);
-			OutString(tab10,0,TotEndBal,false);
+			OutString(tab10,0,TotEndBal,true);
 		EndFormat;
 		StartFormat(15);
 		EndFormat;

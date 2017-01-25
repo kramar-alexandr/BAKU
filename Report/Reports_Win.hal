@@ -673,7 +673,7 @@ window OnCustomersBrandManagerRClass:1 //Edit***************************Sasha2,1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
 	real h,v,vs;
-	WindowBegin("Ћпределите отчет бренд-менеджера по клиентам",OnCustomersBrandManagerRClass,CGRcW,RcType);
+	WindowBegin("Ћпределите Ћтчет долгов по клиентам",OnCustomersBrandManagerRClass,CGRcW,RcType);
 		SetWRect(20,80,410,340);
 		h = 160;
 		vs = 20;
