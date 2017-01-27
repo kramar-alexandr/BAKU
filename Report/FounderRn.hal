@@ -2,6 +2,7 @@ external procedure YcToStr(Integer,var string);
 external procedure FindNLAccBal(string,string,string,Integer,Date,Date,Integer,Integer,Boolean,string,Integer,string,string,var val);
 external procedure BrandManagerRnTool(record RcVc,var val,var val,var val,var val);
 external procedure GetObjs(string,string,var string);
+external function Integer CountObjects(string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -60,9 +61,11 @@ BEGIN
 	record MainVc mainr;
 	record TRVc TRr,tempTRr;
 	row TRVc TRrw,tempTRrw;
+	record FBVc FBr;
+	row FBVc FBrw;
 	record ObjVc Objr;
 	record CurncyCodeVc CCr;
-	integer i,j,k,l,rwcnt,foundcount,curcount;
+	integer i,j,k,l,rwcnt,foundcount,curcount,objcnt;
 	boolean TrHs;
 	integer tab1, tab2, tab3,
 			tab4, tab5, tab6,
@@ -80,6 +83,12 @@ BEGIN
 	tab4 = 130;  tab5 = 180;  tab6 = 230;
 	tab7 = 280;	 tab8 = 330;  tab9 = 380;
 	tab10 = 430;
+	
+	objcnt = 1;
+	if nonblank(RepSpec.ObjStr) then begin
+		objcnt = objcnt + 1;
+	end;
+	
 	
 	AccNum = "75/02";
 	TrHs = true;
@@ -147,6 +156,35 @@ BEGIN
 									end;
 									FoundEndBal[found & ":" & TRrw.Curncy] = FoundEndBal[found & ":" & TRrw.Curncy] + TRrw.CurCredVal - TRrw.CurDebVal;
 									FoundEndBal[found & ":" & TRrw.Curncy & ":BASE"] = FoundEndBal[found & ":" & TRrw.Curncy & ":BASE"] + TRrw.CredVal - TRrw.DebVal;
+								end;
+							end;
+						end;
+					end;
+				end;
+			end;
+			if (mainr.FileName=="FBVc") then begin
+				FBr.SerNr = mainr.TransNr;
+				if (ReadFirstMain(FBr,1,true)) then begin
+					if (mainr.TransDate == FBr.TransDate) and SetInSet(RepSpec.ObjStr,FBr.Objects) and (CountObjects(FBr.Objects)==objcnt) then begin
+						found = "";
+						GetObjs("FOUND",FBr.Objects,found);
+						if nonblank(found) then begin
+							FoundNonBlank[found] = true;
+							rwcnt = MatRowCnt(FBr);
+							for (j=0;j<rwcnt;j=j+1) begin
+								MatRowGet(FBr,j,FBrw);
+								if (FBrw.AccNumber == AccNum) then begin
+									if (mainr.TransDate >= RepSpec.sStartDate) then begin
+										FoundDebet[found & ":" & FBrw.CurncyCode] = FoundDebet[found & ":" & FBrw.CurncyCode] + FBrw.CurDebVal;
+										FoundDebet[found & ":" & FBrw.CurncyCode & ":BASE"] = FoundDebet[found & ":" & FBrw.CurncyCode & ":BASE"] + FBrw.DebVal;
+										FoundCredit[found & ":" & FBrw.CurncyCode] = FoundCredit[found & ":" & FBrw.CurncyCode] + FBrw.CurCredVal;
+										FoundCredit[found & ":" & FBrw.CurncyCode & ":BASE"] = FoundCredit[found & ":" & FBrw.CurncyCode & ":BASE"] + FBrw.CredVal;
+									end else begin
+										FoundBeginBal[found & ":" & FBrw.CurncyCode] = FoundBeginBal[found & ":" & FBrw.CurncyCode] + FBrw.CurCredVal - FBrw.CurDebVal;
+										FoundBeginBal[found & ":" & FBrw.CurncyCode & ":BASE"] = FoundBeginBal[found & ":" & FBrw.CurncyCode & ":BASE"] + FBrw.CredVal - FBrw.DebVal;
+									end;
+									FoundEndBal[found & ":" & FBrw.CurncyCode] = FoundEndBal[found & ":" & FBrw.CurncyCode] + FBrw.CurCredVal - FBrw.CurDebVal;
+									FoundEndBal[found & ":" & FBrw.CurncyCode & ":BASE"] = FoundEndBal[found & ":" & FBrw.CurncyCode & ":BASE"] + FBrw.CredVal - FBrw.DebVal;
 								end;
 							end;
 						end;

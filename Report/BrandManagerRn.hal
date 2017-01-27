@@ -659,7 +659,7 @@ BEGIN
 		mainr.AccNumber = AccList[i];
 		TrHs = true;
 		while (LoopMain(mainr,1,TrHs)) begin
-			if ((mainr.AccNumber != AccList[i]) or (mainr.TransDate > RepSpec.sEndDate))  then begin
+			if ((mainr.AccNumber!=AccList[i]) or (mainr.TransDate > RepSpec.sEndDate))  then begin
 				TrHs = false;	
 			end;
 			if (TrHs) then begin
@@ -676,61 +676,65 @@ BEGIN
 							rwcnt = MatRowCnt(TRr);
 							for (j=0;j<rwcnt;j=j+1) begin
 								MatRowGet(TRr,j,TRrw);
-								if ((TRrw.AccNumber == AccList[i]) and (TRrw.ovst <> 1) and (TRrw.stp == 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+								if ((TRrw.AccNumber==AccList[i]) and (TRrw.ovst!=1) and (TRrw.stp == 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
 									switch (TRrw.AccNumber) begin
 								  	case	"75/02":
 								  		customer = "";
 								  		GetObjs("FOUND",TRrw.Objects,customer);
-											if (blank(customer) or founderflag[customer]==false) then begin
-												customer = "BLANKCUSTOMER";
-											end;
-											if (CustomerAddedToList[customer]==false) then begin
-												CustomersList[CustomersList.length] = customer;
-												CustomerAddedToList[customer] = true;
-											end;
-											CustomerHasBalance[customer] = true;
-											index = customer & ":" & TRrw.Curncy;
-											if (mainr.TransDate >= RepSpec.sStartDate) then begin
-												CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
-												CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + TRrw.DebVal;
-												CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
-												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
-											end else begin
-												CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
-												CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
-											end;
-											CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
-									  otherwise
-									    customer = TRrw.CompCode;
-									    if (blank(customer)) then begin
-									      customer = TRrw.CustCode;
-									    end;
-											if (blank(customer) and TRr.IntYc==IVYc) then begin
-												customer = IVr.CustCode;
-											end;
-											if (blank(customer)) then begin
-												customer = "BLANKCUSTOMER";
-											end;
-											if (CustomerAddedToList[customer]==false) then begin
-												CustomersList[CustomersList.length] = customer;
-												CustomerAddedToList[customer] = true;
-											end;
-											CustomerHasBalance[customer] = true;
-											index = customer & ":" & TRrw.Curncy;
-											if (mainr.TransDate >= RepSpec.sStartDate) then begin
-												CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
-												CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + TRrw.DebVal;
-												CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
-												CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
-											end else begin
+								  		if(nonblank(customer) and founderflag[customer] and SetInSet(RepSpec.ObjStr & "," & customer,TRrw.Objects))then begin
+												if (blank(customer) or founderflag[customer]==false) then begin
+													customer = "BLANKCUSTOMER";
+												end;
+												if (CustomerAddedToList[customer]==false) then begin
+													CustomersList[CustomersList.length] = customer;
+													CustomerAddedToList[customer] = true;
+												end;
+												CustomerHasBalance[customer] = true;
+												index = customer & ":" & TRrw.Curncy;
+												if (mainr.TransDate >= RepSpec.sStartDate) then begin
+													CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
+													CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + TRrw.DebVal;
+													CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
+													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
+												end else begin
+													if(customer=="FOUNDER_3")then begin
+														//logtext(0,TRr.Number & " " & TRrw.CurDebVal - TRrw.CurCredVal & "  " & TRrw.Curncy);
+													end;
 													CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
 													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
+												end;
+												CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+												CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 											end;
-										  CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
-											CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
-								  end;
-									
+											otherwise
+												customer = TRrw.CompCode;
+												if (blank(customer)) then begin
+													customer = TRrw.CustCode;
+												end;
+												if (blank(customer) and TRr.IntYc==IVYc) then begin
+													customer = IVr.CustCode;
+												end;
+												if (blank(customer)) then begin
+													customer = "BLANKCUSTOMER";
+												end;
+												if (CustomerAddedToList[customer]==false) then begin
+													CustomersList[CustomersList.length] = customer;
+													CustomerAddedToList[customer] = true;
+												end;
+												CustomerHasBalance[customer] = true;
+												index = customer & ":" & TRrw.Curncy;
+												if (mainr.TransDate >= RepSpec.sStartDate) then begin
+													CustomerDebet[index] = CustomerDebet[index] + TRrw.CurDebVal;
+													CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + TRrw.DebVal;
+													CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
+													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
+												end else begin
+														CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+														CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
+												end;
+												CustomerEndBal[index] = CustomerEndBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
+												CustomerEndBal[index & ":BASE"] = CustomerEndBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
+											end;
 								end;
 							end;
 						end;
@@ -742,40 +746,42 @@ BEGIN
 					  testf = true;
 					  if (mainr.TransDate!=FBr.TransDate or !SetInSet(RepSpec.ObjStr,FBr.Objects)) then begin testf = false; end;
 					  switch(AccList[i])begin
-					  	case"75/02":
-					  		if (testf and objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  	case "75/02":
+					  		if (objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
 					  	otherwise 
-					  		if (testf and objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
+					  		if (objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
 					  end;
 					  //if (testf and objCountInRep!=CountObjects(FBr.Objects)) then begin testf = false; end;
 						if (testf) then begin
-							customer = "BLANKCUSTOMER";
-							CustomerHasBalance[customer] = true;
+							if(AccList[i]!="75/02")then begin
+								customer = "BLANKCUSTOMER";
+								CustomerHasBalance[customer] = true;
+							end;
 							rwcnt = MatRowCnt(FBr);
 							for (j=0;j<rwcnt;j=j+1) begin
 								MatRowGet(FBr,j,FBrw);
-								if (FBrw.AccNumber == AccList[i]) then begin
+								if (FBrw.AccNumber==AccList[i]) then begin
 								  switch (FBrw.AccNumber) begin
 								  	case	"75/02":
 								  		customer = "";
 								  		GetObjs("FOUND",FBr.Objects,customer);
-											if (blank(customer) or founderflag[customer]==false) then begin
-												customer = "BLANKCUSTOMER";
-											end;
-											if(customer!="BLANKCUSTOMER")then begin
+											if(nonblank(customer))then begin
 												if (CustomerAddedToList[customer]==false) then begin
 													CustomersList[CustomersList.length] = customer;
 													CustomerAddedToList[customer] = true;
 												end;
 												CustomerHasBalance[customer] = true;
 												index = customer & ":" & FBrw.CurncyCode;
-											
+												
 												if (mainr.TransDate >= RepSpec.sStartDate) then begin
 													CustomerDebet[index] = CustomerDebet[index] + FBrw.CurDebVal;
 													CustomerDebet[index & ":BASE"] = CustomerDebet[index & ":BASE"] + FBrw.DebVal;
 													CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
 													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
 												end else begin
+														if(customer=="FOUNDER_3")then begin
+															//logtext(0,FBr.SerNr & " " & FBrw.CurDebVal - FBrw.CurCredVal & "  " & FBrw.CurncyCode);
+														end;
 														CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
 														CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 												end;
@@ -820,6 +826,15 @@ BEGIN
 				  custDebetB = CustomerDebet[index & ":BASE"];
 				  custCredit = CustomerCredit[index];
 				  custCreditB = CustomerCredit[index & ":BASE"];
+				  
+				  CustomerEndBal[index] = blankval;
+				  CustomerEndBal[index & ":BASE"] = blankval;
+				  CustomerBeginBal[index] = blankval;
+				  CustomerBeginBal[index & ":BASE"] = blankval;
+				  CustomerDebet[index] = blankval;
+				  CustomerDebet[index & ":BASE"] = blankval;
+				  CustomerCredit[index] = blankval;
+				  CustomerCredit[index & ":BASE"] = blankval;
 				  
 					/*if ((custEndBal <> 0) or (custEndBalB <> 0) or (custBeginBal <> 0) or (custBeginBalB <> 0) or 
 					  (custDebet <> 0) or (custDebetB <> 0) or (custCredit <> 0) or (custCreditB <> 0)) then begin*/

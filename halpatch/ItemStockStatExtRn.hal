@@ -62,13 +62,13 @@ begin
 					if(testf)then begin
 						res = res + IHr.Qty;
 						cqty[IHr.CurncyCode] = cqty[IHr.CurncyCode] + IHr.Qty;
-						logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+						//logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
 						if(!vcur[IHr.CurncyCode])then begin
 							vcur[IHr.CurncyCode] = true;
 							acur[acnt] = IHr.CurncyCode;
 							acnt = acnt + 1;
 						end;
-						logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+						//logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
 						if(IHr.Qty>=0)then begin
 							serialcost = serialcost + IHr.TotCostPrice;
 							ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] + IHr.TotCostPrice;
@@ -113,13 +113,13 @@ begin
 				if(testf)then begin
 					res = res + IHr.Qty;
 					cqty[IHr.CurncyCode] = cqty[IHr.CurncyCode] + IHr.Qty;
-					logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+					//logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
 					if(!vcur[IHr.CurncyCode])then begin
 						vcur[IHr.CurncyCode] = true;
 						acur[acnt] = IHr.CurncyCode;
 						acnt = acnt + 1;
 					end;
-					logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
+					//logtext(0,vcur[IHr.CurncyCode] & "_" & IHr.CurncyCode);
 					if(IHr.Qty>=0)then begin
 						serialcost = serialcost + IHr.TotCostPrice;
 						ccost[IHr.CurncyCode] = ccost[IHr.CurncyCode] + IHr.TotCostPrice;
