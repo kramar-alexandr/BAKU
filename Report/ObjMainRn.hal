@@ -316,10 +316,18 @@ begin
 	  			if(FBrw.AccNumber==acccode)then begin
 	  				For(oi=0;oi<objcnt;oi=oi+1) begin
 							matrowget(SMr,oi,SMrw);
-							if(SMrw.Objects==FBr.Objects)then begin
-								SMrw.AccNumber = FBrw.AccNumber;
-								SMrw.CurDebVal = SMrw.CurDebVal + FBrw.DebVal;
-								SMrw.CurCredVal = SMrw.CurCredVal + FBrw.CredVal;
+							testf = true;
+							if (SMrw.Objects!=FBr.Objects) then begin testf = false; end;
+							if (NonBlank(objcode) and setinset(FBr.Objects,objcode)==false) then begin testf = false; end;
+							if(testf)then begin
+							  SMrw.AccNumber = FBrw.AccNumber;
+							  if (FBr.TransDate<sd) then begin
+  							  SMrw.CurDebVal = SMrw.CurDebVal + FBrw.DebVal;
+  								SMrw.CurCredVal = SMrw.CurCredVal + FBrw.CredVal;
+							  end else begin
+							    SMrw.DebVal = SMrw.CurDebVal + FBrw.DebVal;
+								  SMrw.CredVal = SMrw.CurCredVal + FBrw.CredVal;
+							  end;
 								matrowput(SMr,oi,SMrw);
 							end;
 						end;
