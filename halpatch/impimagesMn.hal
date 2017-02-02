@@ -4730,3 +4730,104 @@ begin
   writeareatofile(tmparea1,fn,1);
   return;
 end;
+
+global //Edit***************************Sasha2,15:26 01.02.2017 {
+updating procedure FixTRCurBalanceIfBaseCurMn()
+begin
+  record BaseCurBlock BCb;
+  record IVVc IVr;
+  record MainVc mainr;
+  record TRVc TRr;
+	row TRVc TRrw;
+  Array string 10 AccList;
+  Array string 100 CustomersList;
+  vector val CustomerDiffBalance;
+  vector boolean CustomerAddedToList;
+  integer i,j,acccount,rwcnt;
+  string 30 customer;
+  boolean TrHs,testf,storeF;
+  val diffBal;
+  
+    AccList[0] = "62";
+    AccList[1] = "75/02";
+    acccount = AccList.length;
+    BlockLoad(BCb);
+    
+    CustomersList[0] = "BLANKCUSTOMER";
+    CustomerAddedToList["BLANKCUSTOMER"] = true;
+    
+    for (i=0;i<acccount;i=i+1) begin
+  		/*for (j=0;j<CustomersList.length;j=j+1) begin
+    		CustomerDiffBalance[CustomersList[j]] = blankval;
+		  end; */
+      
+      mainr.AccNumber = AccList[i];
+  		TrHs = true;
+  		while (LoopMain(mainr,1,TrHs)) begin
+  			if ((mainr.AccNumber!=AccList[i]))  then begin
+  				TrHs = false;	
+  			end;
+  			if (TrHs) then begin
+  				if (mainr.FileName=="TRVc") then begin
+  					TRr.Number = mainr.TransNr;
+  					TRr.IntYc = mainr.IntYc;
+  					if (ReadFirstMain(TRr,2,true)) then begin
+  						if (mainr.TransDate == TRr.TransDate) then begin
+  						  storeF = false;
+  							/*IVr.CustCode = "";
+  							if (TRr.IntYc==IVYc) then begin
+  							  IVr.SerNr = TRr.Number;
+  								ReadFirstMain(IVr,1,true);
+  							end;*/
+  							rwcnt = MatRowCnt(TRr);
+  							for (j=0;j<rwcnt;j=j+1) begin
+  								MatRowGet(TRr,j,TRrw);
+  								testf = true;
+  								if ((TRrw.AccNumber!=AccList[i]) or (TRrw.ovst==1) or (TRrw.stp!=1)) then begin testf = false; end;
+  								if (TRrw.Curncy!=BCb.BaseCur1) then begin testf = false; end;
+  								if (TRrw.CredVal<>0 and TRrw.CredVal==TRrw.CurCredVal) then begin testf = false; end;
+  								if (TRrw.DebVal<>0 and TRrw.DebVal==TRrw.CurDebVal) then begin testf = false; end;
+  								if (testf) then begin
+										/*customer = TRrw.CompCode;
+										if (blank(customer)) then begin
+											customer = TRrw.CustCode;
+										end;
+										if (blank(customer) and TRr.IntYc==IVYc) then begin
+											customer = IVr.CustCode;
+										end;
+										if (blank(customer)) then begin
+											customer = "BLANKCUSTOMER";
+										end;
+										if (CustomerAddedToList[customer]==false) then begin
+											CustomersList[CustomersList.length] = customer;
+											CustomerAddedToList[customer] = true;
+										end;*/
+										
+										if (TRrw.CredVal<>0) then begin
+										  TRrw.CurCredVal = TRrw.CredVal;
+										  MatRowPut(TRr,j,TRrw);
+										  storeF = true;
+										end else begin
+										  if (TRrw.DebVal<>0) then begin
+										    TRrw.CurDebVal = TRrw.DebVal;
+										    MatRowPut(TRr,j,TRrw);
+										    storeF = true;
+										  end;
+										end;
+  								end;
+  							end;
+  							if (storeF) then begin
+  							  RECORDSTORE(TRr,true); LogText(0," Transaction:" & TRr.IntYc & "." & TRr.Number & Chr(9) & "(Check code \"" & TRr.IntYc & "\" to get document allias)" );
+  							end;
+  						end;
+  					end;
+  				end;
+  			end;
+  		end;
+  		ResetLoop(mainr);
+      
+    end;
+    
+
+  return;
+end; //Edit***************************Sasha2,15:26 01.02.2017 }

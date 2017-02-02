@@ -745,7 +745,7 @@ BEGIN
 					if (ReadFirstMain(FBr,1,true)) then begin
 					  testf = true;
 					  if (mainr.TransDate!=FBr.TransDate or !SetInSet(RepSpec.ObjStr,FBr.Objects)) then begin testf = false; end;
-					  switch(AccList[i])begin
+					  switch(AccList[i]) begin
 					  	case "75/02":
 					  		if (objCountInRep+1!=CountObjects(FBr.Objects)) then begin testf = false; end;
 					  	otherwise 

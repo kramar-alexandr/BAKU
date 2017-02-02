@@ -127,6 +127,7 @@ begin
 	
 	Maintenance("Группы и клас. для товаров",FIXVClass,UpdateItemToCoinEAN,modDromos);
   Maintenance("Перенести классификации товаров из имени",FIXVClass,FixItemDIMn,modDBMain);
+  Maintenance("Выровнять проводки с разными балансами при основной валюте",FIXVClass,FixTRCurBalanceIfBaseCurMn,modDBMain); //Edit***************************Sasha2,16:16 01.02.2017
   	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
