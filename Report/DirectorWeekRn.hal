@@ -2388,21 +2388,21 @@ begin
         tempBal = 0;
         for (i=0;i<curi;i=i+1) begin
           if left(CurList[i],3)=="USD" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
             Balance52USD = Balance52USD + tempBal;
           end;
         end;
         tempBal = 0;
         for (i=0;i<curi;i=i+1) begin
           if left(CurList[i],3)=="EUR" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
             Balance52EUR = Balance52EUR + tempBal;
           end;
         end;
         tempBal = 0;
         for (i=0;i<curi;i=i+1) begin
           if left(CurList[i],3)=="AZN" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sStartDate,0,0,false,CurList[i],0,"","",tempBal);
+            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
             Balance52AZN = Balance52AZN + tempBal;
           end;
         end;
@@ -2411,7 +2411,7 @@ begin
           if (Balance52USD!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sStartDate & " по валютам:",false);
+                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sEndDate & " по валютам:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
@@ -2424,7 +2424,7 @@ begin
           if (Balance52EUR!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sStartDate & " по валютам:",false);
+                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sEndDate & " по валютам:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
@@ -2437,7 +2437,7 @@ begin
           if (Balance52AZN!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sStartDate & " по валютам:",false);
+                OutString(0,0,"Остаток по счету 52 на " & RepSpec.sEndDate & " по валютам:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
