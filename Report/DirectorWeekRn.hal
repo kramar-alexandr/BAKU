@@ -1120,12 +1120,13 @@ begin
           if (Balance52USD!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sStartDate & ":",false);
+                OutString(0,0,"",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
+                OutString(15,0,"",false);
               end;
-              OutString(15,0,"",false);
               OutString(60,0,Balance52USD,false);
               OutString(90,0,"USD",false);
             EndFormat;
@@ -1133,12 +1134,13 @@ begin
           if (Balance52EUR!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sStartDate & ":",false);
+                OutString(0,0,"",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
+                OutString(15,0,"",false);
               end;
-              OutString(15,0,"",false);
               OutString(60,0,Balance52EUR,false);
               OutString(90,0,"EUR",false);
             EndFormat;
@@ -1146,12 +1148,13 @@ begin
           if (Balance52AZN!=0) then begin
             StartFormat(15);
               if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sStartDate & ":",false);
+                OutString(0,0,"",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
+                OutString(15,0,"",false);
               end;
-              OutString(15,0,"",false);
               OutString(60,0,Balance52AZN,false);
               OutString(90,0,"AZN",false);
             EndFormat;
@@ -2376,39 +2379,45 @@ begin
         if ((Balance52USD!=0) or (Balance52EUR!=0)) then begin
           f = false;
           if (Balance52USD!=0) then begin
-            StartFormat(15);
-              if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sEndDate & ":",false);
-                f = true;
-              end else begin
+            if (!f) then begin
+              StartFormat(15);
                 OutString(0,0,"",false);
-              end;
+                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+              EndFormat;
+              f = true;
+            end;
+            StartFormat(15);
+              OutString(0,0,"",false);
               OutString(25,0,"",false);
               OutString(44,0,Balance52USD,false);
               OutString(69,0,"USD",false);
             EndFormat;
           end;
           if (Balance52EUR!=0) then begin
-            StartFormat(15);
-              if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sEndDate & ":",false);
-                f = true;
-              end else begin
+            if (!f) then begin
+              StartFormat(15);
                 OutString(0,0,"",false);
-              end;
+                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+              EndFormat;
+              f = true;
+            end;
+            StartFormat(15);
+              OutString(0,0,"",false);
               OutString(25,0,"",false);
               OutString(44,0,Balance52EUR,false);
               OutString(69,0,"EUR",false);
             EndFormat;
           end;
           if (Balance52AZN!=0) then begin
-            StartFormat(15);
-              if (!f) then begin
-                OutString(0,0,"Остаток по расчетному счету в валюте на " & RepSpec.sEndDate & ":",false);
-                f = true;
-              end else begin
+            if (!f) then begin
+              StartFormat(15);
                 OutString(0,0,"",false);
-              end;
+                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+              EndFormat;
+              f = true;
+            end;
+            StartFormat(15);
+              OutString(0,0,"",false);
               OutString(25,0,"",false);
               OutString(44,0,Balance52AZN,false);
               OutString(69,0,"AZN",false);
