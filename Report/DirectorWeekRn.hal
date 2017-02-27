@@ -2383,112 +2383,110 @@ begin
 			SaldoEndPeriod50n53USD = SaldoEndPeriod50USD + SaldoEndPeriod53USD;
 			SaldoEndPeriod50n53EUR = SaldoEndPeriod50EUR + SaldoEndPeriod53EUR;
 			SaldoEndPeriod50n53AZN = SaldoEndPeriod50AZN + SaldoEndPeriod53AZN;
-			if (currentcompany==19) then begin
-        Balance52USD = 0;
-        Balance52EUR = 0;
-        Balance52AZN = 0;
-        tempBal = 0;
-        for (i=0;i<curi;i=i+1) begin
-          if left(CurList[i],3)=="USD" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
-            Balance52USD = Balance52USD + tempBal;
-          end;
+      Balance52USD = 0;
+      Balance52EUR = 0;
+      Balance52AZN = 0;
+      tempBal = 0;
+      for (i=0;i<curi;i=i+1) begin
+        if left(CurList[i],3)=="USD" then begin
+          FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
+          Balance52USD = Balance52USD + tempBal;
         end;
-        tempBal = 0;
-        for (i=0;i<curi;i=i+1) begin
-          if left(CurList[i],3)=="EUR" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
-            Balance52EUR = Balance52EUR + tempBal;
-          end;
-        end;
-        tempBal = 0;
-        for (i=0;i<curi;i=i+1) begin
-          if left(CurList[i],3)=="AZN" then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
-            Balance52AZN = Balance52AZN + tempBal;
-          end;
-        end;
-        if ((Balance52USD!=0) or (Balance52EUR!=0)) then begin
-          f = false;
-          if (Balance52USD!=0) then begin
-            if (!f) then begin
-              StartFormat(15);
-                OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
-              EndFormat;
-              f = true;
-            end;
-            StartFormat(15);
-              OutString(0,0,"",false);
-              OutString(25,0,"",false);
-              OutString(44,0,Balance52USD,false);
-              OutString(69,0,"USD",false);
-            EndFormat;
-          end;
-          if (Balance52EUR!=0) then begin
-            if (!f) then begin
-              StartFormat(15);
-                OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
-              EndFormat;
-              f = true;
-            end;
-            StartFormat(15);
-              OutString(0,0,"",false);
-              OutString(25,0,"",false);
-              OutString(44,0,Balance52EUR,false);
-              OutString(69,0,"EUR",false);
-            EndFormat;
-          end;
-          if (Balance52AZN!=0) then begin
-            if (!f) then begin
-              StartFormat(15);
-                OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
-              EndFormat;
-              f = true;
-            end;
-            StartFormat(15);
-              OutString(0,0,"",false);
-              OutString(25,0,"",false);
-              OutString(44,0,Balance52AZN,false);
-              OutString(69,0,"AZN",false);
-            EndFormat;
-          end;
-          if (f) then begin
-            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod52);
-            Gray_Divider(25,90);
-            StartFormat(15);
-              OutString(0,0,"",false);
-              OutString(25,0,"Сумма в осн. вал.",false);
-              OutString(44,0,SaldoEndPeriod52,false);
-              OutString(69,0,"AZN",false);
-              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
-                OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
-                OutMyString(160,0,SaldoEndPeriod52/RepSpec.vals0,false);
-              end;
-            EndFormat;
-            Gray_Divider(25,90);
-            StartFormat(15);
-              OutString(0,0,"",false);
-              OutString(25,0,"Курсовая",false);
-              OutString(44,0,kursovaya52,false);
-              OutString(69,0,"AZN",false);
-              if(RepSpec.vals0!=0)then begin
-                OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
-                OutMyString(160,0,(kursovaya52)/RepSpec.vals0,false);
-              end;
-            EndFormat;
-            Gray_Divider(25,90);
-            StartFormat(15);
-            EndFormat;
-          end;
-        end;
-        SaldoEndPeriod50n53USD = SaldoEndPeriod50n53USD + Balance52USD;
-        SaldoEndPeriod50n53EUR = SaldoEndPeriod50n53EUR + Balance52EUR;
-        SaldoEndPeriod50n53AZN = SaldoEndPeriod50n53AZN + Balance52AZN;
       end;
-			StartFormat(15);
+      tempBal = 0;
+      for (i=0;i<curi;i=i+1) begin
+        if left(CurList[i],3)=="EUR" then begin
+          FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
+          Balance52EUR = Balance52EUR + tempBal;
+        end;
+      end;
+      tempBal = 0;
+      for (i=0;i<curi;i=i+1) begin
+        if left(CurList[i],3)=="AZN" then begin
+          FindNLAccBal("52",RepSpec.ObjStr,"",0,"",RepSpec.sEndDate,0,0,false,CurList[i],0,"","",tempBal);
+          Balance52AZN = Balance52AZN + tempBal;
+        end;
+      end;
+      if ((Balance52USD!=0) or (Balance52EUR!=0)) then begin
+        f = false;
+        if (Balance52USD!=0) then begin
+          if (!f) then begin
+            StartFormat(15);
+              OutString(0,0,"",false);
+              OutString(15,0,"Остаток по расчетному счету в валюте:",false);
+            EndFormat;
+            f = true;
+          end;
+          StartFormat(15);
+            OutString(0,0,"",false);
+            OutString(25,0,"",false);
+            OutString(44,0,Balance52USD,false);
+            OutString(69,0,"USD",false);
+          EndFormat;
+        end;
+        if (Balance52EUR!=0) then begin
+          if (!f) then begin
+            StartFormat(15);
+              OutString(0,0,"",false);
+              OutString(15,0,"Остаток по расчетному счету в валюте:",false);
+            EndFormat;
+            f = true;
+          end;
+          StartFormat(15);
+            OutString(0,0,"",false);
+            OutString(25,0,"",false);
+            OutString(44,0,Balance52EUR,false);
+            OutString(69,0,"EUR",false);
+          EndFormat;
+        end;
+        if (Balance52AZN!=0) then begin
+          if (!f) then begin
+            StartFormat(15);
+              OutString(0,0,"",false);
+              OutString(15,0,"Остаток по расчетному счету в валюте:",false);
+            EndFormat;
+            f = true;
+          end;
+          StartFormat(15);
+            OutString(0,0,"",false);
+            OutString(25,0,"",false);
+            OutString(44,0,Balance52AZN,false);
+            OutString(69,0,"AZN",false);
+          EndFormat;
+        end;
+        if (f) then begin
+          FindNLAccBal("52",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod52);
+          Gray_Divider(25,90);
+          StartFormat(15);
+            OutString(0,0,"",false);
+            OutString(25,0,"Сумма в осн. вал.",false);
+            OutString(44,0,SaldoEndPeriod52,false);
+            OutString(69,0,"AZN",false);
+            if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+              OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+              OutMyString(160,0,SaldoEndPeriod52/RepSpec.vals0,false);
+            end;
+          EndFormat;
+          Gray_Divider(25,90);
+          StartFormat(15);
+            OutString(0,0,"",false);
+            OutString(25,0,"Курсовая",false);
+            OutString(44,0,kursovaya52,false);
+            OutString(69,0,"AZN",false);
+            if(RepSpec.vals0!=0)then begin
+              OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+              OutMyString(160,0,(kursovaya52)/RepSpec.vals0,false);
+            end;
+          EndFormat;
+          Gray_Divider(25,90);
+          StartFormat(15);
+          EndFormat;
+        end;
+      end;
+      SaldoEndPeriod50n53USD = SaldoEndPeriod50n53USD + Balance52USD;
+      SaldoEndPeriod50n53EUR = SaldoEndPeriod50n53EUR + Balance52EUR;
+      SaldoEndPeriod50n53AZN = SaldoEndPeriod50n53AZN + Balance52AZN;
+      StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"Остаток общего счета",false);
 				OutString(44,0,SaldoEndPeriod50n53USD,false);
