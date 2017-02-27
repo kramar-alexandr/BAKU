@@ -53,14 +53,14 @@ begin
 		SaldoEndPeriod53AZN,	  SaldoEndPeriod53USD,	  SaldoEndPeriod53EUR,
 		SaldoEndPeriod50n53AZN,	SaldoEndPeriod50n53USD,	SaldoEndPeriod50n53EUR,
     Balance52AZN,		        Balance52USD,		        Balance52EUR,
-		
+		SaldoEndPeriod52,
 		AZNTermDeb,  AZNDeb,  USDDeb,  EURDeb,	BaseDeb,
 		AZNTermCred, AZNCred, USDCred, EURCred,	BaseCred,
 		
 		BalItem1,BalItem2,
 		SaldoEndPeriod51,
 		corspdebval,corspcredval,tempBal,
-		handed53,kursovaya,kursovaya53,
+		handed53,kursovaya,kursovaya53,kursovaya52,
 		convtotal1,convtotal2,convtotal3,convtotal4,convtotal5,// Edit ************************** Wednesday, 26 August 2015 11:49:59
 		fr,to1USD,to2,br1,br2,to1EUR;
 	string 20 store,store2;
@@ -747,6 +747,38 @@ begin
 			end;
 		end;
 	end;
+  
+  
+  ResetLoop(mainr);
+	mainr.AccNumber = "52";
+	mainr.TransDate = RepSpec.sStartDate;
+	TrHs = true;
+	while (LoopMain(mainr,2,TrHs)) begin
+		if ((mainr.AccNumber != "52") or (mainr.TransDate > RepSpec.sEndDate))  then begin
+			TrHs = false;
+		end;
+		if (TrHs) then begin
+			TRr.Number = mainr.TransNr;
+			TRr.IntYc = mainr.IntYc;
+			if (ReadFirstMain(TRr,2,true)) then begin
+				if (mainr.TransDate == TRr.TransDate) then begin
+					rwcnt = MatRowCnt(TRr);
+					for (i=0;i<rwcnt;i=i+1) begin
+						MatRowGet(TRr,i,TRrw);
+						done = false;
+						if ((TRrw.AccNumber == "52") and (TRrw.ovst <> 1) and SetInSet(RepSpec.ObjStr,TRrw.Objects)) then begin
+							testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);
+							if testf then begin
+								kursovaya52 = kursovaya52 - corspdebval + corspcredval;
+							end;
+						end;
+					end;
+				end;
+			end;
+		end;
+	end;
+  
+  
 	rwcnt = MatRowCnt(tempTRr);
 	for (i=0;i<rwcnt;i=i+1) begin
 		MatRowGet(tempTRr,i,tempTRrw);
@@ -1121,7 +1153,7 @@ begin
             StartFormat(15);
               if (!f) then begin
                 OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
@@ -1135,7 +1167,7 @@ begin
             StartFormat(15);
               if (!f) then begin
                 OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
@@ -1149,7 +1181,7 @@ begin
             StartFormat(15);
               if (!f) then begin
                 OutString(0,0,"",false);
-                OutString(15,0,"Остаток по расчетному счету в валюте на:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
                 f = true;
               end else begin
                 OutString(0,0,"",false);
@@ -2382,7 +2414,7 @@ begin
             if (!f) then begin
               StartFormat(15);
                 OutString(0,0,"",false);
-                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
               EndFormat;
               f = true;
             end;
@@ -2397,7 +2429,7 @@ begin
             if (!f) then begin
               StartFormat(15);
                 OutString(0,0,"",false);
-                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
               EndFormat;
               f = true;
             end;
@@ -2412,7 +2444,7 @@ begin
             if (!f) then begin
               StartFormat(15);
                 OutString(0,0,"",false);
-                OutString(25,0,"Остаток по расчетному счету в валюте:",false);
+                OutString(15,0,"Остаток по расчетному счету в валюте:",false);
               EndFormat;
               f = true;
             end;
@@ -2423,8 +2455,34 @@ begin
               OutString(69,0,"AZN",false);
             EndFormat;
           end;
-          StartFormat(15);
-          EndFormat;
+          if (f) then begin
+            FindNLAccBal("52",RepSpec.ObjStr,"",0,"",AddDay(RepSpec.sEndDate,1),0,0,false,"",0,"","",SaldoEndPeriod52);
+            Gray_Divider(25,90);
+            StartFormat(15);
+              OutString(0,0,"",false);
+              OutString(25,0,"Сумма в осн. вал.",false);
+              OutString(44,0,SaldoEndPeriod52,false);
+              OutString(69,0,"AZN",false);
+              if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+                OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+                OutMyString(160,0,SaldoEndPeriod52/RepSpec.vals0,false);
+              end;
+            EndFormat;
+            Gray_Divider(25,90);
+            StartFormat(15);
+              OutString(0,0,"",false);
+              OutString(25,0,"Курсовая",false);
+              OutString(44,0,kursovaya52,false);
+              OutString(69,0,"AZN",false);
+              if(RepSpec.vals0!=0)then begin
+                OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
+                OutMyString(160,0,(kursovaya52)/RepSpec.vals0,false);
+              end;
+            EndFormat;
+            Gray_Divider(25,90);
+            StartFormat(15);
+            EndFormat;
+          end;
         end;
         SaldoEndPeriod50n53USD = SaldoEndPeriod50n53USD + Balance52USD;
         SaldoEndPeriod50n53EUR = SaldoEndPeriod50n53EUR + Balance52EUR;
@@ -2462,7 +2520,7 @@ begin
 				OutString(69,0,"AZN",false);
 				if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
 					OutString(110,0,"В USD по курсу: " & RepSpec.vals0,false);
-					OutMyString(160,0,(SaldoEndPeriod50n51 + SaldoEndPeriod53)/	,false);
+					OutMyString(160,0,(SaldoEndPeriod50n51 + SaldoEndPeriod53)/RepSpec.vals0,false);
 				end;
 			EndFormat;
 		end;
