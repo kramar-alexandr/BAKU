@@ -75,7 +75,8 @@ BEGIN
           if(nonblank(RepSpec.f2) and TRrw.AccNumber!=RepSpec.f2)then begin accflag = false; end;// Edit ************************** Saturday, 1 November 2014 13:03:33
           if(blank(RepSpec.f1) and nonblank(RepSpec.f4))then begin accflag = false; end;// Edit ************************** Friday, 14 November 2014 09:28:55
           if(nonblank(RepSpec.f1) and nonblank(RepSpec.f3))then begin accflag = false; end;// Edit ************************** Friday, 14 November 2014 09:28:55
-
+					
+					//if(!setinset("YD1",TRrw.Objects))then begin accflag = false; end;
           
           if(accflag)then begin // Edit ************************** Saturday, 1 November 2014 13:02:22
 						objstr = TRrw.Objects;
