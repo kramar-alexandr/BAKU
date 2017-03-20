@@ -333,6 +333,7 @@ begin
   array string 5 CurList;
   record ObjVc Objr;
   val fr,to1,to2,br1,br2;
+  val vday,tot;
   
   step = 60;
   curi = 0;
@@ -373,7 +374,9 @@ begin
     while (day<=RepSpec.sEndDate) begin
       StartFormat(15);
         OutString(20,0,day,false);
-        OutString(100,0,DirectorDayCalc(RepSpec,day),false);
+        vday = DirectorDayCalc(RepSpec,day);
+        tot = tot + vday;
+        OutString(100,0,vday,false);
         GetFullCurncyRate(CurList[0],day,fr,to1,to2,br1,br2);
         OutString(160,0,to1,false);
         for (curi=1;curi<CurList.length;curi=curi+1) begin
@@ -383,6 +386,14 @@ begin
       EndFormat;
       day = addday(day,1);
     end;
+    Gray_Divider(0,1);
+    StartFormat(15);
+      OutString(20,0,"Итого:",false);
+      vday = DirectorDayCalc(RepSpec,day);
+      tot = tot + vday;
+      OutString(100,0,tot,false);
+      OutString(160,0,"",false);
+    EndFormat;
 	EndJob;
 	return;
 end;
