@@ -26,7 +26,8 @@ begin
   Register("PackList History","PackList History",CoinPackListHistVc,modDromos);
   Register("Missing EANs","Missing EANs",CoinMissingEANVc,modDromos);//Edit-------------------Vitalii 16:40 13.07.2016
   Register("Price Changes","Price Changes",CoinPriceChangesVc,modDromos); //Edit***************************Sasha2,15:12 28.07.2016
-
+	
+	
 	Setting("Новые товары",NewINLClass,modPO);
 	Setting("Import IN Images",ImportImagesTClass,modIN);
   Setting("PricePoint List",PricePointListLClass,modIN);
@@ -44,6 +45,7 @@ begin
 	Setting("Customs goods description",CoinItemGoodsDecriptLClass,modDromos); //Edit***************************Sasha2,14:58 27.07.2016
   Setting("Composition descriptions",CoinComposDecriptLClass,modDromos); //Edit***************************Sasha2,14:58 27.07.2016
   Setting("Types of goods",CoinGoodsTypesLClass,modDromos); //Edit***************************Sasha2,14:58 27.07.2016
+	Setting("Корреспондирующие счета",CrspAccTClass,modNL); 
 	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
