@@ -246,10 +246,8 @@ begin
 			INr.Code = itemCode;				
 			if (ReadFirstMain(INr,1,true)) then begin
 	      if (blank(INr.BarCode) or INr.BarCode!=eanCode) then begin
-	        LogText(0,"Before:" & INr.Code & chr(9) & INr.BarCode);
 	        INr.BarCode = eanCode;
 	        RecordStore(INr,true);
-	        LogText(0,"After:" & INr.Code & chr(9) & INr.BarCode);
 	      end;
 			end;
 		end;	

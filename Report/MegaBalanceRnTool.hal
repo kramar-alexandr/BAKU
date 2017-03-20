@@ -875,7 +875,6 @@ begin
 			
 			
 			if(testf)then begin
-				logtext(0,IVr.SerNr & "   " & IVr.InvDate);
 				mtrw = matrowcnt(IVr);
 				For(i=0;i<mtrw;i=i+1) begin
 	  			matrowget(IVr,i,IVrw);
@@ -886,7 +885,6 @@ begin
 	  				if(readfirstkey("FNTransNr",IHr,3,true))then begin
 	  					INr.Code = IHr.ArtCode;
 	  					readfirstmain(INr,1,true);
-	  					LogText(0,INr.Code & " " & INr.DispGroups);
 	  					For(j=0;j<brandscnt;j=j+1) begin
 								if(setinset(aBrands[j],INr.DispGroups))then begin
 									br = j;

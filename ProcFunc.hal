@@ -1117,7 +1117,6 @@ begin
 										for(i=0;i<PayModesValues.length;i=i+1) begin  //output: USD AZN EUR terminal...
 											outstring(tab[60],0,round(IVrw.Sum/IVr.Sum4/IVrw.Quant*PayModes[PayModesValues[i]],SetRoundModeD(0)),false);
 											outstring(tab[61],0,round(IVrw.Sum/IVr.Sum4*PayModes[PayModesValues[i]],SetRoundModeD(0)),false);		
-											LogText(0,PayModesValues[i]);		
 										end;*/
 										
                 		

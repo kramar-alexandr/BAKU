@@ -335,9 +335,7 @@ updating procedure LoyaltyCardPointsRedemption(string LoyaltyCardNr,val Points,B
 begin
   record LoyaltyCardVc LCr,oldLCr;
 	
-	logtext(0,1);
-	
-  LCr.SerNr = LoyaltyCardNr;
+	LCr.SerNr = LoyaltyCardNr;
   if (ReadFirstMain(LCr,1,true)) then begin 
     RecordCopy(oldLCr,LCr);
     if (negf) then begin

@@ -221,13 +221,7 @@ BEGIN
         	if(nonblank(object) and !setinset(object,TRrw.Objects))then begin testf = false; end;
         	if(TRrw.ovst>0)then begin testf = false; end;															//Edit----------------------Dima 10.02.2015
 					
-					if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
-						logtext(0,MainAccp.AccNumber & " " & CorAccp.AccNumber & " " & object & " " & i);
-					end;
-          if (CorspTRTest(TRp,MainAccp,i,TRrw.DebVal,TRrw.CredVal) and testf) then begin// Edit ************************** Monday, 22 December 2014 13:30:12
-          	if(TRp.Number==63 and MainAccp.AccNumber=="64")then begin
-							logtext(0,MainAccp.AccNumber & " " & CorAccp.AccNumber & " " & object & " " & i);
-						end;
+					if (CorspTRTest(TRp,MainAccp,i,TRrw.DebVal,TRrw.CredVal) and testf) then begin// Edit ************************** Monday, 22 December 2014 13:30:12
             SumDebet = SumDebet + TRrw.DebVal;
             SumCredit = SumCredit + TRrw.CredVal;                    
           end;       

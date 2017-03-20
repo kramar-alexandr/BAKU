@@ -242,7 +242,6 @@ BEGIN
         end;
       end;
     end;
-//logtext(0,"Acc 18 " & accstr);
     AddEuroCurncyNomARTrRow(gTRp,accstr,otxt,"",tstr,booked,booked2,accf,false,TotSum,
                             OPrw.BankCurncy,fr,to1,to2,br1,br2,
                             curbooked,blankval,"",-1,0,blankval,bd,-1,NegativeAmountsf,taccnumber,"","");
@@ -293,7 +292,7 @@ BEGIN
               if (GetAccName(APAccb.RateGainAcc,tstr,60)==false) then begin
                 res = 1917;
                 goto LAddOPRowPayMode;
-              end; //logtext(0,"Acc 19 " & APAccb.RateGainAcc);
+              end;
               AddEuroCurncyNomARTrRow(gTRp,APAccb.RateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
@@ -301,7 +300,7 @@ BEGIN
               if (GetAccName(APAccb.RateLossAcc,tstr,60)==false) then begin
                 res = 1918;
                 goto LAddOPRowPayMode;
-              end; //logtext(0,"Acc 20 " & APAccb.RateLossAcc);
+              end;
               AddEuroCurncyNomARTrRow(gTRp,APAccb.RateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       brd,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
@@ -325,7 +324,7 @@ strang
               if (GetAccName(APAccb.BankRateGainAcc,tstr,60)==false) then begin
                 res = 24220;
                 goto LAddOPRowPayMode;
-              end; //logtext(0,"Acc 21 " & APAccb.BankRateGainAcc);
+              end;
               AddEuroCurncyNomARTrRow(gTRp,APAccb.BankRateGainAcc,otxt,"",tstr,brd,brd2,true,rgdc1,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
@@ -334,7 +333,6 @@ strang
                 res = 24221;
                 goto LAddOPRowPayMode;
               end;
-//logtext(0,"Acc 22 " & APAccb.BankRateLossAcc);
               AddEuroCurncyNomARTrRow(gTRp,APAccb.BankRateLossAcc,otxt,"",tstr,brd,brd2,true,rgdc2,totsum,
                                       "",blankval,blankval,blankval,blankval,blankval,
                                       blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,12:11 12.02.2015
@@ -351,7 +349,6 @@ strang
       curbooked = OPrw.BankFeeVal;
       booked = MulRateToBase1(OPrw.BankCurncy,curbooked,fr,to1,to2,br1,br2,DefaultCurRoundOff);
       if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",true,taccnumber,1)) then begin end;      
-//logtext(0,"Acc 23 " & APAccb.ExtraCostAcc);
       AddEuroCurncyTrRow(gTRp,APAccb.ExtraCostAcc,"","",tstr,booked,true,true,TotSum,
                          OPrw.BankCurncy,fr,to1,to2,br1,br2,curbooked,blankval,-1,false,taccnumber);
       rowsum = rowsum + booked;
@@ -600,13 +597,13 @@ L22:;
         res = 2172;
         goto LDoBookOPVAT;
       end;
-      if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;      //logtext(0,"Acc 12.2 " & vatacc);
+      if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;
       AddEuroTrRow(gTRp,vatacc,vatobjstr,AddVATCodeToVATAccRows(OPrwp.VATCode),tstr,rd,baserate1,baserate2,true,dc1,totsump,false,taccnumber,"","");
       if (GetAccName(VATCoderw.PurchVATAcc,tstr,60)==false) then begin
         res = 2171;
         goto LDoBookOPVAT;
       end;
-      if (CheckTTRPerRow("OPVc",VATCoderw.PurchVATAcc,vatobjstr,dc2,taccnumber,1)) then begin end;    //logtext(0,"Acc 12.3 " & VATCoderw.PurchVATAcc);   
+      if (CheckTTRPerRow("OPVc",VATCoderw.PurchVATAcc,vatobjstr,dc2,taccnumber,1)) then begin end;
       AddEuroTrRow(gTRp,VATCoderw.PurchVATAcc,vatobjstr,AddVATCodeToVATAccRows(VATCoderw.VATCode),tstr,rd,baserate1,baserate2,true,dc2,totsump,false,taccnumber,"","");
     end else begin
       paidv = VIPaidAmount(VIr,OPp.SerNr);
@@ -636,13 +633,13 @@ L22:;
             res = 2172;
             goto LDoBookOPVAT;
           end;
-          if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;    //logtext(0,"Acc 12.4 " & vatacc);   
+          if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;
           AddEuroTrRow(gTRp,vatacc,vatobjstr,AddVATCodeToVATAccRows(VATrw.VATCode),tstr,rd,baserate1,baserate2,true,dc1,totsump,false,taccnumber,"","");
           if (GetAccName(pvatacc,tstr,60)==false) then begin
             res = 2171;
             goto LDoBookOPVAT;
           end;
-          if (CheckTTRPerRow("OPVc",pvatacc,vatobjstr,dc2,taccnumber,1)) then begin end;      //logtext(0,"Acc 12.5 " & pvatacc); 
+          if (CheckTTRPerRow("OPVc",pvatacc,vatobjstr,dc2,taccnumber,1)) then begin end;
           AddEuroTrRow(gTRp,pvatacc,vatobjstr,AddVATCodeToVATAccRows(VATrw.VATCode),tstr,rd,baserate1,baserate2,true,dc2,totsump,false,taccnumber,"","");
         end;
       end;
@@ -746,7 +743,7 @@ begin
         ors = Round(ors,DefaultCurRoundOff);
          
         if (ors!=0) then begin
-          if (CheckTTRPerRow("OPVc",VIr.APAcc,otxt,dc1,taccnumber,1)) then begin end;      //logtext(0,"Acc 12.6 " & VIr.APAcc);
+          if (CheckTTRPerRow("OPVc",VIr.APAcc,otxt,dc1,taccnumber,1)) then begin end;
           AddEuroTrRow(gTRp,VIr.APAcc,otxt,false,tstr,ors,baserate1,baserate2,false,dc2,totsum,false,taccnumber,"","");
           if (ors>0) then begin
             accstr = APAccb.RateLossAcc;
@@ -761,7 +758,7 @@ begin
               goto LPostBaseCur1RemainingBalance;
             end;
           end;        
-          if (CheckTTRPerRow("OPVc",accstr,otxt,dc1,taccnumber,1)) then begin end;      //logtext(0,"Acc 12.7 " & accstr);
+          if (CheckTTRPerRow("OPVc",accstr,otxt,dc1,taccnumber,1)) then begin end;
           AddEuroTrRow(gTRp,accstr,otxt,false,tstr,ors,baserate1,baserate2,false,dc1,totsum,false,taccnumber,"","");
         end;
       end;
@@ -982,7 +979,7 @@ BEGIN
                 res = 2121;
                 goto LMakeTransFromOP2;
               end;
-              if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,1)) then begin end; //logtext(0,"Acc 1 " & APAccb.ExtraCostAcc);     
+              if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,1)) then begin end;
               AddEuroCurncyTrRow(gTRp,APAccb.ExtraCostAcc,OPrw.Objects,"",tstr,rs,false,dc1,
                                  totsum,OPrw.BankCurncy,frrate,torate1,torate2,baserate1,baserate2,OPrw.BankVal,blankval,-1,false,taccnumber); //Edit***************************Sasha2,10:37 10.02.2015
             end;
@@ -994,7 +991,7 @@ BEGIN
                 res = 2121;
                 goto LMakeTransFromOP2;
               end;
-              if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,1)) then begin end;      //logtext(0,"Acc 2 " & APAccb.ExtraCostAcc); 
+              if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,1)) then begin end;
               AddEuroCurncyTrRow(gTRp,APAccb.ExtraCostAcc,OPrw.Objects,"",tstr,rs,false,dc1,
                                  totsum,OPrw.BankCurncy,frrate,torate1,torate2,baserate1,baserate2,OPrw.BankVal,blankval,-1,false,taccnumber); //Edit***************************Sasha2,10:37 10.02.2015
             end;
@@ -1085,11 +1082,11 @@ BEGIN
                 Base1ToBase2(prepbook,OPp.TransDate,prepbook2);
               end;
             end;            
-            if (OPp.APonTR!=0) then begin //logtext(0,"Acc 3 " & onaccacc); 
+            if (OPp.APonTR!=0) then begin
               AddEuroCurncyNomARTrRow(gTRp,onaccacc,otxt,"",tstr,rs,rs2,false,onaccdc1,totsum,
                   OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,pinvval,blankval,
                   OPrw.VECode,OPrw.VISerNr,2,blankval,OPp.PayDate,-1,false,taccnumber,"",""); 
-            end else begin //logtext(0,"Acc 4 " & onaccacc); 
+            end else begin
               AddEuroCurncyTrRow(gTRp,onaccacc,otxt,"",tstr,rs,false,onaccdc1,totsum,
                          OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,pinvval,blankval,-1,false,taccnumber); 
             end;
@@ -1250,11 +1247,11 @@ BEGIN
             brd2 = brd2 - rd2;
 
             if (CheckTTRPerRow("OPVc",accstr,otxt,dc1,taccnumber,1)) then begin end;      
-            if (OPp.APonTR!=0) then begin //logtext(0,"Acc 5 " & accstr); 
+            if (OPp.APonTR!=0) then begin
               AddEuroCurncyNomARTrRow(gTRp,accstr,otxt,"",ftxt,ors,ors2,false,dc1,totsum,
                 OPrw.PInvCurncy,VIr.FrRate,VIr.ToRateB1,VIr.ToRateB2,VIr.BaseRate1,VIr.BaseRate2,v,blankval,
                 OPrw.VECode,OPrw.VISerNr,2,blankval,OPp.PayDate,-1,NegativeAmountsf,taccnumber,"","");
-            end else begin //logtext(0,"Acc 6 " & accstr); 
+            end else begin
               AddEuroCurncyTrRow(gTRp,accstr,otxt,"",ftxt,ors,false,dc1,totsum,
                 OPrw.PInvCurncy,VIr.FrRate,VIr.ToRateB1,VIr.ToRateB2,VIr.BaseRate1,VIr.BaseRate2,v,blankval,-1,NegativeAmountsf,taccnumber); 
             end;
@@ -1279,12 +1276,12 @@ BEGIN
                   end;
                   tstr = tstr & OPrw.VISerNr;
                 end;
-                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //logtext(0,"Acc 7 " & APAccb.RateGainAcc); 
+                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin
                   AddEuroCurncyNomARTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                           OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
                                           blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
   //                AddEuroTrRow(gTRp,APAccb.RateGainAcc,"","",tstr,rd,1,0,true,dc2,totsum,false,"","","");
-                end else begin //logtext(0,"Acc 8 " & APAccb.RateGainAcc); 
+                end else begin
                   AddEuroTrRow(gTRp,APAccb.RateGainAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
                 end;
               end;
@@ -1306,12 +1303,12 @@ BEGIN
                   end;
                   tstr = tstr & OPrw.VISerNr;
                 end;
-                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin //logtext(0,"Acc 9 " & APAccb.RateLossAcc); 
+                if (TypeOfCurncy(OPrw.PInvCurncy,oldstyle)==2) then begin
                   AddEuroCurncyNomARTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,0,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                           OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,
                                           blankval,blankval,"",-1,0,blankval,bd,-1,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
   //              AddEuroTrRow(gTRp,APAccb.RateLossAcc,"","",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","","");
-                end else begin //logtext(0,"Acc 10 " & APAccb.RateLossAcc); 
+                end else begin
                   AddEuroTrRow(gTRp,APAccb.RateLossAcc,OPrw.Objects,"",tstr,rd,baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","",""); //Edit***************************Sasha2,10:37 10.02.2015
                 end;
               end;
@@ -1331,7 +1328,7 @@ BEGIN
                     tstr = tstr & ", ";
                   end;
                   tstr = tstr & OPrw.VISerNr;
-                end; //logtext(0,"Acc 11 " & APAccb.BankRateGainAcc);
+                end;
                 AddEuroCurncyTrRow(gTRp,APAccb.BankRateGainAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                  bcur.BaseCur2,blankval,blankval,blankval,baserate1,baserate2,brd2,blankval,-1,false,""); //trrwcnt-2);
               end;
@@ -1349,7 +1346,7 @@ BEGIN
                     tstr = tstr & ", ";
                   end;
                   tstr = tstr & OPrw.VISerNr;
-                end; //logtext(0,"Acc 12 " & APAccb.BankRateLossAcc);
+                end;
                 AddEuroCurncyTrRow(gTRp,APAccb.BankRateLossAcc,OPrw.Objects,"",tstr,brd,APAccb.BookRateGainPerOPRow==0,dc2,totsum,
                                  bcur.BaseCur2,blankval,blankval,blankval,baserate1,baserate2,brd2,blankval,-1,false,""); //trrwcnt-2); 
               end;
@@ -1362,7 +1359,7 @@ BEGIN
               tstr = tstr & OPrw.VISerNr;
             end;
             for (k=0;k<SameAccCnt;k=k+1) begin
-              if (SameAccCases[SameAccNames[k]]>1) then begin //logtext(0,"Acc 12.1 " & accstr);
+              if (SameAccCases[SameAccNames[k]]>1) then begin
                 AddEuroTrRow(gTRp,SameAccNames[k],OPrw.Objects,"",tstr,SameAccVal[SameAccNames[k]],baserate1,baserate2,APAccb.BookRateGainPerOPRow==0,dc2,totsum,false,"","","");
                 SameAccVal[SameAccNames[k]] = 0;
               end;
@@ -1370,7 +1367,7 @@ BEGIN
             PostBaseCur1RemainingBalance(gTRp,VIr,OPrw,APAccb,baserate1,baserate2,dc1,dc2,totsum);
           end else begin
             rs = MulRateToBase1(OPrw.PInvCurncy,v,frrate,torate1,torate2,baserate1,baserate2,DefaultCurRoundOff);
-            if (CheckTTRPerRow("OPVc",accstr,otxt,dc1,taccnumber,1)) then begin end;    //logtext(0,"Acc 13 " & accstr);   
+            if (CheckTTRPerRow("OPVc",accstr,otxt,dc1,taccnumber,1)) then begin end;
             AddEuroCurncyTrRow(gTRp,accstr,otxt,"",ftxt,rs,accf,dc1,totsum,
                          OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,v,blankval,-1,false,taccnumber); 
           end;
@@ -1401,7 +1398,7 @@ BEGIN
             res = 2132;
             goto LMakeTransFromOP2;
           end;
-          if (CheckTTRPerRow("OPVc",accstr,OPrw.Objects,dc2,taccnumber,1)) then begin end;     //logtext(0,"Acc 14 " & accstr);     
+          if (CheckTTRPerRow("OPVc",accstr,OPrw.Objects,dc2,taccnumber,1)) then begin end;
           AddEuroCurncyTrRow(gTRp,accstr,OPrw.Objects,"",tstr,rs,false,dc2,totsum,
                              OPrw.BankCurncy,frrate,torate1,torate2,baserate1,baserate2,rebval,blankval,-1,false,taccnumber); 
 //                AddEuroTrRow(gTRp,accstr,OPrw.Objects,"",tstr,rs,baserate1,baserate2,false,dc2,totsum,false,taccnumber,"","");
@@ -1440,7 +1437,7 @@ this must be crap, we need to post settlment discount VAT , same as in SL
                 res = 2132;
                 goto LMakeTransFromOP2;
               end;
-              if (CheckTTRPerRow("OPVc",ftxt,"",dc1,taccnumber,1)) then begin end;      //logtext(0,"Acc 15 " & ftxt); 
+              if (CheckTTRPerRow("OPVc",ftxt,"",dc1,taccnumber,1)) then begin end;
               AddEuroTrRow(gTRp,ftxt,OPrw.Objects,AddVATCodeToVATAccRows(OPrw.VATCode),tstr,rs,baserate1,baserate2,sumrowf,dc1,totsum,false,taccnumber,"",""); 
               if (GetAccName(APAccb.PVATBAcc,tstr,60)==false) then begin
                 res = 2132;
@@ -1452,7 +1449,7 @@ this must be crap, we need to post settlment discount VAT , same as in SL
                 ReadFirstMain(Accr,1,true);
                 vatcode = Accr.VATCode;
               end;
-              if (CheckTTRPerRow("OPVc",APAccb.PVATBAcc,OPrw.Objects,dc2,taccnumber,1)) then begin end;    //logtext(0,"Acc 16 " & APAccb.PVATBAcc);  
+              if (CheckTTRPerRow("OPVc",APAccb.PVATBAcc,OPrw.Objects,dc2,taccnumber,1)) then begin end;
               AddEuroTrRow(gTRp,APAccb.PVATBAcc,"",AddVATCodeToVATAccRows(vatcode),tstr,rs,baserate1,baserate2,sumrowf,dc2,totsum,false,taccnumber,"","");  //Edit***************************Sasha2,10:44 10.02.2015
             end;
           end;
@@ -1465,7 +1462,7 @@ this must be crap, we need to post settlment discount VAT , same as in SL
               res = 2121;
               goto LMakeTransFromOP2;
             end;
-            if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,0)) then begin end;  //logtext(0,"Acc 17 " & APAccb.ExtraCostAcc);      
+            if (CheckTTRPerRow("OPVc",APAccb.ExtraCostAcc,"",dc1,taccnumber,0)) then begin end;
             AddEuroCurncyTrRow(gTRp,APAccb.ExtraCostAcc,OPrw.Objects,"",tstr,rs,false,dc1,
                                totsum,OPrw.BankCurncy,frrate,torate1,torate2,baserate1,baserate2,OPrw.BankVal,blankval,-1,false,taccnumber);  //Edit***************************Sasha2,10:44 10.02.2015
           end;
@@ -1543,7 +1540,7 @@ L80:;
         if (GetAccName(OPrw.RoundOffAcc,tstr,60)==false) then begin
           res = 20099;
           goto LMakeTransFromOP2;
-        end; //logtext(0,"Acc 26 " & OPrw.RoundOffAcc); 
+        end;
         AddEuroCurncyTrRow(gTRp,OPrw.RoundOffAcc,OPrw.Objects,"",tstr,rs,false,dc2,
                        totsum,OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,OPrw.RoundOff,blankval,-1,false,""); //Edit***************************Sasha2,10:37 10.02.2015
       end;
@@ -1563,7 +1560,7 @@ L80:;
         res = 20025;
         goto LMakeTransFromOP2;
       end;
-      if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;    //logtext(0,"Acc 27 " & vatacc);    
+      if (CheckTTRPerRow("OPVc",vatacc,vatobjstr,dc1,taccnumber,1)) then begin end;
       AddEuroCurncyTrRow(gTRp,vatacc,vatobjstr,AddVATCodeToVATAccRows(OPrw.VATCode),tstr,rs,true,dc1,totsum,
                          OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,v,blankval,-1,false,taccnumber); 
 
@@ -1573,7 +1570,7 @@ L80:;
           res = 24222;
           goto LMakeTransFromOP2;
         end;
-        if (CheckTTRPerRow("OPVc",accstr,vatobjstr,dc2,taccnumber,1)) then begin end;   //logtext(0,"Acc 28 " & accstr);      
+        if (CheckTTRPerRow("OPVc",accstr,vatobjstr,dc2,taccnumber,1)) then begin end;
         AddEuroCurncyTrRow(gTRp,accstr,vatobjstr,AddVATCodeToVATAccRows(OPrw.VATCode),tstr,rs,false,dc2,totsum,
                            OPrw.PInvCurncy,frrate,torate1,torate2,baserate1,baserate2,v,blankval,-1,false,taccnumber); 
       end;
@@ -1698,7 +1695,7 @@ gain calculated in difrent place
       if (GetAccName(APAccb.RateRndOffAcc,t2,60)==false) then begin
         res = 20099;
         goto LMakeTransFromOP2;
-      end; //logtext(0,"Acc 29 " & APAccb.RateRndOffAcc); 
+      end;
       rwcnt = MatRowCnt(gTRp); //Edit***************************Sasha2,10:16 13.05.2015 {
       for (i=rwcnt-1;i>=0;i=i-1) begin
         MatRowGet(gTRp,i,gTRpw);

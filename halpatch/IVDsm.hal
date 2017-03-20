@@ -87,7 +87,7 @@ begin
 		RepSpec.sEndDate = RcVcr1.sEndDate;
 		RepSpec.Period2Str = RcVcr1.sStartDate & ":" & RcVcr1.sEndDate;
 		RepSpec.f4 = RcVcr1.f4;
-		RepSpec.ObjStr = dblstr & "," & RcVcr1.ObjStr; LogText(0,"RcVcr1.ObjStr " & RcVcr1.ObjStr);
+		RepSpec.ObjStr = dblstr & "," & RcVcr1.ObjStr;
 		RepSpec.Media = mtScreen;
 		RepSpec.flags[21] = 1;
 		RepSpec.flags[22] = 1;

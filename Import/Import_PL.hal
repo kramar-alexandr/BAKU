@@ -545,14 +545,12 @@ begin
 					INr.BarCode = barcode;
 					INr.AlternativeCode = barcode;
 					INr.EKNCode = barcode;
-					logtext(0,INr.Code);
 					recordstore(INr,true);
 				end else begin
 					if(blank(INr.BarCode) and nonblank(INr.AlternativeCode) and INr.AlternativeCode!=barcode)then begin
 						INr.BarCode = barcode;
 						INr.AlternativeCode = barcode;
 						INr.EKNCode = barcode;
-						logtext(0,INr.Code);
 						recordstore(INr,true);
 					end;
 				end;

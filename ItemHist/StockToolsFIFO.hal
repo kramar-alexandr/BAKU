@@ -1820,7 +1820,6 @@ begin
 													indate = sourceIHr.InDate;
   												infile = sourceIHr.InFileName;
 													totcostpricecurncy = sourceIHr.TotCostPriceCurncy/-sourceIHr.Qty*IHr.Qty;
-													//logtext(0,sourceIHr.SerNr & " " & curncy & " " & totcostpricecurncy);
   											end;
   end;
   IHr.CurncyCode = curncy;

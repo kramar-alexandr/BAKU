@@ -1583,7 +1583,7 @@ begin
   	end;
   end;
   
-  ResetCompany(oldcompany);LogText(0,"cnt " & cnt);
+  ResetCompany(oldcompany);
 	
 return;
 end; //Edit***************************Sasha2,16:29 12.02.2015 }
@@ -1816,7 +1816,6 @@ begin
 				if(IHr.CurncyCode==INr.LastPurchCurncyCode and round(INr.LastPurchPrice2,defaultcurroundoff)<round(cost,defaultcurroundoff))then begin
 					recordcopy(oldINr,INr);
 					INr.LastPurchPrice2 = IHr.TotCostPriceCurncy/IHr.Qty;
-					logtext(0,INr.Code & "_" & INr.LastPurchPrice2);
 					recordupdate(oldINr,INr,true);
 				end;
       end;
@@ -3956,7 +3955,7 @@ begin
       testf = true;
       monthyear = GetMonth(TRr.TransDate) & "_" & GetYear(TRr.TransDate);
       if (rates[monthyear]==0) then begin testf = false; end;
-      if (TRr.TransDate>=mindate) then begin testf = false; TrHs = false; end; //LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number & " ,testf:" & testf);
+      if (TRr.TransDate>=mindate) then begin testf = false; TrHs = false; end;
       if (testf) then begin
         rwcnt = MatRowCnt(TRr);
         if (rwcnt>0) then begin
@@ -3982,7 +3981,7 @@ begin
           if (tosavef) then begin
             TRSumup(TRr,t);
             t = TRr.DSum - AbsoluteVal(TRr.CSum);
-            if (t!=0) then begin //LogText(0,"TRr.IntYc:" & StrTRCode(TRr.IntYc) & "." &  TRr.Number);
+            if (t!=0) then begin
               ClearRow(TRr,TRrw,1);
               TRrw.AccNumber = "84/02";
               MatRowInsert(TRr,rwcnt,TRrw);
@@ -4358,7 +4357,7 @@ begin
       	  end else begin
       	    INr.DispGroups = dispbuildstr;
       	  end;
-      	  RECORDSTORE(INr,true); LogText(0,INr.Code);
+      	  RECORDSTORE(INr,true);
         end;
       end; 	  
   	end;

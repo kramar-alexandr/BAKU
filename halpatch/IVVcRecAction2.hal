@@ -407,8 +407,6 @@ begin
 		OfficialSerNr = "FK/" & year & "/" & month & "/" & SerNumber;
 	end;
 
-	//LogText(0, lastDate & " + " & IVloop.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber & " % " & cashPayments);
-
 GetNextOfficialSerNr_IV = OfficialSerNr;
 return;
 end;

@@ -317,7 +317,6 @@ record CUVc CUr;
 	companiesLength = 0;
 	if (nonblank(RepSpec.f3)) then begin		//Edit----------------------Dima  07.07.2015
 		companiesStr = RepSpec.f3;
-		LogText(0,companiesStr);
 		pos = 0;
 		ExtractObj(companiesStr,pos,temp);
 		while(nonblank(temp)) begin

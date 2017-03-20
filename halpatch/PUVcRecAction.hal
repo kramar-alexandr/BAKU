@@ -158,7 +158,6 @@ begin
 	
 	OfficialSerNr = year & "/" & month & "/" & SerNumber;
 	
-	//LogText(0, lastDate & " + " & PUr.SerNr & " * " & lastOffSerNr & "    ---==    " & lastNumber);
 
 GetNextOfficialSerNr = OfficialSerNr;
 return;

@@ -697,9 +697,6 @@ BEGIN
 													CustomerCredit[index] = CustomerCredit[index] + TRrw.CurCredVal;
 													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + TRrw.CredVal;
 												end else begin
-													if(customer=="FOUNDER_3")then begin
-														//logtext(0,TRr.Number & " " & TRrw.CurDebVal - TRrw.CurCredVal & "  " & TRrw.Curncy);
-													end;
 													CustomerBeginBal[index] = CustomerBeginBal[index] + (TRrw.CurDebVal - TRrw.CurCredVal);
 													CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (TRrw.DebVal - TRrw.CredVal);
 												end;
@@ -779,9 +776,6 @@ BEGIN
 													CustomerCredit[index] = CustomerCredit[index] + FBrw.CurCredVal;
 													CustomerCredit[index & ":BASE"] = CustomerCredit[index & ":BASE"] + FBrw.CredVal;
 												end else begin
-														if(customer=="FOUNDER_3")then begin
-															//logtext(0,FBr.SerNr & " " & FBrw.CurDebVal - FBrw.CurCredVal & "  " & FBrw.CurncyCode);
-														end;
 														CustomerBeginBal[index] = CustomerBeginBal[index] + (FBrw.CurDebVal - FBrw.CurCredVal);
 														CustomerBeginBal[index & ":BASE"] = CustomerBeginBal[index & ":BASE"] + (FBrw.DebVal - FBrw.CredVal);
 												end;

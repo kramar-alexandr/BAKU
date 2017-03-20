@@ -282,7 +282,6 @@ begin
       errorcode = Right(tstr,len(tstr)-1);
       res = StringToInt(errorcode);
     end;
-//LogText(0,"DBG.response " & response & " tstr " & tstr & " errorcode " & errorcode & " res " & res & " Left(tstr,1) " & Left(tstr,1));
     if (res!=noErr) then begin
       CtrlSeq = "trcancel" & chr(POSNET_FS);
       res2 = POSNETWrite(CtrlSeq,POSNETPROTOCOL_LONGDELAY);
@@ -311,7 +310,6 @@ begin
  
   CtrlSeq = chr(POSNET_STX) & aCtrlSeq & "#" & CalculateControlSum(aCtrlSeq) & chr(POSNET_ETX);
 
-//LogText(0,"DBG.POSNETWrite aCtrlSeq " & aCtrlSeq & " CalculateControlSum(aCtrlSeq) " & CalculateControlSum(aCtrlSeq));
 
 /*
   res = -3;
@@ -342,7 +340,6 @@ begin
   response = ""; 
   CtrlSeq = chr(POSNET_STX) & aCtrlSeq & "#" & CalculateControlSum(aCtrlSeq) & chr(POSNET_ETX);
 
-//LogText(0,"POSNETWriteAndGetResponse aCtrlSeq=" & aCtrlSeq);
 
 /*
   res = -5;

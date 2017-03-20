@@ -254,9 +254,6 @@ begin
 				outstring(0,0,"Валюта",false);
 			endformat;
 			
-			logtext(0,User.Code);
-			logtext(0,lastactday);
-			
 			While(loopbackkey("TransDate",PLHr,2,TrHs))begin
 				testf = true;
 				if(PLHr.TransDate<lastactday)then begin TrHs = false; testf = false; end;

@@ -298,7 +298,6 @@ works difrently only for value ZERO ?  how intuitive it is ?
 			TRrp.CurDebVal = TRrp.DebVal;
 		end;
 	end;
- LogText(0,TRrp.Curncy & "  " & TRrp.ToRateB1);
   if ((nonblank(TRrp.DebVal)) and
       ((blank(TRrp.ToRateB1)) and (blank(TRrp.ToRateB2)))) then begin
     tor1 = blankval;

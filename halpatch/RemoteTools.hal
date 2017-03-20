@@ -562,7 +562,6 @@ BEGIN
 //this is not needed ORrw.Shipd1 - ORrw.Invd should already give returned qty
 //            IVrw.Quant = SHrw.Ship - v;
             IVrw.Quant = ORrw.Shipd1 - ORrw.Invd - vinvd[SHrw.OrdRow]- v;
-//LogText(0,"IVrw.ArtCode " & IVrw.ArtCode & " ORrw.Shipd1 " & ORrw.Shipd1 & " ORrw.Invd " & ORrw.Invd & " v " & v & " vinvd[SHrw.OrdRow] " & vinvd[SHrw.OrdRow]);
             if (IVrw.Quant>SHrw.Ship) then begin
               IVrw.Quant = SHrw.Ship;
             end;

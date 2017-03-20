@@ -155,7 +155,6 @@ begin
 	end;
 	
 	for(i=0;i<step;i=i+1) begin
-		//LogText(0,location &  ":   " & dates[i] & " - " & curQty[i]);	
 		if ((curQty[i]==0) and (periodContinue)) then begin
 			periodContinue = false;
 			endPeriod = dates[i];

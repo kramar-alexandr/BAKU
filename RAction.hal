@@ -226,7 +226,6 @@ begin
 	LCr.StartDate = currentdate;
 	LCr.CustName = CUr.Name;
 	//recordinsert(LCr,true);
-	//logtext(0,1);
 	
 return;
 end;

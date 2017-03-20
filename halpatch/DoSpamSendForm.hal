@@ -315,7 +315,6 @@ BEGIN
   recordStore(Docr,true);
   Docr.Code = "XTEMDOC";
   readfirstmain(Docr,1,true);
-	///logtext(0,Docr.UUID);
 	
   frcu = firstinrange(RepSpec.f1,20);
   tocu = lastinrange(RepSpec.f1,20);

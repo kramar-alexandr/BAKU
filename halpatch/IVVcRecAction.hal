@@ -1232,8 +1232,6 @@ LkInvoiceTypeCredit:;
 				delta = 10;
 			end;
       if (testf and AbsoluteVal(cash-IVp.Sum4)>delta) then begin
-      logtext(0,cash & " " & IVp.Sum4);
-      //messagebox(0,cash & " " & IVp.Sum4);
         RecordCheckError(24177,"",MatRowCnt(IVp),"Sum");      
         res = -1; 
         goto L99;
@@ -1343,7 +1341,6 @@ LIVVcRecordCheck_GenTrans:;
   if (HasLocalization("POL") and (IsStandardProduct)) then begin
     transf = HasModNL;
   end;
-  //logtext(0,"transf " & transf);
   if (transf) then begin
     errcode = MakeTransFromIV(gTRp,gSMp,IVp,false,false,fifocurIVr); //Edit***************************Sasha2,15:47 18.03.2015
     if (errcode==0) then begin

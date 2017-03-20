@@ -720,7 +720,6 @@ boolean res;
 	if(fileexists(filename))then begin
 						
 		AddAttachFileToArea(Attachr,aimage,false);
-		logtext(0,Attachr.FileName);
 		res = true;
 		//writeareatofile(attachnew,"PriceList/Images/" & Attachr.UUID & right(Attachr.FileName,4),0);
 	end;

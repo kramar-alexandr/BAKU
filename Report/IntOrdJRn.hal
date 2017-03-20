@@ -116,7 +116,7 @@ begin
 
   rw = 1;
   afr = FirstInRange(RepSpec.f1,30);
-  ato = LastInRange(RepSpec.f1,30); LogText(0,"ffffff" & ato);
+  ato = LastInRange(RepSpec.f1,30);
 
   TotSum = 0;
   StartReportJob(USetStr(4951));

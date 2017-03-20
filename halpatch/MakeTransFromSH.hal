@@ -391,7 +391,7 @@ BEGIN
   BlockLoad(TRGenRec);
   BlockLoad(MainStockRec);
   BlockLoad(PRAb);  
-LogText(0,"MakeTransFromSH");
+
   sumupf = true;
   if (CAb.CorespondingAccounts!=0) then begin
     sumupf = false;

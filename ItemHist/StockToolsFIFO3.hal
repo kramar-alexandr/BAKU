@@ -909,7 +909,6 @@ begin
       sourceIHr.RemQty = sourceIHr.RemQty - useqty;
       sourceIHr.RemCostPrice = sourceIHr.RemCostPrice - IHr.TotCostPrice;
       sourceIHr.RemCostPriceCurncy = sourceIHr.RemCostPriceCurncy + sourceIHr.TotCostPriceCurncy/sourceIHr.Qty*IHr.Qty;// Edit ************************** Monday, 12 May 2014 10:32:08
-      //Logtext(0,"StoreItemHistory_Out_Hist" & " " & IHr.ArtCode & " " & IHr.Source & " " & sourceIHr.RemCostPrice);
       totsourcecost = totsourcecost + IHr.TotCostPrice;
       if (RecordUpdate(oldsourceIHr,sourceIHr,false)==0) then begin end;
     end;

@@ -1167,7 +1167,6 @@ end;
 										if(RepSpec.sEndDate>stringtodate("30/6/" & getYear(tempsd)))then begin
 											RepSpec.sEndDate = stringtodate("30/6/" & getYear(tempsd));
 										end;
-																				logtext(0,tempsd & "  " & temped);
 
 						case 3:	tempsd = RepSpec.sStartDate;
 
