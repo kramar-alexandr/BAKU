@@ -1119,7 +1119,7 @@ not needed any more
             if (INr.SerNrf>0) then begin  
               if (blank(IVrw.SerialNr)) then begin
                 if (IVrw.NotUpdStockFlag==0) then begin
-                  if (IVrw.Quant!=0) then begin
+                  if (IVrw.Quant!=0 and IVp.OKFlag==1) then begin //Edit***************************Sasha2,17:51 31.03.2017
                      RecordCheckError(1239,"",i,"SerialNr");      
                      res = -1; 
                      goto L99;
