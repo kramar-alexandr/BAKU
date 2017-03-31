@@ -40,6 +40,7 @@ external procedure IVDchsum(var record IVVc,Integer); //Edit********************
 external function Boolean IVDchrsum(var record IVVc,Integer); //Edit***************************Sasha2,16:46 01.06.2016
 external function string 20 ReturnFieldDITypeNotJW(string); //Edit***************************Sasha2,16:50 14.06.2016
 external function Boolean SetInSet2(string,string);
+external updating procedure CalcPriceListsMn(record RcVc); //Edit***************************Sasha2,10:15 31.03.2017
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -4834,3 +4835,89 @@ begin
 
   return;
 end; //Edit***************************Sasha2,15:26 01.02.2017 }
+
+global //Edit***************************Sasha2,9:56 31.03.2017 {
+updating procedure UpdateSellPricesViaCustomRatesMn(record RcVc RepSpec)
+begin
+  record RcVc RepSpec2;
+  record INVc INr;
+  record PLVc PLr;
+  Boolean testf;
+  val EURrate,USDrate,CHFrate;
+  roundmode rnd;
+  
+    rnd = DefaultValRoundoff;
+    rnd.decimals = 0;
+    rnd.step = kRoundingStepNone;
+    rnd.mode = kRoundingModeHalfUp;
+    
+    if (NonBlank(RepSpec.f1)) then begin
+      EURrate = AbsoluteVal(RepSpec.vals0);
+      USDrate = AbsoluteVal(RepSpec.vals1);
+      CHFrate = AbsoluteVal(RepSpec.vals2);
+      
+      RECORDNEW(RepSpec2);
+      RepSpec2.f1 = "RRP";
+      RepSpec2.f3 = RepSpec.f1; //item group
+      CalcPriceListsMn(RepSpec2);
+      
+      INr.Code = "";
+      while (LoopMain(INr,1,true)) begin
+        testf = true;
+        if (NonBlank(RepSpec.f1) and RepSpec.f1!=INr.Group) then begin testf = false; end;
+        if (NonBlank(RepSpec.f2) and SetInSet(RepSpec.f2,INr.DispGroups)==false) then begin testf = false; end;
+        if (testf) then begin
+          PLr.PLCode = "RRP";
+          PLr.ArtCode = INr.Code;
+          if (ReadFirstMain(PLr,2,true)) then begin
+            if (PLr.ExVatPrice<>0) then begin
+              switch (PLr.CurncyCode) begin
+                case "EUR":
+                  if (EURrate<>0) then begin
+                    PLr.ExVatPrice = Round(PLr.ExVatPrice*EURrate,rnd);
+                    PLr.CurncyCode = "AZN";
+                    RECORDSTORE(PLr,true);
+                  end;
+                case "USD":
+                  if (USDrate<>0) then begin
+                    PLr.ExVatPrice = Round(PLr.ExVatPrice*USDrate,rnd);
+                    PLr.CurncyCode = "AZN";
+                    RECORDSTORE(PLr,true);
+                  end;
+                case "CHF":
+                  if (CHFrate<>0) then begin
+                    PLr.ExVatPrice = Round(PLr.ExVatPrice*CHFrate,rnd);
+                    PLr.CurncyCode = "AZN";
+                    RECORDSTORE(PLr,true);
+                  end;
+              end;
+            end;
+          end;
+        end;
+      end;
+         
+    end;
+
+  return;
+end; //Edit***************************Sasha2,9:56 31.03.2017 }
+
+global //Edit***************************Sasha2,9:56 31.03.2017 {
+updating procedure SetItemGroupByClassificationMn(record RcVc RepSpec)
+begin
+  record INVc INr;
+  Boolean testf;
+
+    if (NonBlank(RepSpec.f1) and NonBlank(RepSpec.f2)) then begin
+      INr.Code = "";
+      while (LoopMain(INr,1,true)) begin
+        testf = true;
+        if (SetInSet(RepSpec.f2,INr.DispGroups)==false) then begin testf = false; end;
+        if (testf) then begin
+          INr.Group = RepSpec.f1;
+          RECORDSTORE(INr,true);
+        end;
+      end;
+    end;
+
+  return;
+end; //Edit***************************Sasha2,9:56 31.03.2017 }

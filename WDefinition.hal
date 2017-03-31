@@ -2000,3 +2000,39 @@ Integer i;
     SearchField("Search");
   EndWindow;
 end;
+
+window UpdateSellPricesViaCustomRatesVClass:1 //Edit***************************Sasha2,10:13 31.03.2017 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите перерасчет цен по курсам",UpdateSellPricesViaCustomRatesVClass,CGMnt,RcType);
+  SetWRect(20,80,450,208);
+  h = 170; vs = 20; v = 6;
+  
+  EditFieldTL(h,v,100,"Группа товаров",M4Code,Normal,5,f1,false,ITSClass);
+  EditFieldTL(h,v+=vs,100,"Классификация",M4Code,Normal,100,f2,false,DISClass);
+  v = v + vs;
+  EditFieldTL(h,v+=vs,40,"EUR 1 :",M4UVal,Normal,10,vals0,false,0);
+  StaticText(h+50,v+vs/2,"AZN",false);
+  EditFieldTL(h,v+=vs,40,"USD 1 :",M4UVal,Normal,10,vals1,false,0);
+  StaticText(h+50,v+vs/2,"AZN",false);
+  EditFieldTL(h,v+=vs,40,"CHF 1 :",M4UVal,Normal,10,vals2,false,0);
+  StaticText(h+50,v+vs/2,"AZN",false);
+  
+
+  EndWindow;
+end; //Edit***************************Sasha2,10:13 31.03.2017 }
+
+window SetItemGroupByClassificationVClass:1 //Edit***************************Sasha2,10:13 31.03.2017 {
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите класс-цию и соответствующую ей группу",SetItemGroupByClassificationVClass,CGMnt,RcType);
+  SetWRect(20,80,450,208);
+  h = 170; vs = 20; v = 6;
+  
+  EditFieldTL(h,v,100,"Группа товаров",M4Code,Normal,5,f1,false,ITSClass);
+  EditFieldTL(h,v+=vs,100,"Классификация",M4Code,Normal,100,f2,false,DISClass);
+
+  EndWindow;
+end; //Edit***************************Sasha2,10:13 31.03.2017 }
