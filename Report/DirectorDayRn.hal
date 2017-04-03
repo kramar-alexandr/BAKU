@@ -14,7 +14,7 @@ begin
 	record MainVc mainr;
 	record TRVc TRr,tempTRr,tempTRr2;
 	row TRVc TRrw,tempTRrw,tempTRrw2,tempTRrw3;
-	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr8403,Accr76,Accr7505,Accr53,Accr601;
+	record AccVc Accr50,Accr58,Accr4403,Accr51,Accr52,Accr8403,Accr76,Accr7505,Accr53,Accr601;
 	integer i,j,k,l,rwcnt,rwcnt2;
 	boolean TrHs,testf,done;
 	val BaseDeb,corspdebval,corspcredval;
@@ -27,6 +27,8 @@ begin
 	ReadFirstMain(Accr50,1,true);
 	Accr51.AccNumber = "51";
 	ReadFirstMain(Accr51,1,true);
+  Accr52.AccNumber = "52";
+	ReadFirstMain(Accr52,1,true);
 	Accr58.AccNumber = "58";
 	ReadFirstMain(Accr58,1,true);
 	Accr4403.AccNumber = "44/03";
@@ -127,6 +129,11 @@ begin
 							end;
 							
 							testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
+							if testf then begin
+								tempTRrw.DebVal = blankval;
+							end;
+              
+              testf = CorspTRTest(TRr,Accr52,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
 							if testf then begin
 								tempTRrw.DebVal = blankval;
 							end;
