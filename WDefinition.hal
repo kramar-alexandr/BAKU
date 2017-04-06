@@ -2036,3 +2036,15 @@ begin
 
   EndWindow;
 end; //Edit***************************Sasha2,10:13 31.03.2017 }
+
+
+window GiftCertRClass:1			//Edit----------------------Dima  26.02.2016
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real v,vs,h;
+WindowBegin("Отчет по подарочным сертификатам",GiftCertRClass,CGRcW,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+
+  EndWindow;
+end;

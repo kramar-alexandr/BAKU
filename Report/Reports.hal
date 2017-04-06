@@ -15,7 +15,7 @@ external procedure GetObjs(string,string,var string);
 external inner procedure ExtractObj(string,var Integer,var string);
 
 
-//SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
+SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014
 
 global procedure MiddleInvoiceOrderRn(record RcVc RepSpec)
 begin
@@ -1893,7 +1893,8 @@ record GCRVc GCRr;
 		endformat;
 		end;
 		
-		
+		startformat(15);
+		endformat;
 		startformat(15);
 			outstring(0,0,"Подарочные сертификаты проданные",false);
 		endformat;
@@ -1908,7 +1909,7 @@ record GCRVc GCRr;
 			outstring(0,0,"Штрихкод",false);
 			outstring(0,0,"Остаток",false);
 		endformat;
-		while(loopmain(GCr,1,true))begin
+		while(loopmain(GCSr,1,true))begin
 			startformat(15);
 			outstring(0,0,GCSr.SerNr,false);
 			outstring(0,0,GCSr.TransDate,false);
@@ -1923,6 +1924,8 @@ record GCRVc GCRr;
 		end;
 		
 		startformat(15);
+		endformat;
+		startformat(15);
 			outstring(0,0,"Подарочные сертификаты полученные",false);
 		endformat;
 		startformat(15);
@@ -1934,7 +1937,7 @@ record GCRVc GCRr;
 			outstring(0,0,"Номер сч/ф",false);
 			outstring(0,0,"Номер проданного ПС",false);
 		endformat;
-		while(loopmain(GCr,1,true))begin
+		while(loopmain(GCRr,1,true))begin
 			startformat(15);
 			outstring(0,0,GCRr.SerNr,false);
 			outstring(0,0,GCRr.TransDate,false);
