@@ -222,7 +222,8 @@ begin
     case 23: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
     case 24: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
   end;
-  
+  Report("Отчет по подарочным сертификатам",CoinPackListRClass,GiftCertRn,0,modPOS);//Edit----------------------Dima  18.05.2016
+
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
   Document("Накопительные карточки",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);

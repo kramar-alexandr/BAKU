@@ -1859,3 +1859,93 @@ val totalSum,totalLoySum;
   
 end;
 
+global procedure GiftCertRn(record RcVc RepSpec)
+begin
+record GCVc GCr;
+record GCSVc GCSr;
+record GCRVc GCRr;
+	
+	
+	startreportnoheaderjob("Отчет по подарочным сертификатам");
+		startformat(15);
+			outstring(0,0,"Подарочные сертификаты выпущенные",false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Номер в хансе",false);
+			outstring(0,0,"Дата создания",false);
+			outstring(0,0,"Сумма",false);
+			outstring(0,0,"Магазин",false);
+			outstring(0,0,"Срок действия",false);
+			outstring(0,0,"OK Flag",false);
+			outstring(0,0,"Закрыт",false);
+			outstring(0,0,"Штрихкод",false);
+		endformat;
+		while(loopmain(GCr,1,true))begin
+			startformat(15);
+			outstring(0,0,GCr.SerNr,false);
+			outstring(0,0,GCr.TransDate,false);
+			outstring(0,0,GCr.Amount,false);
+			outstring(0,0,GCr.Comment,false);
+			outstring(0,0,GCr.ExpiryDate,false);
+			outstring(0,0,GCr.OKFlag,false);
+			outstring(0,0,GCr.Closed,false);
+			outstring(0,0,GCr.BarCode,false);
+		endformat;
+		end;
+		
+		
+		startformat(15);
+			outstring(0,0,"Подарочные сертификаты проданные",false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"Номер в хансе",false);
+			outstring(0,0,"Дата",false);
+			outstring(0,0,"Сумма",false);
+			outstring(0,0,"Магазин",false);
+			outstring(0,0,"Срок действия",false);
+			outstring(0,0,"Закрыт",false);
+			outstring(0,0,"Номер сч/ф",false);
+			outstring(0,0,"Штрихкод",false);
+			outstring(0,0,"Остаток",false);
+		endformat;
+		while(loopmain(GCr,1,true))begin
+			startformat(15);
+			outstring(0,0,GCSr.SerNr,false);
+			outstring(0,0,GCSr.TransDate,false);
+			outstring(0,0,GCSr.Amount,false);
+			outstring(0,0,GCSr.Comment,false);
+			outstring(0,0,GCSr.ExpiryDate,false);
+			outstring(0,0,GCSr.Closed,false);
+			outstring(0,0,GCSr.InvSerNr,false);
+			outstring(0,0,GCSr.BarCode,false);
+			outstring(0,0,GCSr.Balance,false);
+		endformat;
+		end;
+		
+		startformat(15);
+			outstring(0,0,"Подарочные сертификаты полученные",false);
+		endformat;
+		startformat(15);
+			outstring(0,0,"№",false);
+			outstring(0,0,"Дата",false);
+			outstring(0,0,"Сумма",false);
+			outstring(0,0,"Магзаин",false);
+			outstring(0,0,"Штрихкод",false);
+			outstring(0,0,"Номер сч/ф",false);
+			outstring(0,0,"Номер проданного ПС",false);
+		endformat;
+		while(loopmain(GCr,1,true))begin
+			startformat(15);
+			outstring(0,0,GCRr.SerNr,false);
+			outstring(0,0,GCRr.TransDate,false);
+			outstring(0,0,GCRr.Amount,false);
+			outstring(0,0,GCRr.Comment,false);
+			outstring(0,0,GCRr.BarCode,false);
+			outstring(0,0,GCRr.InvSerNr,false);
+			outstring(0,0,GCRr.GCSSerNr,false);
+		endformat;
+		end;
+	endjob;
+
+return;
+end;
