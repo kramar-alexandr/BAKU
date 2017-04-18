@@ -431,9 +431,15 @@ begin
   	while(nonblank(class)) begin
   	  DIr.Code = class;
   	  readfirstmain(DIr,1,true);
-  	  if(DIr.CType=="TYPE")then begin
-  	    classname = DIr.Name;
-  	  end;
+      if (currentcompany==25) then begin //Edit-------------------Vitalii 16:03 18.04.2017
+        if(DIr.CType=="MODEL")then begin
+          classname = DIr.Name;
+        end;
+      end else begin
+        if(DIr.CType=="TYPE")then begin
+          classname = DIr.Name;
+        end;
+      end;
   	  if(DIr.CType=="BRAND")then begin
   	    brandname = DIr.Name;
   	    brand = DIr.Code;
@@ -874,7 +880,11 @@ begin
      OutString(tab[2],0,USetStr(12501),false);
      OutString(tab[3],0,USetStr(8105),false);
      OutString(tab[31],0,USetStr(31044),false);
-     OutString(tab[32],0,USetStr(9131),false);
+     if (currentcompany==25) then begin //Edit-------------------Vitalii 15:59 18.04.2017
+      OutString(tab[32],0,USetStr(8833),false);
+     end else begin
+      OutString(tab[32],0,USetStr(9131),false);
+     end;
      OutString(tab[4],0,USetStr(31121),false);
      
      if (newreport) then begin
