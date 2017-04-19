@@ -132,6 +132,7 @@ begin
   Maintenance("Выровнять проводки с разными балансами при основной валюте",FIXVClass,FixTRCurBalanceIfBaseCurMn,modDBMain); //Edit***************************Sasha2,16:16 01.02.2017
   Maintenance("Перерасчет цен по курсам",UpdateSellPricesViaCustomRatesVClass,UpdateSellPricesViaCustomRatesMn,modDI); //Edit***************************Sasha2,10:39 31.03.2017
   Maintenance("Проставить группу товара по наличии класс-фии",SetItemGroupByClassificationVClass,SetItemGroupByClassificationMn,modIN); //Edit***************************Sasha2,11:34 31.03.2017
+  Maintenance("Убрать лишние символы из телефона контакта",EmptyVClass,CUVcPhoneClearMn,modDBMain);
   	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
@@ -671,7 +672,7 @@ begin
   
   SString(35097,"Нельзя подтвердить не свой склад ");   
   SString(35098,"Нельзя отправить не на свой склад ");     
-  
+  SString(35099,"Клиент с таким телефоном уже зарегистрирован");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

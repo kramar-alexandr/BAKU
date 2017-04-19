@@ -974,7 +974,7 @@ begin
   Boolean TrHs;
 
   BlockLoad(WCb);
-  if (WCb.UniqueMail!=0) then begin
+  //if (WCb.UniqueMail!=0) then begin //Edit-------------------Vitalii 16:55 19.04.2017
     CUr.eMail = eMail;
     TrHs = true;
     while (LoopKey("eMail",CUr,1,TrHs)) begin
@@ -986,9 +986,32 @@ begin
         end;
       end;
     end;
-  end;
+  //end;
 LCustomerWithEmailExists:;
   CustomerWithEmailExists = res;
+  return;
+end;
+
+global
+function Boolean CustomerWithPhoneExists(string cucode,string phone) //Edit-------------------Vitalii 17:08 19.04.2017
+begin
+  Boolean res;
+  record CUVc CUr;
+  Boolean TrHs;
+
+  CUr.Phone = phone;
+  TrHs = true;
+  while (LoopKey("Phone",CUr,1,TrHs)) begin
+    if (CUr.Phone!=phone) then begin TrHs = false; end;
+    if (TrHs) then begin
+      if ((blank(cucode)) or (cucode<>CUr.Code)) then begin
+        res = true; 
+        goto LCustomerWithPhoneExists;
+      end;
+    end;
+  end;
+LCustomerWithPhoneExists:;
+  CustomerWithPhoneExists = res;
   return;
 end;
 
@@ -1185,6 +1208,9 @@ BEGIN
   record TaxTemplateVc TTr;
   record ObjVc Objr;
   string 20 repeatedNameCUCode; //Edit***************************Sasha2,15:23 19.04.2017
+  string 255 phone;//Edit-------------------Vitalii 17:08 19.04.2017
+  integer chrcode;
+  string 1 char;
 
   BlockLoad(bfr);
   BlockLoad(CUUerLb);
@@ -1566,6 +1592,51 @@ BEGIN
   if nonblank(CUr.eMail) then begin
     if (CustomerWithEmailExists(CUr.Code,CUr.eMail)) then begin
       RecordCheckError(20766,tstr,-1,"eMail"); 
+      res = -1; 
+      goto LCUVcRecordCheck;
+    end;
+  end;
+  if nonblank(CUr.AltPhone) then begin //Edit-------------------Vitalii 17:08 19.04.2017
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.AltPhone);i=i+1) begin
+      char = mid(CUr.AltPhone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.AltPhone = phone;
+  end;
+  if nonblank(CUr.Mobile) then begin //Edit-------------------Vitalii 17:08 19.04.2017
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Mobile);i=i+1) begin
+      char = mid(CUr.Mobile,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Mobile = phone;
+  end;
+  
+  if nonblank(CUr.Phone) then begin //Edit-------------------Vitalii 17:08 19.04.2017
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Phone);i=i+1) begin
+      char = mid(CUr.Phone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Phone = phone;
+    if (CustomerWithPhoneExists(CUr.Code,CUr.Phone)) then begin
+      RecordCheckError(35099,tstr,-1,"Phone"); 
       res = -1; 
       goto LCUVcRecordCheck;
     end;

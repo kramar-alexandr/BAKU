@@ -4921,3 +4921,53 @@ begin
 
   return;
 end; //Edit***************************Sasha2,9:56 31.03.2017 }
+
+global
+updating procedure CUVcPhoneClearMn()
+begin
+  record CUVc CUr;
+  string 255 phone;
+  integer i,chrcode;
+  string 1 char;
+  
+  while (LoopMain(CUr,1,true)) begin
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Phone);i=i+1) begin
+      char = mid(CUr.Phone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Phone = phone;
+    
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.AltPhone);i=i+1) begin
+      char = mid(CUr.AltPhone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.AltPhone = phone;
+    
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Mobile);i=i+1) begin
+      char = mid(CUr.Mobile,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Mobile = phone;
+    RecordStore(CUr,true);
+  end;
+  
+  return;
+end;
