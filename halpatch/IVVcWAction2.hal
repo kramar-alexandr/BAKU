@@ -596,6 +596,10 @@ BEGIN
           if (UserCanAction("AllowSalesmanChange",false)) then begin
             res = true;
           end;
+        case "SalesGroup": 
+          if (UserCanAction("AllowSalesmanChange",false)) then begin
+            res = true;
+          end;
         case "PayDate": res = true;
         case "LastRemndr": res = true;
         case "LastRemDate": res = true;
