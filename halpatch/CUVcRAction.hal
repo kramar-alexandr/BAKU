@@ -1239,7 +1239,7 @@ BEGIN
     goto LCUVcRecordCheck;
   end;
   repeatedNameCUCode = CheckCUNameDuplicate(CUr); //Edit***************************Sasha2,15:21 19.04.2017 {
-  if (NonBlank(repeatedNameCUCode)) then begin
+  if (stat==insertmode and NonBlank(repeatedNameCUCode)) then begin
     MessageBox(0,"The same name in Contact card #" & repeatedNameCUCode);     
   end; //Edit***************************Sasha2,15:23 19.04.2017 }
   if (stat==insertmode) then begin
