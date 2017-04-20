@@ -91,7 +91,7 @@ begin
 
   PHr.TransNr = transnr;
   PHr.FileName = filename;
-  if (ReadFirstMain(PHr,2,true)) then begin 
+  if (ReadFirstKey("TransNr",PHr,2,true)) then begin// Edit ************************** Thursday, 20 April 2017 09:40:10
     points = PHr.Points;
     cardnr = PHr.LMCardNr;
     RecordDelete(PHr);
