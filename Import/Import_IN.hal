@@ -178,7 +178,7 @@ begin
 			discount = ImportField;
 
 
-			if(nonblank(code) and nonblank(discount)) then begin
+			if(nonblank(code) /*and nonblank(discount)*/) then begin
 
 				INr.Code = code;				
 				if (ReadFirstMain(INr,1,true)) then begin
