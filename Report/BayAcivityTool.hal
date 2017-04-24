@@ -623,24 +623,47 @@ begin
 	record IVVc IVr;
 	record LoyaltyCardVc LCr;
 	record CompaniesBlock CBb;
-	integer mtrw,i;
-	boolean TrHs,testf,findf;
-	val sum;
+	integer mtrw,i,k,arsz;
+	boolean TrHs,testf,findf,TrHsCu,testfCu;
+	val sum,psum;
 	record LocationVc Locationr;
 	integer curcomp;
+	array string 50 loycards;
+	vector boolean culoycard;
+	vector val loysum;
 	
 	curcomp = currentcompany;
+	
+	blockload(CBb);
+	mtrw = matrowcnt(CBb);
+	startreportnoheaderjob("Отчет по накопленным баллам клиента");
+	if(RepSpec.flags[0]==0)then begin
+		startformat(15);
+			outstring(0,0,"Клиент",false);
+			outstring(50,0,"Имя",false);
+			outstring(150,0,"Бутик",false);
+			outstring(250,0,"Сч/ф",false);
+			outstring(300,0,"Дата",false);
+			outstring(350,0,"Карта",false);
+			outstring(1,0,"Баллов",true);
+		endformat;
+	end else begin
+		startformat(15);
+			outstring(0,0,"Клиент",false);
+			outstring(50,0,"Имя",false);
+			outstring(150,0,"Карта",false);
+			outstring(250,0,"",false);
+			outstring(300,0,"Бал на карт.",false);
+			outstring(350,0,"Бал. по док",false);
+			outstring(1,0,"Разн.",true);
+		endformat;
+	end;
+	
 	
 	custcode = RepSpec.f1;
 	loyaltycard = RepSpec.f2;
 	findf = false;
 	sum = 0;
-	
-	CUr.Code = custcode;
-	if(readfirstmain(CUr,1,true))then begin
-		custcode = CUr.Code;
-		findf = true;
-	end;
 	
 	if(nonblank(loyaltycard))then begin
 		LCr.SerNr = loyaltycard;
@@ -655,64 +678,377 @@ begin
 		end;
 	end;
 	
+	CUr.Code = custcode;
+	TrHsCu = true;
+	while(loopmain(CUr,1,TrHsCu))begin
+		sum = 0;
+		psum = 0;
+		arsz = 0;
+		testfCu = true;
+		findf = true;
+		if(nonblank(custcode) and CUr.Code!=custcode)then begin TrHsCu = false; testfCu = false; findf = false; end;	
+	
+		if(findf)then begin
+			For(i=0;i<mtrw;i=i+1) begin
+				setcompany(i+1,false);
+				IVr.CustCode = CUr.Code;
+				TrHs = true;
+				while(loopkey("CustDate",IVr,1,TrHs))begin
+					testf = true;
+					if(IVr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+					if(IVr.OKFlag==0)then begin testf = false; end;
+					if(IVr.Invalid==1)then begin testf = false; end;
+					if(nonblank(loyaltycard) and (loyaltycard!=IVr.LoyaltyCardNr))then begin testf = false; end;
+					if(IVr.Points==0)then begin testf = false; end;
+				
+					if(testf)then begin
+						Locationr.Code = IVr.Location;
+						readfirstmain(Locationr,1,true);
+						if(RepSpec.flags[0]==0)then begin
+							startformat(15);
+								outstring(0,0,IVr.CustCode,false);
+								outstring(50,0,IVr.Addr0,false);
+								outstring(150,0,Locationr.Name,false);
+								outstring(250,"DblIVVc",IVr.SerNr,false);
+								outstring(300,0,IVr.InvDate,false);
+								outstring(350,0,IVr.LoyaltyCardNr,false);
+								outstring(1,0,IVr.Points,true);
+							endformat;
+						end else begin
+							if(culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr]==false)then begin
+								culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr] = true;
+								loycards[arsz] = IVr.LoyaltyCardNr;
+								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = IVr.Points;
+								arsz = arsz + 1;
+							end else begin
+								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] + IVr.Points;
+							end;
+						end;
+						sum = sum + IVr.Points;
+					
+					end;
+				end;
+				resetloop(IVr);
+				resetcompany(curcomp);
+			end; 
+			
+			if(RepSpec.flags[0]==0)then begin
+				Gray_Divider(0,1);
+				startformat(15);
+					outstring(0,0,"",false);
+					outstring(50,0,"",false);
+					outstring(100,0,"",false);
+					outstring(150,0,"",false);
+					outstring(200,0,"",false);
+					outstring(350,0,"",false);
+					outstring(1,0,sum,true);
+				endformat;
+			end else begin
+				psum = 0;
+				For(i=0;i<arsz;i=i+1) begin
+					LCr.SerNr = loycards[i];
+					readfirstmain(LCr,1,true);
+					//if(LCr.PointsBalance!=0 or loysum[CUr.Code & ":" & loycards[i]]!=0)then begin
+						startformat(15);
+							outstring(0,0,CUr.Code,false);
+							outstring(50,0,CUr.Name,false);
+							outstring(150,0,loycards[i],false);
+							outstring(150,0,"",false);
+							outstring(300,0,LCr.PointsBalance,false);
+							outstring(350,0,loysum[CUr.Code & ":" & loycards[i]],false);
+							psum = psum + LCr.PointsBalance;
+							outstring(1,0,LCr.PointsBalance-loysum[CUr.Code & ":" & loycards[i]],true);
+						endformat;
+					//end;
+				end; 
+				//if(psum!=0 or sum!=0)then begin
+					gray_divider(0,1);
+					startformat(15);
+						outstring(0,0,CUr.Code,false);
+						outstring(50,0,CUr.Name,false);
+						outstring(100,0,"",false);
+						outstring(150,0,"",false);
+						outstring(300,0,psum,false);
+						outstring(350,0,sum,false);
+						outstring(1,0,psum - sum,true);
+					endformat;
+				//end;
+			end;
+		end;
+	end;
+	endjob;
+
+return;
+end;
+
+
+global procedure LoyaltyCardCounterRn(record RcVc RepSpec)
+begin
+	string 20 custcode,loyaltycard;
+	record CUVc CUr;
+	record IVVc IVr;
+	record LoyaltyCardVc LCr;
+	record CompaniesBlock CBb;
+	integer mtrw,i,k,arsz;
+	boolean TrHs,testf,findf,TrHsCu,testfCu;
+	val sum,psum;
+	record LocationVc Locationr;
+	integer curcomp;
+	array string 50 loycards;
+	vector boolean culoycard;
+	vector val loysum;
+	array val loycardssum;
+	
+	curcomp = currentcompany;
+	
 	blockload(CBb);
 	mtrw = matrowcnt(CBb);
 	startreportnoheaderjob("Отчет по накопленным баллам клиента");
-	startformat(15);
-		outstring(0,0,"Клиент",false);
-		outstring(50,0,"Имя",false);
-		outstring(150,0,"Бутик",false);
-		outstring(250,0,"Сч/ф",false);
-		outstring(300,0,"Дата",false);
-		outstring(350,0,"Карта",false);
-		outstring(1,0,"Баллов",true);
-	endformat;
-
-	if(findf)then begin
-		For(i=0;i<mtrw;i=i+1) begin
-			setcompany(i+1,false);
-			IVr.CustCode = custcode;
-			TrHs = true;
-			while(loopkey("CustDate",IVr,1,TrHs))begin
-				testf = true;
-				if(IVr.CustCode!=custcode)then begin TrHs = false; testf = false; end;
-				if(IVr.OKFlag==0)then begin testf = false; end;
-				if(IVr.Invalid==1)then begin testf = false; end;
-				if( nonblank(loyaltycard) and (loyaltycard!=IVr.LoyaltyCardNr))then begin testf = false; end;
-				if(IVr.Points==0)then begin testf = false; end;
-				
-				if(testf)then begin
-					Locationr.Code = IVr.Location;
-					readfirstmain(Locationr,1,true);
-					startformat(15);
-						outstring(0,0,IVr.CustCode,false);
-						outstring(50,0,IVr.Addr0,false);
-						outstring(150,0,Locationr.Name,false);
-						outstring(250,"DblIVVc",IVr.SerNr,false);
-						outstring(300,0,IVr.InvDate,false);
-						outstring(350,0,IVr.LoyaltyCardNr,false);
-						outstring(1,0,IVr.Points,true);
-					endformat;
-					sum = sum + IVr.Points;
-					
-				end;
-			end;
-			resetloop(IVr);
-			
-			resetcompany(curcomp);
-		end; 
-		Gray_Divider(0,1);
+	if(RepSpec.flags[0]==0)then begin
 		startformat(15);
-			outstring(0,0,"",false);
-			outstring(50,0,"",false);
-			outstring(100,0,"",false);
-			outstring(150,0,"",false);
-			outstring(200,0,"",false);
-			outstring(350,0,"",false);
-			outstring(1,0,sum,true);
+			outstring(0,0,"Клиент",false);
+			outstring(50,0,"Имя",false);
+			outstring(150,0,"Бутик",false);
+			outstring(250,0,"Сч/ф",false);
+			outstring(300,0,"Дата",false);
+			outstring(350,0,"Карта",false);
+			outstring(1,0,"Баллов",true);
+		endformat;
+	end else begin
+		startformat(15);
+			outstring(0,0,"Клиент",false);
+			outstring(50,0,"Имя",false);
+			outstring(150,0,"Карта",false);
+			outstring(250,0,"",false);
+			outstring(300,0,"Бал на карт.",false);
+			outstring(350,0,"Бал. по док",false);
+			outstring(1,0,"Разн.",true);
 		endformat;
 	end;
+	
+	
+	custcode = RepSpec.f1;
+	loyaltycard = RepSpec.f2;
+	findf = false;
+	sum = 0;
+	
+	if(nonblank(loyaltycard))then begin
+		LCr.SerNr = loyaltycard;
+		if(readfirstmain(LCr,1,true))then begin
+			if(nonblank(LCr.CustCode))then begin
+				CUr.Code = LCr.CustCode;
+				if(readfirstmain(CUr,1,true))then begin
+					custcode = CUr.Code;
+					findf = true;
+				end;
+			end;
+		end;
+	end;
+	
+	CUr.Code = custcode;
+	TrHsCu = true;
+	while(loopmain(CUr,1,TrHsCu))begin
+		sum = 0;
+		psum = 0;
+		arsz = 0;
+		testfCu = true;
+		findf = true;
+		if(nonblank(custcode) and CUr.Code!=custcode)then begin TrHsCu = false; testfCu = false; findf = false; end;	
+	
+		if(findf)then begin
+			For(i=0;i<mtrw;i=i+1) begin
+				setcompany(i+1,false);
+				IVr.CustCode = CUr.Code;
+				TrHs = true;
+				while(loopkey("CustDate",IVr,1,TrHs))begin
+					testf = true;
+					if(IVr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+					if(IVr.OKFlag==0)then begin testf = false; end;
+					if(IVr.Invalid==1)then begin testf = false; end;
+					if(nonblank(loyaltycard) and (loyaltycard!=IVr.LoyaltyCardNr))then begin testf = false; end;
+					if(IVr.Points==0)then begin testf = false; end;
+					if(IVr.LCMLevel!="1")then begin testf = false; end;
+					
+					if(testf)then begin
+						//Locationr.Code = IVr.Location;
+						//readfirstmain(Locationr,1,true);
+						if(RepSpec.flags[0]==0)then begin
+							startformat(15);
+								outstring(0,0,IVr.CustCode,false);
+								outstring(50,0,IVr.Addr0,false);
+								outstring(150,0,IVr.Location,false);
+								outstring(250,"DblIVVc",IVr.SerNr,false);
+								outstring(300,0,IVr.InvDate,false);
+								outstring(350,0,IVr.LoyaltyCardNr,false);
+								outstring(1,0,IVr.Points,true);
+							endformat;
+						end else begin
+							if(culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr]==false)then begin
+								culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr] = true;
+								loycards[arsz] = IVr.LoyaltyCardNr;
+								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = IVr.Points;
+								arsz = arsz + 1;
+							end else begin
+								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] + IVr.Points;
+							end;
+						end;
+						sum = sum + IVr.Points;
+					
+					end;
+				end;
+				resetloop(IVr);
+				resetcompany(curcomp);
+			end; 
+			
+			if(RepSpec.flags[0]==0)then begin
+				Gray_Divider(0,1);
+				startformat(15);
+					outstring(0,0,"",false);
+					outstring(50,0,"",false);
+					outstring(100,0,"",false);
+					outstring(150,0,"",false);
+					outstring(200,0,"",false);
+					outstring(350,0,"",false);
+					outstring(1,0,sum,true);
+				endformat;
+			end else begin
+				psum = 0;
+				For(i=0;i<arsz;i=i+1) begin
+					LCr.SerNr = loycards[i];
+					readfirstmain(LCr,1,true);
+					loycardssum[i] = LCr.PointsBalance;
+					psum = psum + LCr.PointsBalance;
+					/*if((LCr.PointsBalance-loysum[CUr.Code & ":" & loycards[i]])!=0)then begin
+						startformat(15);
+							outstring(0,0,CUr.Code,false);
+							outstring(50,0,CUr.Name,false);
+							outstring(150,0,loycards[i],false);
+							outstring(150,0,"",false);
+							outstring(300,0,LCr.PointsBalance,false);
+							outstring(350,0,loysum[CUr.Code & ":" & loycards[i]],false);
+							outstring(1,0,LCr.PointsBalance-loysum[CUr.Code & ":" & loycards[i]],true);
+						endformat;
+					end;*/
+				end; 
+				if((psum-sum)!=0)then begin
+					gray_divider(0,1);
+					startformat(15);
+						outstring(0,0,CUr.Code,false);
+						outstring(50,0,CUr.Name,false);
+						outstring(100,0,"",false);
+						outstring(150,0,"",false);
+						outstring(300,0,psum,false);
+						outstring(350,0,sum,false);
+						outstring(1,0,psum - sum,true);
+						For(i=0;i<arsz;i=i+1) begin
+	  					outstring(1,0,loycards[i],true);
+	  					outstring(1,0,loycardssum[i],true);
+	  					outstring(1,0,loysum[CUr.Code & ":" & loycards[i]],false);
+						end; 
+					endformat;
+				end;
+			end;
+		end;
+	end;
 	endjob;
+
+return;
+end;
+
+global updating procedure FixLoyPaymentsCards()
+begin
+	record PointsHistVc PHr,lPHr;
+	string 20 custcode,loyaltycard;
+	record CUVc CUr;
+	record IVVc IVr;
+	record LoyaltyCardVc LCr;
+	record CompaniesBlock CBb;
+	integer mtrw,i,k,arsz;
+	boolean TrHs,testf,findf,TrHsCu,testfCu,foundf;
+	val sum,psum;
+	record LocationVc Locationr;
+	integer curcomp;
+	array string 50 loycards;
+	vector boolean culoycard;
+	vector val loysum;
+	
+	curcomp = currentcompany;
+	
+	blockload(CBb);
+	mtrw = matrowcnt(CBb);
+	
+	
+	
+		while(loopmain(PHr,1,true))begin
+			foundf = false;
+			if(PHr.FileName=="IVVc")then begin
+				For(i=0;i<mtrw;i=i+1) begin
+					setcompany(i+1,false);
+						IVr.SerNr = PHr.TransNr;
+						if(readfirstmain(IVr,1,true))then begin
+						 if(IVr.LoyaltyCardNr==PHr.LMCardNr)then begin
+							foundf = true;
+						 end;
+						end;
+				end;
+				resetcompany(curcomp);
+				if(foundf==false)then begin
+					LCr.SerNr = PHr.LMCardNr;
+					if(readfirstmain(LCr,1,true))then begin
+						if(LCr.LCMLevel=="1")then begin
+							LCr.PointsBalance = LCr.PointsBalance - PHr.Points;
+							logtext(0,LCr.SerNr & "___" & - PHr.Points);
+							recordstore(LCr,true);
+							recorddelete(PHr);
+							stepback(PHr);
+						end;
+					end;
+					//logtext(0,PHr.TransNr & "___" & PHr.Location & "___" & PHr.LMCardNr);
+				end;
+			end;
+		end;
+		resetloop(PHr);
+		PHr.SerNr = 99999999;
+		while(loopbackkey("SerNr",PHr,1,true))begin
+			if(PHr.FileName=="IVVc")then begin
+				//IVr.SerNr = PHr.TransNr;
+				//if(IVr.LCMLevel=="1")then begin
+					lPHr.TransNr = PHr.TransNr;
+					lPHr.FileName = PHr.FileName;
+					TrHs = true;
+					while(loopbackkey("TransNr",lPHr,2,TrHs))begin
+						testf = true;
+						if(lPHr.TransNr!=PHr.TransNr)then begin TrHs = false; testf = false; end;
+						if(lPHr.FileName!=PHr.FileName)then begin TrHs = false; testf = false; end;
+						if(lPHr.SerNr==PHr.SerNr)then begin testf = false; end;
+						if(lPHr.LMCardNr!=PHr.LMCardNr)then begin testf = false; end;
+						//if(lPHr.Points==PHr.Points)then begin testf = false; end;
+					
+						if(testf)then begin
+							LCr.SerNr = PHr.LMCardNr;
+							if(readfirstmain(LCr,1,true))then begin
+								if(LCr.LCMLevel=="1")then begin
+									LCr.PointsBalance = LCr.PointsBalance - lPHr.Points;
+									recordstore(LCr,true);
+									recorddelete(lPHr);
+									stepback(lPHr);
+									logtext(0,LCr.SerNr & "___" & - PHr.Points);
+								end;
+							end else begin
+								recorddelete(lPHr);
+								stepback(lPHr);
+								//logtext(0,"nocard " & lPHr.SerNr & "___" & lPHr.TransNr & "___" & lPHr.LMCardNr & "___" & lPHr.Points);
+							end;
+						end;
+					end;
+					resetloop(lPHr);
+				//end;				
+			end;
+		end;
+		
+	
+	
+
 
 return;
 end;
