@@ -797,7 +797,7 @@ begin
 	array string 50 loycards;
 	vector boolean culoycard;
 	vector val loysum;
-	array val loycardssum;
+	array val loycardssum,loycardsstart;
 	
 	curcomp = currentcompany;
 	
@@ -820,6 +820,7 @@ begin
 			outstring(50,0,"Имя",false);
 			outstring(150,0,"Карта",false);
 			outstring(250,0,"",false);
+			outstring(300,0,"Нач. бал.",false);
 			outstring(300,0,"Бал на карт.",false);
 			outstring(350,0,"Бал. по док",false);
 			outstring(1,0,"Разн.",true);
@@ -856,6 +857,23 @@ begin
 		if(nonblank(custcode) and CUr.Code!=custcode)then begin TrHsCu = false; testfCu = false; findf = false; end;	
 	
 		if(findf)then begin
+			LCr.CustCode = CUr.Code;
+			TrHs = true;
+			while(loopkey("CustCode",LCr,1,TrHs))begin
+				if(LCr.CustCode!=CUr.Code)then begin TrHs = false; end;
+				if(TrHs)then begin
+					startformat(15);
+						outstring(0,0,"Начальный баланс а карте",false);
+						outstring(50,0,"",false);
+						outstring(150,0,LCr.SerNr,false);
+						outstring(250,0,"",false);
+						outstring(300,0,"",false);
+						outstring(350,0,LCr.StartBalance,false);
+						outstring(1,0,"",true);
+					endformat;	
+				end;
+			end;
+			resetloop(LCr);
 			For(i=0;i<mtrw;i=i+1) begin
 				setcompany(i+1,false);
 				IVr.CustCode = CUr.Code;
@@ -870,8 +888,6 @@ begin
 					if(IVr.LCMLevel!="1")then begin testf = false; end;
 					
 					if(testf)then begin
-						//Locationr.Code = IVr.Location;
-						//readfirstmain(Locationr,1,true);
 						if(RepSpec.flags[0]==0)then begin
 							startformat(15);
 								outstring(0,0,IVr.CustCode,false);
@@ -916,20 +932,9 @@ begin
 				For(i=0;i<arsz;i=i+1) begin
 					LCr.SerNr = loycards[i];
 					readfirstmain(LCr,1,true);
+					loycardsstart[i] = LCr.StartBalance;
 					loycardssum[i] = LCr.PointsBalance;
 					psum = psum + LCr.PointsBalance;
-					
-					/*if((LCr.PointsBalance-loysum[CUr.Code & ":" & loycards[i]])!=0)then begin
-						startformat(15);
-							outstring(0,0,CUr.Code,false);
-							outstring(50,0,CUr.Name,false);
-							outstring(150,0,loycards[i],false);
-							outstring(150,0,"",false);
-							outstring(300,0,LCr.PointsBalance,false);
-							outstring(350,0,loysum[CUr.Code & ":" & loycards[i]],false);
-							outstring(1,0,LCr.PointsBalance-loysum[CUr.Code & ":" & loycards[i]],true);
-						endformat;
-					end;*/
 				end; 
 				if((psum-sum)!=0)then begin
 					gray_divider(0,1);
@@ -942,20 +947,7 @@ begin
 						outstring(350,0,sum,false);
 						outstring(1,0,psum - sum,true);
 						For(i=0;i<arsz;i=i+1) begin
-							
-							LCr.SerNr = loycards[i];
-							readfirstmain(LCr,1,true);
-							if(LCr.LCMLevel=="1")then begin
-								if(loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]]<0)then begin
-									LCr.PointsBalance = LCr.PointsBalance + loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i];
-									//recordstore(LCr,true);
-								end;
-								if(loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]]>0) begin
-									LCr.StartBalance = loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]];
-									//recordstore(LCr,true);
-								end;
-							end;
-							
+							outstring(1,0,loycardsstart[i],true);
 	  					outstring(1,0,loycards[i],true);
 	  					outstring(1,0,loycardssum[i],true);
 	  					outstring(1,0,loysum[CUr.Code & ":" & loycards[i]],false);
@@ -992,32 +984,9 @@ begin
 	curcomp = currentcompany;
 	
 	blockload(CBb);
-	mtrw = matrowcnt(CBb);
-
-	if(RepSpec.flags[0]==0)then begin
-
-	end else begin
-
-	end;
-	
-	
-	custcode = RepSpec.f1;
-	loyaltycard = RepSpec.f2;
+	mtrw = matrowcnt(CBb);	
 	findf = false;
 	sum = 0;
-	
-	if(nonblank(loyaltycard))then begin
-		LCr.SerNr = loyaltycard;
-		if(readfirstmain(LCr,1,true))then begin
-			if(nonblank(LCr.CustCode))then begin
-				CUr.Code = LCr.CustCode;
-				if(readfirstmain(CUr,1,true))then begin
-					custcode = CUr.Code;
-					findf = true;
-				end;
-			end;
-		end;
-	end;
 	
 	CUr.Code = custcode;
 	TrHsCu = true;
@@ -1027,7 +996,6 @@ begin
 		arsz = 0;
 		testfCu = true;
 		findf = true;
-		if(nonblank(custcode) and CUr.Code!=custcode)then begin TrHsCu = false; testfCu = false; findf = false; end;	
 	
 		if(findf)then begin
 			For(i=0;i<mtrw;i=i+1) begin
@@ -1044,56 +1012,44 @@ begin
 					if(IVr.LCMLevel!="1")then begin testf = false; end;
 					
 					if(testf)then begin
-						//Locationr.Code = IVr.Location;
-						//readfirstmain(Locationr,1,true);
-						if(RepSpec.flags[0]==0)then begin
-							
+						if(culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr]==false)then begin
+							culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr] = true;
+							loycards[arsz] = IVr.LoyaltyCardNr;
+							loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = IVr.Points;
+							arsz = arsz + 1;
 						end else begin
-							if(culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr]==false)then begin
-								culoycard[CUr.Code & ":" & IVr.LoyaltyCardNr] = true;
-								loycards[arsz] = IVr.LoyaltyCardNr;
-								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = IVr.Points;
-								arsz = arsz + 1;
-							end else begin
-								loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] + IVr.Points;
-							end;
+							loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] = loysum[CUr.Code & ":" & IVr.LoyaltyCardNr] + IVr.Points;
 						end;
 						sum = sum + IVr.Points;
-					
 					end;
 				end;
 				resetloop(IVr);
 				resetcompany(curcomp);
 			end; 
 			
-			if(RepSpec.flags[0]==0)then begin
-				
-			end else begin
-				psum = 0;
+			psum = 0;
+			For(i=0;i<arsz;i=i+1) begin
+				LCr.SerNr = loycards[i];
+				readfirstmain(LCr,1,true);
+				loycardssum[i] = LCr.PointsBalance;
+				psum = psum + LCr.PointsBalance;
+			end; 
+			if((psum-sum)!=0)then begin
 				For(i=0;i<arsz;i=i+1) begin
 					LCr.SerNr = loycards[i];
 					readfirstmain(LCr,1,true);
-					loycardssum[i] = LCr.PointsBalance;
-					psum = psum + LCr.PointsBalance;
-				end; 
-				if((psum-sum)!=0)then begin
-					For(i=0;i<arsz;i=i+1) begin
-						LCr.SerNr = loycards[i];
-						readfirstmain(LCr,1,true);
-						if(LCr.LCMLevel=="1")then begin
-							if(loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]]<0)then begin
-								LCr.PointsBalance = LCr.PointsBalance + loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i];
-								recordstore(LCr,true);
-								addtexttoarea(LCr.SerNr & "___" & loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i] & chr(13) & chr(10),resarea);
-							end;
-							if(loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]]>0) begin
-								LCr.StartBalance = loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]];
-								recordstore(LCr,true);
-								addtexttoarea(LCr.SerNr & "___" & - loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i] & chr(13) & chr(10),resarea);
-							end;
+					if(LCr.LCMLevel=="1")then begin
+						if(loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]]<0)then begin
+							LCr.PointsBalance = LCr.PointsBalance + loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i];
+							recordstore(LCr,true);
+							addtexttoarea(LCr.SerNr & "___" & loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i] & chr(13) & chr(10),resarea);
+						end else begin
+							LCr.StartBalance = loycardssum[i]-loysum[CUr.Code & ":" & loycards[i]];
+							recordstore(LCr,true);
+							addtexttoarea(LCr.SerNr & "___" & - loysum[CUr.Code & ":" & loycards[i]] - loycardssum[i] & chr(13) & chr(10),resarea);
 						end;
-					end; 
-				end;
+					end;
+				end; 
 			end;
 		end;
 	end;
