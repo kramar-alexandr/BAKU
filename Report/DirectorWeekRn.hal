@@ -430,8 +430,6 @@ begin
 									tempTRrw.MyVal1 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
-								tempTRrw.MyVal3 = - corspdebval + corspcredval;
-								kursovaya = kursovaya - corspdebval + corspcredval;
 								tempTRrw.CurDebVal = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.CurCredVal = blankval;
