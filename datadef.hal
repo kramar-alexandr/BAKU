@@ -4855,6 +4855,41 @@ begin
   KeySegment(Closed);
   EndRecord;
   
+  RecordBegin(PointsHistVc,-,"PointsHistVc3");
+  NewAutosyncRegister(kSyncDirectionToClient,true);
+  RecordField(FileName,M4Str,20,0);
+  RecordField(TransNr,M4Long,0,0);
+  RecordField(TransDate,M4Date,0,0);
+  RecordField(LMCardNr,M4Code,20,0);
+  RecordField(CustCode,M4Code,20,0);
+  RecordField(Points,M4Val,0,0);
+  RecordField(FWBalance,M4Val,0,0);
+  RecordField(PointsFrom,M4Code,20,0);
+  RecordField(Location,M4Code,10,LocationVc);
+  RecordField(Type,M4Set,490,0);
+  RecordField(SerNr,M4Long,0,0);
+  RecordField(User,M4Code,10,UserVc);//Edit-------------------Vitalii 16:01 25.04.2017
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(TransNr);
+  KeySegment(TransNr);
+  KeySegment(FileName);
+  KeySegment(SerNr);
+  KeyBegin(CardDate);
+  KeySegment(LMCardNr);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(CustCode);
+  KeySegment(CustCode);
+  KeySegment(LMCardNr);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  KeyBegin(PointsFrom);
+  KeySegment(PointsFrom);
+  KeySegment(TransDate);
+  KeySegment(SerNr);
+  EndRecord;
+  
   return;  
 end;
 

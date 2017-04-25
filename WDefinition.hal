@@ -2048,3 +2048,21 @@ WindowBegin("Отчет по подарочным сертификатам",GiftCertRClass,CGRcW,RcType);
 
   EndWindow;
 end;
+
+window PointsHistLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("История баллов",PointsHistLClass,CGmlist,-);
+  SetWRect(64,80,549,298);
+  SpawnClass(PointsHistDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(PointsHistVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"№ карт-ки",LMCardNr,false,CardDate);
+  RlCol(84,84,"№ транз-ии",TransNr,false);
+  RlCol(164,164,"Регистр",FileName,false);
+  RlCol(-170,-170,"Дата транцакц.",TransDate,true);
+  RlColKey(-80,-80,"Баллы от",PointsFrom,true,PointsFrom);
+  SearchField("Найти");
+  EndWindow;
+end;
