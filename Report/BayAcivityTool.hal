@@ -857,23 +857,25 @@ begin
 		if(nonblank(custcode) and CUr.Code!=custcode)then begin TrHsCu = false; testfCu = false; findf = false; end;	
 	
 		if(findf)then begin
-			LCr.CustCode = CUr.Code;
-			TrHs = true;
-			while(loopkey("CustCode",LCr,1,TrHs))begin
-				if(LCr.CustCode!=CUr.Code)then begin TrHs = false; end;
-				if(TrHs)then begin
-					startformat(15);
-						outstring(0,0,"Начальный баланс а карте",false);
-						outstring(50,0,"",false);
-						outstring(150,0,LCr.SerNr,false);
-						outstring(250,0,"",false);
-						outstring(300,0,"",false);
-						outstring(350,0,LCr.StartBalance,false);
-						outstring(1,0,"",true);
-					endformat;	
+			if(RepSpec.flags[0]==0)then begin
+				LCr.CustCode = CUr.Code;
+				TrHs = true;
+				while(loopkey("CustCode",LCr,1,TrHs))begin
+					if(LCr.CustCode!=CUr.Code)then begin TrHs = false; end;
+					if(TrHs and LCr.StartBalance>0)then begin
+						startformat(15);
+							outstring(0,0,"Начальный баланс а карте",false);
+							outstring(50,0,"",false);
+							outstring(150,0,LCr.SerNr,false);
+							outstring(250,0,"",false);
+							outstring(300,0,"",false);
+							outstring(350,0,LCr.StartBalance,false);
+							outstring(1,0,"",true);
+						endformat;	
+					end;
 				end;
+				resetloop(LCr);
 			end;
-			resetloop(LCr);
 			For(i=0;i<mtrw;i=i+1) begin
 				setcompany(i+1,false);
 				IVr.CustCode = CUr.Code;
@@ -947,8 +949,8 @@ begin
 						outstring(350,0,sum,false);
 						outstring(1,0,psum - sum,true);
 						For(i=0;i<arsz;i=i+1) begin
-							outstring(1,0,loycardsstart[i],true);
 	  					outstring(1,0,loycards[i],true);
+	  					outstring(1,0,loycardsstart[i],true);
 	  					outstring(1,0,loycardssum[i],true);
 	  					outstring(1,0,loysum[CUr.Code & ":" & loycards[i]],false);
 						end; 

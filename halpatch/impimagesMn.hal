@@ -2356,6 +2356,9 @@ begin
   Boolean TrHs;
   Integer rwcnt;
   val qty;
+  record BaseCurBlock BCb; //Edit***************************Sasha2,10:07 10.02.2016
+	
+	blockload(BCb);
     
     IHr.FileName = "IVVc";
     IHr.TransNr = IVr.SerNr;
@@ -2363,6 +2366,9 @@ begin
     while (LoopKey("FNTransNr",IHr,2,TrHs)) begin
       if (IHr.FileName!="IVVc" or IHr.TransNr!=IVr.SerNr) then begin TrHs = false; end;
       if (TrHs) then begin
+      	if(blank(IHr.CurncyCode))then begin
+					IHr.CurncyCode = BCb.BaseCur1;// Edit ************************** Tuesday, 25 April 2017 14:40:05
+				end;
         if (curIncluded[IHr.CurncyCode]) then begin
           vectIVr = curIV[curindex[IHr.CurncyCode]];
         end else begin
@@ -2373,6 +2379,9 @@ begin
           vectIVr.CurncyCode = IHr.CurncyCode;
           curIncluded[IHr.CurncyCode] = true;
           currs[curcnt] = IHr.CurncyCode;
+          if(blank(IHr.CurncyCode))then begin
+          	currs[curcnt] = BCb.BaseCur1;
+          end;
           curindex[IHr.CurncyCode] = curcnt;
           curcnt = curcnt + 1;
         end;
@@ -2382,7 +2391,12 @@ begin
         vectIVrw.ArtCode = IHr.ArtCode;
         vectIVrw.Quant = qty;
         vectIVrw.FIFO = IHr.TotCostPrice/qty;
-        vectIVrw.FIFORowVal = IHr.TotCostPriceCurncy/qty;
+        if(IHr.CurncyCode==BCb.BaseCur1)then begin
+        	vectIVrw.FIFORowVal = IHr.TotCostPrice/qty;
+        end else begin
+					vectIVrw.FIFORowVal = IHr.TotCostPriceCurncy/qty;
+        end;
+        
         MatRowGet(IVr,IHr.Row,IVrw);
         vectIVrw.Sum = (IVrw.Sum/IVrw.Quant)*qty;
         MatRowPut(vectIVr,rwcnt,vectIVrw);
