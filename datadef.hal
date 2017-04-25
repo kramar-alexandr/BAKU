@@ -4814,6 +4814,47 @@ begin
   KeySegment(SerNr);
   EndRecord;
   
+  RecordBegin(LoyaltyCardVc,-,"LoyaltyCardVc2");
+  NewAutosyncRegister(kSyncDirectionToClient,true);
+  RecordField(SerNr,M4Code,20,0);
+  RecordField(CustCode,M4Code,20,CUVc);
+  RecordField(CustName,M4Str,60,0);
+  RecordField(LCMLevel,M4Code,10,0);
+  RecordField(StartDate,M4Date,0,0);
+  RecordField(ExpiryDate,M4Date,0,0);  
+  RecordField(PointsTo,M4Code,20,0);
+  RecordField(PointsBalance,M4Val,0,0); 
+  RecordField(Closed,M4Int,0,0);
+  RecordField(StartBalance,M4Val,0,0);// Edit ************************** Tuesday, 25 April 2017 09:52:28
+  MainKeyBegin(SerNr,0);
+  KeySegment(SerNr);
+  KeyBegin(CustCode);
+  KeySegment(CustCode);
+  KeySegment(SerNr);
+  KeyBegin(CustName);
+  KeySegment(CustName);
+  KeySegment(SerNr);
+  KeyBegin(PointsTo);
+  KeySegment(PointsTo);
+  KeySegment(SerNr);
+
+  KeyBegin(ActSerNr);
+  KeySegment(SerNr);
+  KeySegment(Closed);
+  KeyBegin(ActCustCode);
+  KeySegment(CustCode);
+  KeySegment(SerNr);
+  KeySegment(Closed);
+  KeyBegin(ActCustName);
+  KeySegment(CustName);
+  KeySegment(SerNr);
+  KeySegment(Closed);
+  KeyBegin(ActPointsTo);
+  KeySegment(PointsTo);
+  KeySegment(SerNr);
+  KeySegment(Closed);
+  EndRecord;
+  
   return;  
 end;
 
