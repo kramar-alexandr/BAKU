@@ -133,7 +133,8 @@ begin
   Maintenance("Перерасчет цен по курсам",UpdateSellPricesViaCustomRatesVClass,UpdateSellPricesViaCustomRatesMn,modDI); //Edit***************************Sasha2,10:39 31.03.2017
   Maintenance("Проставить группу товара по наличии класс-фии",SetItemGroupByClassificationVClass,SetItemGroupByClassificationMn,modIN); //Edit***************************Sasha2,11:34 31.03.2017
   Maintenance("Убрать лишние символы из телефона контакта",EmptyVClass,CUVcPhoneClearMn,modDBMain);
-  
+  Maintenance("Fix LoyaltyPoints",EmptyVClass,LoyaltyCardCounterMn,modDBMain);
+
   Maintenance("FICLOYOAY",EmptyVClass,FixLoyPaymentsCards,modDBMain);
   	
   if(currentcompany==1)then begin
