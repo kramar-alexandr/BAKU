@@ -210,7 +210,7 @@ begin
 		OutString(300,0,"Комментарий к созданию",false);
 		OutString(300,0,"Комментарий",false);
 		OutString(300,0,"Отключен от рассылки",false);
-		OutString(300,0,"Статус",false);		
+		OutString(300,0,"Закрыт/открыт",false);
 	endformat;	
 		
 		
@@ -252,10 +252,14 @@ begin
 		end;
 		if(nonblank(RepSpec.FirstAcc) and RepSpec.FirstAcc!=CUr.RebCode) then begin	testf = false; end;
 		if(RepSpec.flags[3]>0 and blank(CUr.Phone) and blank(CUr.AltPhone) and blank(CUr.Mobile))then begin	testf=false;	end;
-		if(RepSpec.flags[1]>0 and CUr.blockedFlag==0)then begin testf = false; end;
-		If(RepSpec.flags[1]==1)then begin
-			if(CUr.blockedFlag==0)then begin testf = false; end;
+		//if(RepSpec.flags[1]>0 and CUr.blockedFlag==0)then begin testf = false; end;
+		switch(RepSpec.flags[1])begin
+			case 0:if(CUr.blockedFlag==1)then begin testf = false; end;
+			case 1:if(CUr.blockedFlag==0)then begin testf = false; end;
 		end;
+		/*If(RepSpec.flags[1]==1)then begin
+			if(CUr.blockedFlag==0)then begin testf = false; end;
+		end;*/
 		if(CUr.CUType==0)then begin testf = false; end;
 		if(RepSpec.flags[2]>0 and CUr.NoLetterPosting>0)then begin testf = false; end;
 		
@@ -327,12 +331,13 @@ begin
 				end else begin
 					OutString(300,0,"",false);
 				end;
+				
 				if(CUr.blockedFlag==1)then begin
 					OutString(300,0,"Закрыт",false);
 				end else begin
-					OutString(300,0,"",false);
+					OutString(300,0,"Открыт",false);
 				end;			
-				
+
 				
 			EndFormat;	
 
