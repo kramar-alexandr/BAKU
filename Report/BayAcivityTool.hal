@@ -415,6 +415,21 @@ record CUVc CUr;
 								curncy[aqty] = BCb.BaseCur1;
 								aqty = aqty + 1;
 							end;
+							if(RepSpec.flags[2]==1)then begin
+								startformat(15);
+									outstring(0,0,LCr.SerNr,false);
+									outstring(50,0,CUr.Code,false);
+									outstring(100,0,Locr.Code & " " & Locr.Name,false);
+									outstring(150,0,IVr.TotQty,false);
+									outstring(200,0,IVr.BaseSum4,false);
+									outstring(250,0,IVr.InvDate,false);
+									outstring(250,0,IVr.SerNr,false);
+									outstring(300,0,BCb.BaseCur1,false);
+									outstring(330,0,CUr.Name,false);
+									outstring(380,0,CUr.InvAddr0,false);
+									outstring(450,0,CUr.Phone,false);
+								endformat;
+							end;
 						end;
 					end;
 					resetloop(IVr);
@@ -422,7 +437,7 @@ record CUVc CUr;
 				resetcompany(1);
 			end; 
 			
-			if(aqty>0 and RepSpec.flags[1]==0)then begin	//Edit----------------------Dima  08.07.2015
+			if(aqty>0 and RepSpec.flags[1]==0 and RepSpec.flags[2]==0)then begin	//Edit----------------------Dima  08.07.2015
 				For(i=0;i<aqty;i=i+1) begin
 					startformat(15);
 						outstring(0,0,LCr.SerNr,false);
@@ -516,13 +531,30 @@ record CUVc CUr;
 											lastSerNrs[ivi] = lastInvoiceNr;											
 											curncy[aqty] = BCb.BaseCur1;
 											aqty = aqty + 1;
-										end;						
+										end;	
+										
+										if(RepSpec.flags[2]==1)then begin
+											startformat(15);
+												outstring(0,0,LCr.SerNr,false);
+												outstring(50,0,CUr.Code,false);
+												outstring(100,0,Locr.Code & " " & Locr.Name,false);
+												outstring(150,0,IVr.TotQty,false);
+												outstring(200,0,IVr.BaseSum4,false);
+												outstring(250,0,IVr.InvDate,false);
+												outstring(250,0,IVr.SerNr,false);
+												outstring(300,0,BCb.BaseCur1,false);
+												outstring(330,0,CUr.Name,false);
+												outstring(380,0,CUr.InvAddr0,false);
+												outstring(450,0,CUr.Phone,false);
+											endformat;
+										end;
+															
 									end;
 								end;
 								resetloop(IVr);
 							resetcompany(1);
 						end; 
-						if(aqty>0 and RepSpec.flags[1]==0)then begin
+						if(aqty>0 and RepSpec.flags[1]==0 and RepSpec.flags[2]==0)then begin
 							For(i=0;i<aqty;i=i+1) begin
 								startformat(15);
 									outstring(0,0,LCr.SerNr,false);
