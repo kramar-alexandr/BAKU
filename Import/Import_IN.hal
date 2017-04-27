@@ -107,6 +107,48 @@ begin
 return;
 end;
 
+global
+updating procedure UpdateCUrPhonenIn()		//Edit----------------------Dima  10.02.2015
+begin
+  record CUVc CUr;
+  string 200 phone,phone1,phone2,curcode;
+  boolean upd;
+
+	while (TestEOF()==false) begin
+			curcode = ImportField;
+			phone = ImportField;
+			phone1 = ImportField;
+			phone2 = ImportField;
+	
+			if(nonblank(curcode)) then begin
+				if(nonblank(phone) or nonblank(phone1) or nonblank(phone2))then begin
+					CUr.Code = curcode;
+					if(readfirstmain(CUr,1,true))then begin
+						upd = false;
+						if(nonblank(phone) and phone!=CUr.Phone)then begin
+							CUr.Phone = phone;
+							upd = true;
+						end;
+						if(nonblank(phone1) and phone1!=CUr.AltPhone)then begin
+							CUr.AltPhone = phone1;
+							upd = true;
+						end;
+						if(nonblank(phone2) and phone2!=CUr.Mobile)then begin
+							CUr.Mobile = phone2;
+							upd = true;
+						end;
+						if(upd)then begin
+							recordstore(CUr,true);
+						end;
+					end;
+				end;				
+			end;
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end;
+
 /*global
 updating procedure INImportDiscountGroupIn()		//Edit----------------------Dima  10.02.2015
 begin
