@@ -293,3 +293,85 @@ weboutstring("</html> ");
 
 return;
 end;
+
+//Edit***************************Sasha2,15:59 27.04.2017 {
+procedure CheckImagePath(string filename,string filepathP,var string filepathC)
+begin
+  
+  if (FILEEXISTS(filepathP & filename & ".jpeg")) then begin
+		filepathC = filepathP & filename & ".jpeg";
+	end else begin
+		if (FILEEXISTS(filepathP & filename & ".png")) then begin
+			filepathC = filepathP & filename & ".png";
+		end else begin
+			if (FILEEXISTS(filepathP & filename & ".jpg")) then begin
+				filepathC = filepathP & filename & ".jpg";
+			end;
+		end;
+	end;
+	
+  return;
+end; //Edit***************************Sasha2,15:59 27.04.2017 }
+
+global //Edit***************************Sasha2,15:18 27.04.2017 {
+updating procedure SendToServerArtCodeReply(Area a_reply,Area a_replyheader,boolean timeout)
+begin
+		
+return;
+end; //Edit***************************Sasha2,15:18 27.04.2017 }
+
+global //Edit***************************Sasha2,15:18 27.04.2017 {
+procedure SendToServerArtCode(string artcode,string user,string localmachine,integer company)
+begin
+	area art;
+	string 100 filename;
+	record INVc INr;
+	row INVc INrw;
+	string 255 imgName,filepathP,filepathC;
+	record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
+  integer oldcompany,i,rwcnt;
+
+  /*Добавить блок компаний для взятия адреса хоста*/
+	
+	if(nonblank(artcode))then begin
+		/*filename = "userimage/" & user & localmachine & ".txt";
+		//logtext(0,"URL FILENAME " & filename);
+		//createfile(filename)
+		//CloseFile;  
+		addtexttoarea("<div><img height=150 src=\"",art);
+		addtexttoarea("https://www.rybray.com.ua/get-image.php?sku="& artcode,art);
+		addtexttoarea("\"/></div>",art);
+		writeareatofile(art,filename,0);*/
+		
+		INr.Code = artcode;
+		ReadFirstMain(INr,1,true);
+		
+		oldcompany = company;
+		BlockLoad(Compb);
+		rwcnt = MatRowCnt(Compb);
+		for (i=0;i<rwcnt;i=i+1) begin
+		  MatRowGet(Compb,i,Comprw);
+		  if (Comprw.CompCode==company & "") then begin
+		    filepathP = "webcust/" & Comprw.ShortName & "/";
+		    i = rwcnt;
+		  end;
+		end;
+		
+		filepathC = "";
+		if (NonBlank(filepathP)) then begin
+		  if (StringToInt(Comprw.CompCode)==9) then begin
+				CheckImagePath(INr.AlternativeCode,filepathP,filepathC);
+			end else begin
+				CheckImagePath(INr.Code,filepathP,filepathC);
+			end;
+			if (NonBlank(filepathC)) then begin
+			  filepathC = UrlEncode(CURRENTPATH & "/" & filepathC);
+			end;
+		end;
+    SendAsyncWebRequest("127.0.0.1","1070","1070",false,"GET","/setUserImage?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
+
+	end;
+	
+return;
+end; //Edit***************************Sasha2,15:18 27.04.2017 }

@@ -70,6 +70,7 @@ external updating procedure CreatePUfromIVDsm(); //Edit*************************
 external updating procedure CreateSDfromIVDsm(String,String); //Edit***************************Sasha2,10:56 11.12.2014
 remote procedure IVDUpdatePrices(var record IVVc,Boolean);
 remote function string 255 SaboPromotion(var record IVVc,string); //Edit***************************Sasha2,13:19 01.06.2016
+remote procedure SendToServerArtCode(string,string,string,integer); //Edit***************************Sasha2,15:20 27.04.2017
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -1748,6 +1749,7 @@ LkInvoiceRowTypeNormal1:;
         //readfirstmain(INr,1,true);
         //tstr = GetClassString(IVrw.ArtCode);
         PutWindowString(wn,"CustomerDisplayData_Line3",classstr);
+        SendToServerArtCode(IVrw.ArtCode,currentuser,curmachinename,CurrentCompany); //Edit***************************Sasha2,15:20 27.04.2017
         //PutWindowString(wn,"CustomerDisplayData_Line3",ParseClassification(INr.DispGroups));// Edit ************************** Thursday, 2 May 2013 11:29:34
      
       case kInvoiceRowTypeCashPayment:
