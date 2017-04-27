@@ -369,7 +369,7 @@ begin
 			  filepathC = UrlEncode(CURRENTPATH & "/" & filepathC);
 			end;
 		end;
-    SendAsyncWebRequest("127.0.0.1","1070","1070",false,"GET","/setUserImage?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
+    SendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImage?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
 
 	end;
 	
