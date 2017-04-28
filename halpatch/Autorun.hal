@@ -181,7 +181,7 @@ begin
 	Creative = 9;
 	CassaCoin = 25;
 	Xtravaganza = 16;
-	
+		
 	if (SetCompany(SWAROVSKI,false)) then begin
 		AutoCetRebCodeCU;
 		AutoUnGroupIV;
@@ -197,6 +197,44 @@ begin
 		CreatePLActivityMn(RepSpec);
 		ResetCompany(Jewelry);  
   end;
+  
+  if (SetCompany(17,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(17);  
+  end;
+  if (SetCompany(19,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(19);  
+  end;
+  if (SetCompany(20,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(20);  
+  end;
+  if (SetCompany(21,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(21);  
+  end;
+  if (SetCompany(22,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(22);  
+  end;
+  if (SetCompany(23,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(23);  
+  end;
+  if (SetCompany(24,false)) then begin
+		//AutoUnGroupIV;
+		CreatePLActivityMn(RepSpec);
+		ResetCompany(24);  
+  end;
+  
+  
   if (SetCompany(Villeroy,false)) then begin
 		AutoUnGroupIV;
 		CreatePLActivityMn(RepSpec);
