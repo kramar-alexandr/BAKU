@@ -171,7 +171,10 @@ begin
 	integer i,mtrw;
 	record RcVc RepSpec;
 	
-	if(getminute(currenttime)==0)then begin
+	blockload(CBb);
+	
+	if(getminute(currenttime)==6)then begin
+		logtext(0,"TimeAutoRunMinutes in " & getminute(currenttime));
 		mtrw = matrowcnt(CBb);
 		For(i=0;i<mtrw;i=i+1) begin
 			if(CompanyIsJWLikeCompany(i) or i==1 or i==2 or i==4 or i==5 or i==6 or i==7 or i==8 or i==9 or i==25 or i==16)then begin

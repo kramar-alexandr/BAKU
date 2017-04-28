@@ -194,7 +194,7 @@ real h,v,vs,h1;
   RlCol(80,80,"Товар",ArtCode,false);
   RlCol(140,140,"Клиент",CustCode,false);
   RlCol(200,200,"Сер. №",SerialNr,false);
-  RlCol(-140,-140,"Дата",TransDate,false);
+  RlColKey(-140,-140,"Дата",TransDate,false,TransDate);
   RlCol(-70,-70,"Время",TransTime,true);
   SearchField("Search");
   EndWindow;
