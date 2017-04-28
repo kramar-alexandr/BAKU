@@ -6,6 +6,7 @@ external function val DivWithRateToBase1(string,Date,val,roundmode);
 external function val MulWithRateToBase1(var string,Date,val,roundmode);
 external function Boolean GetPurchaseItem(string,string,var record PIVc);
 remote function boolean CompanyIsJWLikeCompany(Integer);
+external function Boolean FindStringInString(string,string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -13,7 +14,7 @@ procedure SearchCuRnResults(record RcVc RepSpec,Boolean printf,Array string acon
 begin
   record CUVc CUr;
   record LetVc Letr;
-  boolean TrHs,testf,TrHs1;
+  boolean TrHs,testf,TrHs1,testf1;
   string 255 tstr,keystr;
   record UserVc Userr;
   LongInt pos;
@@ -39,7 +40,7 @@ begin
         keystr = "ActCode";
     end;
   end;
-  if (RepSpec.ArtMode == 5) then begin //Edit***************************Sasha2,14:23 28.04.2017 {
+  if (RepSpec.ArtMode == 0) or (RepSpec.ArtMode == 5) then begin //Edit***************************Sasha2,14:23 28.04.2017 {
     char = "";
     phone = "";
     for (i=0;i<len(RepSpec.f1);i=i+1) begin
@@ -49,11 +50,8 @@ begin
         phone = phone & char;
       end;
     end;
-    if (phone!=RepSpec.f1) then begin
-      RepSpec.f1 = phone;
-    end;
   end; //Edit***************************Sasha2,14:23 28.04.2017 }
-  TrHs = true; LogText(0,"phone:" & phone);
+  TrHs = true;
   while (LoopKey(keystr,CUr,1,TrHs)) begin
     if (TrHs) then begin
       testf = false;
@@ -77,15 +75,20 @@ begin
       if (RepSpec.ArtMode == 0) or (RepSpec.ArtMode == 5) then begin
         AddToText(CUr.Phone,Letr);
         AddToText(" ",Letr);
-        TrHs1 = true; //Edit***************************Sasha2,13:48 28.04.2017 {
-        Phoner.CUCode = CUr.Code;
-        while (LoopKey("CUCode",Phoner,1,TrHs1)) begin
-          if (Phoner.CUCode!=CUr.Code) then begin TrHs1 = false; end;
-          if (TrHs1) then begin LogText(0,"Phoner.PhoneNum:" & Phoner.PhoneNum);
-            AddToText(Phoner.PhoneNum,Letr);
-            AddToText(" ",Letr);
-          end;
-        end; RESETLOOP(Phoner);//Edit***************************Sasha2,13:48 28.04.2017 }
+        if (NonBlank(phone)) then begin //Edit***************************Sasha2,13:48 28.04.2017 {
+          TrHs1 = true; 
+          Phoner.CUCode = CUr.Code;
+          while (LoopKey("CUCode",Phoner,1,TrHs1)) begin
+            testf1 = true;
+            if (Phoner.CUCode!=CUr.Code) then begin TrHs1 = false; testf1 = false; end;
+            if (FindStringInString(Phoner.PhoneNum,phone)==false) then begin testf1 = false; end;
+            if (testf1) then begin
+              AddToText(RepSpec.f1,Letr);
+              AddToText(" ",Letr);
+              TrHs1 = false;
+            end;
+          end; RESETLOOP(Phoner);
+        end; //Edit***************************Sasha2,13:48 28.04.2017 }
       end;
       if (RepSpec.ArtMode == 0) or (RepSpec.ArtMode == 6) then begin
         AddToText(CUr.Person,Letr);
