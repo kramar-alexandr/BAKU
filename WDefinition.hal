@@ -207,11 +207,6 @@ real h,v,vs,h1;
 		EditField(h,v+=vs,100, "Имя",Normal,f1,false,0);
 		EditField(h,v+=vs,100, "Телефон",Normal,LastAcc,false,0);
 		EditField(h,v+=vs,100, "e-mail",Normal,Stext,false,0);
-		ButtonFrame(h-70,v+=2*vs,80,3,"Статус");
-    RadioButton(h-70,v,0,0,"Открытые",flags[1]);
-    RadioButton(h-70,v+=16,1,0,"Закрытые",flags[1]);
-    RadioButton(h-70,v+=16,2,0,"Все",flags[1]);
-    EndFrame;
 		h=240;
 		v = 56;
 		ButtonFrame(h,v,123,2,"Показывать клиентов");
@@ -219,12 +214,12 @@ real h,v,vs,h1;
     RadioButton(h,v+=16,1,0,"Активных",flags[0]);
     RadioButton(h,v+=16,2,0,"Неактивных",flags[0]);
     EndFrame;
-		//CheckBox(h,v+=20,0,"Удаленные карты",flags[1]);
+		CheckBox(h,v+=20,0,"Удаленные карты",flags[1]);
 		CheckBox(h,v+=16,0,"Только с рассылкой",flags[2]);
 		CheckBox(h,v+=16,0,"Только с телефонами",flags[3]);
 		EditField(h,v+=30,100, "С таблицой скидок",Normal,FirstAcc,false,RebSClass);
 		h=100;
-		v=v+40;
+		v=v+20;
 		CheckBox(h-50,v+=16,0,"Карточки зарегестрированные в период:",flags[4]);
 		PeriodField(h,v+=16,"Период");
   EndWindow;
@@ -2070,4 +2065,39 @@ begin
   RlColKey(-80,-80,"Баллы от",PointsFrom,true,PointsFrom);
   SearchField("Найти");
   EndWindow;
+end;
+
+window PhoneLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,t,v,vm,vs;
+  Integer tilenr,f,flipnr;
+
+  WindowBegin("Phone",PhoneLClass,CGmlist,-);
+  SpawnClass(PhoneDClass);
+  SetWRect(64,80,800,298);
+  Sizeable(-1,-1,0,0);
+  UseView(PhoneVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4, "Номер",PhoneNum,false,PhoneNum);
+  RlCol(150,150,"Код клиента",CUCode,false);
+  
+  SearchField("Пошук");
+  EndWindow;
+end;
+
+window PhoneDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h1,h2,h3,h4,t,v,vm,vs;
+  Integer tilenr,f,flipnr;
+
+  WindowBegin("Phone",PhoneDClass,CGview,-);
+  SetWRect(64,80,800,298);
+  Sizeable(-1,-1,0,0);
+  UseView(PhoneVc);
+  vs = 20;
+  EditField(h=100,v,200,"Номер",Normal,PhoneNum,false,0);
+ 	EditField(h,v+=vs,200,"Код клиента",Normal,CUCode,false,0);	
+ 	EndWindow;
 end;

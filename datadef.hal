@@ -4890,6 +4890,15 @@ begin
   KeySegment(SerNr);
   EndRecord;
   
+  RecordBegin(PhoneVc,-,"");//Edit-------------------Vitalii 17:10 03.11.2016
+    RecordField(PhoneNum,M4Str,50,0);
+    RecordField(CUCode,M4Str,100,0);
+    MainKeyBegin(PhoneNum,0);
+    KeySegment(PhoneNum);
+    KeySegment(CUCode);
+    KeyBegin(CUCode);
+    KeySegment(CUCode);
+  EndRecord;
   return;  
 end;
 

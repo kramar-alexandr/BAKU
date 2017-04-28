@@ -46,6 +46,7 @@ begin
   Setting("Composition descriptions",CoinComposDecriptLClass,modDromos); //Edit***************************Sasha2,14:58 27.07.2016
   Setting("Types of goods",CoinGoodsTypesLClass,modDromos); //Edit***************************Sasha2,14:58 27.07.2016
 	Setting("Корреспондирующие счета",CrspAccTClass,modNL); 
+  Setting("PhoneVc",PhoneLClass,modDBMain);//Edit-------------------Vitalii 16:40 13.07.2016
 	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
@@ -132,10 +133,11 @@ begin
   Maintenance("Выровнять проводки с разными балансами при основной валюте",FIXVClass,FixTRCurBalanceIfBaseCurMn,modDBMain); //Edit***************************Sasha2,16:16 01.02.2017
   Maintenance("Перерасчет цен по курсам",UpdateSellPricesViaCustomRatesVClass,UpdateSellPricesViaCustomRatesMn,modDI); //Edit***************************Sasha2,10:39 31.03.2017
   Maintenance("Проставить группу товара по наличии класс-фии",SetItemGroupByClassificationVClass,SetItemGroupByClassificationMn,modIN); //Edit***************************Sasha2,11:34 31.03.2017
-  Maintenance("Убрать лишние символы из телефона контакта",EmptyVClass,CUVcPhoneClearMn,modDBMain);
+  //Maintenance("Убрать лишние символы из телефона контакта",EmptyVClass,CUVcPhoneClearMn,modDBMain);
   Maintenance("Fix LoyaltyPoints",EmptyVClass,LoyaltyCardCounterMn,modDBMain);
 
   Maintenance("FICLOYOAY",EmptyVClass,FixLoyPaymentsCards,modDBMain);
+  Maintenance("Заполнить PhoneVc",EmptyVClass,FillPhoneVcMn,modDBMain);
   	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);

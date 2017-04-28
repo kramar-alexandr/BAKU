@@ -708,6 +708,18 @@ global
 updating function LongInt CUVcRecordRemove(var record CUVc CUr,record CUVc CU2r,LongInt long3,LongInt long4)
 BEGIN
   LongInt res;
+  record PhoneVc Phoner;
+  boolean TrHs;
+  
+  Phoner.CUCode = CUr.Code;
+  TrHs = true;
+  while (LoopKey("CUCode",Phoner,1,TrHs)) begin
+    if (Phoner.CUCode!=CUr.Code) then begin TrHs = false; end;
+    if (TrHs) then begin
+      RecordDelete(Phoner);
+      StepBack(Phoner);
+    end;
+  end;
   
   RemoveContactRelations(CUr);      
   RemoveNormalizedNumbers(CUr);
@@ -719,13 +731,33 @@ global
 updating function LongInt CUVcRecordSave(var record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+  record PhoneVc Phoner;
+  
   CUr.DateChanged = CurrentDate;
   if (nonblankdate(CUr.BirthDate)) then begin
     CUr.Birthday = DateToString(CUr.BirthDate,"MM/DD");
   end;
   UpdateContactPersons(CUr,CU2r);
   UpdateContracts(CUr);
+  
+  if nonblank(CUr.Phone) then begin
+    recordnew(Phoner);
+    Phoner.PhoneNum = CUr.Phone;
+    Phoner.CUCode = CUr.Code;
+    recordStore(Phoner,true);
+  end;
+  if nonblank(CUr.AltPhone) then begin
+    recordnew(Phoner);
+    Phoner.PhoneNum = CUr.AltPhone;
+    Phoner.CUCode = CUr.Code;
+    recordStore(Phoner,true);
+  end;
+  if nonblank(CUr.Mobile) then begin
+    recordnew(Phoner);
+    Phoner.PhoneNum = CUr.Mobile;
+    Phoner.CUCode = CUr.Code;
+    recordStore(Phoner,true);
+  end;
   CUVcRecordSave = res;
   RETURN;
 END;
@@ -824,13 +856,36 @@ global
 updating function LongInt CUVcRecordUpdate(var record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-
+  record PhoneVc Phoner;
+  
   CUr.DateChanged = CurrentDate;
   if (nonblankdate(CUr.BirthDate)) then begin
     CUr.Birthday = DateToString(CUr.BirthDate,"MM/DD");
   end;
   UpdateContactPersons(CUr,CU2r);
   UpdateContracts(CUr);
+  
+  if (CUr.Phone!=CU2r.Phone) then begin
+    Phoner.CUCode = CUr.Code;
+    Phoner.PhoneNum = CU2r.Phone;
+    readfirstmain(Phoner,2,true);
+    Phoner.PhoneNum = CUr.Phone;
+    recordStore(Phoner,true);
+  end;
+  if (CUr.AltPhone!=CU2r.AltPhone) then begin
+    Phoner.CUCode = CUr.Code;
+    Phoner.PhoneNum = CU2r.AltPhone;
+    readfirstmain(Phoner,2,true);
+    Phoner.PhoneNum = CUr.AltPhone;
+    recordStore(Phoner,true);
+  end;
+  if (CUr.Mobile!=CU2r.Mobile) then begin
+    Phoner.CUCode = CUr.Code;
+    Phoner.PhoneNum = CU2r.Mobile;
+    readfirstmain(Phoner,2,true);
+    Phoner.PhoneNum = CUr.Mobile;
+    recordStore(Phoner,true);
+  end;
   CUVcRecordUpdate = res;
   RETURN;
 END;
