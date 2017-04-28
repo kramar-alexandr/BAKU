@@ -1048,19 +1048,41 @@ LCustomerWithEmailExists:;
 end;
 
 global
-function Boolean CustomerWithPhoneExists(string cucode,string phone) //Edit-------------------Vitalii 17:08 19.04.2017
+function Boolean CustomerWithPhoneExists(record CUVc CUr, var string errstr, var string field) //Edit-------------------Vitalii 17:08 19.04.2017
 begin
   Boolean res;
-  record CUVc CUr;
+  record PhoneVc Phoner;
   Boolean TrHs;
-
-  CUr.Phone = phone;
-  TrHs = true;
-  while (LoopKey("Phone",CUr,1,TrHs)) begin
-    if (CUr.Phone!=phone) then begin TrHs = false; end;
-    if (TrHs) then begin
-      if ((blank(cucode)) or (cucode<>CUr.Code)) then begin
-        res = true; 
+  
+  if nonblank(CUr.Phone) then begin
+    Phoner.PhoneNum = CUr.Phone;
+    if readfirstmain(Phoner,1,true) then begin
+      if (Phoner.CUCode!=CUr.Code) then begin
+        errstr = ": " & Phoner.CUCode;
+        field = "Phone";
+        res = true;
+        goto LCustomerWithPhoneExists;
+      end;
+    end;
+  end;
+  if nonblank(CUr.AltPhone) then begin
+    Phoner.PhoneNum = CUr.AltPhone;
+    if readfirstmain(Phoner,1,true) then begin
+      if (Phoner.CUCode!=CUr.Code) then begin
+        errstr = ": " & Phoner.CUCode;
+        field = "AltPhone";
+        res = true;
+        goto LCustomerWithPhoneExists;
+      end;
+    end;
+  end;
+  if nonblank(CUr.Mobile) then begin
+    Phoner.PhoneNum = CUr.Mobile;
+    if readfirstmain(Phoner,1,true) then begin
+      if (Phoner.CUCode!=CUr.Code) then begin
+        errstr = ": " & Phoner.CUCode;
+        field = "Mobile";
+        res = true;
         goto LCustomerWithPhoneExists;
       end;
     end;
@@ -1243,7 +1265,7 @@ global
 function LongInt CUVcRecordCheck(var record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
-  string 255 tstr,gotofield,oldnr;
+  string 255 tstr,gotofield,oldnr,field;
   record CUVc lCUr;
   record CCatVc CCatr;
   record VGVc VGr;
@@ -1651,51 +1673,13 @@ BEGIN
       goto LCUVcRecordCheck;
     end;
   end;
-  if nonblank(CUr.AltPhone) then begin //Edit-------------------Vitalii 17:08 19.04.2017
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.AltPhone);i=i+1) begin
-      char = mid(CUr.AltPhone,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.AltPhone = phone;
-  end;
-  if nonblank(CUr.Mobile) then begin //Edit-------------------Vitalii 17:08 19.04.2017
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.Mobile);i=i+1) begin
-      char = mid(CUr.Mobile,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.Mobile = phone;
-  end;
-  
-  if nonblank(CUr.Phone) then begin //Edit-------------------Vitalii 17:08 19.04.2017
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.Phone);i=i+1) begin
-      char = mid(CUr.Phone,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.Phone = phone;
-    if (CustomerWithPhoneExists(CUr.Code,CUr.Phone)) then begin
-      RecordCheckError(35099,tstr,-1,"Phone"); 
+  if (CustomerWithPhoneExists(CUr,tstr,field)) then begin
+      RecordCheckError(35099,tstr,-1,field); 
       res = -1; 
       goto LCUVcRecordCheck;
     end;
-  end;
+  
+  
   if ((CheckMultipleIndexField(CUr.Classification,10,10)==false) and (IsSyncing==false)) then begin
     RecordCheckError(2246,"",-1,"Classification");      
     res = -1; 
