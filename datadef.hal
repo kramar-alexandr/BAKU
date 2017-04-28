@@ -4898,6 +4898,7 @@ begin
     KeySegment(CUCode);
     KeyBegin(CUCode);
     KeySegment(CUCode);
+    KeySegment(PhoneNum);
   EndRecord;
   return;  
 end;

@@ -867,24 +867,51 @@ BEGIN
   
   if (CUr.Phone!=CU2r.Phone) then begin
     Phoner.CUCode = CUr.Code;
-    Phoner.PhoneNum = CU2r.Phone;
-    readfirstmain(Phoner,2,true);
-    Phoner.PhoneNum = CUr.Phone;
-    recordStore(Phoner,true);
+    if (readfirstkey("CUCode",Phoner,1,true)) then begin
+      RecordDelete(Phoner);
+      if nonblank(CUr.Phone) then begin
+        Phoner.CUCode = CUr.Code;
+        Phoner.PhoneNum = CUr.Phone;
+        recordStore(Phoner,true);
+      end;
+    end else begin
+      RecordNew(Phoner);
+      Phoner.CUCode = CUr.Code;
+      Phoner.PhoneNum = CUr.Phone;
+      recordStore(Phoner,true);
+    end;
   end;
   if (CUr.AltPhone!=CU2r.AltPhone) then begin
     Phoner.CUCode = CUr.Code;
-    Phoner.PhoneNum = CU2r.AltPhone;
-    readfirstmain(Phoner,2,true);
-    Phoner.PhoneNum = CUr.AltPhone;
-    recordStore(Phoner,true);
+    if (readfirstkey("CUCode",Phoner,1,true)) then begin
+      RecordDelete(Phoner);
+      if nonblank(CUr.AltPhone) then begin
+        Phoner.CUCode = CUr.Code;
+        Phoner.PhoneNum = CUr.AltPhone;
+        recordStore(Phoner,true);
+      end;
+    end else begin
+      RecordNew(Phoner);
+      Phoner.CUCode = CUr.Code;
+      Phoner.PhoneNum = CUr.AltPhone;
+      recordStore(Phoner,true);
+    end;
   end;
   if (CUr.Mobile!=CU2r.Mobile) then begin
     Phoner.CUCode = CUr.Code;
-    Phoner.PhoneNum = CU2r.Mobile;
-    readfirstmain(Phoner,2,true);
-    Phoner.PhoneNum = CUr.Mobile;
-    recordStore(Phoner,true);
+    if (readfirstkey("CUCode",Phoner,1,true)) then begin
+      RecordDelete(Phoner);
+      if nonblank(CUr.Mobile) then begin
+        Phoner.CUCode = CUr.Code;
+        Phoner.PhoneNum = CUr.Mobile;
+        recordStore(Phoner,true);
+      end;
+    end else begin
+      RecordNew(Phoner);
+      Phoner.CUCode = CUr.Code;
+      Phoner.PhoneNum = CUr.Mobile;
+      recordStore(Phoner,true);
+    end;
   end;
   CUVcRecordUpdate = res;
   RETURN;
