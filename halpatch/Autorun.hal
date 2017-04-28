@@ -165,6 +165,28 @@ return;
 end;
 
 
+global updating procedure TimeAutoRunMinutes()
+begin
+	record CompaniesBlock CBb;
+	integer i,mtrw;
+	record RcVc RepSpec;
+	
+	if(getminute(currenttime)==0)then begin
+		mtrw = matrowcnt(CBb);
+		For(i=0;i<mtrw;i=i+1) begin
+			if(CompanyIsJWLikeCompany(i) or i==1 or i==2 or i==4 or i==5 or i==6 or i==7 or i==8 or i==9 or i==25 or i==16)then begin
+				if (SetCompany(i,false)) then begin
+					logtext(0,"CreatePLActivityMn in " & i);
+					CreatePLActivityMn(RepSpec);
+				end;
+			end;
+		end; 
+		ResetCompany(1);  
+	end;
+	
+return;
+end;
+
 global updating procedure TimeAutoRun()
 begin
 	integer SWAROVSKI,LLADRO,Jewelry,Villeroy,Rosental,Baccarat,Ambience,IvDelorme,Creative,CassaCoin,Xtravaganza;
@@ -288,6 +310,7 @@ begin
   InTransmissionEnd = stringtotime("11:30:00");
   OutTransmissionBegin = stringtotime("23:15:00");
   OutTransmissionEnd = stringtotime("23:20:00");
+  TimeAutoRunMinutes;
     
   if (CurrentTime >= InTransmissionBegin) and (CurrentTime <= InTransmissionEnd) then begin
     if (SetCompany(25,false)) then begin
