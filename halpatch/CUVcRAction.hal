@@ -1075,13 +1075,27 @@ LCustomerWithEmailExists:;
 end;
 
 global
-function Boolean CustomerWithPhoneExists(record CUVc CUr, var string errstr, var string field) //Edit-------------------Vitalii 17:08 19.04.2017
+function Boolean CustomerWithPhoneExists(var record CUVc CUr, var string errstr, var string field) //Edit-------------------Vitalii 17:08 19.04.2017
 begin
   Boolean res;
   record PhoneVc Phoner;
   Boolean TrHs;
+  string 255 phone;//Edit-------------------Vitalii 17:08 19.04.2017
+  integer chrcode,i;
+  string 1 char;
   
   if nonblank(CUr.Phone) then begin
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Phone);i=i+1) begin
+      char = mid(CUr.Phone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Phone = phone;
     Phoner.PhoneNum = CUr.Phone;
     if readfirstmain(Phoner,1,true) then begin
       if (Phoner.CUCode!=CUr.Code) then begin
@@ -1093,6 +1107,17 @@ begin
     end;
   end;
   if nonblank(CUr.AltPhone) then begin
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.AltPhone);i=i+1) begin
+      char = mid(CUr.AltPhone,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.AltPhone = phone;
     Phoner.PhoneNum = CUr.AltPhone;
     if readfirstmain(Phoner,1,true) then begin
       if (Phoner.CUCode!=CUr.Code) then begin
@@ -1104,6 +1129,17 @@ begin
     end;
   end;
   if nonblank(CUr.Mobile) then begin
+    char = "";
+    chrcode = 0;
+    phone = "";
+    for (i=0;i<len(CUr.Mobile);i=i+1) begin
+      char = mid(CUr.Mobile,i,1);
+      chrcode = asc(char);
+      if ((chrcode>=48) and (chrcode<=57)) then begin
+        phone = phone & char;
+      end;
+    end;
+    CUr.Mobile = phone;
     Phoner.PhoneNum = CUr.Mobile;
     if readfirstmain(Phoner,1,true) then begin
       if (Phoner.CUCode!=CUr.Code) then begin
