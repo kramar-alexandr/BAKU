@@ -1,0 +1,104 @@
+/*external procedure ParsePhones(string, var integer, var array string);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global procedure CUVcPhoneErrorRn(record RcVc RepSpec)
+begin
+  record CUVc CUr;
+  record PhoneVc Phoner;
+  Boolean TrHs;
+  array string 255 phones;//Edit-------------------Vitalii 17:08 19.04.2017
+  integer i,phonesqty,arri,fi;
+  array string 255 CUCodes;
+  array string 20 field;
+  
+  if nonblank(RepSpec.f1) then begin
+    ParsePhones(RepSpec.f1,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      TrHs = true;
+      resetloop(Phoner);
+      while loopmain(Phoner,1,TrHs) begin
+        if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+        if (TrHs) then begin
+          if (Phoner.CUCode!=RepSpec.f4) then begin
+            CUCodes[arri] = Phoner.CUCode;
+            arri = arri + 1;
+            field[fi] = "Телефон";
+          end;
+        end;
+      end;
+    end;
+  end;
+  if nonblank(RepSpec.f2) then begin
+    fi = fi + 1;
+    ParsePhones(RepSpec.f2,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      TrHs = true;
+      resetloop(Phoner);
+      while loopmain(Phoner,1,TrHs) begin
+        if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+        if (TrHs) then begin
+          if (Phoner.CUCode!=RepSpec.f4) then begin
+            CUCodes[arri] = Phoner.CUCode;
+            arri = arri + 1;
+            field[fi] = "Доп. телефон";
+          end;
+        end;
+      end;
+    end;
+  end;
+  if nonblank(RepSpec.f3) then begin
+    fi = fi + 1;
+    ParsePhones(RepSpec.f3,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      TrHs = true;
+      resetloop(Phoner);
+      while loopmain(Phoner,1,TrHs) begin
+        if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+        if (TrHs) then begin
+          if (Phoner.CUCode!=RepSpec.f4) then begin
+            CUCodes[arri] = Phoner.CUCode;
+            arri = arri + 1;
+            field[fi] = "Мобильный тел.";
+          end;
+        end;
+      end;
+    end;
+  end;
+  
+  
+  
+  startreportnoheaderjob("Контакты с таким номером телефона");
+    startformat(15);
+			outstring(20,0,"Поле(я) с ошибкой" & ,false);
+      for (i=0;i<=fi;i=i+1) begin
+        outstring(20 + i*100,0,field[i],false);
+      end;
+  	endformat;
+    //startformat(15);
+		  //outstring(20,0,"Содержание поля: " & ,false);
+    //endformat;
+    Black_Divider(0,1);
+    startformat(15);
+			outstring(20,0,"Код контакта",false);
+      outstring(120,0,"Телефон",false);
+      outstring(220,0,"Доп. телефон",false);
+      outstring(320,0,"Мобильный тел.",false);
+  	endformat;
+    Black_Divider(0,1);
+    for (i=0;i<=arri;i=i+1) begin
+      outstring(20,"DblCUVc",CUCodes[i],false);
+      CUr.Code = CUCodes[i];
+      readfirstmain(CUr,1,true);
+      outstring(120,0,CUr.Phone,false);
+      outstring(220,0,CUr.AltPhone,false);
+      outstring(320,0,CUr.Mobile,false);
+    end;
+  endjob;
+  
+  return;
+end;
+*/

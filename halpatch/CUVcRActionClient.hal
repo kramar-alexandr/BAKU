@@ -1,0 +1,23 @@
+/*remote function Boolean CustomerWithPhoneExists(record CUVc, var string, var string);
+
+global
+function LongInt CUVcRecordCheckClient(LongInt wn,record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt errorcheck)
+begin
+  LongInt res;
+  string 255 var1,var2;
+  record RcVc RepSpec;
+  
+  if (CustomerWithPhoneExists(CUr,var1,var2)) then begin
+    RepSpec.Media = mtScreen;
+    RepSpec.f1 = CUr.Phone;
+    RepSpec.f2 = CUr.AltPhone;
+    RepSpec.f3 = CUr.Mobile;
+    RepSpec.f4 = CUr.Code;
+    RepSpec.repname = "CUVcPhoneErrorRn";
+    RunReport(RepSpec,0);
+  end;
+  
+LCUVcRecordCheckClient:;  
+  CUVcRecordCheckClient = res;
+  return;
+end;*/

@@ -4923,6 +4923,33 @@ begin
 end; //Edit***************************Sasha2,9:56 31.03.2017 }
 
 global
+procedure ParsePhones(string inpphone, var integer arrlen, var array string phones)
+begin
+  integer i,chrcode;
+  string 1 char;
+
+  char = "";
+  chrcode = 0;
+  for (i=0;i<=arrlen;i=i+1) begin
+    phones[i] = "";
+  end;
+  arrlen = 0;
+  for (i=0;i<len(inpphone);i=i+1) begin
+    char = mid(inpphone,i,1);
+    chrcode = asc(char);
+    if ((chrcode>=48) and (chrcode<=57)) then begin
+      phones[arrlen] = phones[arrlen] & char;
+    end;
+    if ((char==",") or (char==".") or (char==";")) then begin
+      arrlen = arrlen + 1;
+    end;
+  end;
+  
+  return;
+end;
+
+
+global
 updating procedure CUVcPhoneClearMn()
 begin
   record CUVc CUr;
@@ -4977,64 +5004,44 @@ updating procedure FillPhoneVcMn()
 begin
   record CUVc CUr;
   record PhoneVc Phoner;
-  string 255 phone;
-  integer i,chrcode;
-  string 1 char;
+  array string 255 phones;
+  integer i,phonesqty;
   
-  while (LoopMain(CUr,1,true)) begin
-    if nonblank(CUr.Phone) then begin
-      char = "";
-      chrcode = 0;
-      phone = "";
-      for (i=0;i<len(CUr.Phone);i=i+1) begin
-        char = mid(CUr.Phone,i,1);
-        chrcode = asc(char);
-        if ((chrcode>=48) and (chrcode<=57)) then begin
-          phone = phone & char;
-        end;
-      end;
-      recordnew(Phoner);
-      Phoner.PhoneNum = phone;
-      Phoner.CUCode = CUr.Code;
-      recordStore(Phoner,true);
-    end;
-    if nonblank(CUr.AltPhone) then begin
-      char = "";
-      chrcode = 0;
-      phone = "";
-      for (i=0;i<len(CUr.AltPhone);i=i+1) begin
-        char = mid(CUr.AltPhone,i,1);
-        chrcode = asc(char);
-        if ((chrcode>=48) and (chrcode<=57)) then begin
-          phone = phone & char;
-        end;
-      end;
-      recordnew(Phoner);
-      Phoner.PhoneNum = phone;
-      Phoner.CUCode = CUr.Code;
-      recordStore(Phoner,true);
-    end;
-    if nonblank(CUr.Mobile) then begin
-      char = "";
-      chrcode = 0;
-      phone = "";
-      for (i=0;i<len(CUr.Mobile);i=i+1) begin
-        char = mid(CUr.Mobile,i,1);
-        chrcode = asc(char);
-        if ((chrcode>=48) and (chrcode<=57)) then begin
-          phone = phone & char;
-        end;
-      end;
-      recordnew(Phoner);
-      Phoner.PhoneNum = phone;
-      Phoner.CUCode = CUr.Code;
-      recordStore(Phoner,true);
-    end;
-  end;
-  /*Phoner.PhoneNum = "";
+  Phoner.PhoneNum = "";
 	while(loopmain(Phoner,1,true))begin
 		recorddelete(Phoner);
 		stepback(Phoner);
-	end;  */
+	end;
+  
+  while (LoopMain(CUr,1,true)) begin
+    if nonblank(CUr.Phone) then begin
+      ParsePhones(CUr.Phone,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        recordnew(Phoner);
+        Phoner.PhoneNum = phones[i];
+        Phoner.CUCode = CUr.Code;
+        recordStore(Phoner,true);
+      end;
+    end;
+    if nonblank(CUr.AltPhone) then begin
+      ParsePhones(CUr.AltPhone,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        recordnew(Phoner);
+        Phoner.PhoneNum = phones[i];
+        Phoner.CUCode = CUr.Code;
+        recordStore(Phoner,true);
+      end;
+    end;
+    if nonblank(CUr.Mobile) then begin
+      ParsePhones(CUr.Mobile,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        recordnew(Phoner);
+        Phoner.PhoneNum = phones[i];
+        Phoner.CUCode = CUr.Code;
+        recordStore(Phoner,true);
+      end;
+    end;
+  end;
+  
   return;
 end;

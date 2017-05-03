@@ -21,6 +21,7 @@ external function Integer CountObjects(string);
 external procedure ExtractElemFromSet(string,integer,var string);
 external function Boolean IsVATCodeDefined(string);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string); //Edit***************************Sasha2,15:42 19.04.2017
+external procedure ParsePhones(string, var integer, var array string);
 
 updating procedure AddToNumberLookupRegister(string phoneno,Integer compno,string custcode)
 begin
@@ -732,6 +733,8 @@ updating function LongInt CUVcRecordSave(var record CUVc CUr,record CUVc CU2r,Lo
 BEGIN
   LongInt res;
   record PhoneVc Phoner;
+  array string 255 phones;
+  integer i,phonesqty;
   
   CUr.DateChanged = CurrentDate;
   if (nonblankdate(CUr.BirthDate)) then begin
@@ -741,23 +744,35 @@ BEGIN
   UpdateContracts(CUr);
   
   if nonblank(CUr.Phone) then begin
-    recordnew(Phoner);
-    Phoner.PhoneNum = CUr.Phone;
-    Phoner.CUCode = CUr.Code;
-    recordStore(Phoner,true);
+    ParsePhones(CUr.Phone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
+      Phoner.CUCode = CUr.Code;
+      recordStore(Phoner,true);
+    end;
   end;
+  
   if nonblank(CUr.AltPhone) then begin
-    recordnew(Phoner);
-    Phoner.PhoneNum = CUr.AltPhone;
-    Phoner.CUCode = CUr.Code;
-    recordStore(Phoner,true);
+    ParsePhones(CUr.AltPhone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
+      Phoner.CUCode = CUr.Code;
+      recordStore(Phoner,true);
+    end;
   end;
+  
   if nonblank(CUr.Mobile) then begin
-    recordnew(Phoner);
-    Phoner.PhoneNum = CUr.Mobile;
-    Phoner.CUCode = CUr.Code;
-    recordStore(Phoner,true);
+    ParsePhones(CUr.Mobile,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
+      Phoner.CUCode = CUr.Code;
+      recordStore(Phoner,true);
+    end;
   end;
+    
   CUVcRecordSave = res;
   RETURN;
 END;
@@ -857,6 +872,9 @@ updating function LongInt CUVcRecordUpdate(var record CUVc CUr,record CUVc CU2r,
 BEGIN
   LongInt res;
   record PhoneVc Phoner;
+  array string 255 phones;
+  integer i,phonesqty;
+  boolean TrHs;
   
   CUr.DateChanged = CurrentDate;
   if (nonblankdate(CUr.BirthDate)) then begin
@@ -865,54 +883,43 @@ BEGIN
   UpdateContactPersons(CUr,CU2r);
   UpdateContracts(CUr);
   
-  if (CUr.Phone!=CU2r.Phone) then begin
+  if ((CUr.Phone!=CU2r.Phone) or (CUr.AltPhone!=CU2r.AltPhone) or (CUr.Mobile!=CU2r.Mobile)) then begin
+    resetloop(Phoner);
+    TrHs = true;
     Phoner.CUCode = CUr.Code;
-    if (readfirstkey("CUCode",Phoner,1,true)) then begin
-      RecordDelete(Phoner);
-      if nonblank(CUr.Phone) then begin
-        Phoner.CUCode = CUr.Code;
-        Phoner.PhoneNum = CUr.Phone;
-        recordStore(Phoner,true);
+    while (LoopKey("CUCode",Phoner,1,TrHs)) begin
+      if (Phoner.CUCode!=CUr.Code) then begin TrHs = false; end;
+      if (TrHs) then begin
+        RecordDelete(Phoner);
+        StepBack(Phoner);
       end;
-    end else begin
-      RecordNew(Phoner);
+    end;
+    
+    ParsePhones(CUr.Phone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
       Phoner.CUCode = CUr.Code;
-      Phoner.PhoneNum = CUr.Phone;
+      recordStore(Phoner,true);
+    end;
+    
+    ParsePhones(CUr.AltPhone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
+      Phoner.CUCode = CUr.Code;
+      recordStore(Phoner,true);
+    end;
+    
+    ParsePhones(CUr.Mobile,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      recordnew(Phoner);
+      Phoner.PhoneNum = phones[i];
+      Phoner.CUCode = CUr.Code;
       recordStore(Phoner,true);
     end;
   end;
-  if (CUr.AltPhone!=CU2r.AltPhone) then begin
-    Phoner.CUCode = CUr.Code;
-    if (readfirstkey("CUCode",Phoner,1,true)) then begin
-      RecordDelete(Phoner);
-      if nonblank(CUr.AltPhone) then begin
-        Phoner.CUCode = CUr.Code;
-        Phoner.PhoneNum = CUr.AltPhone;
-        recordStore(Phoner,true);
-      end;
-    end else begin
-      RecordNew(Phoner);
-      Phoner.CUCode = CUr.Code;
-      Phoner.PhoneNum = CUr.AltPhone;
-      recordStore(Phoner,true);
-    end;
-  end;
-  if (CUr.Mobile!=CU2r.Mobile) then begin
-    Phoner.CUCode = CUr.Code;
-    if (readfirstkey("CUCode",Phoner,1,true)) then begin
-      RecordDelete(Phoner);
-      if nonblank(CUr.Mobile) then begin
-        Phoner.CUCode = CUr.Code;
-        Phoner.PhoneNum = CUr.Mobile;
-        recordStore(Phoner,true);
-      end;
-    end else begin
-      RecordNew(Phoner);
-      Phoner.CUCode = CUr.Code;
-      Phoner.PhoneNum = CUr.Mobile;
-      recordStore(Phoner,true);
-    end;
-  end;
+  
   CUVcRecordUpdate = res;
   RETURN;
 END;
@@ -1075,78 +1082,53 @@ LCustomerWithEmailExists:;
 end;
 
 global
-function Boolean CustomerWithPhoneExists(var record CUVc CUr, var string errstr, var string field) //Edit-------------------Vitalii 17:08 19.04.2017
+function Boolean CustomerWithPhoneExists(record CUVc CUr, var string errstr, var string field) //Edit-------------------Vitalii 17:08 19.04.2017
 begin
   Boolean res;
   record PhoneVc Phoner;
   Boolean TrHs;
-  string 255 phone;//Edit-------------------Vitalii 17:08 19.04.2017
-  integer chrcode,i;
-  string 1 char;
+  array string 255 phones;//Edit-------------------Vitalii 17:08 19.04.2017
+  integer i,phonesqty;
   
   if nonblank(CUr.Phone) then begin
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.Phone);i=i+1) begin
-      char = mid(CUr.Phone,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.Phone = phone;
-    Phoner.PhoneNum = CUr.Phone;
-    if readfirstmain(Phoner,1,true) then begin
-      if (Phoner.CUCode!=CUr.Code) then begin
-        errstr = ": " & Phoner.CUCode;
-        field = "Phone";
-        res = true;
-        goto LCustomerWithPhoneExists;
+    ParsePhones(CUr.Phone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      if readfirstmain(Phoner,1,true) then begin
+        if (Phoner.CUCode!=CUr.Code) then begin
+          errstr = ": " & Phoner.CUCode;
+          field = "Phone";
+          res = true;
+          goto LCustomerWithPhoneExists;
+        end;
       end;
     end;
   end;
   if nonblank(CUr.AltPhone) then begin
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.AltPhone);i=i+1) begin
-      char = mid(CUr.AltPhone,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.AltPhone = phone;
-    Phoner.PhoneNum = CUr.AltPhone;
-    if readfirstmain(Phoner,1,true) then begin
-      if (Phoner.CUCode!=CUr.Code) then begin
-        errstr = ": " & Phoner.CUCode;
-        field = "AltPhone";
-        res = true;
-        goto LCustomerWithPhoneExists;
+    ParsePhones(CUr.AltPhone,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      if readfirstmain(Phoner,1,true) then begin
+        if (Phoner.CUCode!=CUr.Code) then begin
+          errstr = ": " & Phoner.CUCode;
+          field = "AltPhone";
+          res = true;
+          goto LCustomerWithPhoneExists;
+        end;
       end;
     end;
   end;
   if nonblank(CUr.Mobile) then begin
-    char = "";
-    chrcode = 0;
-    phone = "";
-    for (i=0;i<len(CUr.Mobile);i=i+1) begin
-      char = mid(CUr.Mobile,i,1);
-      chrcode = asc(char);
-      if ((chrcode>=48) and (chrcode<=57)) then begin
-        phone = phone & char;
-      end;
-    end;
-    CUr.Mobile = phone;
-    Phoner.PhoneNum = CUr.Mobile;
-    if readfirstmain(Phoner,1,true) then begin
-      if (Phoner.CUCode!=CUr.Code) then begin
-        errstr = ": " & Phoner.CUCode;
-        field = "Mobile";
-        res = true;
-        goto LCustomerWithPhoneExists;
+    ParsePhones(CUr.Mobile,phonesqty,phones);
+    for (i=0;i<=phonesqty;i=i+1) begin
+      Phoner.PhoneNum = phones[i];
+      if readfirstmain(Phoner,1,true) then begin
+        if (Phoner.CUCode!=CUr.Code) then begin
+          errstr = ": " & Phoner.CUCode;
+          field = "Mobile";
+          res = true;
+          goto LCustomerWithPhoneExists;
+        end;
       end;
     end;
   end;
