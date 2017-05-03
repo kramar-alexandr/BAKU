@@ -173,7 +173,7 @@ begin
 	
 	blockload(CBb);
 	
-	if(getminute(currenttime)==6)then begin
+	if(getminute(currenttime)==6 and gethour(currenttime)==10)then begin
 		logtext(0,"TimeAutoRunMinutes in " & getminute(currenttime));
 		mtrw = matrowcnt(CBb);
 		For(i=0;i<mtrw;i=i+1) begin
