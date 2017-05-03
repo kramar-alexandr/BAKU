@@ -4900,6 +4900,25 @@ begin
     KeySegment(CUCode);
     KeySegment(PhoneNum);
   EndRecord;
+  
+  RecordBegin(ERVc,-,"er2");
+  NewAutosyncRegister(kSyncDirectionToClient,true);
+  RecordField(CurncyCode,M4Code,5,CurncyCodeVc);
+  RecordField(Date,M4Date,0,0);
+  RecordField(ToRate1,M4Rate,0,0);
+  RecordField(ToRate2,M4Rate,0,0);
+  RecordField(FrRate,M4Rate,0,0);
+  RecordField(PurchaseRateTo1,M4Rate,0,0);
+  RecordField(SalesRateTo1,M4Rate,0,0);
+  RecordField(RateShareFlag,M4Mark,0,0); //Edit***************************Sasha2,11:46 03.05.2017
+  MainKeyBegin(CDKey,0);
+  KeySegment(CurncyCode);
+  KeySegment(Date);
+  KeyBegin(DCKey);
+  KeySegment(Date);
+  KeySegment(CurncyCode);
+  EndRecord;
+  
   return;  
 end;
 
