@@ -2230,6 +2230,8 @@ begin
   RecordField(Radio,M4Int,0,0);				
   RecordField(OtherInformationSource,M4Str,200,0);//Edit----------------------Dima  01.04.2016
   RecordField(AllowWhatsApp,M4Int,0,0);			//Edit----------------------Dima  01.04.2016  
+  RecordField(PhoneDublFlag,M4Int,0,0);//Edit-------------------Vitalii 15:42 04.05.2017
+  RecordField(EmailDublFlag,M4Int,0,0);//Edit-------------------Vitalii 15:42 04.05.2017
   
   MainKeyBegin(Code,1);
   StoreInBaseKey;

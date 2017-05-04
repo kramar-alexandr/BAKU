@@ -4638,17 +4638,20 @@ begin
   label = UserDefined("CUVc","InvAddr4");
    EditField(h,v+=vs,-20,label,Normal,InvAddr4,false,0);
   EditField(h,v+=vs,50,"Страна",Normal,CountryCode,false,CountrySClass);//tsp-101118
-  EditField(h1,v,-20,"Отдел",Normal,Department,false,0);
+  StaticText(h+120,v+13,"Разрешить совпад. с др. картами",false);//Edit-------------------Vitalii 15:56 04.05.2017
+  EditField(h1+90,v,-20,"Отдел",Normal,Department,false,0);
   EditField(h,v+=vs,150,"Телефон",Normal,Phone,false,0);
-  EditField(h1,v,-20,"Факс",Normal,Fax,false,0);
+  CheckBox(h+170,v,0,"",PhoneDublFlag);
+  EditField(h1+90,v,-20,"Факс",Normal,Fax,false,0);
   EditField(h,v+=vs,150,"Доп. телефон",Normal,AltPhone,false,0);
-  EditField(h1,v,-20,"Мобильный тел.",Normal,Mobile,false,0);
+  EditField(h1+90,v,-20,"Мобильный тел.",Normal,Mobile,false,0);
   EditField(h,v+=vs,150,"Имя в Skype",Normal,SkypeName,false,0);
-  EditField(h1,v,-20,"SIP",Normal,SIPCode,false,0);
+  EditField(h1+90,v,-20,"SIP",Normal,SIPCode,false,0);
   EditField(h,v+=vs,150,"E-mail",Normal,eMail,false,0);  
-  EditField(h1,v,-20,"Префикс",Normal,Extension,false,0);
+  CheckBox(h+170,v,0,"",EmailDublFlag);
+  EditField(h1+90,v,-20,"Префикс",Normal,Extension,false,0);
   EditField(h,v+=vs,150,"Основное конт. лицо",Normal,Person,false,ContactSClass);
-  EditField(h1,v,-20,"WWW-адрес",Normal,wwwAddr,false,0);
+  EditField(h1+90,v,-20,"WWW-адрес",Normal,wwwAddr,false,0);
   EditField(h,v+=vs,-20,"Классификация",Normal,Classification,false,CClassSClass);
   RecordList2(10,v+=40,-30,-39,"ContactRelVc");
   RlColKey(4,4,"Код",ContactCode,false,ActCustContactCode);

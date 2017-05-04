@@ -1086,48 +1086,69 @@ function Boolean CustomerWithPhoneExists(record CUVc CUr, var string errstr, var
 begin
   Boolean res;
   record PhoneVc Phoner;
+  record CUVc tCUr;
   Boolean TrHs;
   array string 255 phones;//Edit-------------------Vitalii 17:08 19.04.2017
   integer i,phonesqty;
   
-  if nonblank(CUr.Phone) then begin
-    ParsePhones(CUr.Phone,phonesqty,phones);
-    for (i=0;i<=phonesqty;i=i+1) begin
-      Phoner.PhoneNum = phones[i];
-      if readfirstmain(Phoner,1,true) then begin
-        if (Phoner.CUCode!=CUr.Code) then begin
-          errstr = ": " & Phoner.CUCode;
-          field = "Phone";
-          res = true;
-          goto LCustomerWithPhoneExists;
+  if (CUr.blockedFlag==0) then begin
+    if (nonblank(CUr.Phone) and (CUr.PhoneDublFlag==0)) then begin
+      ParsePhones(CUr.Phone,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        Phoner.PhoneNum = phones[i];
+        TrHs = true;
+        while (loopmain(Phoner,1,TrHs)) begin
+          if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+          if ((TrHs) and (Phoner.CUCode!=CUr.Code)) then begin
+            tCUr.Code = Phoner.CUCode;
+            readfirstmain(tCUr,1,true);
+            if (tCUr.blockedFlag==0) then begin
+              errstr = ": " & Phoner.CUCode;
+              field = "Phone";
+              res = true;
+              goto LCustomerWithPhoneExists;
+            end;
+          end;
         end;
       end;
     end;
-  end;
-  if nonblank(CUr.AltPhone) then begin
-    ParsePhones(CUr.AltPhone,phonesqty,phones);
-    for (i=0;i<=phonesqty;i=i+1) begin
-      Phoner.PhoneNum = phones[i];
-      if readfirstmain(Phoner,1,true) then begin
-        if (Phoner.CUCode!=CUr.Code) then begin
-          errstr = ": " & Phoner.CUCode;
-          field = "AltPhone";
-          res = true;
-          goto LCustomerWithPhoneExists;
+    if (nonblank(CUr.AltPhone) and (CUr.PhoneDublFlag==0)) then begin
+      ParsePhones(CUr.AltPhone,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        Phoner.PhoneNum = phones[i];
+        TrHs = true;
+        while (loopmain(Phoner,1,TrHs)) begin
+          if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+          if ((TrHs) and (Phoner.CUCode!=CUr.Code)) then begin
+            tCUr.Code = Phoner.CUCode;
+            readfirstmain(tCUr,1,true);
+            if (tCUr.blockedFlag==0) then begin
+              errstr = ": " & Phoner.CUCode;
+              field = "AltPhone";
+              res = true;
+              goto LCustomerWithPhoneExists;
+            end;
+          end;
         end;
       end;
     end;
-  end;
-  if nonblank(CUr.Mobile) then begin
-    ParsePhones(CUr.Mobile,phonesqty,phones);
-    for (i=0;i<=phonesqty;i=i+1) begin
-      Phoner.PhoneNum = phones[i];
-      if readfirstmain(Phoner,1,true) then begin
-        if (Phoner.CUCode!=CUr.Code) then begin
-          errstr = ": " & Phoner.CUCode;
-          field = "Mobile";
-          res = true;
-          goto LCustomerWithPhoneExists;
+    if (nonblank(CUr.Mobile) and (CUr.PhoneDublFlag==0)) then begin
+      ParsePhones(CUr.Mobile,phonesqty,phones);
+      for (i=0;i<=phonesqty;i=i+1) begin
+        Phoner.PhoneNum = phones[i];
+        TrHs = true;
+        while (loopmain(Phoner,1,TrHs)) begin
+          if (Phoner.PhoneNum!=phones[i]) then begin TrHs = false; end;
+          if ((TrHs) and (Phoner.CUCode!=CUr.Code)) then begin
+            tCUr.Code = Phoner.CUCode;
+            readfirstmain(tCUr,1,true);
+            if (tCUr.blockedFlag==0) then begin
+              errstr = ": " & Phoner.CUCode;
+              field = "Mobile";
+              res = true;
+              goto LCustomerWithPhoneExists;
+            end;
+          end;
         end;
       end;
     end;
@@ -1711,7 +1732,7 @@ BEGIN
       goto LCUVcRecordCheck;
     end;
   end;
-  if nonblank(CUr.eMail) then begin
+  if (nonblank(CUr.eMail) and (CUr.EmailDublFlag==0) and (CUr.blockedFlag==0)) then begin  //Edit-------------------Vitalii 16:10 04.05.2017
     if (CustomerWithEmailExists(CUr.Code,CUr.eMail)) then begin
       RecordCheckError(20766,tstr,-1,"eMail"); 
       res = -1; 
