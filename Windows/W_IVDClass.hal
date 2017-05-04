@@ -5111,7 +5111,11 @@ begin
   		EditField(h2,v,70,"Накопл. баллы",viewonly,PointsBalance,true,0);
   end;
   EditField(h3,v,-40,"Баллов до",Normal,PointsTo,false,LoyaltyCardSClass);
-  EditField(h,v+=20,80,"Начальные баллы",ViewOnly,StartBalance,false,0);
+  if(usercanaction("AllowChangeLoyaltyPoints",false))then begin
+		EditField(h,v+=20,80,"Начальные баллы",Normal,StartBalance,false,0);
+  end else begin
+  	EditField(h,v+=20,80,"Начальные баллы",ViewOnly,StartBalance,false,0);
+  end;
   CheckBox(h,v+=20,0,"Закрыта",Closed);
   EndWindow;
 end;
