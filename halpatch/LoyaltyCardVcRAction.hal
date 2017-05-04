@@ -32,7 +32,7 @@ begin
 end;
 
 global
-updating function LongInt LoyaltyCardVcRecordSave(var record LoyaltyCardVc LCr,record LoyaltyCardVc LC2r,LongInt stat,LongInt long4)
+updating function LongInt LoyaltyCardVcRecordSave(var record LoyaltyCardVc LoyaltyCardr,record LoyaltyCardVc LoyaltyCard2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
   record SRBlock SRb;
@@ -40,30 +40,28 @@ begin
   LongInt lastLCnr,curLCnr;
   record PointsHistVc PointsHistr;
 
-  if (LCr.PointsBalance!=LC2r.PointsBalance) then begin
-    RecordNew(PointsHistr);
-    PointsHistr.TransNr = StringToLongInt(LCr.SerNr);
-    PointsHistr.FileName = "UserChange";
-    PointsHistr.TransDate = CurrentDate;
-    PointsHistr.CustCode = LCr.CustCode;
-    PointsHistr.Location = "";        
-    PointsHistr.LMCardNr = LCr.SerNr;
-    PointsHistr.FWBalance = LCr.PointsBalance;
-    PointsHistr.Points = LCr.PointsBalance - LC2r.PointsBalance;
-    PointsHistr.User = CurrentUser;
-    PointsHistr.SerNr = NextSerNr("PointsHistVc",PointsHistr.TransDate,-1,false,"");
-    RecordStore(PointsHistr,false);
-  end;
+  RecordNew(PointsHistr);
+  PointsHistr.TransNr = StringToLongInt(LoyaltyCardr.SerNr);
+  PointsHistr.FileName = "UserChange";
+  PointsHistr.TransDate = CurrentDate;
+  PointsHistr.CustCode = LoyaltyCardr.CustCode;
+  PointsHistr.Location = "";        
+  PointsHistr.LMCardNr = LoyaltyCardr.SerNr;
+  PointsHistr.FWBalance = LoyaltyCardr.PointsBalance;
+  PointsHistr.Points = LoyaltyCardr.PointsBalance;
+  PointsHistr.User = CurrentUser;
+  PointsHistr.SerNr = NextSerNr("PointsHistVc",PointsHistr.TransDate,-1,false,"");
+  RecordStore(PointsHistr,false);
   BlockLoad(SRb);
   SplitAlphaDigit(SRb.LastLoyaltyCardNr,lastcardnr,lastLCnr);
-  SplitAlphaDigit(LCr.SerNr,curcardnr,curLCnr);
+  SplitAlphaDigit(LoyaltyCardr.SerNr,curcardnr,curLCnr);
   if (curcardnr==lastcardnr) then begin
     if (curLCnr!=lastLCnr) then begin
-      SRb.LastLoyaltyCardNr = LCr.SerNr;
+      SRb.LastLoyaltyCardNr = LoyaltyCardr.SerNr;
       BlockStore(SRb);
     end;
   end else begin
-    SRb.LastLoyaltyCardNr = LCr.SerNr;
+    SRb.LastLoyaltyCardNr = LoyaltyCardr.SerNr;
     BlockStore(SRb);
   end;
  
@@ -267,21 +265,21 @@ begin
 end;
 
 global
-updating function LongInt LoyaltyCardVcRecordUpdate(var record LoyaltyCardVc LCr,record LoyaltyCardVc LC2r,LongInt stat,LongInt long4)
+updating function LongInt LoyaltyCardVcRecordUpdate(var record LoyaltyCardVc LoyaltyCardr,record LoyaltyCardVc LoyaltyCard2r,LongInt stat,LongInt long4)
 BEGIN
   LongInt res;
   record PointsHistVc PointsHistr;
 
-  if (LCr.PointsBalance!=LC2r.PointsBalance) then begin
+  if (LoyaltyCardr.PointsBalance!=LoyaltyCard2r.PointsBalance) then begin
     RecordNew(PointsHistr);
-    PointsHistr.TransNr = StringToLongInt(LCr.SerNr);
+    PointsHistr.TransNr = StringToLongInt(LoyaltyCardr.SerNr);
     PointsHistr.FileName = "UserChange";
     PointsHistr.TransDate = CurrentDate;
-    PointsHistr.CustCode = LCr.CustCode;
+    PointsHistr.CustCode = LoyaltyCardr.CustCode;
     PointsHistr.Location = "";        
-    PointsHistr.LMCardNr = LCr.SerNr;
-    PointsHistr.FWBalance = LCr.PointsBalance;
-    PointsHistr.Points = LCr.PointsBalance - LC2r.PointsBalance;
+    PointsHistr.LMCardNr = LoyaltyCardr.SerNr;
+    PointsHistr.FWBalance = LoyaltyCardr.PointsBalance;
+    PointsHistr.Points = LoyaltyCardr.PointsBalance - LoyaltyCard2r.PointsBalance;
     PointsHistr.User = CurrentUser;
     PointsHistr.SerNr = NextSerNr("PointsHistVc",PointsHistr.TransDate,-1,false,"");
     RecordStore(PointsHistr,false);
