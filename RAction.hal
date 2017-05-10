@@ -290,14 +290,28 @@ BEGIN
   RETURN;
 END; 
 
-updating procedure ExtSalesUpdateLoyaltyCard(string custcode,val sum)
+updating procedure ExtSalesUpdateLoyaltyCard(string custcode,val sum,record ExternalSalesVc ESp)
 begin
  record LoyaltyCardVc LCr;
+ record PointsHistVc PHr;
  
  LCr.CustCode = custcode;
  if(readfirstkey("ActCustCode",LCr,1,true))then begin
- 	LCr.PointsBalance = LCr.PointsBalance + sum;
+ 	LCr.StartBalance = LCr.StartBalance + sum;
  	recordstore(LCr,true);
+ 	
+ 	recordnew(PHr);
+ 	PHr.SerNr = NextSerNr("PointsHistVc",PHr.TransDate,-1,false,"");
+ 	PHr.FileName = "ExternalSalesVc";
+ 	PHr.TransNr = ESp.SerNr;
+ 	PHr.LMCardNr = LCr.SerNr;
+	PHr.FWBalance = LCr.PointsBalance;
+	PHr.Points = sum;
+	PHr.CustCode = ESp.CustCode;
+	PHr.Location = ESp.Location;
+ 	RecordStore(PHr,false); 
+
+ 	
  end;
 
 return;
@@ -382,15 +396,15 @@ BEGIN
   
   if(stat==insertmode)then begin
   	if(ESp.OKFlag==1)then begin
-			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum);
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum,ESp);
 		end;
 	end;
 	if(stat==updatemode)then begin
   	if(ESp.OKFlag==1 and ES2p.OKFlag==0)then begin
-			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum);
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,ESp.Sum,ESp);
 		end;
 		if(ESp.OKFlag==0 and ES2p.OKFlag==1)then begin
-			ExtSalesUpdateLoyaltyCard(ESp.CustCode,-ESp.Sum);
+			ExtSalesUpdateLoyaltyCard(ESp.CustCode,-ESp.Sum,ESp);
 		end;
 	end;
 	
