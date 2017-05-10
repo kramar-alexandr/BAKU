@@ -1069,9 +1069,11 @@ begin
     while (LoopKey("eMail",CUr,1,TrHs)) begin
       if (CUr.eMail!=eMail) then begin TrHs = false; end;
       if (TrHs) then begin
-        if ((blank(cucode)) or (cucode<>CUr.Code)) then begin
-          res = true; 
-          goto LCustomerWithEmailExists;
+      	if(CUr.blockedFlag==0)then begin// Edit ************************** Wednesday, 10 May 2017 09:38:54
+					if ((blank(cucode)) or (cucode<>CUr.Code)) then begin
+						res = true; 
+						goto LCustomerWithEmailExists;
+					end;
         end;
       end;
     end;

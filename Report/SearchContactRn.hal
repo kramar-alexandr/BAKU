@@ -103,6 +103,7 @@ begin
       		AddToText(CUr.CreateCompany & " ",Letr);
       		AddToText(CUr.CreateLocation & " ",Letr);
       		AddToText(CUr.CreateComment & " ",Letr);
+      		AddToText(CUr.eMail & " ",Letr);
       end;            
       if (StringInText(RepSpec.f1,Letr)) then begin
         testf = true;
