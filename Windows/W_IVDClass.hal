@@ -2479,6 +2479,7 @@ end;
   SpecialMenu("Сделать поступление для FOB36",' ',0,"CreatePufromIVforPLDsm"); //Edit***************************Sasha2,14:35 07.04.2015
   SpecialMenu("Создать кредитовый счет-фактуру",' ',20,"CreateCreditNoteIVDsm");
   SpecialMenu("Открыть прикрепленные ссылки",' ',25,"OpenLinkWindow");	//Edit----------------------Dima  20.05.2015
+  SpecialMenu("Статус счета-фактуры",'r',2,"IVInfoIVDsm");
   EndWindow;
 end;
 
