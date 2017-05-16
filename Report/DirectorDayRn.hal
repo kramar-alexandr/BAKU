@@ -426,8 +426,6 @@ begin
     Gray_Divider(0,1);
     StartFormat(15);
       OutString(20,0,"Итого:",false);
-      vday = DirectorDayCalc(RepSpec,day);
-      tot = tot + vday;
       OutString(100,0,tot,false);
       OutString(160,0,"",false);
     EndFormat;
