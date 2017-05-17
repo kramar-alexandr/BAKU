@@ -1736,7 +1736,7 @@ BEGIN
   end;
   if (nonblank(CUr.eMail) and (CUr.EmailDublFlag==0) and (CUr.blockedFlag==0)) then begin  //Edit-------------------Vitalii 16:10 04.05.2017
     if (CustomerWithEmailExists(CUr.Code,CUr.eMail)) then begin
-      RecordCheckError(20766,tstr,-1,"eMail"); 
+      RecordCheckError(20766,"",-1,"eMail"); 
       res = -1; 
       goto LCUVcRecordCheck;
     end;
