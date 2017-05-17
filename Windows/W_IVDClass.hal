@@ -2179,6 +2179,10 @@ if (HasTouchScreenLook==false) then begin
     MatCol(t,-190,"FIFO вал.по стр.",0,FIFORowValCur,true,0);
     MatCol(t,-100,"FIFO вал.валюта",0,CurncyCodeCur,true,0);
   end; //Edit***************************Sasha2,11:03 23.05.2016 }
+  if(currentuser=="SA")then begin
+		Flip(8);
+  	MatCol(t,-100,"FIFO вал.валюта",0,UsedBirthRebate,true,0);
+  end;
   InsertRowTest;
   DeleteRowTest;
   EndMatrix;
@@ -2191,6 +2195,9 @@ if (HasTouchScreenLook==false) then begin
   v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,6,"F");
   if (CurFIFOFlip) then begin
     v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,7,"G"); //Edit***************************Sasha2,11:03 23.05.2016
+  end;
+  if(currentuser=="SA")then begin
+  	v=v+ vs; VTab(-35,v,-16,v+vs,ToolFlip,8,"H");
   end;
   Tile(3,70,false,"3",FrRate);
   vs = 20;
@@ -2480,6 +2487,7 @@ end;
   SpecialMenu("Создать кредитовый счет-фактуру",' ',20,"CreateCreditNoteIVDsm");
   SpecialMenu("Открыть прикрепленные ссылки",' ',25,"OpenLinkWindow");	//Edit----------------------Dima  20.05.2015
   SpecialMenu("Статус счета-фактуры",'r',2,"IVInfoIVDsm");
+  SpecialMenu("Скидка",'',2,"GetBirthRebateDsm");
   EndWindow;
 end;
 
@@ -4832,6 +4840,9 @@ begin
   EditField(h,v+=vs,100,"Источник заказа",Normal,BookOrigin,false,BookOrgSClass);
   EditField(h,v+=vs,300,"Отметки о диете",Normal,DietRemarks,false,0);
   EditField(h,v+=vs,300,"Отметки о треб.",Normal,RequirementRemarks,false,0);
+  EditField(h,v+=vs,70,"Дата скидки др",ViewOnly,BirthRebateLastDate,false,0);
+  EditField(h,v+=vs,70,"Компания скидки",ViewOnly,BirthRebateInComp,false,0);
+  EditField(h,v+=vs,70,"Номер сч/ф",ViewOnly,BirthRebateTransNr,false,0);
   
   ButtonFrame(h2,v=vm+20,100,3,"Пол");
   RadioButton(h2,v,0,0,"Мужской",Gender);

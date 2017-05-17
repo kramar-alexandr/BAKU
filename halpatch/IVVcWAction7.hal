@@ -71,6 +71,9 @@ external updating procedure CreateSDfromIVDsm(String,String); //Edit************
 remote procedure IVDUpdatePrices(var record IVVc,Boolean);
 remote function string 255 SaboPromotion(var record IVVc,string); //Edit***************************Sasha2,13:19 01.06.2016
 remote procedure SendToServerArtCode(string,string,string,integer); //Edit***************************Sasha2,15:20 27.04.2017
+remote procedure IVDchsum(var record IVVc,Integer);// Edit ************************** Tuesday, 16 May 2017 14:06:35
+external function Boolean IVDchrsum(var record IVVc,Integer); //Edit***************************Sasha2,16:46 01.06.2016
+
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -80,6 +83,8 @@ enum begin
   kPOSButtonTypeCreateShotSDVc = 104,
   kPOSButtonTypeCreateShotPUVc = 105,
   kPOSButtonTypeOpenCustomAllInvoices = 106,
+  kPOSButtonTypeOSashaChtotoDelal = 107,
+  kPOSButtonTypeGetBirthRebate = 108
 end;
 
 function string 200 ParseClassification(string class)
@@ -567,6 +572,77 @@ begin
   nwn = OpenWindow("IV1LClass",1,wn,subset,"",IVr);  
   return;
 end; //Edit***************************Sasha2,15:45 23.12.2014 }
+// Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 May 2017 14:22:09
+	
+global procedure GetBirthRebateDsm() begin
+	Integer wn,nwn,i;
+  record IVVc IVr;
+  row IVVc IVrw;
+  record UserVc Userr;
+  string 255 subset;
+  integer mtrw,rwcnt;
+  string 50 artcode;
+  Integer sernrf;
+  string 255 inwarning,warning;
+  record BirthdayRebateBlock BRb;
+  date startdate,enddate;
+  date birthmin,birth,mirthmax;
+  val lastquant; 
+  record CUVc CUr;
+  
+	blockload(BRb);
+	
+	wn = CurWindow;
+	getwindowrecord(wn,IVr);
+	CUr.Code = IVr.CustCode;
+	if(readfirstmain(CUr,1,true))then begin
+		startdate = addday(IVr.InvDate,-BRb.DayBefore);
+		enddate = addday(IVr.InvDate,BRb.DayAfter);
+		
+		
+		if(IVr.OKFlag==0)then begin
+			birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
+    	birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
+    	mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
+    	
+    	if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
+    		if(BRb.PrcRebate!=0)then begin
+					mtrw = matrowcnt(IVr);
+					For(i=0;i<mtrw;i=i+1) begin
+						matrowget(IVr,i,IVrw);
+						if(nonblank(IVrw.ArtCode) and IVrw.stp==1)then begin
+							lastquant = IVrw.Quant;
+							IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+							matrowget(IVr,i,IVrw);
+							IVrw.Quant = lastquant;
+							matrowput(IVr,i,IVrw);
+							IVVc_PasteQuantity(IVr,i);										
+							matrowget(IVr,i,IVrw);
+							IVrw.vRebate = (1-(100-IVrw.vRebate)/100*(100-BRb.PrcRebate)/100)*100;
+							IVrw.UsedBirthRebate = 1;
+							matrowput(IVr,i,IVrw);
+							IVDchrsum(IVr,i);
+							IVDchsum(IVr,i);
+						end;
+					end;
+					IVSumup(IVr,true);
+					putwindowrecord(wn,IVr);
+					IVDClass_RefreshStringList(wn,IVr);
+				end;
+			end else begin
+				messagebox(35101,"");
+			end;
+			
+      //DisplayIVItem(IVr,rownr);
+		end;
+	end;
+	
+return;
+end;
+
+	// Edit End ---------------------------------------------- Edit End
+	
 
 global updating
 procedure IVDClassTouchScreenPasteButtonDo(integer butnr)
@@ -800,6 +876,9 @@ begin
       case kPOSButtonTypeCreateShotPUVc: //Edit***************************Sasha2,10:37 11.12.2014
         CreatePUfromIVDsm;
         goto LIVDClassTouchScreenPasteButtonDo;
+      case kPOSButtonTypeGetBirthRebate:
+      	GetBirthRebateDsm;
+      	goto LIVDClassTouchScreenPasteButtonDo;
       end;
   end;
 LIVDClassTouchScreenPasteButtonDo:;

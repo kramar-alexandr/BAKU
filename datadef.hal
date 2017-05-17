@@ -329,6 +329,7 @@ begin
   ArrayField(CurncyCodeCur,M4Code,5,CurncyCodeVc); //Edit***************************Sasha2,17:22 19.05.2016
   ArrayField(IVForRetNr,M4Long,0,0); //Edit***************************Sasha2,11:44 23.05.2016
   ArrayField(RetFromComp,M4Code,0,0); //Edit***************************Sasha2,11:44 23.05.2016
+  ArrayField(UsedBirthRebate,M4Int,0,0);// Edit ************************** Tuesday, 16 May 2017 14:39:32
   EndArray;
   return;
 end;
@@ -2232,6 +2233,9 @@ begin
   RecordField(AllowWhatsApp,M4Int,0,0);			//Edit----------------------Dima  01.04.2016  
   RecordField(PhoneDublFlag,M4Int,0,0);//Edit-------------------Vitalii 15:42 04.05.2017
   RecordField(EmailDublFlag,M4Int,0,0);//Edit-------------------Vitalii 15:42 04.05.2017
+  RecordField(BirthRebateInComp,M4Int,0,0);// Edit ************************** Tuesday, 16 May 2017 14:41:06
+  RecordField(BirthRebateLastDate,M4Date,0,0);// Edit ************************** Tuesday, 16 May 2017 14:41:08
+  RecordField(BirthRebateTransNr,M4Long,0,0);// Edit ************************** Tuesday, 16 May 2017 14:41:07
   
   MainKeyBegin(Code,1);
   StoreInBaseKey;
@@ -4920,6 +4924,14 @@ begin
   KeySegment(Date);
   KeySegment(CurncyCode);
   EndRecord;
+  
+  BlockBegin(BirthdayRebateBlock,-,"");// Edit ************************** Tuesday, 16 May 2017 14:35:03
+		RecordField(PrcRebate,M4Val,0,0);
+		RecordField(AbsRebate,M4Val,0,0);
+		RecordField(RebCode,M4Val,0,0);
+		RecordField(DayBefore,M4Int,0,0);
+		RecordField(DayAfter,M4Int,0,0);
+  EndBlock; 
   
   return;  
 end;

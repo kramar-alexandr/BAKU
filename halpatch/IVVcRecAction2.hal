@@ -528,6 +528,37 @@ BEGIN
 	  row IVVc IVrw;// Edit ************************** Tuesday, 26 February 2013 17:15:51
 		integer i,mtrw;// Edit ************************** Tuesday, 26 February 2013 17:16:00
 		boolean redempt;// Edit ************************** Tuesday, 26 February 2013 17:17:32
+    boolean foundflag;// Edit ************************** Tuesday, 16 May 2017 14:53:09
+		record CUVc CUr;
+  
+  
+  // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 May 2017 14:42:24
+	
+	foundflag = false;
+  if(IVr.OKFlag==1)then begin
+  	mtrw = matrowcnt(IVr);
+  	For(i=0;i<mtrw;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.UsedBirthRebate==1)then begin
+				foundflag = true;
+			end;	  
+		end; 
+  	if(foundflag)then begin
+  		CUr.Code = IVr.CustCode;
+  		if(readfirstmain(CUr,1,true))then begin
+  			if(blank(CUr.BirthRebateLastDate) or CUr.BirthRebateLastDate<=IVr.InvDate)then begin
+  				CUr.BirthRebateLastDate = IVr.InvDate;
+  				CUr.BirthRebateInComp = CurrentCompany;
+  				CUr.BirthRebateTransNr = IVr.SerNr;
+  				recordstore(CUr,true);
+  			end;
+  		end;
+  	end;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+	
   
   if (IVr.Invalid==0) then begin
     if (IVr.OKFlag!=0) then begin
@@ -1021,7 +1052,7 @@ BEGIN
   LongInt res;
   record ARVc ARr;
   record ARVc oldARr;
-  Boolean testf;
+  Boolean testf,foundflag;
   record EInvoiceBlock EIb;
   record CredManEventVc CredManEventr;
   Boolean ihef;
@@ -1032,6 +1063,7 @@ BEGIN
   row IVVc IVrw;// Edit ************************** Tuesday, 26 February 2013 17:15:51
   integer i,mtrw;// Edit ************************** Tuesday, 26 February 2013 17:16:00
   boolean redempt;// Edit ************************** Tuesday, 26 February 2013 17:17:32
+  record CUVc CUr;// Edit ************************** Tuesday, 16 May 2017 14:53:10
    
   ihef = ItemHistExists("IVVc",IVr.SerNr);
   if (IVr.OKFlag==1) then begin
@@ -1045,6 +1077,53 @@ BEGIN
       BAEMailFromCreditNote(IVr);
     end;
   end;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 May 2017 14:42:24
+	
+	foundflag = false;
+  if(IVr.OKFlag==1 and IV2r.OKFlag==0)then begin
+  	mtrw = matrowcnt(IVr);
+  	For(i=0;i<mtrw;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.UsedBirthRebate==1)then begin
+				foundflag = true;
+			end;	  
+		end; 
+  	if(foundflag)then begin
+  		CUr.Code = IVr.CustCode;
+  		if(readfirstmain(CUr,1,true))then begin
+  			if(blank(CUr.BirthRebateLastDate) or CUr.BirthRebateLastDate<=IVr.InvDate)then begin
+  				CUr.BirthRebateLastDate = IVr.InvDate;
+  				CUr.BirthRebateInComp = CurrentCompany;
+  				CUr.BirthRebateTransNr = IVr.SerNr;
+  				recordstore(CUr,true);
+  			end;
+  		end;
+  	end;
+  end;
+  if(IVr.OKFlag==0 and IV2r.OKFlag==1)then begin
+		mtrw = matrowcnt(IVr);
+  	For(i=0;i<mtrw;i=i+1) begin
+			matrowget(IVr,i,IVrw);
+			if(IVrw.UsedBirthRebate==1)then begin
+				foundflag = true;
+			end;	  
+		end; 
+  	if(foundflag)then begin
+  		CUr.Code = IVr.CustCode;
+  		if(readfirstmain(CUr,1,true))then begin
+  			if(CUr.BirthRebateInComp==CurrentCompany and CUr.BirthRebateTransNr==IVr.SerNr)then begin
+  				CUr.BirthRebateLastDate = "";
+  				CUr.BirthRebateInComp = 0;
+  				CUr.BirthRebateTransNr = -1;
+  				recordstore(CUr,true);
+  			end;
+  		end;
+  	end;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+	
   if ((IV2r.Invalid==0) and (IVr.Invalid==0)) then begin
     if (IVr.OrderNr!=-1) then begin
       UpdateOrderFromInv(IVr,true,IV2r,true);

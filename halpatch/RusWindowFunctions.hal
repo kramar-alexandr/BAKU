@@ -845,6 +845,9 @@ begin
       case 107:
         AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); //Edit***************************Sasha2,10:35 11.12.2014
         procstr = "";
+      case 108:
+        AddTouchScreenPasteButton(h,v,width,height,procstr,i+1,lblstr,POSBrw.colnr); // Edit ************************** Tuesday, 16 May 2017 13:33:29
+        procstr = "";
     end;
     
     if (procstr<>"") then begin

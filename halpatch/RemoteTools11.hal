@@ -782,7 +782,18 @@ BEGIN
   string 20 poscrncy;
   row IVVc IVrw;// Edit ************************** Monday, 3 June 2013 14:48:44
   integer i,rwcnt;
+  record BirthdayRebateBlock BRb;// Edit ************************** Tuesday, 16 May 2017 12:56:00
+  date startdate,enddate;
+  date birthmin,birth,mirthmax;
+  // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 May 2017 13:05:05
+	
+  blockload(BRb);
+  startdate = addday(currentdate,-BRb.DayBefore);
+  enddate = addday(currentdate,BRb.DayAfter);
   
+	// Edit End ---------------------------------------------- Edit End
+	
  	CntPOSCurrencies(acrncy,achangecrncyf,acrncnt);// Edit ************************** Saturday, 23 March 2013 14:58:11
  	// Edit Start ---------------------------------------------- Edit Start
 	//Monday, 3 June 2013 14:53:10
@@ -1004,6 +1015,28 @@ BEGIN
     if (nonblank(CUr.WarnText1)) then begin
       warning = CUr.WarnText1;
     end;
+    // Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 16 May 2017 13:05:31
+	
+    if(!blankdate(CUr.BirthDate))then begin
+    	birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
+    	birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
+    	mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
+    	if(BRb.PrcRebate!=0 or BRb.AbsRebate!=0)then begin
+    		if(birthmin>=startdate and birthmin<=enddate)then begin
+    			warning = warning & " " & USetStr(35100) &  " " & birthmin;
+    		end;
+    		if(birth>=startdate and birth<=enddate)then begin
+    			warning = warning & " " & USetStr(35100) &  " " & birth;
+    		end;
+    		if(mirthmax>=startdate and mirthmax<=enddate)then begin
+    			warning = warning & " " & USetStr(35100) &  " " & mirthmax;
+    		end;
+    	end;
+    end;
+    
+	// Edit End ---------------------------------------------- Edit End
+	
     if (CreditLimitRec.IVPaste==1) then begin
       if (limitdaysf) then begin
         errstr = USetStr(22260);

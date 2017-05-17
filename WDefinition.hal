@@ -2101,3 +2101,21 @@ begin
  	EditField(h,v+=vs,200,"Код клиента",Normal,CUCode,false,0);	
  	EndWindow;
 end;
+
+window BirthdayRebateTClass:1 //Edit***************************Sasha2,16:12 25.09.2014 {
+ wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs,f;
+  WindowBegin("Настройка скидки дня рождения",BirthdayRebateTClass,CGSbl,-);
+  SetBlid(BirthdayRebateBlock);
+  SetWRect(64,80,480,150);
+  h=150;f=150;
+  v=6;vs=20;
+    EditField(h=130,v,70,"Скидка %",Normal,PrcRebate,false,0);
+    //EditField(h,v+=20,70,"Скидка манат",Normal,AbsRebate,false,0);
+    //EditField(h=100,v,200,"Таблица ",Normal,PhoneNum,false,0);
+    EditField(h,v+=20,70,"Действ. дней до",Normal,DayBefore,false,0);
+    EditField(h,v+=20,70,"Действ. дней после",Normal,DayAfter,false,0);
+    
+  EndWindow;
+end; //Edit***************************Sasha2,16:12 25.09.2014 }
