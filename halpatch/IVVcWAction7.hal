@@ -590,51 +590,68 @@ global procedure GetBirthRebateDsm() begin
   date birthmin,birth,mirthmax;
   val lastquant; 
   record CUVc CUr;
+  boolean notused;
+  record RebVc Rebr;
   
 	blockload(BRb);
 	
 	wn = CurWindow;
 	getwindowrecord(wn,IVr);
 	CUr.Code = IVr.CustCode;
+	
+	Rebr.Code = IVr.RebCode;
+	if(readfirstmain(Rebr,1,true))then begin
+
+	end;
+	
 	if(readfirstmain(CUr,1,true))then begin
 		startdate = addday(IVr.InvDate,-BRb.DayBefore);
 		enddate = addday(IVr.InvDate,BRb.DayAfter);
 		
-		
-		if(IVr.OKFlag==0)then begin
-			birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
-    	birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
-    	mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
-    	
-    	if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
-    		if(BRb.PrcRebate!=0)then begin
-					mtrw = matrowcnt(IVr);
-					For(i=0;i<mtrw;i=i+1) begin
-						matrowget(IVr,i,IVrw);
-						if(nonblank(IVrw.ArtCode) and IVrw.stp==1)then begin
-							lastquant = IVrw.Quant;
-							IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
-							matrowget(IVr,i,IVrw);
-							IVrw.Quant = lastquant;
-							matrowput(IVr,i,IVrw);
-							IVVc_PasteQuantity(IVr,i);										
-							matrowget(IVr,i,IVrw);
-							IVrw.vRebate = (1-(100-IVrw.vRebate)/100*(100-BRb.PrcRebate)/100)*100;
-							IVrw.UsedBirthRebate = 1;
-							matrowput(IVr,i,IVrw);
-							IVDchrsum(IVr,i);
-							IVDchsum(IVr,i);
-						end;
-					end;
-					IVSumup(IVr,true);
-					putwindowrecord(wn,IVr);
-					IVDClass_RefreshStringList(wn,IVr);
-				end;
-			end else begin
-				messagebox(35101,"");
-			end;
+		notused = true;
+		if(getyear(CUr.BirthRebateLastDate)==getyear(IVr.InvDate))then begin
+			messagebox(35102,CUr.BirthRebateInComp & " invoice # " & CUr.BirthRebateTransNr);
+			notused = false;
+		end;
+		if(notused)then begin
+			if(IVr.OKFlag==0)then begin
+				birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
+				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
+				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
 			
-      //DisplayIVItem(IVr,rownr);
+				if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
+					if(BRb.PrcRebate!=0)then begin
+						mtrw = matrowcnt(IVr);
+						For(i=0;i<mtrw;i=i+1) begin
+							matrowget(IVr,i,IVrw);
+							if(nonblank(IVrw.ArtCode) and IVrw.stp==1 and IVrw.vRebate==Rebr.vra0)then begin
+								lastquant = IVrw.Quant;
+								IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+								matrowget(IVr,i,IVrw);
+								IVrw.Quant = lastquant;
+								matrowput(IVr,i,IVrw);
+								IVVc_PasteQuantity(IVr,i);										
+								matrowget(IVr,i,IVrw);
+								if(IVrw.vRebate==Rebr.vra0)then begin
+									IVrw.vRebate = (1-(100-IVrw.vRebate)/100*(100-BRb.PrcRebate)/100)*100;
+									IVrw.UsedBirthRebate = 1;
+									IVr.UsedBirthRebateH = 1;
+								end;
+								matrowput(IVr,i,IVrw);
+								IVDchrsum(IVr,i);
+								IVDchsum(IVr,i);
+							end;
+						end;
+						IVSumup(IVr,true);
+						putwindowrecord(wn,IVr);
+						IVDClass_RefreshStringList(wn,IVr);
+					end;
+				end else begin
+					messagebox(35101,"");
+				end;
+			
+				//DisplayIVItem(IVr,rownr);
+			end;
 		end;
 	end;
 	

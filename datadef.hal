@@ -231,6 +231,7 @@ begin
   RecordField(AcceptanceFYI,M4List,200,UserVc);
   RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
   RecordField(ReceiptNrForReturn,M4Str,30,0);
+  RecordField(UsedBirthRebateH,M4Int,0,0);// Edit ************************** Thursday, 18 May 2017 12:29:54
   return;
 end; 
 

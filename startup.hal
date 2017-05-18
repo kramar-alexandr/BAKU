@@ -684,6 +684,7 @@ begin
   SString(35099,"Клиент с таким телефоном уже зарегистрирован");
   SString(35100,"У клиента скоро день рождения!");
   SString(35101,"День рождения клиента не входит в нужный диапазон");
+  SString(35102,"Скидка уже использована в компании ");
 	
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

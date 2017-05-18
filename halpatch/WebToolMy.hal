@@ -1,3 +1,4 @@
+external procedure MySendAsyncWebRequest(string,string,boolean,string,string,string,string,area,string,integer);
 
 function string 200 NormalizeFileName(string fname)
 begin
@@ -334,16 +335,7 @@ begin
 
   /*Добавить блок компаний для взятия адреса хоста*/
 	
-	if(nonblank(artcode))then begin
-		/*filename = "userimage/" & user & localmachine & ".txt";
-		//logtext(0,"URL FILENAME " & filename);
-		//createfile(filename)
-		//CloseFile;  
-		addtexttoarea("<div><img height=150 src=\"",art);
-		addtexttoarea("https://www.rybray.com.ua/get-image.php?sku="& artcode,art);
-		addtexttoarea("\"/></div>",art);
-		writeareatofile(art,filename,0);*/
-		
+	if(nonblank(artcode))then begin		
 		INr.Code = artcode;
 		ReadFirstMain(INr,1,true);
 		
@@ -373,7 +365,8 @@ begin
 			  end;
 			end;
 		end;
-    SendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
+		Logtext(0,1);
+    MySendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
 
 	end;
 	
