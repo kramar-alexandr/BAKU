@@ -1227,7 +1227,7 @@ LkInvoiceTypeCredit:;
 					testf = false;       
 				end;  
 			end;// Edit ************************** Wednesday, 18 February 2015 16:29:28
-			delta = 1;
+			delta = 3;
 			if(currentcompany==13)then begin
 				delta = 10;
 			end;
