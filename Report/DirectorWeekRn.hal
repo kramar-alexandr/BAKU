@@ -869,12 +869,15 @@ begin
 				case "EUR":
 					tempTRrw.DebVal2 = tempTRrw.CurDebVal;
           tempTRrw.MyVal3 = tempTRrw.MyVal1;
+          tempTRrw.MyVal1 = 0;
 				case "USD":
 					tempTRrw.Qty = tempTRrw.CurDebVal;
           tempTRrw.MyVal4 = tempTRrw.MyVal1;
+          tempTRrw.MyVal1 = 0;
 				case "TER":
 					tempTRrw.NomVal = tempTRrw.CurDebVal;
           tempTRrw.MyVal5 = tempTRrw.MyVal1;
+          tempTRrw.MyVal1 = 0;
 			end;
 			MatRowPut(tempTRr2,i,tempTRrw);
 		end;
@@ -2047,7 +2050,6 @@ begin
 						if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
 							OutMyString(tab[11]+25,0,tempTRrw.MyVal2/RepSpec.vals0,false);
 						end;
-            convtotal5 = convtotal5 + tempTRrw.MyVal2;
 					end;
 					OutString(tab[111],0,tempTRrw.MyVal6,false);
           if terf then begin
