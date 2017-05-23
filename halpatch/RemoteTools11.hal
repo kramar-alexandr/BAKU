@@ -1019,9 +1019,9 @@ BEGIN
 	//Tuesday, 16 May 2017 13:05:31
 	
     if(!blankdate(CUr.BirthDate))then begin
-    	birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
-    	birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
-    	mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
+    	birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(currentdate)-1);
+    	birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(currentdate));
+    	mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(currentdate)+1);
     	if(BRb.PrcRebate!=0 or BRb.AbsRebate!=0)then begin
     		if(birthmin>=startdate and birthmin<=enddate)then begin
     			warning = warning & " " & USetStr(35100) &  " " & birthmin;

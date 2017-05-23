@@ -615,9 +615,9 @@ global procedure GetBirthRebateDsm() begin
 		end;
 		if(notused)then begin
 			if(IVr.OKFlag==0)then begin
-				birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)-1);
-				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate));
-				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CUr.BirthDate)+1);
+				birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)-1);
+				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate));
+				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)+1);
 			
 				if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
 					if(BRb.PrcRebate!=0)then begin
