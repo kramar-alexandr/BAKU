@@ -69,7 +69,7 @@ begin
 	outstring(11,0,"Ритейл за ед-цу в валюте АЗН",false);
 	outstring(12,0,"Сумма продажи в валюте бренда",false);
 	outstring(13,0,"Сумма продажи в валюте АЗН",false);
-	outstring(14,0,"Себестоимость",false);
+	outstring(14,0,"Себестоимость в валюте АЗН",false);
 	outstring(15,0,"Разница в валюте АЗН",false);
 	outstring(16,0,"Валюта брэнда",false);
 	outstring(17,0,"Номер клиента",false);
