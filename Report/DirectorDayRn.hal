@@ -14,7 +14,7 @@ begin
 	record MainVc mainr;
 	record TRVc TRr,tempTRr,tempTRr2;
 	row TRVc TRrw,tempTRrw,tempTRrw2,tempTRrw3;
-	record AccVc Accr50,Accr58,Accr59,Accr4403,Accr51,Accr52,Accr8403,Accr76,Accr7505,Accr53,Accr601;
+	record AccVc Accr50,Accr58,Accr59,Accr591,Accr4403,Accr51,Accr52,Accr8403,Accr76,Accr7505,Accr53,Accr601;
 	integer i,j,k,l,rwcnt,rwcnt2;
 	boolean TrHs,testf,done;
 	val BaseDeb,corspdebval,corspcredval;
@@ -33,6 +33,8 @@ begin
 	ReadFirstMain(Accr58,1,true);
 	Accr59.AccNumber = "59";
 	ReadFirstMain(Accr59,1,true);
+  Accr591.AccNumber = "59/1";
+	ReadFirstMain(Accr591,1,true);
 	Accr4403.AccNumber = "44/03";
 	ReadFirstMain(Accr4403,1,true);
 	Accr8403.AccNumber = "84/03";
@@ -100,6 +102,32 @@ begin
 								for (k=0;k<rwcnt;k=k+1) begin
 									MatRowGet(TRr,k,tempTRrw2);
 									if (tempTRrw2.AccNumber == "59") and (tempTRrw2.ovst <> 1) then begin
+										tempTRrw.DebVal = tempTRrw2.CredVal;
+										MatRowPut(tempTRr,j,tempTRrw);
+										j = j + 1;
+										done = true;
+									end;
+								end;
+								testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
+								if testf then begin
+									for (k=0;k<rwcnt;k=k+1) begin
+										MatRowGet(TRr,k,tempTRrw2);
+										if (tempTRrw2.AccNumber == "44/03") and (tempTRrw2.ovst <> 1) then begin
+											tempTRrw.DebVal = tempTRrw2.CredVal;
+											MatRowPut(tempTRr,j,tempTRrw);
+											j = j + 1;
+											done = true;
+										end;
+									end;
+								end;
+							end;
+							corspdebval = blankval;
+							corspcredval = blankval;
+              testf = CorspTRTest(TRr,Accr591,i,corspdebval,corspcredval);
+							if testf then begin
+								for (k=0;k<rwcnt;k=k+1) begin
+									MatRowGet(TRr,k,tempTRrw2);
+									if (tempTRrw2.AccNumber == "59/1") and (tempTRrw2.ovst <> 1) then begin
 										tempTRrw.DebVal = tempTRrw2.CredVal;
 										MatRowPut(tempTRr,j,tempTRrw);
 										j = j + 1;
