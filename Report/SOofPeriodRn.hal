@@ -152,7 +152,7 @@ begin
 								while (LoopKey("FNTransNr",IHr,3,TrHs3)) begin
 									if ((IHr.FileName != "SHVc") or (IHr.TransNr != SHr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
 									if (TrHs3) then begin
-										stoim = stoim + IHr.TotCostPriceCurncy;
+										stoim = stoim + IHr.TotCostPrice;
 										quant = quant - IHr.Qty;
 									end;
 								end;
@@ -178,7 +178,7 @@ begin
 								while (LoopKey("FNTransNr",IHr,3,TrHs3)) begin
 									if ((IHr.FileName != "RetVc") or (IHr.TransNr != Retr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
 									if (TrHs3) then begin
-										stoim = stoim - IHr.TotCostPriceCurncy;
+										stoim = stoim - IHr.TotCostPrice;
 										quant = quant - IHr.Qty;
 									end;
 								end;
