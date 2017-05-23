@@ -685,8 +685,43 @@ BEGIN
   record CUVc CUr;
   
   res = true;
-
+	
+	if(wnst==Rs_update)then begin
+		GetPrevWindowRecord(wn,CUr);
+	end;
+	
+	
   switch (fieldname) begin
+  	// Edit Start ---------------------------------------------- Edit Start
+	//Tuesday, 23 May 2017 10:34:48
+	
+  	case "SuprDate": 
+      switch (wnst) begin
+        case Rs_update: If(usercanaction("UpdateCUBirthDate",true)==false)then begin 
+        									if(nonblank(CUr.SuprDate))then begin
+														res = false; 
+        									end;
+        								end;
+      end;
+    case "WedDate": 
+      switch (wnst) begin
+        case Rs_update: If(usercanaction("UpdateCUBirthDate",true)==false)then begin 
+        									if(nonblank(CUr.WedDate))then begin
+														res = false; 
+        									end;
+        								end;
+      end;
+    case "BirthDate": 
+      switch (wnst) begin
+        case Rs_update: If(usercanaction("UpdateCUBirthDate",true)==false)then begin 
+        									if(nonblank(CUr.BirthDate))then begin
+														res = false; 
+        									end;
+        								end;
+      end;
+      
+	// Edit End ---------------------------------------------- Edit End
+	
     case "Code": 
       switch (wnst) begin
         case Rs_update: res = false;

@@ -3207,19 +3207,54 @@ begin
 	EditField(h,v+=vs,95,"Дом",Normal,InvAddr1,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
 	EditField(h,v+=vs,95,"Квартира",Normal,InvAddr2,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
 	EditField(h,v+=vs,95,"Индекс",Normal,InvAddr3,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
-	/*
-  BlockLoad(NPTSNCUFb);
-  rwcnt = MatRowCnt(NPTSNCUFb);
-  for (i=0;i<rwcnt;i=i+1) begin
-    MatRowGet(NPTSNCUFb,i,NPTSNCUFbrw);
-    EditField2(h,v+=vs,h1-h+50,NPTSNCUFbrw.FieldName,NPTSNCUFbrw.EditState,NPTSNCUFbrw.FieldName,false,0);
-  end;*/
-  
-  
   EndWindow;
 end;
 
 
+window CUDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  integer i,rwcnt;
+  real h,h1,h2,h3,h4,h5,l,v,vs;
+  WindowBegin("Контакт",CUDClass,CGview,-);
+  DynamicWindow;
+  SetWRect(20,80,680,441);
+  Sizeable(-1,-1,0,0); 
+  UseView(CUVc);
+  v = 6; h = 130; l=223; vs = 20; h1=410; h2 = 340; h3 = 430; h4 = 580; h5 = 460;
+  ActiveFieldOnNew("Code"); //dont change, otherwise automatic address lookup helper window wont show automatically //wns
+
+  h=h+30;
+  EditField(h,v ,   95,"Код",Normal,Code,false,TSerSClass);// Edit ************************** Thursday, 24 October 2013 15:16:39
+  
+  EditField(h,v+=vs,h1-h+50,"Имя Фамилия Отчество",Normal,Name,false,0);
+  EditField(h,v+=vs,h1-h+50,"Род занятий",Normal,Profesion,false,0);
+  EditField(h,v+=vs,80,"Дата рождения",Normal,BirthDate,false,PasteCurDate);
+  
+  EditField(h,v+=vs,80,"Дата рождения супруга(ги)",Normal,SuprDate,false,PasteCurDate);
+  EditField(h,v+=vs,80,"Дата свадьбы",Normal,WedDate,false,PasteCurDate);
+  
+	CheckBox(h+350,v=20,0,"Разрешить СМС",AllowSendSMS);
+	CheckBox(h+350,v=v+vs,0,"Разрешить eMail",AllowSendeMail);
+	CheckBox(h+350,v=v+vs,0,"Разрешить звонок",AllowSendCall);
+	CheckBox(h+350,v=v+vs,0,"Разрешить куръерскую почту",AllowSendkMail);
+	
+	ButtonFrame(h+350,v=100,100,3,"");
+  RadioButton(h+350,v,0,0,"Г-н",Gender);
+  RadioButton(h+350,v+=17,1,0,"Г-жа",Gender);
+  RadioButton(h+350,v+=17,2,0,"Компания",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
+	
+	v=120;
+	EditField(h,v+=vs,95,"Телефон дом.",Normal,Phone,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"Телефон моб.",Normal,Mobile,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"e-Mail",Normal,eMail,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"Улица",Normal,InvAddr0,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"Дом",Normal,InvAddr1,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"Квартира",Normal,InvAddr2,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+	EditField(h,v+=vs,95,"Индекс",Normal,InvAddr3,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
+  
+  EndWindow;
+end;
 
 
 
