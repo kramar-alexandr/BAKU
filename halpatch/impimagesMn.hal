@@ -5071,7 +5071,7 @@ begin
       RecordCopy(oldLoyaltyCardr,LoyaltyCardr);
       LoyaltyCardr.Closed = 1;
       if (RecordUpdate(oldLoyaltyCardr,LoyaltyCardr,false)==0) then begin 
-        LogText(0,"Loyalty cardr was closed " & LoyaltyCardr.SerNr);
+        LogText(0,"Loyalty card was closed #" & LoyaltyCardr.SerNr);
       end;
     end;
 
