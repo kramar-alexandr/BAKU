@@ -149,6 +149,39 @@ begin
   return;
 end;
 
+function Boolean CUDClassCodeEFAfter(Integer wn,Integer changed)
+begin
+  record CUVc CUr;
+  Boolean res,messagef;
+  string 255 tstr,reststr;
+  string 1 char;
+  integer i,chrcode;
+  
+  if (changed!=0) then begin
+    GetWindowRecord(wn,CUr);
+    tstr = CUr.Code;
+    for (i=0;i<len(tstr);i=i+1) begin
+      char = mid(tstr,i,1);
+      chrcode = asc(char);
+      if ((chrcode == 45) or (chrcode == 95)
+          or ((chrcode>=48) and (chrcode<=57))
+          or ((chrcode>=65) and (chrcode<=90))
+          or ((chrcode>=97) and (chrcode<=122))) then begin
+        reststr = reststr & char;
+      end else begin
+        messagef = true;
+      end;
+    end;
+    if (messagef) then begin
+      messagebox(0,USetStr(1059));
+    end;
+    CUr.Code = reststr;
+    PutWindowRecord(wn,CUr);
+  end;
+  CUDClassCodeEFAfter = res;
+  return;
+end;
+
 global
 function Boolean CUDClassAfterEditField(Integer wn,string fieldname,Integer fn, Integer rownr,Integer changed)
 BEGIN
@@ -166,6 +199,7 @@ BEGIN
     case "InvAddr3": res = CUDClassInvAddrEFAfter(wn,changed,3);
     case "InvAddr4": res = CUDClassInvAddrEFAfter(wn,changed,4);
     case "CountryCode": res = CUDClassCountryCodeEFAfter(wn,changed);
+    case "Code" : res = CUDClassCodeEFAfter(wn,changed);
   end;
   CUDClassAfterEditField = res;
   RETURN;
