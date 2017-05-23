@@ -1,6 +1,7 @@
 external updating procedure TransferPointsHist(record LoyaltyCardVc,Boolean);
 external procedure NextM4Number(string,var string);
 external procedure SplitAlphaDigit(string,var string,var LongInt);
+external updating procedure CopyLoyaltyBalanceToNewCard(var record LoyaltyCardVc); //Edit***************************Sasha2,12:19 23.05.2017
 
 global
 function Boolean GetNextLoyaltyCardNr(var string nr)
@@ -113,7 +114,7 @@ begin
 end;
 
 global
-function LongInt LoyaltyCardVcRecordCheck(var record LoyaltyCardVc LoyaltyCardr,record LoyaltyCardVc LoyaltyCard2r,LongInt stat,LongInt long4)
+updating function LongInt LoyaltyCardVcRecordCheck(var record LoyaltyCardVc LoyaltyCardr,record LoyaltyCardVc LoyaltyCard2r,LongInt stat,LongInt long4)
 begin
   LongInt res;
   record LoyaltyCardVc lLoyaltyCardr;
@@ -158,33 +159,7 @@ begin
       res = -1; 
       goto LLoyaltyCardVcRecordCheck;
     end;
-  end;
-  // Edit Start ---------------------------------------------- Edit Start
-	//Thursday, 25 September 2014 15:29:39
-	if(LoyaltyCardr.Closed==0)then begin
-		lLoyaltyCardr.CustCode = LoyaltyCardr.CustCode;
-		TrHs = true;
-		foundf = false;
-		while(loopkey("CustCode",lLoyaltyCardr,1,TrHs))begin
-			testf = true;
-			if(lLoyaltyCardr.CustCode!=LoyaltyCardr.CustCode)then begin TrHs = false; testf = false; end;
-			if(lLoyaltyCardr.SerNr==LoyaltyCardr.SerNr)then begin testf = false; end;
-			if(lLoyaltyCardr.Closed==1)then begin testf = false; end;
-		
-			if(testf)then begin
-				foundf = true;
-			end;  	
-		end;
-	
-		if(foundf)then begin
-			RecordCheckError(31012,LoyaltyCardr.CustCode,-1,"CustCode");      
-			res = -1; 
-			goto LLoyaltyCardVcRecordCheck;
-		end;
-  end;
-  
-	// Edit End ---------------------------------------------- Edit End
-	
+  end;	
   if (nonblank(LoyaltyCardr.ExpiryDate) and LoyaltyCardr.StartDate>LoyaltyCardr.ExpiryDate) then begin 
     RecordCheckError(22118," " & LoyaltyCardr.ExpiryDate,-1,"ExpiryDate");      
     res = -1; 
@@ -226,6 +201,35 @@ begin
       goto LLoyaltyCardVcRecordCheck;
     end;
   end;
+  
+  CopyLoyaltyBalanceToNewCard(LoyaltyCardr); //Edit***************************Sasha2,12:20 23.05.2017
+  // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 25 September 2014 15:29:39
+	if(LoyaltyCardr.Closed==0)then begin
+		lLoyaltyCardr.CustCode = LoyaltyCardr.CustCode;
+		TrHs = true;
+		foundf = false;
+		while(loopkey("CustCode",lLoyaltyCardr,1,TrHs))begin
+			testf = true;
+			if(lLoyaltyCardr.CustCode!=LoyaltyCardr.CustCode)then begin TrHs = false; testf = false; end;
+			if(lLoyaltyCardr.SerNr==LoyaltyCardr.SerNr)then begin testf = false; end;
+			if(lLoyaltyCardr.Closed==1)then begin testf = false; end;
+		
+			if(testf)then begin
+				foundf = true;
+			end;  	
+		end;
+	
+		if(foundf)then begin
+			RecordCheckError(31012,LoyaltyCardr.CustCode,-1,"CustCode");      
+			res = -1; 
+			goto LLoyaltyCardVcRecordCheck;
+		end;
+  end;
+  
+	// Edit End ---------------------------------------------- Edit End
+  //don't put custom checks after above one
+	
 LLoyaltyCardVcRecordCheck:;
   LoyaltyCardVcRecordCheck = res;
   RETURN;
