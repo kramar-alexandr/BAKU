@@ -9,7 +9,7 @@ external procedure IVVc_ChangeQuantityRecepy(string,val,Integer,var record IVVc)
 external procedure RowCalculateTaxMatrix_IVVc(var record IVVc,Integer,row IVVc);
 external function Boolean IVVc_CalculateRate(var record IVVc);
 external function roundmode SetRoundModeD(Integer);
-external function Boolean PasteCust2InInv(var record IVVc,string,Boolean,var string,var string,var string,var string,var string);
+remote function Boolean PasteCust2InInv(var record IVVc,string,Boolean,var string,var string,var string,var string,var string);
 external procedure AddMultiBuyDiscountItems_IVVc(var record IVVc);
 external function string 255 FillupTaxMatrix(Integer,string,string,string,string,string,var record TaxMatrixVc);
 external procedure RegionPerceptionTax(string,string,string,string,var string,var val);
@@ -135,6 +135,9 @@ begin
       IVr.CustCode = LoyaltyCardr.CustCode;
       if (IVr.CustCode!=oldcust) then begin 
         if (PasteCust2InInv(IVr,oldcust,true,warning,errstr,prepstr,invdatewarn,transdatewarn)) then begin 
+        	if(nonblank(warning))then begin
+        		messagebox(0,warning);
+        	end;
         end;
       end;  
       IVr.LoyaltyCardNr = LoyaltyCardr.SerNr;

@@ -239,6 +239,8 @@ begin
 		if(nonblank(RepSpec.Stext))then begin
 			AddToText(CUr.eMail,Letr);
 			AddToText(" ",Letr);
+			AddToText(CUr.BirthDate & " ",Letr);
+			AddToText(CUr.SuprDate & " ",Letr);
 		end;
 		
 		if(nonblank(RepSpec.f1)) then begin

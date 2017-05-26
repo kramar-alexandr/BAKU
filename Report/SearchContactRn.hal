@@ -1,3 +1,4 @@
+SetLangMode(LangRussian,"RUS",0);
 
 global
 procedure SearchContactRn(record RcVc RepSpec)
@@ -29,9 +30,14 @@ begin
     goto LSearchContactRn;
   end;
   StartFormat(15);
-  OutString(0,0,USetStr(13533),false);
-  OutString(150,0,USetStr(13534),false);
+  OutString(0,0,"Код",false);
+  OutString(150,0,"Имя",false);
+  OutString(300,0,"Skype",false);
+  OutString(340,0,"e-mail",false);
   OutString(380,0,USetStr(13535),false);
+  /*OutString(0,0,USetStr(13533),false);
+  OutString(150,0,USetStr(13534),false);
+  OutString(380,0,USetStr(13535),false);*/
   EndFormat;
   Gray_Divider(0,1);
   TrHs = true;
@@ -112,7 +118,11 @@ begin
         StartFormat(15);
         OutString(0,"DblCUVc",CUr.Code,false);
         OutString(150,0,left(CUr.Name,25),false);
+        OutString(300,0,CUr.SkypeName,false);
+        OutString(340,0,CUr.eMail,false);
         OutString(380,0,CUr.Phone,false);
+        OutString(380,0,CUr.Mobile,false);
+        OutString(380,0,CUr.AltPhone,false);
         EndFormat;
         cnt = cnt + 1;
       end;  
