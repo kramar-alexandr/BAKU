@@ -25,7 +25,7 @@ end;
 
 
 global
-procedure PaperPlanesRn(record RcVc RepSpec)
+procedure PaperPlanesRn1(record RcVc RepSpec)
 begin
   record INVc INr;
   record DIVc DIr;
