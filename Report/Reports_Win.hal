@@ -408,6 +408,7 @@ begin
   EditFieldTL(h,v+=vs, 150,"Бутики",   M4Str,Normal,200,f4,false,LocationSClass);	//Edit----------------------Dima 07.07.2015
   CheckBox(h-100,v+=30,0,"Показывать, только тех,кто не совершал покупок",flags[1]);
   CheckBox(h-100,v+=30,0,"Детальный",flags[2]);
+  CheckBox(h-100,v+=30,0,"По всем покупателям",flags[3]);
   EndWindow;
 end;
 

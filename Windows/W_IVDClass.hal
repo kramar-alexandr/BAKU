@@ -2181,7 +2181,7 @@ if (HasTouchScreenLook==false) then begin
   end; //Edit***************************Sasha2,11:03 23.05.2016 }
   if(currentuser=="SA")then begin
 		Flip(8);
-  	MatCol(t,-100,"FIFO вал.валюта",0,UsedBirthRebate,true,0);
+  	MatCol(t,-100,"Скидка ДР",0,UsedBirthRebate,true,0);
   end;
   InsertRowTest;
   DeleteRowTest;
