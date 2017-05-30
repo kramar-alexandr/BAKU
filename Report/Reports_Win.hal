@@ -937,7 +937,7 @@ begin
     RadioButton(h,v+=16,5,0,"отделе",ArtMode);
   end;
   RadioButton(h,v+=16,6,0,"Телефон",ArtMode);
-  RadioButton(h,v+=16,7,0,"Дата рождения",ArtMode);
+  RadioButton(h,v+=16,7,0,"Важная дата",ArtMode);
   RadioButton(h,v+=16,0,0,"Любое поле",ArtMode);
   EndWindow;
 end;
