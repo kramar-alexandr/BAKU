@@ -1,3 +1,5 @@
+external function Boolean IsEnterprise();
+
 //##ii
 procedure dummy() //##ii
 begin //##ii
@@ -915,5 +917,27 @@ begin
   EditField(h,v+=vs,80,"Склад (магазин)",Normal,f1,false,LocationSClass);
   HalPushButton(h2,v+vs,h2+80,40,"MyBIRun","Запуск");
   
+  EndWindow;
+end;
+
+window SearchContactRClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Поиск контактных лиц",SearchContactRClass,CGRcW,RcType);
+  SetWRect(64,80,509,298);
+  vs =20;h=100;v=5;
+  EditFieldTL(h,6 ,-20,"Искать",M4Str,Normal,40,f1,false,0);
+  ButtonFrame(h,v=50,123,7,"Искать в");
+  RadioButton(h,v,2,0,"ФИО",ArtMode);
+  RadioButton(h,v+=16,1,0,"наименовании",ArtMode);
+  RadioButton(h,v+=16,3,0,"коде",ArtMode);
+  RadioButton(h,v+=16,4,0,"должности",ArtMode);
+  if (IsEnterprise) then begin
+    RadioButton(h,v+=16,5,0,"отделе",ArtMode);
+  end;
+  RadioButton(h,v+=16,6,0,"Телефон",ArtMode);
+  RadioButton(h,v+=16,7,0,"Дата рождения",ArtMode);
+  RadioButton(h,v+=16,0,0,"Любое поле",ArtMode);
   EndWindow;
 end;
