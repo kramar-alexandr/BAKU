@@ -687,7 +687,10 @@ begin
   SString(35100,"Поздравьте клиента! У него скоро день рождения!");
   SString(35101,"День рождения клиента не входит в нужный диапазон");
   SString(35102,"Скидка уже использована в компании ");
-	
+  SString(35103,"Программа лояльности должна быть 1");
+  SString(35104,"Счет-фактура проведена с картой лояльности");
+  SString(35105,"Счет-фактура уже привязана к карте лояльности");
+  
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
 	StrSetText(RoyaltyRepApproveAnyPercentage,"Approve Royalty Sales records with custom royalty %");//!!TRANSLATE

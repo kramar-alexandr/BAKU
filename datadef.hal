@@ -232,6 +232,7 @@ begin
   RecordField(NotForReport,M4Mark,0,0);	//Edit----------------------Dima  01.04.2015
   RecordField(ReceiptNrForReturn,M4Str,30,0);
   RecordField(UsedBirthRebateH,M4Int,0,0);// Edit ************************** Thursday, 18 May 2017 12:29:54
+  RecordField(LinkLoyaltyCardNr,M4Code,20,0);
   return;
 end; 
 
@@ -4833,6 +4834,8 @@ begin
   RecordField(PointsBalance,M4Val,0,0); 
   RecordField(Closed,M4Int,0,0);
   RecordField(StartBalance,M4Val,0,0);// Edit ************************** Tuesday, 25 April 2017 09:52:28
+  RecordField(IVSerNr,M4Str,255,0);//Edit-------------------Vitalii 17:00 31.05.2017
+  RecordField(CompNr,M4Str,255,0);//Edit-------------------Vitalii 17:00 31.05.2017
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
   KeyBegin(CustCode);
