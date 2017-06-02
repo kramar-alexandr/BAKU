@@ -176,6 +176,8 @@ begin
   Report("Информация о клиентах",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
   Report("Активные клиенты за период",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
   Report("Поиск контактных лиц",SearchContactRClass,SearchContactRn,0,modMYCRM);
+  Report("Поиск контактных лиц",SearchContactRClass,SearchContactRn,0,modSL);
+  Report("Поиск контактных лиц",SearchContactRClass,SearchContactRn,0,modSO);
   Report("Отчет активности покупок",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
   Report("Отчет активности по бутикам",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
   Report("Накопленные баллы клиента",LoyaltyCardCounterRClass,LoyaltyCardCounterRn,0,modMYCRM);
