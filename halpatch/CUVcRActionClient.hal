@@ -30,16 +30,16 @@ begin
         CUr.Classification = CUr.Classification & "," & LMb.DefLocation;
       end;
     end;
-    res = 0; 
-    if (CustomerWithPhoneExists(CUr,var1,var2)) then begin
-      RepSpec.Media = mtScreen;
-      RepSpec.f1 = CUr.Phone;
-      RepSpec.f2 = CUr.AltPhone;
-      RepSpec.f3 = CUr.Mobile;
-      RepSpec.f4 = CUr.Code;
-      RepSpec.repname = "CUVcPhoneErrorRn";
-      RunReport(RepSpec,0);
-    end;
+  end;
+  res = 0; 
+  if (CustomerWithPhoneExists(CUr,var1,var2)) then begin
+    RepSpec.Media = mtScreen;
+    RepSpec.f1 = CUr.Phone;
+    RepSpec.f2 = CUr.AltPhone;
+    RepSpec.f3 = CUr.Mobile;
+    RepSpec.f4 = CUr.Code;
+    RepSpec.repname = "CUVcPhoneErrorRn";
+    RunReport(RepSpec,0);
   end;
   
 LCUVcRecordCheckClient:;  
