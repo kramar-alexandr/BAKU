@@ -2818,3 +2818,40 @@ begin
 return;
 end;
 
+global
+procedure OpenCUDsm()	//Edit----------------------Dima  04.03.2015
+begin
+  record IVVc IVr;
+  record CUVc CUr;
+  integer wn,nwn;
+
+  wn = CurWindow;
+  GetWindowRecord(wn,IVr);
+  CUr.Code = IVr.CustCode;
+  if (ReadFirstMain(CUr,1,true)) then begin
+    nwn = OpenWindow("CUDClass",1,0,"","",CUr);
+  end else begin
+  	messagebox(0,"Нет такого контакта");
+  end;
+
+  
+return;
+end;
+
+global
+procedure OpenSearchContactRnDsm()
+begin
+  record RcVc RepSpec;
+  integer wn,nwn;
+
+  nwn = OpenWindow("SearchContactRClass",0,0,"","",RepSpec);
+  DeselectWindow(nwn,false);
+  ReportDefaults(RepSpec,"SearchContactRClass");
+  RepSpec.repname = "SearchContactRn";
+  RepSpec.critname = "SearchContactRClass";
+  RepSpec.Media = mtScreen;
+  PutWindowRecord(nwn,RepSpec);  
+  WindowFieldGoto(nwn,RepSpec,-1,"f1",true);
+  
+return;
+end;

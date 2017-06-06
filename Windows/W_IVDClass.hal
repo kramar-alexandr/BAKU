@@ -2489,6 +2489,8 @@ end;
   SpecialMenu("Открыть прикрепленные ссылки",' ',25,"OpenLinkWindow");	//Edit----------------------Dima  20.05.2015
   SpecialMenu("Статус счета-фактуры",'r',2,"IVInfoIVDsm");
   SpecialMenu("Скидка",'',2,"GetBirthRebateDsm");
+  SpecialMenu("Открыть карточку контракта",' ',2,"OpenCUDsm");
+  SpecialMenu("Открыть очет Поиск контактных лиц",' ',2,"OpenSearchContactRnDsm");
   EndWindow;
 end;
 
