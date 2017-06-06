@@ -207,6 +207,7 @@ real h,v,vs,h1;
 		EditField(h,v+=vs,100, "Имя",Normal,f1,false,0);
 		EditField(h,v+=vs,100, "Телефон",Normal,LastAcc,false,0);
 		EditField(h,v+=vs,100, "e-mail",Normal,Stext,false,0);
+		EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,Stext,false,CClassSClass);
 		h=240;
 		v = 56;
 		ButtonFrame(h,v,123,2,"Показывать клиентов");

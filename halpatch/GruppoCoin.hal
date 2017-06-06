@@ -66,6 +66,8 @@ begin
   boolean TrHs,testf,initfile;
   LongInt reccnt;
   string 5 nextline;
+  val vquant;
+  string 100 myart,oldmyart;
     
     BlockLoad(SysFormatRec);
     BlockLoad(CoinSb);
@@ -89,44 +91,79 @@ begin
     nextline = chr(13) & chr(10);
     reccnt = 0;
     pos = 0;
-    
+    myart = "";
+    oldmyart = "";
     AddTextToArea("**INIT**STOCOUNT" & datestring & storenumber & nextline, ames);
-    ExtractObjWithSeparator(",",CoinSb.Locations,true,pos,curloc);
-    while (NonBlank(curloc)) begin
+    //ExtractObjWithSeparator(",",CoinSb.Locations,true,pos,curloc);
+    //while (NonBlank(curloc)) begin
       testf = false;
       Locr.Code = curloc;
-      testf = ReadFirstMain(Locr,1,true);
-      if (testf) then begin
+      //testf = ReadFirstMain(Locr,1,true);
+      //if (testf) then begin
         TrHs = true;
         ISr.Location = Locr.Code;
         
-        while (LoopKey("Location",ISr,1,TrHs)) begin
-          if (ISr.Location!=Locr.Code) then begin TrHs=false; end;
-          if (TrHs) then begin
-            INr.Code = ISr.Code;
-            ReadFirstMain(INr,1,true);
-            
-            CEANr.EANNumber = INr.BarCode;
-						if(readfirstkey("EANNumber",CEANr,1,true))then begin
-							if (len(INr.BarCode)==13) then begin
-								barcode = INr.BarCode;
-							end else begin
-								barcode = NewM4PadString(ISr.Code,13,"0",false);
+        while (LoopMain(ISr,1,TrHs)) begin
+        	testf = true;
+         // if (ISr.Location!=Locr.Code) then begin TrHs=false; end;
+         	if(!setinset(ISr.Location,CoinSb.Locations))then begin testf = false; end;
+
+          if (testf) then begin
+						myart = ISr.Code;
+						if(myart!=oldmyart)then begin
+							if(nonblank(oldmyart))then begin
+								INr.Code = oldmyart;
+								ReadFirstMain(INr,1,true);
+								CEANr.EANNumber = INr.BarCode;
+								if(readfirstkey("EANNumber",CEANr,1,true))then begin
+									if (len(INr.BarCode)==13) then begin
+										barcode = INr.BarCode;
+									end else begin
+										barcode = NewM4PadString(oldmyart,13,"0",false);
+									end;
+									qty = "+" & NewM4PadString(ValToString(vquant,M45Val,"",SysFormatRec.decimalPt,1),6,"0",true);
+									PLr.PLCode = "RRP";
+									PLr.ArtCode = oldmyart;
+									ReadFirstMain(PLr,2,true);
+									price = ValToString(Round(PLr.ExVatPrice,SetRoundModeD(2)),M423Val,"","",0);
+									price = "+" & NewM4PadString(price,10,"0",true);
+									AddTextToArea("STOCOUNT" & storenumber & "I" & datestring & barcode & qty & price & nextline, ames);
+									reccnt = reccnt + 1;  
+								end;
 							end;
-							qty = "+" & NewM4PadString(ValToString(ISr.Instock,M45Val,"",SysFormatRec.decimalPt,1),6,"0",true);
-							PLr.PLCode = "RRP";
-							PLr.ArtCode = ISr.Code;
-							ReadFirstMain(PLr,2,true);
-							price = ValToString(Round(PLr.ExVatPrice,SetRoundModeD(2)),M423Val,"","",0);
-							price = "+" & NewM4PadString(price,10,"0",true);
-							AddTextToArea("STOCOUNT" & storenumber & "I" & datestring & barcode & qty & price & nextline, ames);
-							reccnt = reccnt + 1;  
-            end;
+							vquant = 0;
+							oldmyart = myart;
+						end;
+						vquant = vquant + ISr.Instock;
           end;
         end;
-      end;
-      ExtractObjWithSeparator(",",CoinSb.Locations,true,pos,curloc)
-    end;
+        oldmyart = myart;
+        if(nonblank(oldmyart))then begin
+					INr.Code = oldmyart;
+					ReadFirstMain(INr,1,true);
+					CEANr.EANNumber = INr.BarCode;
+					if(readfirstkey("EANNumber",CEANr,1,true))then begin
+						if (len(INr.BarCode)==13) then begin
+							barcode = INr.BarCode;
+						end else begin
+							barcode = NewM4PadString(oldmyart,13,"0",false);
+						end;
+						qty = "+" & NewM4PadString(ValToString(vquant,M45Val,"",SysFormatRec.decimalPt,1),6,"0",true);
+						PLr.PLCode = "RRP";
+						PLr.ArtCode = oldmyart;
+						ReadFirstMain(PLr,2,true);
+						price = ValToString(Round(PLr.ExVatPrice,SetRoundModeD(2)),M423Val,"","",0);
+						price = "+" & NewM4PadString(price,10,"0",true);
+						AddTextToArea("STOCOUNT" & storenumber & "I" & datestring & barcode & qty & price & nextline, ames);
+						reccnt = reccnt + 1;  
+					end;
+				end;
+      //end;
+    //  ExtractObjWithSeparator(",",CoinSb.Locations,true,pos,curloc)
+    //end;
+    
+    
+    
     
 LStocKCountGC:;    
   	 

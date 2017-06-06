@@ -223,6 +223,8 @@ begin
 		if(nonblank(frcode) and CUr.Code>tocode)then begin TrHs = false; testf = false; end;
 		if(RepSpec.flags[4]>0 and CUr.DateCreated>RepSpec.sEndDate)then begin testf = false; TrHs = false; end;
 		
+		if(nonblank(RepSpec.Stext) and !setinset(RepSpec.Stext,CUr.Classification))then begin testf = false; end;
+		
 		RecordClear(Letr);
 		if(nonblank(RepSpec.f1))then begin
 			AddToText(CUr.Name,Letr);

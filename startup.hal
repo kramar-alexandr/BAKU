@@ -144,6 +144,8 @@ begin
 
   Maintenance("FICLOYOAY",EmptyVClass,FixLoyPaymentsCards,modDBMain);
   Maintenance("Заполнить PhoneVc",EmptyVClass,FillPhoneVcMn,modDBMain);
+  
+  Maintenance("Coin Stock to DROMOS",EmptyVClass,GruppoCoinStockCountMn,modIN);
   	
   if(currentcompany==1)then begin
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
