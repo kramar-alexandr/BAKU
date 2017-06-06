@@ -44,6 +44,7 @@ external procedure GetItemSalesAccFromOR(record ORVc,var string);
 remote procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);
 external procedure IVDUpdatePrices(var record IVVc,Boolean);// Edit ************************** Monday, 3 June 2013 11:09:26
 
+SetLangMode(LangRussian,"RUS",0);
 
 procedure GetItemDebtorsAcc(record ORVc ORr,var string debtorsacc)
 BEGIN
@@ -1025,12 +1026,15 @@ BEGIN
     	if(BRb.PrcRebate!=0 or BRb.AbsRebate!=0)then begin
     		if(birthmin>=startdate and birthmin<=enddate)then begin
     			warning = warning & " " & USetStr(35100) &  " " & birthmin;
+    			warning = warning & chr(10) & "Скидка действительна:" & addday(birthmin,-BRb.DayAfter) & " - " & addday(birthmin,BRb.DayBefore);
     		end;
     		if(birth>=startdate and birth<=enddate)then begin
     			warning = warning & " " & USetStr(35100) &  " " & birth;
+    			warning = warning & chr(10) & "Скидка действительна:" & addday(birthmin,-BRb.DayAfter) & " - " & addday(birthmin,BRb.DayBefore);
     		end;
     		if(mirthmax>=startdate and mirthmax<=enddate)then begin
     			warning = warning & " " & USetStr(35100) &  " " & mirthmax;
+    			warning = warning & chr(10) & "Скидка действительна:" & addday(birthmin,-BRb.DayAfter) & " - " & addday(birthmin,BRb.DayBefore);
     		end;
     	end;
     end;
