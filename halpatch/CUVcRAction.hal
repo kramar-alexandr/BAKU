@@ -1748,7 +1748,7 @@ BEGIN
     end;
   
   
-  if ((CheckMultipleIndexField(CUr.Classification,10,10)==false) and (IsSyncing==false)) then begin
+  /*if ((CheckMultipleIndexField(CUr.Classification,10,10)==false) and (IsSyncing==false)) then begin//**********alex
     RecordCheckError(2246,"",-1,"Classification");      
     res = -1; 
     goto LCUVcRecordCheck;
@@ -1759,7 +1759,7 @@ BEGIN
       res = -1; 
       goto LCUVcRecordCheck;
     end;
-  end;
+  end;*/
   if (nonblank(CUr.HealthStatus)) then begin
     if (CheckHealthStatus(CUr.HealthStatus,tstr)==false) then begin
       RecordCheckError(2246," " & tstr,-1,"HealthStatus");      
