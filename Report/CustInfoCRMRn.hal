@@ -211,6 +211,7 @@ begin
 		OutString(300,0,"Комментарий",false);
 		OutString(300,0,"Отключен от рассылки",false);
 		OutString(300,0,"Закрыт/открыт",false);
+		OutString(300,0,"Должность",false);
 	endformat;	
 		
 		
@@ -243,6 +244,9 @@ begin
 			AddToText(" ",Letr);
 			AddToText(CUr.BirthDate & " ",Letr);
 			AddToText(CUr.SuprDate & " ",Letr);
+		end;
+		if(nonblank(CUr.Title))then begin
+			AddToText(CUr.Title & " ",Letr);
 		end;
 		
 		if(nonblank(RepSpec.f1)) then begin
@@ -341,6 +345,7 @@ begin
 				end else begin
 					OutString(300,0,"Открыт",false);
 				end;			
+				OutString(300,0,CUr.Title,false);
 
 				
 			EndFormat;	

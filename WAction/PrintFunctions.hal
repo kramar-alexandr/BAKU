@@ -221,3 +221,33 @@ record SVOVc SVOr;
 return;
 end;*/
 
+
+global
+function Boolean SearchContactRClassMediaButtonAction(Integer wn,Integer value)
+BEGIN
+  Boolean res;
+  
+  res = false;
+  SearchContactRClassMediaButtonAction = res;
+  RETURN;
+END;
+
+
+/*global
+function Boolean SearchContactRClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
+begin
+  Boolean res;
+	record ExternalSalesVc ESr;
+	
+	getwindowrecord(wn,ESr);
+	
+  res = true;
+  if(ESr.OKFlag==1)then begin
+  	res = false;
+  end;
+  SearchContactRClassActiveEditField = res;
+  return;
+end;
+
+
+SearchContactRClass*/

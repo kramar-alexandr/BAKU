@@ -13,6 +13,8 @@ begin
   array string 255 phonestoprint,datestoprint;
   array integer tabs;
   
+  RepSpec.Media = mtScreen;
+  
   tabs[1] = 0;
   tabs[2] = tabs[1] + 90;
   tabs[3] = tabs[2] + 100;
