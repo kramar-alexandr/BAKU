@@ -247,6 +247,7 @@ begin
       		ppprice = 0;
       	  if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin// Edit ************************** Wednesday, 20 April 2016 10:33:53
 						PPLr.TransDate = CurrentDate;
+						resetloop(PPLr);
 						loopbackkey("TransDate",PPLr,1,true);
 						pmtrw = matrowcnt(PPLr);
 						if(stringtoint(INr.CPSCode)<=pmtrw)then begin
@@ -505,6 +506,7 @@ begin
       		ppprice = 0;
 					if(nonblank(INr.CPSCode) and stringtoint(INr.CPSCode)>0 and pricelist=="RRP")then begin
 						PPLr.TransDate = CurrentDate;
+						resetloop(PPLr);
 						loopbackkey("TransDate",PPLr,1,true);
 						pmtrw = matrowcnt(PPLr);
 						if(stringtoint(INr.CPSCode)<=pmtrw)then begin

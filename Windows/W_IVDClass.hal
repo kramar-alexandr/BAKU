@@ -2361,6 +2361,7 @@ if (HasTouchScreenLook==false) then begin
   SpecialMenu("Изменение скидки менеджером",' ',24,"MgrsDiscOverrideIVDsm");  
   SpecialMenu("Открыть нал. матрицу",' ',25,"TestVatMatrixIVDsm"); 
   SpecialMenu("Добавить возврат товара",' ',0,"PasteRetItemIVDsm");
+  SpecialMenu("Скидка дня рождения",'',2,"GetBirthRebateDsm");
    // SpecialMenu("Apple гар. статус проверка",'w',26,"WarrantyStatusIVDsm"); 
   if(currentuser=="SA")then begin
 		SpecialMenu("Экспорт регистра",' ',0,"ExportRegIVDsm");
@@ -2488,7 +2489,7 @@ end;
   SpecialMenu("Создать кредитовый счет-фактуру",' ',20,"CreateCreditNoteIVDsm");
   SpecialMenu("Открыть прикрепленные ссылки",' ',25,"OpenLinkWindow");	//Edit----------------------Dima  20.05.2015
   SpecialMenu("Статус счета-фактуры",'r',2,"IVInfoIVDsm");
-  SpecialMenu("Скидка",'',2,"GetBirthRebateDsm");
+  SpecialMenu("Скидка дня рождения",'',2,"GetBirthRebateDsm");
   SpecialMenu("Открыть карточку контракта",' ',2,"OpenCUDsm");
   SpecialMenu("Открыть очет Поиск контактных лиц",' ',2,"OpenSearchContactRnDsm");
   EndWindow;

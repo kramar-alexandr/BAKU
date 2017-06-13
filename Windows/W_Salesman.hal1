@@ -1968,7 +1968,7 @@ if (HasTouchScreenLook==false) then begin
   SpecialMenu("Статус товара",'I',0,"ItemStatusIVDsm");
   SpecialMenu("Добавить возврат товара",' ',0,"PasteRetItemIVDsm");
   SpecialMenu("Вставить товары из перемещения",'B',6,"PasteStoclMovToIVsm");
-  
+  SpecialMenu("Скидка дня рождения",'',2,"GetBirthRebateDsm");
 end else begin
 
   date td;

@@ -114,14 +114,14 @@ BEGIN
   end;   */// Edit ************************** Thursday, 24 July 2014 13:12:38
   
   if(nonblank(Mrkr.Phone1))then begin
-  	if(len(Mrkr.Phone1)!=10)then begin
+  	if(len(Mrkr.Phone1)!=9)then begin
   		RecordCheckError(31010,"",-1,"Phone1");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
   	end;
   end;
   if(nonblank(Mrkr.Phone2))then begin
-  	if(len(Mrkr.Phone2)!=10)then begin
+  	if(len(Mrkr.Phone2)!=9)then begin
   		RecordCheckError(31010,"",-1,"Phone2");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
