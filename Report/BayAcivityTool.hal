@@ -340,6 +340,10 @@ record CUVc CUr;
 		while(nonblank(temp)) begin
 			if(nonblank(temp))then begin
 				companies[companiesLength] = StringToInt(temp);
+				if(StringToInt(temp)>0 and StringToInt(temp)<=matrowcnt(CBb))then begin
+					matrowget(CBb,StringToInt(temp)-1,CBrw);
+					compname[companiesLength] = CBrw.CompName;
+				end;
 				companiesLength = companiesLength + 1;
 			end;
 			ExtractObj(companiesStr,pos,temp);
@@ -349,7 +353,7 @@ record CUVc CUr;
 		  matrowget(CBb,i,CBrw);
 		  companies[i] = StringToInt(CBrw.CompCode);
 		  compname[i] = CBrw.CompName;
-		  logtext(0,compname[i]);
+		  //logtext(0,compname[i]);
 		end;
 		companiesLength = mtrw;
 	end; 												

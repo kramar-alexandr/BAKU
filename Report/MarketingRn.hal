@@ -50,7 +50,7 @@ integer i, pos;
 		outstring(0,0,"Время посещения",false);
 		outstring(60,0,"Консультант",false);
 		outstring(60,0,"Имя посетителя",false);
-		outstring(140,0,"*Пол",false);
+		outstring(140,0,"Пол",false);
 		outstring(140,0,"Гражданство",false);
 		outstring(200,0,"Возраст",false);
 		outstring(230,0,"Откуда узнали",false);
