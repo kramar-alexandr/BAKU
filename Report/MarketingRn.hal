@@ -21,10 +21,10 @@ integer i, pos;
   
   location = RepSpec.f1;
 
-	startreportnoheaderjob("Ћтчет по маркетингу");
+	startreportnoheaderjob("Ћтчет по фиксации визитов");
 	
 	StartFormat(15);
-		outstring(0,0,"Ћтчет по маркетингу",false);
+		outstring(0,0,"Ћтчет по фиксации визитов",false);
 	endformat;
 	
 	StartFormat(15);

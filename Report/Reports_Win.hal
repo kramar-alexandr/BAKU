@@ -527,7 +527,7 @@ window MarketingRClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,v,vs;
-  WindowBegin("Ћпределите отчет по маркетингу",MarketingRClass,CGRcW,RcType);
+  WindowBegin("Ћтчет по фиксации визитов",MarketingRClass,CGRcW,RcType);
   SetWRect(20,80,410,340);
   vs = 20;
   h = 160;

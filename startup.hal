@@ -198,7 +198,7 @@ begin
 
  // Report("RecordHist",MBARClass,RHist2Rn,0,modTC);
 
-  Report("Отчет по маркетингу",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
+  Report("Отчет по фиксации визитов",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
   Report("Материальный отчет",PecuniaryRClass,PecuniaryRn,0,modSL); //Edit***************************Sasha2,15:14 05.11.2014
   Report("Материальный отчет новый",PecuniaryNewRClass,PecuniaryRn,0,modSL);//Edit-------------------Vitalii 16:57 22.01.2016
   //Report("Отчёт по продажам",SaleReportRClass,SaleReportRn,0,modSL);
