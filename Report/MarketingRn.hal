@@ -11,7 +11,7 @@ boolean findf, TrHs, testf;
 val totalqty, totalcost, totalcost2;
 record LocationVc Locr, Loc2r;
 string 20 location;
-string 255 serNum;
+string 255 serNum,phoner,ph;
 integer i, pos;
 
 	sd = RepSpec.sStartDate;
@@ -45,14 +45,23 @@ integer i, pos;
 		if(blank(RepSpec.f1))then begin
 			OutString(0,0,"",false);	
 		end;
+		outstring(0,0,"Магазин (склад)",false);
 		outstring(0,0,"Дата посещения",false);
-		outstring(60,0,"Клиент",false);
-		outstring(140,0,"Национальность",false);
+		outstring(0,0,"Время посещения",false);
+		outstring(60,0,"Консультант",false);
+		outstring(60,0,"Имя посетителя",false);
+		outstring(140,0,"*Пол",false);
+		outstring(140,0,"Гражданство",false);
 		outstring(200,0,"Возраст",false);
+		outstring(230,0,"Откуда узнали",false);
 		outstring(230,0,"Причина посещения",false);
 		outstring(310,0,"Результат посещения",false);
-		outstring(420,0,"Продано на суму",false);
-		outstring(470,0,"Продано на суму (валюта)",false);
+		outstring(420,0,"Продано на сумму(AZN)",false);
+		//*outstring(470,0,"Продано на суму (валюта)",false);
+		outstring(420,0,"ID карты",false);
+		outstring(420,0,"Телефон, Доп. телефон, Моб. Телефон",false);
+		outstring(420,0,"E-mail",false);
+		outstring(420,0,"Адрес",false);
 				
 	endformat;
 	
@@ -68,43 +77,85 @@ integer i, pos;
 		
 		if(testf)then begin
 			StartFormat(15);
-				if(blank(RepSpec.f1))then begin
-					OutString(0,0,MRr.Location,false);	
-				end;
+				OutString(0,0,MRr.Location,false);	
 				outstring(0,0,MRr.TransDate,false);
+				outstring(0,0,MRr.TransTime,false);
+				OutString(60,0,MRr.SalesMan,false);
 			if(nonblank(MRr.Name))then begin
 				OutString(60,0,MRr.Name,false);
 			end else begin
-					OutString(60,0,"No name",false);
+				OutString(60,0,"No name",false);
+			end;
+			switch (MRr.Gender) begin
+				case 0: 
+					OutString(140,0,"-",false);
+				case 1: 
+					OutString(140,0,"Мужчина",false);
+				case 2: 
+					OutString(140,0,"Женщина",false);
+				case 3: 
+					OutString(140,0,"Смешанная группа",false);	
+				case 4: 
+					OutString(140,0,"Группа мужчин",false);	
+				case 5: 
+					OutString(140,0,"Группа женщин",false);			
 			end;
 			
 			switch (MRr.NationalityRbtn) begin
 				case 0: 
 					OutString(140,0,"-",false);
 				case 1: 
-					OutString(140,0,"Азербайджанец",false);
+					OutString(140,0,"Гражданин Азербайджана",false);
 				case 2: 
-					OutString(140,0,"Русский",false);
+					OutString(140,0,"Иностранный турист",false);
 				case 3: 
-					OutString(140,0,MRr.NationalityTxt,false);			
+					OutString(140,0,"Экспат",false);			
 			end;
 			
 			switch (MRr.Age) begin
 				case 0: 
 					OutString(200,0,"-",false);
 				case 1: 
-					OutString(200,0,"< 20",false);
+					OutString(200,0,"13-17",false);
 				case 2: 
-					OutString(200,0,"20-30",false);
+					OutString(200,0,"18-24",false);
 				case 3: 
-					OutString(200,0,"30-40",false);
+					OutString(200,0,"25-34",false);
 				case 4: 
-					OutString(200,0,"40-50",false);			
+					OutString(200,0,"35-44",false);			
 				case 5: 
-					OutString(200,0,"50-60",false);
+					OutString(200,0,"45-54",false);
 				case 6: 
-					OutString(200,0,"Больше 60",false);
+					OutString(200,0,"55-64",false);
+				case 7: 
+					OutString(200,0,"65+",false);
 			end;
+						
+			switch (MRr.ReferenceRbtn) begin
+				case 0: 
+					OutString(230,0,"-",false);
+				case 1: 
+					OutString(230,0,"Facebook",false);
+				case 2: 
+					OutString(230,0,"Instagram",false);	
+				case 3: 
+					OutString(230,0,"Веб-сайт: " & MRr.ReferenceTxtWeb,false);	
+				case 4: 
+					OutString(230,0,"Уличная реклама",false);	
+				case 5: 
+					OutString(230,0,"Журнал: " & MRr.ReferenceTxtMag,false);	
+				case 6: 
+					OutString(230,0,"Рекомендация друга",false);	
+				case 7: 
+					OutString(230,0,"Увидел в торговом центре",false);	
+				case 8: 
+					OutString(230,0,"Радио",false);	
+				case 9: 
+					OutString(230,0,"Телевидение",false);	
+				case 10: 
+					OutString(230,0,"Другое: " & MRr.ReferenceTxt,false);									
+			end;
+			
 			
 			outstring(230,0,MRr.Reason,false);
 			
@@ -135,6 +186,36 @@ integer i, pos;
 					end;
 									
 			end;
+			
+			outstring(420,0,MRr.CustCode,false);
+			phoner = "";
+			ph = MRr.Phone1;
+			if(nonblank(ph))then begin
+				if(blank(phoner))then begin
+					phoner = phoner & ph;
+				end else begin
+					phoner = phoner & "," & ph;
+				end;
+			end;
+			ph = MRr.Phone2;
+			if(nonblank(ph))then begin
+				if(blank(phoner))then begin
+					phoner = phoner & ph;
+				end else begin
+					phoner = phoner & "," & ph;
+				end;
+			end;
+			ph = MRr.Phone3;
+			if(nonblank(ph))then begin
+				if(blank(phoner))then begin
+					phoner = phoner & ph;
+				end else begin
+					phoner = phoner & "," & ph;
+				end;
+			end;		
+			outstring(420,0,phoner,false);
+			outstring(420,0,MRr.eMail,false);
+			outstring(420,0,MRr.Address,false);
 						
 			endformat;									
 		end;
