@@ -3636,6 +3636,10 @@ begin
   RecordField(PersonsQty,M4Int,0,0);
   RecordField(SalesMan,M4Str,100,UserVc);//Edit by Victor July 22 10.17 100,0 -> 100,UserVc
   RecordField(Math,M4TextField,0,0);
+  RecordField(Phone3,M4Str,20,0);
+  RecordField(ReasonBtn,M4Int,0,0);
+  RecordField(ReferenceTxtWeb,M4Str,250,0);
+  RecordField(ReferenceTxtMag,M4Str,250,0);
 	  
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);

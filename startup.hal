@@ -448,6 +448,7 @@ begin
   SString(31180,"Консигнация");
   SString(31181,"Сравнить товары внутр.заказов и заказов пост.");
   SString(31182,"Переносить товары на этот склад не допускается.");
+  SString(31183,"Причина посещения");
 
 //RebItemSalesRn
   SString(31200,"Отчет по обороту акционных товаров"); //Отчет по обороту акционных товаров
@@ -694,7 +695,7 @@ begin
   SString(35103,"Программа лояльности должна быть 1");
   SString(35104,"Счет-фактура проведена с картой лояльности");
   SString(35105,"Счет-фактура уже привязана к карте лояльности");
-  
+    
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
 	StrSetText(RoyaltyRepApproveAnyPercentage,"Approve Royalty Sales records with custom royalty %");//!!TRANSLATE

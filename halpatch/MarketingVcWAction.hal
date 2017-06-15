@@ -134,6 +134,33 @@ BEGIN
   RETURN;
 END;
 
+
+global
+function Boolean MarketingDClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
+begin
+  Boolean res;
+	record MarketingVc Marketingr; 
+	
+	getwindowrecord(wn,Marketingr);
+	
+	res = true;
+	if(nonblank(Marketingr.CustCode))then begin
+		switch(fieldname)begin
+			case "Name": res = false;
+			case "Phone1": res = false;
+			case "Phone2": res = false;
+			case "Phone3": res = false;
+			case "eMail": res = false;
+			case "Address":res = false;
+		end;
+	end;
+	
+	
+	
+  MarketingDClassActiveEditField = res;
+  return;
+end;
+
 global updating
 function Boolean MarketingDClassOnClose(Integer wn,Integer wn2)
 begin

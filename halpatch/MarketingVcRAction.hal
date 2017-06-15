@@ -128,6 +128,14 @@ BEGIN
   	end;
   end;
   
+  if(nonblank(Mrkr.Phone3))then begin
+  	if(len(Mrkr.Phone3)!=9)then begin
+  		RecordCheckError(31010,"",-1,"Phone3");      
+			res = -1; 
+			goto LMarketingVcRecordCheck;
+  	end;
+  end;
+  
   if (blank(Mrkr.Location)) then begin
     RecordCheckError(1058,Mrkr.Location,-1,"Location");      
     res = -1; 
@@ -172,6 +180,13 @@ BEGIN
 		res = -1; 
 		goto LMarketingVcRecordCheck;
   end;
+  
+  if(Mrkr.ReasonBtn==0) then begin
+		RecordCheckError(1058," " & USetStr(31183),-1,"ReasonBtn");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  
   if(Mrkr.ReferenceRbtn==6) then begin
   	if(blank(Mrkr.ReferenceTxt)) then begin
   		RecordCheckError(1058,Mrkr.ReferenceTxt,-1,"ReferenceTxt");

@@ -278,6 +278,8 @@ record CUVc CUr;
 	vector boolean include;
 	string 20 IncludeIndex;
   array integer tab;
+  array string 50 compname;
+  string 100 locationname;
   
   
   tab[1] = 0;
@@ -346,6 +348,8 @@ record CUVc CUr;
 		For(i=0;i<mtrw;i=i+1) begin
 		  matrowget(CBb,i,CBrw);
 		  companies[i] = StringToInt(CBrw.CompCode);
+		  compname[i] = CBrw.CompName;
+		  logtext(0,compname[i]);
 		end;
 		companiesLength = mtrw;
 	end; 												
@@ -407,17 +411,27 @@ record CUVc CUr;
 						if(IVr.Invalid==1)then begin testf = false; end;
 						if(nonblank(RepSpec.f4) and ((SetInSet(IVr.Location,RepSpec.f4)==false) or blank(IVr.Location)) ) then begin testf = false; end;//Edit--------------Dima  07.07.2015
 						
-						
+						locationname = "";
 						if(testf)then begin
 							if (IVr.InvDate>lastBuyDate) then begin 	//Edit----------------------Dima  07.07.2015
 										lastBuyDate = IVr.InvDate;
 										lastInvoiceNr = IVr.SerNr; 
 							end;						
 							Locr.Code = IVr.Location;
-							readfirstmain(Locr,1,true);
+							if(blank(IVr.Location))then begin
+								//Locr.Code = compname[i];
+								locationname = compname[i];
+							end else begin
+								if(readfirstmain(Locr,1,true)==false)then begin
+									//Locr.Code = compname[i];
+									locationname = compname[i];
+								end else begin
+									locationname = Locr.Code & " " & Locr.Name;
+								end;
+							end;
 							findloc = false;
 							For(ivi=0;ivi<aqty;ivi=ivi+1) begin
-								if(loc[ivi]==Locr.Code & " " & Locr.Name)then begin
+								if(loc[ivi]==locationname)then begin
 									qty[ivi] = qty[ivi] + IVr.TotQty;
 									sum[ivi] = sum[ivi] + IVr.BaseSum4;
 									lastDates[ivi] = lastBuyDate;
@@ -428,7 +442,7 @@ record CUVc CUr;
 							if(findloc==false)then begin
 								qty[aqty] = qty[aqty] + IVr.TotQty;
 								sum[aqty] = sum[aqty] + IVr.BaseSum4;
-								loc[aqty] = Locr.Code & " " & Locr.Name;
+								loc[aqty] = locationname;
 								lastDates[ivi] = lastBuyDate;
 								lastSerNrs[ivi] = lastInvoiceNr;								
 								curncy[aqty] = BCb.BaseCur1;
@@ -532,10 +546,20 @@ record CUVc CUr;
                   end;	
                 
                   Locr.Code = IVr.Location;
-                  readfirstmain(Locr,1,true);
+                  if(blank(IVr.Location))then begin
+										//Locr.Code = compname[i];
+										locationname = compname[i];
+									end else begin
+										if(readfirstmain(Locr,1,true)==false)then begin
+											//Locr.Code = compname[i];
+											locationname = compname[i];
+										end else begin
+											locationname = Locr.Code & " " & Locr.Name;
+										end;
+									end;
                   findloc = false;
                   For(ivi=0;ivi<aqty;ivi=ivi+1) begin
-                    if(loc[ivi]==Locr.Code & " " & Locr.Name)then begin
+                    if(loc[ivi]==locationname)then begin
                       qty[ivi] = qty[ivi] + IVr.TotQty;
                       sum[ivi] = sum[ivi] + IVr.BaseSum4;
                       lastDates[ivi] = lastBuyDate;
@@ -546,7 +570,7 @@ record CUVc CUr;
                   if(findloc==false)then begin
                     qty[aqty] = qty[aqty] + IVr.TotQty;
                     sum[aqty] = sum[aqty] + IVr.BaseSum4;
-                    loc[aqty] = Locr.Code & " " & Locr.Name;
+                    loc[aqty] = locationname;
                     lastDates[ivi] = lastBuyDate;
                     lastSerNrs[ivi] = lastInvoiceNr;											
                     curncy[aqty] = BCb.BaseCur1;
@@ -557,7 +581,7 @@ record CUVc CUr;
                     startformat(15);
                       outstring(tab[1],0,LCr.SerNr,false);
                       outstring(tab[2],0,CUr.Code,false);
-                      outstring(tab[3],0,Locr.Code & " " & Locr.Name,false);
+                      outstring(tab[3],0,locationname,false);
                       outstring(tab[4],0,IVr.TotQty,false);
                       outstring(tab[5],0,IVr.BaseSum4,false);
                       outstring(tab[6],0,IVr.InvDate,false);
