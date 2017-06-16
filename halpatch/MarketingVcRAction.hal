@@ -196,7 +196,7 @@ BEGIN
   end;
   
   
-  if(Mrkr.CityRbtn==0) then begin
+  /*if(Mrkr.CityRbtn==0) then begin
 		RecordCheckError(1058," " & USetStr(31007),-1,"CityTxt");
 		res = -1; 
 		goto LMarketingVcRecordCheck;
@@ -207,7 +207,7 @@ BEGIN
   		res = -1; 
 	    goto LMarketingVcRecordCheck;
   	end;
-  end;
+  end;*/
   
   
   /*if (SizeTextCnt(Mrkr) == 0) then begin
