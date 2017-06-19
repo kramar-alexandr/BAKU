@@ -1826,6 +1826,55 @@ begin
 return;
 end; //Edit***************************Sasha2,11:22 06.03.2015 }
 
+global //Edit***************************Sasha2,10:38 19.06.2017 {
+updating procedure SetUpdateCostINToLastPurchPriceMn(record RcVc RepSpec)
+begin
+	record INVc INr,oldINr;
+	record ItemHistVc IHr;
+	record PUVc PUr;
+	row PUVc PUrw;
+  boolean changef,testf;
+  val cost;
+	
+	INr.Code = "";
+	while (loopmain(INr,1,true)) begin
+	  testf = true;
+	  if (INr.UpdateCost==1) then begin testf = false; end;
+	  if (testf) then begin
+  	  IHr.ArtCode = INr.Code;
+      IHr.FileName = "PUVc";
+      if (ReadLastKey("FNArtCode",IHr,2,true) and IHr.ArtCode==INr.Code and IHr.FileName=="PUVc") then begin
+        cost = round(IHr.TotCostPriceCurncy/IHr.Qty,defaultcurroundoff);
+        if (IHr.TotCostPriceCurncy==0) then begin
+          PUr.SerNr = IHr.TransNr;
+          if (ReadFirstMain(PUr,1,true)) then begin
+            MatRowGet(PUr,IHr.Row,PUrw);
+            if (PUrw.ArtCode==IHr.ArtCode) then begin
+              cost = round(PUrw.Sum/PUrw.Quant,defaultcurroundoff);
+            end;
+          end;
+        end;
+        if (cost<0) then begin
+          cost = cost * (-1);
+        end;
+        recordcopy(oldINr,INr);
+        INr.UpdateCost = 1;
+				if(IHr.CurncyCode!=INr.LastPurchCurncyCode or round(INr.LastPurchPrice2,defaultcurroundoff)!=cost)then begin
+					INr.LastPurchCurncyCode = IHr.CurncyCode;
+					INr.LastPurchPrice2 = cost;
+				end;
+				if (recordupdate(oldINr,INr,true)==0) then begin
+				  LogText(0,"Was changed cost flag in item #" & INr.Code);
+				end else begin
+				  LogText(0,"Problem to save item #" & INr.Code);
+				end;
+      end;
+	  end;
+	end;
+	
+return;
+end; //Edit***************************Sasha2,10:38 19.06.2017 }
+
 
 global
 updating procedure CalcINVcLastPurchPriceRn(record RcVc RepSpec)
