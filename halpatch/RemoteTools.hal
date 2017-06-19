@@ -549,10 +549,12 @@ BEGIN
             end;
             
             IVrw.ArtCode = SHrw.ArtCode;
-            IVrw.CustArtCode = SHrw.CustArtCode;
+            IVrw.CustArtCode = SHrw.CustArtCode;            
             if ((ORrw.Quant==blankval) and (remnv==0)) then begin
               remnv = blankval;
             end;
+            IVrw.UsedBirthRebate = ORrw.UsedBirthRebate;// Edit ************************** Monday, 19 June 2017 12:05:51
+
             IVrw.Location = SHrw.Location;
             IVrw.PosCode = SHrw.PosCode;
             IVrw.Spec = SHrw.Spec;
@@ -651,6 +653,8 @@ BEGIN
             orsum = orsum + IVrw.Sum;
             IVrw.SHNr = SHr.SerNr;
             IVrw.SHRow = shi;
+            
+            
 
             IVrw.TaxTemplateCode = ORrw.TaxTemplateCode;
             UnpackRowFieldMatrix(ORrw,"TaxMatrix",TMr);
@@ -1180,6 +1184,9 @@ L20PasteOrdInInv:;
     if (ReadFirstMain(CUr,1,true)) then begin  
     end;
   end;
+  
+  IVp.UsedBirthRebateH = ORp.UsedBirthRebateH;// Edit ************************** Monday, 19 June 2017 12:05:07
+  
   GetARAcc(IVp.CustCode,tstr);
   IVp.ARAcc = tstr;
   IVp.ClientContact = ORp.CustContact;
@@ -1356,6 +1363,7 @@ L20PasteOrdInInv:;
       if ((ORrw.Quant==blankval) and (remn==0)) then begin
         remn = blankval;
       end;
+      IVrw.UsedBirthRebate = ORrw.UsedBirthRebate;// Edit ************************** Monday, 19 June 2017 12:05:51
       IVrw.Quant = remn;
       IVrw.Location = ORrw.Location;
       IVrw.PosCode = ORrw.Position;

@@ -73,7 +73,10 @@ remote function string 255 SaboPromotion(var record IVVc,string); //Edit********
 remote procedure SendToServerArtCode(string,string,string,integer); //Edit***************************Sasha2,15:20 27.04.2017
 remote procedure IVDchsum(var record IVVc,Integer);// Edit ************************** Tuesday, 16 May 2017 14:06:35
 external function Boolean IVDchrsum(var record IVVc,Integer); //Edit***************************Sasha2,16:46 01.06.2016
-
+remote function Boolean ORVc_PasteArtCode(var record ORVc,Integer,var string,var string,Boolean);
+remote procedure ORVc_PasteQuant(var record ORVc,Integer,Boolean,var Boolean);
+remote procedure ORDchsum(var record ORVc,Integer);
+remote procedure ORSumup(var record ORVc);
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -658,6 +661,92 @@ global procedure GetBirthRebateDsm() begin
 return;
 end;
 
+
+global procedure GetBirthRebateORDsm() begin
+	Integer wn,nwn,i;
+  record ORVc ORr;
+  row ORVc ORrw;
+  record UserVc Userr;
+  string 255 subset;
+  integer mtrw,rwcnt;
+  string 50 artcode;
+  Integer sernrf;
+  string 255 inwarning,warning;
+  record BirthdayRebateBlock BRb;
+  date startdate,enddate;
+  date birthmin,birth,mirthmax;
+  val lastquant; 
+  record CUVc CUr;
+  boolean notused,chsum;
+  record RebVc Rebr;
+  
+	blockload(BRb);
+	
+	wn = CurWindow;
+	getwindowrecord(wn,ORr);
+	CUr.Code = ORr.CustCode;
+	
+	Rebr.Code = ORr.RebCode;
+	if(readfirstmain(Rebr,1,true))then begin
+
+	end;
+	
+	if(readfirstmain(CUr,1,true))then begin
+		startdate = addday(ORr.OrdDate,-BRb.DayBefore);
+		enddate = addday(ORr.OrdDate,BRb.DayAfter);
+		
+		notused = true;
+		if(getyear(CUr.BirthRebateLastDate)==getyear(ORr.OrdDate))then begin
+			messagebox(35102,CUr.BirthRebateInComp & " invoice # " & CUr.BirthRebateTransNr);
+			notused = false;
+		end;
+		if(notused)then begin
+			if(ORr.OKFlag==0)then begin
+				birthmin = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)-1);
+				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate));
+				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)+1);
+			
+				if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
+					if(BRb.PrcRebate!=0)then begin
+						mtrw = matrowcnt(ORr);
+						For(i=0;i<mtrw;i=i+1) begin
+							matrowget(ORr,i,ORrw);
+							if(nonblank(ORrw.ArtCode) and ORrw.stp==1 and ORrw.vRebate==Rebr.vra0)then begin
+								lastquant = ORrw.Quant;
+								//IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+								ORVc_PasteArtCode(ORr,i,warning,warning,false);
+								matrowget(ORr,i,ORrw);
+								ORrw.Quant = lastquant;
+								matrowput(ORr,i,ORrw);
+								ORVc_PasteQuant(ORr,i,true,chsum);
+
+								//IVVc_PasteQuantity(IVr,i);										
+								matrowget(ORr,i,ORrw);
+								if(ORrw.vRebate==Rebr.vra0)then begin
+									ORrw.vRebate = (1-(100-ORrw.vRebate)/100*(100-BRb.PrcRebate)/100)*100;
+									ORrw.UsedBirthRebate = 1;
+									ORr.UsedBirthRebateH = 1;
+								end;
+								matrowput(ORr,i,ORrw);								
+								ORDchsum(ORr,i);
+								ORSumup(ORr);
+							end;
+						end;
+						//IVSumup(IVr,true);
+						ORSumup(ORr);
+						putwindowrecord(wn,ORr);
+					end;
+				end else begin
+					messagebox(35101,"");
+				end;
+			
+				//DisplayIVItem(IVr,rownr);
+			end;
+		end;
+	end;
+	
+return;
+end;
 	// Edit End ---------------------------------------------- Edit End
 	
 

@@ -3136,6 +3136,7 @@ begin
   RecordField(AcceptanceBy,M4List,200,UserVc);
   RecordField(AcceptanceFYI,M4List,200,UserVc);
   RecordField(OKDate,M4Date,0,0);// Edit ************************** Wednesday, 13 November 2013 15:34:25
+  RecordField(UsedBirthRebateH,M4Int,0,0);// Edit ************************** Thursday, 18 May 2017 12:29:54
   ArrayBegin(Math,-,1);
   ArrayField(stp,M4Int,0,0);
   ArrayField(ArtCode,M4Code,20,INVc);
@@ -3194,6 +3195,7 @@ begin
   ArrayField(RecipeQuant,M4Qty,0,0);
   ArrayField(CustArtCode,M4Code,20,CUINVc);
   ArrayField(Salesmen,M4UStr,60,UserVc);
+  ArrayField(UsedBirthRebate,M4Int,0,0);// Edit ************************** Tuesday, 16 May 2017 14:39:32
   EndArray;
   MainKeyBegin(SerNr,1);
   StoreInBaseKey;
