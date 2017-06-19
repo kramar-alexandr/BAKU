@@ -263,36 +263,25 @@ begin
 								tempTRrw.CredVal = - TRrw.DebVal;
 							end;
 							
+							corspdebval = blankval;
+							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr58,i,corspdebval,corspcredval);
 							if testf then begin
-								tempComm = tempTRrw.ExtraComment;
-								for (k=0;k<rwcnt;k=k+1) begin
+              	for (k=0;k<rwcnt;k=k+1) begin
 									MatRowGet(TRr,k,tempTRrw2);
-									if (tempTRrw2.AccNumber == "58") and (tempTRrw2.ovst <> 1) then begin
-										tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-										tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-										tempTRrw.DebVal = tempTRrw2.CredVal;
-										tempTRrw.CredVal = tempTRrw2.DebVal;
-										tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-										MatRowPut(tempTRr,j,tempTRrw);
-										j = j + 1;
-										done = true;
-									end;
-								end;
-								testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
-								if testf then begin
-									for (k=0;k<rwcnt;k=k+1) begin
-										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "44/03") and (tempTRrw2.ovst <> 1) then begin
-											tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-											tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-											tempTRrw.DebVal = tempTRrw2.CredVal;
-											tempTRrw.CredVal = tempTRrw2.DebVal;
-											tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-											MatRowPut(tempTRr,j,tempTRrw);
-											j = j + 1;
-											done = true;
-										end;
+									if ((tempTRrw2.AccNumber == "58") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
+                    if (tempTRrw2.CredVal!=0) then begin
+                      tempTRrw.CurCredVal = -tempTRrw2.CurCredVal;
+                      tempTRrw.CredVal = -tempTRrw2.CredVal;
+                    end else begin
+                      tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
+                      tempTRrw.CredVal = tempTRrw2.DebVal;
+                    end;
+                    tempTRrw.MyVal1 = blankval;
+                    tempTRrw.MyVal2 = blankval;
+                    tempTRrw.CurDebVal = blankval;
+                    tempTRrw.DebVal = blankval;
+                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -301,34 +290,21 @@ begin
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr59,i,corspdebval,corspcredval);
 							if testf then begin
-								tempComm = tempTRrw.ExtraComment;
-								for (k=0;k<rwcnt;k=k+1) begin
+              	for (k=0;k<rwcnt;k=k+1) begin
 									MatRowGet(TRr,k,tempTRrw2);
-									if (tempTRrw2.AccNumber == "59") and (tempTRrw2.ovst <> 1) then begin
-										tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-										tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-										tempTRrw.DebVal = tempTRrw2.CredVal;
-										tempTRrw.CredVal = tempTRrw2.DebVal;
-										tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-										MatRowPut(tempTRr,j,tempTRrw);
-										j = j + 1;
-										done = true;
-									end;
-								end;
-								testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
-								if testf then begin
-									for (k=0;k<rwcnt;k=k+1) begin
-										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "44/03") and (tempTRrw2.ovst <> 1) then begin
-											tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-											tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-											tempTRrw.DebVal = tempTRrw2.CredVal;
-											tempTRrw.CredVal = tempTRrw2.DebVal;
-											tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-											MatRowPut(tempTRr,j,tempTRrw);
-											j = j + 1;
-											done = true;
-										end;
+									if ((tempTRrw2.AccNumber == "59") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
+                    if (tempTRrw2.CredVal!=0) then begin
+                      tempTRrw.CurCredVal = -tempTRrw2.CurCredVal;
+                      tempTRrw.CredVal = -tempTRrw2.CredVal;
+                    end else begin
+                      tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
+                      tempTRrw.CredVal = tempTRrw2.DebVal;
+                    end;
+                    tempTRrw.MyVal1 = blankval;
+                    tempTRrw.MyVal2 = blankval;
+                    tempTRrw.CurDebVal = blankval;
+                    tempTRrw.DebVal = blankval;
+                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -337,34 +313,21 @@ begin
 							corspcredval = blankval;
 							testf = CorspTRTest(TRr,Accr591,i,corspdebval,corspcredval);
 							if testf then begin
-								tempComm = tempTRrw.ExtraComment;
-								for (k=0;k<rwcnt;k=k+1) begin
+              	for (k=0;k<rwcnt;k=k+1) begin
 									MatRowGet(TRr,k,tempTRrw2);
-									if (tempTRrw2.AccNumber == "59/1") and (tempTRrw2.ovst <> 1) then begin
-										tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-										tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-										tempTRrw.DebVal = tempTRrw2.CredVal;
-										tempTRrw.CredVal = tempTRrw2.DebVal;
-										tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-										MatRowPut(tempTRr,j,tempTRrw);
-										j = j + 1;
-										done = true;
-									end;
-								end;
-								testf = CorspTRTest(TRr,Accr4403,i,corspdebval,corspcredval);
-								if testf then begin
-									for (k=0;k<rwcnt;k=k+1) begin
-										MatRowGet(TRr,k,tempTRrw2);
-										if (tempTRrw2.AccNumber == "44/03") and (tempTRrw2.ovst <> 1) then begin
-											tempTRrw.CurDebVal = tempTRrw2.CurCredVal;
-											tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
-											tempTRrw.DebVal = tempTRrw2.CredVal;
-											tempTRrw.CredVal = tempTRrw2.DebVal;
-											tempTRrw.ExtraComment = tempComm & " - " & tempTRrw2.Comment;
-											MatRowPut(tempTRr,j,tempTRrw);
-											j = j + 1;
-											done = true;
-										end;
+									if ((tempTRrw2.AccNumber == "59/1") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
+                    if (tempTRrw2.CredVal!=0) then begin
+                      tempTRrw.CurCredVal = -tempTRrw2.CurCredVal;
+                      tempTRrw.CredVal = -tempTRrw2.CredVal;
+                    end else begin
+                      tempTRrw.CurCredVal = tempTRrw2.CurDebVal;
+                      tempTRrw.CredVal = tempTRrw2.DebVal;
+                    end;
+                    tempTRrw.MyVal1 = blankval;
+                    tempTRrw.MyVal2 = blankval;
+                    tempTRrw.CurDebVal = blankval;
+                    tempTRrw.DebVal = blankval;
+                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
