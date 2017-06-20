@@ -187,7 +187,7 @@ BEGIN
 		goto LMarketingVcRecordCheck;
   end;
   
-  if(Mrkr.ReferenceRbtn==6) then begin
+  if(Mrkr.ReferenceRbtn==10) then begin
   	if(blank(Mrkr.ReferenceTxt)) then begin
   		RecordCheckError(1058,Mrkr.ReferenceTxt,-1,"ReferenceTxt");
   		res = -1; 

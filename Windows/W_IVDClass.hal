@@ -6730,15 +6730,31 @@ window MarketingDClass:1
 begin
   real h1,h2,v,vs,l;
   WindowBegin("Фиксация визита",MarketingDClass,CGview,-);
-  SetWRect(64,80,850,800);
+  SetWRect(64,80,850,680);
   Sizeable(-1,-1,0,0);
   UseView(MarketingVc);
   vs = 20; h1 = 50; h2 = 260;
   ActiveFieldOnNew("Name");
-  EditField(h1,v=16,40,"Номер",ViewOnly,SerNr,false,0);
+  EditField(h1,v=16,60,"Номер",ViewOnly,SerNr,false,0);
   
-  v = 50; 
-  ButtonFrame(h1,v,l=160,8,"Возраст");
+  v = 25; h1 = h1 + 170;
+  ButtonFrame(h1,v,l=130,6,"Пол");
+  RadioButton(h1,v,0,0,"-",Gender);
+  RadioButton(h1,v+=16,1,0,"Мужчина",Gender);
+  RadioButton(h1,v+=16,2,0,"Женщина",Gender);
+  RadioButton(h1,v+=16,3,0,"Смешанная группа",Gender);
+  RadioButton(h1,v+=16,4,0,"Группа мужчин",Gender);
+  RadioButton(h1,v+=16,5,0,"Группа женщин",Gender);
+
+  v = 25; h1 = h1+180;
+  ButtonFrame(h1,v,l=160,4,"Гражданство");
+  RadioButton(h1,v,0,0,"-",NationalityRbtn);
+  RadioButton(h1,v+=16,1,0,"Гражданин Азербайджана",NationalityRbtn);
+  RadioButton(h1,v+=16,2,0,"Иностранный турист",NationalityRbtn);
+  RadioButton(h1,v+=16,3,0,"Экспат",NationalityRbtn);
+  
+  v = 25; h1 = h1 + 200;
+  ButtonFrame(h1,v,l=50,8,"Возраст");
   RadioButton(h1,v,0,0,"-",Age);
   RadioButton(h1,v+=16,1,0,"13-17",Age);
   RadioButton(h1,v+=16,2,0,"18-24",Age);
@@ -6746,27 +6762,12 @@ begin
   RadioButton(h1,v+=16,4,0,"35-44",Age);
   RadioButton(h1,v+=16,5,0,"45-54",Age);
   RadioButton(h1,v+=16,6,0,"55-64",Age);
-  RadioButton(h1,v+=16,6,0,"65+",Age);
+  RadioButton(h1,v+=16,7,0,"65+",Age);
   
-  v = 50; h1 = h1+200;
-  ButtonFrame(h1,v,l=160,6,"Пол");
-  RadioButton(h1,v,0,0,"-",Gender);
-  RadioButton(h1,v+=16,1,0,"Мужчина",Gender);
-  RadioButton(h1,v+=16,2,0,"Женщина",Gender);
-  RadioButton(h1,v+=16,3,0,"Смешанная группа",Gender);
-  RadioButton(h1,v+=16,4,0,"Группа мужчин",Gender);
-  RadioButton(h1,v+=16,5,0,"Группа женщин",Gender);
-  
-  v = 50; h1 = h1 + 200;
-  ButtonFrame(h1,v,l=160,4,"Гражданство");
-  RadioButton(h1,v,0,0,"-",NationalityRbtn);
-  RadioButton(h1,v+=16,1,0,"Гражданин Азербайджана",NationalityRbtn);
-  RadioButton(h1,v+=16,2,0,"Иностранный турист",NationalityRbtn);
-  RadioButton(h1,v+=16,3,0,"Экспат",NationalityRbtn);
   v = v + 5;
   //EditField(h1+30,v-3,120,"",Normal,NationalityTxt,false,0);
   
-  v = 160;
+  v = 110;
   h1 = 100;
   
   EditField(h1,v+=vs,70,"ID карты",Normal,CustCode,false,CUSClass);
@@ -6801,16 +6802,16 @@ begin
   
   
   h1 = h1 + 220;
-  v = 330;
+  v = 270;
   ButtonFrame(h1,v,l=190,13,"Откуда узнали");
   RadioButton(h1,v,0,0,"-",ReferenceRbtn);
   RadioButton(h1,v+=16,1,0,"Facebook",ReferenceRbtn);
   RadioButton(h1,v+=16,2,0,"Instagram",ReferenceRbtn);
   RadioButton(h1,v+=16,3,0,"Веб-сайт",ReferenceRbtn);
-  																										EditField(h1+70,v-3,120,"",Normal,ReferenceTxtWeb,false,0);
+  																										EditField(h1+70,v-2,120,"",Normal,ReferenceTxtWeb,false,0);
   RadioButton(h1,v+=16,4,0,"Уличная реклама",ReferenceRbtn);
   RadioButton(h1,v+=16,5,0,"Журнал",ReferenceRbtn);
-																											EditField(h1+70,v-3,120,"",Normal,ReferenceTxtMag,false,0);
+																											EditField(h1+70,v-2,120,"",Normal,ReferenceTxtMag,false,0);
   RadioButton(h1,v+=16,6,0,"Рекомендация друга",ReferenceRbtn);
   RadioButton(h1,v+=16,7,0,"Увидел в торговом центре",ReferenceRbtn);
   RadioButton(h1,v+=16,8,0,"Радио",ReferenceRbtn);
@@ -6834,7 +6835,7 @@ begin
   //Start edit Victor --------------------- 21.08 
   
   //h1 = h1 + 210;
-  v = 460+vs*5;
+  v = 390+vs*5;
   ButtonFrame(h1,v,l=300,3,"Результат");
   RadioButton(h1,v,0,0,"-",ResultRbtn);
   RadioButton(h1,v+=16,1,0,"Нет продаж: коммент.",ResultRbtn);
@@ -6846,9 +6847,9 @@ begin
   //End Edit
   
   h1 = 10;
-  v = 360+vs;
+  v = 240+vs;
   StaticText(h1,v+=vs,"Каким товаром интересовался?",false);
-  TextField(h1,v,300,-16,Math,0);
+  TextField(h1,v+=15,300,-16,Math,0);
   
   EndWindow;
 end;
