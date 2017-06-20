@@ -1260,27 +1260,52 @@ begin
       end;
       tempTRrw.Curncy = left(tempTRrw.Curncy,3);
 			MatRowPut(tempTRr2,i,tempTRrw);
-      if (tempTRrw.NomVal!=blankval) then begin tabprintf[2] = true; end;
       if (f) then begin
-        if (tempTRrw.MyVal10!=blankval) then begin tabprintf[3] = true; end;
-        if (tempTRrw.MyVal11!=blankval) then begin tabprintf[4] = true; end;
-        if (tempTRrw.MyVal12!=blankval) then begin tabprintf[5] = true; end;
+        switch (tempTRrw.Curncy) begin
+          case "AZN":
+            if (tempTRrw.MyVal7!=blankval) then begin tabprintf[3] = true; end;
+          case "EUR":
+            if (tempTRrw.MyVal7!=blankval) then begin tabprintf[4] = true; end;
+          case "USD":
+            if (tempTRrw.MyVal7!=blankval) then begin tabprintf[5] = true; end;
+        end;
       end;
-      if (tempTRrw.CredVal2!=blankval) then begin tabprintf[6] = true; end;
-      if (tempTRrw.DebVal2!=blankval) then begin tabprintf[7] = true; end;
-      if (tempTRrw.Qty!=blankval) then begin tabprintf[8] = true; end;
+      switch (tempTRrw.Curncy) begin
+        case "TER":
+          if (tempTRrw.CurDebVal!=blankval) then begin tabprintf[2] = true; end;
+        case "AZN":
+          if (tempTRrw.CurDebVal!=blankval) then begin tabprintf[6] = true; end;
+        case "EUR":
+          if (tempTRrw.CurDebVal!=blankval) then begin tabprintf[7] = true; end;
+        case "USD":
+          if (tempTRrw.CurDebVal!=blankval) then begin tabprintf[8] = true; end;
+      end;
+      
       if (tempTRrw.DebVal!=blankval) then begin tabprintf[9] = true; end;
-      if (tempTRrw.MyVal5!=blankval) then begin tabprintf[10] = true; end;
       if (f) then begin
-        if (tempTRrw.MyVal13!=blankval) then begin tabprintf[11] = true; end;
-        if (tempTRrw.MyVal14!=blankval) then begin tabprintf[12] = true; end;
-        if (tempTRrw.MyVal15!=blankval) then begin tabprintf[13] = true; end;
+      switch (tempTRrw.Curncy) begin
+          case "AZN":
+            if (tempTRrw.MyVal8!=blankval) then begin tabprintf[11] = true; end;
+          case "EUR":
+            if (tempTRrw.MyVal8!=blankval) then begin tabprintf[12] = true; end;
+          case "USD":
+            if (tempTRrw.MyVal8!=blankval) then begin tabprintf[13] = true; end;
+        end;
       end;
-      if (tempTRrw.MyVal1!=blankval) then begin tabprintf[14] = true; end;
-      if (tempTRrw.MyVal3!=blankval) then begin tabprintf[15] = true; end;
-      if (tempTRrw.MyVal4!=blankval) then begin tabprintf[16] = true; end;
+      
+      switch (tempTRrw.Curncy) begin
+        case "TER":
+          if (tempTRrw.MyVal1!=blankval) then begin tabprintf[10] = true; end;
+        case "AZN":
+          if (tempTRrw.MyVal1!=blankval) then begin tabprintf[14] = true; end;
+        case "EUR":
+          if (tempTRrw.MyVal1!=blankval) then begin tabprintf[15] = true; end;
+        case "USD":
+          if (tempTRrw.MyVal1!=blankval) then begin tabprintf[16] = true; end;
+      end;
       if (tempTRrw.MyVal2!=blankval) then begin tabprintf[17] = true; end;
-      if (tempTRrw.MyVal6!=blankval) then begin tabprintf[18] = true; end;
+      
+      if (tempTRrw.MyVal3!=blankval) then begin tabprintf[18] = true; end;
 		end;
 		rwcnt2 = MatRowCnt(tempTRr2);
 		for (j=0;j<rwcnt2-1;j=j+1) begin
@@ -1395,6 +1420,9 @@ begin
 			end;
 		end;
 	end;
+  /*for (j=0;j<rwcnt;j=j+1) begin
+    MatRowGet(tempTRr,j,tempTRrw);
+  end;*/
 	AZNTermDeb = 0;
 	AZNTermCred = 0;
 	AZNDeb = 0;
