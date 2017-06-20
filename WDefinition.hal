@@ -2121,3 +2121,14 @@ begin
     
   EndWindow;
 end; //Edit***************************Sasha2,16:12 25.09.2014 }
+
+window FindCostForItemWithEmptyCostVClass:1 //Edit***************************Sasha2,17:37 19.06.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Восстановить себестоимость для товара",FindCostForItemWithEmptyCostVClass,CGMnt,RcType);
+  SetWRect(20,80,400,240);
+  vs = 20;h = 100; v = 26;
+  EditField(h,v,150,"Товар",Normal,f1,false,INSClass);
+  EndWindow;
+end;

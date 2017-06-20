@@ -5146,3 +5146,57 @@ begin
 	
 return;
 end;
+
+global //Edit***************************Sasha2,16:37 19.06.2017 {
+updating procedure FindCostForItemWithEmptyCostMn(record RcVc RepSpec)
+begin
+  record ItemHistVc IHr;
+  record PUVc PUr;
+	row PUVc PUrw;
+  Boolean TrHs,testf,saveF;
+  string 5 curncy;
+  val itemCost;
+
+    if (NonBlank(RepSpec.f1)) then begin
+      TrHs = true;
+      IHr.ArtCode = RepSpec.f1;
+      while (LoopKey("ArtCode",IHr,1,TrHs)) begin
+        testf = true;
+        if (IHr.ArtCode!=RepSpec.f1) then begin TrHs = false; testf = false; end;
+        if (IHr.StockAffectf==0) then begin testf = false; end;
+        if (testf) then begin
+          saveF = false;
+          if (IHr.FileName=="PUVc") then begin
+            itemCost = IHr.TotCostPriceCurncy/IHr.Qty;
+            curncy = IHr.CurncyCode;
+            if (itemCost==0 or Blank(curncy)) then begin
+              PUr.SerNr = IHr.TransNr;
+              if (ReadFirstMain(PUr,1,true)) then begin
+                MatRowGet(PUr,IHr.Row,PUrw);
+                if (PUrw.ArtCode==IHr.ArtCode) then begin
+                  itemCost = round(PUrw.Sum/PUrw.Quant,defaultcurroundoff);
+                  curncy = PUr.CurncyCode;
+                end;
+              end;
+            end;
+          end else begin
+            if (NonBlank(curncy) and itemCost>0) then begin
+              if (IHr.TotCostPriceCurncy==0 or IHr.CurncyCode!=curncy) then begin
+                IHr.TotCostPriceCurncy = AbsoluteVal(IHr.Qty)*itemCost;
+                IHr.CurncyCode = curncy;
+                if (IHr.RemQty>0) then begin
+                  IHr.RemCostPriceCurncy = IHr.RemQty*itemCost;
+                end;
+                saveF = true;
+              end;
+            end;
+          end;
+          if (saveF) then begin
+            RECORDSTORE(IHr,true);
+          end;
+        end;
+      end;
+    end;
+
+  return;
+end; //Edit***************************Sasha2,16:38 19.06.2017 }
