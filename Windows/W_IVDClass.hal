@@ -6826,7 +6826,7 @@ begin
   RadioButton(h1+220,v+=16,1,0,"Поиск подарка",ReasonBtn);
   RadioButton(h1+220,v+=16,2,0,"Поиск для себя лично",ReasonBtn);
   RadioButton(h1+220,v+=16,3,0,"Посмотреть товары, прицениться",ReasonBtn);
-  RadioButton(h1+220,v+=16,4,0,"Познакомиться с магазином",ReasonBtn);
+  //RadioButton(h1+220,v+=16,4,0,"Познакомиться с магазином",ReasonBtn);
   RadioButton(h1+220,v+=16,5,0,"Пришел по акции",ReasonBtn);
   RadioButton(h1+220,v+=16,6,0,"Others...",ReasonBtn);
 	v = v + 5;
