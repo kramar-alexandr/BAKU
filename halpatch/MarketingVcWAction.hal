@@ -166,9 +166,16 @@ function Boolean MarketingDClassOnClose(Integer wn,Integer wn2)
 begin
   Integer nwn;
   record MarketingVc Mrkr;
+  record UserVc Userr;
   boolean res;
   
-  res = !WindowDoOk(wn,0);
+  Userr.Code = CurrentUser;
+  ReadFirstMain(Userr,1,true);
+  if (SetInSet("ADMIN",Userr.AccessGroup) or SetInSet("DISCO",Userr.AccessGroup)) then begin
+    res = false;
+  end else begin
+    res = !WindowDoOk(wn,0);
+  end;
 
   MarketingDClassOnClose = res;
   return;
@@ -177,8 +184,15 @@ end;
 global
 procedure MarketingDClassButtonFlags(Integer wn,var Boolean duplOK,var Boolean newOK,var Boolean saveOK,var Boolean restOK)
 begin
+  record UserVc Userr;
     duplOK = false;
     restOK = false;
+    
+    Userr.Code = CurrentUser;
+    ReadFirstMain(Userr,1,true);
+    if (SetInSet("ADMIN",Userr.AccessGroup) or SetInSet("DISCO",Userr.AccessGroup)) then begin
+      restOK = true;
+    end;
   return;
 end;
 

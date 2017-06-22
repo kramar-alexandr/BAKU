@@ -3642,6 +3642,7 @@ begin
   RecordField(ReasonBtn,M4Int,0,0);
   RecordField(ReferenceTxtWeb,M4Str,250,0);
   RecordField(ReferenceTxtMag,M4Str,250,0);
+  RecordField(GenderQty,M4Int,0,0);
 	  
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
