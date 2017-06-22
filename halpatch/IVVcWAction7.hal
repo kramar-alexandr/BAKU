@@ -622,7 +622,7 @@ global procedure GetBirthRebateDsm() begin
 				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate));
 				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)+1);
 			
-				if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
+				if(((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate)) or usercanaction("GetBirthRebateAnyway",false))then begin 	
 					if(BRb.PrcRebate!=0)then begin
 						mtrw = matrowcnt(IVr);
 						For(i=0;i<mtrw;i=i+1) begin
@@ -706,7 +706,7 @@ global procedure GetBirthRebateORDsm() begin
 				birth = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate));
 				mirthmax = stringtodate(getday(CUr.BirthDate) & "/" & getmonth(CUr.BirthDate) & "/" & getyear(CurrentDate)+1);
 			
-				if((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate))then begin 	
+				if(((birthmin>=startdate and birthmin<=enddate) or (birth>=startdate and birth<=enddate) or (mirthmax>=startdate and mirthmax<=enddate)) or usercanaction("GetBirthRebateAnyway",false))then begin 	
 					if(BRb.PrcRebate!=0)then begin
 						mtrw = matrowcnt(ORr);
 						For(i=0;i<mtrw;i=i+1) begin

@@ -963,6 +963,7 @@ begin
 	StrSetText(DropSHOK,"Утверждение уведомл. об отгр.");
 	StrSetText(ActOK,"Утвержение активностей");
 	StrSetText(JobELockingSystem,"Электронная замочная система");
+	StrSetText(GetBirthRebateAnyway,"Дать скидку дня рождения в любой день");
   EndStrSet;
 
 
