@@ -1951,6 +1951,7 @@ begin
           if (tabprintf[1]) then begin
           	OutString(tab[1],0,tempDate,false);
           end;
+        if (compf) then begin
           if (tabprintf[2]) then begin
           	OutString(tab[2],0,"",false);
           end;
@@ -2144,8 +2145,9 @@ begin
         EndFormat;
         Gray_Divider(0,1);
         StartFormat(15);
-        if (tabprintf[1]) then begin
-        	OutString(tab[1],0,"",false);
+          if (tabprintf[1]) then begin
+            OutString(tab[1],0,"",false);
+          end;
         end;
 			end else begin
 				Gray_Divider(0,1);
