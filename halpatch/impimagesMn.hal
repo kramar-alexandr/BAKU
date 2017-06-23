@@ -5200,3 +5200,29 @@ begin
 
   return;
 end; //Edit***************************Sasha2,16:38 19.06.2017 }
+
+
+global updating procedure AddPModeMn(record RcVc RepSpec)
+begin
+	record PMBlock PMb;
+	row PMBlock PMrw;
+	integer i,mtrw;
+	
+	blockload(PMb);
+	
+	mtrw = matrowcnt(PMb);
+	
+	if(nonblank(RepSpec.f1) and nonblank(RepSpec.f2))then begin
+		PMrw.Code = RepSpec.f1;
+		PMrw.AccNr = RepSpec.f2;
+		PMrw.Comment = RepSpec.f3;
+		PMrw.Objects = RepSpec.f4;
+		messagebox(0,mtrw);
+		matrowput(PMb,mtrw,PMrw);
+		blockstore(PMb);
+		messagebox(0,matrowcnt(PMb));
+	end;
+	
+	
+return;
+end;
