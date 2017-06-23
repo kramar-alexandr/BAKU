@@ -51,6 +51,7 @@ integer i, pos;
 		outstring(60,0,"Консультант",false);
 		outstring(60,0,"Имя посетителя",false);
 		outstring(140,0,"Пол",false);
+		outstring(140,0,"Кол-во",false);
 		outstring(140,0,"Возраст",false);
 		outstring(200,0,"Гражданство",false);
 		outstring(230,0,"Откуда узнали",false);
@@ -101,7 +102,7 @@ integer i, pos;
 				case 5: 
 					OutString(140,0,"Группа женщин",false);			
 			end;
-			
+			OutString(140,0,MRr.GenderQty,false);
 			switch (MRr.Age) begin
 				case 0: 
 					OutString(140,0,"-",false);

@@ -285,7 +285,6 @@ begin
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.CurDebVal = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -308,7 +307,6 @@ begin
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.CurDebVal = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -331,7 +329,6 @@ begin
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.CurDebVal = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -929,17 +926,16 @@ begin
 									MatRowGet(TRr,k,tempTRrw2);
 									if ((tempTRrw2.AccNumber == "58") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
                     if (tempTRrw2.CredVal!=0) then begin
-                      tempTRrw.MyVal9 = -tempTRrw2.MyVal9;
+                      tempTRrw.MyVal9 = -tempTRrw2.CurCredVal;
                       tempTRrw.CredVal = -tempTRrw2.CredVal;
                     end else begin
-                      tempTRrw.MyVal9 = tempTRrw2.MyVal7;
+                      tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
                     end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.MyVal7 = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -952,17 +948,16 @@ begin
 									MatRowGet(TRr,k,tempTRrw2);
 									if ((tempTRrw2.AccNumber == "59") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
                     if (tempTRrw2.CredVal!=0) then begin
-                      tempTRrw.MyVal9 = -tempTRrw2.MyVal9;
+                      tempTRrw.MyVal9 = -tempTRrw2.CurCredVal;
                       tempTRrw.CredVal = -tempTRrw2.CredVal;
                     end else begin
-                      tempTRrw.MyVal9 = tempTRrw2.MyVal7;
+                      tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
                     end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.MyVal7 = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;
@@ -975,17 +970,16 @@ begin
 									MatRowGet(TRr,k,tempTRrw2);
 									if ((tempTRrw2.AccNumber == "59/1") and (tempTRrw2.ovst <> 1) and (tempTRrw2.CredVal==corspcredval) and (tempTRrw2.DebVal==corspdebval)) then begin
                     if (tempTRrw2.CredVal!=0) then begin
-                      tempTRrw.MyVal9 = -tempTRrw2.MyVal9;
+                      tempTRrw.MyVal9 = -tempTRrw2.CurCredVal;
                       tempTRrw.CredVal = -tempTRrw2.CredVal;
                     end else begin
-                      tempTRrw.MyVal9 = tempTRrw2.MyVal7;
+                      tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
                     end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.MyVal7 = blankval;
                     tempTRrw.DebVal = blankval;
-                    tempTRrw.ExtraComment = tempTRrw2.Comment;
 									end;
 								end;
 							end;

@@ -42,6 +42,7 @@ BEGIN
   Mrkr.Location = LMb.DefLocation;
   Mrkr.CityRbtn = 0;
   Mrkr.ResultRbtn = 0;	
+  Mrkr.GenderQty = 1;	
    
   MarketingVcRecordDefaults = res; 
   RETURN;
@@ -229,6 +230,11 @@ BEGIN
   end;
   if(Mrkr.Gender==0) then begin
 		RecordCheckError(1058," " & USetStr(31006),-1,"Gender");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  if(Mrkr.Gender>=3 and Mrkr.GenderQty<=1) then begin
+		RecordCheckError(20823," " & USetStr(31006),-1,"Gender");
 		res = -1; 
 		goto LMarketingVcRecordCheck;
   end;
