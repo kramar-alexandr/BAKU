@@ -241,6 +241,7 @@ begin
     case 24: Report("Статистика продаж (Web)",MyBIRClass,MyBIRn,0,modSL);
   end;
   Report("Отчет по подарочным сертификатам",GiftCertRClass,GiftCertRn,0,modPOS);//Edit----------------------Dima  18.05.2016
+  Report("Отчет по дням",DaysExcelRClass,DaysExcelRn,0,modNL); //Edit-------------------Vitalii 10:57 23.06.2017
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);

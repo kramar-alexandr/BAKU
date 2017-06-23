@@ -1,0 +1,30 @@
+remote procedure DaysExcelRn(record RcVc,var area);
+
+SetLangMode(LangRussian,"RUS",0);
+
+global
+procedure RunDaysExcelRn()
+begin
+	string 250 filename;
+	area fileToSave;
+	record RcVc RepSpec;
+	integer wn;
+	
+	wn = curwindow;
+	deselectwindow(wn,true);
+	getwindowrecord(wn,RepSpec);
+  
+  RepSpec.sStartDate = StringToDate(FirstInRange(RepSpec.Period2Str,10));
+	RepSpec.sEndDate = StringToDate(LastInRange(RepSpec.Period2Str,10));
+  filename = SaveFileDialog("DaysExcel " & RepSpec.f1,"","xlsx");
+	if ((filename!="DaysExcel " & RepSpec.f1) and nonblank(filename)) then begin
+		DaysExcelRn(RepSpec,fileToSave);
+		if(fileexists(filename))then begin
+			delete_file(filename);
+		end;
+		writeareatofile(fileToSave,filename,0);
+		CloseWindow(wn);
+		Messagebox(0,"Готово!");
+	end;
+return;
+end;

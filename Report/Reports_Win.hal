@@ -941,3 +941,17 @@ begin
   RadioButton(h,v+=16,0,0,"Любое поле",ArtMode);
   EndWindow;
 end;
+
+window DaysExcelRClass:1	//Edit-------------------Vitalii 11:17 23.06.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Определите отчет по дням",DaysExcelRClass,CGother,RcType);
+  SetWRect(20,80,400,250);
+  v = 6; vs = 20; h = 130;
+  PeriodField(h,v,"Период");
+  EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
+  HalPushButton(h=50,v+=20,h+110,v+=20,"RunDaysExcelRn","Run");
+  
+  EndWindow;
+end;
