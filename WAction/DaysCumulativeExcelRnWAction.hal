@@ -1,9 +1,9 @@
-remote procedure DaysExcelRn(record RcVc,var area);
+remote procedure DaysCumulativeExcelRn(record RcVc,var area);
 
 SetLangMode(LangRussian,"RUS",0);
 
 global
-procedure RunDaysExcelRn()
+procedure RunDaysCumulativeExcelRn()
 begin
 	string 250 filename;
 	area fileToSave;
@@ -16,9 +16,9 @@ begin
   
   RepSpec.sStartDate = StringToDate(FirstInRange(RepSpec.Period2Str,10));
 	RepSpec.sEndDate = StringToDate(LastInRange(RepSpec.Period2Str,10));
-  filename = SaveFileDialog("DaysExcel " & RepSpec.ObjStr,"","xlsx");
-	if ((filename!="DaysExcel " & RepSpec.ObjStr) and nonblank(filename)) then begin
-		DaysExcelRn(RepSpec,fileToSave);
+  filename = SaveFileDialog("DaysCumulativeExcel " & RepSpec.ObjStr,"","xlsx");
+	if ((filename!="DaysCumulativeExcel " & RepSpec.ObjStr) and nonblank(filename)) then begin
+		DaysCumulativeExcelRn(RepSpec,fileToSave);
 		if(fileexists(filename))then begin
 			delete_file(filename);
 		end;

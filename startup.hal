@@ -111,7 +111,7 @@ begin
 	Maintenance("Сч/ф клиенту: InvalidDate = InvDate",CleaningVClass,SetInvoiceInvalidDateMn,modDBMain);	//Edit***************************Sasha2,14:03 26.05.2015	
 	
 	Maintenance("Заменить KASSA на СС",FIXVClass,FixLocalMachineMn,modSL);		//Edit----------------------Dima  13.05.2015
-	Maintenance("Добавить способ оплаты",AddPModeMnVClass,AddPModeMn,modSL);
+
 	
 	
 	Maintenance("Проставить клиентам категорию NONAME",FIXVClass,PasteCategoryToCUMn,modDBMain);	//Edit by Victor 14.07.15
@@ -242,6 +242,7 @@ begin
   end;
   Report("Отчет по подарочным сертификатам",GiftCertRClass,GiftCertRn,0,modPOS);//Edit----------------------Dima  18.05.2016
   Report("Отчет по дням",DaysExcelRClass,DaysExcelRn,0,modNL); //Edit-------------------Vitalii 10:57 23.06.2017
+  Report("Отчет за день с накопительным эффектом",DaysCumulativeExcelRClass,DaysCumulativeExcelRn,0,modNL); //Edit-------------------Vitalii 11:53 26.06.2017
 
   Document("Рассылка писем",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
   Document("Стикеры на товары",INinStockRClass,INinStockForm,INinStockFClass,modIN);
@@ -272,7 +273,7 @@ begin
   SString(31001,"Использован сертификат на ");
   SString(31002,"Определите выдачу сдачи или полученные наличные");
   SString(31003,"У клиента нет активной накопительной карты");
-  SString(31004,"Гражданство");
+  SString(31004,"Национальность");
   SString(31005,"Возраст");
   SString(31006,"Пол");
   SString(31007,"Город");
@@ -964,7 +965,6 @@ begin
 	StrSetText(DropSHOK,"Утверждение уведомл. об отгр.");
 	StrSetText(ActOK,"Утвержение активностей");
 	StrSetText(JobELockingSystem,"Электронная замочная система");
-	StrSetText(GetBirthRebateAnyway,"Дать скидку дня рождения в любой день");
   EndStrSet;
 
 

@@ -57,6 +57,7 @@ begin
 		SaldoEndPeriod52,
 		AZNTermDeb,  AZNDeb,  USDDeb,  EURDeb,	BaseDeb,
 		AZNTermCred, AZNCred, USDCred, EURCred,	BaseCred,
+    Base52Conv,Base52Cred,Base52Deb,
 		convtotal1,convtotal2,convtotal3,convtotal4,convtotal5,// Edit ************************** Wednesday, 26 August 2015 11:49:59
     AZN52Deb,EUR52Deb,USD52Deb,AZN52Conv,EUR52Conv,USD52Conv,AZN52Cred,EUR52Cred,USD52Cred,
 
@@ -71,7 +72,7 @@ begin
 	integer step;
 	string 5 tempStr;
 	string 200 tempComm;
-	boolean basef,aznf,usdf,eurf,terf,compf;
+	boolean compf;
   roundmode rnd
   
   rnd = DefaultCurRoundoff;
@@ -2158,6 +2159,9 @@ begin
           if (tabprintf[3]) then begin
           	OutString(tab[3],0,tempTRrw.MyVal7,false);
             AZN52Deb = AZN52Deb + tempTRrw.MyVal7;
+            if (tempTRrw.MyVal7!=blankval) then begin
+              Base52Deb = Base52Deb + tempTRrw.DebVal;
+            end;
           end;
           if (tabprintf[4]) then begin
           	OutString(tab[4],0,"",false);
@@ -2168,6 +2172,7 @@ begin
           if (tabprintf[6]) then begin
           	OutString(tab[6],0,tempTRrw.CurDebVal,false);
             AZNDeb = AZNDeb + tempTRrw.CurDebVal;
+
           end;
           if (tabprintf[7]) then begin
           	OutString(tab[7],0,"",false);
@@ -2187,6 +2192,9 @@ begin
           if (tabprintf[11]) then begin
           	OutString(tab[11],0,tempTRrw.MyVal8,false);
             AZN52Conv = AZN52Conv + tempTRrw.MyVal8;
+            if (tempTRrw.MyVal8!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[12]) then begin
           	OutString(tab[12],0,"",false);
@@ -2219,6 +2227,9 @@ begin
           if (tabprintf[20]) then begin
           	OutString(tab[20],0,tempTRrw.MyVal9,false);
             AZN52Cred = AZN52Cred + tempTRrw.MyVal9;
+            if (tempTRrw.MyVal9!=blankval) then begin
+              Base52Cred = Base52Cred + tempTRrw.CredVal;
+            end;
           end;
           if (tabprintf[21]) then begin
           	OutString(tab[21],0,"",false);
@@ -2252,6 +2263,9 @@ begin
           if (tabprintf[4]) then begin
           	OutString(tab[4],0,tempTRrw.MyVal7,false);
             EUR52Deb = EUR52Deb + tempTRrw.MyVal7;
+            if (tempTRrw.MyVal7!=blankval) then begin
+              Base52Deb = Base52Deb + tempTRrw.DebVal;
+            end;
           end;
           if (tabprintf[5]) then begin
           	OutString(tab[5],0,"",false);
@@ -2281,6 +2295,9 @@ begin
           if (tabprintf[12]) then begin
           	OutString(tab[12],0,tempTRrw.MyVal8,false);
             EUR52Conv = EUR52Conv + tempTRrw.MyVal8;
+            if (tempTRrw.MyVal8!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[13]) then begin
           	OutString(tab[13],0,"",false);
@@ -2313,6 +2330,9 @@ begin
           if (tabprintf[21]) then begin
           	OutString(tab[21],0,tempTRrw.MyVal9,false);
             EUR52Cred = EUR52Cred + tempTRrw.MyVal9;
+            if (tempTRrw.MyVal9!=blankval) then begin
+              Base52Cred = Base52Cred + tempTRrw.CredVal;
+            end;
           end;
           if (tabprintf[22]) then begin
           	OutString(tab[22],0,"",false);
@@ -2346,6 +2366,9 @@ begin
           if (tabprintf[5]) then begin
             OutString(tab[5],0,tempTRrw.MyVal7,false);
             USD52Deb = USD52Deb + tempTRrw.MyVal7;
+            if (tempTRrw.MyVal7!=blankval) then begin
+              Base52Deb = Base52Deb + tempTRrw.DebVal;
+            end;
           end;
           if (tabprintf[6]) then begin
             OutString(tab[6],0,"",false);
@@ -2375,6 +2398,9 @@ begin
           if (tabprintf[13]) then begin
             OutString(tab[13],0,tempTRrw.MyVal8,false);
             USD52Conv = USD52Conv + tempTRrw.MyVal15;
+            if (tempTRrw.MyVal8!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[14]) then begin
             OutString(tab[14],0,"",false); 
@@ -2407,6 +2433,9 @@ begin
           if (tabprintf[22]) then begin
             OutString(tab[22],0,tempTRrw.MyVal9,false);
             USD52Cred = USD52Cred + tempTRrw.MyVal9;
+            if (tempTRrw.MyVal9!=blankval) then begin
+              Base52Cred = Base52Cred + tempTRrw.CredVal;
+            end;
           end;
           if (tabprintf[23]) then begin
             OutString(tab[23],0,"",false);
@@ -2554,14 +2583,23 @@ begin
           if (tabprintf[11]) then begin
             OutString(tab[11],0,tempTRrw.MyVal13,false);
             AZN52Conv = AZN52Conv + tempTRrw.MyVal13;
+            if (tempTRrw.MyVal13!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[12]) then begin
             OutString(tab[12],0,tempTRrw.MyVal14,false);
             EUR52Conv = EUR52Conv + tempTRrw.MyVal14;
+            if (tempTRrw.MyVal14!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[13]) then begin
             OutString(tab[13],0,tempTRrw.MyVal15,false);
             USD52Conv = USD52Conv + tempTRrw.MyVal15;
+            if (tempTRrw.MyVal15!=blankval) then begin
+              Base52Conv = Base52Conv + tempTRrw.MyVal2;
+            end;
           end;
           if (tabprintf[14]) then begin
           	OutString(tab[14],0,tempTRrw.MyVal1,false); 
@@ -2731,8 +2769,8 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(15,0,"Оборот AZN:",false);
-			OutString(44,0,BaseDeb,false);
-			if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+      OutString(44,0,BaseDeb,false);
+      if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
 				OutString(69,0,"В USD по курсу: " & RepSpec.vals0,false);
 				OutMyString(93,0,BaseDeb/RepSpec.vals0,false);
 				OutString(118,0,"",false);
@@ -2743,7 +2781,7 @@ begin
 			end;
 			OutString(142,0,"Расход AZN:",false);
 			OutString(167,0,BaseCred,false);
-			if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
+      if(RepSpec.vals0!=0)then begin// Edit ************************** Wednesday, 24 February 2016 10:05:01
 				OutString(180,0,"В USD по курсу: " & RepSpec.vals0,false);
 				OutMyString(200,0,BaseCred/RepSpec.vals0,false);
 			end;
@@ -2796,7 +2834,7 @@ begin
 		StartFormat(15);
 			OutString(0,0,"",false);
 			OutString(15,0,"Расход",false);// Касса - Расход
-			OutString(44,0,BaseCred - AZNTermCred,false);
+			OutString(44,0,BaseCred - AZNTermCred - Base52Cred,false);
 			OutString(69,0,"AZN",false);
 			if(RepSpec.vals0!=0)then begin
 				OutMyString(93,0,(BaseCred - AZNTermCred)/RepSpec.vals0,false);
@@ -2882,7 +2920,7 @@ begin
 		end;
 		Black_Divider(15,93);
 	// к сдаче
-		SaldoEndPeriod50n51 = BeginBalance50n51 + BaseDeb - BaseCred + convtotal5;// Edit ************************** Thursday, 27 August 2015 15:22:15
+    SaldoEndPeriod50n51 = BeginBalance50n51 + (BaseDeb - Base52Deb) - (BaseCred - Base52Cred) + (convtotal5 - Base52Conv) - kursovaya52;// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50USD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50EUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
 		SaldoEndPeriod50AZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
