@@ -936,7 +936,7 @@ begin
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 130;
   PeriodField(h,v,"Период");
-  EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
+  EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,LocationSClass);
   HalPushButton(h=50,v+=20,h+110,v+=20,"RunDaysExcelRn","Run");
   
   EndWindow;
@@ -950,7 +950,7 @@ begin
   SetWRect(20,80,400,250);
   v = 6; vs = 20; h = 130;
   PeriodField(h,v,"Период");
-  EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,ObjStoreSClass);
+  EditFieldTL(h,v+=vs,150,"Магазин",M4UStr,Normal,60,ObjStr,false,LocationSClass);
   HalPushButton(h=50,v+=20,h+110,v+=20,"RunDaysCumulativeExcelRn","Run");
   
   EndWindow;

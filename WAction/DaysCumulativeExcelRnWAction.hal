@@ -17,6 +17,9 @@ begin
   RepSpec.sStartDate = StringToDate(FirstInRange(RepSpec.Period2Str,10));
 	RepSpec.sEndDate = StringToDate(LastInRange(RepSpec.Period2Str,10));
   filename = SaveFileDialog("DaysCumulativeExcel " & RepSpec.ObjStr,"","xlsx");
+  if (right(filename,5)!=".xlsx") then begin
+    filename = filename & ".xlsx";
+  end;
 	if ((filename!="DaysCumulativeExcel " & RepSpec.ObjStr) and nonblank(filename)) then begin
 		DaysCumulativeExcelRn(RepSpec,fileToSave);
 		if(fileexists(filename))then begin
