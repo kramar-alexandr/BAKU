@@ -1,6 +1,5 @@
-external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function string 255 MonthName(Date);
-external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);
+external function val MulRateToBase1(var string,val,val,val,val,val,val,roundmode);
 
 external procedure XmlXlsxWorkBegin(string,string);
 external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
@@ -23,16 +22,17 @@ SetLangMode(LangRussian,"RUS",0);
 global 
 procedure DaysExcelRn(record RcVc RepSpec,var area areatofile)
 begin
-  array string 255 LocArr,MonthArr;
-  boolean TrHs,testf;
-  date startdate,enddate;
+  array string 255 LocArr,MonthArr,NameArr;
+  boolean TrHs,testf,cnf;
+  date startdate,enddate,prevdate;
   record IVVc IVr;
   record LocationVc Locr;
   row IVVc IVrw;
   string 20 key;
   string 255 tstr,loc,month;
-  integer keycnt,rwcnt,normrwcnt,LAi,MAi,i;
-  vector boolean LocInArr,MonthInArr,MonthLoc;
+  integer keycnt,rwcnt,normrwcnt,LAi,MAi,NAi,i,j,qtyoborot,qtyvozvrat;
+  val sumoborot,sumvozvrat;
+  vector boolean LocInArr,MonthInArr,MonthLoc,DayNameObor,DayNameVozv,NameInArr;
   vector val Oborot,Vozvrat;
   
   array string 50 sheetNames;
@@ -76,6 +76,7 @@ begin
     if (IVr.OKFlag==0) then begin testf = false; end;
     if (IVr.Invalid==1) then begin testf = false; end;
     if (testf) then begin
+      cnf = false;
       Locr.Code = IVr.Location;
       ReadFirstMain(Locr,1,true);
       loc = Locr.Name;
@@ -92,28 +93,58 @@ begin
       end;
       MonthLoc[month & ";" & loc] = true;
       tstr = loc & ";" & month & ";" & getday(IVr.InvDate) & ";";
+      if (IVr.PayDeal=="CN") then begin
+        Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
+        Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
+        cnf = true;
+      end;
+      sumvozvrat = 0;
+      sumoborot = 0;
       rwcnt = matrowcnt(IVr);
-      normrwcnt = 0;
       for (i=0;i<rwcnt;i=i+1) begin
         matrowget(IVr,i,IVrw);
         if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-          normrwcnt = normrwcnt + 1;
+          if (cnf) then begin
+            DayNameVozv[loc & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
+            if (NameInArr[IVrw.ArtCode]==false) then begin
+              NameArr[NAi] = IVrw.ArtCode;
+              NAi = NAi + 1;
+              NameInArr[IVrw.ArtCode] = true;
+            end;
+          end else begin
+            if (IVrw.Quant<0) then begin
+              DayNameVozv[loc & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
+              if (NameInArr[IVrw.ArtCode]==false) then begin
+                NameArr[NAi] = IVrw.ArtCode;
+                NAi = NAi + 1;
+                NameInArr[IVrw.ArtCode] = true;
+              end;
+              sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+            end else begin
+              DayNameObor[IVr.InvDate & ";" & IVrw.ArtCode] = true;
+              if (NameInArr[IVrw.ArtCode]==false) then begin
+                NameArr[NAi] = IVrw.ArtCode;
+                NAi = NAi + 1;
+                NameInArr[IVrw.ArtCode] = true;
+              end;
+              sumoborot = sumoborot + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+            end;
+          end;
         end;
       end;
-      if ((IVr.PayDeal=="CN") or (IVr.BaseSum4<0)) then begin
-        if (IVr.PayDeal=="CN") then begin
-          Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
-        end else begin
-          Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + IVr.BaseSum4;
-        end;
-        Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
-        Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + normrwcnt;
+      if (cnf) then begin
       end else begin
-        Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + IVr.BaseSum4;
-        Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
-        Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + normrwcnt;
+        if (sumvozvrat!=0) then begin
+          Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
+          Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+        end;
+        if (sumoborot!=0) then begin
+          Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
+          Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+        end;
       end;
     end;
+    prevdate = IVr.InvDate;
   end;
   
   reportName = "DaysExcelRn";
@@ -224,6 +255,16 @@ begin
         for (i=1;i<32;i=i+1) begin
           tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";";
           if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
+            qtyoborot = 0;
+            qtyvozvrat = 0;
+            for (j=0;j<NameArr.length;j=j+1) begin
+              if (DayNameObor[LocArr[LAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
+                qtyoborot = qtyoborot + 1;
+              end;
+              if (DayNameVozv[LocArr[LAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
+                qtyvozvrat = qtyvozvrat + 1;
+              end;
+            end;
             colnum = 2;
             BeginRow(sheetnum,fileToSave,rownum,0,blankval);
               style = 16;
@@ -233,13 +274,13 @@ begin
               style = 17;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
               style = 18;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,qtyoborot);
               style = 15;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
               style = 17;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
               style = 18;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,qtyvozvrat);
               style = 14;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
             EndRow(sheetnum,fileToSave,rownum);

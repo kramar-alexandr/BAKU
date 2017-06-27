@@ -17,10 +17,10 @@ begin
   RepSpec.sStartDate = StringToDate(FirstInRange(RepSpec.Period2Str,10));
 	RepSpec.sEndDate = StringToDate(LastInRange(RepSpec.Period2Str,10));
   filename = SaveFileDialog("DaysExcel " & RepSpec.ObjStr,"","xlsx");
-  if (right(filename,5)!=".xlsx") then begin
-    filename = filename & ".xlsx";
-  end;
 	if ((filename!="DaysExcel " & RepSpec.ObjStr) and nonblank(filename)) then begin
+    if (right(filename,5)!=".xlsx") then begin
+      filename = filename & ".xlsx";
+    end;
 		DaysExcelRn(RepSpec,fileToSave);
 		if(fileexists(filename))then begin
 			delete_file(filename);
