@@ -5151,10 +5151,12 @@ begin
   if(usercanaction("AllowChangeLoyaltyPoints",false))then begin
 		EditField(h,v+=20,80,"Начальные баллы",Normal,StartBalance,false,0);
 		EditField(h,v+=20,80,"Связанные сч/ф",Normal,IVSerNr,false,0);
+		EditField(h2,v,70,"Копия нак.балл.",ViewOnly,PointsBalanceDuplicate,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   	EditField(h,v+=20,80,"Компании сч/ф",Normal,CompNr,false,0);
   end else begin
   	EditField(h,v+=20,80,"Начальные баллы",ViewOnly,StartBalance,false,0);
   	EditField(h,v+=20,80,"Связанные сч/ф",ViewOnly,IVSerNr,false,0);
+  	EditField(h2,v,70,"Копия нак.балл.",ViewOnly,PointsBalanceDuplicate,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   	EditField(h,v+=20,80,"Компании сч/ф",ViewOnly,CompNr,false,0);
   end;
   
@@ -6825,6 +6827,7 @@ begin
   RadioButton(h1,v,0,0,"-",ReferenceRbtn);
   RadioButton(h1,v+=16,1,0,"Facebook",ReferenceRbtn);
   RadioButton(h1,v+=16,2,0,"Instagram",ReferenceRbtn);
+  RadioButton(h1,v+=16,11,0,"E-mail рассылка",ReferenceRbtn);
   RadioButton(h1,v+=16,3,0,"Веб-сайт",ReferenceRbtn);
   																										EditField(h1+70,v-2,120,"",Normal,ReferenceTxtWeb,false,0);
   RadioButton(h1,v+=16,4,0,"Уличная реклама",ReferenceRbtn);
@@ -6861,6 +6864,14 @@ begin
   
   EditField(h1+180,v - vs,100,"",Normal,ResultTxt,false,0);
   EditField(h1+180,v,100,"",Normal,InvNr,false,0);
+  
+  v = v + vs*2;
+  ButtonFrame(h1,v,l=300,3,"Использовалась чужая карта");
+  RadioButton(h1,v,0,0,"-",AnotherCard);
+  RadioButton(h1,v+=16,1,0,"Да",AnotherCard);
+  EditField(h1+40,v,200,"",Normal,AnotherCardNr,false,0);
+  RadioButton(h1,v+=16,2,0,"Нет",AnotherCard);
+  RadioButton(h1,v+=16,3,0,"Без карты",AnotherCard);
   
   //End Edit
   
