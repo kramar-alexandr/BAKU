@@ -42,7 +42,8 @@ BEGIN
   Mrkr.Location = LMb.DefLocation;
   Mrkr.CityRbtn = 0;
   Mrkr.ResultRbtn = 0;	
-  Mrkr.GenderQty = 1;	
+  Mrkr.GenderQty = 1;
+  Mrkr.Name = "Guest";
    
   MarketingVcRecordDefaults = res; 
   RETURN;
@@ -234,7 +235,7 @@ BEGIN
 		goto LMarketingVcRecordCheck;
   end;
   if(Mrkr.Gender>=3 and Mrkr.GenderQty<=1) then begin
-		RecordCheckError(20823," " & USetStr(31006),-1,"Gender");
+		RecordCheckError(20823," " & USetStr(31006),-1,"GenderQty");
 		res = -1; 
 		goto LMarketingVcRecordCheck;
   end;
@@ -297,6 +298,18 @@ BEGIN
   		res = -1; 
 	    goto LMarketingVcRecordCheck;
   	end;
+  end;
+  
+  if(Mrkr.AnotherCard==1 and blank(Mrkr.AnotherCardNr)) then begin
+  	RecordCheckError(1058,"",-1,"AnotherCardNr");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
+  end;
+  
+  if(Mrkr.ResultRbtn==2 and Mrkr.AnotherCard==0) then begin
+  	RecordCheckError(1058," " & USetStr(26439),-1,"AnotherCardNr");
+		res = -1; 
+		goto LMarketingVcRecordCheck;
   end;
  	
 LMarketingVcRecordCheck:;

@@ -3643,6 +3643,8 @@ begin
   RecordField(ReferenceTxtWeb,M4Str,250,0);
   RecordField(ReferenceTxtMag,M4Str,250,0);
   RecordField(GenderQty,M4Int,0,0);
+  RecordField(AnotherCard,M4Int,0,0);
+  RecordField(AnotherCardNr,M4Str,100,0);
 	  
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
@@ -4852,6 +4854,7 @@ begin
   RecordField(StartBalance,M4Val,0,0);// Edit ************************** Tuesday, 25 April 2017 09:52:28
   RecordField(IVSerNr,M4Str,255,0);//Edit-------------------Vitalii 17:00 31.05.2017
   RecordField(CompNr,M4Str,255,0);//Edit-------------------Vitalii 17:00 31.05.2017
+  RecordField(PointsBalanceDuplicate,M4Val,0,0); //Edit***************************Sasha2,10:10 23.06.2017
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);
   KeyBegin(CustCode);

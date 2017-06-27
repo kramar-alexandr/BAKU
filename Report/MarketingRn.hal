@@ -42,10 +42,10 @@ integer i, pos;
 	Black_Divider(0,1);
 		
 	StartFormat(15);
-		if(blank(RepSpec.f1))then begin
-			OutString(0,0,"",false);	
-		end;
-		outstring(0,0,"Магазин (склад)",false);
+		outstring(0,0,"Номер",false);
+		//if(nonblank(RepSpec.f1))then begin
+		  outstring(0,0,"Магазин (склад)",false);
+		//end;
 		outstring(0,0,"Дата посещения",false);
 		outstring(0,0,"Время посещения",false);
 		outstring(60,0,"Консультант",false);
@@ -60,9 +60,13 @@ integer i, pos;
 		outstring(420,0,"Продано на сумму(AZN)",false);
 		//*outstring(470,0,"Продано на суму (валюта)",false);
 		outstring(420,0,"ID карты",false);
-		outstring(420,0,"Телефон, Доп. телефон, Моб. Телефон",false);
+		//outstring(420,0,"Телефон, Доп. телефон, Моб. Телефон",false);
+		outstring(420,0,"Телефон",false);
+		outstring(420,0,"Доп. телефон",false);
+		outstring(420,0,"Моб. Телефон",false);
 		outstring(420,0,"E-mail",false);
 		outstring(420,0,"Адрес",false);
+		outstring(420,0,"Использовалась чужая карта",false);
 				
 	endformat;
 	
@@ -78,11 +82,13 @@ integer i, pos;
 		
 		if(testf)then begin
 			StartFormat(15);
-			OutString(0,0,"",false);	
-				OutString(0,0,MRr.Location,false);	
-				outstring(0,0,MRr.TransDate,false);
-				outstring(0,0,MRr.TransTime,false);
-				OutString(60,0,MRr.SalesMan,false);
+			outstring(0,0,MRr.SerNr,false);
+			//if(nonblank(RepSpec.f1))then begin
+			  OutString(0,0,MRr.Location,false);	
+			//end;
+			outstring(0,0,MRr.TransDate,false);
+			outstring(0,0,MRr.TransTime,false);
+			OutString(60,0,MRr.SalesMan,false);
 			if(nonblank(MRr.Name))then begin
 				OutString(60,0,MRr.Name,false);
 			end else begin
@@ -155,7 +161,9 @@ integer i, pos;
 				case 9: 
 					OutString(230,0,"Телевидение",false);	
 				case 10: 
-					OutString(230,0,"Другое: " & MRr.ReferenceTxt,false);									
+					OutString(230,0,"Другое: " & MRr.ReferenceTxt,false);			
+				case 11: 
+					OutString(230,0,"E-mail рассылка",false);							
 			end;
 			
 			switch (MRr.ReasonBtn) begin
@@ -203,7 +211,7 @@ integer i, pos;
 			
 			
 			outstring(420,0,MRr.CustCode,false);
-			phoner = "";
+			/*phoner = "";
 			ph = MRr.Phone1;
 			if(nonblank(ph))then begin
 				if(blank(phoner))then begin
@@ -228,9 +236,23 @@ integer i, pos;
 					phoner = phoner & "," & ph;
 				end;
 			end;		
-			outstring(420,0,phoner,false);
+			outstring(420,0,phoner,false);*/
+			outstring(420,0,MRr.Phone1,false);
+			outstring(420,0,MRr.Phone2,false);
+			outstring(420,0,MRr.Phone3,false);
 			outstring(420,0,MRr.eMail,false);
 			outstring(420,0,MRr.Address,false);
+			
+			switch (MRr.AnotherCard) begin
+				case 0: 
+					OutString(420,0,"-",false);
+				case 1: 
+					OutString(420,0,MRr.AnotherCardNr,false);
+				case 2: 
+					OutString(420,0,"Нет",false);	
+				case 3: 
+				  outstring(420,0,"Без карты",false);								
+			end;
 						
 			endformat;									
 		end;

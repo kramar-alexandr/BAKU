@@ -255,15 +255,17 @@ record CUVc CUr;
 	record IVVc IVr;
 	row IVVc IVrw;
 	record CompaniesBlock CBb;
+	record UserVc Userr;
 	row CompaniesBlock CBrw;
 	integer i,mtrw;
 	boolean findf,TrHs,testf,testf1,nextCust;
 	string 20 custcode;
 	date lastBuyDate;
 	time lasttime;
-	string 100 lastloc,temp,companiesStr;
+	string 100 lastloc,temp,companiesStr,salesman;
 	array string 20 artcode,loc,curncy;
 	array date lastDates;
+	array time lastTimes;
 	array longint lastSerNrs;
 	array val qty,sum;
 	integer aqty,ai,ivmtrw,ivi;
@@ -289,10 +291,11 @@ record CUVc CUr;
   tab[5] = 180;
   tab[6] = 210;
   tab[7] = 250;
-  tab[8] = 300;
-  tab[9] = 330;
-  tab[10] = 380;
-  tab[11] = 450;
+  tab[8] = 270;
+  tab[9] = 300;
+  tab[10] = 350;
+  tab[11] = 390;
+  tab[12] = 440;
   
 	
 	
@@ -382,14 +385,17 @@ record CUVc CUr;
 			outstring(tab[4],0,"Кол-во покупок",false);
 			outstring(tab[5],0,"Сумма",false);
 			outstring(tab[6],0,"Дата последней",false);
+			outstring(tab[6],0,"Время последней",false);
 			outstring(tab[6],0,"№ последней с/ф",false);
+			outstring(tab[6],0,"Имя консультанта",false);
       if(RepSpec.flags[2]==1)then begin
         outstring(tab[7],0,"Скидка Дня Рождения",false);
       end;
 			outstring(tab[8],0,"Валюта",false);
 			outstring(tab[9],0,"ФИО",false);
-			outstring(tab[10],0,"Адрес",false);
-			outstring(tab[11],0,"Телефон",false);
+			outstring(tab[10],0,"Пол",false);
+			outstring(tab[11],0,"Моб.Телефон",false);
+			outstring(tab[12],0,"E-mail",false);
 		endformat;
 		
 		if(findf)then begin
@@ -419,7 +425,8 @@ record CUVc CUr;
 						if(testf)then begin
 							if (IVr.InvDate>lastBuyDate) then begin 	//Edit----------------------Dima  07.07.2015
 										lastBuyDate = IVr.InvDate;
-										lastInvoiceNr = IVr.SerNr; 
+										lastInvoiceNr = IVr.SerNr;
+										lasttime = IVr.TransTime; //Edit***************************Sasha2,17:14 26.06.2017
 							end;						
 							Locr.Code = IVr.Location;
 							if(blank(IVr.Location))then begin
@@ -439,6 +446,7 @@ record CUVc CUr;
 									qty[ivi] = qty[ivi] + IVr.TotQty;
 									sum[ivi] = sum[ivi] + IVr.BaseSum4;
 									lastDates[ivi] = lastBuyDate;
+									lastTimes[ivi] = lasttime; //Edit***************************Sasha2,17:15 26.06.2017
 									lastSerNrs[ivi] = lastInvoiceNr;
 									findloc = true;
 								end;
@@ -448,6 +456,7 @@ record CUVc CUr;
 								sum[aqty] = sum[aqty] + IVr.BaseSum4;
 								loc[aqty] = locationname;
 								lastDates[ivi] = lastBuyDate;
+								lastTimes[ivi] = lasttime; //Edit***************************Sasha2,17:15 26.06.2017
 								lastSerNrs[ivi] = lastInvoiceNr;								
 								curncy[aqty] = BCb.BaseCur1;
 								aqty = aqty + 1;
@@ -460,7 +469,11 @@ record CUVc CUr;
 									outstring(tab[4],0,IVr.TotQty,false);
 									outstring(tab[5],0,IVr.BaseSum4,false);
 									outstring(tab[6],0,IVr.InvDate,false);
+									outstring(tab[6],0,IVr.TransTime,false);
 									outstring(tab[6],0,IVr.SerNr,false);
+									Userr.Code = IVr.SalesMan;
+									ReadFirstMain(Userr,1,true);
+									outstring(tab[6],0,Userr.Name,false);
                   if (IVr.UsedBirthRebateH==1) then begin
                     outstring(tab[7],0,"да",false);
                   end else begin
@@ -468,8 +481,13 @@ record CUVc CUr;
                   end;
                   outstring(tab[8],0,BCb.BaseCur1,false);
 									outstring(tab[9],0,CUr.Name,false);
-									outstring(tab[10],0,CUr.InvAddr0,false);
-									outstring(tab[11],0,CUr.Phone,false);
+									if (CUr.Gender==0) then begin
+									  outstring(tab[10],0,USetStr(20745),false);
+									end else begin
+									  outstring(tab[10],0,USetStr(20746),false);
+									end;
+									outstring(tab[11],0,CUr.Mobile,false);
+									outstring(tab[12],0,CUr.eMail,false);
 								endformat;
 							end;
 						end;
@@ -488,11 +506,18 @@ record CUVc CUr;
 						outstring(tab[4],0,qty[i],false);
 						outstring(tab[5],0,sum[i],false);
 						outstring(tab[6],0,lastDates[i],false);
+						outstring(tab[6],0,lastTimes[i],false);
 						outstring(tab[6],0,lastSerNrs[i],false);
+						outstring(tab[6],0,"",false);
 						outstring(tab[8],0,curncy[i],false);
 						outstring(tab[9],0,CUr.Name,false);
-						outstring(tab[10],0,CUr.InvAddr0,false);
-						outstring(tab[11],0,CUr.Phone,false);
+						if (CUr.Gender==0) then begin
+						  outstring(tab[10],0,USetStr(20745),false);
+						end else begin
+						  outstring(tab[10],0,USetStr(20746),false);
+						end;
+						outstring(tab[11],0,CUr.Mobile,false);
+						outstring(tab[12],0,CUr.eMail,false);
 					endformat;
 				end;
 			end;
@@ -547,6 +572,7 @@ record CUVc CUr;
                   if (IVr.InvDate>lastBuyDate) then begin 	//Edit----------------------Dima  07.07.2015
                       lastBuyDate = IVr.InvDate;
                       lastInvoiceNr = IVr.SerNr; 
+                      lasttime = IVr.TransTime; //Edit***************************Sasha2,17:14 26.06.2017
                   end;	
                 
                   Locr.Code = IVr.Location;
@@ -567,6 +593,7 @@ record CUVc CUr;
                       qty[ivi] = qty[ivi] + IVr.TotQty;
                       sum[ivi] = sum[ivi] + IVr.BaseSum4;
                       lastDates[ivi] = lastBuyDate;
+                      lastTimes[ivi] = lasttime; //Edit***************************Sasha2,17:15 26.06.2017
                       lastSerNrs[ivi] = lastInvoiceNr;												
                       findloc = true;
                     end;
@@ -576,6 +603,7 @@ record CUVc CUr;
                     sum[aqty] = sum[aqty] + IVr.BaseSum4;
                     loc[aqty] = locationname;
                     lastDates[ivi] = lastBuyDate;
+                    lastTimes[ivi] = lasttime; //Edit***************************Sasha2,17:15 26.06.2017
                     lastSerNrs[ivi] = lastInvoiceNr;											
                     curncy[aqty] = BCb.BaseCur1;
                     aqty = aqty + 1;
@@ -589,7 +617,11 @@ record CUVc CUr;
                       outstring(tab[4],0,IVr.TotQty,false);
                       outstring(tab[5],0,IVr.BaseSum4,false);
                       outstring(tab[6],0,IVr.InvDate,false);
+                      outstring(tab[6],0,IVr.TransTime,false);
                       outstring(tab[6],0,IVr.SerNr,false);
+                      Userr.Code = IVr.SalesMan;
+    									ReadFirstMain(Userr,1,true);
+    									outstring(tab[6],0,Userr.Name,false);
                       if (IVr.UsedBirthRebateH==1) then begin
                         outstring(tab[7],0,"да",false);
                       end else begin
@@ -597,8 +629,13 @@ record CUVc CUr;
                       end;
                       outstring(tab[8],0,BCb.BaseCur1,false);
                       outstring(tab[9],0,CUr.Name,false);
-                      outstring(tab[10],0,CUr.InvAddr0,false);
-                      outstring(tab[11],0,CUr.Phone,false);
+                      if (CUr.Gender==0) then begin
+    									  outstring(tab[10],0,USetStr(20745),false);
+    									end else begin
+    									  outstring(tab[10],0,USetStr(20746),false);
+    									end;
+    									outstring(tab[11],0,CUr.Mobile,false);
+    									outstring(tab[12],0,CUr.eMail,false);
                     endformat;
                   end;
                             
@@ -616,11 +653,18 @@ record CUVc CUr;
 									outstring(tab[4],0,qty[i],false);
 									outstring(tab[5],0,sum[i],false);
 									outstring(tab[6],0,lastDates[i],false);
+									outstring(tab[6],0,lastTimes[i],false);
 									outstring(tab[6],0,lastSerNrs[i],false);
+									outstring(tab[6],0,"",false);
 									outstring(tab[8],0,curncy[i],false);
 									outstring(tab[9],0,CUr.Name,false);
-									outstring(tab[10],0,CUr.InvAddr0,false);
-									outstring(tab[11],0,CUr.Phone,false);
+									if (CUr.Gender==0) then begin
+      						  outstring(tab[10],0,USetStr(20745),false);
+      						end else begin
+      						  outstring(tab[10],0,USetStr(20746),false);
+      						end;
+      						outstring(tab[11],0,CUr.Mobile,false);
+      						outstring(tab[12],0,CUr.eMail,false);
 								endformat;
 							end;
 							gray_divider(0,1);
@@ -650,11 +694,18 @@ record CUVc CUr;
 									outstring(tab[5],0,"",false);
 									outstring(tab[6],0,"",false);
 									outstring(tab[6],0,"",false);
+									outstring(tab[6],0,"",false);
+									outstring(tab[6],0,"",false);
 									outstring(tab[7],0,"",false);
                   outstring(tab[8],0,"",false);
 									outstring(tab[9],0,CUr.Name,false);
-									outstring(tab[10],0,CUr.InvAddr0,false);
-									outstring(tab[11],0,CUr.Phone,false);						
+									if (CUr.Gender==0) then begin
+      						  outstring(tab[10],0,USetStr(20745),false);
+      						end else begin
+      						  outstring(tab[10],0,USetStr(20746),false);
+      						end;
+      						outstring(tab[11],0,CUr.Mobile,false);
+      						outstring(tab[12],0,CUr.eMail,false);						
 									endformat;
 						end;
 					end;					
@@ -673,6 +724,8 @@ record CUVc CUr;
 										outstring(tab[3],0,shops[i],false);
 										outstring(tab[4],0,"",false);
 										outstring(tab[5],0,"",false);
+										outstring(tab[6],0,"",false);
+										outstring(tab[6],0,"",false);
 										outstring(tab[6],0,"",false);
 										outstring(tab[6],0,"",false);
 										outstring(tab[7],0,"",false);
