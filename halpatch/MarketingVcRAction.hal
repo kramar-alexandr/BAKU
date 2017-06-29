@@ -114,15 +114,16 @@ BEGIN
     res = -1;
     goto LMarketingVcRecordCheck; 
   end;   */// Edit ************************** Thursday, 24 July 2014 13:12:38
-  
-  if(nonblank(Mrkr.Phone1) and blank(Mrkr.CustCode))then begin
+  CUr.Code = Mrkr.CustCode;
+  if(readfirstmain(CUr,1,true))then begin end;
+  if(nonblank(Mrkr.Phone1) and blank(CUr.Phone))then begin
   	if(len(Mrkr.Phone1)!=9)then begin
   		RecordCheckError(31010,"|" & Mrkr.Phone1 & "|",-1,"Phone1");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
   	end;
   end;
-  if(nonblank(Mrkr.Phone2) and blank(Mrkr.CustCode))then begin
+  if(nonblank(Mrkr.Phone2) and blank(CUr.Mobile))then begin
   	if(len(Mrkr.Phone2)!=9)then begin
   		RecordCheckError(31010,"|" & Mrkr.Phone2 & "|",-1,"Phone2");      
 			res = -1; 
@@ -130,7 +131,7 @@ BEGIN
   	end;
   end;
   
-  if(nonblank(Mrkr.Phone3) and blank(Mrkr.CustCode))then begin
+  if(nonblank(Mrkr.Phone3) and blank(CUr.AltPhone))then begin
   	if(len(Mrkr.Phone3)!=9)then begin
   		RecordCheckError(31010,"|" & Mrkr.Phone3 & "|",-1,"Phone3");      
 			res = -1; 
@@ -337,6 +338,10 @@ BEGIN
 				CUr.Mobile = Mrkr.Phone2;
 				changes = true;
 			end;
+			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
+				CUr.AltPhone = Mrkr.Phone2;
+				changes = true;
+			end;
 			if(nonblank(Mrkr.eMail) and Mrkr.eMail!=CUr.eMail)then begin
 				CUr.eMail = Mrkr.eMail;
 				changes = true;
@@ -375,6 +380,10 @@ BEGIN
 			end;
 			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
 				CUr.Mobile = Mrkr.Phone2;
+				changes = true;
+			end;
+			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
+				CUr.AltPhone = Mrkr.Phone2;
 				changes = true;
 			end;
 			if(nonblank(Mrkr.eMail) and Mrkr.eMail!=CUr.eMail)then begin

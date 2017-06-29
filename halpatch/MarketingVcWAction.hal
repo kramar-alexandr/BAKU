@@ -17,6 +17,7 @@ string 200 adr;
 		adr = CUr.InvAddr0;
 		Marketingr.Phone1 = CUr.Phone;
 		Marketingr.Phone2 = CUr.Mobile;
+		Marketingr.Phone3 = CUr.AltPhone;
 		Marketingr.eMail = CUr.eMail;	
 	end;
 	
@@ -139,19 +140,25 @@ global
 function Boolean MarketingDClassActiveEditField(Integer wn,string fieldname,Integer fn,Integer wnst,Integer rownr,Integer changed)
 begin
   Boolean res;
-	record MarketingVc Marketingr; 
+	record MarketingVc Marketingr,Marketing2r; 
+	record CUVc CUr;
 	
 	getwindowrecord(wn,Marketingr);
-	
+	GetPrevWindowRecord(wn,Marketing2r);
 	res = true;
+	
+	
 	if(nonblank(Marketingr.CustCode))then begin
-		switch(fieldname)begin
-			case "Name": res = false;
-			case "Phone1": res = false;
-			case "Phone2": res = false;
-			case "Phone3": res = false;
-			case "eMail": res = false;
-			case "Address":res = false;
+		CUr.Code = Marketingr.CustCode;
+		if(readfirstmain(CUr,1,true))then begin
+			switch(fieldname)begin
+				case "Name": if(nonblank(CUr.Name))then begin res = false; end;
+				case "Phone1": if(nonblank(CUr.Phone))then begin res = false; end;
+				case "Phone2": if(nonblank(CUr.Mobile))then begin res = false; end;
+				case "Phone3": if(nonblank(CUr.AltPhone))then begin res = false; end;
+				case "eMail": if(nonblank(CUr.eMail))then begin res = false; end;
+				case "Address":if(nonblank(CUr.InvAddr0))then begin res = false; end;
+			end;
 		end;
 	end;
 	
