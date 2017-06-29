@@ -6767,7 +6767,7 @@ begin
   RadioButton(h1,v+=16,5,0,"Группа женщин",Gender);
 
   v = 25; h1 = h1+220;
-  ButtonFrame(h1,v,l=160,4,"Гражданство");
+  ButtonFrame(h1,v,l=160,5,"Гражданство");
   RadioButton(h1,v,0,0,"-",NationalityRbtn);
   RadioButton(h1,v+=16,1,0,"Гражданин Азербайджана",NationalityRbtn);
   RadioButton(h1,v+=16,2,0,"Иностранный турист",NationalityRbtn);
@@ -6824,7 +6824,7 @@ begin
   
   h1 = h1 + 220;
   v = 230;
-  ButtonFrame(h1,v,l=190,13,"Откуда узнали");
+  ButtonFrame(h1,v,l=190,14,"Откуда узнали");
   RadioButton(h1,v,0,0,"-",ReferenceRbtn);
   RadioButton(h1,v+=16,1,0,"Facebook",ReferenceRbtn);
   RadioButton(h1,v+=16,2,0,"Instagram",ReferenceRbtn);

@@ -55,7 +55,7 @@ string 200 adr;
   if(changed>0)then begin
     getwindowrecord(wn,Marketingr);
 	
-	Marketingr.ReferenceRbtn = 6;
+	Marketingr.ReferenceRbtn = 10;
 		
 	putwindowrecord(wn,Marketingr);   
   end;
