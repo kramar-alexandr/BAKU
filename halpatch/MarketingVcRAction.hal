@@ -307,11 +307,13 @@ BEGIN
 		goto LMarketingVcRecordCheck;
   end;
   
-  if(Mrkr.ResultRbtn==2 and Mrkr.AnotherCard==0) then begin
-  	RecordCheckError(1058," " & USetStr(26439),-1,"AnotherCardNr");
+  if(/*Mrkr.ResultRbtn==2 and*/ Mrkr.AnotherCard==0) then begin
+  	//RecordCheckError(1058," " & USetStr(26439),-1,"AnotherCardNr");
+  	RecordCheckError(1058," " & USetStr(35106),-1,"Age");
 		res = -1; 
 		goto LMarketingVcRecordCheck;
   end;
+  
  	
 LMarketingVcRecordCheck:;
   MarketingVcRecordCheck = res;

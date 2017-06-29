@@ -171,7 +171,9 @@ integer i, pos;
 				case 13: 
 					OutString(230,0,"Мероприятие",false);	
 				case 14: 
-					OutString(230,0,"Проходил мимо",false);				
+					OutString(230,0,"Проходил мимо",false);	
+				case 15: 
+					OutString(230,0,"Обзвон клиентов",false);				
 			end;
 			
 			switch (MRr.ReasonBtn) begin
