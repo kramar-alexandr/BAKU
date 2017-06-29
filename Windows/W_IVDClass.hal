@@ -6804,9 +6804,9 @@ begin
   EditField(h1+370,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
   EditField(h1+500,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
   v = v -vs;
-  EditField(h1,v,100,"Телефон",Normal,Phone1,false,0);
+  EditField(h1,v,100,"Моб. Телефон",Normal,Phone3,false,0);
   EditField(h1,v+=vs,100,"Доп. телефон",Normal,Phone2,false,0);
-  EditField(h1,v+=vs,100,"Моб. Телефон",Normal,Phone3,false,0);
+  EditField(h1,v+=vs,100,"Телефон",Normal,Phone1,false,0);
   EditField(h1,v+=vs,-50,"Адрес",Normal,Address,false,0);
   EditField(h1,v+=vs,120,"e-Mail",Normal,eMail,false,0);
   
@@ -6836,6 +6836,7 @@ begin
   RadioButton(h1,v+=16,11,0,"E-mail рассылка",ReferenceRbtn);
   RadioButton(h1,v+=16,12,0,"SMS рассылка",ReferenceRbtn);
   RadioButton(h1,v+=16,13,0,"Мероприятие",ReferenceRbtn);
+  RadioButton(h1,v+=16,14,0,"Проходил мимо",ReferenceRbtn);
   RadioButton(h1,v+=16,3,0,"Веб-сайт",ReferenceRbtn);
   																										EditField(h1+70,v-2,120,"",Normal,ReferenceTxtWeb,false,0);
   RadioButton(h1,v+=16,4,0,"Уличная реклама",ReferenceRbtn);
@@ -6849,7 +6850,7 @@ begin
 	v = v + 5;
   EditField(h1+70,v-3,120,"",Normal,ReferenceTxt,false,0);
   
-  v = 320+vs;
+  v = 300+vs;
   ButtonFrame(h1+220,v,l=300,7,"Причина посещения");
   RadioButton(h1+220,v,0,0,"-",ReasonBtn);
   RadioButton(h1+220,v+=16,1,0,"Поиск подарка",ReasonBtn);
@@ -6857,6 +6858,8 @@ begin
   RadioButton(h1+220,v+=16,3,0,"Посмотреть товары, прицениться",ReasonBtn);
   //RadioButton(h1+220,v+=16,4,0,"Познакомиться с магазином",ReasonBtn);
   RadioButton(h1+220,v+=16,5,0,"Пришел по акции",ReasonBtn);
+  RadioButton(h1+220,v+=16,7,0,"Возврат товара",ReasonBtn);
+  RadioButton(h1+220,v+=16,8,0,"Оплата долга",ReasonBtn);
   RadioButton(h1+220,v+=16,6,0,"Others...",ReasonBtn);
 	v = v + 5;
   EditField(h1+290,v-3,-20,"",Normal,Reason,false,0);
@@ -6864,7 +6867,7 @@ begin
   //Start edit Victor --------------------- 21.08 
   
   //h1 = h1 + 210;
-  v = 380+vs*5;
+  v = 390+vs*5;
   ButtonFrame(h1,v,l=300,3,"Результат");
   RadioButton(h1,v,0,0,"-",ResultRbtn);
   RadioButton(h1,v+=16,1,0,"Нет продаж: коммент.",ResultRbtn);

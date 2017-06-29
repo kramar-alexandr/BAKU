@@ -169,7 +169,9 @@ integer i, pos;
 			  case 12: 
 					OutString(230,0,"SMS рассылка",false);	
 				case 13: 
-					OutString(230,0,"Мероприятие",false);					
+					OutString(230,0,"Мероприятие",false);	
+				case 14: 
+					OutString(230,0,"Проходил мимо",false);				
 			end;
 			
 			switch (MRr.ReasonBtn) begin
@@ -186,7 +188,11 @@ integer i, pos;
 				case 5: 
 					OutString(230,0,"Пришел по акции" & MRr.ReferenceTxtMag,false);	
 				case 6: 
-					OutString(230,0,"Другое: " & MRr.Reason,false);									
+					OutString(230,0,"Другое: " & MRr.Reason,false);	
+				case 7: 
+					OutString(230,0,"Возврат товара",false);	
+				case 8: 
+					OutString(230,0,"Оплата долга",false);									
 			end;
 			
 			switch (MRr.ResultRbtn) begin
