@@ -6837,6 +6837,7 @@ begin
   RadioButton(h1,v+=16,12,0,"SMS рассылка",ReferenceRbtn);
   RadioButton(h1,v+=16,13,0,"Мероприятие",ReferenceRbtn);
   RadioButton(h1,v+=16,14,0,"Проходил мимо",ReferenceRbtn);
+  RadioButton(h1,v+=16,15,0,"Обзвон клиентов",ReferenceRbtn);
   RadioButton(h1,v+=16,3,0,"Веб-сайт",ReferenceRbtn);
   																										EditField(h1+70,v-2,120,"",Normal,ReferenceTxtWeb,false,0);
   RadioButton(h1,v+=16,4,0,"Уличная реклама",ReferenceRbtn);
@@ -6867,7 +6868,7 @@ begin
   //Start edit Victor --------------------- 21.08 
   
   //h1 = h1 + 210;
-  v = 390+vs*5;
+  v = 405+vs*5;
   ButtonFrame(h1,v,l=300,3,"Результат");
   RadioButton(h1,v,0,0,"-",ResultRbtn);
   RadioButton(h1,v+=16,1,0,"Нет продаж: коммент.",ResultRbtn);

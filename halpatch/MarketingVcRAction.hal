@@ -89,7 +89,7 @@ BEGIN
 	LongInt res;
 	record CUVc CUr;
 	record IVVc IVr;
-	string 255 serNum, invNum,tmpCust;
+	string 255 serNum, invNum,tmpCust,excludeCustomers;
 	integer insertmode,updatemode, pos, i;
 	record SysFormatBlock SysFormatRec;
 	record LocalMachineVc LMr;
@@ -261,15 +261,16 @@ BEGIN
 				RecordCheckError(1451,serNum,-1,"InvNr");
 				goto LMarketingVcRecordCheck;		
       end else begin
+        excludeCustomers = "NONAME,VIP,VIP25,VIP30,VIP20,VIP_1,VIP_2";
 				if(nonBlank(Mrkr.CustCode))then begin
-					if(IVr.CustCode != Mrkr.CustCode and IVr.CustCode!="NONAME")then begin
+					if(IVr.CustCode != Mrkr.CustCode and not SetInSet(IVr.CustCode,excludeCustomers))then begin
 						res	= -1;
 						RecordCheckError(2130,serNum,-1,"InvNr");
 						goto LMarketingVcRecordCheck;		
 					end;
 				end else begin
 					if(i > 0) then begin
-						if(tmpCust != IVr.CustCode and IVr.CustCode!="NONAME")then begin
+						if(tmpCust != IVr.CustCode and not SetInSet(IVr.CustCode,excludeCustomers))then begin
 							res	= -1;
 							RecordCheckError(2130,serNum,-1,"InvNr");
 							goto LMarketingVcRecordCheck;
@@ -307,11 +308,13 @@ BEGIN
 		goto LMarketingVcRecordCheck;
   end;
   
-  if(Mrkr.ResultRbtn==2 and Mrkr.AnotherCard==0) then begin
-  	RecordCheckError(1058," " & USetStr(26439),-1,"AnotherCardNr");
+  if(/*Mrkr.ResultRbtn==2 and*/ Mrkr.AnotherCard==0) then begin
+  	//RecordCheckError(1058," " & USetStr(26439),-1,"AnotherCardNr");
+  	RecordCheckError(1058," " & USetStr(35106),-1,"Age");
 		res = -1; 
 		goto LMarketingVcRecordCheck;
   end;
+  
  	
 LMarketingVcRecordCheck:;
   MarketingVcRecordCheck = res;
@@ -335,7 +338,7 @@ BEGIN
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
-				CUr.Mobile = Mrkr.Phone2;
+				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
@@ -379,7 +382,7 @@ BEGIN
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
-				CUr.Mobile = Mrkr.Phone2;
+				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin

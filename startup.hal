@@ -147,6 +147,7 @@ begin
   
   Maintenance("Coin Stock to DROMOS",EmptyVClass,GruppoCoinStockCountMn,modIN);
   Maintenance("Проверить в карточке товара галочку \"Изменять ст-ть при поступлении\"",FIXVClass,SetUpdateCostINToLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
+  //Maintenance("Продублировать накопленные баллы в копию накопл. баллов в карте лояльности",EmptyVClass,PassPointBalanceToPointsBalanceDuplicateMn,modDBMain); //Edit***************************Sasha2,14:17 23.06.2017
   	
   if(currentcompany==1)then begin
     Maintenance("Восстановить себестоимость для товара",FindCostForItemWithEmptyCostVClass,FindCostForItemWithEmptyCostMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
@@ -699,6 +700,7 @@ begin
   SString(35103,"Программа лояльности должна быть 1");
   SString(35104,"Счет-фактура проведена с картой лояльности");
   SString(35105,"Счет-фактура уже привязана к карте лояльности");
+  SString(35106,"Использовалась карта");
     
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE
