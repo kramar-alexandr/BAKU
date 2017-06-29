@@ -115,24 +115,24 @@ BEGIN
     goto LMarketingVcRecordCheck; 
   end;   */// Edit ************************** Thursday, 24 July 2014 13:12:38
   
-  if(nonblank(Mrkr.Phone1))then begin
+  if(nonblank(Mrkr.Phone1) blank(Mrkr.CustCode))then begin
   	if(len(Mrkr.Phone1)!=9)then begin
-  		RecordCheckError(31010,"",-1,"Phone1");      
+  		RecordCheckError(31010,"|" & Mrkr.Phone1 & "|",-1,"Phone1");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
   	end;
   end;
-  if(nonblank(Mrkr.Phone2))then begin
+  if(nonblank(Mrkr.Phone2) and blank(Mrkr.CustCode))then begin
   	if(len(Mrkr.Phone2)!=9)then begin
-  		RecordCheckError(31010,"",-1,"Phone2");      
+  		RecordCheckError(31010,"|" & Mrkr.Phone2 & "|",-1,"Phone2");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
   	end;
   end;
   
-  if(nonblank(Mrkr.Phone3))then begin
+  if(nonblank(Mrkr.Phone3) blank(Mrkr.CustCode))then begin
   	if(len(Mrkr.Phone3)!=9)then begin
-  		RecordCheckError(31010,"",-1,"Phone3");      
+  		RecordCheckError(31010,"|" & Mrkr.Phone3 & "|",-1,"Phone3");      
 			res = -1; 
 			goto LMarketingVcRecordCheck;
   	end;
