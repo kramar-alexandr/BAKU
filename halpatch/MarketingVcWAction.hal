@@ -156,8 +156,8 @@ begin
 				case "Phone1": if(nonblank(CUr.Phone))then begin res = false; end;
 				case "Phone2": if(nonblank(CUr.Mobile))then begin res = false; end;
 				case "Phone3": if(nonblank(CUr.AltPhone))then begin res = false; end;
-				case "eMail": if(nonblank(CUr.eMail))then begin res = false; end;
-				case "Address":if(nonblank(CUr.InvAddr0))then begin res = false; end;
+				case "eMail": if(nonblank(Marketingr.eMail))then begin res = false; end;
+				case "Address":if(nonblank(Marketingr.Address))then begin res = false; end;
 			end;
 		end;
 	end;
