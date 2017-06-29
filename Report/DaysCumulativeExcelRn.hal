@@ -36,7 +36,6 @@ begin
   val sumoborot,sumvozvrat;
   vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc,MonthLocDay,DayNameObor,DayNameVozv,NameInArr;
   vector val Oborot,Vozvrat;
-  
   array string 50 sheetNames;
 	array val sheetColls;
 	array string 21 mergeCell;
@@ -47,6 +46,8 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
+  vector boolean loccode;
+  vector string 100 locname;
   
   setexportcodepage("UTF8");
   
@@ -78,16 +79,23 @@ begin
     if (IVr.OKFlag==0) then begin testf = false; end;
     if (IVr.Invalid==1) then begin testf = false; end;
     if (testf) then begin
-      Locr.Code = IVr.Location;
-      if (ReadFirstMain(Locr,1,true)) then begin
-        loc = Locr.Name;
+    	
+    	if(loccode[IVr.Location]==false)then begin
+				Locr.Code = IVr.Location;
+				
+				if (ReadFirstMain(Locr,1,true)) then begin
+					loc = Locr.Name;
+				end else begin
+					loc = IVr.Location;
+				end;
+				locname[IVr.Location] = loc;
+				if (LocInArr[loc]==false) then begin
+					LocInArr[loc] = true;
+					LocArr[LAi] = loc;
+					LAi = LAi + 1;
+				end;
       end else begin
-        loc = IVr.Location;
-      end;
-      if (LocInArr[loc]==false) then begin
-        LocInArr[loc] = true;
-        LocArr[LAi] = loc;
-        LAi = LAi + 1;
+      	loc = locname[IVr.Location];
       end;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin

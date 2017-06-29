@@ -45,6 +45,8 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
+  vector boolean loccode; 
+  vector string 100 locname;
   
   setexportcodepage("UTF8");
   
@@ -77,13 +79,18 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     if (testf) then begin
       cnf = false;
-      Locr.Code = IVr.Location;
-      ReadFirstMain(Locr,1,true);
-      loc = Locr.Name;
-      if (LocInArr[loc]==false) then begin
-        LocInArr[loc] = true;
-        LocArr[LAi] = loc;
-        LAi = LAi + 1;
+      if(loccode[IVr.Location]==false)then begin
+      	loccode[IVr.Location] = true;
+				Locr.Code = IVr.Location;
+				ReadFirstMain(Locr,1,true);
+				loc = Locr.Name;
+				if (LocInArr[loc]==false) then begin
+					LocInArr[loc] = true;
+					LocArr[LAi] = loc;
+					LAi = LAi + 1;
+				end;
+      end else begin
+      	loc = locname[IVr.Location];
       end;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
