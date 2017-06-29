@@ -335,7 +335,7 @@ BEGIN
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
-				CUr.Mobile = Mrkr.Phone2;
+				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
@@ -379,7 +379,7 @@ BEGIN
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
-				CUr.Mobile = Mrkr.Phone2;
+				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
 			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin

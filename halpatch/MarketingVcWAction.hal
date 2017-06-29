@@ -16,8 +16,8 @@ string 200 adr;
 		Marketingr.Name = CUr.Name;
 		adr = CUr.InvAddr0;
 		Marketingr.Phone1 = CUr.Phone;
-		Marketingr.Phone2 = CUr.Mobile;
-		Marketingr.Phone3 = CUr.AltPhone;
+		Marketingr.Phone2 = CUr.AltPhone;
+		Marketingr.Phone3 = CUr.Mobile;
 		Marketingr.eMail = CUr.eMail;	
 	end;
 	

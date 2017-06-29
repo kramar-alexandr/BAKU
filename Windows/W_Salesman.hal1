@@ -3245,6 +3245,12 @@ begin
   RadioButton(h+350,v,0,0,"Г-н",Gender);
   RadioButton(h+350,v+=17,1,0,"Г-жа",Gender);
   RadioButton(h+350,v+=17,2,0,"Компания",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
+ 
+  ButtonFrame(h+350,v+=50,100,4,"Семейное положение");
+  RadioButton(h+350,v,0,0,"Не женат",MarStatus);
+  RadioButton(h+350,v+=17,1,0,"Замужем",MarStatus);
+  RadioButton(h+350,v+=17,2,0,"В разводе",MarStatus);
+  RadioButton(h+350,v+=17,3,0,"Вдовa/-ец",MarStatus);
 	
 	v=120;
 	EditField(h,v+=vs,95,"Телефон дом.",Normal,Phone,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09
@@ -3257,12 +3263,6 @@ begin
   
   EndWindow;
 end;
-
-
-
-
-
-
 
 
 window PUDClass:1 //Edit-----------------Dima-11.12.2014
