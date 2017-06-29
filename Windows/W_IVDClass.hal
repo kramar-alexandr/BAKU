@@ -6757,6 +6757,11 @@ begin
   ActiveFieldOnNew("Name");
   EditField(h1,v=16,60,"Номер",ViewOnly,SerNr,false,0);
   
+  v = 70; h1 = h1 + 40;
+  ButtonFrame(h1,v,l=110,2,"");
+  RadioButton(h1,v,0,0,"Клиент",CustCodeType);
+  RadioButton(h1,v+=16,1,0,"Доверенное лицо",CustCodeType);
+  
   v = 25; h1 = h1 + 140;
   ButtonFrame(h1,v,l=110,6,"Пол");
   RadioButton(h1,v,0,0,"-",Gender);
