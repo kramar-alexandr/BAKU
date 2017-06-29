@@ -6757,7 +6757,7 @@ begin
   ActiveFieldOnNew("Name");
   EditField(h1,v=16,60,"Номер",ViewOnly,SerNr,false,0);
   
-  v = 25; h1 = h1 + 100;
+  v = 25; h1 = h1 + 140;
   ButtonFrame(h1,v,l=110,6,"Пол");
   RadioButton(h1,v,0,0,"-",Gender);
   RadioButton(h1,v+=16,1,0,"Мужчина",Gender); StaticText(h1+140,v+12,"Кол-во",false);
@@ -6766,12 +6766,13 @@ begin
   RadioButton(h1,v+=16,4,0,"Группа мужчин",Gender);
   RadioButton(h1,v+=16,5,0,"Группа женщин",Gender);
 
-  v = 25; h1 = h1+250;
+  v = 25; h1 = h1+220;
   ButtonFrame(h1,v,l=160,4,"Гражданство");
   RadioButton(h1,v,0,0,"-",NationalityRbtn);
   RadioButton(h1,v+=16,1,0,"Гражданин Азербайджана",NationalityRbtn);
   RadioButton(h1,v+=16,2,0,"Иностранный турист",NationalityRbtn);
   RadioButton(h1,v+=16,3,0,"Экспат",NationalityRbtn);
+  RadioButton(h1,v+=16,4,0,"Сотрудники ID Group",NationalityRbtn);
   
   v = 25; h1 = h1 + 200;
   ButtonFrame(h1,v,l=50,8,"Возраст");
@@ -6787,17 +6788,17 @@ begin
   v = v + 5;
   //EditField(h1+30,v-3,120,"",Normal,NationalityTxt,false,0);
   
-  v = 110;
+  v = 90;
   h1 = 100;
   
-  EditField(h1,v+=vs,70,"ID карты",Normal,CustCode,false,CUSClass);
-  EditField(h1+200,v,230,"Имя",Normal,Name,false,0);
-  EditField(h1+200,v+=vs,80,"Дата",ViewOnly,TransDate,false,PasteCurDate);
-  EditField(h1+350,v,80,"Время",ViewOnly,TransTime,false,);
-  EditField(h1+200,v+vs,80,"Консультант",Normal,SalesMan,false,UserSClass);
-  EditField(h1+350,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
-  EditField(h1+480,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
-  
+  EditField(h1,v+=vs,70,"Код Клиента",Normal,CustCode,false,CUSClass);
+  EditField(h1+220,v+=vs,230,"Имя",Normal,Name,false,0);
+  EditField(h1+220,v+=vs,80,"Дата",ViewOnly,TransDate,false,PasteCurDate);
+  EditField(h1+370,v,80,"Время",ViewOnly,TransTime,false,);
+  EditField(h1+220,v+vs,80,"Консультант",Normal,SalesMan,false,UserSClass);
+  EditField(h1+370,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
+  EditField(h1+500,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
+  v = v -vs;
   EditField(h1,v,100,"Телефон",Normal,Phone1,false,0);
   EditField(h1,v+=vs,100,"Доп. телефон",Normal,Phone2,false,0);
   EditField(h1,v+=vs,100,"Моб. Телефон",Normal,Phone3,false,0);
@@ -6822,12 +6823,14 @@ begin
   
   
   h1 = h1 + 220;
-  v = 270;
+  v = 230;
   ButtonFrame(h1,v,l=190,13,"Откуда узнали");
   RadioButton(h1,v,0,0,"-",ReferenceRbtn);
   RadioButton(h1,v+=16,1,0,"Facebook",ReferenceRbtn);
   RadioButton(h1,v+=16,2,0,"Instagram",ReferenceRbtn);
   RadioButton(h1,v+=16,11,0,"E-mail рассылка",ReferenceRbtn);
+  RadioButton(h1,v+=16,12,0,"SMS рассылка",ReferenceRbtn);
+  RadioButton(h1,v+=16,13,0,"Мероприятие",ReferenceRbtn);
   RadioButton(h1,v+=16,3,0,"Веб-сайт",ReferenceRbtn);
   																										EditField(h1+70,v-2,120,"",Normal,ReferenceTxtWeb,false,0);
   RadioButton(h1,v+=16,4,0,"Уличная реклама",ReferenceRbtn);
@@ -6856,7 +6859,7 @@ begin
   //Start edit Victor --------------------- 21.08 
   
   //h1 = h1 + 210;
-  v = 390+vs*5;
+  v = 380+vs*5;
   ButtonFrame(h1,v,l=300,3,"Результат");
   RadioButton(h1,v,0,0,"-",ResultRbtn);
   RadioButton(h1,v+=16,1,0,"Нет продаж: коммент.",ResultRbtn);
@@ -6866,17 +6869,17 @@ begin
   EditField(h1+180,v,100,"",Normal,InvNr,false,0);
   
   v = v + vs*2;
-  ButtonFrame(h1,v,l=300,3,"Использовалась чужая карта");
+  ButtonFrame(h1,v,l=300,4,"Использовалась карта");
   RadioButton(h1,v,0,0,"-",AnotherCard);
-  RadioButton(h1,v+=16,1,0,"Да",AnotherCard);
-  EditField(h1+40,v,200,"",Normal,AnotherCardNr,false,0);
-  RadioButton(h1,v+=16,2,0,"Нет",AnotherCard);
-  RadioButton(h1,v+=16,3,0,"Без карты",AnotherCard);
+  RadioButton(h1,v+=16,1,0,"Чужая карта",AnotherCard);
+  EditField(h1+90,v,200,"",Normal,AnotherCardNr,false,0);
+  RadioButton(h1,v+=16,2,0,"Своя карта",AnotherCard);
+  RadioButton(h1,v+=16,3,0,"Нет карты",AnotherCard);
   
   //End Edit
   
   h1 = 10;
-  v = 240+vs;
+  v = 230+vs;
   StaticText(h1,v+=vs,"Каким товаром интересовался?",false);
   TextField(h1,v+=15,300,-16,Math,0);
   

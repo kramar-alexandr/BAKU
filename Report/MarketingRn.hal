@@ -66,7 +66,7 @@ integer i, pos;
 		outstring(420,0,"Моб. Телефон",false);
 		outstring(420,0,"E-mail",false);
 		outstring(420,0,"Адрес",false);
-		outstring(420,0,"Использовалась чужая карта",false);
+		outstring(420,0,"Использовалась карта",false);
 				
 	endformat;
 	
@@ -136,6 +136,8 @@ integer i, pos;
 					OutString(200,0,"Иностранный турист",false);
 				case 3: 
 					OutString(200,0,"Экспат",false);			
+				case 4: 
+					OutString(200,0,"Сотрудники ID Group",false);	
 			end;
 			
 						
@@ -163,7 +165,11 @@ integer i, pos;
 				case 10: 
 					OutString(230,0,"Другое: " & MRr.ReferenceTxt,false);			
 				case 11: 
-					OutString(230,0,"E-mail рассылка",false);							
+					OutString(230,0,"E-mail рассылка",false);	
+			  case 12: 
+					OutString(230,0,"SMS рассылка",false);	
+				case 13: 
+					OutString(230,0,"Мероприятие",false);					
 			end;
 			
 			switch (MRr.ReasonBtn) begin
@@ -249,9 +255,9 @@ integer i, pos;
 				case 1: 
 					OutString(420,0,MRr.AnotherCardNr,false);
 				case 2: 
-					OutString(420,0,"Нет",false);	
+					OutString(420,0,"Своя карта",false);	
 				case 3: 
-				  outstring(420,0,"Без карты",false);								
+				  outstring(420,0,"Нет карты",false);								
 			end;
 						
 			endformat;									
