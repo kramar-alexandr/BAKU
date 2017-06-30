@@ -267,6 +267,7 @@ begin
     if (GetWindowFileName(wn)=="MarketingVc") then begin
       GetWindowRecord(wn,Marketingr);
       RecordNew(CUr);
+      CUr.Code = Marketingr.CustCode;
       CUr.Name = Marketingr.Name;
   		CUr.InvAddr0 = Marketingr.Address;
   		CUr.Phone = Marketingr.Phone1;

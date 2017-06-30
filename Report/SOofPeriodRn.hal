@@ -37,11 +37,15 @@ begin
 	row RetVc Retrw;
 	record ItemHistVc IHr;
 	record BaseCurBlock BCb;
+	record RLinkVc RLr;
+	record POVc POr;
+	row POVc POrw;
 	Boolean TrHs,TrHs2,TrHs3,printf;
 	Integer rwcnt,rwcnt1,i,j,pos;
 	string 10 classtr,brandstr;
-	val price,sum,stoim,quant,razn;
+	val price,sum,stoim,quant,razn,brandCost;
 	string 50 category;
+	Integer notenr;
 
 	fromdate = RepSpec.sStartDate;
 	todate = RepSpec.sEndDate;
@@ -71,11 +75,12 @@ begin
 	outstring(13,0,"Сумма продажи в валюте АЗН",false);
 	outstring(14,0,"Себестоимость в валюте АЗН",false);
 	outstring(15,0,"Разница в валюте АЗН",false);
-	outstring(16,0,"Валюта брэнда",false);
-	outstring(17,0,"Номер клиента",false);
-	outstring(18,0,"Имя клиента",false);
-	outstring(19,0,"Процент скидки",false);
-	outstring(20,0,"Продавец",false);
+	outstring(16,0,"Себестоимость в валюте бренда",false);
+	outstring(17,0,"Валюта бренда",false);
+	outstring(18,0,"Номер клиента",false);
+	outstring(19,0,"Имя клиента",false);
+	outstring(20,0,"Процент скидки",false);
+	outstring(21,0,"Продавец",false);
 	endformat;
 	gray_divider(0,480); 
 	
@@ -134,6 +139,7 @@ begin
 				CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,ORrw.Sum,BCb.StdBaseCur,sum,DefaultCurRoundOff);
 				outstring(13,0,sum,false);
 			//Edit***********************Vitalii 10:31 09.09.2014
+			  brandCost = 0;
 				stoim = 0;
 				quant = 0;
 				TrHs2 = true;
@@ -153,6 +159,7 @@ begin
 									if ((IHr.FileName != "SHVc") or (IHr.TransNr != SHr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
 									if (TrHs3) then begin
 										stoim = stoim + IHr.TotCostPrice;
+										brandCost = brandCost + IHr.TotCostPriceCurncy;
 										quant = quant - IHr.Qty;
 									end;
 								end;
@@ -179,6 +186,7 @@ begin
 									if ((IHr.FileName != "RetVc") or (IHr.TransNr != Retr.SerNr) or (IHr.Row != j)) then begin TrHs3 = false; end;
 									if (TrHs3) then begin
 										stoim = stoim - IHr.TotCostPrice;
+										brandCost = brandCost - IHr.TotCostPriceCurncy;
 										quant = quant - IHr.Qty;
 									end;
 								end;
@@ -190,21 +198,41 @@ begin
 				resetloop(Retr);
 				if (quant < ORrw.Quant) then begin
 					stoim = stoim + INr.InPrice*(ORrw.Quant - quant);
+					brandCost = brandCost + INr.LastPurchPrice2*(ORrw.Quant - quant);
 				end;
 				if (ORrw.Quant == 0) then begin
 					razn = 0;
 					stoim = 0;
+					brandCost = 0;
 				end else begin
 					razn = sum - stoim;
 					stoim = stoim/ORrw.Quant;
+					brandCost = brandCost/ORrw.Quant;
+				end;
+				if (ORrw.Quant!=0) then begin
+  				if (brandCost==0 and INr.LastPurchPrice2<>0) then begin
+  				  brandCost = INr.LastPurchPrice2;
+  				end;
+  				notenr = 1;
+  				if (brandCost==0 and ReadRecordLink(ORr,notenr,POr,RLr)) then begin
+  				  rwcnt1 = MatRowCnt(POr);
+  				  for (j=0;j<rwcnt1;j=j+1) begin
+  				    MatRowGet(POr,j,POrw);
+  				    if (POrw.ArtCode==ORrw.ArtCode and POrw.Price<>0) then begin
+  				      brandCost = POrw.Price;
+  				      j = rwcnt1;
+  				    end;
+  				  end;
+  				end;
 				end;
 				outstring(14,0,stoim,false);
 				outstring(15,0,razn,false);
-				outstring(16,0,INr.LastPurchCurncyCode,false);
-				outstring(17,0,ORr.CustCode,false);
-				outstring(18,0,ORr.Addr0,false);
-				outstring(19,0,ORrw.vRebate,false);
-				outstring(20,0,ORr.SalesMan,false);
+				outstring(16,0,brandCost,false);
+				outstring(17,0,INr.LastPurchCurncyCode,false);
+				outstring(18,0,ORr.CustCode,false);
+				outstring(19,0,ORr.Addr0,false);
+				outstring(20,0,ORrw.vRebate,false);
+				outstring(21,0,ORr.SalesMan,false);
 				endformat;
 			end;
 		end;
