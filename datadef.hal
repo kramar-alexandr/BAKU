@@ -3646,6 +3646,7 @@ begin
   RecordField(AnotherCard,M4Int,0,0);
   RecordField(AnotherCardNr,M4Str,100,0);
   RecordField(CustCodeType,M4Int,0,0);
+  RecordField(SaleType,M4Int,0,0);
 	  
   MainKeyBegin(SerNr,0);
   KeySegment(SerNr);

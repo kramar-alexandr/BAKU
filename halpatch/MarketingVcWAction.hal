@@ -218,3 +218,72 @@ begin
   duplOK = false;
   return;
 end;
+
+global //Edit***************************Sasha2,12:13 30.06.2017 {
+updating procedure MarketingSeachCustomerDsm()
+begin
+  Integer wn;
+  record MarketingVc Marketingr;
+  record RcVc RepSpec;
+  string 20 phone;
+    
+    wn = CurWindow;
+    DeselectWindow(wn,true);
+    if (GetWindowFileName(wn)=="MarketingVc") then begin
+      GetWindowRecord(wn,Marketingr);
+      phone = Marketingr.Phone3;
+      if (Blank(phone) and NonBlank(Marketingr.Phone1)) then begin
+        phone = Marketingr.Phone1;
+      end;
+      if (Blank(phone) and NonBlank(Marketingr.Phone2)) then begin
+        phone = Marketingr.Phone2;
+      end;
+      if (NonBlank(phone)) then begin
+        ReportDefaults(RepSpec,"SearchContactRClass");
+        RepSpec.repname = "SearchContactRn";
+        RepSpec.critname = "SearchContactRClass";
+        RepSpec.f1 = phone;
+        RepSpec.Media = mtScreen;
+        RunReport(RepSpec,0);
+      end else begin
+        MessageBox(0,"Нет ни одного телефона для поиска");
+      end;
+      
+    end;
+  
+  return;
+end; //Edit***************************Sasha2,12:13 30.06.2017 }
+
+global //Edit***************************Sasha2,12:13 30.06.2017 {
+updating procedure MarketingCreateCustomerDsm()
+begin
+  Integer wn,nwn;
+  record MarketingVc Marketingr;
+  record CUVc CUr;
+  string 20 phone;
+    
+    wn = CurWindow;
+    DeselectWindow(wn,true);
+    if (GetWindowFileName(wn)=="MarketingVc") then begin
+      GetWindowRecord(wn,Marketingr);
+      RecordNew(CUr);
+      CUr.Name = Marketingr.Name;
+  		CUr.InvAddr0 = Marketingr.Address;
+  		CUr.Phone = Marketingr.Phone1;
+  		CUr.AltPhone = Marketingr.Phone2;
+  		CUr.Mobile = Marketingr.Phone3;
+  		CUr.eMail = Marketingr.eMail;
+  		if (Marketingr.Gender>0) then begin
+  		  switch (Marketingr.Gender) begin
+  		    case 1: CUr.Gender = 0;
+  		    case 2: CUr.Gender = 1;
+  		    otherwise 
+  		      CUr.Gender = 2;
+  		  end;
+  		end;
+  		nwn = OpenWindow("CUDClass",1,0,"","",CUr);
+      //WindowFieldGoto(nwn,CUr,-1,"Code",true);
+    end;
+  
+  return;
+end; //Edit***************************Sasha2,12:13 30.06.2017 }

@@ -6797,15 +6797,17 @@ begin
   h1 = 100;
   
   EditField(h1,v+=vs,70,"Код Клиента",Normal,CustCode,false,CUSClass);
-  EditField(h1+220,v+=vs,230,"Имя",Normal,Name,false,0);
-  EditField(h1+220,v+=vs,80,"Дата",Normal,TransDate,false,PasteCurDate);
-  EditField(h1+370,v,80,"Время",Normal,TransTime,false,);
-  EditField(h1+220,v+vs,80,"Консультант",Normal,SalesMan,false,UserSClass);
-  EditField(h1+370,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
-  EditField(h1+500,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
+  EditField(h1+290,v+=vs,230,"Имя",Normal,Name,false,0);
+  EditField(h1+290,v+=vs,80,"Дата",Normal,TransDate,false,PasteCurDate);
+  EditField(h1+440,v,80,"Время",Normal,TransTime,false,);
+  EditField(h1+290,v+vs,80,"Консультант",Normal,SalesMan,false,UserSClass);
+  EditField(h1+440,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
+  EditField(h1+570,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
   v = v -vs;
   EditField(h1,v,100,"Моб. Телефон",Normal,Phone3,false,0);
+  HalPushButton(h1+110,v-5,h1+210,v+15,"MarketingSeachCustomerDsm","Искать клиента");
   EditField(h1,v+=vs,100,"Доп. телефон",Normal,Phone2,false,0);
+  HalPushButton(h1+110,v+5,h1+210,v+25,"MarketingCreateCustomerDsm","Создать клиента");
   EditField(h1,v+=vs,100,"Телефон",Normal,Phone1,false,0);
   EditField(h1,v+=vs,-50,"Адрес",Normal,Address,false,0);
   EditField(h1,v+=vs,120,"e-Mail",Normal,eMail,false,0);
@@ -6851,7 +6853,7 @@ begin
 	v = v + 5;
   EditField(h1+70,v-3,120,"",Normal,ReferenceTxt,false,0);
   
-  v = 300+vs;
+  v = 210+vs;
   ButtonFrame(h1+220,v,l=300,7,"Причина посещения");
   RadioButton(h1+220,v,0,0,"-",ReasonBtn);
   RadioButton(h1+220,v+=16,1,0,"Поиск подарка",ReasonBtn);
@@ -6864,6 +6866,15 @@ begin
   RadioButton(h1+220,v+=16,6,0,"Others...",ReasonBtn);
 	v = v + 5;
   EditField(h1+290,v-3,-20,"",Normal,Reason,false,0);
+  
+  v = v+2*vs;
+  ButtonFrame(h1+220,v,l=150,6,"Тип продажи");
+  RadioButton(h1+220,v,0,0,"Нет продажи",SaleType);
+  RadioButton(h1+220,v+=16,1,0,"Обычная продажа",SaleType);
+  RadioButton(h1+220,v+=16,2,0,"Продажа по звонку",SaleType);
+  RadioButton(h1+220,v+=16,3,0,"Продажа по Whatsapp",SaleType);
+  RadioButton(h1+220,v+=16,4,0,"Продажа по Instagram",SaleType);
+  RadioButton(h1+220,v+=16,5,0,"Продажа по Facebook",SaleType);
   
   //Start edit Victor --------------------- 21.08 
   
