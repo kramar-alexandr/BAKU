@@ -262,7 +262,7 @@ BEGIN
 				goto LMarketingVcRecordCheck;		
       end else begin
         excludeCustomers = "NONAME,VIP,VIP25,VIP30,VIP20,VIP_1,VIP_2";
-				if(nonBlank(Mrkr.CustCode))then begin
+				/*if(nonBlank(Mrkr.CustCode))then begin
 					if(IVr.CustCode != Mrkr.CustCode and not SetInSet(IVr.CustCode,excludeCustomers))then begin
 						res	= -1;
 						RecordCheckError(2130,serNum,-1,"InvNr");
@@ -278,7 +278,7 @@ BEGIN
 					end;
 					tmpCust = IVr.CustCode;
 					i = i + 1;
-				end;
+				end;*/
 			end;
       ExtractObj(Mrkr.InvNr,pos,serNum);
     end;
