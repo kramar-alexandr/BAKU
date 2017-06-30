@@ -3,6 +3,7 @@ external function Boolean POVc_PasteArtCode(var record POVc,Integer,Boolean);// 
 external procedure POVc_PasteQuant(var record POVc,Integer);// Edit ************************** Friday, 31 August 2012 16:50:20
 external function Boolean POVc_PasteVECode(var record POVc,Boolean);
 external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
+external function roundmode DefaultRoundMode();
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -213,6 +214,9 @@ begin
 				if (ORrw.Quant!=0) then begin
   				if (brandCost==0 and INr.LastPurchPrice2<>0) then begin
   				  brandCost = INr.LastPurchPrice2;
+  				  if (stoim==0) then begin
+  				    CurValToOtherCur(INr.LastPriceChange,ORr.CurncyCode,brandCost,BCb.StdBaseCur,stoim,DefaultRoundMode);
+  				  end;
   				end;
   				notenr = 1;
   				if (brandCost==0 and ReadRecordLink(ORr,notenr,POr,RLr)) then begin
@@ -224,6 +228,9 @@ begin
   				      if (brandCurncy!=POr.CurncyCode) then begin
   				        brandCurncy = POr.CurncyCode;
   				      end;
+  				      if (stoim==0) then begin
+      				    CurValToOtherCur(POr.TransDate,POr.CurncyCode,brandCost,BCb.StdBaseCur,stoim,DefaultRoundMode);
+      				  end;
   				      j = rwcnt1;
   				    end;
   				  end;
