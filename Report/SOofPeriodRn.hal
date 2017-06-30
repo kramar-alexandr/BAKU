@@ -42,7 +42,7 @@ begin
 	row POVc POrw;
 	Boolean TrHs,TrHs2,TrHs3,printf;
 	Integer rwcnt,rwcnt1,i,j,pos;
-	string 10 classtr,brandstr;
+	string 10 classtr,brandstr,brandCurncy;
 	val price,sum,stoim,quant,razn,brandCost;
 	string 50 category;
 	Integer notenr;
@@ -209,6 +209,7 @@ begin
 					stoim = stoim/ORrw.Quant;
 					brandCost = brandCost/ORrw.Quant;
 				end;
+				brandCurncy = INr.LastPurchCurncyCode;
 				if (ORrw.Quant!=0) then begin
   				if (brandCost==0 and INr.LastPurchPrice2<>0) then begin
   				  brandCost = INr.LastPurchPrice2;
@@ -220,6 +221,9 @@ begin
   				    MatRowGet(POr,j,POrw);
   				    if (POrw.ArtCode==ORrw.ArtCode and POrw.Price<>0) then begin
   				      brandCost = POrw.Price;
+  				      if (brandCurncy!=POr.CurncyCode) then begin
+  				        brandCurncy = POr.CurncyCode;
+  				      end;
   				      j = rwcnt1;
   				    end;
   				  end;
@@ -228,7 +232,7 @@ begin
 				outstring(14,0,stoim,false);
 				outstring(15,0,razn,false);
 				outstring(16,0,brandCost,false);
-				outstring(17,0,INr.LastPurchCurncyCode,false);
+				outstring(17,0,brandCurncy,false);
 				outstring(18,0,ORr.CustCode,false);
 				outstring(19,0,ORr.Addr0,false);
 				outstring(20,0,ORrw.vRebate,false);
