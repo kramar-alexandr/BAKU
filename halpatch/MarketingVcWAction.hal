@@ -142,6 +142,7 @@ begin
   Boolean res;
 	record MarketingVc Marketingr,Marketing2r; 
 	record CUVc CUr;
+	boolean acces;
 	
 	getwindowrecord(wn,Marketingr);
 	GetPrevWindowRecord(wn,Marketing2r);
@@ -161,7 +162,15 @@ begin
 			end;
 		end;
 	end;
+  
+  if(usercanaction("ChangeMarketingVc",false))then begin
+  	acces = true;
+  end;
 	
+	switch(fieldname)begin
+		case "TransDate": res = acces;
+		case "TransTime": res = acces;
+	end;
 	
 	
   MarketingDClassActiveEditField = res;

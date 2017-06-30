@@ -6798,8 +6798,8 @@ begin
   
   EditField(h1,v+=vs,70,"Код Клиента",Normal,CustCode,false,CUSClass);
   EditField(h1+220,v+=vs,230,"Имя",Normal,Name,false,0);
-  EditField(h1+220,v+=vs,80,"Дата",ViewOnly,TransDate,false,PasteCurDate);
-  EditField(h1+370,v,80,"Время",ViewOnly,TransTime,false,);
+  EditField(h1+220,v+=vs,80,"Дата",Normal,TransDate,false,PasteCurDate);
+  EditField(h1+370,v,80,"Время",Normal,TransTime,false,);
   EditField(h1+220,v+vs,80,"Консультант",Normal,SalesMan,false,UserSClass);
   EditField(h1+370,v+vs,80,"Магазин",Normal,Location,false,LocationSClass);
   EditField(h1+500,v+vs,80,"Л.Маш.",Normal,LocalMachine,false,LocalMachineSClass);
