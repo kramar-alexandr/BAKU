@@ -123,7 +123,7 @@ BEGIN
 			goto LMarketingVcRecordCheck;
   	end;
   end;
-  if(nonblank(Mrkr.Phone2) and blank(CUr.Mobile))then begin
+  if(nonblank(Mrkr.Phone2) and blank(CUr.AltPhone))then begin
   	if(len(Mrkr.Phone2)!=9)then begin
   		RecordCheckError(31010,"|" & Mrkr.Phone2 & "|",-1,"Phone2");      
 			res = -1; 
@@ -131,7 +131,7 @@ BEGIN
   	end;
   end;
   
-  if(nonblank(Mrkr.Phone3) and blank(CUr.AltPhone))then begin
+  if(nonblank(Mrkr.Phone3) and blank(CUr.Mobile))then begin
   	if(len(Mrkr.Phone3)!=9)then begin
   		RecordCheckError(31010,"|" & Mrkr.Phone3 & "|",-1,"Phone3");      
 			res = -1; 
