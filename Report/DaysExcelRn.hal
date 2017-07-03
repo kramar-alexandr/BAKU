@@ -18,7 +18,6 @@ external procedure ConvertToXLSX(string,boolean);
 
 SetLangMode(LangRussian,"RUS",0);
 
-
 global 
 procedure DaysExcelRn(record RcVc RepSpec,var area areatofile)
 begin
@@ -30,9 +29,10 @@ begin
   row IVVc IVrw;
   string 20 key;
   string 255 tstr,loc,month;
-  integer keycnt,rwcnt,normrwcnt,LAi,MAi,NAi,i,j,qtyoborot,qtyvozvrat;
+  integer keycnt,rwcnt,normrwcnt,LAi,MAi,i,j;
   val sumoborot,sumvozvrat;
-  vector boolean LocInArr,MonthInArr,MonthLoc,DayNameObor,DayNameVozv,NameInArr;
+  vector boolean LocInArr,MonthInArr,MonthLoc,LocDayNameObor,LocDayNameVozv;
+  vector string 100 LocName;
   vector val Oborot,Vozvrat;
   
   array string 50 sheetNames;
@@ -45,8 +45,6 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
-  vector boolean loccode; 
-  vector string 100 locname;
   
   setexportcodepage("UTF8");
   
@@ -77,20 +75,20 @@ begin
     end;
     if (IVr.OKFlag==0) then begin testf = false; end;
     if (IVr.Invalid==1) then begin testf = false; end;
+    if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
+      if (prevdate!=IVr.InvDate) then begin
+        
+      end;
       cnf = false;
-      if(loccode[IVr.Location]==false)then begin
-      	loccode[IVr.Location] = true;
-				Locr.Code = IVr.Location;
-				ReadFirstMain(Locr,1,true);
-				loc = Locr.Name;
-				if (LocInArr[loc]==false) then begin
-					LocInArr[loc] = true;
-					LocArr[LAi] = loc;
-					LAi = LAi + 1;
-				end;
-      end else begin
-      	loc = locname[IVr.Location];
+      loc = IVr.Location;
+      if (LocInArr[loc]==false) then begin
+				Locr.Code = loc;
+        ReadFirstMain(Locr,1,true);
+				LocInArr[loc] = true;
+        LocArr[LAi] = loc;
+				LocName[loc] = Locr.Name;
+        LAi = LAi + 1;
       end;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
@@ -112,27 +110,21 @@ begin
         matrowget(IVr,i,IVrw);
         if (IVrw.stp==kInvoiceRowTypeNormal) then begin
           if (cnf) then begin
-            DayNameVozv[loc & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
-            if (NameInArr[IVrw.ArtCode]==false) then begin
-              NameArr[NAi] = IVrw.ArtCode;
-              NAi = NAi + 1;
-              NameInArr[IVrw.ArtCode] = true;
+            if (LocDayNameVozv[tstr & IVrw.ArtCode]==false) then begin
+              LocDayNameVozv[tstr & IVrw.ArtCode] = true;
+              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
             end;
           end else begin
             if (IVrw.Quant<0) then begin
-              DayNameVozv[loc & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
-              if (NameInArr[IVrw.ArtCode]==false) then begin
-                NameArr[NAi] = IVrw.ArtCode;
-                NAi = NAi + 1;
-                NameInArr[IVrw.ArtCode] = true;
-              end;
+              if (LocDayNameVozv[tstr & IVrw.ArtCode]==false) then begin
+              LocDayNameVozv[tstr & IVrw.ArtCode] = true;
+              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
+            end;
               sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
             end else begin
-              DayNameObor[IVr.InvDate & ";" & IVrw.ArtCode] = true;
-              if (NameInArr[IVrw.ArtCode]==false) then begin
-                NameArr[NAi] = IVrw.ArtCode;
-                NAi = NAi + 1;
-                NameInArr[IVrw.ArtCode] = true;
+              if (LocDayNameObor[tstr & IVrw.ArtCode]==false) then begin
+                LocDayNameObor[tstr & IVrw.ArtCode] = true;
+                Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1;
               end;
               sumoborot = sumoborot + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
             end;
@@ -164,7 +156,7 @@ begin
   for (MAi=0;MAi<MonthArr.length;MAi=MAi+1) begin
     for (LAi=0;LAi<LocArr.length;LAi=LAi+1) begin
       if (MonthLoc[MonthArr[MAi] & ";" & LocArr[LAi]]) then begin
-        sheetNames[qtyOfSheets] = UpperCase(left(MonthName(StringToDate("1/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/2000")),3)) & " " & LocArr[LAi];
+        sheetNames[qtyOfSheets] = UpperCase(left(MonthName(StringToDate("1/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/2000")),3)) & " " & LocName[LocArr[LAi]];
         qtyOfSheets = qtyOfSheets + 1;
       end;
     end;
@@ -207,7 +199,7 @@ begin
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
           style = 12;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,LocArr[LAi],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,LocName[LocArr[LAi]],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
         EndRow(sheetnum,fileToSave,rownum);
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
@@ -262,16 +254,6 @@ begin
         for (i=1;i<32;i=i+1) begin
           tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";";
           if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
-            qtyoborot = 0;
-            qtyvozvrat = 0;
-            for (j=0;j<NameArr.length;j=j+1) begin
-              if (DayNameObor[LocArr[LAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
-                qtyoborot = qtyoborot + 1;
-              end;
-              if (DayNameVozv[LocArr[LAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
-                qtyvozvrat = qtyvozvrat + 1;
-              end;
-            end;
             colnum = 2;
             BeginRow(sheetnum,fileToSave,rownum,0,blankval);
               style = 16;
@@ -281,13 +263,13 @@ begin
               style = 17;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
               style = 18;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,qtyoborot);
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
               style = 15;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
               style = 17;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
               style = 18;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,qtyvozvrat);
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
               style = 14;
               NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
             EndRow(sheetnum,fileToSave,rownum);

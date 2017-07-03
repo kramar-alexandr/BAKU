@@ -31,3 +31,27 @@ begin
 	end;
 return;
 end;
+
+global
+procedure DaysExcelRClassReportDefaults(integer wn)
+begin
+	record RcVc RepSpec;
+	
+	GetWindowRecord(wn,RepSpec);
+	RepSpec.Period2Str = "01/" & getmonth(CurrentDate) & "/" & getyear(CurrentDate) & ":" & DaysInMonth(GetYear(CurrentDate),GetMonth(CurrentDate)) & "/" & getmonth(CurrentDate) & "/" & getyear(CurrentDate);
+  PutWindowRecord(wn,RepSpec);
+	
+	return;
+end;
+
+global
+function Boolean DaysExcelRClassOnOpenWindow(Integer wn)
+begin
+	record RcVc RepSpec;
+	
+	GetWindowRecord(wn,RepSpec);
+	RepSpec.Period2Str = "01/" & getmonth(CurrentDate) & "/" & getyear(CurrentDate) & ":" & DaysInMonth(GetYear(CurrentDate),GetMonth(CurrentDate)) & "/" & getmonth(CurrentDate) & "/" & getyear(CurrentDate);
+  PutWindowRecord(wn,RepSpec);
+
+	return;
+end;
