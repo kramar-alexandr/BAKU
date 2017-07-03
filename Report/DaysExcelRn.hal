@@ -23,7 +23,7 @@ procedure DaysExcelRn(record RcVc RepSpec,var area areatofile)
 begin
   array string 255 LocArr,MonthArr,NameArr;
   boolean TrHs,testf,cnf;
-  date startdate,enddate,prevdate;
+  date startdate,enddate;
   record IVVc IVr;
   record LocationVc Locr;
   row IVVc IVrw;
@@ -77,9 +77,6 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
-      if (prevdate!=IVr.InvDate) then begin
-        
-      end;
       cnf = false;
       loc = IVr.Location;
       if (LocInArr[loc]==false) then begin
@@ -117,9 +114,9 @@ begin
           end else begin
             if (IVrw.Quant<0) then begin
               if (LocDayNameVozv[tstr & IVrw.ArtCode]==false) then begin
-              LocDayNameVozv[tstr & IVrw.ArtCode] = true;
-              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
-            end;
+                LocDayNameVozv[tstr & IVrw.ArtCode] = true;
+                Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
+              end;
               sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
             end else begin
               if (LocDayNameObor[tstr & IVrw.ArtCode]==false) then begin
@@ -143,7 +140,6 @@ begin
         end;
       end;
     end;
-    prevdate = IVr.InvDate;
   end;
   
   reportName = "DaysExcelRn";

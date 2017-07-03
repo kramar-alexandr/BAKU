@@ -25,16 +25,17 @@ procedure DaysCumulativeExcelRn(record RcVc RepSpec,var area areatofile)
 begin
   array string 255 LocArr,MonthArr,ConsultArr,NameArr;
   boolean TrHs,testf,cnf;
-  date startdate,enddate,prevdate;
+  date startdate,enddate;
   record IVVc IVr;
   record LocationVc Locr;
   record UserVc Userr;
   row IVVc IVrw;
-  integer keycnt,rwcnt,normrwcnt,LAi,MAi,CAi,NAi,i,j,qtyoborot,qtyvozvrat;
+  integer keycnt,rwcnt,normrwcnt,LAi,MAi,CAi,i,j;
   string 20 key;
   string 255 tstr,loc,month,salesman;
   val sumoborot,sumvozvrat;
-  vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc,MonthLocDay,DayNameObor,DayNameVozv,NameInArr;
+  vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc,LocSalesmanNameObor,LocSalesmanNameVozv;
+  vector string 100 LocName;
   vector val Oborot,Vozvrat;
   array string 50 sheetNames;
 	array val sheetColls;
@@ -46,8 +47,6 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
-  vector boolean loccode;
-  vector string 100 locname;
   
   setexportcodepage("UTF8");
   
@@ -78,24 +77,16 @@ begin
     end;
     if (IVr.OKFlag==0) then begin testf = false; end;
     if (IVr.Invalid==1) then begin testf = false; end;
+    if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
-    	
-    	if(loccode[IVr.Location]==false)then begin
-				Locr.Code = IVr.Location;
-				
-				if (ReadFirstMain(Locr,1,true)) then begin
-					loc = Locr.Name;
-				end else begin
-					loc = IVr.Location;
-				end;
-				locname[IVr.Location] = loc;
-				if (LocInArr[loc]==false) then begin
-					LocInArr[loc] = true;
-					LocArr[LAi] = loc;
-					LAi = LAi + 1;
-				end;
-      end else begin
-      	loc = locname[IVr.Location];
+      loc = IVr.Location;
+      if (LocInArr[loc]==false) then begin
+				Locr.Code = loc;
+        ReadFirstMain(Locr,1,true);
+				LocInArr[loc] = true;
+        LocArr[LAi] = loc;
+				LocName[loc] = Locr.Name;
+        LAi = LAi + 1;
       end;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
@@ -104,7 +95,6 @@ begin
         MAi = MAi + 1;
       end;
       MonthLoc[month & ";" & loc] = true;
-      MonthLocDay[month & ";" & loc & ";" & getday(IVr.InvDate)] = true;
       Userr.Code = IVr.SalesMan;
       if (ReadFirstMain(Userr,1,true)) then begin
         salesman = Userr.Name;
@@ -116,7 +106,7 @@ begin
         ConsultArr[CAi] = salesman;
         CAi = CAi + 1;
       end;
-      tstr = loc & ";" & month & ";" & getday(IVr.InvDate) & ";" & salesman & ";";
+      tstr = loc & ";" & month & ";" & salesman & ";";
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
@@ -129,27 +119,21 @@ begin
         matrowget(IVr,i,IVrw);
         if (IVrw.stp==kInvoiceRowTypeNormal) then begin
           if (cnf) then begin
-            DayNameVozv[loc & ";" & salesman & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
-            if (NameInArr[IVrw.ArtCode]==false) then begin
-              NameArr[NAi] = IVrw.ArtCode;
-              NAi = NAi + 1;
-              NameInArr[IVrw.ArtCode] = true;
+            if (LocSalesmanNameVozv[tstr & IVrw.ArtCode]==false) then begin
+              LocSalesmanNameVozv[tstr & IVrw.ArtCode] = true;
+              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
             end;
           end else begin
             if (IVrw.Quant<0) then begin
-              DayNameVozv[loc & ";" & salesman & ";" & IVr.InvDate & ";" & IVrw.ArtCode] = true;
-              if (NameInArr[IVrw.ArtCode]==false) then begin
-                NameArr[NAi] = IVrw.ArtCode;
-                NAi = NAi + 1;
-                NameInArr[IVrw.ArtCode] = true;
+              if (LocSalesmanNameVozv[tstr & IVrw.ArtCode]==false) then begin
+                LocSalesmanNameVozv[tstr & IVrw.ArtCode] = true;
+                Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
               end;
               sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
             end else begin
-              DayNameObor[IVr.InvDate & ";" & IVrw.ArtCode] = true;
-              if (NameInArr[IVrw.ArtCode]==false) then begin
-                NameArr[NAi] = IVrw.ArtCode;
-                NAi = NAi + 1;
-                NameInArr[IVrw.ArtCode] = true;
+              if (LocSalesmanNameObor[tstr & IVrw.ArtCode]==false) then begin
+                LocSalesmanNameObor[tstr & IVrw.ArtCode] = true;
+                Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1;
               end;
               sumoborot = sumoborot + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
             end;
@@ -168,7 +152,6 @@ begin
         end;
       end;
     end;
-    prevdate = IVr.InvDate;
   end;
   
   reportName = "DaysCumulativeExcelRn";
@@ -181,7 +164,7 @@ begin
   for (MAi=0;MAi<MonthArr.length;MAi=MAi+1) begin
     for (LAi=0;LAi<LocArr.length;LAi=LAi+1) begin
       if (MonthLoc[MonthArr[MAi] & ";" & LocArr[LAi]]) then begin
-        sheetNames[qtyOfSheets] = UpperCase(left(MonthName(StringToDate("1/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/2000")),3)) & " " & LocArr[LAi];
+        sheetNames[qtyOfSheets] = UpperCase(left(MonthName(StringToDate("1/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/2000")),3)) & " " & LocName[LocArr[LAi]];
         qtyOfSheets = qtyOfSheets + 1;
       end;
     end;
@@ -223,7 +206,7 @@ begin
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
           style = 3;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,LocArr[LAi],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,LocName[LocArr[LAi]],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
         EndRow(sheetnum,fileToSave,rownum);
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
@@ -275,35 +258,9 @@ begin
           qtyOfEmpStr = 1;
           EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
         EndRow(sheetnum,fileToSave,rownum);
-        for (i=1;i<32;i=i+1) begin
-          if (MonthLocDay[MonthArr[MAi] & ";" & LocArr[LAi] & ";" & i]) then begin
-            colnum = 2;
-            BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-              mergeCell[qtyMergeCell] = GetStringCellNum(colnum,rownum);
-              style = 33;
-              StringCell(sheetnum,fileToSave,colnum,rownum,style,i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4),SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-              style = 34;
-              qtyOfEmpStr = 6;
-              EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-              style = 35;
-              qtyOfEmpStr = 1;
-              EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-              mergeCell[qtyMergeCell] = mergeCell[qtyMergeCell] & ":" & GetStringCellNum(colnum - 1,rownum);
-              qtyMergeCell = qtyMergeCell + 1;
-            EndRow(sheetnum,fileToSave,rownum);
             for (CAi=0;CAi<ConsultArr.length;CAi=CAi+1) begin
-              tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";" & ConsultArr[CAi] & ";";
+              tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & ConsultArr[CAi] & ";";
               if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
-                qtyoborot = 0;
-                qtyvozvrat = 0;
-                for (j=0;j<NameArr.length;j=j+1) begin
-                  if (DayNameObor[LocArr[LAi] & ";" & ConsultArr[CAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
-                    qtyoborot = qtyoborot + 1;
-                  end;
-                  if (DayNameVozv[LocArr[LAi] & ";" & ConsultArr[CAi] & ";" & i & "/" & left(MonthArr[MAi],(len(MonthArr[MAi]) - 5)) & "/" & right(MonthArr[MAi],4) & ";" & NameArr[j]]) then begin
-                    qtyvozvrat = qtyvozvrat + 1;
-                  end;
-                end;
                 colnum = 2;
                 BeginRow(sheetnum,fileToSave,rownum,0,blankval);
                   style = 7;
@@ -325,18 +282,13 @@ begin
                 EndRow(sheetnum,fileToSave,rownum);
               end;
             end;
-          end;
-        end;
+          
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
           style = 25;
           qtyOfEmpStr = 8;
           EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
         EndRow(sheetnum,fileToSave,rownum);
-        
-        
-        
-        
         EndSheetData(sheetnum,fileToSave);
         MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
         EndSheet(sheetnum,fileToSave,0);
