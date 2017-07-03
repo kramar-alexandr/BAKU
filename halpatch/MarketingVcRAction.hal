@@ -337,11 +337,11 @@ BEGIN
 				CUr.Phone = Mrkr.Phone1;
 				changes = true;
 			end;
-			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
+			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.Mobile)then begin
 				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
-			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
+			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.AltPhone)then begin
 				CUr.AltPhone = Mrkr.Phone2;
 				changes = true;
 			end;
@@ -381,11 +381,11 @@ BEGIN
 				CUr.Phone = Mrkr.Phone1;
 				changes = true;
 			end;
-			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.Mobile)then begin
+			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.Mobile)then begin
 				CUr.Mobile = Mrkr.Phone3;
 				changes = true;
 			end;
-			if(nonblank(Mrkr.Phone3) and Mrkr.Phone3!=CUr.AltPhone)then begin
+			if(nonblank(Mrkr.Phone2) and Mrkr.Phone2!=CUr.AltPhone)then begin
 				CUr.AltPhone = Mrkr.Phone2;
 				changes = true;
 			end;
