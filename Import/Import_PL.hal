@@ -569,6 +569,7 @@ global 	//Edit***************************Sasha2,11:45 04.07.2017 {
 updating procedure HandleCUClassificationIn(integer mode)
 begin
   record CUVc CUr;
+  record CClassVc CClassr,CClass2r;
   string 20 code;
   string 255 importedClass,importedClassForExchange,newClassList,extractedClass;
   Boolean storeF;
@@ -591,7 +592,8 @@ begin
 					      pos = 0;
                 ExtractObj(importedClass,pos,extractedClass);
                 while (nonblank(extractedClass)) begin
-                  if (SetInSet(extractedClass,CUr.Classification)==false) then begin
+                  CClassr.Code = extractedClass;
+                  if (ReadFirstMain(CClassr,1,true) and SetInSet(extractedClass,CUr.Classification)==false) then begin
                     if (NonBlank(CUr.Classification)) then begin
                       CUr.Classification = CUr.Classification & ",";
                     end;
@@ -608,24 +610,29 @@ begin
               pos = 0;
               ExtractObj(importedClassForExchange,pos,extractedClass);
               importedClassForExchange = extractedClass;
+              
               newClassList = "";
-              if (NonBlank(importedClass) and NonBlank(importedClassForExchange)) then begin
-                pos = 0;
-                ExtractObj(CUr.Classification,pos,extractedClass);
-                while (NonBlank(extractedClass)) begin
-                  if (NonBlank(newClassList)) then begin
-                    newClassList = newClassList & ",";
-                  end;
-                  if (extractedClass==importedClass) then begin
-                    newClassList = newClassList & importedClassForExchange;
-                  end else begin
-                    newClassList = newClassList & extractedClass;
-                  end;
+              CClassr.Code = extractedClass;
+              CClass2r.Code = importedClassForExchange;
+              if (ReadFirstMain(CClassr,1,true) and ReadFirstMain(CClass2r,1,true)) then begin
+                if (NonBlank(importedClass) and NonBlank(importedClassForExchange)) then begin
+                  pos = 0;
                   ExtractObj(CUr.Classification,pos,extractedClass);
-                end; 
-                if (newClassList!=CUr.Classification) then begin
-                  CUr.Classification = newClassList;
-                  storeF = true;
+                  while (NonBlank(extractedClass)) begin
+                    if (NonBlank(newClassList)) then begin
+                      newClassList = newClassList & ",";
+                    end;
+                    if (extractedClass==importedClass) then begin
+                      newClassList = newClassList & importedClassForExchange;
+                    end else begin
+                      newClassList = newClassList & extractedClass;
+                    end;
+                    ExtractObj(CUr.Classification,pos,extractedClass);
+                  end; 
+                  if (newClassList!=CUr.Classification) then begin
+                    CUr.Classification = newClassList;
+                    storeF = true;
+                  end;
                 end;
               end;
 					  case 2: //remove classification
