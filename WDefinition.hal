@@ -2177,7 +2177,7 @@ Integer i;
   StaticText(h,v+=vs,i &". Изменить с класс-ции",false);
 	 StaticText(h+150,v,"Обязательное поле",false);
 	 i=i+1;
-	StaticText(h,v+=vs,i &". На классфикацию",false);
+	StaticText(h,v+=vs,i &". На классификацию",false);
 	 StaticText(h+150,v,"Обязательное поле",false);
 	 i=i+1;
   h=10;
