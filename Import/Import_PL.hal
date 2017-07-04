@@ -1,3 +1,6 @@
+external procedure NoDupObjs(string,var string);
+external procedure ExtractObj(string,var Integer,var string);
+
 SetLangMode(LangRussian,"RUS",0);
 
 Global updating procedure ImportPLIn()
@@ -561,3 +564,129 @@ begin
 	end;
 	return;
 end;
+
+global 	//Edit***************************Sasha2,11:45 04.07.2017 {
+updating procedure HandleCUClassificationIn(integer mode)
+begin
+  record CUVc CUr;
+  string 20 code;
+  string 255 importedClass,importedClassForExchange,newClassList,extractedClass;
+  Boolean storeF;
+  Integer pos;
+
+	while (TestEOF()==false) begin
+			code = ImportField;
+			importedClass = ImportField;
+			if (mode==1) then begin
+			  importedClassForExchange = ImportField;
+			end;
+
+			if(nonblank(code)) then begin
+				CUr.Code = code;				
+				if (ReadFirstMain(CUr,1,true)) then begin
+					storeF = false;
+					switch (mode) begin
+					  case 0: //add classification
+					    if (NonBlank(importedClass)) then begin
+					      pos = 0;
+                ExtractObj(importedClass,pos,extractedClass);
+                while (nonblank(extractedClass)) begin
+                  if (SetInSet(extractedClass,CUr.Classification)==false) then begin
+                    if (NonBlank(CUr.Classification)) then begin
+                      CUr.Classification = CUr.Classification & ",";
+                    end;
+                    CUr.Classification = CUr.Classification & extractedClass;
+                    storeF = true;
+                  end;
+                  ExtractObj(importedClass,pos,extractedClass);
+                end;
+					    end;
+					  case 1: //exchange classification
+              pos = 0;
+              ExtractObj(importedClass,pos,extractedClass);
+              importedClass = extractedClass;
+              pos = 0;
+              ExtractObj(importedClassForExchange,pos,extractedClass);
+              importedClassForExchange = extractedClass;
+              newClassList = "";
+              if (NonBlank(importedClass) and NonBlank(importedClassForExchange)) then begin
+                pos = 0;
+                ExtractObj(CUr.Classification,pos,extractedClass);
+                while (NonBlank(extractedClass)) begin
+                  if (NonBlank(newClassList)) then begin
+                    newClassList = newClassList & ",";
+                  end;
+                  if (extractedClass==importedClass) then begin
+                    newClassList = newClassList & importedClassForExchange;
+                  end else begin
+                    newClassList = newClassList & extractedClass;
+                  end;
+                  ExtractObj(CUr.Classification,pos,extractedClass);
+                end; 
+                if (newClassList!=CUr.Classification) then begin
+                  CUr.Classification = newClassList;
+                  storeF = true;
+                end;
+              end;
+					  case 2: //remove classification
+					    if (NonBlank(importedClass) and NonBlank(CUr.Classification)) then begin
+					      pos = 0;
+					      newClassList = "";
+                ExtractObj(CUr.Classification,pos,extractedClass);
+                while (nonblank(extractedClass)) begin
+                  if (SetInSet(extractedClass,importedClass)==false) then begin
+                    if (NonBlank(newClassList)) then begin
+                      newClassList = newClassList & ",";
+                    end;
+                    newClassList = newClassList & extractedClass;
+                  end;
+                  ExtractObj(CUr.Classification,pos,extractedClass);
+                end;
+                if (newClassList!=CUr.Classification) then begin
+                  CUr.Classification = newClassList;
+                  storeF = true;
+                end;
+					    end;
+					    if (Blank(importedClass) and NonBlank(CUr.Classification)) then begin //clear up CUVc classifications
+					      CUr.Classification = "";
+                storeF = true;
+					    end;
+					end;
+					if (storeF) then begin
+					  RecordStore(CUr,true);
+					end;
+				end;
+			end;								
+				
+			if (NextImportLine(true)) then begin end;
+	end;		
+
+return;
+end; //Edit***************************Sasha2,11:45 04.07.2017 }
+
+global 	//Edit***************************Sasha2,11:45 04.07.2017 {
+updating procedure AddCUClassificationIn(record RcVc RepSpec)
+begin
+  
+  HandleCUClassificationIn(0);
+  
+return;
+end; //Edit***************************Sasha2,11:45 04.07.2017 }
+
+global 	//Edit***************************Sasha2,11:45 04.07.2017 {
+updating procedure ChangeCUClassificationIn(record RcVc RepSpec)
+begin
+  
+  HandleCUClassificationIn(1);
+  
+return;
+end; //Edit***************************Sasha2,11:45 04.07.2017 }
+
+global 	//Edit***************************Sasha2,11:45 04.07.2017 {
+updating procedure RemoveCUClassificationIn(record RcVc RepSpec)
+begin
+  
+  HandleCUClassificationIn(2);
+  
+return;
+end; //Edit***************************Sasha2,11:45 04.07.2017 }

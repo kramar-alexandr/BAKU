@@ -2132,3 +2132,82 @@ begin
   EditField(h,v,150,"Товар",Normal,f1,false,INSClass);
   EndWindow;
 end;
+
+window AddCUClassificationIClass:1 //Edit***************************Sasha2,14:11 04.07.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Добавление класс-ций клиенту",AddCUClassificationIClass,CGIcW,-);
+  SetWRect(20,80,470,320);
+  i=1; //номер колонки
+  h=10;  v=15;
+  StaticText(h,v,"Формат импорта",false);
+  h=20;  v=40;
+  StaticText(h,v,"Список колонок:",false);
+  v=v+30; vs=25;
+  StaticText(h,v,i &". Код клиента",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+  StaticText(h,v+=vs,i &". Классификации",false);
+	 StaticText(h+150,v,"Обязательное поле (через запятую)",false);
+	 i=i+1;
+  h=10;
+  StaticText(h,v+=45,"Примечание:   Все столбцы разделены <Tab>",false);
+
+  EndWindow;
+end;
+
+window ChangeCUClassificationIClass:1 //Edit***************************Sasha2,14:11 04.07.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Подмена класс-ций у клиента",ChangeCUClassificationIClass,CGIcW,-);
+  SetWRect(20,80,470,320);
+  i=1; //номер колонки
+  h=10;  v=15;
+  StaticText(h,v,"Формат импорта",false);
+  h=20;  v=40;
+  StaticText(h,v,"Список колонок:",false);
+  v=v+30; vs=25;
+  StaticText(h,v,i &". Код клиента",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+  StaticText(h,v+=vs,i &". Изменить с класс-ции",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+	StaticText(h,v+=vs,i &". На классфикацию",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+  h=10;
+  StaticText(h,v+=45,"Примечание:   Все столбцы разделены <Tab>",false);
+
+  EndWindow;
+end;
+
+window RemoveCUClassificationIClass:1 //Edit***************************Sasha2,14:11 04.07.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+real h,v,vs;
+Integer i;
+  WindowBegin("Удаление класс-ций у клиента",RemoveCUClassificationIClass,CGIcW,-);
+  SetWRect(20,80,470,320);
+  i=1; //номер колонки
+  h=10;  v=15;
+  StaticText(h,v,"Формат импорта",false);
+  h=20;  v=40;
+  StaticText(h,v,"Список колонок:",false);
+  v=v+30; vs=25;
+  StaticText(h,v,i &". Код клиента",false);
+	 StaticText(h+150,v,"Обязательное поле",false);
+	 i=i+1;
+  StaticText(h,v+=vs,i &". Классификации",false);
+	 StaticText(h+150,v,"Обязательное поле (через запятую), но",false);
+	 StaticText(h+150,v+15,"если поле пустое, все класс-ции клиента убираются",false);
+	 i=i+1;
+  h=10;
+  StaticText(h,v+=45,"Примечание:   Все столбцы разделены <Tab>",false);
+
+  EndWindow;
+end;

@@ -261,6 +261,9 @@ begin
 	Import("Импорт регистров БЕЗ ПЕРЕЗАПИСИ",ImportOfRegisterIClass,ImportOfRegister,modDBMain);	//Edit----------------------Dima  27.05.2015
 	Import("Импорт регистров C ПЕРЕЗАПИСЬЮ",ImportOfRegisterRewriteIClass,ImportOfRegisterRewriting,modDBMain);
 	Import("Замена штрих-кодов в карточках товаров",ReplaceBarCodeIClass,ReplaceBarCodeIn,modDBMain); //Edit***************************Sasha2,10:11 30.06.2016
+	Import("Импорт классификаций клиента: добавление",AddCUClassificationIClass,AddCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
+	Import("Импорт классификаций клиента: подмена",ChangeCUClassificationIClass,ChangeCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
+	Import("Импорт классификаций клиента: удаление",RemoveCUClassificationIClass,RemoveCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
 
 	SetBegin(900);
 		SetText(0,"Обычный");
