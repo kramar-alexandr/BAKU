@@ -2804,8 +2804,6 @@ begin
 			OutString(69,0,"Валюта",false);
 			if(RepSpec.vals0!=0)then begin
 				OutString(93,0,"В USD по курсу: " & RepSpec.vals0,false);
-			end else begin
-				OutString(93,0,"",false);
 			end;
 			OutString(118,0,"",false);
 			OutString(142,0,"Терминал",false);
@@ -3246,9 +3244,9 @@ begin
           SaldoEndPeriod50n51 = SaldoEndPeriod50n51 + SaldoEndPeriod52;
         end;
       end;
-      SaldoEndPeriod50n53USD = SaldoEndPeriod50n53USD + Balance52USD;
+      /*SaldoEndPeriod50n53USD = SaldoEndPeriod50n53USD + Balance52USD;
       SaldoEndPeriod50n53EUR = SaldoEndPeriod50n53EUR + Balance52EUR;
-      SaldoEndPeriod50n53AZN = SaldoEndPeriod50n53AZN + Balance52AZN;
+      SaldoEndPeriod50n53AZN = SaldoEndPeriod50n53AZN + Balance52AZN;*///Edit-------------------Vitalii 14:21 04.07.2017
       StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"Остаток общего счета",false);
@@ -3273,6 +3271,29 @@ begin
 				OutString(44,0,SaldoEndPeriod51,false);
 				OutString(69,0,"AZN терминал",false);
 			EndFormat;
+      if (Balance52USD!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(44,0,Balance52USD,false);
+          OutString(69,0,"USD банк",false);
+        EndFormat;
+      end;
+      if (Balance52EUR!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(44,0,Balance52EUR,false);
+          OutString(69,0,"EUR банк",false);
+        EndFormat;
+      end;if (Balance52AZN!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(44,0,Balance52AZN,false);
+          OutString(69,0,"AZN банк",false);
+        EndFormat;
+      end;
 			Gray_Divider(25,90);
 			StartFormat(15);
 				OutString(0,0,"",false);
