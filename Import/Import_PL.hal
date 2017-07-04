@@ -576,9 +576,9 @@ begin
 
 	while (TestEOF()==false) begin
 			code = ImportField;
-			importedClass = ImportField;
+			importedClass = UpperCase(ImportField);
 			if (mode==1) then begin
-			  importedClassForExchange = ImportField;
+			  importedClassForExchange = UpperCase(ImportField);
 			end;
 
 			if(nonblank(code)) then begin
