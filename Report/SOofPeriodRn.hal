@@ -95,7 +95,7 @@ begin
 				startformat(15);
 				outstring(0,0,ORr.OrderClass,false);
 				outstring(1,0,ORr.SerNr,false);
-				outstring(2,0,ORr.OrdDate,false);
+				outdate(2,0,ORr.OrdDate,false);
 				outstring(3,0,ORrw.ArtCode,false);
 				INr.Code = ORrw.ArtCode;
 				ReadFirstKey("Code",INr,1,true);
@@ -131,14 +131,14 @@ begin
 
 				outstring(6,0,brandstr,false);
 				outstring(7,0,INr.Name,false);
-				outstring(8,0,ORrw.Quant,false);
+				outval(8,0,ORrw.Quant,M4Val,false);
 				outstring(9,0,ORrw.UnitCode,false);
-				outstring(10,0,ORrw.Price,false);
+				outval(10,0,ORrw.Price,M4Val,false);
 				CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,ORrw.Price,BCb.StdBaseCur,price,DefaultCurRoundOff);
-				outstring(11,0,price,false);
-				outstring(12,0,ORrw.Sum,false);
+				outval(11,0,price,M4Val,false);
+				outval(12,0,ORrw.Sum,M4Val,false);
 				CurValToOtherCur(ORr.OrdDate,ORr.CurncyCode,ORrw.Sum,BCb.StdBaseCur,sum,DefaultCurRoundOff);
-				outstring(13,0,sum,false);
+				outval(13,0,sum,M4Val,false);
 			//Edit***********************Vitalii 10:31 09.09.2014
 			  brandCost = 0;
 				stoim = 0;
@@ -236,13 +236,13 @@ begin
   				  end;
   				end;
 				end;
-				outstring(14,0,stoim,false);
-				outstring(15,0,razn,false);
-				outstring(16,0,brandCost,false);
+				outval(14,0,stoim,M4Val,false);
+				outval(15,0,razn,M4Val,false);
+				outval(16,0,brandCost,M4Val,false);
 				outstring(17,0,brandCurncy,false);
 				outstring(18,0,ORr.CustCode,false);
 				outstring(19,0,ORr.Addr0,false);
-				outstring(20,0,ORrw.vRebate,false);
+				outval(20,0,ORrw.vRebate,M4Val,false);
 				outstring(21,0,ORr.SalesMan,false);
 				endformat;
 			end;
