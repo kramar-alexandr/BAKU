@@ -224,7 +224,7 @@ begin
 		if(nonblank(frcode) and CUr.Code>tocode)then begin TrHs = false; testf = false; end;
 		if(RepSpec.flags[4]>0 and CUr.DateCreated>RepSpec.sEndDate)then begin testf = false; TrHs = false; end;
 		
-		if(nonblank(RepSpec.Stext) and !setinset(RepSpec.Stext,CUr.Classification))then begin testf = false; end;
+		if(nonblank(RepSpec.f2) and !setinset(RepSpec.f2,CUr.Classification))then begin testf = false; end;
 		
 		RecordClear(Letr);
 		if(nonblank(RepSpec.f1))then begin
@@ -255,8 +255,8 @@ begin
 		if(nonblank(RepSpec.LastAcc)) then begin
 			if (!StringInText(RepSpec.LastAcc,Letr)) then begin testf = false; end;
 		end;
-		if(nonblank(RepSpec.Stext)) then begin
-			if (!StringInText(RepSpec.Stext,Letr)) then begin testf = false; end;
+		if(nonblank(RepSpec.f2)) then begin
+			if (!StringInText(RepSpec.f2,Letr)) then begin testf = false; end;
 		end;
 		if(nonblank(RepSpec.FirstAcc) and RepSpec.FirstAcc!=CUr.RebCode) then begin	testf = false; end;
 		if(RepSpec.flags[3]>0 and blank(CUr.Phone) and blank(CUr.AltPhone) and blank(CUr.Mobile))then begin	testf=false;	end;

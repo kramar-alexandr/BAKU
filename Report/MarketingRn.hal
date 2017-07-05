@@ -7,6 +7,7 @@ begin
 date sd,ed;
 record MarketingVc MRr;
 record IVVc IVr;
+record CUVc CUr;
 boolean findf, TrHs, testf;
 val totalqty, totalcost, totalcost2;
 record LocationVc Locr, Loc2r;
@@ -103,9 +104,12 @@ array integer positions;
 	findf = true;
 	while(loopKey("TransDate",MRr,1,TrHs))begin
 		testf = true;
-		if(MRr.TransDate<sd and MRr.TransDate>ed)then begin TrHs = false; testf = false; end;
+		if(MRr.TransDate<sd or MRr.TransDate>ed)then begin TrHs = false; testf = false; end;
 		if(nonblank(location) and MRr.Location!=location)then begin testf = false; end;
-		
+		if (NonBlank(RepSpec.f3)) then begin
+		  CUr.Code = MRr.CustCode;
+		  if (ReadFirstMain(CUr,1,true) and SetInSet(RepSpec.f3,CUr.Classification)==false) then begin testf = false; end;
+		end;
 		if(testf)then begin
 			StartFormat(15);
 			outstring(positions[0],0,MRr.SerNr,false);

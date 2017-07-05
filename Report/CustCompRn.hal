@@ -69,6 +69,7 @@ BEGIN
   Array Boolean achangecrncyf;
   Integer acrncnt,blcnt;
   string 255 brand,type;
+  vector Boolean excludeCustomer; //Edit***************************Sasha2,9:37 05.07.2017
 
 
   CntPOSCurrencies(carncy,achangecrncyf,acrncnt);
@@ -190,7 +191,14 @@ BEGIN
 							if (IVr.Invalid==1) then begin testf1 = false; end;
 							If(RepSpec.sStartDate>IVr.TransDate) then begin testf1 = false; end;
 							If(IVr.TransDate>RepSpec.sEndDate) then begin TS = false; testf1 = false; end;
-						
+							if (excludeCustomer[IVr.CustCode]) then begin testf1 = false; end; //Edit***************************Sasha2,18:00 04.07.2017 {
+						  if (testf1 and NonBlank(RepSpec.f3)) then begin
+          		  CUr.Code = RepSpec.f1;
+          		  if (ReadFirstMain(CUr,1,true) and SetInSet(RepSpec.f3,CUr.Classification)==false) then begin 
+          		    testf1 = false; 
+          		    excludeCustomer[IVr.CustCode] = true;
+          		  end;
+          		end; //Edit***************************Sasha2,18:00 04.07.2017 }
 							if (testf1) then begin
 								ivfr = 1; ivto = 1;
 								 fr = 1; to1 = 1;

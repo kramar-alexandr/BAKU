@@ -31,6 +31,9 @@ begin
 			end else begin
 				custcode = CUr.Code;
 				findf = true;
+				if (NonBlank(RepSpec.f3) and SetInSet(RepSpec.f3,CUr.Classification)==false) then begin
+				  findf = false; //Edit***************************Sasha2,17:07 04.07.2017
+				end;
 			end;
 		end;
 	end;
@@ -43,6 +46,9 @@ begin
 			readfirstkey("CustCode",LCr,1,true);
 			custcode = CUr.Code;
 			findf = true;
+			if (NonBlank(RepSpec.f3) and SetInSet(RepSpec.f3,CUr.Classification)==false) then begin
+			  findf = false; //Edit***************************Sasha2,17:07 04.07.2017
+			end;
 		end;
 	end;
 	
@@ -69,7 +75,7 @@ begin
 				setcompany(i+1,false);
 					IVr.CustCode = custcode;
 					TrHs = true;
-					while(loopbackkey("CustCode",IVr,1,TrHs))begin
+					while(loopbackkey("CustCode",IVr,1,TrHs)) begin
 						testf = true;
 						if(IVr.CustCode!=custcode)then begin TrHs = false; testf = false; end;
 						if(IVr.OKFlag==0)then begin testf = false; end;
@@ -148,7 +154,7 @@ begin
 		end else begin
 			if(blank(RepSpec.f1) and blank(RepSpec.f2))then begin
 				LCr.SerNr = "";
-				while(loopmain(LCr,1,true))begin
+				while(loopmain(LCr,1,true)) begin
 					testf1 = true;
 					if(blank(LCr.CustCode))then begin testf1 = false; end;
 					if(blank(LCr.Closed==1))then begin testf1 = false; end;
@@ -157,87 +163,90 @@ begin
 						CUr.Code = LCr.CustCode;
 						custcode = "";
 						readfirstmain(CUr,1,true);
-						custcode = CUr.Code;
-						aqty = 0;
-						lastdate = "";
-						lasttime = "";
-						For(i=0;i<mtrw;i=i+1) begin
-							setcompany(i+1,false);
-								IVr.CustCode = custcode;
-								TrHs = true;
-								while(loopbackkey("CustCode",IVr,1,TrHs))begin
-									testf = true;
-									if(IVr.CustCode!=custcode)then begin TrHs = false; testf = false; end;
-									if(IVr.OKFlag==0)then begin testf = false; end;
-									if(IVr.Sum4<=0)then begin testf = false; end;
-									if(IVr.Invalid==1)then begin testf = false; end;
-									
-									if(testf)then begin
-										TrHs = false;
-										if(IVr.InvDate<lastdate)then begin
-											testf = false;
-										end;
-										if(testf)then begin
-											if(IVr.InvDate==lastdate	and lasttime>IVr.TransTime)then begin
-												testf = false;
-											end;
-											if(testf)then begin
-												lastdate = IVr.InvDate;
-												lasttime = IVr.TransTime;
-												Locr.Code = IVr.Location;
-												readfirstmain(Locr,1,true);
-												lastloc = Locr.Code & " " & Locr.Name;
-								
-												ivmtrw = matrowcnt(IVr);
-												aqty = 0;
-												For(ivi=0;ivi<ivmtrw;ivi=ivi+1) begin
-													matrowget(IVr,ivi,IVrw);
-													if(IVrw.stp==kInvoiceRowTypeNormal)then begin
-														artcode[ivi] = IVrw.ArtCode;
-														qty[ivi] = IVrw.Quant;
-														sum[ivi] = IVrw.Sum;
-														aqty = aqty + 1;
-													end;
-												end; 
-											end;
-										end;
-										testf = false;							
-									end;
-								end;
-								resetloop(IVr);
-				
-							resetcompany(1);
-						end; 
-						if(aqty>0)then begin
-							startformat(15);
-								outstring(0,0,LCr.SerNr,false);
-								outstring(50,0,CUr.Code,false);
-								outstring(100,0,lastdate,false);
-								outstring(150,0,lastloc,false);
-								outstring(200,0,artcode[0],false);
-								outstring(250,0,sum[0],false);
-								outstring(300,0,CUr.Name,false);
-								outstring(350,0,CUr.InvAddr0,false);
-								outstring(400,0,CUr.Phone,false);
-							endformat;
-							if(aqty>1)then begin
-								For(i=1;i<aqty;i=i+1) begin
-									startformat(15);
-										outstring(0,0,"",false);
-										outstring(50,0,"",false);
-										outstring(100,0,"",false);
-										outstring(150,0,"",false);
-										outstring(200,0,artcode[i],false);
-										outstring(250,0,sum[i],false);
-										outstring(300,0,"",false);
-										outstring(350,0,"",false);
-										outstring(400,0,"",false);
-									endformat;
-								end;
-							end;
-							gray_divider(0,1);
-							startformat(15);
-							endformat;
+						if (NonBlank(RepSpec.f3) and SetInSet(RepSpec.f3,CUr.Classification)==false) then begin testf1 = false; end; //Edit***************************Sasha2,17:41 04.07.2017
+						if (testf1) then begin
+						  custcode = CUr.Code;
+  						aqty = 0;
+  						lastdate = "";
+  						lasttime = "";
+  						For(i=0;i<mtrw;i=i+1) begin
+  							setcompany(i+1,false);
+  								IVr.CustCode = custcode;
+  								TrHs = true;
+  								while(loopbackkey("CustCode",IVr,1,TrHs)) begin
+  									testf = true;
+  									if(IVr.CustCode!=custcode)then begin TrHs = false; testf = false; end;
+  									if(IVr.OKFlag==0)then begin testf = false; end;
+  									if(IVr.Sum4<=0)then begin testf = false; end;
+  									if(IVr.Invalid==1)then begin testf = false; end;
+  									
+  									if(testf)then begin
+  										TrHs = false;
+  										if(IVr.InvDate<lastdate)then begin
+  											testf = false;
+  										end;
+  										if(testf)then begin
+  											if(IVr.InvDate==lastdate	and lasttime>IVr.TransTime)then begin
+  												testf = false;
+  											end;
+  											if(testf)then begin
+  												lastdate = IVr.InvDate;
+  												lasttime = IVr.TransTime;
+  												Locr.Code = IVr.Location;
+  												readfirstmain(Locr,1,true);
+  												lastloc = Locr.Code & " " & Locr.Name;
+  								
+  												ivmtrw = matrowcnt(IVr);
+  												aqty = 0;
+  												For(ivi=0;ivi<ivmtrw;ivi=ivi+1) begin
+  													matrowget(IVr,ivi,IVrw);
+  													if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+  														artcode[ivi] = IVrw.ArtCode;
+  														qty[ivi] = IVrw.Quant;
+  														sum[ivi] = IVrw.Sum;
+  														aqty = aqty + 1;
+  													end;
+  												end; 
+  											end;
+  										end;
+  										testf = false;							
+  									end;
+  								end;
+  								resetloop(IVr);
+  				
+  							resetcompany(1);
+  						end; 
+  						if(aqty>0)then begin
+  							startformat(15);
+  								outstring(0,0,LCr.SerNr,false);
+  								outstring(50,0,CUr.Code,false);
+  								outstring(100,0,lastdate,false);
+  								outstring(150,0,lastloc,false);
+  								outstring(200,0,artcode[0],false);
+  								outstring(250,0,sum[0],false);
+  								outstring(300,0,CUr.Name,false);
+  								outstring(350,0,CUr.InvAddr0,false);
+  								outstring(400,0,CUr.Phone,false);
+  							endformat;
+  							if(aqty>1)then begin
+  								For(i=1;i<aqty;i=i+1) begin
+  									startformat(15);
+  										outstring(0,0,"",false);
+  										outstring(50,0,"",false);
+  										outstring(100,0,"",false);
+  										outstring(150,0,"",false);
+  										outstring(200,0,artcode[i],false);
+  										outstring(250,0,sum[i],false);
+  										outstring(300,0,"",false);
+  										outstring(350,0,"",false);
+  										outstring(400,0,"",false);
+  									endformat;
+  								end;
+  							end;
+  							gray_divider(0,1);
+  							startformat(15);
+  							endformat;
+  						end;
 						end;
 					end;
 				end;
@@ -317,6 +326,9 @@ record CUVc CUr;
 			end else begin
 				custcode = CUr.Code;
 				findf = true;
+				if (NonBlank(RepSpec.f5) and SetInSet(RepSpec.f5,CUr.Classification)==false) then begin
+				  findf = false; //Edit***************************Sasha2,17:07 04.07.2017
+				end;
 			end;
 		end;
 	end;
@@ -329,6 +341,9 @@ record CUVc CUr;
 			readfirstkey("CustCode",LCr,1,true);
 			custcode = CUr.Code;
 			findf = true;
+			if (NonBlank(RepSpec.f5) and SetInSet(RepSpec.f5,CUr.Classification)==false) then begin
+			  findf = false; //Edit***************************Sasha2,17:07 04.07.2017
+			end;
 		end;
 	end;
 		
@@ -533,6 +548,8 @@ record CUVc CUr;
           testf = false;
           if (ReadFirstKey("ActCustCode",LCr,1,true)) then begin testf = true; end;
           if (RepSpec.flags[3]!=0) then begin testf = true; end;
+          
+          if (NonBlank(RepSpec.f5) and SetInSet(RepSpec.f5,CUr.Classification)==false) then begin testf = false; end; //Edit***************************Sasha2,17:09 04.07.2017
           if (testf) then begin
             For(ivi=0;ivi<aqty;ivi=ivi+1) begin
 							qty[ivi] = blankval;

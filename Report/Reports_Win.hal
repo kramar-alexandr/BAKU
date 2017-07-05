@@ -320,6 +320,7 @@ begin
   //EditFieldTL(h,v+=vs, 150,"Категории",   M4UStr,Normal,30,f3,false,CCatSClass);
   //EditFieldTL(h,v+=vs,150,"Классификация",M4UStr,Normal,30,Stext,false,CClassSClass);
   EditFieldTL(h,v+=vs, 150,"Компания",   M4UStr,Normal,41,f2,false, CompaniesbSClass);
+  EditFieldTL(h,v+=vs, 150,"Класс-ция контакта",   M4UStr,Normal,41,f3,false, CClassSClass);
 	//EditFieldTL(h,v+=20, 150,"Склад",   M4UStr,Normal,20,FirstAcc,false,LocationSClass);
 	//EditFieldTL(h,v+=vs ,100,"Продавец (от кл.)",M4UStr,Normal,10,AccStr,false,UserSClass);
 	//EditFieldTL(h,v+=vs ,100,"Группа продажи (от кл.)",M4UStr,Normal,5,Language,false,SalesGroupSClass);
@@ -347,6 +348,7 @@ begin
   PeriodField(h,v=6,"Период");
   EditFieldTL(h,v+=vs, 150,"Клиент",   M4UStr,Normal,30,f1,false,CUSClass);
   EditFieldTL(h,v+=vs, 150,"Компания",   M4UStr,Normal,41,f2,false, CompaniesbSClass);
+  EditFieldTL(h,v+=vs, 150,"Класс-ция контакта",M4UStr,Normal,41,f3,false, CClassSClass);
 
   EndWindow;
 end; //Edit ************************** Sasha2, Friday, 27 June 2013 }
@@ -390,6 +392,7 @@ begin
 
   EditFieldTL(h,v+=vs, 150,"Карта",   M4UStr,Normal,30,f1,false,LoyaltyCardSClass);
   EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
+  EditFieldTL(h,v+=vs, 150,"Класс-ция контакта",   M4UStr,Normal,30,f3,false,CClassSClass);
 	
   EndWindow;
 end;
@@ -408,6 +411,7 @@ begin
   EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f2,false,CUSClass);
   EditFieldTL(h,v+=vs, 150,"Компании",   M4Str,Normal,90,f3,false,Companies2SClass);//Edit----------------------Dima  06.07.2015
   EditFieldTL(h,v+=vs, 150,"Бутики",   M4Str,Normal,200,f4,false,LocationSClass);	//Edit----------------------Dima 07.07.2015
+  EditFieldTL(h,v+=vs, 150,"Класс-ция контакта",M4Str,Normal,200,f5,false,CClassSClass);
   CheckBox(h-100,v+=30,0,"Показывать, только тех,кто не совершал покупок",flags[1]);
   CheckBox(h-100,v+=30,0,"Детальный",flags[2]);
   CheckBox(h-100,v+=30,0,"По всем покупателям",flags[3]);
@@ -534,6 +538,7 @@ begin
 
   PeriodField(h,v=6,"Период");
   EditFieldTL(h,v+=vs, 150,"Магазин", M4UStr,Normal,30,f1,false,LocationSClass);
+  EditFieldTL(h,v+=vs, 150,"Класс-ция контакта", M4UStr,Normal,30,f3,false,CClassSClass);
  	
   EndWindow;
 end;
