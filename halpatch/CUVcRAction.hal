@@ -187,6 +187,9 @@ BEGIN
     end;
   end;
   CUr.CUType = 1;
+  CUr.Gender = 3; //Edit***************************Sasha2,11:42 05.07.2017
+  CUr.MarStatus = 4; //Edit***************************Sasha2,11:42 05.07.2017
+  
   CUVcRecordDefaults = res; 
   RETURN;
 END;

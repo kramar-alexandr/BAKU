@@ -3241,16 +3241,20 @@ begin
 	CheckBox(h+350,v=v+vs,0,"Разрешить звонок",AllowSendCall);
 	CheckBox(h+350,v=v+vs,0,"Разрешить куръерскую почту",AllowSendkMail);
 	
-	ButtonFrame(h+350,v=100,100,3,"");
-  RadioButton(h+350,v,0,0,"Г-н",Gender);
+	ButtonFrame(h+350,v=100,100,4,"");
+	RadioButton(h+350,v,3,0,"-",Gender); //Edit***************************Sasha2,11:35 05.07.2017
+  RadioButton(h+350,v+=17,0,0,"Г-н",Gender);
   RadioButton(h+350,v+=17,1,0,"Г-жа",Gender);
   RadioButton(h+350,v+=17,2,0,"Компания",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
+  //pay attention that Gender RadioButton #3 is in use
  
-  ButtonFrame(h+350,v+=50,100,4,"Семейное положение");
-  RadioButton(h+350,v,0,0,"Не женат",MarStatus);
+  ButtonFrame(h+350,v+=50,100,5,"Семейное положение");
+  RadioButton(h+350,v,4,0,"-",MarStatus); //Edit***************************Sasha2,11:38 05.07.2017
+  RadioButton(h+350,v+=17,0,0,"Не женат",MarStatus);
   RadioButton(h+350,v+=17,1,0,"Замужем",MarStatus);
   RadioButton(h+350,v+=17,2,0,"В разводе",MarStatus);
   RadioButton(h+350,v+=17,3,0,"Вдовa/-ец",MarStatus);
+  //pay attention that MarStatus RadioButton #4 is in use
 	
 	v=120;
 	EditField(h,v+=vs,95,"Телефон дом.",Normal,Phone,false,0);// Edit ************************** Wednesday, 16 December 2015 11:25:09

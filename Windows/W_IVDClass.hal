@@ -4866,19 +4866,23 @@ begin
   EditField(h,v+=vs,70,"Компания скидки",ViewOnly,BirthRebateInComp,false,0);
   EditField(h,v+=vs,70,"Номер сч/ф",ViewOnly,BirthRebateTransNr,false,0);
   
-  ButtonFrame(h2,v=vm+20,100,3,"Пол");
-  RadioButton(h2,v,0,0,"Мужской",Gender);
+  ButtonFrame(h2,v=vm+20,100,4,"Пол");
+  RadioButton(h2,v,3,0,"-",Gender); //Edit***************************Sasha2,11:35 05.07.2017
+  RadioButton(h2,v+=17,0,0,"Мужской",Gender);
   RadioButton(h2,v+=17,1,0,"Женский",Gender);
   RadioButton(h2,v+=17,2,0,"Компания",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
+  //pay attention that Gender RadioButton #3 is in use
   
   CheckBox(h2+130,v=vm+20,0,"Курит",Smoking);
   CheckBox(h2+130,v+=17,0,"В черном списке",Blacklist);
   
-  ButtonFrame(h2,vm=(v+=50),100,4,"Семейное положение");
-  RadioButton(h2,v,0,0,"Не женат",MarStatus);
+  ButtonFrame(h2,vm=(v+=70),100,5,"Семейное положение");
+  RadioButton(h2,v,4,0,"-",MarStatus); //Edit***************************Sasha2,11:38 05.07.2017
+  RadioButton(h2,v+=17,0,0,"Не женат",MarStatus);
   RadioButton(h2,v+=17,1,0,"Замужем",MarStatus);
   RadioButton(h2,v+=17,2,0,"В разводе",MarStatus);
   RadioButton(h2,v+=17,3,0,"Вдовa/-ец",MarStatus);
+  //pay attention that MarStatus RadioButton #4 is in use
 
   ButtonFrame(h2=h2+130,v=vm,100,3,"Возраст");
   RadioButton(h2,v,1,0,"Ребенок",AgeStatus);

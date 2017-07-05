@@ -1,6 +1,6 @@
 SetLangMode(LangRussian,"RUS",0);
 external procedure ExtractObj(string,var Integer,var string);
-
+external function string 50 GetGender(integer);
 
 global procedure BayAcivityRunRn(record RcVc RepSpec)
 begin
@@ -496,11 +496,7 @@ record CUVc CUr;
                   end;
                   outstring(tab[8],0,BCb.BaseCur1,false);
 									outstring(tab[9],0,CUr.Name,false);
-									if (CUr.Gender==0) then begin
-									  outstring(tab[10],0,USetStr(20745),false);
-									end else begin
-									  outstring(tab[10],0,USetStr(20746),false);
-									end;
+									outstring(tab[10],0,GetGender(CUr.Gender),false);
 									outstring(tab[11],0,CUr.Mobile,false);
 									outstring(tab[12],0,CUr.eMail,false);
 								endformat;
@@ -526,11 +522,7 @@ record CUVc CUr;
 						outstring(tab[6],0,"",false);
 						outstring(tab[8],0,curncy[i],false);
 						outstring(tab[9],0,CUr.Name,false);
-						if (CUr.Gender==0) then begin
-						  outstring(tab[10],0,USetStr(20745),false);
-						end else begin
-						  outstring(tab[10],0,USetStr(20746),false);
-						end;
+						outstring(tab[10],0,GetGender(CUr.Gender),false);
 						outstring(tab[11],0,CUr.Mobile,false);
 						outstring(tab[12],0,CUr.eMail,false);
 					endformat;
@@ -646,11 +638,7 @@ record CUVc CUr;
                       end;
                       outstring(tab[8],0,BCb.BaseCur1,false);
                       outstring(tab[9],0,CUr.Name,false);
-                      if (CUr.Gender==0) then begin
-    									  outstring(tab[10],0,USetStr(20745),false);
-    									end else begin
-    									  outstring(tab[10],0,USetStr(20746),false);
-    									end;
+                      outstring(tab[10],0,GetGender(CUr.Gender),false);
     									outstring(tab[11],0,CUr.Mobile,false);
     									outstring(tab[12],0,CUr.eMail,false);
                     endformat;
@@ -675,11 +663,7 @@ record CUVc CUr;
 									outstring(tab[6],0,"",false);
 									outstring(tab[8],0,curncy[i],false);
 									outstring(tab[9],0,CUr.Name,false);
-									if (CUr.Gender==0) then begin
-      						  outstring(tab[10],0,USetStr(20745),false);
-      						end else begin
-      						  outstring(tab[10],0,USetStr(20746),false);
-      						end;
+									outstring(tab[10],0,GetGender(CUr.Gender),false);
       						outstring(tab[11],0,CUr.Mobile,false);
       						outstring(tab[12],0,CUr.eMail,false);
 								endformat;
@@ -716,11 +700,7 @@ record CUVc CUr;
 									outstring(tab[7],0,"",false);
                   outstring(tab[8],0,"",false);
 									outstring(tab[9],0,CUr.Name,false);
-									if (CUr.Gender==0) then begin
-      						  outstring(tab[10],0,USetStr(20745),false);
-      						end else begin
-      						  outstring(tab[10],0,USetStr(20746),false);
-      						end;
+      						outstring(tab[10],0,GetGender(CUr.Gender),false);
       						outstring(tab[11],0,CUr.Mobile,false);
       						outstring(tab[12],0,CUr.eMail,false);						
 									endformat;

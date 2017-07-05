@@ -4075,18 +4075,23 @@ begin
   EditField(h,v+=vs,300,"Diet Remarks",Normal,DietRemarks,false,0);
   EditField(h,v+=vs,300,"Req. Remarks",Normal,RequirementRemarks,false,0);
 
-  ButtonFrame(h2,v=vm+20,100,2,"Sex");
+  ButtonFrame(h2,v=vm+20,100,4,"Sex");
+  RadioButton(h2,v,3,0,"-",Gender); //Edit***************************Sasha2,11:35 05.07.2017
   RadioButton(h2,v,0,0,"Male",Gender);
   RadioButton(h2,v+=17,1,0,"Female",Gender);
+  RadioButton(h2,v+=17,2,0,"Group",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
+  //pay attention that Gender RadioButton #3 is in use
 
   CheckBox(h2+130,v=vm+20,0,"Smoker",Smoking);
   CheckBox(h2+130,v+=17,0,"Blacklisted",Blacklist);
 
-  ButtonFrame(h2,vm=(v+=40),100,4,"Marital Status");
+  ButtonFrame(h2,vm=(v+=60),100,5,"Marital Status");
+  RadioButton(h2,v,4,0,"-",MarStatus); //Edit***************************Sasha2,11:38 05.07.2017
   RadioButton(h2,v,0,0,"Single",MarStatus);
   RadioButton(h2,v+=17,1,0,"Married",MarStatus);
   RadioButton(h2,v+=17,2,0,"Divorced",MarStatus);
   RadioButton(h2,v+=17,3,0,"Widowed",MarStatus);
+  //pay attention that MarStatus RadioButton #4 is in use
 
   ButtonFrame(h2=h2+130,v=vm,100,3,"Age Status");
   RadioButton(h2,v,1,0,"Child",AgeStatus);

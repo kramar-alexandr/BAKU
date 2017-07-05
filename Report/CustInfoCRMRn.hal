@@ -30,6 +30,7 @@ string 50 res;
 		case 0: res = USetStr(35090);
 		case 1: res = USetStr(35091);
 		case 2: res = USetStr(35092);
+		case 3: res = "Unknown";
 	end;
 	
 GetGender = res;
@@ -45,6 +46,7 @@ string 50 res;
 		case 1: res = USetStr(35094);
 		case 2: res = USetStr(35095);
 		case 3: res = USetStr(35096);
+		case 4: res = "Unknown";
 	end;
 	
 GetMaritalStatus = res;

@@ -276,6 +276,7 @@ begin
   		CUr.eMail = Marketingr.eMail;
   		if (Marketingr.Gender>0) then begin
   		  switch (Marketingr.Gender) begin
+  		    case 0: CUr.Gender = 4;
   		    case 1: CUr.Gender = 0;
   		    case 2: CUr.Gender = 1;
   		    otherwise 
