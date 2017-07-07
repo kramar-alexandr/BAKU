@@ -720,13 +720,13 @@ procedure ORVc_PastePayDeal(var record ORVc ORp)
 BEGIN
   record PDVc PDr;
   
-  //if (blank(ORp.PriceList)) then begin
+  if (blank(ORp.PriceList)) then begin
     PDr.Code = ORp.PayDeal;
     if (ReadFirstMain(PDr,1,true)) then begin
       ORp.PriceList = PDr.PriceList;
       ORDUpdatePrices(ORp,false);
     end;
-  //end;
+  end;
   RETURN;
 END;
 
