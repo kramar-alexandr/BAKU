@@ -2211,3 +2211,13 @@ Integer i;
 
   EndWindow;
 end;
+
+window SalesmanSClass:2
+  wtag("language","ENG"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Выберите продавца",SalesmanSClass,CGother,HBlRecType);
+  SetWRect(240,80,500,298);
+  StringList(9,9,236,209);
+  SearchField("Search");
+  EndWindow;
+end;
