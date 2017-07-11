@@ -77,16 +77,28 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
-      cnf = false;
-      loc = IVr.Location;
-      if (LocInArr[loc]==false) then begin
-				Locr.Code = loc;
-        ReadFirstMain(Locr,1,true);
-				LocInArr[loc] = true;
-        LocArr[LAi] = loc;
-				LocName[loc] = Locr.Name;
-        LAi = LAi + 1;
+      if (currentcompany==9) then begin
+        IVr.Location = "CS";
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          LocName[IVr.Location] = "CreativeSystem";
+        end;
+      end else begin
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          Locr.Code = IVr.Location;
+          if (ReadFirstMain(Locr,1,true)) then begin
+            LocName[IVr.Location] = Locr.Name;
+          end else begin
+            LocName[IVr.Location] = IVr.Location;
+          end;
+        end;
       end;
+      cnf = false;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
         MonthInArr[month] = true;
