@@ -28,7 +28,7 @@ begin
   record LocationVc Locr;
   row IVVc IVrw;
   string 20 key;
-  string 255 tstr,loc,month;
+  string 255 tstr,month;
   integer keycnt,rwcnt,normrwcnt,LAi,MAi,i,j;
   val sumoborot,sumvozvrat;
   vector boolean LocInArr,MonthInArr,MonthLoc,LocDayNameObor,LocDayNameVozv;
@@ -105,8 +105,8 @@ begin
         MonthArr[MAi] = month;
         MAi = MAi + 1;
       end;
-      MonthLoc[month & ";" & loc] = true;
-      tstr = loc & ";" & month & ";" & getday(IVr.InvDate) & ";";
+      MonthLoc[month & ";" & IVr.Location] = true;
+      tstr = IVr.Location & ";" & month & ";" & getday(IVr.InvDate) & ";";
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
