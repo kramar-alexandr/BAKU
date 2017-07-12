@@ -22,13 +22,13 @@ global
 procedure DaysExcelRn(record RcVc RepSpec,var area areatofile)
 begin
   array string 255 LocArr,MonthArr,NameArr;
-  boolean TrHs,testf,cnf;
+  boolean TrHs,testf,cnf,emptyf;
   date startdate,enddate;
   record IVVc IVr;
   record LocationVc Locr;
   row IVVc IVrw;
   string 20 key;
-  string 255 tstr,loc,month;
+  string 255 tstr,month;
   integer keycnt,rwcnt,normrwcnt,LAi,MAi,i,j;
   val sumoborot,sumvozvrat;
   vector boolean LocInArr,MonthInArr,MonthLoc,LocDayNameObor,LocDayNameVozv;
@@ -77,24 +77,36 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
-      cnf = false;
-      loc = IVr.Location;
-      if (LocInArr[loc]==false) then begin
-				Locr.Code = loc;
-        ReadFirstMain(Locr,1,true);
-				LocInArr[loc] = true;
-        LocArr[LAi] = loc;
-				LocName[loc] = Locr.Name;
-        LAi = LAi + 1;
+      if (currentcompany==9) then begin
+        IVr.Location = "CS";
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          LocName[IVr.Location] = "CreativeSystem";
+        end;
+      end else begin
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          Locr.Code = IVr.Location;
+          if (ReadFirstMain(Locr,1,true)) then begin
+            LocName[IVr.Location] = Locr.Name;
+          end else begin
+            LocName[IVr.Location] = IVr.Location;
+          end;
+        end;
       end;
+      cnf = false;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
         MonthInArr[month] = true;
         MonthArr[MAi] = month;
         MAi = MAi + 1;
       end;
-      MonthLoc[month & ";" & loc] = true;
-      tstr = loc & ";" & month & ";" & getday(IVr.InvDate) & ";";
+      MonthLoc[month & ";" & IVr.Location] = true;
+      tstr = IVr.Location & ";" & month & ";" & getday(IVr.InvDate) & ";";
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
@@ -105,6 +117,10 @@ begin
       rwcnt = matrowcnt(IVr);
       for (i=0;i<rwcnt;i=i+1) begin
         matrowget(IVr,i,IVrw);
+        /*if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+          Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1;
+          sumoborot = sumoborot + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+        end;*/
         if (IVrw.stp==kInvoiceRowTypeNormal) then begin
           if (cnf) then begin
             if (LocDayNameVozv[tstr & IVrw.ArtCode]==false) then begin
@@ -157,6 +173,11 @@ begin
       end;
     end;
   end;
+  if (qtyOfSheets==0) then begin
+    emptyf = true;
+    sheetNames[qtyOfSheets] = "Empty";
+    qtyOfSheets = qtyOfSheets + 1;
+  end;
   
 	sheetColls[0] = 2.86;
 	sheetColls[1] = 6.86;
@@ -178,6 +199,14 @@ begin
 	XmlXlsxWorkBegin(fileToSave,reportName);
 	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,0,true);
 	sheetnum = 0;
+  if (emptyf) then begin
+    sheetnum = sheetnum + 1;
+    SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
+    BeginSheetData(sheetnum,fileToSave);
+    EndSheetData(sheetnum,fileToSave);
+    MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
+    EndSheet(sheetnum,fileToSave,0);
+  end;
   for (MAi=0;MAi<MonthArr.length;MAi=MAi+1) begin
     for (LAi=0;LAi<LocArr.length;LAi=LAi+1) begin
     if (MonthLoc[MonthArr[MAi] & ";" & LocArr[LAi]]) then begin

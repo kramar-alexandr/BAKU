@@ -24,7 +24,7 @@ global
 procedure DaysCumulativeExcelRn(record RcVc RepSpec,var area areatofile)
 begin
   array string 255 LocArr,MonthArr,ConsultArr,NameArr;
-  boolean TrHs,testf,cnf;
+  boolean TrHs,testf,cnf,emptyf;
   date startdate,enddate;
   record IVVc IVr;
   record LocationVc Locr;
@@ -32,10 +32,10 @@ begin
   row IVVc IVrw;
   integer keycnt,rwcnt,normrwcnt,LAi,MAi,CAi,i,j;
   string 20 key;
-  string 255 tstr,loc,month,salesman;
+  string 255 tstr,month;
   val sumoborot,sumvozvrat;
   vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc,LocSalesmanNameObor,LocSalesmanNameVozv;
-  vector string 100 LocName;
+  vector string 100 LocName,ConsultName;
   vector val Oborot,Vozvrat;
   array string 50 sheetNames;
 	array val sheetColls;
@@ -50,6 +50,20 @@ begin
   
   setexportcodepage("UTF8");
   
+  Userr.Code = "";
+  TrHs = true;
+  while (LoopMain(Userr,1,TrHs)) begin
+    if ((Userr.IsSalesMan!=0) and (Userr.Closed==0)) then begin
+      ConsultInArr[Userr.Code] = true;
+      ConsultArr[CAi] = Userr.Code;
+      CAi = CAi + 1;
+      if nonblank(Userr.Name) then begin
+        ConsultName[Userr.Code] = Userr.Name;
+      end else begin
+        ConsultName[Userr.Code] = Userr.Code;
+      end;
+    end;
+  end;
   if (nonblank(RepSpec.sStartDate)) then begin
     startdate = RepSpec.sStartDate;
     enddate = RepSpec.sEndDate;
@@ -67,7 +81,7 @@ begin
     keycnt = 1;
   end;
   TrHs = true;
-  while(loopkey(key,IVr,keycnt,TrHs))begin
+  while (loopkey(key,IVr,keycnt,TrHs)) begin
     testf = true;
     if (key=="Location") then begin
       if (IVr.Location!=RepSpec.ObjStr) then begin TrHs = false; testf = false; end;
@@ -79,14 +93,37 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
-      loc = IVr.Location;
-      if (LocInArr[loc]==false) then begin
-				Locr.Code = loc;
-        ReadFirstMain(Locr,1,true);
-				LocInArr[loc] = true;
-        LocArr[LAi] = loc;
-				LocName[loc] = Locr.Name;
-        LAi = LAi + 1;
+      if (currentcompany==9) then begin
+        IVr.Location = "CS";
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          LocName[IVr.Location] = "CreativeSystem";
+        end;
+      end else begin
+        if (LocInArr[IVr.Location]==false) then begin
+          LocInArr[IVr.Location] = true;
+          LocArr[LAi] = IVr.Location;
+          LAi = LAi + 1;
+          Locr.Code = IVr.Location;
+          if (ReadFirstMain(Locr,1,true)) then begin
+            LocName[IVr.Location] = Locr.Name;
+          end else begin
+            LocName[IVr.Location] = IVr.Location;
+          end;
+        end;
+      end;
+      if (ConsultInArr[IVr.SalesMan]==false) then begin
+        ConsultInArr[IVr.SalesMan] = true;
+        ConsultArr[CAi] = IVr.SalesMan;
+        CAi = CAi + 1;
+        Userr.Code = IVr.SalesMan;
+        if (ReadFirstMain(Userr,1,true)) then begin
+          ConsultName[IVr.SalesMan] = Userr.Name;
+        end else begin
+          ConsultName[IVr.SalesMan] = IVr.SalesMan;
+        end;
       end;
       month = getmonth(IVr.InvDate) & "_" & getyear(IVr.InvDate);
       if (MonthInArr[month]==false) then begin
@@ -94,19 +131,8 @@ begin
         MonthArr[MAi] = month;
         MAi = MAi + 1;
       end;
-      MonthLoc[month & ";" & loc] = true;
-      Userr.Code = IVr.SalesMan;
-      if (ReadFirstMain(Userr,1,true)) then begin
-        salesman = Userr.Name;
-      end else begin
-        salesman = IVr.SalesMan;
-      end;
-      if (ConsultInArr[salesman]==false) then begin
-        ConsultInArr[salesman] = true;
-        ConsultArr[CAi] = salesman;
-        CAi = CAi + 1;
-      end;
-      tstr = loc & ";" & month & ";" & salesman & ";";
+      MonthLoc[month & ";" & IVr.Location] = true;
+      tstr = IVr.Location & ";" & month & ";" & IVr.SalesMan & ";";
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
@@ -169,6 +195,11 @@ begin
       end;
     end;
   end;
+  if (qtyOfSheets==0) then begin
+    emptyf = true;
+    sheetNames[qtyOfSheets] = "Empty";
+    qtyOfSheets = qtyOfSheets + 1;
+  end;
   
 	sheetColls[0] = 2.86;
 	sheetColls[1] = 27.71;
@@ -184,6 +215,14 @@ begin
 	numOfSharedStrings = 0;
 	XmlXlsxWorkBegin(fileToSave,reportName);
 	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,0,true);
+  if (emptyf) then begin
+    sheetnum = sheetnum + 1;
+    SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
+    BeginSheetData(sheetnum,fileToSave);
+    EndSheetData(sheetnum,fileToSave);
+    MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
+    EndSheet(sheetnum,fileToSave,0);
+  end;
 	sheetnum = 0;
   for (MAi=0;MAi<MonthArr.length;MAi=MAi+1) begin
     for (LAi=0;LAi<LocArr.length;LAi=LAi+1) begin
@@ -258,30 +297,30 @@ begin
           qtyOfEmpStr = 1;
           EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
         EndRow(sheetnum,fileToSave,rownum);
-            for (CAi=0;CAi<ConsultArr.length;CAi=CAi+1) begin
-              tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & ConsultArr[CAi] & ";";
-              if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
-                colnum = 2;
-                BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-                  style = 7;
-                  StringCell(sheetnum,fileToSave,colnum,rownum,style,ConsultArr[CAi],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-                  style = 8;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
-                  style = 4;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
-                  style = 9;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
-                  style = 8;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
-                  style = 4;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
-                  style = 9;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
-                  style = 11;
-                  NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
-                EndRow(sheetnum,fileToSave,rownum);
-              end;
-            end;
+        for (CAi=0;CAi<ConsultArr.length;CAi=CAi+1) begin
+          tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & ConsultArr[CAi] & ";";
+          //if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
+            colnum = 2;
+            BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+              style = 7;
+              StringCell(sheetnum,fileToSave,colnum,rownum,style,ConsultName[ConsultArr[CAi]],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+              style = 8;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
+              style = 4;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
+              style = 9;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
+              style = 8;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
+              style = 4;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
+              style = 9;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
+              style = 11;
+              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
+            EndRow(sheetnum,fileToSave,rownum);
+          //end;
+        end;
           
         colnum = 2;
         BeginRow(sheetnum,fileToSave,rownum,0,blankval);
