@@ -764,13 +764,11 @@ BEGIN
       CalcVATBaseVAT(VATr,0,VIp.NoTAXonVAT,vcrwcnt,vat,tax1);
       vipayval_vat = vipayval_vat + vat;
       vibookrval = MulRateToBase1(VIp.CurncyCode,vipayval,VIp.FrRate,VIp.ToRateB1,VIp.ToRateB2,VIp.BaseRate1,VIp.BaseRate2,DefaultCurRoundOff);
-     	messagebox(0,"vibookrval " & vibookrval & " OPPr.BookRVal " & OPPr.BookRVal);
       if (vibookrval>=OPPr.BookRVal) then begin
         CurValToOtherCur(VIp.TransDate,OPPr.CurncyCode,OPPr.PPVal,VIp.CurncyCode,prepval,DefaultCurRoundOff);
         vatt = OPPr.VATVal;        
         bookrval = OPPr.BookRVal;
       end else begin
-      	messagebox(0,"vipayval " & vipayval);
         CurValToOtherCur(VIp.TransDate,VIp.CurncyCode,vipayval,OPPr.CurncyCode,ppval,DefaultCurRoundOff);
         CurValToOtherCur(VIp.TransDate,OPPr.CurncyCode,ppval,VIp.CurncyCode,prepval,DefaultCurRoundOff);
         if (vipayval_vat>prepval) then begin
@@ -797,7 +795,6 @@ BEGIN
         bookrval = OPPr.BookRVal;
       end;
       VIrw.VATCode = OPPr.VATCode;
-      messagebox(0,prepval & " " & bookrval);
       VIrw.PrepayAmount = prepval;
       VIrw.VATVal = vatt;
       VIrw.Sum = Round(bookrval,SetRoundModeD(2));
