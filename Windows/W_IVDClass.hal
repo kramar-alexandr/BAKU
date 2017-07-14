@@ -2281,8 +2281,13 @@ if (HasTouchScreenLook==false) then begin
   EditField(h3,v+=vs,80,"Накопительная карта",Normal,LoyaltyCardNr,false,LoyaltyCardSClass);
   EditField(h3,v+=vs,80,"Связанная накопительная карта",ViewOnly,LinkLoyaltyCardNr,false,LoyaltyCardSClass);//Edit-------------------Vitalii 11:39 01.06.2017
   EnterSkip(Math);
-  EditField(h3,v+=vs,80,"Программы лояльности",ViewOnly,LCMLevel,false,LCMemberLevelSClass);
-  EditField(h3,v+=vs,80,"Накопительные баллы",ViewOnly,Points,true,0);
+  if(left(currentuser,3)=="SA")then begin
+		EditField(h3,v+=vs,80,"Программы лояльности",Normal,LCMLevel,false,LCMemberLevelSClass);
+		EditField(h3,v+=vs,80,"Накопительные баллы",Normal,Points,true,0);
+  end else begin
+  	EditField(h3,v+=vs,80,"Программы лояльности",ViewOnly,LCMLevel,false,LCMemberLevelSClass);
+		EditField(h3,v+=vs,80,"Накопительные баллы",ViewOnly,Points,true,0);
+  end;
   EditField(h3,v+=vs,80,"№ TREO",Normal,TREONr,false,0);
   Tile(7,250,false,"7",Addr1); vs = 20;
   label = UserDefined("CUVc","InvAddr0");
