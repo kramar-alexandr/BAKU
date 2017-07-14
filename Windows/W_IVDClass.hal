@@ -2281,7 +2281,7 @@ if (HasTouchScreenLook==false) then begin
   EditField(h3,v+=vs,80,"Накопительная карта",Normal,LoyaltyCardNr,false,LoyaltyCardSClass);
   EditField(h3,v+=vs,80,"Связанная накопительная карта",ViewOnly,LinkLoyaltyCardNr,false,LoyaltyCardSClass);//Edit-------------------Vitalii 11:39 01.06.2017
   EnterSkip(Math);
-  if(left(currentuser,3)=="SA")then begin
+  if(left(currentuser,2)=="SA")then begin
 		EditField(h3,v+=vs,80,"Программы лояльности",Normal,LCMLevel,false,LCMemberLevelSClass);
 		EditField(h3,v+=vs,80,"Накопительные баллы",Normal,Points,true,0);
   end else begin
