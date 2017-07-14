@@ -250,6 +250,9 @@ begin
 		if(nonblank(CUr.Title))then begin
 			AddToText(CUr.Title & " ",Letr);
 		end;
+		if(nonblank(CUr.Classification))then begin
+			AddToText(CUr.Classification & " ",Letr);
+		end;
 		
 		if(nonblank(RepSpec.f1)) then begin
 			if (!StringInText(RepSpec.f1,Letr)) then begin testf = false; end;

@@ -120,6 +120,7 @@ begin
       		AddToText(CUr.CreateLocation & " ",Letr);
       		AddToText(CUr.CreateComment & " ",Letr);
       		AddToText(CUr.eMail & " ",Letr);
+      		AddToText(CUr.Classification & " ",Letr);
       end;            
       if (RepSpec.ArtMode == 7) then begin
         if (CUr.BirthDate==StringToDate(RepSpec.f1)) then begin
