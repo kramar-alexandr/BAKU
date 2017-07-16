@@ -2221,3 +2221,83 @@ begin
   SearchField("Search");
   EndWindow;
 end;
+
+window LCCashbackLevelDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,v,vs;
+  WindowBegin("Структура программы лояльности CASHBACK",LCCashbackLevelDClass,CGview,-);
+  UseView(LCCashbackLevelVc);
+  SetWRect(20,80,530,457);
+  v = 6; h=70; h2 = h + 150; h3 = h + 341; vs=20;
+  EditField(h,v,60,"Пр.лояльн.",Normal,LCMLevel,false,LCMemberLevelSClass);
+  EditField(h2,v, 100,"Округление",Normal,RndTo,false,SetSClass);
+  EditField(h,v+=vs, -40,"Коммент.",Normal,Comment,false,0);
+  MatrixBegin(h=8,v+=40,-31,-10,-,199);
+  MatCol(1,32,"Начиная с баллов",0,FromPoints,false,0);
+  MatCol(1,150,"Заканчивая баллами",0,ToPoints,false,0);
+  MatCol(1,-170,"Процент возврата от покупки,%",0,CashbackPercent,false,0);
+  EndMatrix;
+  EndWindow;
+end;
+
+window LCCashbackLevelLClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Структуры программы лояльности CASHBACK",LCCashbackLevelLClass,CGmlist,-);
+  SetWRect(64,80,559,298);
+  SpawnClass(LCCashbackLevelDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(LCCashbackLevelVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"Прогр.лояльн.",LCMLevel,false,LCMLevel);
+  //RlCol(81,81,"С даты",PromStrDate,false);
+  //RlCol(161,161,"По дату",PromEndDate,false);
+  RlCol(121,121,"Комментарий",Comment,false);
+  SearchField("Найти");
+  EndWindow;
+end;
+
+window LCCashbackCorrectionDClass:1 //Edit***************************Sasha2,16:35 13.07.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,h2,h3,v,vs;
+  WindowBegin("Корректировка накоп. баллов CASHBACK",LCCashbackCorrectionDClass,CGview,-);
+  UseView(LCCashbackCorrectionVc);
+  SetWRect(20,80,530,457);
+  v = 6; h=70; h2 = h + 130; h3 = h + 300; vs=20;
+  EditField(h,v,40,"Номер",Normal,SerNr,false,LCMemberLevelSClass);
+  EditField(h3,v,80,"Прогр.лояльн.",Normal,LCMLevel,false,LCMemberLevelSClass);
+  EditField(h,v+=vs,60,"С даты",Normal,FromDate,false,PasteCurDate);
+  EditField(h2,v,60,"По дату",Normal,ToDate,false,PasteCurDate);
+  EditField(h3,v,80,"Для скидки,%",Normal,CustomerPercentLevel,false,0);
+  EditField(h,v+=vs,60,"С времени",Normal,FromTime,false,PasteCurTime);
+  EditField(h2,v,60,"По время",Normal,ToTime,false,PasteCurTime);
+  EditField(h2,v+=vs,80,"Процент возврата от покупки,%",Normal,CashbackPercent,false,SetSClass);
+  EditField(h3,v,100,"Округление",Normal,RndTo,false,SetSClass);
+  EditField(h,v+=vs, -40,"Коммент.",Normal,Comment,false,0);
+  MatrixBegin(h=8,v+=40,-31,-10,-,199);
+  MatCol(1,32,"Тип",0,CodeType,false,SetSClass);
+  MatCol(1,120,"Группа/Товар",0,ITCode,false,ITSClass);
+  MatCol(1,-100,"Процент возврата,%",0,CashbackPercent,false,0);
+  EndMatrix;
+  EndWindow;
+end;
+
+window LCCashbackCorrectionLClass:1 //Edit***************************Sasha2,16:35 13.07.2017
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  WindowBegin("Корректировка накоп. баллов CASHBACK",LCCashbackCorrectionLClass,CGmlist,-);
+  SetWRect(64,80,559,298);
+  SpawnClass(LCCashbackCorrectionDClass);
+  Sizeable(-1,-1,0,0);
+  UseView(LCCashbackCorrectionVc);
+  RecordList(4,17,-21,-39);
+  RlColKey(4,4,"Номер",SerNr,false,SerNr);
+  RlColKey(81,81,"С даты",FromDate,false,FromDate);
+  RlColKey(161,161,"По дату",ToDate,false,ToDate);
+  RlCol(241,241,"Прогр.лояльн.",LCMLevel,false);
+  RlCol(321,321,"Для скидки,%",CustomerPercentLevel,false);
+  SearchField("Найти");
+  EndWindow;
+end;

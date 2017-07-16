@@ -5108,6 +5108,7 @@ begin
         testf = true;
         if (LoyaltyCardr.CustCode!=newLoyaltyCardr.CustCode) then begin TrHs = false; testf = false; end;
         if (LoyaltyCardr.SerNr==newLoyaltyCardr.SerNr) then begin testf = false; end;
+        if (LoyaltyCardr.LCMLevel!=newLoyaltyCardr.LCMLevel) then begin testf = false; end;
         if (testf) then begin
           foundf = true;
           TrHs = false;
@@ -5117,6 +5118,8 @@ begin
     if (foundf) then begin
       newLoyaltyCardr.PointsBalance = LoyaltyCardr.PointsBalance;
       newLoyaltyCardr.StartBalance = LoyaltyCardr.PointsBalance;
+      newLoyaltyCardr.PointsBalanceTotal = LoyaltyCardr.PointsBalanceTotal;
+      newLoyaltyCardr.CashbackLevelPoints = LoyaltyCardr.CashbackLevelPoints;
       RecordCopy(oldLoyaltyCardr,LoyaltyCardr);
       LoyaltyCardr.Closed = 1;
       if (RecordUpdate(oldLoyaltyCardr,LoyaltyCardr,false)==0) then begin 
@@ -5226,3 +5229,65 @@ begin
 	
 return;
 end;
+
+global //Edit***************************Sasha2,17:24 13.07.2017 {
+procedure CheckForCashbackCorrection()
+begin
+  return;
+end; //Edit***************************Sasha2,17:25 13.07.2017 }
+
+global //Edit***************************Sasha2,15:10 07.07.2017 {
+procedure CalculateIVVcCashbackPoints(var record IVVc IVr)
+begin 
+  record LCCashbackLevelVc LCCBLevelr;
+  row LCCashbackLevelVc LCCBLevelrw;
+  row IVVc IVrw;
+  record LoyaltyCardVc LoyaltyCardr;
+  record BaseCurBlock BCb;
+  roundmode rnd;
+  Boolean found;
+  Integer i,rwcnt;
+  val loyCardPointsBalance,cashbackPercent,paidViaPoints,sum;
+  
+    BlockLoad(BCb);
+    LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
+    if (nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) then begin
+      rnd = DefaultValRoundoff;
+      rnd.decimals = 2;
+      rnd.mode = kRoundingModeTruncate;
+      loyCardPointsBalance = LoyaltyCardr.CashbackLevelPoints;
+      
+      LCCBLevelr.LCMLevel = IVr.LCMLevel;
+      found = ReadFirstMain(LCCBLevelr,1,true);
+      if (found) then begin
+        rnd.decimals = LCCBLevelr.RndTo;
+        rwcnt = MatRowCnt(LCCBLevelr);
+        for (i=0;i<rwcnt;i=i+1) begin
+          MatRowGet(LCCBLevelr,i,LCCBLevelrw);
+          if (LCCBLevelrw.FromPoints<=loyCardPointsBalance and LCCBLevelrw.CashbackPercent>0) then begin
+            if (LCCBLevelrw.ToPoints>=loyCardPointsBalance or LCCBLevelrw.ToPoints==BlankVal) then begin
+              cashbackPercent = LCCBLevelrw.CashbackPercent;
+              i = rwcnt;
+            end;
+          end;
+        end;
+        if (cashbackPercent>0) then begin
+          rwcnt = MatRowCnt(IVr);
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(IVr,i,IVrw);
+            switch (IVrw.stp) begin
+              case kInvoiceRowTypeLoyaltyPointsPayment:
+                paidViaPoints = paidViaPoints + IVrw.Points;
+            end;
+          end;
+          sum = IVr.Sum4;
+          if (IVr.CurncyCode!=BCb.BaseCur1) then begin
+            sum = MulRateToBase1(IVr.CurncyCode,IVr.Sum4,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+          end;
+          IVr.Points = Round((sum - paidViaPoints)*cashbackPercent/100,rnd);
+        end;
+      end;
+    end;
+
+  return;
+end; //Edit***************************Sasha2,15:10 07.07.2017 }

@@ -100,6 +100,9 @@ begin
     if (LoyaltyCardr.Closed==0) then begin
       RecordCopy(oldLoyaltyCardr,LoyaltyCardr);
       LoyaltyCardr.PointsBalance = LoyaltyCardr.PointsBalance - points;
+      LoyaltyCardr.CashbackLevelPoints = LoyaltyCardr.CashbackLevelPoints - points; //Edit***************************Sasha2,11:46 14.07.2017
+      LoyaltyCardr.PointsBalanceTotal = LoyaltyCardr.PointsBalanceTotal - points; //Edit***************************Sasha2,11:46 14.07.2017
+      LogText(0,"DeletePointsHist Invoice #" & transnr & " LoyProgram:" & LoyaltyCardr.LCMLevel & " points:" & points);
       if (oldLoyaltyCardr.PointsBalance<LoyaltyCardr.PointsBalance) then begin
         nextlevel = NextLCMLevel(LoyaltyCardr.PointsBalance);
         if (nonblank(nextlevel)) then begin 
@@ -208,6 +211,9 @@ begin
       if (blank(LoyaltyCardr.PointsTo)) then begin
         RecordCopy(oldLoyaltyCardr,LoyaltyCardr);
         LoyaltyCardr.PointsBalance = LoyaltyCardr.PointsBalance + qty;
+        LoyaltyCardr.CashbackLevelPoints = LoyaltyCardr.CashbackLevelPoints + qty; //Edit***************************Sasha2,11:46 14.07.2017
+        LoyaltyCardr.PointsBalanceTotal = LoyaltyCardr.PointsBalanceTotal + qty; //Edit***************************Sasha2,11:46 14.07.2017
+        LogText(0,"AddPointsHist Invoice #" & IVr.SerNr & " LoyProgram:" & LoyaltyCardr.LCMLevel & " points:" & qty);
         if (oldLoyaltyCardr.PointsBalance<LoyaltyCardr.PointsBalance) then begin
           nextlevel = NextLCMLevel(LoyaltyCardr.PointsBalance);
           if (nonblank(nextlevel)) then begin 
@@ -215,7 +221,7 @@ begin
           end;
         end;  
         if (RecordUpdate(oldLoyaltyCardr,LoyaltyCardr,false)==0) then begin
-        	if(LoyaltyCardr.LCMLevel=="C3000")then begin// Edit ************************** Thursday, 7 August 2014 16:00:58// Edit ************************** Thursday, 7 August 2014 16:01:00
+        	if(LoyaltyCardr.LCMLevel=="C3000")then begin // Edit ************************** Thursday, 7 August 2014 16:00:58// Edit ************************** Thursday, 7 August 2014 16:01:00
         		if(LoyaltyCardr.PointsBalance>3000)then begin
         			messagebox(31011,"");
         		end;
@@ -225,6 +231,8 @@ begin
         // which card level to update ??
         RecordCopy(oldLoyaltyCardr,LoyaltyCard2r);
         LoyaltyCard2r.PointsBalance = LoyaltyCard2r.PointsBalance + qty;
+        LoyaltyCard2r.CashbackLevelPoints = LoyaltyCard2r.CashbackLevelPoints + qty; //Edit***************************Sasha2,11:46 14.07.2017
+        LoyaltyCard2r.PointsBalanceTotal = LoyaltyCard2r.PointsBalanceTotal + qty; //Edit***************************Sasha2,11:46 14.07.2017
         if (oldLoyaltyCardr.PointsBalance<LoyaltyCard2r.PointsBalance) then begin
           nextlevel = NextLCMLevel(LoyaltyCard2r.PointsBalance);
           if (nonblank(nextlevel)) then begin 

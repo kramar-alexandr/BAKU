@@ -108,6 +108,8 @@ begin
   LoyaltyCardr.StartDate = CurrentDate;
   LoyaltyCardr.PointsBalance = blankval;
   LoyaltyCardr.Closed = 0;
+  LoyaltyCardr.PointsBalanceTotal = blankval; //Edit***************************Sasha2,10:22 23.06.2017
+  LoyaltyCardr.CashbackLevelPoints = blankval; //Edit***************************Sasha2,10:22 23.06.2017LoyaltyCardr.PointsBalanceTotal = blankval; //Edit***************************Sasha2,10:22 23.06.2017
 
   LoyaltyCardVcRecordDuplicate = res; 
   return;
@@ -217,7 +219,7 @@ begin
 			if(lLoyaltyCardr.CustCode!=LoyaltyCardr.CustCode)then begin TrHs = false; testf = false; end;
 			if(lLoyaltyCardr.SerNr==LoyaltyCardr.SerNr)then begin testf = false; end;
 			if(lLoyaltyCardr.Closed==1)then begin testf = false; end;
-		
+		  if (CurrentCompany==25 and lLoyaltyCardr.LCMLevel=="1") then begin testf = false; end; //Edit***************************Sasha2,16:23 23.06.2017
 			if(testf)then begin
 				foundf = true;
 			end;  	
