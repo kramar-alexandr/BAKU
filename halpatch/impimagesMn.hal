@@ -5248,7 +5248,9 @@ begin
   Boolean found;
   Integer i,rwcnt;
   val loyCardPointsBalance,cashbackPercent,paidViaPoints,sum;
-  
+  	
+  	
+  	
     BlockLoad(BCb);
     LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
     if (nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) then begin
@@ -5260,18 +5262,20 @@ begin
       LCCBLevelr.LCMLevel = IVr.LCMLevel;
       found = ReadFirstMain(LCCBLevelr,1,true);
       if (found) then begin
+      	
         rnd.decimals = LCCBLevelr.RndTo;
         rwcnt = MatRowCnt(LCCBLevelr);
         for (i=0;i<rwcnt;i=i+1) begin
           MatRowGet(LCCBLevelr,i,LCCBLevelrw);
           if (LCCBLevelrw.FromPoints<=loyCardPointsBalance and LCCBLevelrw.CashbackPercent>0) then begin
+          	
             if (LCCBLevelrw.ToPoints>=loyCardPointsBalance or LCCBLevelrw.ToPoints==BlankVal) then begin
               cashbackPercent = LCCBLevelrw.CashbackPercent;
               i = rwcnt;
             end;
           end;
         end;
-        if (cashbackPercent>0) then begin
+        if (cashbackPercent!=0) then begin
           rwcnt = MatRowCnt(IVr);
           for (i=0;i<rwcnt;i=i+1) begin
             MatRowGet(IVr,i,IVrw);

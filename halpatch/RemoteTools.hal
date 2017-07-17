@@ -1092,6 +1092,7 @@ BEGIN
   record XSrsVc XSrsr;
   record AccVc Accr;
   record LoyaltyCardVc LoyaltyCardr;// Edit ************************** Thursday, 20 March 2014 12:55:40
+  boolean TrHsLoy;
     	
   lastrwcnt = MatRowCnt(IVp);
   orsum = blankval;
@@ -1131,10 +1132,30 @@ BEGIN
       // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 20 March 2014 13:09:57
       LoyaltyCardr.CustCode = IVp.CustCode;
-			if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
-				IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
-				IVVc_PasteLoyaltyCardNr(IVp);
-			end;// Edit ************************** Thursday, 20 March 2014 13:20:50
+      TrHsLoy = true;// Edit ************************** Monday, 17 July 2017 15:54:04
+      while(loopkey("ActCustCode",LoyaltyCardr,1,TrHsLoy))begin
+      	if(LoyaltyCardr.CustCode!=IVp.CustCode)then begin TrHsLoy = false; end;
+      	
+      	if(TrHsLoy)then begin
+      		if(currentcompany==25)then begin
+      			if(LoyaltyCardr.LCMLevel=="CASACOIN")then begin
+							TrHsLoy = false;
+							IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+							IVVc_PasteLoyaltyCardNr(IVp);
+						end;
+      		end else begin
+      			if(LoyaltyCardr.LCMLevel!="CASACOIN")then begin
+							TrHsLoy = false;
+							IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+							IVVc_PasteLoyaltyCardNr(IVp);
+						end;
+      		end;
+      	end;
+      end;
+			//if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
+			//	IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+				
+			//end;// Edit ************************** Thursday, 20 March 2014 13:20:50
       IVp.Addr0 = CUr.Name;
       IVp.Addr1 = CUr.InvAddr0;
       IVp.Addr2 = CUr.InvAddr1;
@@ -1163,10 +1184,30 @@ L20PasteOrdInInv:;
     // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 20 March 2014 13:09:57
       LoyaltyCardr.CustCode = IVp.CustCode;
-			if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
+      TrHsLoy = true;// Edit ************************** Monday, 17 July 2017 15:54:04
+      while(loopkey("ActCustCode",LoyaltyCardr,1,TrHsLoy))begin
+      	if(LoyaltyCardr.CustCode!=IVp.CustCode)then begin TrHsLoy = false; end;
+      	
+      	if(TrHsLoy)then begin
+      		if(currentcompany==25)then begin
+      			if(LoyaltyCardr.LCMLevel=="CASACOIN")then begin
+							TrHsLoy = false;
+							IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+							IVVc_PasteLoyaltyCardNr(IVp);
+						end;
+      		end else begin
+      			if(LoyaltyCardr.LCMLevel!="CASACOIN")then begin
+							TrHsLoy = false;
+							IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+							IVVc_PasteLoyaltyCardNr(IVp);
+						end;
+      		end;
+      	end;
+      end;
+			/*if (ReadFirstKey("ActCustCode",LoyaltyCardr,1,true)) then begin
 				IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
 				IVVc_PasteLoyaltyCardNr(IVp);
-			end;
+			end;*/
 	// Edit End ---------------------------------------------- Edit End
     IVp.Addr0 = ORp.Addr0;
     IVp.Addr1 = ORp.Addr1;
