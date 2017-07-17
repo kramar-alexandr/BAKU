@@ -2281,8 +2281,13 @@ if (HasTouchScreenLook==false) then begin
   EditField(h3,v+=vs,80,"Накопительная карта",Normal,LoyaltyCardNr,false,LoyaltyCardSClass);
   EditField(h3,v+=vs,80,"Связанная накопительная карта",ViewOnly,LinkLoyaltyCardNr,false,LoyaltyCardSClass);//Edit-------------------Vitalii 11:39 01.06.2017
   EnterSkip(Math);
-  EditField(h3,v+=vs,80,"Программы лояльности",ViewOnly,LCMLevel,false,LCMemberLevelSClass);
-  EditField(h3,v+=vs,80,"Накопительные баллы",ViewOnly,Points,true,0);
+  if(left(currentuser,2)=="SA")then begin
+		EditField(h3,v+=vs,80,"Программы лояльности",Normal,LCMLevel,false,LCMemberLevelSClass);
+		EditField(h3,v+=vs,80,"Накопительные баллы",Normal,Points,true,0);
+  end else begin
+  	EditField(h3,v+=vs,80,"Программы лояльности",ViewOnly,LCMLevel,false,LCMemberLevelSClass);
+		EditField(h3,v+=vs,80,"Накопительные баллы",ViewOnly,Points,true,0);
+  end;
   EditField(h3,v+=vs,80,"№ TREO",Normal,TREONr,false,0);
   Tile(7,250,false,"7",Addr1); vs = 20;
   label = UserDefined("CUVc","InvAddr0");
@@ -5075,7 +5080,11 @@ begin
   SetWRect(80,200,600,480);
   vs = 20;
   EditFieldTLX(h=340,v=6,150,"Баланс",M4Val,viewonly,100,30,patM4black,vals1,true,0);
-  EditFieldTLX(h,v+=40,150,"Использовать баллов",M4Val,viewonly,100,30,patM4black,vals0,true,0);
+  if(currentcompany==25)then begin
+  	EditFieldTLX(h,v+=40,150,"Использовать баллов",M4Val,Normal,100,30,patM4black,vals0,true,0);
+  end else begin
+  	EditFieldTLX(h,v+=40,150,"Использовать баллов",M4Val,viewonly,100,30,patM4black,vals0,true,0);
+  end;
   v=v+40;
   EditFieldTLX(h,v+=40,150,"Будут зачисленны как",M4Val,viewonly,100,30,patM4black,vals2,true,0);
 
@@ -5152,16 +5161,18 @@ begin
   		EditField(h2,v,70,"Накопл. баллы",viewonly,PointsBalance,true,0);
   end;
   EditField(h3,v,-40,"Баллов до",Normal,PointsTo,false,LoyaltyCardSClass);
-  if(usercanaction("AllowChangeLoyaltyPoints",false))then begin
+   if(usercanaction("AllowChangeLoyaltyPoints",false))then begin
 		EditField(h,v+=20,80,"Начальные баллы",Normal,StartBalance,false,0);
 		EditField(h,v+=20,80,"Связанные сч/ф",Normal,IVSerNr,false,0);
-		EditField(h2,v,70,"Копия нак.балл.",ViewOnly,PointsBalanceDuplicate,true,0); //Edit***************************Sasha2,10:12 23.06.2017
+		EditField(h3,v,70,"Уровень cashback (в баллах)",ViewOnly,CashbackLevelPoints,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   	EditField(h,v+=20,80,"Компании сч/ф",Normal,CompNr,false,0);
+  	EditField(h3,v,70,"Суммарно накоплено баллов",ViewOnly,PointsBalanceTotal,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   end else begin
   	EditField(h,v+=20,80,"Начальные баллы",ViewOnly,StartBalance,false,0);
   	EditField(h,v+=20,80,"Связанные сч/ф",ViewOnly,IVSerNr,false,0);
-  	EditField(h2,v,70,"Копия нак.балл.",ViewOnly,PointsBalanceDuplicate,true,0); //Edit***************************Sasha2,10:12 23.06.2017
+  	EditField(h3,v,70,"Уровень cashback (в баллах)",ViewOnly,CashbackLevelPoints,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   	EditField(h,v+=20,80,"Компании сч/ф",ViewOnly,CompNr,false,0);
+  	EditField(h3,v,70,"Суммарно накоплено баллов",ViewOnly,PointsBalanceTotal,true,0); //Edit***************************Sasha2,10:12 23.06.2017
   end;
   
   CheckBox(h,v+=20,0,"Закрыта",Closed);

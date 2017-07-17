@@ -646,8 +646,10 @@ BEGIN
     end; 
   end;
   if (nonblank(IVp.SalesMan)) then begin    
-    errcode = VerifySalesmen(IVp.SalesMan,tstr);
-    if (errcode!=0) then begin
+    //errcode = VerifySalesmen(IVp.SalesMan,tstr);
+    //if (errcode!=0) then begin
+    USr.Code = IVp.SalesMan;
+  	if(readfirstmain(USr,1,true)==false)then begin
       RecordCheckError(errcode,": " & tstr,-1,"SalesMan");   
       res = -1; 
       goto L99;

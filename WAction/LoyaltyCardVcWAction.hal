@@ -64,3 +64,28 @@ begin
   
   return;
 end;
+
+global
+function string 40 LCCashbackCorrectionDClassSpecPasteName(Integer wn,string defpsname)
+begin
+  string 255 psname;
+  record LCCashbackCorrectionVc LCCbCr;
+  row LCCashbackCorrectionVc LCCbCrw;
+  Integer rownr;
+  
+  psname = defpsname;
+  switch (WindowActiveField(wn)) begin
+    case "ITCode":
+      GetWindowRecord(wn,LCCbCr);
+      rownr = WindowActiveRow(wn);
+      if (rownr>=0) then begin
+        MatRowGet(LCCbCr,rownr,LCCbCrw);
+      end;
+      switch (LCCbCrw.CodeType) begin
+        case 0: psname = "ITSClass";
+        case 1: psname = "INSClass";
+      end;
+  end;
+  LCCashbackCorrectionDClassSpecPasteName = psname;
+  return;
+end;

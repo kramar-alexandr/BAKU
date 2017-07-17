@@ -51,6 +51,8 @@ begin
   Setting("Скидки дня рождения",BirthdayRebateTClass,modMYCRM);// Edit ************************** Tuesday, 16 May 2017 12:52:07
   Setting("Скидки дня рождения",BirthdayRebateTClass,modSL);// Edit ************************** Tuesday, 16 May 2017 12:52:07
   Setting("Скидки дня рождения",BirthdayRebateTClass,modSO);// Edit ************************** Tuesday, 16 May 2017 12:52:08
+  Setting("Структуры программы лояльности CASHBACK нак.карт.",LCCashbackLevelLClass,modPOS); //Edit***************************Sasha2,14:19 07.07.2017
+  Setting("Корректировка баллов CASHBACK нак.карт.",LCCashbackCorrectionLClass,modPOS); //Edit***************************Sasha2,14:19 07.07.2017
 	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
@@ -147,7 +149,7 @@ begin
   
   Maintenance("Coin Stock to DROMOS",EmptyVClass,GruppoCoinStockCountMn,modIN);
   Maintenance("Проверить в карточке товара галочку \"Изменять ст-ть при поступлении\"",FIXVClass,SetUpdateCostINToLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
-  //Maintenance("Продублировать накопленные баллы в копию накопл. баллов в карте лояльности",EmptyVClass,PassPointBalanceToPointsBalanceDuplicateMn,modDBMain); //Edit***************************Sasha2,14:17 23.06.2017
+  Maintenance("Продублировать накопленные баллы в копию накопл. баллов в карте лояльности",EmptyVClass,PassPointBalanceToPointsBalanceTotalMn,modDBMain); //Edit***************************Sasha2,14:17 23.06.2017
   	
   if(currentcompany==1)then begin
     Maintenance("Восстановить себестоимость для товара",FindCostForItemWithEmptyCostVClass,FindCostForItemWithEmptyCostMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
@@ -704,6 +706,7 @@ begin
   SString(35104,"Счет-фактура проведена с картой лояльности");
   SString(35105,"Счет-фактура уже привязана к карте лояльности");
   SString(35106,"Использовалась карта");
+  SString(35107,"Корректировка баллов CASHBACK на этот период уже существует");
     
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

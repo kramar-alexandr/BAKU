@@ -1435,6 +1435,7 @@ begin
     RepSpec.FirstAcc = paymode;
     RepSpec.vals1 = PointsBalance;
     RepSpec.vals2 = totsumb1;
+    messagebox(0,totsumb1);
     wn = OpenWindow("LoyaltyPaymentNPTSSClass",0,mwn,"","",RepSpec);
     WindowFieldGoto(wn,RepSpec,-1,"vals0",false);    
   end;

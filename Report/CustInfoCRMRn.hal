@@ -250,15 +250,15 @@ begin
 		if(nonblank(CUr.Title))then begin
 			AddToText(CUr.Title & " ",Letr);
 		end;
+		if(nonblank(CUr.Classification))then begin
+			AddToText(CUr.Classification & " ",Letr);
+		end;
 		
 		if(nonblank(RepSpec.f1)) then begin
 			if (!StringInText(RepSpec.f1,Letr)) then begin testf = false; end;
 		end;
 		if(nonblank(RepSpec.LastAcc)) then begin
 			if (!StringInText(RepSpec.LastAcc,Letr)) then begin testf = false; end;
-		end;
-		if(nonblank(RepSpec.f2)) then begin
-			if (!StringInText(RepSpec.f2,Letr)) then begin testf = false; end;
 		end;
 		if(nonblank(RepSpec.FirstAcc) and RepSpec.FirstAcc!=CUr.RebCode) then begin	testf = false; end;
 		if(RepSpec.flags[3]>0 and blank(CUr.Phone) and blank(CUr.AltPhone) and blank(CUr.Mobile))then begin	testf=false;	end;
