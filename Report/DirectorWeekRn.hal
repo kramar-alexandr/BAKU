@@ -1612,9 +1612,9 @@ begin
 					BeginBalance50n51n53 = BeginBalance50n51n53 + BeginBalance52;
 				end;
 			end;
-			BeginBalance50n53USD = BeginBalance50n53USD + Balance52USD;
+			/*BeginBalance50n53USD = BeginBalance50n53USD + Balance52USD;
 			BeginBalance50n53EUR = BeginBalance50n53EUR + Balance52EUR;
-			BeginBalance50n53AZN = BeginBalance50n53AZN + Balance52AZN;
+			BeginBalance50n53AZN = BeginBalance50n53AZN + Balance52AZN;*/ //Edit-------------------Vitalii 18:02 17.07.2017
 			StartFormat(15);
 				OutString(0,0,"",false);
 				OutString(15,0,"Остаток общего счета",false);
@@ -1639,6 +1639,32 @@ begin
 				OutString(60,0,BeginBalance51,false);
 				OutString(90,0,"AZN терминал",false);
 			EndFormat;
+      //Edit-------------------Vitalii 18:02 17.07.2017
+      if (Balance52USD!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(60,0,Balance52USD,false);
+          OutString(90,0,"USD банк",false);
+        EndFormat;
+      end;
+      if (Balance52EUR!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(60,0,Balance52EUR,false);
+          OutString(90,0,"EUR банк",false);
+        EndFormat;
+      end;
+      if (Balance52AZN!=0) then begin
+        StartFormat(15);
+          OutString(0,0,"",false);
+          OutString(15,0,"",false);
+          OutString(60,0,Balance52AZN,false);
+          OutString(90,0,"AZN банк",false);
+        EndFormat;
+      end;
+      
 			Gray_Divider(25,120);
 			StartFormat(15);
 				OutString(0,0,"",false);
