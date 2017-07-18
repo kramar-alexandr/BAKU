@@ -24,13 +24,14 @@ global
 procedure DaysCumulativeExcelRn(record RcVc RepSpec,var area areatofile)
 begin
   array string 255 LocArr,MonthArr,ConsultArr,NameArr;
-  boolean TrHs,testf,cnf,emptyf;
+  boolean TrHs,testf,cnf,emptyf,giftf;
   date startdate,enddate;
-  record IVVc IVr;
+  record IVVc IVr,tIVr;
   record LocationVc Locr;
   record UserVc Userr;
-  row IVVc IVrw;
-  integer keycnt,rwcnt,normrwcnt,LAi,MAi,CAi,i,j;
+  record GCSVc GCSr;
+  row IVVc IVrw,tIVrw;
+  integer keycnt,rwcnt,rwcnt2,LAi,MAi,CAi,i,j;
   string 20 key;
   string 255 tstr,month;
   val sumoborot,sumvozvrat;
@@ -143,6 +144,47 @@ begin
       rwcnt = matrowcnt(IVr);
       for (i=0;i<rwcnt;i=i+1) begin
         matrowget(IVr,i,IVrw);
+        if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+          giftf = false;
+          for (j=0;j<rwcnt;j=j+1) begin
+            matrowget(IVr,j,tIVrw);
+            if (tIVrw.PayMode=="G") then begin
+              giftf = true;
+              j = rwcnt;
+            end;
+          end;
+          if (!giftf) then begin
+            if (LocSalesmanNameObor[tstr & "GV"]==false) then begin
+              LocSalesmanNameObor[tstr & "GV"] = true;
+              Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1;
+            end;
+            sumoborot = sumoborot + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+          end;
+        end;
+        if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
+          GCSr.SerNr = IVrw.GCNr;
+          readfirstmain(GCSr,1,true);
+          tIVr.SerNr = GCSr.InvSerNr;
+          readfirstmain(tIVr,1,true);
+          rwcnt2 = matrowcnt(tIVr);
+          giftf = false;
+          for (j=0;j<rwcnt2;j=j+1) begin
+            matrowget(IVr,j,tIVrw);
+            if (tIVrw.PayMode=="G") then begin
+              giftf = true;
+              j = rwcnt2;
+            end;
+          end;
+          if (!giftf) then begin
+            if (LocSalesmanNameVozv[tstr & "GV"]==false) then begin
+              LocSalesmanNameVozv[tstr & "GV"] = true;
+              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
+            end;
+            sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+          end else begin
+            sumoborot = sumoborot - MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+          end;
+        end;
         if (IVrw.stp==kInvoiceRowTypeNormal) then begin
           if (cnf) then begin
             if (LocSalesmanNameVozv[tstr & IVrw.ArtCode]==false) then begin
