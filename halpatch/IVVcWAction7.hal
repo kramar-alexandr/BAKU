@@ -1389,20 +1389,22 @@ begin
 			
 			
   	end else begin
-			MessageBox(0,USetStr(31001) & amount & " AZN"); //Edit***************************Sasha2,17:09 11.02.2015
-			ClearRow(IVr,IVrw,kInvoiceRowTypeLoyaltyPointsPayment);    
-			points = amount; 
-			if(IVr.Sum4<amount)then begin
-				points = IVr.Sum4;
-			end;    
-			IVrw.Points = points;// Edit ************************** Wednesday, 6 March 2013 12:08:33
-			IVrw.Sum = points;// Edit ************************** Wednesday, 6 March 2013 12:08:34
-			IVrw.CurncyCode = IVr.CurncyCode;
-			IVrw.PayMode = paymode;        
-			IVrw.Spec = UsetStr(24182);
-			MatRowPut(IVr,MatRowCnt(IVr),IVrw);
-			putwindowrecord(mwn,IVr);
-			ProceedLoyaltyPaymentNPTSSClassExecuteMy(mwn);
+  		if(amount!=0)then begin
+				MessageBox(0,USetStr(31001) & amount & " AZN"); //Edit***************************Sasha2,17:09 11.02.2015
+				ClearRow(IVr,IVrw,kInvoiceRowTypeLoyaltyPointsPayment);    
+				points = amount; 
+				if(IVr.Sum4<amount)then begin
+					points = IVr.Sum4;
+				end;    
+				IVrw.Points = points;// Edit ************************** Wednesday, 6 March 2013 12:08:33
+				IVrw.Sum = points;// Edit ************************** Wednesday, 6 March 2013 12:08:34
+				IVrw.CurncyCode = IVr.CurncyCode;
+				IVrw.PayMode = paymode;        
+				IVrw.Spec = UsetStr(24182);
+				MatRowPut(IVr,MatRowCnt(IVr),IVrw);
+				putwindowrecord(mwn,IVr);
+				ProceedLoyaltyPaymentNPTSSClassExecuteMy(mwn);
+			end;
 			goto LIVDClassTouchScreenLoyaltyPointsPaymentExecute;
     end;
   end;
@@ -1435,7 +1437,6 @@ begin
     RepSpec.FirstAcc = paymode;
     RepSpec.vals1 = PointsBalance;
     RepSpec.vals2 = totsumb1;
-    messagebox(0,totsumb1);
     wn = OpenWindow("LoyaltyPaymentNPTSSClass",0,mwn,"","",RepSpec);
     WindowFieldGoto(wn,RepSpec,-1,"vals0",false);    
   end;
