@@ -179,7 +179,7 @@ begin
           rwcnt2 = matrowcnt(tIVr);
           giftf = false;
           for (j=0;j<rwcnt2;j=j+1) begin
-            matrowget(IVr,j,tIVrw);
+            matrowget(tIVr,j,tIVrw);
             if (tIVrw.PayMode=="G") then begin
               giftf = true;
               j = rwcnt2;
@@ -190,7 +190,7 @@ begin
               LocDayNameVozv[tstr & "GV"] = true;
               Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1;
             end;
-            sumvozvrat = sumvozvrat + MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+            sumvozvrat = sumvozvrat - MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
           end else begin
             sumoborot = sumoborot - MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
           end;
@@ -220,11 +220,11 @@ begin
       end;
       if (cnf) then begin
       end else begin
-        if (sumvozvrat!=0) then begin
+        if (Vozvrat[tstr & "naim"]!=0) then begin
           Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
           Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
         end;
-        if (sumoborot!=0) then begin
+        if (Oborot[tstr & "naim"]!=0) then begin
           Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
           Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
         end;
