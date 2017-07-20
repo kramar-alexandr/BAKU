@@ -85,7 +85,8 @@ array integer positions;
 		outstring(positions[12],0,"Результат посещения",false);
 		outstring(positions[13],0,"Тип продажи",false);
 		outstring(positions[14],0,"Использовалась карта",false);
-		outstring(positions[15],0,"Продано на сумму(AZN)",false);
+		outstring(positions[15],0,"Продано на сумму",false);
+		outstring(positions[15],0,"Валюта",false);
 		outstring(positions[16],0,"Код клиента",false);
 		outstring(positions[17],0,"Имя посетителя",false);
 		outstring(positions[18],0,"Моб. Телефон",false);
@@ -224,6 +225,9 @@ array integer positions;
 				case 8: 
 					OutString(positions[11],0,"Оплата долга",false);									
 			end;
+			
+			totalcost = 0;
+			totalcost2 = 0;
 			switch (MRr.ResultRbtn) begin
 				case 0: 
 					OutString(positions[12],0,"-",false);
@@ -232,8 +236,7 @@ array integer positions;
 				case 2: 
 					OutString(positions[12],0,"Есть продажи: номера сч/ф: " & MRr.InvNr,false);
 					pos = 0;
-					totalcost = 0;
-					totalcost2 = 0;
+					
 					ExtractObj(MRr.InvNr,pos,serNum);
 					while(nonblank(serNum)) begin
 						IVr.SerNr = serNum;
@@ -268,7 +271,13 @@ array integer positions;
 				case 3: 
 				  outstring(positions[14],0,"Нет карты",false);								
 			end;
-			outstring(positions[15],0,totalcost & " " & IVr.CurncyCode,false);	
+			if(totalcost!=0)then begin
+				outstring(positions[15],0,totalcost,false);	
+				outstring(positions[15],0,IVr.CurncyCode,false);	
+			end else begin
+				outstring(positions[15],0,0,false);	
+				outstring(positions[15],0,"",false);	
+			end;
 			if(totalcost2!=0)then begin
 				//outstring(460,0,totalcost2 & " " & IVr.CurncyCode,false);					
 			end;
