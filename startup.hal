@@ -150,7 +150,10 @@ begin
   Maintenance("Coin Stock to DROMOS",EmptyVClass,GruppoCoinStockCountMn,modIN);
   Maintenance("Проверить в карточке товара галочку \"Изменять ст-ть при поступлении\"",FIXVClass,SetUpdateCostINToLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
   Maintenance("Продублировать накопленные баллы в копию накопл. баллов в карте лояльности",EmptyVClass,PassPointBalanceToPointsBalanceTotalMn,modDBMain); //Edit***************************Sasha2,14:17 23.06.2017
-  	
+  
+ 	Maintenance("Добавить способ оплаты",AddPModeMnVClass,AddPModeMn,modSL);
+
+  
   if(currentcompany==1)then begin
     Maintenance("Восстановить себестоимость для товара",FindCostForItemWithEmptyCostVClass,FindCostForItemWithEmptyCostMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
