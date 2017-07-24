@@ -5230,6 +5230,31 @@ begin
 return;
 end;
 
+global updating procedure AddVATCodeMn(record RcVc RepSpec)
+begin
+	record VATCodeBlock VCb;
+	row VATCodeBlock VCrw;
+	integer i,mtrw;
+	
+	blockload(VCb);
+	
+	mtrw = matrowcnt(VCb);
+	
+	if(nonblank(RepSpec.f1))then begin
+		VCrw.VATCode = RepSpec.f1;
+		VCrw.ExVatpr = RepSpec.vals0;
+		VCrw.IncVatpr = RepSpec.vals1;
+		VCrw.SalesVATAcc = RepSpec.f2;
+		VCrw.PaySalesVATAcc = RepSpec.f3;
+		
+		matrowput(VCb,mtrw,VCrw);
+		blockstore(VCb);
+	end;
+	
+	
+return;
+end;
+
 global //Edit***************************Sasha2,17:24 13.07.2017 {
 procedure CheckForCashbackCorrection()
 begin

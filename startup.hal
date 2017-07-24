@@ -152,6 +152,7 @@ begin
   Maintenance("Продублировать накопленные баллы в копию накопл. баллов в карте лояльности",EmptyVClass,PassPointBalanceToPointsBalanceTotalMn,modDBMain); //Edit***************************Sasha2,14:17 23.06.2017
   
  	Maintenance("Добавить способ оплаты",AddPModeMnVClass,AddPModeMn,modSL);
+ 	Maintenance("Добавить код НДС",AddVATCodeVClass,AddVATCodeMn,modNL);
 
   
   if(currentcompany==1)then begin

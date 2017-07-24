@@ -3173,6 +3173,21 @@ begin
   EndWindow;
 end;
 
+window AddVATCodeVClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Добавить код НДС",AddVATCodeVClass,CGMnt,RcType);
+  SetWRect(20,80,400,240);
+  vs = 20;h = 130; v = 20;
+  	EditField(h,v, -10,"Код",Normal,f1,false,0);
+  	EditField(h,v+=vs, -10,"Искл.%",Normal,vals0,false,0);
+  	EditField(h,v+=vs, -10,"Вкл.%",Normal,vals1,false,0);
+  	EditField(h,v+=vs, -10,"До реал.",Normal,f2,false,AccSClass);
+  	EditField(h,v+=vs, -10,"По реал.",Normal,f3,false,AccSClass);
+  EndWindow;
+end;
+
 window ImportImagesTClass:1
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
