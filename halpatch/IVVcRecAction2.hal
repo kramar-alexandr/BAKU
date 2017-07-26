@@ -604,7 +604,9 @@ BEGIN
 	For(i=0;i<mtrw;i=i+1) begin
 		matrowget(IVr,i,IVrw);
 		if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
-			IVr.Points=0;
+			if (CurrentCompany!=25) then begin
+			  IVr.Points=0;
+			end;
 			redempt = true;
 		end;	  
 	end; 
@@ -1263,7 +1265,9 @@ BEGIN
 	For(i=0;i<mtrw;i=i+1) begin
 		matrowget(IVr,i,IVrw);
 		if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
-			IVr.Points=0;
+			if (CurrentCompany!=25) then begin
+			  IVr.Points=0;
+			end;
 			redempt = true;
 		end;	  
 	end; 

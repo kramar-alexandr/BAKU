@@ -5281,7 +5281,7 @@ begin
     if (nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) then begin
       rnd = DefaultValRoundoff;
       rnd.decimals = 2;
-      rnd.mode = kRoundingModeTruncate;
+      rnd.mode = kRoundingModeHalfUp;
       loyCardPointsBalance = LoyaltyCardr.CashbackLevelPoints;
       
       LCCBLevelr.LCMLevel = IVr.LCMLevel;

@@ -2262,7 +2262,7 @@ window LCCashbackCorrectionDClass:1 //Edit***************************Sasha2,16:3
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
   real h,h2,h3,v,vs;
-  WindowBegin("Корректировка накоп. баллов CASHBACK",LCCashbackCorrectionDClass,CGview,-);
+  WindowBegin("Акция для CASHBACK накоп. карт",LCCashbackCorrectionDClass,CGview,-);
   UseView(LCCashbackCorrectionVc);
   SetWRect(20,80,530,457);
   v = 6; h=70; h2 = h + 130; h3 = h + 300; vs=20;
@@ -2287,7 +2287,7 @@ end;
 window LCCashbackCorrectionLClass:1 //Edit***************************Sasha2,16:35 13.07.2017
   wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
 begin
-  WindowBegin("Корректировка накоп. баллов CASHBACK",LCCashbackCorrectionLClass,CGmlist,-);
+  WindowBegin("Акции для CASHBACK накоп. карт",LCCashbackCorrectionLClass,CGmlist,-);
   SetWRect(64,80,559,298);
   SpawnClass(LCCashbackCorrectionDClass);
   Sizeable(-1,-1,0,0);

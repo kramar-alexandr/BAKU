@@ -52,7 +52,7 @@ begin
   Setting("Скидки дня рождения",BirthdayRebateTClass,modSL);// Edit ************************** Tuesday, 16 May 2017 12:52:07
   Setting("Скидки дня рождения",BirthdayRebateTClass,modSO);// Edit ************************** Tuesday, 16 May 2017 12:52:08
   Setting("Структуры программы лояльности CASHBACK нак.карт.",LCCashbackLevelLClass,modPOS); //Edit***************************Sasha2,14:19 07.07.2017
-  Setting("Корректировка баллов CASHBACK нак.карт.",LCCashbackCorrectionLClass,modPOS); //Edit***************************Sasha2,14:19 07.07.2017
+  Setting("Акции для CASHBACK нак.карт.",LCCashbackCorrectionLClass,modPOS); //Edit***************************Sasha2,14:19 07.07.2017
 	
 	Maintenance("Import IN Images",ImportImagesVClass,ImportImagesMn,modIN);
 	Maintenance("Очистить историю изменения цен",EmptyVClass,DelPLHistMn,modDI);
@@ -711,6 +711,7 @@ begin
   SString(35105,"Счет-фактура уже привязана к карте лояльности");
   SString(35106,"Использовалась карта");
   SString(35107,"Корректировка баллов CASHBACK на этот период уже существует");
+  SString(35108,"Проверьте счета для CASHBACK");
     
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

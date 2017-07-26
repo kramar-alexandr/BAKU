@@ -775,6 +775,7 @@ BEGIN
   val fr,to1,to2,br1,br2,fifoTotSum;	//Edit by Victor 18.03.15
   record IVVc corIVr;// Edit ************************** Friday, 3 July 2015 15:50:31
   boolean newCred;
+  record LoyaltyCardVc LoyaltyCardr; //Edit***************************Sasha2,15:59 25.07.2017
     
   if (IVr.InvType==kInvoiceTypeCredit or IVr.InvType==kInvoiceTypeCreditSpecialSales) or (IVr.InvType==kInvoiceTypeDebit) then begin
     if (IVr.CredInv>0) then begin
@@ -2006,8 +2007,25 @@ BEGIN
       OUTFORMFIELD("F_CHECKNR",IVr.ReceiptNrForReturn);  	//Edit----------------------Dima  14.04.2015
   end; 
   
-  
   PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc");
+  if (CurrentCompany==25 and NonBlank(IVr.LoyaltyCardNr)) then begin //Edit***************************Sasha2,13:41 25.07.2017 {
+    LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
+    if (ReadFirstMain(LoyaltyCardr,1,true) and LoyaltyCardr.Closed==0) then begin
+      if (FIELDINFORM("F_POINTS")) then begin
+        OUTFORMFIELD("F_POINTS",IVr.Points);
+      end;
+      if (FIELDINFORM("F_POINTSSTARTBAL")) then begin
+        OUTFORMFIELD("F_POINTSSTARTBAL",PointsSpent);
+      end;
+      if (FIELDINFORM("F_MYPOINTSLEFT")) then begin
+        OUTFORMFIELD("F_MYPOINTSLEFT",LoyaltyCardr.PointsBalance);
+      end;
+      if (FIELDINFORM("F_MYPOINTSTEXPIRE")) then begin
+        OUTFORMFIELD("F_MYPOINTSTEXPIRE",AddDay(IVr.InvDate,365));
+      end;
+    end;
+  end; //Edit***************************Sasha2,13:41 25.07.2017 }
+  
 
   OutFormImage(IVr);
   PrintFINREF(IVr,Docr);
