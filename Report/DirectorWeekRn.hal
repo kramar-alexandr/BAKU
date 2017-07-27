@@ -753,6 +753,23 @@ begin
 									end;
 								end;
 							end;
+              
+              corspdebval = blankval;
+							corspcredval = blankval;
+							testf = CorspTRTest(TRr,Accr52,i,corspdebval,corspcredval);
+							if testf then begin
+								if(TRrw.CredVal!=0)then begin
+									tempTRrw.MyVal1 = -TRrw.CurCredVal;
+									tempTRrw.MyVal2 = -TRrw.CredVal;
+								end else begin
+									tempTRrw.MyVal1 = TRrw.CurDebVal;
+									tempTRrw.MyVal2 = TRrw.DebVal;
+								end;
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.CredVal = blankval;
+							end;
 							
 							
 							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
@@ -2949,7 +2966,7 @@ begin
 			OutString(309,0,SaldoEndPeriod52 - kursovaya52,false);
 			OutString(333,0,"AZN",false);
 			if(RepSpec.vals0!=0)then begin
-				OutString(342,0,(SaldoEndPeriod52)/RepSpec.vals0,false);
+				OutString(342,0,(SaldoEndPeriod52 - kursovaya52)/RepSpec.vals0,false);
 			end;
 		EndFormat;
 		Black_Divider(142,216);
@@ -3018,10 +3035,10 @@ begin
       end;
       OutString(240,0,"",false);
       OutString(284,0,"К сдаче",false);
-      OutString(309,0,SaldoEndPeriod52 + kursovaya52,false);
+      OutString(309,0,SaldoEndPeriod52,false);
       OutString(333,0,"AZN",false);
       if(RepSpec.vals0!=0)then begin
-        OutString(342,0,(SaldoEndPeriod52 + kursovaya52)/RepSpec.vals0,false);
+        OutString(342,0,(SaldoEndPeriod52)/RepSpec.vals0,false);
       end;
     EndFormat;
 		Black_Divider(15,93);
