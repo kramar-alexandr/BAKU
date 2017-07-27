@@ -1265,15 +1265,15 @@ BEGIN
 	For(i=0;i<mtrw;i=i+1) begin
 		matrowget(IVr,i,IVrw);
 		if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
-			if (CurrentCompany!=25) then begin
+			if (CurrentCompany!=25) then begin //Edit***************************Sasha2,17:55 26.07.2017
 			  IVr.Points=0;
+			  redempt = true;
 			end;
-			redempt = true;
 		end;	  
 	end; 
   if ((IVr.OKFlag!=0) and (IV2r.OKFlag==0)) then begin
 		if(redempt)then begin
-				IVVc_LoyaltyCardPointsRedemption(IVr,false);
+				IVVc_LoyaltyCardPointsRedemption(IVr,false); //causes problems with points return if invoice is unoked. DeletePointsHist(...) finds wrong PointsHistVc record.
 		end;
   end;
   

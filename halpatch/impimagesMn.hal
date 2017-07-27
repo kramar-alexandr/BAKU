@@ -41,6 +41,7 @@ external function Boolean IVDchrsum(var record IVVc,Integer); //Edit************
 external function string 20 ReturnFieldDITypeNotJW(string); //Edit***************************Sasha2,16:50 14.06.2016
 external function Boolean SetInSet2(string,string);
 external updating procedure CalcPriceListsMn(record RcVc); //Edit***************************Sasha2,10:15 31.03.2017
+external function Boolean TimeInRange(Time,Time,Time); //Edit***************************Sasha2,11:26 27.07.2017
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -5256,8 +5257,110 @@ return;
 end;
 
 global //Edit***************************Sasha2,17:24 13.07.2017 {
-procedure CheckForCashbackCorrection()
+procedure CheckForCashbackCorrection(var record IVVc IVr,val initCBPercent,val paidViaPoints,var roundmode rnd)
 begin
+  record LCCashbackCorrectionVc LCCBCorr;
+  row LCCashbackCorrectionVc LCCBCorrw;
+  row IVVc IVrw;
+  record INVc INr;
+  record BaseCurBlock BCb;
+  Boolean corrFound;
+  date blankd;
+  Integer i,rwcnt,ivRwcnt;
+  val ivTotal,ivTotalB,rowSum,rowsPoints,promotionCBPercent,rowCBPercent;
+  vector val groupCBPercent,itemCBPercent;
+  vector boolean groupCBPercentF,itemCBPercentF;
+  Boolean TrHs,testf,foundF;
+  Time ivTime;
+  
+    BlockLoad(BCb);
+    if (NonBlank(IVr.LCMLevel)) then begin
+      ivTotal = IVr.Sum4;
+      ivTime = IVr.TransTime;
+      if (BlankTime(ivTime)) then begin
+        ivTime = CurrentTime;
+      end;
+      LCCBCorr.LCMLevel = IVr.LCMLevel;
+      LCCBCorr.CustomerPercentLevel = initCBPercent;
+      LCCBCorr.FromDate = IVr.InvDate;
+      TrHs = true;
+      corrFound = false;
+      while (LoopBackKey("LCMLevel",LCCBCorr,3,TrHs)) begin
+        testf = true;
+        if (LCCBCorr.LCMLevel!=IVr.LCMLevel or LCCBCorr.CustomerPercentLevel!=initCBPercent) then begin TrHs = false; testf = false; end;
+        if (DateInRange(IVr.InvDate,LCCBCorr.FromDate,LCCBCorr.ToDate)==false) then begin TrHs = false; testf = false; end;
+        if (NonBlankTime(LCCBCorr.FromTime) and  NonBlankTime(LCCBCorr.ToTime) and TimeInRange(ivTime,LCCBCorr.FromTime,LCCBCorr.ToTime)==false) then begin testf = false; end;
+        if (testf) then begin
+          corrFound = true;
+          TrHs = false;
+        end;
+      end; RESETLOOP(LCCBCorr);     
+      
+      if (corrFound==false) then begin //!!!!!! if a necessity to separate blankdate LCCashbackCorrectionVc records according to time range will appear, update LCCashbackCorrectionVcRecordCheck(...) too
+        LCCBCorr.LCMLevel = IVr.LCMLevel;
+        LCCBCorr.CustomerPercentLevel = initCBPercent;
+        LCCBCorr.FromDate = blankd;
+        corrFound = ReadFirstKey("LCMLevel",LCCBCorr,3,true);
+        if (corrFound) then begin
+          if (LCCBCorr.LCMLevel!=IVr.LCMLevel or LCCBCorr.CustomerPercentLevel!=initCBPercent) then begin corrFound = false; end;
+          if (NonBlankDate(LCCBCorr.FromDate) or NonBlankDate(LCCBCorr.ToDate)) then begin corrFound = false; end;
+        end;
+      end;
+      if (corrFound) then begin
+        promotionCBPercent = LCCBCorr.CashbackPercent;
+        rnd.decimals = LCCBCorr.RndTo;
+        rwcnt = MatRowCnt(LCCBCorr);
+        if (rwcnt>0) then begin
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(LCCBCorr,i,LCCBCorrw);
+            switch (LCCBCorrw.CodeType) begin
+              case 0:
+                groupCBPercent[LCCBCorrw.ITCode] = LCCBCorrw.CashbackPercent;
+                groupCBPercentF[LCCBCorrw.ITCode] = true;
+              case 1:
+                itemCBPercent[LCCBCorrw.ITCode] = LCCBCorrw.CashbackPercent;
+                itemCBPercentF[LCCBCorrw.ITCode] = true;
+            end;
+          end;
+          ivRwcnt = MatRowCnt(IVr);
+          if (ivRwcnt>0) then begin
+            for (i=0;i<ivRwcnt;i=i+1) begin
+              MatRowGet(IVr,i,IVrw);
+              if (IVrw.stp==kInvoiceRowTypeNormal and NonBlank(IVrw.ArtCode)) then begin
+                INr.Code = IVrw.ArtCode;
+                if (ReadFirstMain(INr,1,true)) then begin
+                  foundF = false;
+                  if (itemCBPercentF[INr.Code]) then begin
+                    rowCBPercent = itemCBPercent[INr.Code];
+                    foundF = true;
+                  end;
+                  if (foundF==false and groupCBPercentF[INr.Group]) then begin
+                    rowCBPercent = groupCBPercent[INr.Group];
+                    foundF = true;
+                  end;
+                  if (foundF) then begin
+                    ivTotal = ivTotal - IVrw.Sum;
+                    rowSum = IVrw.Sum;
+                    if (IVr.CurncyCode!=BCb.BaseCur1) then begin
+                      rowSum = MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+                    end;
+                    rowsPoints = rowsPoints + Round((rowSum - (paidViaPoints*IVrw.Sum/IVr.Sum4))*rowCBPercent/100,rnd);
+                    //LogText(0,IVrw.ArtCode & " gave points: " & Round((rowSum - (paidViaPoints*IVrw.Sum/IVr.Sum4))*rowCBPercent/100,rnd));
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+        ivTotalB = ivTotal;
+        if (IVr.CurncyCode!=BCb.BaseCur1) then begin
+          ivTotalB = MulRateToBase1(IVr.CurncyCode,ivTotal,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+        end;
+        IVr.Points = Round((ivTotalB - (paidViaPoints*ivTotal/IVr.Sum4))*promotionCBPercent/100,rnd) + rowsPoints;
+        //LogText(0,"IVr.Points: " & IVr.Points);
+      end;
+    end;
+    
   return;
 end; //Edit***************************Sasha2,17:25 13.07.2017 }
 
@@ -5273,8 +5376,6 @@ begin
   Boolean found;
   Integer i,rwcnt;
   val loyCardPointsBalance,cashbackPercent,paidViaPoints,sum;
-  	
-  	
   	
     BlockLoad(BCb);
     LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
@@ -5314,6 +5415,7 @@ begin
             sum = MulRateToBase1(IVr.CurncyCode,IVr.Sum4,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
           end;
           IVr.Points = Round((sum - paidViaPoints)*cashbackPercent/100,rnd);
+          CheckForCashbackCorrection(IVr,cashbackPercent,paidViaPoints,rnd);
         end;
       end;
     end;

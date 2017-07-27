@@ -2294,10 +2294,12 @@ begin
   UseView(LCCashbackCorrectionVc);
   RecordList(4,17,-21,-39);
   RlColKey(4,4,"Номер",SerNr,false,SerNr);
-  RlColKey(81,81,"С даты",FromDate,false,FromDate);
-  RlColKey(161,161,"По дату",ToDate,false,ToDate);
-  RlCol(241,241,"Прогр.лояльн.",LCMLevel,false);
-  RlCol(321,321,"Для скидки,%",CustomerPercentLevel,false);
+  RlColKey(60,60,"С даты",FromDate,false,LCMLevel);
+  RlColKey(130,130,"По дату",ToDate,false,ToDate);
+  RlCol(190,190,"Прогр.лояльн.",LCMLevel,false);
+  RlCol(-210,-210,"С времени",FromTime,false);
+  RlCol(-150,-150,"По время",ToTime,false);
+  RlCol(-90,-90,"Для скидки,%",CustomerPercentLevel,false);
   SearchField("Найти");
   EndWindow;
 end;

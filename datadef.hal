@@ -4999,16 +4999,12 @@ begin
   KeyBegin(LCMLevel);
   KeySegment(LCMLevel);
   KeySegment(CustomerPercentLevel);
-  KeySegment(SerNr);
-  KeyBegin(FromDate);
-  KeySegment(LCMLevel);
   KeySegment(FromDate);
-  KeySegment(CustomerPercentLevel);
   KeySegment(SerNr);
   KeyBegin(ToDate);
   KeySegment(LCMLevel);
-  KeySegment(ToDate);
   KeySegment(CustomerPercentLevel);
+  KeySegment(ToDate);
   KeySegment(SerNr);
   
   EndRecord;
