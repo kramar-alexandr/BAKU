@@ -6,9 +6,9 @@ external procedure GetObjs(string,string,var string);
 external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val);
 external function string 200 ValToMyString(val,integer);
 remote function boolean CompanyIsJWLikeCompany(Integer);
+external function Integer InString2(string,string);
 
 SetLangMode(LangRussian,"RUS",0);
-
 
 procedure OutMyString(integer p1,integer p2,val str,boolean alight)
 begin
@@ -771,6 +771,22 @@ begin
 								tempTRrw.CredVal = blankval;
 							end;
 							
+              testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
+							if testf then begin
+								if(TRrw.CredVal!=0)then begin
+									tempTRrw.MyVal1 = -TRrw.CurCredVal;
+									tempTRrw.MyVal2 = -TRrw.CredVal;
+								end else begin
+									tempTRrw.MyVal1 = TRrw.CurDebVal;
+									tempTRrw.MyVal2 = TRrw.DebVal;
+								end;
+								tempTRrw.MyVal3 = - corspdebval + corspcredval;
+								kursovaya = kursovaya - corspdebval + corspcredval;
+								tempTRrw.CurDebVal = blankval;
+								tempTRrw.DebVal = blankval;
+								tempTRrw.CurCredVal = blankval;
+								tempTRrw.CredVal = blankval;
+							end;
 							
 							if ((RepSpec.ArtMode == 1) and (TRr.IntYc == IVYc) and nonblank(TRrw.DebVal)) then begin
 								MatRowPut(tempTRr2,l,tempTRrw);
@@ -926,12 +942,24 @@ begin
 							tempTRrw.ReconDate = mainr.TransDate;
 							tempTRrw.Curncy = TRrw.Curncy & "52";
 							tempTRrw.MyVal7 = TRrw.CurDebVal;
+              if (!setinset("7",tempTRrw.TFromCode)) then begin
+                tempTRrw.TFromCode = tempTRrw.TFromCode & "7,";
+              end;
 							tempTRrw.MyVal9 = TRrw.CurCredVal;
+              if (!setinset("9",tempTRrw.TFromCode)) then begin
+                tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
+              end;
 							tempTRrw.DebVal = TRrw.DebVal;
 							tempTRrw.CredVal = TRrw.CredVal;
 							if ((TRr.IntYc == IVYc) and (TRrw.CredVal <> 0)) then begin
 								tempTRrw.MyVal7 = - TRrw.CurCredVal;
+                if (!setinset("7",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "7,";
+                end;
 								tempTRrw.MyVal9 = - TRrw.CurDebVal;
+                if (!setinset("9",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
+                end;
 								tempTRrw.DebVal = - TRrw.CredVal;
 								tempTRrw.CredVal = - TRrw.DebVal;
 							end;
@@ -949,6 +977,9 @@ begin
                     end else begin
                       tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
+                    end;
+                    if (!setinset("9",tempTRrw.TFromCode)) then begin
+                      tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
                     end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
@@ -972,6 +1003,9 @@ begin
                       tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
                     end;
+                    if (!setinset("9",tempTRrw.TFromCode)) then begin
+                      tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
+                    end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
                     tempTRrw.MyVal7 = blankval;
@@ -993,6 +1027,9 @@ begin
                     end else begin
                       tempTRrw.MyVal9 = tempTRrw2.CurDebVal;
                       tempTRrw.CredVal = tempTRrw2.DebVal;
+                    end;
+                    if (!setinset("9",tempTRrw.TFromCode)) then begin
+                      tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
                     end;
                     tempTRrw.MyVal8 = blankval;
                     tempTRrw.MyVal2 = blankval;
@@ -1022,6 +1059,9 @@ begin
 													tempTRrw.MyVal8 = TRrw.CurDebVal;
 													tempTRrw.MyVal2 = TRrw.DebVal;
 												end;
+                        if (!setinset("8",tempTRrw.TFromCode)) then begin
+                          tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                        end;
 												tempTRrw.MyVal7 = blankval;
 												tempTRrw.DebVal = blankval;
 												tempTRrw.MyVal9 = blankval;
@@ -1034,7 +1074,13 @@ begin
 													TRrw.MyVal7 = blankval;
 												end;
 												tempTRrw.MyVal7 = TRrw.CurDebVal;
+                        if (!setinset("7",tempTRrw.TFromCode)) then begin
+                          tempTRrw.TFromCode = tempTRrw.TFromCode & "7,";
+                        end;
 												tempTRrw.MyVal9 = TRrw.CurCredVal;
+                        if (!setinset("9",tempTRrw.TFromCode)) then begin
+                          tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
+                        end;
 												tempTRrw.DebVal = TRrw.DebVal;
 												tempTRrw.CredVal = TRrw.CredVal;
 											end;
@@ -1050,6 +1096,9 @@ begin
 															tempTRrw.MyVal8 = TRrw.CurDebVal;
 															tempTRrw.MyVal2 = TRrw.DebVal;
 														end;
+                            if (!setinset("8",tempTRrw.TFromCode)) then begin
+                              tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                            end;
                             tempTRrw.MyVal7 = blankval;
 														tempTRrw.DebVal = blankval;
 														tempTRrw.MyVal9 = blankval;
@@ -1070,6 +1119,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
                 tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.MyVal9 = blankval;
@@ -1085,13 +1137,15 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
                 tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.MyVal9 = blankval;
 								tempTRrw.CredVal = blankval;
 							end;
-              
-							testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
+              testf = CorspTRTest(TRr,Accr8403,i,corspdebval,corspcredval);// Edit ************************** Wednesday, 26 August 2015 16:05:46
 							if testf then begin
               	if(TRrw.CredVal!=0)then begin
 									tempTRrw.MyVal8 = -TRrw.CurCredVal;
@@ -1100,6 +1154,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
                 tempTRrw.MyVal3 = - corspdebval + corspcredval;
 								kursovaya52 = kursovaya52 - corspdebval + corspcredval;
 								tempTRrw.MyVal7 = blankval;
@@ -1117,6 +1174,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
                 logtext(0,"4 " & tempTRrw.MyVal8);
                 tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
@@ -1133,6 +1193,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
 								if SetInSet("E131",TRrw.Objects) then begin
 									BalItem1 = BalItem1 - TRrw.CredVal + TRrw.DebVal;
 								end;
@@ -1154,6 +1217,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
                 BalItem2 = BalItem2 + TRrw.CredVal - TRrw.DebVal;
 								tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
@@ -1169,7 +1235,13 @@ begin
 									TRrw.MyVal9 = -TRrw.CurDebVal;
 									TRrw.MyVal7 = blankval;
 									tempTRrw.MyVal7 = TRrw.CurDebVal;
+                  if (!setinset("7",tempTRrw.TFromCode)) then begin
+                    tempTRrw.TFromCode = tempTRrw.TFromCode & "7,";
+                  end;
 									tempTRrw.MyVal9 = TRrw.CurCredVal;
+                  if (!setinset("9",tempTRrw.TFromCode)) then begin
+                    tempTRrw.TFromCode = tempTRrw.TFromCode & "9,";
+                  end;
 									tempTRrw.DebVal = TRrw.DebVal;
 									tempTRrw.CredVal = TRrw.CredVal;
 								end;
@@ -1183,6 +1255,9 @@ begin
 									tempTRrw.MyVal8 = TRrw.CurDebVal;
 									tempTRrw.MyVal2 = TRrw.DebVal;
 								end;
+                if (!setinset("8",tempTRrw.TFromCode)) then begin
+                  tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
+                end;
 								handed53 = handed53 + TRrw.CredVal;
 								tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
@@ -1344,8 +1419,19 @@ begin
           tempTRrw.MyVal1 = tempTRrw.MyVal1;
           tempTRrw.MyVal10 = tempTRrw.MyVal7;
           tempTRrw.MyVal13 = tempTRrw.MyVal8;
+          if (!setinset("13",tempTRrw.TFromCode)) then begin
+            tempTRrw.TFromCode = tempTRrw.TFromCode & "13,";
+          end;
           tempTRrw.MyVal7 = 0;
+          if (!setinset("7",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"7");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.MyVal8 = 0;
+          if (!setinset("8",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"8");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.CurDebVal = 0;
 				case "EUR":
 					tempTRrw.DebVal2 = tempTRrw.CurDebVal;
@@ -1354,7 +1440,15 @@ begin
           tempTRrw.MyVal14 = tempTRrw.MyVal8;
           tempTRrw.MyVal1 = 0;
           tempTRrw.MyVal7 = 0;
+          if (!setinset("7",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"7");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.MyVal8 = 0;
+          if (!setinset("8",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"8");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.CurDebVal = 0;
 				case "USD":
 					tempTRrw.Qty = tempTRrw.CurDebVal;
@@ -1363,7 +1457,15 @@ begin
           tempTRrw.MyVal15 = tempTRrw.MyVal8;
           tempTRrw.MyVal1 = 0;
           tempTRrw.MyVal7 = 0;
+          if (!setinset("7",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"7");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.MyVal8 = 0;
+          if (!setinset("8",tempTRrw.TFromCode)) then begin
+            j = InString2(tempTRrw.TFromCode,"8");
+            tempTRrw.TFromCode = left(tempTRrw.TFromCode,j) & right(tempTRrw.TFromCode,(len(tempTRrw.TFromCode)-j-2));
+          end;
           tempTRrw.CurDebVal = 0;
 			end;
 			MatRowPut(tempTRr2,i,tempTRrw);
@@ -1432,10 +1534,7 @@ begin
 			end;
 		end;
 	end;
-  /*for (j=0;j<rwcnt;j=j+1) begin
-    MatRowGet(tempTRr,j,tempTRrw);
-  end;*/
-	AZNTermDeb = 0;
+  AZNTermDeb = 0;
 	AZNTermCred = 0;
 	AZNDeb = 0;
 	AZNCred = 0;
@@ -2207,9 +2306,9 @@ begin
           if (tabprintf[3]) then begin
           	OutString(tab[3],0,tempTRrw.MyVal7,false);
             AZN52Deb = AZN52Deb + tempTRrw.MyVal7;
-            if (tempTRrw.MyVal7!=blankval) then begin
-              Base52Deb = Base52Deb + tempTRrw.DebVal;
-            end;
+          end;
+          if (setinset("7",tempTRrw.TFromCode)) then begin
+            Base52Deb = Base52Deb + tempTRrw.DebVal;
           end;
           if (tabprintf[4]) then begin
           	OutString(tab[4],0,"",false);
@@ -2240,9 +2339,9 @@ begin
           if (tabprintf[11]) then begin
           	OutString(tab[11],0,tempTRrw.MyVal8,false);
             AZN52Conv = AZN52Conv + tempTRrw.MyVal8;
-            if (tempTRrw.MyVal8!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("8",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[12]) then begin
           	OutString(tab[12],0,"",false);
@@ -2275,9 +2374,9 @@ begin
           if (tabprintf[20]) then begin
           	OutString(tab[20],0,tempTRrw.MyVal9,false);
             AZN52Cred = AZN52Cred + tempTRrw.MyVal9;
-            if (tempTRrw.MyVal9!=blankval) then begin
-              Base52Cred = Base52Cred + tempTRrw.CredVal;
-            end;
+          end;
+          if (setinset("9",tempTRrw.TFromCode)) then begin
+            Base52Cred = Base52Cred + tempTRrw.CredVal;
           end;
           if (tabprintf[21]) then begin
           	OutString(tab[21],0,"",false);
@@ -2311,9 +2410,9 @@ begin
           if (tabprintf[4]) then begin
           	OutString(tab[4],0,tempTRrw.MyVal7,false);
             EUR52Deb = EUR52Deb + tempTRrw.MyVal7;
-            if (tempTRrw.MyVal7!=blankval) then begin
-              Base52Deb = Base52Deb + tempTRrw.DebVal;
-            end;
+          end;
+          if (setinset("7",tempTRrw.TFromCode)l) then begin
+            Base52Deb = Base52Deb + tempTRrw.DebVal;
           end;
           if (tabprintf[5]) then begin
           	OutString(tab[5],0,"",false);
@@ -2343,9 +2442,9 @@ begin
           if (tabprintf[12]) then begin
           	OutString(tab[12],0,tempTRrw.MyVal8,false);
             EUR52Conv = EUR52Conv + tempTRrw.MyVal8;
-            if (tempTRrw.MyVal8!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("8",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[13]) then begin
           	OutString(tab[13],0,"",false);
@@ -2378,9 +2477,9 @@ begin
           if (tabprintf[21]) then begin
           	OutString(tab[21],0,tempTRrw.MyVal9,false);
             EUR52Cred = EUR52Cred + tempTRrw.MyVal9;
-            if (tempTRrw.MyVal9!=blankval) then begin
-              Base52Cred = Base52Cred + tempTRrw.CredVal;
-            end;
+          end;
+          if (setinset("9",tempTRrw.TFromCode)) then begin
+            Base52Cred = Base52Cred + tempTRrw.CredVal;
           end;
           if (tabprintf[22]) then begin
           	OutString(tab[22],0,"",false);
@@ -2414,9 +2513,9 @@ begin
           if (tabprintf[5]) then begin
             OutString(tab[5],0,tempTRrw.MyVal7,false);
             USD52Deb = USD52Deb + tempTRrw.MyVal7;
-            if (tempTRrw.MyVal7!=blankval) then begin
-              Base52Deb = Base52Deb + tempTRrw.DebVal;
-            end;
+          end;
+          if (setinset("7",tempTRrw.TFromCode)) then begin
+            Base52Deb = Base52Deb + tempTRrw.DebVal;
           end;
           if (tabprintf[6]) then begin
             OutString(tab[6],0,"",false);
@@ -2446,9 +2545,9 @@ begin
           if (tabprintf[13]) then begin
             OutString(tab[13],0,tempTRrw.MyVal8,false);
             USD52Conv = USD52Conv + tempTRrw.MyVal15;
-            if (tempTRrw.MyVal8!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("8",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[14]) then begin
             OutString(tab[14],0,"",false); 
@@ -2481,9 +2580,9 @@ begin
           if (tabprintf[22]) then begin
             OutString(tab[22],0,tempTRrw.MyVal9,false);
             USD52Cred = USD52Cred + tempTRrw.MyVal9;
-            if (tempTRrw.MyVal9!=blankval) then begin
-              Base52Cred = Base52Cred + tempTRrw.CredVal;
-            end;
+          end;
+          if (setinset("9",tempTRrw.TFromCode)) then begin
+            Base52Cred = Base52Cred + tempTRrw.CredVal;
           end;
           if (tabprintf[23]) then begin
             OutString(tab[23],0,"",false);
@@ -2631,23 +2730,23 @@ begin
           if (tabprintf[11]) then begin
             OutString(tab[11],0,tempTRrw.MyVal13,false);
             AZN52Conv = AZN52Conv + tempTRrw.MyVal13;
-            if (tempTRrw.MyVal13!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("13",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[12]) then begin
             OutString(tab[12],0,tempTRrw.MyVal14,false);
             EUR52Conv = EUR52Conv + tempTRrw.MyVal14;
-            if (tempTRrw.MyVal14!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("14",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[13]) then begin
             OutString(tab[13],0,tempTRrw.MyVal15,false);
             USD52Conv = USD52Conv + tempTRrw.MyVal15;
-            if (tempTRrw.MyVal15!=blankval) then begin
-              Base52Conv = Base52Conv + tempTRrw.MyVal2;
-            end;
+          end;
+          if (setinset("15",tempTRrw.TFromCode)) then begin
+            Base52Conv = Base52Conv + tempTRrw.MyVal2;
           end;
           if (tabprintf[14]) then begin
           	OutString(tab[14],0,tempTRrw.MyVal1,false); 
@@ -3043,7 +3142,7 @@ begin
     EndFormat;
 		Black_Divider(15,93);
 	// к сдаче
-    SaldoEndPeriod50n51 = BeginBalance50n51 + (BaseDeb - Base52Deb) - (BaseCred - Base52Cred) + (convtotal5 - Base52Conv) - kursovaya52;// Edit ************************** Thursday, 27 August 2015 15:22:15
+    SaldoEndPeriod50n51 = BeginBalance50n51 + (BaseDeb - Base52Deb) - (BaseCred - Base52Cred) + (convtotal5 - Base52Conv);// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50USD = BeginBalance50USD + USDDeb - USDCred + convtotal4;// Edit ************************** Thursday, 27 August 2015 15:22:15
 		SaldoEndPeriod50EUR = BeginBalance50EUR + EURDeb - EURCred + convtotal3;// Edit ************************** Thursday, 27 August 2015 15:22:16
 		SaldoEndPeriod50AZN = BeginBalance50AZN + AZNDeb - AZNCred + convtotal2;// Edit ************************** Thursday, 27 August 2015 15:22:17
