@@ -2270,7 +2270,7 @@ begin
   EditField(h3,v,80,"Прогр.лояльн.",Normal,LCMLevel,false,LCMemberLevelSClass);
   EditField(h,v+=vs,60,"С даты",Normal,FromDate,false,PasteCurDate);
   EditField(h2,v,60,"По дату",Normal,ToDate,false,PasteCurDate);
-  EditField(h3,v,80,"Для скидки,%",Normal,CustomerPercentLevel,false,0);
+  EditField(h3,v,80,"Для проц.возвр.,%",Normal,CustomerPercentLevel,false,0);
   EditField(h,v+=vs,60,"С времени",Normal,FromTime,false,PasteCurTime);
   EditField(h2,v,60,"По время",Normal,ToTime,false,PasteCurTime);
   EditField(h2,v+=vs,80,"Процент возврата от покупки,%",Normal,CashbackPercent,false,SetSClass);
@@ -2299,7 +2299,7 @@ begin
   RlCol(190,190,"Прогр.лояльн.",LCMLevel,false);
   RlCol(-210,-210,"С времени",FromTime,false);
   RlCol(-150,-150,"По время",ToTime,false);
-  RlCol(-90,-90,"Для скидки,%",CustomerPercentLevel,false);
+  RlCol(-90,-90,"Для проц.возвр.,%",CustomerPercentLevel,false);
   SearchField("Найти");
   EndWindow;
 end;
