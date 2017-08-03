@@ -73,13 +73,13 @@ begin
 	string 5 tempStr;
 	string 200 tempComm;
 	boolean compf;
-  roundmode rnd
+  roundmode rnd;
   
   rnd = DefaultCurRoundoff;
   rnd.decimals = 0;
   rnd.step = kRoundingStepNone;
   rnd.mode = kRoundingModeHalfDown;
-	
+  
 	BeginBalance50 = 0;
 	BeginBalance51 = 0;
 	BeginBalance53 = 0;
@@ -1946,7 +1946,23 @@ begin
         tab[31] = tab[k] + (tab[j]-tab[k])/2;
         tab[41] = tab[k];
         tab[42] = tab[j] - 3;
+        if (RepSpec.Media==mtExcel) then begin
+          j = 0;
+          for (i=2;i<10;i=i+1) begin
+            if (tabprintf[i]) then begin
+              j = j + 1;
+            end;
+          end;
+          for (i=0;i<Round((j-1)/2,rnd);i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
         OutStringCut(tab[31]-12,tab[31]+12,0,"Поступления",true,0);
+        if (RepSpec.Media==mtExcel) then begin
+          for (i=0;i<(j-1-Round((j-1)/2,rnd));i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
       end;
         //OutStringCut(integer x, integer y,
         //			   integer und, string str,
@@ -1982,7 +1998,23 @@ begin
         tab[32] = tab[k] + (tab[j]-tab[k])/2;
         tab[43] = tab[k] + 3;
         tab[44] = tab[j] - 3;
+                if (RepSpec.Media==mtExcel) then begin
+          j = 0;
+          for (i=10;i<18;i=i+1) begin
+            if (tabprintf[i]) then begin
+              j = j + 1;
+            end;
+          end;
+          for (i=0;i<Round((j-1)/2,rnd);i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
         OutStringCut(tab[32]-13,tab[32]+13,0,"Конвертация/банк",true,0);
+        if (RepSpec.Media==mtExcel) then begin
+          for (i=0;i<(j-1-Round((j-1)/2,rnd));i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
       end;
       j = 0;
       k = 0;
@@ -2004,7 +2036,23 @@ begin
         tab[33] = tab[k] + (tab[j]-tab[k])/2;
         tab[45] = tab[k] + 3;
         tab[46] = tab[j] - 3;
+                if (RepSpec.Media==mtExcel) then begin
+          j = 0;
+          for (i=19;i<27;i=i+1) begin
+            if (tabprintf[i]) then begin
+              j = j + 1;
+            end;
+          end;
+          for (i=0;i<(Round((j-1)/2,rnd)+1);i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
         OutStringCut(tab[33]-12,tab[32]+12,0,"Расходы",true,0);
+        if (RepSpec.Media==mtExcel) then begin
+          for (i=0;i<(j-1-Round((j-1)/2,rnd));i=i+1) begin
+            OutString(0,0,"",false);
+          end;
+        end;
       end;
       tab[34] = tab[27] + (480-tab[27])/2;
       OutStringCut(tab[34]-12,tab[34]+12,0,"Примечание",false,0);
