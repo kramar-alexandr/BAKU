@@ -1177,7 +1177,6 @@ begin
                 if (!setinset("8",tempTRrw.TFromCode)) then begin
                   tempTRrw.TFromCode = tempTRrw.TFromCode & "8,";
                 end;
-                logtext(0,"4 " & tempTRrw.MyVal8);
                 tempTRrw.MyVal7 = blankval;
 								tempTRrw.DebVal = blankval;
 								tempTRrw.MyVal9 = blankval;
@@ -1341,6 +1340,7 @@ begin
 		for (i=0;i<rwcnt2;i=i+1) begin
 			MatRowGet(tempTRr2,i,tempTRrw);
 			if (right(tempTRrw.Curncy,2)=="52") then begin
+      
         f = true;
       end else begin
         f = false;
@@ -2486,7 +2486,7 @@ begin
           	OutString(tab[4],0,tempTRrw.MyVal7,false);
             EUR52Deb = EUR52Deb + tempTRrw.MyVal7;
           end;
-          if (setinset("7",tempTRrw.TFromCode)l) then begin
+          if (setinset("7",tempTRrw.TFromCode)) then begin
             Base52Deb = Base52Deb + tempTRrw.DebVal;
           end;
           if (tabprintf[5]) then begin
