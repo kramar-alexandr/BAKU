@@ -153,8 +153,23 @@ begin
   
  	Maintenance("Добавить способ оплаты",AddPModeMnVClass,AddPModeMn,modSL);
  	Maintenance("Добавить код НДС",AddVATCodeVClass,AddVATCodeMn,modNL);
+ 	Maintenance("Добавить ед.изм.",ImportImagesVClass,AddInchesMn,modIN);
 
   
+  Report("Test",TestRClass,TestRn,0,modDBMain);
+	
+	Report("Средний чек",MiddleInvoiceRClass,MiddleInvoiceRn,0,modSL);
+	Report("Средний чек по счетам",MiddleInvoiceOrderRClass,MiddleInvoiceOrderRn,0,modSO);
+	Report("Отчет по клиентам по всем компаниям",CustCompRClass,CustCompRn,0,modSL);
+  Report("Отчет по активным клиентам",ActiveCustCompRClass,ActiveCustCompRn,0,modSL); //Edit ************************** Sasha2, Friday, 27 June 2013
+	Report("Отчет по обороту акционных товаров",RebItemSalesRClass,RebItemSalesRn,0,modSL); //Edit ************************** Sasha2, Friday, 27 June 2013
+	Report("Баланс",MegaBalanceRClass,MegaBalanceRn,0,modSL); // Edit ************************** Thursday, 24 April 2014 14:59:05
+	Report("Баланс для монобренда",MegaBalanceByCatRClass,MegaBalanceByCatRn,0,modSL); // Edit ************************** Thursday, 24 April 2014 14:59:05
+
+	Report("Приход",CLInRepRClass,CLInRepRn,0,modCL); // Edit ************************** Thursday, 24 April 2014 14:59:05
+	Report("Расход",CLOutRepRClass,CLOutRepRn,0,modCL); // Edit ************************** Thursday, 24 April 2014 14:59:05
+
+	Report("JW Attributes",SameBarCodesRClass,AllJWAttributesRn,0,modTC);//Edit----------------------Dima  16.12.2015
   if(currentcompany==1)then begin
     Maintenance("Восстановить себестоимость для товара",FindCostForItemWithEmptyCostVClass,FindCostForItemWithEmptyCostMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
   	Report("Оборотно-сальдовая ведомость по товарам расширенная",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
@@ -257,6 +272,7 @@ begin
 
   Export("Отчет по продажам с картинками",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
   Export("Остатки по складам с картинками",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
+  Export("Экспорт товаров",ExportINEClass,ExportINEn,modIN);
 
 	Import("Обновление названий и классификаций товаров",INUpdatingIClass,INImportIn,modIN);	//Edit----------------------Dima  16.02.2015
 	Import("2_Обновление названий и классификаций товаров",INUpdatingIClass,INImport2In,modIN);//Edit----------------------Dima  16.02.2015
@@ -270,6 +286,13 @@ begin
 	Import("Импорт классификаций клиента: добавление",AddCUClassificationIClass,AddCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
 	Import("Импорт классификаций клиента: подмена",ChangeCUClassificationIClass,ChangeCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
 	Import("Импорт классификаций клиента: удаление",RemoveCUClassificationIClass,RemoveCUClassificationIn,modMYCRM); //Edit***************************Sasha2,14:17 04.07.2017
+	Import("Импорт прайсового рассписания",ImportPLClass,ImportPLIn,modDI);
+  Import("Мзменение скидок клиентов",ImportDiskTableLClass,ImportDiskTableIn,modDI);
+  Import("Импорт товаров",ImportMyINClass,ImportMyINIn,modIN);
+  Import("Телефоны клиентам",ImportMyINClass,UpdateCUrPhonenIn,modDBMain);
+  Import("Импорт баркодов",ImportMyINClass,ImportBarCodesIn,modIN);
+  Import("CLOutImport",ImportMyINClass,ImpCLOut,modCL);
+  Import("Импорт форм документов",ImportMyINClass,ImpDocVc,modSY);
 
 	SetBegin(900);
 		SetText(0,"Обычный");
@@ -463,6 +486,7 @@ begin
   SString(31181,"Сравнить товары внутр.заказов и заказов пост.");
   SString(31182,"Переносить товары на этот склад не допускается.");
   SString(31183,"Причина посещения");
+  SString(31184,"Проблема со специальным товаром активации cashback");
 
 //RebItemSalesRn
   SString(31200,"Отчет по обороту акционных товаров"); //Отчет по обороту акционных товаров
@@ -712,6 +736,8 @@ begin
   SString(35106,"Использовалась карта");
   SString(35107,"Корректировка баллов CASHBACK на этот период уже существует");
   SString(35108,"Проверьте счета для CASHBACK");
+  SString(35109,"Для этой накопительной карточке не указана программа лояльности");
+  SString(35110,"Карта лояльности уже добавлена в счет/фактуру");
     
   StrSetBegin(3); /* Try to keep them in alphabetical order */
   StrSetText(RoyaltyRepApproveWithDiscount,"Approve Royalty Sales records with approved discount");//!!TRANSLATE

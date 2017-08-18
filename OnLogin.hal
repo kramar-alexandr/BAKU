@@ -53,6 +53,16 @@ BEGIN
       if (FILEEXISTS(hansaDirectory & "halcust/WDefinition.hal")) then begin
         Delete_File(hansaDirectory & "halcust/WDefinition.hal");
       end;
+      if (FILEEXISTS(hansaDirectory & "halcust/Report/Report_Startup.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/Report/Report_Startup.hal");
+      end;
+      if (FILEEXISTS(hansaDirectory & "halcust/Export/Export_IN_startup.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/Export/Export_IN_startup.hal");
+      end;
+      if (FILEEXISTS(hansaDirectory & "halcust/Import/Import_PL_startup.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/Import/Import_PL_startup.hal");
+      end;
+      
     end;
 	end; //Edit***************************Sasha2,15:24 18.08.2017 }
 	
