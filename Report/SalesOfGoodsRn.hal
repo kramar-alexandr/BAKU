@@ -592,7 +592,7 @@ begin
     if (IVr.InvType==kInvoiceTypeCredit) then begin testf = false; end;
     if nonblank(RepSpec.ObjStr) then begin
       store = "";
-      GetObjs("STORE",IPrw.Objects,store);
+      GetObjs("STORE",IVr.Objects,store);
       if (RepSpec.ObjStr!=store) then begin testf = false; end;
     end;
     if (testf) then begin
