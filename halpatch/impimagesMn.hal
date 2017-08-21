@@ -45,6 +45,232 @@ external function Boolean TimeInRange(Time,Time,Time); //Edit*******************
 
 SetLangMode(LangRussian,"RUS",0);
 
+global //Edit***************************Sasha2,14:27 02.08.2016 {
+procedure CalcEANCHS(var string str)
+begin
+integer c1,c2,lenth,i,chsum,litle;
+val sum;
+  sum = 0;
+  lenth = len(str);
+  if (lenth==12)then begin
+    for(i=0;i<12;i=i+2)begin
+      c1 = evaltoval(mid(str,i,1));
+      c2 = evaltoval(mid(str,i+1,1));
+      c2=c2*3;
+      sum = sum+c1+c2;
+    end;
+    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
+      litle = round(sum/10,SetRoundModeD(0))-1;
+    end else begin
+      litle = round(sum/10,SetRoundModeD(0));
+    end;
+    chsum  = 10-(10*(sum/10-litle));
+    if(chsum==10) then begin chsum = 0; end;
+    str = str & chsum;
+  end else begin
+    str = "";
+  end;
+  
+return;
+end;
+
+global 
+updating procedure CreateLoyaltyCardRemote(record CUVc CUr,var record LoyaltyCardVc LCr)
+begin
+	record LoyaltyCardVc LoyaltyCardr,oldLCr;
+	string 50 code;
+	longint newcode;
+	boolean foundf,TrHs,testf;
+	
+	oldLCr.CustCode = CUr.Code;
+	TrHs = true;
+	foundf = false;
+	while(loopkey("ActCustCode",oldLCr,1,TrHs))begin
+		testf = true;
+		if(oldLCr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+		if(currentcompany!=25)then begin
+			if(oldLCr.LCMLevel!="1")then begin testf = false; end;
+		end else begin
+			if(oldLCr.LCMLevel!="CASACOIN")then begin testf = false; end;
+		end;
+		if(left(oldLCr.SerNr,2)=="ID")then begin testf = false; end;
+		
+		if(testf)then begin
+			foundf = true;
+			LCr.SerNr = "";
+			LCr.CustCode = oldLCr.CustCode;
+			LCr.LCMLevel = oldLCr.LCMLevel;
+			LCr.CustName = oldLCr.CustName;
+			LCr.StartDate = currentdate;
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;			
+		end;
+	end;
+	
+	if(foundf==false)then begin
+		resetloop(oldLCr)
+		TrHs = true;
+		while(loopkey("CustCode",oldLCr,1,TrHs))begin
+			testf = true;
+			if(oldLCr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+			if(currentcompany!=25)then begin
+				if(oldLCr.LCMLevel!="1")then begin testf = false; end;
+			end else begin
+				if(oldLCr.LCMLevel!="CASACOIN")then begin testf = false; end;
+			end;
+			if(left(oldLCr.SerNr,2)=="ID")then begin testf = false; end;
+		
+			if(testf)then begin
+				foundf = true;
+				LCr.SerNr = "";
+				LCr.CustCode = oldLCr.CustCode;
+				LCr.LCMLevel = oldLCr.LCMLevel;
+				LCr.CustName = oldLCr.CustName;
+				LCr.StartDate = currentdate;
+				LoyaltyCardr.SerNr = "ID001";
+				loopmain(LoyaltyCardr,1,true);
+				stepback(LoyaltyCardr);
+				stepback(LoyaltyCardr);
+				loopmain(LoyaltyCardr,1,true);
+				code = left(LoyaltyCardr.SerNr,12);
+				code = right(code,9);
+				newcode = stringtolongint(code);
+				newcode = newcode+1;
+				code = "999" & newcode;
+				CalcEANCHS(code);
+				LCr.SerNr = code;			
+			end;
+		end;	
+	end;
+	
+	
+	if(foundf==false)then begin
+		resetloop(LoyaltyCardr);
+		LoyaltyCardr.SerNr = "ID001";
+		loopmain(LoyaltyCardr,1,true);
+		stepback(LoyaltyCardr);
+		stepback(LoyaltyCardr);
+		loopmain(LoyaltyCardr,1,true);
+		code = left(LoyaltyCardr.SerNr,12);
+		code = right(code,9);
+		newcode = stringtolongint(code);
+		newcode = newcode+1;
+		code = "999" & newcode;
+		CalcEANCHS(code);
+		LCr.SerNr = code;
+		LCr.CustCode = CUr.Code;
+		LCr.LCMLevel = "1";
+		if(currentcompany==25)then begin
+			LCr.LCMLevel = "CASACOIN";
+		end;
+		LCr.StartDate = currentdate;
+		LCr.CustName = CUr.Name;
+	end;
+		
+	/*oldLCr.CustCode = CUr.Code;
+	if(readfirstkey("ActCustCode",oldLCr,1,true) and left(oldLCr.SerNr,2)!="ID")then begin
+		LCr.SerNr = "";
+		LCr.CustCode = oldLCr.CustCode;
+		LCr.LCMLevel = oldLCr.LCMLevel;
+		LCr.CustName = oldLCr.CustName;
+		LCr.StartDate = currentdate;
+		LoyaltyCardr.SerNr = "ID001";
+		loopmain(LoyaltyCardr,1,true);
+		stepback(LoyaltyCardr);
+		stepback(LoyaltyCardr);
+		loopmain(LoyaltyCardr,1,true);
+		code = left(LoyaltyCardr.SerNr,12);
+		code = right(code,9);
+		newcode = stringtolongint(code);
+		newcode = newcode+1;
+		code = "999" & newcode;
+		CalcEANCHS(code);
+		LCr.SerNr = code;
+	end else begin
+		oldLCr.CustCode = CUr.Code;
+		if(readfirstkey("CustCode",oldLCr,1,true) and left(oldLCr.SerNr,2)!="ID")then begin
+			LCr.SerNr = "";
+			LCr.CustCode = oldLCr.CustCode;
+			LCr.LCMLevel = oldLCr.LCMLevel;
+			LCr.CustName = oldLCr.CustName;
+			LCr.StartDate = currentdate;
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;
+		end else begin
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;
+			LCr.CustCode = CUr.Code;
+			LCr.LCMLevel = "1";
+			if(currentcompany==25)then begin
+				LCr.LCMLevel = "CASACOIN";
+			end;
+			LCr.StartDate = currentdate;
+			LCr.CustName = CUr.Name;
+		end;
+	end;*/
+		
+	
+	//recordinsert(LCr,true);
+	
+return;
+end;
+
+global 
+function boolean HasOpenActivity(string user)
+begin
+	record ActVc Actr;
+	boolean TrHs,testf,res;
+	
+	res = false;
+	
+	Actr.OKFlag=0;
+	TrHs = true;
+	While(loopkey("OKFlag",Actr,1,TrHs)) begin
+		testf = true;
+	  if(Actr.OKFlag>0)then begin TrHs=false; end;	  
+	  
+	  if(TrHs)then begin
+	  	if(SetInSet2(user,Actr.MainPersons))then begin
+	  		res = true;
+	  	end;
+	  end;	
+	end; 
+	
+	HasOpenActivity = res;
+
+return;
+end;
+
 procedure Gen0EAN(string str, var string res)
 begin
 integer i,i0,i1,i2,i3,i4,i5,i6,a,b,c;
@@ -287,35 +513,6 @@ boolean testf;
   end;
 str = res;
 return
-end;
-
-global //Edit***************************Sasha2,14:27 02.08.2016 {
-procedure CalcEANCHS(var string str)
-begin
-integer c1,c2,lenth,i,chsum,litle;
-val sum;
-  sum = 0;
-  lenth = len(str);
-  if (lenth==12)then begin
-    for(i=0;i<12;i=i+2)begin
-      c1 = evaltoval(mid(str,i,1));
-      c2 = evaltoval(mid(str,i+1,1));
-      c2=c2*3;
-      sum = sum+c1+c2;
-    end;
-    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
-      litle = round(sum/10,SetRoundModeD(0))-1;
-    end else begin
-      litle = round(sum/10,SetRoundModeD(0));
-    end;
-    chsum  = 10-(10*(sum/10-litle));
-    if(chsum==10) then begin chsum = 0; end;
-    str = str & chsum;
-  end else begin
-    str = "";
-  end;
-  
-return;
 end;
 
 global //Edit***************************Sasha2,14:27 02.08.2016 {
