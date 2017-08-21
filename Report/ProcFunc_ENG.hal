@@ -125,24 +125,24 @@ record ERVc ERr;
 END;
 
 
-procedure ClearValArray(integer maxcnt, var array val cleararray)
+procedure ClearValArray(integer maxcnt, var array val mcleararray)
 begin
 integer i;
 
   for (i=0;i<maxcnt;i=i+1) begin
-    cleararray[i] = blankval;
+    mcleararray[i] = blankval;
   end;
 
 RETURN;
 END;
 
 
-procedure ClearStringArr(integer maxcnt, var array string cleararray)
+procedure ClearStringArr(integer maxcnt, var array string mcleararray)
 begin
 integer i;
 
   for (i=0;i<maxcnt;i=i+1) begin
-    cleararray[i] = "";
+    mcleararray[i] = "";
   end;
 
 return;
