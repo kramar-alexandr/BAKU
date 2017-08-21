@@ -62,6 +62,19 @@ BEGIN
       if (FILEEXISTS(hansaDirectory & "halcust/Import/Import_PL_startup.hal")) then begin
         Delete_File(hansaDirectory & "halcust/Import/Import_PL_startup.hal");
       end;
+      if (FILEEXISTS(hansaDirectory & "halcust/ExtSalesWAction.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/ExtSalesWAction.hal");
+      end;
+      if (FILEEXISTS(hansaDirectory & "halcust/ItemSaldoRn.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/ItemSaldoRn.hal");
+      end;
+      if (FILEEXISTS(hansaDirectory & "halcust/ProcFunc.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/ProcFunc.hal");
+      end;
+      if (FILEEXISTS(hansaDirectory & "halcust/SaleReportRn.hal")) then begin
+        Delete_File(hansaDirectory & "halcust/SaleReportRn.hal");
+      end;
+      
       
     end;
 	end; //Edit***************************Sasha2,15:24 18.08.2017 }
