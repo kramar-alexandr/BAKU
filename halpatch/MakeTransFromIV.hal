@@ -57,6 +57,8 @@ external procedure GetFullCurncyRateText(Boolean,var string,val,val,val,val,val)
 external function Integer AddIVPrePayRow(var record TRVc,record IVVc,Integer,string,val,val,val,val,val,
                                          Boolean,Boolean,var string,var val,record SMVc,Integer,record TRGenBlock,record AccBlock);
 external procedure GetFullCurncyRate(var string,Date,var val,var val,var val,var val,var val); //Edit***************************Sasha2,18:26 24.07.2017
+external function string 255 GetCashBackSpecialItemCode(); //Edit***************************Sasha2,11:37 14.08.2017
+external function string 20 GetCashBackLoyProgramByCardPrefix(string); //Edit***************************Sasha2,11:37 14.08.2017
 
 global
 function Boolean NegativeAmountsOnIVTrans(Integer InvType,val v)
@@ -675,70 +677,81 @@ retention change
   errstrno = IVVc_Change(gTRp,ARb.ARUseObj,ARb.CashBackAcc,cuobj,IVp,baserate1,baserate2,dc1,dc2,TotSum);
   
   //cashback points transaction rows
-  if (NonBlank(IVp.LoyaltyCardNr)) then begin //Edit***************************Sasha2,16:55 24.07.2017 {
-    LoyaltyCardr.SerNr = IVp.LoyaltyCardNr;
-    if (ReadFirstMain(LoyaltyCardr,1,true) /*and LoyaltyCardr.LCMLevel=="CASACOIN"*/ and LoyaltyCardr.Closed==0) then begin
-      proceedF = false;
-      LCCBLevelr.LCMLevel = LoyaltyCardr.LCMLevel;
-      if (ReadFirstMain(LCCBLevelr,1,true) and MatRowCnt(LCCBLevelr)>0) then begin
+  LoyaltyCardr.SerNr = IVp.LoyaltyCardNr; //Edit***************************Sasha2,16:55 24.07.2017 {
+  proceedF = (ReadFirstMain(LoyaltyCardr,1,true) and LoyaltyCardr.Closed==0 /*and LoyaltyCardr.LCMLevel=="CASACOIN"*/);
+  if (proceedF==false) then begin
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(IVp,i,IVrw);
+      if (IVrw.stp==kInvoiceRowTypeNormal and IVrw.ArtCode==GetCashBackSpecialItemCode) then begin
         proceedF = true;
+        LCCBLevelr.LCMLevel = GetCashBackLoyProgramByCardPrefix(IVrw.SerialNr);
+        i = rwcnt;
       end;
-      if (proceedF) then begin
-        for (i=0;i<rwcnt;i=i+1) begin
-          MatRowGet(IVp,i,IVrw);
-          if (IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment) then begin
-            if (IVrw.FrRate==BlankVal or IVrw.ToRateB1==BlankVal) then begin
-              if (IVp.CurncyCode==IVrw.CurncyCode) then begin
-                IVrw.FrRate = IVp.FrRate;
-                IVrw.ToRateB1 = IVp.ToRateB1;
-                IVrw.ToRateB2 = IVp.ToRateB2;
-                IVrw.BaseRate1 = IVp.BaseRate1;
-                IVrw.BaseRate2 = IVp.BaseRate2;
-              end else begin
-                GetFullCurncyRate(IVrw.CurncyCode,IVp.InvDate,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2);
-              end;
+    end;
+  end;
+  if (proceedF) then begin
+    proceedF = false;
+    if (Blank(LCCBLevelr.LCMLevel)) then begin
+      LCCBLevelr.LCMLevel = LoyaltyCardr.LCMLevel;
+    end;
+    if (ReadFirstMain(LCCBLevelr,1,true) and MatRowCnt(LCCBLevelr)>0) then begin
+      proceedF = true;
+    end;
+    if (proceedF) then begin
+      for (i=0;i<rwcnt;i=i+1) begin
+        MatRowGet(IVp,i,IVrw);
+        if (IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment) then begin
+          if (IVrw.FrRate==BlankVal or IVrw.ToRateB1==BlankVal) then begin
+            if (IVp.CurncyCode==IVrw.CurncyCode) then begin
+              IVrw.FrRate = IVp.FrRate;
+              IVrw.ToRateB1 = IVp.ToRateB1;
+              IVrw.ToRateB2 = IVp.ToRateB2;
+              IVrw.BaseRate1 = IVp.BaseRate1;
+              IVrw.BaseRate2 = IVp.BaseRate2;
+            end else begin
+              GetFullCurncyRate(IVrw.CurncyCode,IVp.InvDate,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2);
             end;
-            rs = MulRateToBase1(IVrw.CurncyCode,IVrw.Points,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
-            
-            accNr = "44/04";
-            if (GetAccName(accNr,tstr,60)==false) then begin
-              errstrno = 35108;
-              goto LMakeTransFromIV;
-            end;
-            AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,rs,false,true,TotSum,
-                              IVrw.CurncyCode,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,IVrw.Points,blankval,-1,
-                              IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");
-            
-            accNr = "36";
-            if (GetAccName(accNr,tstr,60)==false) then begin
-              errstrno = 35108;
-              goto LMakeTransFromIV;
-            end;
-            AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,rs,false,false,TotSum,
-                              IVrw.CurncyCode,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,IVrw.Points,blankval,-1,
-                              IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");   
-                              
           end;
-        end;
-        if (IVp.Points<>0) then begin                              
+          rs = MulRateToBase1(IVrw.CurncyCode,IVrw.Points,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+          
+          accNr = "44/04";
+          if (GetAccName(accNr,tstr,60)==false) then begin
+            errstrno = 35108;
+            goto LMakeTransFromIV;
+          end;
+          AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,rs,false,true,TotSum,
+                            IVrw.CurncyCode,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,IVrw.Points,blankval,-1,
+                            IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");
+          
           accNr = "36";
           if (GetAccName(accNr,tstr,60)==false) then begin
             errstrno = 35108;
             goto LMakeTransFromIV;
           end;
-          AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,IVp.Points,false,true,TotSum,
-                            IVp.CurncyCode,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,IVp.Points,blankval,-1,
-                            IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");                  
-          
-          accNr = "62/1";
-          if (GetAccName(accNr,tstr,60)==false) then begin
-            errstrno = 35108;
-            goto LMakeTransFromIV;
-          end;          
-          AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,IVp.Points,false,false,TotSum,
-                            IVp.CurncyCode,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,IVp.Points,blankval,-1,
-                            IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,""); 
+          AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,rs,false,false,TotSum,
+                            IVrw.CurncyCode,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,IVrw.Points,blankval,-1,
+                            IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");   
+                            
         end;
+      end;
+      if (IVp.Points<>0) then begin                              
+        accNr = "36";
+        if (GetAccName(accNr,tstr,60)==false) then begin
+          errstrno = 35108;
+          goto LMakeTransFromIV;
+        end;
+        AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,IVp.Points,false,true,TotSum,
+                          IVp.CurncyCode,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,IVp.Points,blankval,-1,
+                          IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,"");                  
+        
+        accNr = "62/1";
+        if (GetAccName(accNr,tstr,60)==false) then begin
+          errstrno = 35108;
+          goto LMakeTransFromIV;
+        end;          
+        AddEuroCurncyTrRow(gTRp,accNr,IVp.Objects,"",tstr,IVp.Points,false,false,TotSum,
+                          IVp.CurncyCode,IVp.FrRate,IVp.ToRateB1,IVp.ToRateB2,IVp.BaseRate1,IVp.BaseRate2,IVp.Points,blankval,-1,
+                          IVp.InvType==kInvoiceTypeCredit or IVp.InvType==kInvoiceTypeCreditSpecialSales,""); 
       end;
     end;
   end; //Edit***************************Sasha2,16:55 24.07.2017 }

@@ -5562,7 +5562,7 @@ begin
 end; //Edit***************************Sasha2,17:25 13.07.2017 }
 
 global //Edit***************************Sasha2,15:10 07.07.2017 {
-procedure CalculateIVVcCashbackPoints(var record IVVc IVr)
+procedure CalculateIVVcCashbackPoints(var record IVVc IVr,Boolean noCheck)
 begin 
   record LCCashbackLevelVc LCCBLevelr;
   row LCCashbackLevelVc LCCBLevelrw;
@@ -5576,7 +5576,7 @@ begin
   	
     BlockLoad(BCb);
     LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
-    if (nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) then begin
+    if ((nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) or noCheck) then begin
       rnd = DefaultValRoundoff;
       rnd.decimals = 2;
       rnd.mode = kRoundingModeHalfUp;

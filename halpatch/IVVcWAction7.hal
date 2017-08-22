@@ -77,6 +77,7 @@ remote function Boolean ORVc_PasteArtCode(var record ORVc,Integer,var string,var
 remote procedure ORVc_PasteQuant(var record ORVc,Integer,Boolean,var Boolean);
 remote procedure ORDchsum(var record ORVc,Integer);
 remote procedure ORSumup(var record ORVc);
+external procedure OpenGCBCardckIssueTouchScreenDClass(); //Edit***************************Sasha2,17:30 11.08.2017
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -87,7 +88,8 @@ enum begin
   kPOSButtonTypeCreateShotPUVc = 105,
   kPOSButtonTypeOpenCustomAllInvoices = 106,
   kPOSButtonTypeOSashaChtotoDelal = 107,
-  kPOSButtonTypeGetBirthRebate = 108
+  kPOSButtonTypeGetBirthRebate = 108,
+  kPOSButtonTypeIssueCBLoyaltyCard = 109
 end;
 
 function string 200 ParseClassification(string class)
@@ -984,6 +986,9 @@ begin
         goto LIVDClassTouchScreenPasteButtonDo;
       case kPOSButtonTypeGetBirthRebate:
       	GetBirthRebateDsm;
+      	goto LIVDClassTouchScreenPasteButtonDo;
+      case kPOSButtonTypeIssueCBLoyaltyCard: //Edit***************************Sasha2,17:30 11.08.2017
+      	OpenGCBCardckIssueTouchScreenDClass;
       	goto LIVDClassTouchScreenPasteButtonDo;
       end;
   end;
