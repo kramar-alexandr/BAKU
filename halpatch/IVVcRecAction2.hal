@@ -606,14 +606,14 @@ BEGIN
 		if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
 			if (CurrentCompany!=25) then begin
 			  IVr.Points=0;
+			  redempt = true;
 			end;
-			redempt = true;
 		end;	  
 	end; 
   
   if(redempt)then begin
   		if (IVr.OKFlag!=0) then begin
-				IVVc_LoyaltyCardPointsRedemption(IVr,false);
+				IVVc_LoyaltyCardPointsRedemption(IVr,false);  //causes problems with points return if invoice is unoked. DeletePointsHist(...) finds wrong PointsHistVc record.
   		end;
   end;
   
