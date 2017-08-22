@@ -1267,8 +1267,8 @@ BEGIN
 		if(IVrw.stp==kInvoiceRowTypeLoyaltyPointsPayment)then begin
 			if (CurrentCompany!=25) then begin //Edit***************************Sasha2,17:55 26.07.2017
 			  IVr.Points=0;
-			  redempt = true;
 			end;
+			redempt = true;
 		end;	  
 	end; 
 	logtext(0,"redempt " & redempt);
@@ -1292,6 +1292,7 @@ BEGIN
     end;
     if ((IVr.OKFlag==0) and (IV2r.OKFlag!=0)) then begin
       DeletePointsHist(IVr.SerNr,"IVVc");
+      IVVc_LoyaltyCardPointsRedemption(IVr,true);
     end; 
     if ((IVr.Invalid>0) and (IV2r.Invalid==0)) then begin// Edit ************************** Thursday, 20 April 2017 09:40:18
       DeletePointsHist(IVr.SerNr,"IVVc");
