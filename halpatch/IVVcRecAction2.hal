@@ -611,19 +611,21 @@ BEGIN
 		end;	  
 	end; 
   
-  if(redempt)then begin
+  /*if(redempt)then begin
   		if (IVr.OKFlag!=0) then begin
 				IVVc_LoyaltyCardPointsRedemption(IVr,false);  //causes problems with points return if invoice is unoked. DeletePointsHist(...) finds wrong PointsHistVc record.
   		end;
-  end;
+  end;*/
   
   
 	// Edit End ---------------------------------------------- Edit End
 	
   
   if (IVr.OKFlag!=0) then begin
-    if (nonblank(IVr.LoyaltyCardNr) and (IVr.Points!=0)) then begin
-      AddPointsHist(IVr.SerNr,"IVVc",IVr.InvType);
+    if (nonblank(IVr.LoyaltyCardNr)) then begin
+    	if(IVr.Points!=0)then begin
+				AddPointsHist(IVr.SerNr,"IVVc",IVr.InvType);
+      end;
       IVVc_LoyaltyCardPointsRedemption(IVr,false);
     end;   
   end;
@@ -1271,7 +1273,7 @@ BEGIN
 			redempt = true;
 		end;	  
 	end; 
-	logtext(0,"redempt " & redempt);
+	/*logtext(0,"redempt " & redempt);
   if ((IVr.OKFlag!=0) and (IV2r.OKFlag==0)) then begin
 		if(redempt)then begin
 				IVVc_LoyaltyCardPointsRedemption(IVr,false); //causes problems with points return if invoice is unoked. DeletePointsHist(...) finds wrong PointsHistVc record.
@@ -1281,21 +1283,29 @@ BEGIN
 		if(redempt)then begin
 				IVVc_LoyaltyCardPointsRedemption(IVr,true);
 		end;
-  end;
+  end;*/
   
 	// Edit End ---------------------------------------------- Edit End
 	
-  if (nonblank(IVr.LoyaltyCardNr) and (IVr.Points!=0)) then begin
+  if (nonblank(IVr.LoyaltyCardNr)) then begin
     if ((IVr.OKFlag!=0) and (IV2r.OKFlag==0)) then begin
-      AddPointsHist(IVr.SerNr,"IVVc",IVr.InvType);
+    	if(IVr.Points!=0)then begin
+				AddPointsHist(IVr.SerNr,"IVVc",IVr.InvType);
+      end;
       IVVc_LoyaltyCardPointsRedemption(IVr,false);
     end;
     if ((IVr.OKFlag==0) and (IV2r.OKFlag!=0)) then begin
-      DeletePointsHist(IVr.SerNr,"IVVc");
+    	if(IVr.Points!=0)then begin
+				DeletePointsHist(IVr.SerNr,"IVVc");
+      end;
       IVVc_LoyaltyCardPointsRedemption(IVr,true);
     end; 
     if ((IVr.Invalid>0) and (IV2r.Invalid==0)) then begin// Edit ************************** Thursday, 20 April 2017 09:40:18
-      DeletePointsHist(IVr.SerNr,"IVVc");
+    	if(IVr.Points!=0)then begin
+				DeletePointsHist(IVr.SerNr,"IVVc");
+    	end;
+      IVVc_LoyaltyCardPointsRedemption(IVr,true);
+      
     end;   
   end;
   switch (IVr.AcceptanceStatus) begin
