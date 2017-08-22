@@ -2371,6 +2371,8 @@ begin
               MatRowPut(IVr,rownr,IVrw);
               CloseWindow(wn);
               PutWindowRecord(mwn,IVr);
+              GetWindowRecord(mwn,IVr);
+							IVDClass_RefreshStringList(mwn,IVr);
               WindowFieldGoto(wn,IVr,-1,"touchscreenitem",true);
             end;
           end;
