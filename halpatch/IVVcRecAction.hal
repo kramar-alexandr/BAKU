@@ -1453,6 +1453,7 @@ LIVVcRecordCheck_GenTrans:;
     LoyaltyCardr.SerNr = newCashBackCardNr;
     LoyaltyCardr.CustCode = IVp.CustCode;
     LoyaltyCardr.CustName = IVp.Addr0;
+    LoyaltyCardr.StartDate = IVp.InvDate;
     LoyaltyCardr.LCMLevel = GetCashBackLoyProgramByCardPrefix(newCashBackCardNr);
     RECORDSTORE(LoyaltyCardr,false);
     IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
