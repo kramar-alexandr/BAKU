@@ -2234,7 +2234,7 @@ begin
   Boolean foundF;
 	
     if (foundF==false) then begin
-      if (asc(left(prefix,1))==1057 and asc(mid(prefix,1,1))==1057) then begin //‘‘ (cyrillic)
+      if (asc(left(prefix,1))==67 and asc(mid(prefix,1,1))==67) then begin //CC
         LCMLevel = "CASACOIN";
         foundF = true;
       end;
