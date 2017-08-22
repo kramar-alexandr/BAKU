@@ -1271,9 +1271,15 @@ BEGIN
 			redempt = true;
 		end;	  
 	end; 
+	logtext(0,"redempt " & redempt);
   if ((IVr.OKFlag!=0) and (IV2r.OKFlag==0)) then begin
 		if(redempt)then begin
 				IVVc_LoyaltyCardPointsRedemption(IVr,false);
+		end;
+  end;
+  if ((IVr.OKFlag==0) and (IV2r.OKFlag!=0)) then begin
+		if(redempt)then begin
+				IVVc_LoyaltyCardPointsRedemption(IVr,true);
 		end;
   end;
   
