@@ -1,5 +1,42 @@
 remote function Boolean CustomerWithPhoneExists(record CUVc, var string, var string);
 
+
+global
+function LongInt CUVcRecordDuplicateClient(var record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  string 255 tstr;
+  record CustomerSettingBlock CSb;
+	record LocalMachineBlock LMb;// Edit ************************** Tuesday, 30 September 2014 12:48:53
+  
+  BlockLoad(LMb);// Edit ************************** Tuesday, 30 September 2014 12:48:56
+  
+	CUr.CreateLocation = LMb.DefLocation;// Edit ************************** Tuesday, 30 September 2014 12:48:59
+	CUr.CreateCompany = currentcompany;// Edit ************************** Tuesday, 30 September 2014 12:49:02
+	
+
+  RETURN;
+END;
+
+global
+function LongInt CUVcRecordDefaultsClient(var record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt long4)
+BEGIN
+  LongInt res;
+  string 255 tstr;
+  record UserVc Userr;
+  record CustomerSettingBlock CSb;
+  record LocalMachineBlock LMb;// Edit ************************** Tuesday, 30 September 2014 12:49:09
+  
+  BlockLoad(LMb);// Edit ************************** Tuesday, 28 January 2014 17:02:56
+
+  CUr.DateCreated = CurrentDate;
+	CUr.CreateLocation = LMb.DefLocation;// Edit ************************** Tuesday, 30 September 2014 12:49:14
+	CUr.CreateCompany = currentcompany;
+	
+  CUVcRecordDefaultsClient = res; 
+  RETURN;
+END;
+
 global
 updating function LongInt CUVcRecordCheckClient(LongInt wn,record CUVc CUr,record CUVc CU2r,LongInt stat,LongInt errorcheck)
 begin
