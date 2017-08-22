@@ -47,7 +47,7 @@ remote function Boolean FindLastInvoiceRowForSerial(LongInt,string ,string,var r
 external function Integer ArgEInvLock(record IVVc,integer);
 external function Integer GetArgIVType(integer,string);
 remote function boolean CompanyIsJWLikeCompany(Integer);
-external procedure CalculateIVVcCashbackPoints(var record IVVc); //Edit***************************Sasha2,13:49 14.07.2017
+external procedure CalculateIVVcCashbackPoints(var record IVVc,Boolean); //Edit***************************Sasha2,13:49 14.07.2017
 
 global
 function Boolean IVDClassNoInterestFlagButtonAction(Integer wn,Integer value)
@@ -1897,7 +1897,7 @@ LIVSumup:;
   CalculateIVCashBack(IVp);
   RecalcIVSubtotal(IVp);
   CalculateIVVcPoints(IVp);
-  CalculateIVVcCashbackPoints(IVp); //Edit***************************Sasha2,13:50 14.07.2017
+  CalculateIVVcCashbackPoints(IVp,false); //Edit***************************Sasha2,13:50 14.07.2017
   return;
 end;
 

@@ -41,8 +41,235 @@ external function Boolean IVDchrsum(var record IVVc,Integer); //Edit************
 external function string 20 ReturnFieldDITypeNotJW(string); //Edit***************************Sasha2,16:50 14.06.2016
 external function Boolean SetInSet2(string,string);
 external updating procedure CalcPriceListsMn(record RcVc); //Edit***************************Sasha2,10:15 31.03.2017
+external function Boolean TimeInRange(Time,Time,Time); //Edit***************************Sasha2,11:26 27.07.2017
 
 SetLangMode(LangRussian,"RUS",0);
+
+global //Edit***************************Sasha2,14:27 02.08.2016 {
+procedure CalcEANCHS(var string str)
+begin
+integer c1,c2,lenth,i,chsum,litle;
+val sum;
+  sum = 0;
+  lenth = len(str);
+  if (lenth==12)then begin
+    for(i=0;i<12;i=i+2)begin
+      c1 = evaltoval(mid(str,i,1));
+      c2 = evaltoval(mid(str,i+1,1));
+      c2=c2*3;
+      sum = sum+c1+c2;
+    end;
+    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
+      litle = round(sum/10,SetRoundModeD(0))-1;
+    end else begin
+      litle = round(sum/10,SetRoundModeD(0));
+    end;
+    chsum  = 10-(10*(sum/10-litle));
+    if(chsum==10) then begin chsum = 0; end;
+    str = str & chsum;
+  end else begin
+    str = "";
+  end;
+  
+return;
+end;
+
+global 
+updating procedure CreateLoyaltyCardRemote(record CUVc CUr,var record LoyaltyCardVc LCr)
+begin
+	record LoyaltyCardVc LoyaltyCardr,oldLCr;
+	string 50 code;
+	longint newcode;
+	boolean foundf,TrHs,testf;
+	
+	oldLCr.CustCode = CUr.Code;
+	TrHs = true;
+	foundf = false;
+	while(loopkey("ActCustCode",oldLCr,1,TrHs))begin
+		testf = true;
+		if(oldLCr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+		if(currentcompany!=25)then begin
+			if(oldLCr.LCMLevel!="1")then begin testf = false; end;
+		end else begin
+			if(oldLCr.LCMLevel!="CASACOIN")then begin testf = false; end;
+		end;
+		if(left(oldLCr.SerNr,2)=="ID")then begin testf = false; end;
+		
+		if(testf)then begin
+			foundf = true;
+			LCr.SerNr = "";
+			LCr.CustCode = oldLCr.CustCode;
+			LCr.LCMLevel = oldLCr.LCMLevel;
+			LCr.CustName = oldLCr.CustName;
+			LCr.StartDate = currentdate;
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;			
+		end;
+	end;
+	
+	if(foundf==false)then begin
+		resetloop(oldLCr)
+		TrHs = true;
+		while(loopkey("CustCode",oldLCr,1,TrHs))begin
+			testf = true;
+			if(oldLCr.CustCode!=CUr.Code)then begin TrHs = false; testf = false; end;
+			if(currentcompany!=25)then begin
+				if(oldLCr.LCMLevel!="1")then begin testf = false; end;
+			end else begin
+				if(oldLCr.LCMLevel!="CASACOIN")then begin testf = false; end;
+			end;
+			if(left(oldLCr.SerNr,2)=="ID")then begin testf = false; end;
+		
+			if(testf)then begin
+				foundf = true;
+				LCr.SerNr = "";
+				LCr.CustCode = oldLCr.CustCode;
+				LCr.LCMLevel = oldLCr.LCMLevel;
+				LCr.CustName = oldLCr.CustName;
+				LCr.StartDate = currentdate;
+				LoyaltyCardr.SerNr = "ID001";
+				loopmain(LoyaltyCardr,1,true);
+				stepback(LoyaltyCardr);
+				stepback(LoyaltyCardr);
+				loopmain(LoyaltyCardr,1,true);
+				code = left(LoyaltyCardr.SerNr,12);
+				code = right(code,9);
+				newcode = stringtolongint(code);
+				newcode = newcode+1;
+				code = "999" & newcode;
+				CalcEANCHS(code);
+				LCr.SerNr = code;			
+			end;
+		end;	
+	end;
+	
+	
+	if(foundf==false)then begin
+		resetloop(LoyaltyCardr);
+		LoyaltyCardr.SerNr = "ID001";
+		loopmain(LoyaltyCardr,1,true);
+		stepback(LoyaltyCardr);
+		stepback(LoyaltyCardr);
+		loopmain(LoyaltyCardr,1,true);
+		code = left(LoyaltyCardr.SerNr,12);
+		code = right(code,9);
+		newcode = stringtolongint(code);
+		newcode = newcode+1;
+		code = "999" & newcode;
+		CalcEANCHS(code);
+		LCr.SerNr = code;
+		LCr.CustCode = CUr.Code;
+		LCr.LCMLevel = "1";
+		if(currentcompany==25)then begin
+			LCr.LCMLevel = "CASACOIN";
+		end;
+		LCr.StartDate = currentdate;
+		LCr.CustName = CUr.Name;
+	end;
+		
+	/*oldLCr.CustCode = CUr.Code;
+	if(readfirstkey("ActCustCode",oldLCr,1,true) and left(oldLCr.SerNr,2)!="ID")then begin
+		LCr.SerNr = "";
+		LCr.CustCode = oldLCr.CustCode;
+		LCr.LCMLevel = oldLCr.LCMLevel;
+		LCr.CustName = oldLCr.CustName;
+		LCr.StartDate = currentdate;
+		LoyaltyCardr.SerNr = "ID001";
+		loopmain(LoyaltyCardr,1,true);
+		stepback(LoyaltyCardr);
+		stepback(LoyaltyCardr);
+		loopmain(LoyaltyCardr,1,true);
+		code = left(LoyaltyCardr.SerNr,12);
+		code = right(code,9);
+		newcode = stringtolongint(code);
+		newcode = newcode+1;
+		code = "999" & newcode;
+		CalcEANCHS(code);
+		LCr.SerNr = code;
+	end else begin
+		oldLCr.CustCode = CUr.Code;
+		if(readfirstkey("CustCode",oldLCr,1,true) and left(oldLCr.SerNr,2)!="ID")then begin
+			LCr.SerNr = "";
+			LCr.CustCode = oldLCr.CustCode;
+			LCr.LCMLevel = oldLCr.LCMLevel;
+			LCr.CustName = oldLCr.CustName;
+			LCr.StartDate = currentdate;
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;
+		end else begin
+			LoyaltyCardr.SerNr = "ID001";
+			loopmain(LoyaltyCardr,1,true);
+			stepback(LoyaltyCardr);
+			stepback(LoyaltyCardr);
+			loopmain(LoyaltyCardr,1,true);
+			code = left(LoyaltyCardr.SerNr,12);
+			code = right(code,9);
+			newcode = stringtolongint(code);
+			newcode = newcode+1;
+			code = "999" & newcode;
+			CalcEANCHS(code);
+			LCr.SerNr = code;
+			LCr.CustCode = CUr.Code;
+			LCr.LCMLevel = "1";
+			if(currentcompany==25)then begin
+				LCr.LCMLevel = "CASACOIN";
+			end;
+			LCr.StartDate = currentdate;
+			LCr.CustName = CUr.Name;
+		end;
+	end;*/
+		
+	
+	//recordinsert(LCr,true);
+	
+return;
+end;
+
+global 
+function boolean HasOpenActivity(string user)
+begin
+	record ActVc Actr;
+	boolean TrHs,testf,res;
+	
+	res = false;
+	
+	Actr.OKFlag=0;
+	TrHs = true;
+	While(loopkey("OKFlag",Actr,1,TrHs)) begin
+		testf = true;
+	  if(Actr.OKFlag>0)then begin TrHs=false; end;	  
+	  
+	  if(TrHs)then begin
+	  	if(SetInSet2(user,Actr.MainPersons))then begin
+	  		res = true;
+	  	end;
+	  end;	
+	end; 
+	
+	HasOpenActivity = res;
+
+return;
+end;
 
 procedure Gen0EAN(string str, var string res)
 begin
@@ -286,35 +513,6 @@ boolean testf;
   end;
 str = res;
 return
-end;
-
-global //Edit***************************Sasha2,14:27 02.08.2016 {
-procedure CalcEANCHS(var string str)
-begin
-integer c1,c2,lenth,i,chsum,litle;
-val sum;
-  sum = 0;
-  lenth = len(str);
-  if (lenth==12)then begin
-    for(i=0;i<12;i=i+2)begin
-      c1 = evaltoval(mid(str,i,1));
-      c2 = evaltoval(mid(str,i+1,1));
-      c2=c2*3;
-      sum = sum+c1+c2;
-    end;
-    if(round(sum/10,SetRoundModeD(0))>sum/10) then begin
-      litle = round(sum/10,SetRoundModeD(0))-1;
-    end else begin
-      litle = round(sum/10,SetRoundModeD(0));
-    end;
-    chsum  = 10-(10*(sum/10-litle));
-    if(chsum==10) then begin chsum = 0; end;
-    str = str & chsum;
-  end else begin
-    str = "";
-  end;
-  
-return;
 end;
 
 global //Edit***************************Sasha2,14:27 02.08.2016 {
@@ -5256,13 +5454,115 @@ return;
 end;
 
 global //Edit***************************Sasha2,17:24 13.07.2017 {
-procedure CheckForCashbackCorrection()
+procedure CheckForCashbackCorrection(var record IVVc IVr,val initCBPercent,val paidViaPoints,var roundmode rnd)
 begin
+  record LCCashbackCorrectionVc LCCBCorr;
+  row LCCashbackCorrectionVc LCCBCorrw;
+  row IVVc IVrw;
+  record INVc INr;
+  record BaseCurBlock BCb;
+  Boolean corrFound;
+  date blankd;
+  Integer i,rwcnt,ivRwcnt;
+  val ivTotal,ivTotalB,rowSum,rowsPoints,promotionCBPercent,rowCBPercent;
+  vector val groupCBPercent,itemCBPercent;
+  vector boolean groupCBPercentF,itemCBPercentF;
+  Boolean TrHs,testf,foundF;
+  Time ivTime;
+  
+    BlockLoad(BCb);
+    if (NonBlank(IVr.LCMLevel)) then begin
+      ivTotal = IVr.Sum4;
+      ivTime = IVr.TransTime;
+      if (BlankTime(ivTime)) then begin
+        ivTime = CurrentTime;
+      end;
+      LCCBCorr.LCMLevel = IVr.LCMLevel;
+      LCCBCorr.CustomerPercentLevel = initCBPercent;
+      LCCBCorr.FromDate = IVr.InvDate;
+      TrHs = true;
+      corrFound = false;
+      while (LoopBackKey("LCMLevel",LCCBCorr,3,TrHs)) begin
+        testf = true;
+        if (LCCBCorr.LCMLevel!=IVr.LCMLevel or LCCBCorr.CustomerPercentLevel!=initCBPercent) then begin TrHs = false; testf = false; end;
+        if (DateInRange(IVr.InvDate,LCCBCorr.FromDate,LCCBCorr.ToDate)==false) then begin TrHs = false; testf = false; end;
+        if (NonBlankTime(LCCBCorr.FromTime) and  NonBlankTime(LCCBCorr.ToTime) and TimeInRange(ivTime,LCCBCorr.FromTime,LCCBCorr.ToTime)==false) then begin testf = false; end;
+        if (testf) then begin
+          corrFound = true;
+          TrHs = false;
+        end;
+      end; RESETLOOP(LCCBCorr);     
+      
+      if (corrFound==false) then begin //!!!!!! if a necessity to separate blankdate LCCashbackCorrectionVc records according to time range will appear, update LCCashbackCorrectionVcRecordCheck(...) too
+        LCCBCorr.LCMLevel = IVr.LCMLevel;
+        LCCBCorr.CustomerPercentLevel = initCBPercent;
+        LCCBCorr.FromDate = blankd;
+        corrFound = ReadFirstKey("LCMLevel",LCCBCorr,3,true);
+        if (corrFound) then begin
+          if (LCCBCorr.LCMLevel!=IVr.LCMLevel or LCCBCorr.CustomerPercentLevel!=initCBPercent) then begin corrFound = false; end;
+          if (NonBlankDate(LCCBCorr.FromDate) or NonBlankDate(LCCBCorr.ToDate)) then begin corrFound = false; end;
+        end;
+      end;
+      if (corrFound) then begin
+        promotionCBPercent = LCCBCorr.CashbackPercent;
+        rnd.decimals = LCCBCorr.RndTo;
+        rwcnt = MatRowCnt(LCCBCorr);
+        if (rwcnt>0) then begin
+          for (i=0;i<rwcnt;i=i+1) begin
+            MatRowGet(LCCBCorr,i,LCCBCorrw);
+            switch (LCCBCorrw.CodeType) begin
+              case 0:
+                groupCBPercent[LCCBCorrw.ITCode] = LCCBCorrw.CashbackPercent;
+                groupCBPercentF[LCCBCorrw.ITCode] = true;
+              case 1:
+                itemCBPercent[LCCBCorrw.ITCode] = LCCBCorrw.CashbackPercent;
+                itemCBPercentF[LCCBCorrw.ITCode] = true;
+            end;
+          end;
+          ivRwcnt = MatRowCnt(IVr);
+          if (ivRwcnt>0) then begin
+            for (i=0;i<ivRwcnt;i=i+1) begin
+              MatRowGet(IVr,i,IVrw);
+              if (IVrw.stp==kInvoiceRowTypeNormal and NonBlank(IVrw.ArtCode)) then begin
+                INr.Code = IVrw.ArtCode;
+                if (ReadFirstMain(INr,1,true)) then begin
+                  foundF = false;
+                  if (itemCBPercentF[INr.Code]) then begin
+                    rowCBPercent = itemCBPercent[INr.Code];
+                    foundF = true;
+                  end;
+                  if (foundF==false and groupCBPercentF[INr.Group]) then begin
+                    rowCBPercent = groupCBPercent[INr.Group];
+                    foundF = true;
+                  end;
+                  if (foundF) then begin
+                    ivTotal = ivTotal - IVrw.Sum;
+                    rowSum = IVrw.Sum;
+                    if (IVr.CurncyCode!=BCb.BaseCur1) then begin
+                      rowSum = MulRateToBase1(IVr.CurncyCode,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+                    end;
+                    rowsPoints = rowsPoints + Round((rowSum - (paidViaPoints*IVrw.Sum/IVr.Sum4))*rowCBPercent/100,rnd);
+                    //LogText(0,IVrw.ArtCode & " gave points: " & Round((rowSum - (paidViaPoints*IVrw.Sum/IVr.Sum4))*rowCBPercent/100,rnd));
+                  end;
+                end;
+              end;
+            end;
+          end;
+        end;
+        ivTotalB = ivTotal;
+        if (IVr.CurncyCode!=BCb.BaseCur1) then begin
+          ivTotalB = MulRateToBase1(IVr.CurncyCode,ivTotal,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+        end;
+        IVr.Points = Round((ivTotalB - (paidViaPoints*ivTotal/IVr.Sum4))*promotionCBPercent/100,rnd) + rowsPoints;
+        //LogText(0,"IVr.Points: " & IVr.Points);
+      end;
+    end;
+    
   return;
 end; //Edit***************************Sasha2,17:25 13.07.2017 }
 
 global //Edit***************************Sasha2,15:10 07.07.2017 {
-procedure CalculateIVVcCashbackPoints(var record IVVc IVr)
+procedure CalculateIVVcCashbackPoints(var record IVVc IVr,Boolean noCheck)
 begin 
   record LCCashbackLevelVc LCCBLevelr;
   row LCCashbackLevelVc LCCBLevelrw;
@@ -5274,11 +5574,9 @@ begin
   Integer i,rwcnt;
   val loyCardPointsBalance,cashbackPercent,paidViaPoints,sum;
   	
-  	
-  	
     BlockLoad(BCb);
     LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
-    if (nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) then begin
+    if ((nonblank(IVr.LoyaltyCardNr) and ReadFirstMain(LoyaltyCardr,1,true)) or noCheck) then begin
       rnd = DefaultValRoundoff;
       rnd.decimals = 2;
       rnd.mode = kRoundingModeHalfUp;
@@ -5314,6 +5612,7 @@ begin
             sum = MulRateToBase1(IVr.CurncyCode,IVr.Sum4,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
           end;
           IVr.Points = Round((sum - paidViaPoints)*cashbackPercent/100,rnd);
+          CheckForCashbackCorrection(IVr,cashbackPercent,paidViaPoints,rnd);
         end;
       end;
     end;

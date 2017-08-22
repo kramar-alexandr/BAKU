@@ -2218,4 +2218,182 @@ begin
 return;
 end;	
 	
+global //Edit***************************Sasha2,13:39 11.08.2017 {
+function string 255 GetCashBackSpecialItemCode() 
+begin
 	
+  GetCashBackSpecialItemCode = "CASHBACKCARD";
+  
+return;
+end; //Edit***************************Sasha2,13:39 11.08.2017 }
+
+global //Edit***************************Sasha2,13:39 11.08.2017 {
+function string 20 GetCashBackLoyProgramByCardPrefix(String prefix) 
+begin
+  string 20 LCMLevel;
+  Boolean foundF;
+	
+    if (foundF==false) then begin
+      if (asc(left(prefix,1))==1057 and asc(mid(prefix,1,1))==1057) then begin //‘‘ (cyrillic)
+        LCMLevel = "CASACOIN";
+        foundF = true;
+      end;
+    end;
+  
+  GetCashBackLoyProgramByCardPrefix = LCMLevel;
+  
+return;
+end; //Edit***************************Sasha2,13:39 11.08.2017 }
+
+global //Edit***************************Sasha2,17:28 11.08.2017 {
+procedure OpenGCBCardckIssueTouchScreenDClass()
+begin
+  Integer nwn;
+  record RcVc RepSpec;
+
+    nwn = OpenWindow("CBCardckIssueTouchScreenDClass",1,CurWindow,"","",RepSpec);
+    if (nwn>0) then begin
+      WindowFieldGoto(nwn,RepSpec,-1,"f1",true);
+    end;
+  return;
+end; //Edit***************************Sasha2,17:28 11.08.2017 }
+
+global //Edit***************************Sasha2,15:25 11.08.2017 {
+updating procedure ProceedCBCardckIssueTouchScreenDClass()
+begin
+  Integer wn,mwn,rownr,i,sernrf;
+  record LoyaltyCardVc LoyaltyCardr;
+  record RcVc RepSpec;
+  record IVVc prevIVr;
+  record IVVc IVr;
+  record INVc INr;
+  row IVVc IVrw;
+  Boolean proceedF;
+  string 255 inwarning,warning;
+
+  wn = CurWindow;
+  DeselectWindow(wn,true);
+  mwn = MotherWindow(wn);
+  if (mwn!=0) then begin
+    proceedF = true;
+    GetWindowRecord(wn,RepSpec);
+    if (proceedF) then begin
+      if (blank(RepSpec.f1)) then begin
+        MessageBox(1854,"");
+        WindowFieldGoto(wn,RepSpec,-1,"f1",true);
+        proceedF = false;
+      end;
+    end;
+    if (proceedF) then begin
+      LoyaltyCardr.SerNr = RepSpec.f1;
+      if (ReadFirstMain(LoyaltyCardr,1,true)) then begin
+        MessageBox(1709,"");
+        WindowFieldGoto(wn,RepSpec,-1,"f1",true);
+        proceedF = false;
+      end;
+    end;
+    if (proceedF) then begin
+      if (blank(GetCashBackLoyProgramByCardPrefix(RepSpec.f1))) then begin
+        MessageBox(35109,"");
+        WindowFieldGoto(wn,RepSpec,-1,"f1",true);
+        proceedF = false;
+      end;
+    end;
+    if (proceedF) then begin
+      if (NonBlank(IVr.LoyaltyCardNr)) then begin
+        MessageBox(35110,"");
+        CloseWindow(wn);
+        proceedF = false;
+      end;
+    end;
+    
+    if (proceedF) then begin
+      switch (GetWindowFileName(mwn)) begin
+        case "IVVc":
+          DeselectWindow(mwn,false);
+          GetWindowRecord(mwn,IVr);
+          switch (WindowState(mwn)) begin
+            case Rs_update:
+              GetPrevWindowRecord(mwn,prevIVr);
+              if (prevIVr.OKFlag!=0) then begin
+                CloseWindow(wn);
+                proceedF = false;
+              end;
+              if (IVr.Invalid!=0) then begin
+                CloseWindow(wn);
+                proceedF = false;
+              end;
+            case Rs_normal:
+              GetWindowRecord(mwn,prevIVr);
+              if (prevIVr.OKFlag!=0) then begin
+                CloseWindow(wn);
+                proceedF = false;
+              end;
+              if (prevIVr.Invalid!=0) then begin
+                CloseWindow(wn);
+                proceedF = false;;
+              end;
+          end;
+          if (proceedF) then begin
+            INr.Code = GetCashBackSpecialItemCode;
+            if (ReadFirstMain(INr,1,true)==false) then begin
+              MessageBox(31184,". " & UsetStr(1216));
+              proceedF = false;
+            end;
+            if (proceedF) then begin
+              if (INr.UPrice1==BlankVal) then begin
+                MessageBox(31184,". " & UsetStr(20524));
+                proceedF = false;
+              end;
+            end;
+            if (proceedF) then begin
+              if (INr.ItemType!=kItemTypePlain) then begin
+                MessageBox(31184,". " & UsetStr(2279));
+                proceedF = false;
+              end;
+            end;
+            rownr = MatRowCnt(IVr);
+            for (i=0;i<rownr;i=i+1) begin
+              MatRowGet(IVr,i,IVrw);
+              if (IVrw.stp==kInvoiceRowTypeNormal and NonBlank(IVrw.ArtCode) and IVrw.ArtCode==INr.Code) then begin
+                proceedF = false;
+                i = rownr;
+              end;
+            end;
+            if (proceedF) then begin
+              ClearRow(IVr,IVrw,kInvoiceRowTypeNormal);
+              IVrw.ArtCode = INr.Code;
+              MatRowPut(IVr,rownr,IVrw);
+              if (IVVc_PasteArtCode(IVr,rownr,inwarning,warning,TouchScreenLook,sernrf)) then begin
+              end;
+              MatRowGet(IVr,rownr,IVrw);
+              IVrw.SerialNr = RepSpec.f1;
+              MatRowPut(IVr,rownr,IVrw);
+              CloseWindow(wn);
+              PutWindowRecord(mwn,IVr);
+              WindowFieldGoto(wn,IVr,-1,"touchscreenitem",true);
+            end;
+          end;
+      end;
+      /*if (WindowDoOK(mwn,0)) then begin
+        DeselectWindow(wn,false);
+        GetWindowRecord(wn,RepSpec);
+        CloseWindow(wn);
+        switch (GetWindowFileName(mwn)) begin
+          case "IVVc":
+            GetWindowRecord(mwn,IVr);
+            IVDClass_RefreshStringList(mwn,IVr);
+        end;
+      end else begin
+        switch (GetWindowFileName(mwn)) begin
+          case "IVVc":
+            GetWindowRecord(mwn,IVr);
+            IVDClass_RefreshStringList(mwn,IVr);
+        end;
+        CloseWindow(wn);
+      end;*/
+    end;
+  end;
+ 
+  return;
+end; //Edit***************************Sasha2,15:25 11.08.2017 }

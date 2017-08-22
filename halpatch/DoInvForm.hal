@@ -88,6 +88,8 @@ external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,va
 remote procedure RowCalculateTaxMatrix_IVVc(var record IVVc,Integer,row IVVc); //Edit***************************Sasha2,15:48 20.03.2015
 remote procedure IVSumup(var record IVVc,Boolean); //Edit***************************Sasha2,15:50 20.03.2015
 
+SetLangMode(LangRussian,"RUS",0);
+
 procedure RebVal(record IVVc ivrp,record RoundBlock RoundRec,Integer base,var string res)
 BEGIN
   val tv,t100;
@@ -2007,23 +2009,39 @@ BEGIN
       OUTFORMFIELD("F_CHECKNR",IVr.ReceiptNrForReturn);  	//Edit----------------------Dima  14.04.2015
   end; 
   
-  PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc");
-  if (CurrentCompany==25 and NonBlank(IVr.LoyaltyCardNr)) then begin //Edit***************************Sasha2,13:41 25.07.2017 {
-    LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
-    if (ReadFirstMain(LoyaltyCardr,1,true) and LoyaltyCardr.Closed==0) then begin
-      if (FIELDINFORM("F_POINTS")) then begin
-        OUTFORMFIELD("F_POINTS",IVr.Points);
-      end;
-      if (FIELDINFORM("F_POINTSSTARTBAL")) then begin
-        OUTFORMFIELD("F_POINTSSTARTBAL",PointsSpent);
-      end;
-      if (FIELDINFORM("F_MYPOINTSLEFT")) then begin
-        OUTFORMFIELD("F_MYPOINTSLEFT",LoyaltyCardr.PointsBalance);
-      end;
-      if (FIELDINFORM("F_MYPOINTSTEXPIRE")) then begin
-        OUTFORMFIELD("F_MYPOINTSTEXPIRE",AddDay(IVr.InvDate,365));
-      end;
+  //PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc"); //Edit***************************Sasha2,13:52 28.07.2017
+  if (CurrentCompany==25) then begin //Edit***************************Sasha2,13:41 25.07.2017 {
+    if (FIELDINFORM("F_POINTS")) then begin
+      OUTFORMFIELD("F_POINTS","");
     end;
+    if (FIELDINFORM("F_MYPOINTSSPENT")) then begin
+      OUTFORMFIELD("F_MYPOINTSSPENT","");
+    end;
+    if (FIELDINFORM("F_POINTSSTARTBAL")) then begin
+      OUTFORMFIELD("F_POINTSSTARTBAL","");
+    end;
+    if (FIELDINFORM("F_MYPOINTSTEXPIRE")) then begin
+      OUTFORMFIELD("F_MYPOINTSTEXPIRE","");
+    end;
+    if (NonBlank(IVr.LoyaltyCardNr)) then begin
+      LoyaltyCardr.SerNr = IVr.LoyaltyCardNr;
+      if (ReadFirstMain(LoyaltyCardr,1,true) and LoyaltyCardr.Closed==0) then begin
+        if (FIELDINFORM("F_POINTS")) then begin
+          OUTFORMFIELD("F_POINTS","Заработано баллов: " & IVr.Points);
+        end;
+        if (FIELDINFORM("F_MYPOINTSSPENT")) then begin
+          OUTFORMFIELD("F_MYPOINTSSPENT","Списано баллов: " & PointsSpent );
+        end;
+        if (FIELDINFORM("F_POINTSSTARTBAL")) then begin
+          OUTFORMFIELD("F_POINTSSTARTBAL","Остаток баллов: " & LoyaltyCardr.PointsBalance);
+        end;
+        if (FIELDINFORM("F_MYPOINTSTEXPIRE")) then begin
+          OUTFORMFIELD("F_MYPOINTSTEXPIRE","Баллы действительны до: " & AddDay(IVr.InvDate,365));
+        end;
+      end;  
+    end;
+  end else begin
+    PrintLoyaltyCard(LangNrr,IVr.LoyaltyCardNr,IVr.LCMLevel,IVr.Points,PointsSpent,IVr.SerNr,"IVVc");
   end; //Edit***************************Sasha2,13:41 25.07.2017 }
   
 

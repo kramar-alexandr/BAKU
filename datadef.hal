@@ -4999,18 +4999,26 @@ begin
   KeyBegin(LCMLevel);
   KeySegment(LCMLevel);
   KeySegment(CustomerPercentLevel);
-  KeySegment(SerNr);
-  KeyBegin(FromDate);
-  KeySegment(LCMLevel);
   KeySegment(FromDate);
-  KeySegment(CustomerPercentLevel);
   KeySegment(SerNr);
   KeyBegin(ToDate);
   KeySegment(LCMLevel);
-  KeySegment(ToDate);
   KeySegment(CustomerPercentLevel);
+  KeySegment(ToDate);
   KeySegment(SerNr);
   
+  EndRecord;
+  
+  RecordBegin(ShopCoefVc,-,"");//Edit-------------------Vitalii 16:27 11.08.2017
+  RecordField(Shop,M4Code,10,0);
+  RecordField(Date,M4Date,0,0);
+  RecordField(Coef,M4Val,0,0);
+  MainKeyBegin(ShopDate,0);
+  KeySegment(Shop);
+  KeySegment(Date);
+  KeyBegin(DateShop);
+  KeySegment(Date);
+  KeySegment(Shop);
   EndRecord;
   
   return;  

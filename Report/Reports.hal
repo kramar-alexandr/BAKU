@@ -12,7 +12,6 @@ external procedure YcToStr(Integer,var string);
 external function Boolean CorspTRTest(record TRVc,record AccVc,Integer,var val,var val);
 external procedure ReadCorspTRRowSums(record TRVc,record AccVc,record AccVc,var val,var val,string);
 external procedure GetObjs(string,string,var string);
-external inner procedure ExtractObj(string,var Integer,var string);
 
 
 SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,17:21 11.12.2014

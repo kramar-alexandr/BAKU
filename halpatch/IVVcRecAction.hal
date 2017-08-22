@@ -63,8 +63,10 @@ external function Boolean HasModNL();
 remote function boolean CompanyIsJWLikeCompany(Integer);
 remote function string 255 SaboPromotion(var record IVVc,string); //Edit***************************Sasha2,13:19 01.06.2016
 external function val AbsoluteVal(val); // Edit ************************** Monday, 13 June 2016 13:36:12
-
-
+external function string 255 GetCashBackSpecialItemCode(); //Edit***************************Sasha2,11:37 14.08.2017
+external function string 20 GetCashBackLoyProgramByCardPrefix(string); //Edit***************************Sasha2,11:37 14.08.2017
+remote procedure IVSumup(var record IVVc,Boolean); //Edit***************************Sasha2,11:49 14.08.2017
+remote procedure CalculateIVVcCashbackPoints(var record IVVc,Boolean); //Edit***************************Sasha2,13:23 14.08.2017
 
 function Boolean CheckIfNextLegalSerNr(LongInt curivnr,string OfficialSerNr,Date invdate,record CUVc CUr)
 begin
@@ -241,6 +243,7 @@ BEGIN
   record POSCurrenciesBlock POSCurblock;
   string 5 posCurcncy;
   val delta;// Edit ************************** Monday, 13 June 2016 13:41:00
+  string 20 newCashBackCardNr; //Edit***************************Sasha2,11:35 14.08.2017
   
   
   Locationr.Code = IVp.Location;
@@ -1344,6 +1347,42 @@ LIVVcRecordCheck_GenTrans:;
     transf = HasModNL;
   end;
   if (transf) then begin
+    rwcnt = MatRowCnt(IVp); //Edit***************************Sasha2,11:35 14.08.2017 {
+    for (i=0;i<rwcnt;i=i+1) begin
+      MatRowGet(IVp,i,IVrw);
+      if (IVrw.stp==kInvoiceRowTypeNormal and IVrw.ArtCode==GetCashBackSpecialItemCode) then begin
+        if (IVrw.Quant>1) then begin
+          RecordCheckError(35042,". " & USetStr(5279) ,i,"ArtCode");      
+          res = -1;
+          goto L99;
+        end;
+        for (j=i+1;j<rwcnt;j=j+1) begin
+          MatRowGet(IVp,j,IV2rw);
+          if (IV2rw.stp==kInvoiceRowTypeNormal and IV2rw.ArtCode==GetCashBackSpecialItemCode) then begin
+            RecordCheckError(35042,". " & USetStr(1547) ,j,"ArtCode");      
+            res = -1;
+            goto L99;
+          end;
+        end;
+        newCashBackCardNr = IVrw.SerialNr;
+        RecordCopy(locIVr,IVp);
+        MatRowDelete(locIVr,i);
+        IVSumup(locIVr,true);
+        locIVr.Points = BlankVal;
+        locIVr.LCMLevel = GetCashBackLoyProgramByCardPrefix(newCashBackCardNr);
+        CalculateIVVcCashbackPoints(locIVr,true);
+        IVp.Points = locIVr.Points + IVrw.Sum;
+        i = rwcnt;
+      end;
+    end;
+    if (NonBlank(newCashBackCardNr)) then begin
+      LoyaltyCardr.SerNr = newCashBackCardNr;
+      if (ReadFirstMain(LoyaltyCardr,1,true)) then begin
+        RecordCheckError(1709,". " & USetStr(35042) ,-1,"CustCode");      
+        res = -1;
+        goto L99;
+      end;
+    end; //Edit***************************Sasha2,11:39 14.08.2017 }
     errcode = MakeTransFromIV(gTRp,gSMp,IVp,false,false,fifocurIVr); //Edit***************************Sasha2,15:47 18.03.2015
     if (errcode==0) then begin
       if (MatRowCnt(gSMp)>0) then begin
@@ -1353,17 +1392,17 @@ LIVVcRecordCheck_GenTrans:;
       end;
     end;
     if (check) then begin
-    if (errcode>0) then begin
-      RecordCheckError(errcode,"",-1,"SerNr");      
-      res = -1;
-      goto L99;
-    end;
-    errcode = ConnectCreditNotetoVI(IVp);
-    if (errcode!=0) then begin
-      RecordCheckError(errcode,"",-1,"SerNr");      
-      res = -1;
-      goto L99;
-    end;
+      if (errcode>0) then begin
+        RecordCheckError(errcode,"",-1,"SerNr");      
+        res = -1;
+        goto L99;
+      end;
+      errcode = ConnectCreditNotetoVI(IVp);
+      if (errcode!=0) then begin
+        RecordCheckError(errcode,"",-1,"SerNr");      
+        res = -1;
+        goto L99;
+      end;
     end;
 
     if ((gTRp.Number>0) and (gTRp.IntYc==IVYc)) then begin
@@ -1408,6 +1447,17 @@ LIVVcRecordCheck_GenTrans:;
     res = -1;
     goto L99;
   end;
+  
+  if (transf and NonBlank(newCashBackCardNr)) then begin //Edit***************************Sasha2,12:15 14.08.2017 {
+    RecordNew(LoyaltyCardr);
+    LoyaltyCardr.SerNr = newCashBackCardNr;
+    LoyaltyCardr.CustCode = IVp.CustCode;
+    LoyaltyCardr.CustName = IVp.Addr0;
+    LoyaltyCardr.LCMLevel = GetCashBackLoyProgramByCardPrefix(newCashBackCardNr);
+    RECORDSTORE(LoyaltyCardr,false);
+    IVp.LoyaltyCardNr = LoyaltyCardr.SerNr;
+  end; //Edit***************************Sasha2,12:15 14.08.2017 }
+  
 L99:;
   if (res!=0) then begin 
     IVp.SerNr = oldnr; 
