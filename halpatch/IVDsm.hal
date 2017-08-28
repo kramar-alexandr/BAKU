@@ -2855,3 +2855,27 @@ begin
   
 return;
 end;
+
+global //Edit***************************Sasha2,16:30 28.08.2017 {
+procedure OpenClientCashbackStatusRnDsm()
+begin
+  record IVVc IVr;
+  record RcVc RepSpec;
+  integer wn,nwn;
+
+  //nwn = OpenWindow("ClientCashbackStatusRClass",0,0,"","",RepSpec);
+  //DeselectWindow(nwn,false);
+  wn = curwindow;
+  if (GetWindowFileName(wn)=="IVVc") then begin
+    GetWindowRecord(wn,IVr);
+    ReportDefaults(RepSpec,"ClientCashbackStatusRClass");
+    RepSpec.f1 = IVr.CustCode;
+    RepSpec.repname = "ClientCashbackStatusRn";
+    RepSpec.critname = "ClientCashbackStatusRClass";
+    RepSpec.Media = mtScreen;
+    RunReport(RepSpec,0);
+  end;
+  
+  
+return;
+end; //Edit***************************Sasha2,16:30 28.08.2017 }

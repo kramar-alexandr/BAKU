@@ -657,6 +657,11 @@ BEGIN
       res = -1; 
       goto L99;
     end;
+    if (transf and USr.IsSalesMan==0) then begin //Edit***************************Sasha2,9:59 28.08.2017 {
+      RecordCheckError(1824,"",-1,"SalesMan");   
+      res = -1; 
+      goto L99;
+    end; //Edit***************************Sasha2,9:59 28.08.2017 }
   end;
   BlockLoad(LINrb);  
   if ((nonblank(IVp.OfficialSerNr)) and (MatRowCnt(LINrb)>0)) or ((HasLocalization("POL")) and (IsStandardProduct)) then begin    
@@ -1379,6 +1384,11 @@ LIVVcRecordCheck_GenTrans:;
       LoyaltyCardr.SerNr = newCashBackCardNr;
       if (ReadFirstMain(LoyaltyCardr,1,true)) then begin
         RecordCheckError(1709,". " & USetStr(35042) ,-1,"CustCode");      
+        res = -1;
+        goto L99;
+      end;
+      if (blank(IVp.CustCode) or IVp.CustCode=="NONAME") then begin
+        RecordCheckError(25600,"",-1,"CustCode");      
         res = -1;
         goto L99;
       end;
