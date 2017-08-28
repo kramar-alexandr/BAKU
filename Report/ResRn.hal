@@ -272,6 +272,9 @@ BEGIN
   RETURN;
 END;
 
+
+
+
 global
 procedure AccListPerBalResGr(record RcVc RepSpec,Boolean PLf,record UserDefRepLinesVc UserDefRepLinesr,var val S3bp,var val Pbp,
                         var val Ebp,var val S4bp,var val S5bp,var val S6bp,Boolean negf,val goms,Boolean resUseAccum,
@@ -465,6 +468,34 @@ BEGIN
   end;
   GetUserDefRepDescription(UserDefRepLinesr,RepSpec.Language,tstr);
   ALPBEnd(RepSpec,PLf,tstr,UserDefRepLinesr.SpecCode,S3bp,Pbp,Ebp,S4bp,S5bp,S6bp,negf,goms,headflag,resUseAccum,UserDefRepLinesr.IdKey,printf);// UserDefRepLinesr.Comment
+  RETURN;
+END;
+
+global
+procedure MYAccListPerBalResGr(record RcVc RepSpec,Boolean PLf,record UserDefRepLinesVc UserDefRepLinesr,var val S3bp,var val Pbp,
+                        var val Ebp,var val S4bp,var val S5bp,var val S6bp,Boolean negf,val goms,Boolean resUseAccum,
+                        Date AccumStartDate,Boolean printf)// Edit ************************** Monday, 28 August 2017 09:57:53
+BEGIN
+  record AccVc Accr;
+  Boolean addflag;
+  string 255 Nitem;
+  string 255 Nitem2;
+  string 255 NRu;
+  string 5 nsep;
+  Boolean Accs;
+  Integer np;
+  Boolean headflag;
+  string 255 tstr;
+
+  S3bp = 100;
+  S4bp = 0;
+  S5bp = 0;
+  S6bp = 0;
+  Pbp =1000;
+  Ebp = 0;
+  headflag = false;
+  np = 0;
+  
   RETURN;
 END;
 
