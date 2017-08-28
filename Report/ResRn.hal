@@ -484,17 +484,37 @@ BEGIN
   Integer np;
   Boolean headflag;
   string 255 tstr;
-  val plantot,facttot;
-  vector val vplantotcur,vfacttotcur;
+  val plantot,facttot,plantot2,facttot2;
+  vector val vplantotcur,vfacttotcur,vplantotcur2,vfacttotcur2;
+  record RcVc RepSpec2;
   
   RunSalesOfGoodsRn(RepSpec,false,plantot,facttot,vplantotcur,vfacttotcur);
-  if blank(UserDefRepLinesr.CurncyCode) then begin
-    S3bp = plantot + facttot;
-    Pbp = plantot + facttot;
-  end else begin
-    S3bp = vplantotcur[UserDefRepLinesr.CurncyCode] + vfacttotcur[UserDefRepLinesr.CurncyCode];
-    Pbp = vplantotcur[UserDefRepLinesr.CurncyCode] + vfacttotcur[UserDefRepLinesr.CurncyCode];
+  RepSpec2.ObjStr = RepSpec.ObjStr;
+  if (RepSpec.Comparison==1) then begin
+    RepSpec2.sStartDate = addyear(RepSpec.sStartDate,-1);
+    RepSpec2.sEndDate = addyear(RepSpec.sEndDate,-1);
+    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2);
+    if blank(UserDefRepLinesr.CurncyCode) then begin
+      Pbp = plantot + facttot;
+      S3bp = plantot2 + facttot2;
+    end else begin
+      Pbp = vplantotcur[UserDefRepLinesr.CurncyCode] + vfacttotcur[UserDefRepLinesr.CurncyCode];
+      S3bp = vplantotcur2[UserDefRepLinesr.CurncyCode] + vfacttotcur2[UserDefRepLinesr.CurncyCode];
+    end;
   end;
+  if (RepSpec.Comparison==0) then begin
+    RepSpec2.sStartDate = addyear(RepSpec.sStartDate,-1980);
+    RepSpec2.sEndDate = RepSpec.sEndDate;
+    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2);
+    if blank(UserDefRepLinesr.CurncyCode) then begin
+      S3bp = plantot + facttot;
+      Pbp = plantot2 + facttot2;
+    end else begin
+      S3bp = vplantotcur[UserDefRepLinesr.CurncyCode] + vfacttotcur[UserDefRepLinesr.CurncyCode];
+      Pbp = vplantotcur2[UserDefRepLinesr.CurncyCode] + vfacttotcur2[UserDefRepLinesr.CurncyCode];
+    end;
+  end;
+  
   S4bp = 0;
   S5bp = 0;
   S6bp = 0;
@@ -943,7 +963,7 @@ BEGIN
   record CYBlock CYb;
   Boolean PLf,headerf,resUseAccum;
   record ConsolidationBlock cr;
-  string 255 tstr,notstr,per1,per2;
+  string 255 tstr,notstr,per1,per2,dblstr;
   val Goms;
   Date AccumStartDate;
   val tmpS3ba,tmpS4ba,tmpS5ba,tmpS6ba,tmpPba,tmpEba;
@@ -1301,9 +1321,13 @@ end;
           end;
         end;                        
         if (nonblank(UserDefRepLinesr.Comment)) then begin
-          GetUserDefRepDescription(UserDefRepLinesr,RepSpec.Language,tstr);        
+          GetUserDefRepDescription(UserDefRepLinesr,RepSpec.Language,tstr);    
+          dblstr = "";
+          if (UserDefRepLinesr.SalesOfGoodsUse==1) then begin
+            dblstr = "DblSalesOfGoods";
+          end;
           AGrSumLine2(RepSpec,0,tstr,"",UserDefRepLinesr.SpecCode,S3ba[UserDefRepLinesr.IdKey],Pba[UserDefRepLinesr.IdKey],Eba[UserDefRepLinesr.IdKey],
-                     S4ba[UserDefRepLinesr.IdKey],S5ba[UserDefRepLinesr.IdKey],S6ba[UserDefRepLinesr.IdKey],negf,Goms,PLf,resUseAccum,"",UserDefRepLinesr.IdKey,false,true,GetVATLaw!=vatFinnish);
+                     S4ba[UserDefRepLinesr.IdKey],S5ba[UserDefRepLinesr.IdKey],S6ba[UserDefRepLinesr.IdKey],negf,Goms,PLf,resUseAccum,dblstr,UserDefRepLinesr.IdKey,false,true,GetVATLaw!=vatFinnish);
         end;
       case kRsTypeText:
         GetUserDefRepDescription(UserDefRepLinesr,RepSpec.Language,tstr);        
