@@ -26,7 +26,8 @@ begin
   return;
 end;
 
-procedure SalesOfGoodsRn_processIV(record IVVc IVp, val recivedmoneybase, val percent, date transdate, longint cupnr, boolean printf, array integer tabs, var boolean InvoiceRowTypeDownpaymentf, var val plantot, var val facttot, var val sumtot)
+procedure SalesOfGoodsRn_processIV(record IVVc IVp, val recivedmoneybase, val percent, date transdate, longint cupnr, boolean printf, array integer tabs, var boolean InvoiceRowTypeDownpaymentf,
+                                   var val plantot, var val facttot, var val sumtot,var vector val vplantotcur,var vector val vfacttotcur)
 begin
   val aznfr,aznto,fr,to1,to2,br1,br2;
   record IVVc tIVr;
@@ -115,7 +116,9 @@ begin
       CurValToOtherCur(transdate,IVrw.CurncyCode,IVrw.Sum/qty,brandcur,retailbrandcur,DefaultCurRoundOff);
       retailbase = IVToBaseMy(IVp,IVrw,IVrw.Sum/qty);
       plantot = plantot + planfifobase;
+      vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
       facttot = facttot + fifobase;
+      vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
       sumtot = sumtot + sumbase;
         
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
@@ -240,7 +243,9 @@ begin
         sumbrandcur = 0;
       end;
       plantot = plantot + planfifobase;
+      vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobase;
       facttot = facttot + fifobase;
+      vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobase;
       sumtot = sumtot + sumbase;
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
         startformat(15);
@@ -287,7 +292,8 @@ begin
   return;
 end;
 
-procedure SalesOfGoodsRn_processOR(record ORVc ORp, val recivedmoneybase, val percent, date transdate, longint iprsernr, string iprwbankcurncy, boolean printf, array integer tabs, var val plantot, var val facttot, var val sumtot)
+procedure SalesOfGoodsRn_processOR(record ORVc ORp, val recivedmoneybase, val percent, date transdate, longint iprsernr, string iprwbankcurncy, boolean printf, array integer tabs,
+                                   var val plantot, var val facttot, var val sumtot,var vector val vplantotcur,var vector val vfacttotcur)
 begin
   string 5 tstr;
   val aznfr,aznto,fr,to1,to2,br1,br2;
@@ -426,7 +432,9 @@ begin
     end;
     retailbase = MulRateToBase1(iprwbankcurncy,ORrw.Sum/qty,fr,to1,to2,br1,br2,DefaultCurRoundOff);
     plantot = plantot + planfifobase;
+    vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobase;
     facttot = facttot + fifobase;
+    vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobase;
     sumtot = sumtot + sumbase;
     if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
       startformat(15);
@@ -471,7 +479,8 @@ begin
 end;
 
 global 
-procedure RunSalesOfGoodsRn(record RcVc RepSpec,boolean printf)
+procedure RunSalesOfGoodsRn(record RcVc RepSpec,boolean printf,
+                            var val resplantot,var val resfacttot,var vector val vplantotcur,var vector val vfacttotcur)
 begin
   boolean TrHs,TrHs2,testf,testf2,InvoiceRowTypeDownpaymentf,giftf,found,nocoef;
   date startdate,enddate;
@@ -640,7 +649,7 @@ begin
       
       if (recivedmoneybase!=0) then begin
         recivedmoneybase = recivedmoneybase - gifted - giftsertpaym - loyaltypaym;
-        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment),IVr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot);
+        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment),IVr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
       end;
       
       
@@ -679,7 +688,7 @@ begin
             if (IPrw.InvoiceNr!=-1) then begin
               IVr.SerNr = IPrw.InvoiceNr;
               ReadFirstMain(IVr,1,true);
-              SalesOfGoodsRn_processIV(IVr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot);
+              SalesOfGoodsRn_processIV(IVr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
               if (InvoiceRowTypeDownpaymentf) then begin
                 rwcnt2 = matrowcnt(IVr);
                 for (j=0;j<rwcnt2;j=j+1) begin
@@ -687,7 +696,7 @@ begin
                   if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
                     ORr.SerNr = IVrw.Spec;
                     ReadFirstMain(ORr,1,true);
-                    SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,IPr.SerNr,IPrw.BankCurncy,printf,tabs,plantot,facttot,sumtot);
+                    SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/IVr.Sum4,IPr.TransDate,IPr.SerNr,IPrw.BankCurncy,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
                   end;
                 end;
               end;
@@ -695,7 +704,7 @@ begin
               if (IPrw.OrderNr!=-1) then begin
                 ORr.SerNr = IPrw.OrderNr;
                 ReadFirstMain(ORr,1,true);
-                SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/ORr.Sum4,IPr.TransDate,IPr.SerNr,IPrw.BankCurncy,printf,tabs,plantot,facttot,sumtot);
+                SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/ORr.Sum4,IPr.TransDate,IPr.SerNr,IPrw.BankCurncy,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
               end else begin
                 if (IPrw.CUPNr!=-1) then begin
                   ARPayHistr.FileName = "IVVc";
@@ -710,7 +719,7 @@ begin
                       rmbpart = ARPayHistr.BookVal;
                       IVr.SerNr = ARPayHistr.SerNr;
                       ReadFirstMain(IVr,1,true);
-                      SalesOfGoodsRn_processIV(IVr,rmbpart,IPrw.RecVal/IVr.Sum4,IPr.TransDate,ARPayHistr.CUPNr,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot);
+                      SalesOfGoodsRn_processIV(IVr,rmbpart,IPrw.RecVal/IVr.Sum4,IPr.TransDate,ARPayHistr.CUPNr,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
                       printedprepval = printedprepval + rmbpart;
                     end;
                   end;
@@ -783,12 +792,17 @@ begin
     endformat;
     endjob;
   end;
+  resplantot = plantot;
+  resfacttot = facttot;
   return;
 end;
   
 global 
 procedure SalesOfGoodsRn(record RcVc RepSpec)
 begin
-  RunSalesOfGoodsRn(RepSpec,true);
+  val v1,v2,v3;
+  vector val vv1,vv2;
+  
+  RunSalesOfGoodsRn(RepSpec,true,v1,v2,vv1,vv2);
   return;
 end;
