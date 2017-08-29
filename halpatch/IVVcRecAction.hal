@@ -658,7 +658,7 @@ BEGIN
       goto L99;
     end;
     if (transf and USr.IsSalesMan==0) then begin //Edit***************************Sasha2,9:59 28.08.2017 {
-      RecordCheckError(1824,"",-1,"SalesMan");   
+      RecordCheckError(35111,"",-1,"SalesMan");   
       res = -1; 
       goto L99;
     end; //Edit***************************Sasha2,9:59 28.08.2017 }
