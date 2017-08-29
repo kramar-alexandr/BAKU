@@ -249,7 +249,7 @@ begin
       sumtot = sumtot + sumbase;
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
         startformat(15);
-          outstring(tabs[1],0,"ПС " & IVrw.GCNr,false);                             // Код товара
+          outstring(tabs[1],0,"ПС " & IVrw.GCNr,false);                        // Код товара
           OutStringID(tabs[2],"DblIVVc","СЧ/Ф. " & IVp.SerNr,false,IVp.SerNr); // Докум.
           outstring(tabs[3],0,transdate,false);                                // Дата продажи
           outstring(tabs[4],0,qty,false);                                      // Кол.
@@ -627,6 +627,7 @@ begin
           if (IVrw.PayMode=="G") then begin
             gifted = gifted + IVToBaseMy(IVr,IVrw,IVrw.Sum);
           end;
+          //IVrw.PayMode=="D"
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
         if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
@@ -707,20 +708,22 @@ begin
                 SalesOfGoodsRn_processOR(ORr,recivedmoneybase,IPrw.RecVal/ORr.Sum4,IPr.TransDate,IPr.SerNr,IPrw.BankCurncy,printf,tabs,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
               end else begin
                 if (IPrw.CUPNr!=-1) then begin
-                  ARPayHistr.FileName = "IVVc";
-                  ARPayHistr.CUPNr = IPrw.CUPNr;
-                  TrHs2 = true;
-                  resetloop(ARPayHistr);
-                  printedprepval = 0;
-                  while (loopmain(ARPayHistr,2,TrHs)) begin
-                    if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
-                    if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
-                    if (TrHs2) then begin
-                      rmbpart = ARPayHistr.BookVal;
-                      IVr.SerNr = ARPayHistr.SerNr;
-                      ReadFirstMain(IVr,1,true);
-                      SalesOfGoodsRn_processIV(IVr,rmbpart,IPrw.RecVal/IVr.Sum4,IPr.TransDate,ARPayHistr.CUPNr,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
-                      printedprepval = printedprepval + rmbpart;
+                  if (recivedmoneybase>0) then begin
+                    ARPayHistr.FileName = "IVVc";
+                    ARPayHistr.CUPNr = IPrw.CUPNr;
+                    TrHs2 = true;
+                    resetloop(ARPayHistr);
+                    printedprepval = 0;
+                    while (loopmain(ARPayHistr,2,TrHs)) begin
+                      if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
+                      if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
+                      if (TrHs2) then begin
+                        rmbpart = ARPayHistr.BookVal;
+                        IVr.SerNr = ARPayHistr.SerNr;
+                        ReadFirstMain(IVr,1,true);
+                        SalesOfGoodsRn_processIV(IVr,rmbpart,rmbpart/IVr.BaseSum4,IPr.TransDate,ARPayHistr.CUPNr,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
+                        printedprepval = printedprepval + rmbpart;
+                      end;
                     end;
                   end;
                   if (AbsoluteVal(recivedmoneybase)>AbsoluteVal(printedprepval)) then begin
@@ -752,9 +755,13 @@ begin
                         outstring(tabs[6],0,"",false);
                         outstring(tabs[7],0,"",false);
                         if (planfifobase!=0) then begin
-                          outstring(tabs[8],0,planfifobase,false);                              // План. себест. в осн. вал.
+                          outstring(tabs[8],0,planfifobase,false);                           // План. себест. в осн. вал.
                         end else begin
-                          outstring(tabs[8],0,"",false);
+                          if (nocoef) then begin
+                            outstring(tabs[8],0,"Коэф. не найден",false);
+                          end else begin
+                            outstring(tabs[8],0,"",false);
+                          end;
                         end;
                         outstring(tabs[9],0,"",false);
                         outstring(tabs[10],0,"",false);
