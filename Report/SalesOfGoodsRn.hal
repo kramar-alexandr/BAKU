@@ -8,6 +8,7 @@ external procedure CurValToOtherCur(Date,string,val,string,var val,roundmode);
 external function Boolean GetPMRow(string,var row PMBlock);
 external procedure GetObjs(string,string,var string);
 external function val AbsoluteVal(val);
+external function val CheckSign(val);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -17,10 +18,10 @@ begin
   string 5 tstr;
   if (nonblank(IVrw.CurncyCode)) then begin
     tstr = IVrw.CurncyCode;
-    res = MulRateToBase1(tstr,IVrw.Sum,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
+    res = MulRateToBase1(tstr,value,IVrw.FrRate,IVrw.ToRateB1,IVrw.ToRateB2,IVrw.BaseRate1,IVrw.BaseRate2,DefaultCurRoundOff);
   end else begin
     tstr = IVr.CurncyCode;
-    res = MulRateToBase1(tstr,IVrw.Sum,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
+    res = MulRateToBase1(tstr,value,IVr.FrRate,IVr.ToRateB1,IVr.ToRateB2,IVr.BaseRate1,IVr.BaseRate2,DefaultCurRoundOff);
   end;
   IVToBaseMy = res;
   return;
@@ -71,6 +72,14 @@ begin
         updst = false;
       end;
       FindFIFOOrigValAndCurncyIV(IVp.SerNr,i,fifobrandcur,brandcur,fifobase,updst);
+      if ((qty<0) and (fifobase>0)) then begin
+        fifobase = (-1)*fifobase;
+        fifobrandcur = (-1)*fifobrandcur;
+      end;
+      if ((qty>0) and (fifobase<0)) then begin
+        fifobase = (-1)*fifobase;
+        fifobrandcur = (-1)*fifobrandcur;
+      end;
       if (fifobase==0) then begin
         pofound = false;
         resetloop(POr);
@@ -527,12 +536,14 @@ begin
   record GCSVc GCSr;
   record ShopCoefVc SCr;
   record ARPayHistVc ARPayHistr;
+  record TRVc TRr;
   row PMBlock PMrw;
   row IVVc IVrw,tIVrw;
   row IPVc IPrw;
   row ORVc ORrw;
   row SHVc SHrw;
   row POVc POrw;
+  row TRVc TRrw;
   val sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrmb,printedrm,planfifobase,qty;
   val recivedmoneybase,recivedmoneybrandcur,plantot,facttot,sumtot,prepayment,gifted,giftsertpaym,loyaltypaym,printedprepval,rmbpart;
   val aznfr,aznto,fr,to1,to2,br1,br2;
@@ -713,7 +724,24 @@ begin
             if (RepSpec.ObjStr!=store) then begin testf2 = false; end;
           end;
           if (testf2) then begin
-            GetFullCurncyRate(IPrw.BankCurncy,IPr.TransDate,fr,to1,to2,br1,br2);
+            TRr.Number = IPr.SerNr;
+            TRr.IntYc = IPYc;
+            if (ReadFirstMain(TRr,2,true)) then begin
+              fr = 1;
+              rwcnt2 = MatRowCnt(TRr);
+              for(j=0;j<rwcnt2;j=j+1) begin
+                MatRowGet(TRr,j,TRrw);
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1)) then begin
+                  to1 = TRrw.DebVal/TRrw.CurDebVal;
+                  if (to1==0) then begin
+                    to1 = TRrw.CredVal/TRrw.CurCredVal;
+                  end;
+                  j = rwcnt2;
+                end;
+              end;
+            end else begin
+              GetFullCurncyRate(IPrw.BankCurncy,IPr.TransDate,fr,to1,to2,br1,br2);
+            end;
             if (fr==0 or to1==0) then begin
               fr = 1; to1 = 1;
             end;
