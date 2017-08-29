@@ -40,10 +40,13 @@ begin
   record IPVc IPr;
   record GCRVc GCRr;
   record PLVc PLr;
+  record ItemStatusVc ISr;
+  record POVc POr;
   row IVVc IVrw,tIVrw;
   row PMBlock PMrw;
-  integer i,j,rwcnt,rwcnt2;
-  boolean updst,giftf,found,notprint,nocoef,nopcppr;
+  row POVc POrw;
+  integer i,j,rwcnt,rwcnt2,halt;
+  boolean updst,giftf,found,notprint,nocoef,nopcppr,pofound,TrHs;
   val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,tmp,itemsum,qty;
   string 10 brandcur,tstr,store;
   
@@ -69,34 +72,69 @@ begin
       end;
       FindFIFOOrigValAndCurncyIV(IVp.SerNr,i,fifobrandcur,brandcur,fifobase,updst);
       if (fifobase==0) then begin
-        INr.Code = IVrw.ArtCode;
-        readfirstmain(INr,1,true);
-        fifobase = INr.WeighedAvPrice * qty;
+        ISr.Code = IVrw.ArtCode;
+				ISr.Location = ";;;";
+				readfirstmain(ISr,2,true);
+        if (ISr.Instock>0) then begin
+          INr.Code = IVrw.ArtCode;
+          readfirstmain(INr,1,true);
+          if (ISr.Instock>qty) then begin
+            halt = qty;
+          end else begin
+            halt = ISr.Instock;
+          end;
+          planfifobase = INr.WeighedAvPrice * halt;
+          planfifobrandcur = INr.LastPurchPrice2 * halt;
+          brandcur = INr.LastPurchCurncyCode;
+          halt = ISr.Instock;
+         end;
       end;
-      if (fifobrandcur==0) then begin
-        INr.Code = IVrw.ArtCode;
-        readfirstmain(INr,1,true);
-        fifobrandcur = INr.LastPurchPrice2 * qty;
+      if ((planfifobase==0) or (halt<qty)) then begin
+        pofound = false;
+        resetloop(POr);
+        POr.OrdNr = IVp.OrderNr;
+        TrHs = true;
+        while (loopkey("OrdNr",POr,1,TrHs)) begin
+          if (POr.OrdNr!=IVp.OrderNr) then begin TrHs = false; end;
+          if ((TrHs) and (POr.OKFlag!=0)) then begin
+            rwcnt2 = matrowcnt(POr);
+            for (j=0;j<rwcnt2;j=j+1) begin
+              matrowget(POr,j,POrw);
+              if (POrw.ArtCode==IVrw.ArtCode) then begin
+                pofound = true;
+                planfifobrandcur = planfifobrandcur + POrw.Sum/POrw.Quant*(qty - halt);
+                planfifobase = planfifobase + MulRateToBase1(POr.CurncyCode,POrw.Sum,POr.FrRate,POr.ToRateB1,POr.ToRateB2,POr.BaseRate1,POr.BaseRate2,DefaultCurRoundOff)/POrw.Quant*(qty - halt);
+                brandcur = POr.CurncyCode;
+                j = rwcnt2;
+                TrHs = false;
+              end;
+            end;
+          end;
+        end;
       end;
-      if (fifobrandcur==0) then begin
+      if ((!pofound) or (planfifobase==0) or (halt<qty)) then begin
         PLr.PLCode = "PCP";
         PLr.ArtCode = IVrw.ArtCode;
         nopcppr = true;
         if (ReadFirstMain(PLr,2,true)) then begin
-          planfifobrandcur = PLr.ExVatPrice*qty;
+          planfifobrandcur = PLr.ExVatPrice*(qty - halt);
           brandcur = PLr.CurncyCode;
           GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
           if (fr==0 or to1==0) then begin
             fr = 1; to1 = 1;
           end;
-          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff)*qty;
+          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff)*(qty - halt);
           nopcppr = false;
         end;
       end;
       fifobase = fifobase*percent;
       fifobrandcur = fifobrandcur*percent;
+      planfifobase = planfifobase*percent;
+      planfifobrandcur = planfifobrandcur*percent;
       fifobase = round(fifobase,SetRoundModeD(2));
       fifobrandcur = round(fifobrandcur,SetRoundModeD(2));
+      planfifobase = round(planfifobase,SetRoundModeD(2));
+      planfifobrandcur = round(planfifobrandcur,SetRoundModeD(2));
       
       tstr = brandcur;
       GetFullCurncyRate(tstr,transdate,fr,to1,to2,br1,br2);
