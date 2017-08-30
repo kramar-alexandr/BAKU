@@ -3197,6 +3197,8 @@ begin
   ArrayField(CustArtCode,M4Code,20,CUINVc);
   ArrayField(Salesmen,M4UStr,60,UserVc);
   ArrayField(UsedBirthRebate,M4Int,0,0);// Edit ************************** Tuesday, 16 May 2017 14:39:32
+  ArrayField(PlanCostCur,M4Code,20,0);// Edit ************************** Wednesday, 30 August 2017 10:54:17
+  ArrayField(PlanCostVal,M4Val,0,0);// Edit ************************** Wednesday, 30 August 2017 10:54:18
   EndArray;
   MainKeyBegin(SerNr,1);
   StoreInBaseKey;
