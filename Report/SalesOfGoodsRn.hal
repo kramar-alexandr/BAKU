@@ -164,19 +164,19 @@ begin
         
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
         startformat(15);
-          outstring(tabs[1],0,IVrw.ArtCode,false);                             // Код товара
+          outstring(tabs[1],0,IVrw.ArtCode,false);                               // Код товара
           if (cupnr==-1) then begin
             OutStringID(tabs[2],"DblIVVc","СЧ/Ф. " & IVp.SerNr,false,IVp.SerNr); // Докум.
           end else begin
             OutStringID(tabs[2],"DblPrHisSL",cupnr,false,"");
           end;
-          outstring(tabs[3],0,transdate,false);                                // Дата продажи
-          outstring(tabs[4],0,qty,false);                                      // Кол.
-          outstring(tabs[5],0,brandcur,false);                                 // Вал. бренда
-          outstring(tabs[6],0,retailbase,false);                               // Ритейл за ед. в осн. вал.
-          outstring(tabs[7],0,retailbrandcur,false);                           // Ритейл за ед. в вал. бренда
+          outstring(tabs[3],0,transdate,false);                                  // Дата продажи
+          outstring(tabs[4],0,qty,false);                                        // Кол.
+          outstring(tabs[5],0,brandcur,false);                                   // Вал. бренда
+          outstring(tabs[6],0,retailbase,false);                                 // Ритейл за ед. в осн. вал.
+          outstring(tabs[7],0,retailbrandcur,false);                             // Ритейл за ед. в вал. бренда
           if (planfifobase!=0) then begin
-            outstring(tabs[8],0,planfifobase,false);                           // План. себест. в осн. вал.
+            outstring(tabs[8],0,planfifobase,false);                             // План. себест. в осн. вал.
           end else begin
             if ((fifobase==0) and nopcppr) then begin
               outstring(tabs[8],0,"План. себест. не найдена",false);
@@ -185,22 +185,22 @@ begin
             end;
           end;
           if (planfifobrandcur!=0) then begin
-            outstring(tabs[9],0,planfifobrandcur,false);                       // План. себест. в вал. бренда
+            outstring(tabs[9],0,planfifobrandcur,false);                         // План. себест. в вал. бренда
           end else begin
             outstring(tabs[9],0,"",false);
           end;
           if (fifobase!=0) then begin
-            outstring(tabs[10],0,fifobase,false);                              // Факт. себест. в осн. вал.
+            outstring(tabs[10],0,fifobase,false);                                // Факт. себест. в осн. вал.
           end else begin
             outstring(tabs[10],0,"",false);
           end;
           if (fifobrandcur!=0) then begin
-            outstring(tabs[11],0,fifobrandcur,false);                          // Факт. себест. в вал. бренда
+            outstring(tabs[11],0,fifobrandcur,false);                            // Факт. себест. в вал. бренда
           end else begin
             outstring(tabs[11],0,"",false);
           end;
-          outstring(tabs[12],0,sumbase,false);                                 // Сумма прихода в осн. вал.
-          outstring(tabs[13],0,sumbrandcur,false);                             // Сумма прихода в вал. бренда
+          outstring(tabs[12],0,sumbase,false);                                   // Сумма прихода в осн. вал.
+          outstring(tabs[13],0,sumbrandcur,false);                               // Сумма прихода в вал. бренда
         endformat;
       end;
     end;
@@ -487,7 +487,7 @@ begin
         outstring(tabs[6],0,retailbase,false);                                  // Ритейл за ед. в осн. вал.
         outstring(tabs[7],0,retailbrandcur,false);                              // Ритейл за ед. в вал. бренда
         if ((planfifobase!=0) or pofound) then begin
-          outstring(tabs[8],0,planfifobase,false);                           // План. себест. в осн. вал.
+          outstring(tabs[8],0,planfifobase,false);                              // План. себест. в осн. вал.
         end else begin
           if (((fifobase==0) and !shfound) and nopcppr) then begin
             outstring(tabs[8],0,"План. себест. не найдена",false);
@@ -496,22 +496,22 @@ begin
           end;
         end;
         if ((planfifobrandcur!=0) or pofound) then begin
-          outstring(tabs[9],0,planfifobrandcur,false);                       // План. себест. в вал. бренда
+          outstring(tabs[9],0,planfifobrandcur,false);                          // План. себест. в вал. бренда
         end else begin
           outstring(tabs[9],0,"",false);
         end;
         if ((fifobase!=0) or shfound) then begin
-          outstring(tabs[10],0,fifobase,false);                              // Факт. себест. в осн. вал.
+          outstring(tabs[10],0,fifobase,false);                                 // Факт. себест. в осн. вал.
         end else begin
           outstring(tabs[10],0,"",false);
         end;
         if ((fifobrandcur!=0) or shfound) then begin
-          outstring(tabs[11],0,fifobrandcur,false);                          // Факт. себест. в вал. бренда
+          outstring(tabs[11],0,fifobrandcur,false);                             // Факт. себест. в вал. бренда
         end else begin
           outstring(tabs[11],0,"",false);
         end;
-        outstring(tabs[12],0,sumbase,false);                                 // Сумма прихода в осн. вал.
-        outstring(tabs[13],0,sumbrandcur,false);                             // Сумма прихода в вал. бренда
+        outstring(tabs[12],0,sumbase,false);                                    // Сумма прихода в осн. вал.
+        outstring(tabs[13],0,sumbrandcur,false);                                // Сумма прихода в вал. бренда
       endformat;
     end;
   end;
@@ -577,14 +577,6 @@ begin
     tabs[13] = tabs[12] + 35;
     
     tabs[14] = 480;
-    /*
-    tabs[14] = tabs[14] + 0;
-    tabs[15] = tabs[14] + 0;
-    tabs[16] = tabs[15] + 0;
-    tabs[17] = tabs[16] + 0;
-    tabs[18] = tabs[17] + 0;
-    tabs[19] = tabs[18] + 0;
-    tabs[20] = tabs[19] + 0;*/
     startreportjob("Отчёт реализации товаров");
     rw = 1;
     Header(rw,"Период отчета - " & startdate & " : " & enddate,1);
@@ -667,10 +659,9 @@ begin
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
         if (IVrw.stp==kInvoiceRowTypeCreditCardPayment) then begin
-          if (IVrw.PayMode=="G") then begin
+          if ((IVrw.PayMode=="G") or (IVrw.PayMode=="D")) then begin
             gifted = gifted + IVToBaseMy(IVr,IVrw,IVrw.Sum);
           end;
-          //IVrw.PayMode=="D"
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
         if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
@@ -815,7 +806,7 @@ begin
                         outstring(tabs[6],0,"",false);
                         outstring(tabs[7],0,"",false);
                         if (planfifobase!=0) then begin
-                          outstring(tabs[8],0,planfifobase,false);                           // План. себест. в осн. вал.
+                          outstring(tabs[8],0,planfifobase,false);                              // План. себест. в осн. вал.
                         end else begin
                           if (nocoef) then begin
                             outstring(tabs[8],0,"Коэф. не найден",false);
