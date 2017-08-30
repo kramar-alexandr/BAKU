@@ -293,9 +293,9 @@ begin
         sumbrandcur = 0;
       end;
       plantot = plantot + planfifobase;
-      vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobase;
+      vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
       facttot = facttot + fifobase;
-      vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobase;
+      vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
       sumtot = sumtot + sumbase;
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
         startformat(15);
@@ -493,9 +493,9 @@ begin
     end;
     retailbase = MulRateToBase1(iprwbankcurncy,ORrw.Sum/qty,fr,to1,to2,br1,br2,DefaultCurRoundOff);
     plantot = plantot + planfifobase;
-    vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobase;
+    vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
     facttot = facttot + fifobase;
-    vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobase;
+    vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
     sumtot = sumtot + sumbase;
     if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
       startformat(15);
@@ -704,7 +704,7 @@ begin
       
       if (recivedmoneybase!=0) then begin
         recivedmoneybase = recivedmoneybase - gifted - giftsertpaym - loyaltypaym;
-        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym),IVr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
+        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym),IVr.InvDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
       end;
       
       
