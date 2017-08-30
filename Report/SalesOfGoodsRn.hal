@@ -12,6 +12,7 @@ external function val CheckSign(val);
 
 SetLangMode(LangRussian,"RUS",0);
 
+global
 function val IVToBaseMy(record IVVc IVr, row IVVc IVrw, val value)
 begin
   val res;
@@ -40,12 +41,13 @@ begin
   record IPrsVc IPrsr;
   record IPVc IPr;
   record GCRVc GCRr;
-  record PLVc PLr;
   record ItemStatusVc ISr;
   record POVc POr;
+  record ORVc ORr;
   row IVVc IVrw,tIVrw;
   row PMBlock PMrw;
   row POVc POrw;
+  row ORVc ORrw;
   integer i,j,rwcnt,rwcnt2;
   boolean updst,giftf,found,notprint,nocoef,nopcppr,pofound,TrHs;
   val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,tmp,itemsum,qty;
@@ -116,18 +118,25 @@ begin
          end;
       end;
       if (planfifobase==0) then begin
-        PLr.PLCode = "PCP";
-        PLr.ArtCode = IVrw.ArtCode;
         nopcppr = true;
-        if (ReadFirstMain(PLr,2,true)) then begin
-          planfifobrandcur = PLr.ExVatPrice*qty;
-          brandcur = PLr.CurncyCode;
-          GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
-          if (fr==0 or to1==0) then begin
-            fr = 1; to1 = 1;
+        ORr.SerNr = IVp.OrderNr;
+        ReadFirstMain(ORr,1,true);
+        rwcnt2 = matrowcnt(ORr);
+        for (j=0;j<rwcnt2;j=j+1) begin
+          matrowget(ORr,j,ORrw);
+          if (ORrw.ArtCode==IVrw.ArtCode) then begin
+            if (ORrw.PlanCostVal!=blankval) then begin
+              planfifobrandcur = ORrw.PlanCostVal*qty;
+              brandcur = ORrw.PlanCostCur;
+              GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+              if (fr==0 or to1==0) then begin
+                fr = 1; to1 = 1;
+              end;
+              planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+              nopcppr = false;
+            end;
+            j = rwcnt2;
           end;
-          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
-          nopcppr = false;
         end;
       end;
       fifobase = fifobase*percent;
@@ -341,7 +350,8 @@ begin
   record ItemHistVc IHr;
   record SHVc SHr;
   record POVc POr;
-  record PLVc PLr;
+  record ItemStatusVc ISr;
+  record INVc INr;
   record BaseCurBlock bcur;
   row SHVc SHrw;
   row POVc POrw;
@@ -427,13 +437,23 @@ begin
         end;
       end;
     end;
-    if (!pofound) then begin
-      PLr.PLCode = "PCP";
-      PLr.ArtCode = ORrw.ArtCode;
+    if ((!pofound) or (planfifobase==0)) then begin
+      ISr.Code = ORrw.ArtCode;
+      ISr.Location = ";;;";
+      readfirstmain(ISr,2,true);
+      if (ISr.Instock>0) then begin
+        INr.Code = ORrw.ArtCode;
+        readfirstmain(INr,1,true);
+        planfifobase = INr.WeighedAvPrice * qty;
+        planfifobrandcur = INr.LastPurchPrice2 * qty;
+        brandcur = INr.LastPurchCurncyCode;
+       end;
+    end;
+    if (planfifobase==0) then begin
       nopcppr = true;
-      if (ReadFirstMain(PLr,2,true)) then begin
-        planfifobrandcur = PLr.ExVatPrice*ORrw.Quant;
-        brandcur = PLr.CurncyCode;
+      if (ORrw.PlanCostVal!=blankval) then begin
+        planfifobrandcur = ORrw.PlanCostVal*qty;
+        brandcur = ORrw.PlanCostCur;
         GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
         if (fr==0 or to1==0) then begin
           fr = 1; to1 = 1;
@@ -684,7 +704,7 @@ begin
       
       if (recivedmoneybase!=0) then begin
         recivedmoneybase = recivedmoneybase - gifted - giftsertpaym - loyaltypaym;
-        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment),IVr.TransDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
+        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym),IVr.InvDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
       end;
       
       
