@@ -166,7 +166,7 @@ begin
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
         if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
-          giftsertpaym = giftsertpaym + IVToBaseMy(IVr,IVrw,IVrw.Sum);
+          //giftsertpaym = giftsertpaym + IVToBaseMy(IVr,IVrw,IVrw.Sum);
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
       end;
@@ -415,27 +415,6 @@ begin
                   sumoborot = sumoborot + sumbase;
                 end;
               end;
-              if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
-                GCSr.SerNr = IVrw.GCNr;
-                readfirstmain(GCSr,1,true);
-                tIVr.SerNr = GCSr.InvSerNr;
-                readfirstmain(tIVr,1,true);
-                rwcnt2 = matrowcnt(tIVr);
-                giftf = false;
-                for (j=0;j<rwcnt2;j=j+1) begin
-                  matrowget(tIVr,j,tIVrw);
-                  if (tIVrw.PayMode=="G") then begin
-                    giftf = true;
-                    j = rwcnt2;
-                  end;
-                end;
-                if (!giftf) then begin
-                  Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1*percent;
-                  sumvozvrat = sumvozvrat - round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                end else begin
-                  sumoborot = sumoborot - round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                end;
-              end;
             end;
             if (Vozvrat[tstr & "naim"]!=0) then begin
               Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
@@ -559,27 +538,6 @@ begin
                             sumoborot = sumoborot + sumbase;
                           end;
                         end;
-                        if (IVrw.stp==kInvoiceRowTypeGiftVoucherPayment) then begin
-                          GCSr.SerNr = IVrw.GCNr;
-                          readfirstmain(GCSr,1,true);
-                          tIVr.SerNr = GCSr.InvSerNr;
-                          readfirstmain(tIVr,1,true);
-                          rwcnt2 = matrowcnt(tIVr);
-                          giftf = false;
-                          for (j=0;j<rwcnt2;j=j+1) begin
-                            matrowget(tIVr,j,tIVrw);
-                            if (tIVrw.PayMode=="G") then begin
-                              giftf = true;
-                              j = rwcnt2;
-                            end;
-                          end;
-                          if (!giftf) then begin
-                            Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + 1*percent;
-                            sumvozvrat = sumvozvrat - round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                          end else begin
-                            sumoborot = sumoborot - round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                          end;
-                        end;
                       end;
                       if (Vozvrat[tstr & "naim"]!=0) then begin
                         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
@@ -604,18 +562,10 @@ begin
               end;
             end;
           end;
-          
-          
-          
         end;
       end;
     end;
   end;
-  
-  
-  
-  
-  
   reportName = "DaysExcelRn";
 	if(windowsmode==1)then begin
 		fileToSave = "tmpxlsx.xlsx";
@@ -671,126 +621,121 @@ begin
         sheetnum = sheetnum + 1;
         SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
         BeginSheetData(sheetnum,fileToSave);
-        rownum = 1;
-        
-        colnum = 3;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 6;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Отчет за день",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-        EndRow(sheetnum,fileToSave,rownum);
-        rownum = rownum + 1;
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 5;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,LocName[LocArr[LAi]],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-        EndRow(sheetnum,fileToSave,rownum);
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 5;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,startdate & ":" & enddate,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-        EndRow(sheetnum,fileToSave,rownum);
-        rownum = rownum + 1;
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 17;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"День",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 12;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Оборот",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 13;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-          style = 14;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-          style = 12;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Возвраты",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 13;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-          style = 14;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-          style = 15;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Сумма",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-        EndRow(sheetnum,fileToSave,rownum);
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 18;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-          style = 2;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Приход",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 3;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. чеков",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 4;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. наим.",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 2;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Возврат",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 3;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. чеков",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 4;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. наим.",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-          style = 16;
-          qtyOfEmpStr = 1;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-        EndRow(sheetnum,fileToSave,rownum);
-        for (i=1;i<32;i=i+1) begin
-          tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";";
-          if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
-            colnum = 2;
-            BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-              style = 9;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,i);
-              style = 8;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
-              style = 10;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
-              style = 11;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
-              style = 8;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
-              style = 10;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
-              style = 11;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
-              style = 7;
-              NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
-            EndRow(sheetnum,fileToSave,rownum);
+          rownum = 1;
+          colnum = 3;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 6;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Отчет за день",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EndRow(sheetnum,fileToSave,rownum);
+          rownum = rownum + 1;
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 5;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,LocName[LocArr[LAi]],SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EndRow(sheetnum,fileToSave,rownum);
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 5;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,startdate & ":" & enddate,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EndRow(sheetnum,fileToSave,rownum);
+          rownum = rownum + 1;
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 17;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"День",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 12;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Оборот",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 13;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+            style = 14;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+            style = 12;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Возвраты",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 13;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+            style = 14;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+            style = 15;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Сумма",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EndRow(sheetnum,fileToSave,rownum);
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 18;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+            style = 2;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Приход",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 3;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. чеков",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 4;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. наим.",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 2;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Возврат",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 3;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. чеков",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 4;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"Кол. наим.",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+            style = 16;
+            qtyOfEmpStr = 1;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+          EndRow(sheetnum,fileToSave,rownum);
+          for (i=1;i<32;i=i+1) begin
+            tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";";
+            if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
+              colnum = 2;
+              BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+                style = 9;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,i);
+                style = 8;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
+                style = 10;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
+                style = 11;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
+                style = 8;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
+                style = 10;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
+                style = 11;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
+                style = 7;
+                NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
+              EndRow(sheetnum,fileToSave,rownum);
+            end;
           end;
-        end;
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 1;
-          qtyOfEmpStr = 8;
-          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
-        EndRow(sheetnum,fileToSave,rownum);
-        colnum = 2;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 5;
-          StringCell(sheetnum,fileToSave,colnum,rownum,style,"FOB36",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-        EndRow(sheetnum,fileToSave,rownum);
-        colnum = 3;
-        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-          style = 19;
-          tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";FOB36;";
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
-          style = 20;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
-          style = 21;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
-          style = 22;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
-          style = 21;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
-          style = 21;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
-          style = 23;
-          NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
-        EndRow(sheetnum,fileToSave,rownum);
-        
-        
-        
-        
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 1;
+            qtyOfEmpStr = 8;
+            EmptyCell(sheetnum,fileToSave,colnum,rownum,style,qtyOfEmpStr);
+          EndRow(sheetnum,fileToSave,rownum);
+          colnum = 2;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 5;
+            StringCell(sheetnum,fileToSave,colnum,rownum,style,"FOB36",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EndRow(sheetnum,fileToSave,rownum);
+          colnum = 3;
+          BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+            style = 19;
+            tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";FOB36;";
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"]);
+            style = 20;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "chek"]);
+            style = 21;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "naim"]);
+            style = 22;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "sum"]);
+            style = 21;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "chek"]);
+            style = 21;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Vozvrat[tstr & "naim"]);
+            style = 23;
+            NumericCell(sheetnum,fileToSave,colnum,rownum,style,Oborot[tstr & "sum"] + Vozvrat[tstr & "sum"]);
+          EndRow(sheetnum,fileToSave,rownum);
         EndSheetData(sheetnum,fileToSave);
         MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
         EndSheet(sheetnum,fileToSave,0);
