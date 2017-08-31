@@ -170,14 +170,6 @@ begin
           recivedmoneybase = recivedmoneybase + IVToBaseMy(IVr,IVrw,IVrw.Sum);
         end;
       end;
-      /*if (recivedmoneybase==0) then begin
-        PDr.Code = IVr.PayDeal;
-        if (readfirstmain(PDr,1,true)) then begin
-          if (PDr.PDType==kInvoiceTypeCash) then begin
-            recivedmoneybase = IVr.BaseSum4 - prepayment;
-          end;
-        end;
-      end;*/
       if ((currentcompany==9) and (IVr.PayDeal=="F")) then begin
         recivedmoneybase = 0;
       end;
