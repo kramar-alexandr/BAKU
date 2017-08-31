@@ -44,9 +44,8 @@ begin
   row PMBlock PMrw;
   row TRVc TRrw;
   row ORVc ORrw;
-  string 20 key;
   string 255 tstr,month,store;
-  integer keycnt,rwcnt,rwcnt2,rwcnt3,LAi,MAi,CAi,i,j,k;
+  integer rwcnt,rwcnt2,rwcnt3,LAi,MAi,CAi,i,j,k;
   val sumoborot,sumvozvrat,recivedmoneybase,prepayment,gifted,giftsertpaym,loyaltypaym,percent,printedrmb,
       sumbase,fr,to1,to2,br1,br2,printedprepval,rmbpart;
   vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc;
@@ -88,22 +87,14 @@ begin
     enddate = StringToDate("31/12/" & getyear(CurrentDate));
   end;
   IVr.InvDate = startdate;
-  if (nonblank(RepSpec.ObjStr)) then begin
-    IVr.Location = RepSpec.ObjStr;
-    key = "Location";
-    keycnt = 2;
-  end else begin
-    key = "InvDate";
-    keycnt = 1;
-  end;
   TrHs = true;
-  while (loopkey(key,IVr,keycnt,TrHs)) begin
+  while(loopkey("InvDate",IVr,1,TrHs))begin
     testf = true;
-    if (key=="Location") then begin
-      if (IVr.Location!=RepSpec.ObjStr) then begin TrHs = false; testf = false; end;
-      if (IVr.InvDate>enddate) then begin testf = false; end;
-    end else begin
-      if (IVr.InvDate>enddate) then begin TrHs = false; testf = false; end;
+    if (IVr.InvDate>enddate) then begin TrHs = false; testf = false; end;
+    if nonblank(RepSpec.ObjStr) then begin
+      store = "";
+      GetObjs("STORE",IVr.Objects,store);
+      if (RepSpec.ObjStr!=store) then begin testf = false; end;
     end;
     if (IVr.OKFlag==0) then begin testf = false; end;
     if (IVr.Invalid==1) then begin testf = false; end;
@@ -295,98 +286,190 @@ begin
           sumvozvrat = 0;
           sumoborot = 0;
           matrowget(IPr,i,IPrw);
-          if (currentcompany==9) then begin
-            store = "CS";
-            if (LocInArr[store]==false) then begin
-              LocInArr[store] = true;
-              LocArr[LAi] = store;
-              LAi = LAi + 1;
-              LocName[store] = "CreativeSystem";
-            end;
-          end else begin
+          if nonblank(RepSpec.ObjStr) then begin
             store = "";
             GetObjs("STORE",IPrw.Objects,store);
-            if (LocInArr[store]==false) then begin
-              LocInArr[store] = true;
-              LocArr[LAi] = store;
-              LAi = LAi + 1;
-              Locr.Code = store;
-              if (ReadFirstMain(Locr,1,true)) then begin
-                LocName[store] = Locr.Name;
-              end else begin
-                Objr.Code = store;
-                if (ReadFirstMain(Objr,1,true)) then begin
-                  LocName[store] = Objr.Comment;
+            if (RepSpec.ObjStr!=store) then begin testf = false; end;
+          end;
+          if (testf) then begin
+            if (currentcompany==9) then begin
+              store = "CS";
+              if (LocInArr[store]==false) then begin
+                LocInArr[store] = true;
+                LocArr[LAi] = store;
+                LAi = LAi + 1;
+                LocName[store] = "CreativeSystem";
+              end;
+            end else begin
+              store = "";
+              GetObjs("STORE",IPrw.Objects,store);
+              if (LocInArr[store]==false) then begin
+                LocInArr[store] = true;
+                LocArr[LAi] = store;
+                LAi = LAi + 1;
+                Locr.Code = store;
+                if (ReadFirstMain(Locr,1,true)) then begin
+                  LocName[store] = Locr.Name;
                 end else begin
-                  LocName[store] = store;
+                  Objr.Code = store;
+                  if (ReadFirstMain(Objr,1,true)) then begin
+                    LocName[store] = Objr.Comment;
+                  end else begin
+                    LocName[store] = store;
+                  end;
                 end;
               end;
             end;
-          end;
-          cnf = false;
-          month = getmonth(IPr.TransDate) & "_" & getyear(IPr.TransDate);
-          if (MonthInArr[month]==false) then begin
-            MonthInArr[month] = true;
-            MonthArr[MAi] = month;
-            MAi = MAi + 1;
-          end;
-          MonthLoc[month & ";" & store] = true;
-          TRr.Number = IPr.SerNr;
-          TRr.IntYc = IPYc;
-          if (ReadFirstMain(TRr,2,true)) then begin
-            fr = 1;
-            rwcnt2 = MatRowCnt(TRr);
-            for(j=0;j<rwcnt2;j=j+1) begin
-              MatRowGet(TRr,j,TRrw);
-              if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1)) then begin
-                to1 = TRrw.DebVal/TRrw.CurDebVal;
-                if (to1==0) then begin
-                  to1 = TRrw.CredVal/TRrw.CurCredVal;
+            cnf = false;
+            month = getmonth(IPr.TransDate) & "_" & getyear(IPr.TransDate);
+            if (MonthInArr[month]==false) then begin
+              MonthInArr[month] = true;
+              MonthArr[MAi] = month;
+              MAi = MAi + 1;
+            end;
+            MonthLoc[month & ";" & store] = true;
+            TRr.Number = IPr.SerNr;
+            TRr.IntYc = IPYc;
+            if (ReadFirstMain(TRr,2,true)) then begin
+              fr = 1;
+              rwcnt2 = MatRowCnt(TRr);
+              for(j=0;j<rwcnt2;j=j+1) begin
+                MatRowGet(TRr,j,TRrw);
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1)) then begin
+                  to1 = TRrw.DebVal/TRrw.CurDebVal;
+                  if (to1==0) then begin
+                    to1 = TRrw.CredVal/TRrw.CurCredVal;
+                  end;
+                  j = rwcnt2;
                 end;
-                j = rwcnt2;
               end;
+            end else begin
+              GetFullCurncyRate(IPrw.BankCurncy,IPr.TransDate,fr,to1,to2,br1,br2);
             end;
-          end else begin
-            GetFullCurncyRate(IPrw.BankCurncy,IPr.TransDate,fr,to1,to2,br1,br2);
-          end;
-          if (fr==0 or to1==0) then begin
-            fr = 1; to1 = 1;
-          end;
-          recivedmoneybase = MulRateToBase1(IPrw.BankCurncy,IPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
-          if (IPrw.InvoiceNr!=-1) then begin
-            IVr.SerNr = IPrw.InvoiceNr;
-            ReadFirstMain(IVr,1,true);
-            if (ConsultInArr[IVr.SalesMan]==false) then begin
-              ConsultInArr[IVr.SalesMan] = true;
-              ConsultArr[CAi] = IVr.SalesMan;
-              CAi = CAi + 1;
-              Userr.Code = IVr.SalesMan;
-              if (ReadFirstMain(Userr,1,true)) then begin
-                ConsultName[IVr.SalesMan] = Userr.Name;
-              end else begin
-                ConsultName[IVr.SalesMan] = IVr.SalesMan;
+            if (fr==0 or to1==0) then begin
+              fr = 1; to1 = 1;
+            end;
+            recivedmoneybase = MulRateToBase1(IPrw.BankCurncy,IPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+            if (IPrw.InvoiceNr!=-1) then begin
+              IVr.SerNr = IPrw.InvoiceNr;
+              ReadFirstMain(IVr,1,true);
+              if (ConsultInArr[IVr.SalesMan]==false) then begin
+                ConsultInArr[IVr.SalesMan] = true;
+                ConsultArr[CAi] = IVr.SalesMan;
+                CAi = CAi + 1;
+                Userr.Code = IVr.SalesMan;
+                if (ReadFirstMain(Userr,1,true)) then begin
+                  ConsultName[IVr.SalesMan] = Userr.Name;
+                end else begin
+                  ConsultName[IVr.SalesMan] = IVr.SalesMan;
+                end;
               end;
-            end;
-            tstr = store & ";" & month & ";" & IVr.SalesMan & ";";
-            if (IPrw.CustCode=="FOB36") then begin
-              tstr = store & ";" & month & ";FOB36;";
-            end;
-            percent = IPrw.RecVal/IVr.Sum4;
-            printedrmb = 0;
-            rwcnt2 = matrowcnt(IVr);
-            InvoiceRowTypeDownpaymentf = false;
-            for (j=0;j<rwcnt2;j=j+1) begin
-              matrowget(IVr,j,IVrw);
-              sumbase = 0;
-              if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
-                InvoiceRowTypeDownpaymentf = true;
-                ORr.SerNr = IVrw.Spec;
+              tstr = store & ";" & month & ";" & IVr.SalesMan & ";";
+              if (IPrw.CustCode=="FOB36") then begin
+                tstr = store & ";" & month & ";FOB36;";
+              end;
+              percent = IPrw.RecVal/IVr.Sum4;
+              printedrmb = 0;
+              rwcnt2 = matrowcnt(IVr);
+              InvoiceRowTypeDownpaymentf = false;
+              for (j=0;j<rwcnt2;j=j+1) begin
+                matrowget(IVr,j,IVrw);
+                sumbase = 0;
+                if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
+                  InvoiceRowTypeDownpaymentf = true;
+                  ORr.SerNr = IVrw.Spec;
+                  ReadFirstMain(ORr,1,true);
+                  printedrmb = 0;
+                  rwcnt3 = matrowcnt(ORr);
+                  for (k=0;k<rwcnt3;k=k+1) begin
+                    matrowget(ORr,k,ORrw);
+                    sumbase = 0;
+                    if (k==rwcnt3-1) then begin
+                      sumbase = recivedmoneybase - printedrmb;
+                    end else begin
+                      sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                      printedrmb = printedrmb + sumbase;
+                    end;
+                    Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
+                    sumoborot = sumoborot + sumbase;
+                  end;
+                  if (sumvozvrat!=0) then begin
+                    Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
+                    Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                  end;
+                  if (sumoborot!=0) then begin
+                    Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
+                    Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                  end;
+                  j = rwcnt2;
+                end;
+                if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+                  if (j==rwcnt2-1) then begin
+                    sumbase = recivedmoneybase - printedrmb;
+                  end else begin
+                    sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                    printedrmb = printedrmb + sumbase;
+                  end;
+                  if (IVrw.Quant<0) then begin
+                    Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] - IVrw.Quant*percent;
+                    sumvozvrat = sumvozvrat + sumbase;
+                  end else begin
+                    Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + IVrw.Quant*percent;
+                    sumoborot = sumoborot + sumbase;
+                  end;
+                end;
+                if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+                  giftf = false;
+                  for (j=0;j<rwcnt;j=j+1) begin
+                    matrowget(IVr,j,tIVrw);
+                    if (tIVrw.PayMode=="G") then begin
+                      giftf = true;
+                      j = rwcnt;
+                    end;
+                  end;
+                  if (!giftf) then begin
+                    if (i==rwcnt-1) then begin
+                      sumbase = recivedmoneybase - printedrmb;
+                    end else begin
+                      sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                      printedrmb = printedrmb + sumbase;
+                    end;
+                    Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1*percent;
+                    sumoborot = sumoborot + sumbase;
+                  end;
+                end;
+              end;
+              if (sumvozvrat!=0) then begin
+                Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
+                Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+              end;
+              if (sumoborot!=0) then begin
+                Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
+                Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+              end;
+            end else begin
+              if (IPrw.OrderNr!=-1) then begin
+                ORr.SerNr = IPrw.OrderNr;
                 ReadFirstMain(ORr,1,true);
+                if (ConsultInArr[ORr.SalesMan]==false) then begin
+                  ConsultInArr[ORr.SalesMan] = true;
+                  ConsultArr[CAi] = ORr.SalesMan;
+                  CAi = CAi + 1;
+                  Userr.Code = ORr.SalesMan;
+                  if (ReadFirstMain(Userr,1,true)) then begin
+                    ConsultName[ORr.SalesMan] = Userr.Name;
+                  end else begin
+                    ConsultName[ORr.SalesMan] = ORr.SalesMan;
+                  end;
+                end;
+                tstr = store & ";" & month & ";" & ORr.SalesMan & ";";
+                if (IPrw.CustCode=="FOB36") then begin
+                  tstr = store & ";" & month & ";FOB36;";
+                end;
                 printedrmb = 0;
                 rwcnt3 = matrowcnt(ORr);
                 for (k=0;k<rwcnt3;k=k+1) begin
                   matrowget(ORr,k,ORrw);
-                  sumbase = 0;
                   if (k==rwcnt3-1) then begin
                     sumbase = recivedmoneybase - printedrmb;
                   end else begin
@@ -404,226 +487,141 @@ begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
                 end;
-                j = rwcnt2;
-              end;
-              if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-                if (j==rwcnt2-1) then begin
-                  sumbase = recivedmoneybase - printedrmb;
-                end else begin
-                  sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                  printedrmb = printedrmb + sumbase;
-                end;
-                if (IVrw.Quant<0) then begin
-                  Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] - IVrw.Quant*percent;
-                  sumvozvrat = sumvozvrat + sumbase;
-                end else begin
-                  Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + IVrw.Quant*percent;
-                  sumoborot = sumoborot + sumbase;
-                end;
-              end;
-              if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
-                giftf = false;
-                for (j=0;j<rwcnt;j=j+1) begin
-                  matrowget(IVr,j,tIVrw);
-                  if (tIVrw.PayMode=="G") then begin
-                    giftf = true;
-                    j = rwcnt;
-                  end;
-                end;
-                if (!giftf) then begin
-                  if (i==rwcnt-1) then begin
-                    sumbase = recivedmoneybase - printedrmb;
-                  end else begin
-                    sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                    printedrmb = printedrmb + sumbase;
-                  end;
-                  Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1*percent;
-                  sumoborot = sumoborot + sumbase;
-                end;
-              end;
-            end;
-            if (sumvozvrat!=0) then begin
-              Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
-              Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-            end;
-            if (sumoborot!=0) then begin
-              Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
-              Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-            end;
-          end else begin
-            if (IPrw.OrderNr!=-1) then begin
-              ORr.SerNr = IPrw.OrderNr;
-              ReadFirstMain(ORr,1,true);
-              if (ConsultInArr[ORr.SalesMan]==false) then begin
-                ConsultInArr[ORr.SalesMan] = true;
-                ConsultArr[CAi] = ORr.SalesMan;
-                CAi = CAi + 1;
-                Userr.Code = ORr.SalesMan;
-                if (ReadFirstMain(Userr,1,true)) then begin
-                  ConsultName[ORr.SalesMan] = Userr.Name;
-                end else begin
-                  ConsultName[ORr.SalesMan] = ORr.SalesMan;
-                end;
-              end;
-              tstr = store & ";" & month & ";" & ORr.SalesMan & ";";
-              if (IPrw.CustCode=="FOB36") then begin
-                tstr = store & ";" & month & ";FOB36;";
-              end;
-              printedrmb = 0;
-              rwcnt3 = matrowcnt(ORr);
-              for (k=0;k<rwcnt3;k=k+1) begin
-                matrowget(ORr,k,ORrw);
-                if (k==rwcnt3-1) then begin
-                  sumbase = recivedmoneybase - printedrmb;
-                end else begin
-                  sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                  printedrmb = printedrmb + sumbase;
-                end;
-                Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
-                sumoborot = sumoborot + sumbase;
-              end;
-              if (sumvozvrat!=0) then begin
-                Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
-                Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-              end;
-              if (sumoborot!=0) then begin
-                Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
-                Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-              end;
-            end else begin
-              if (IPrw.CUPNr!=-1) then begin
-                if (recivedmoneybase>0) then begin
-                  ARPayHistr.FileName = "IVVc";
-                  ARPayHistr.CUPNr = IPrw.CUPNr;
-                  TrHs2 = true;
-                  resetloop(ARPayHistr);
-                  printedprepval = 0;
-                  while (loopmain(ARPayHistr,2,TrHs2)) begin
-                    if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
-                    if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
-                    if (TrHs2) then begin
-                      rmbpart = ARPayHistr.BookVal;
-                      IVr.SerNr = ARPayHistr.SerNr;
-                      ReadFirstMain(IVr,1,true);
-                      if (ConsultInArr[IVr.SalesMan]==false) then begin
-                        ConsultInArr[IVr.SalesMan] = true;
-                        ConsultArr[CAi] = IVr.SalesMan;
-                        CAi = CAi + 1;
-                        Userr.Code = IVr.SalesMan;
-                        if (ReadFirstMain(Userr,1,true)) then begin
-                          ConsultName[IVr.SalesMan] = Userr.Name;
-                        end else begin
-                          ConsultName[IVr.SalesMan] = IVr.SalesMan;
-                        end;
-                      end;
-                      tstr = store & ";" & month & ";" & IVr.SalesMan & ";";
-                      if (IPrw.CustCode=="FOB36") then begin
-                        tstr = store & ";" & month & ";FOB36;";
-                      end;
-                      percent = rmbpart/IVr.BaseSum4;
-                      printedrmb = 0;
-                      rwcnt2 = matrowcnt(IVr);
-                      InvoiceRowTypeDownpaymentf = false;
-                      for (j=0;j<rwcnt2;j=j+1) begin
-                        matrowget(IVr,j,IVrw);
-                        sumbase = 0;
-                        if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
-                          InvoiceRowTypeDownpaymentf = true;
-                          ORr.SerNr = IVrw.Spec;
-                          ReadFirstMain(ORr,1,true);
-                          printedrmb = 0;
-                          rwcnt3 = matrowcnt(ORr);
-                          for (k=0;k<rwcnt3;k=k+1) begin
-                            matrowget(ORr,k,ORrw);
-                            sumbase = 0;
-                            if (k==rwcnt3-1) then begin
-                              sumbase = recivedmoneybase - printedrmb;
-                            end else begin
-                              sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                              printedrmb = printedrmb + sumbase;
-                            end;
-                            Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
-                            sumoborot = sumoborot + sumbase;
-                          end;
-                          if (sumvozvrat!=0) then begin
-                            Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
-                            Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                          end;
-                          if (sumoborot!=0) then begin
-                            Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
-                            Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                          end;
-                          j = rwcnt2;
-                        end;
-                        if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-                          if (j==rwcnt2-1) then begin
-                            sumbase = recivedmoneybase - printedrmb;
+              end else begin
+                if (IPrw.CUPNr!=-1) then begin
+                  if (recivedmoneybase>0) then begin
+                    ARPayHistr.FileName = "IVVc";
+                    ARPayHistr.CUPNr = IPrw.CUPNr;
+                    TrHs2 = true;
+                    resetloop(ARPayHistr);
+                    printedprepval = 0;
+                    while (loopmain(ARPayHistr,2,TrHs2)) begin
+                      if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
+                      if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
+                      if (TrHs2) then begin
+                        rmbpart = ARPayHistr.BookVal;
+                        IVr.SerNr = ARPayHistr.SerNr;
+                        ReadFirstMain(IVr,1,true);
+                        if (ConsultInArr[IVr.SalesMan]==false) then begin
+                          ConsultInArr[IVr.SalesMan] = true;
+                          ConsultArr[CAi] = IVr.SalesMan;
+                          CAi = CAi + 1;
+                          Userr.Code = IVr.SalesMan;
+                          if (ReadFirstMain(Userr,1,true)) then begin
+                            ConsultName[IVr.SalesMan] = Userr.Name;
                           end else begin
-                            sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
-                            printedrmb = printedrmb + sumbase;
+                            ConsultName[IVr.SalesMan] = IVr.SalesMan;
                           end;
-                          if (cnf) then begin
-                            Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + IVrw.Quant*percent;
-                          end else begin
-                            if (IVrw.Quant<0) then begin
-                              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] - IVrw.Quant*percent;
-                              sumvozvrat = sumvozvrat + sumbase;
-                            end else begin
-                              Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + IVrw.Quant*percent;
+                        end;
+                        tstr = store & ";" & month & ";" & IVr.SalesMan & ";";
+                        if (IPrw.CustCode=="FOB36") then begin
+                          tstr = store & ";" & month & ";FOB36;";
+                        end;
+                        percent = rmbpart/IVr.BaseSum4;
+                        printedrmb = 0;
+                        rwcnt2 = matrowcnt(IVr);
+                        InvoiceRowTypeDownpaymentf = false;
+                        for (j=0;j<rwcnt2;j=j+1) begin
+                          matrowget(IVr,j,IVrw);
+                          sumbase = 0;
+                          if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
+                            InvoiceRowTypeDownpaymentf = true;
+                            ORr.SerNr = IVrw.Spec;
+                            ReadFirstMain(ORr,1,true);
+                            printedrmb = 0;
+                            rwcnt3 = matrowcnt(ORr);
+                            for (k=0;k<rwcnt3;k=k+1) begin
+                              matrowget(ORr,k,ORrw);
+                              sumbase = 0;
+                              if (k==rwcnt3-1) then begin
+                                sumbase = recivedmoneybase - printedrmb;
+                              end else begin
+                                sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                printedrmb = printedrmb + sumbase;
+                              end;
+                              Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
                               sumoborot = sumoborot + sumbase;
                             end;
-                          end;
-                        end;
-                        if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
-                          giftf = false;
-                          for (j=0;j<rwcnt;j=j+1) begin
-                            matrowget(IVr,j,tIVrw);
-                            if (tIVrw.PayMode=="G") then begin
-                              giftf = true;
-                              j = rwcnt;
+                            if (sumvozvrat!=0) then begin
+                              Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
+                              Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
                             end;
+                            if (sumoborot!=0) then begin
+                              Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
+                              Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                            end;
+                            j = rwcnt2;
                           end;
-                          if (!giftf) then begin
-                            if (i==rwcnt-1) then begin
+                          if (IVrw.stp==kInvoiceRowTypeNormal) then begin
+                            if (j==rwcnt2-1) then begin
                               sumbase = recivedmoneybase - printedrmb;
                             end else begin
                               sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
                               printedrmb = printedrmb + sumbase;
                             end;
-                            Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1*percent;
-                            sumoborot = sumoborot + sumbase;
+                            if (cnf) then begin
+                              Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] + IVrw.Quant*percent;
+                            end else begin
+                              if (IVrw.Quant<0) then begin
+                                Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] - IVrw.Quant*percent;
+                                sumvozvrat = sumvozvrat + sumbase;
+                              end else begin
+                                Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + IVrw.Quant*percent;
+                                sumoborot = sumoborot + sumbase;
+                              end;
+                            end;
+                          end;
+                          if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+                            giftf = false;
+                            for (j=0;j<rwcnt;j=j+1) begin
+                              matrowget(IVr,j,tIVrw);
+                              if (tIVrw.PayMode=="G") then begin
+                                giftf = true;
+                                j = rwcnt;
+                              end;
+                            end;
+                            if (!giftf) then begin
+                              if (i==rwcnt-1) then begin
+                                sumbase = recivedmoneybase - printedrmb;
+                              end else begin
+                                sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                printedrmb = printedrmb + sumbase;
+                              end;
+                              Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1*percent;
+                              sumoborot = sumoborot + sumbase;
+                            end;
                           end;
                         end;
+                        if (sumvozvrat!=0) then begin
+                          Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
+                          Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                        end;
+                        if (sumoborot!=0) then begin
+                          Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
+                          Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                        end;
+                        printedprepval = printedprepval + rmbpart;
                       end;
-                      if (sumvozvrat!=0) then begin
-                        Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
-                        Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                      end;
-                      if (sumoborot!=0) then begin
-                        Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
-                        Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                      end;
-                      printedprepval = printedprepval + rmbpart;
                     end;
                   end;
-                end;
-                if (AbsoluteVal(recivedmoneybase)>AbsoluteVal(printedprepval)) then begin
-                  if (IPrw.CustCode=="FOB36") then begin
-                    tstr = store & ";" & month & ";FOB36;";
-                  end else begin
-                  tstr = store & ";" & month & ";STORE;";
-                    if (ConsultInArr["STORE"]==false) then begin
-                      ConsultInArr["STORE"] = true;
-                      ConsultArr[CAi] = "STORE";
-                      CAi = CAi + 1;
-                      ConsultName["STORE"] = "STORE";
+                  if (AbsoluteVal(recivedmoneybase)>AbsoluteVal(printedprepval)) then begin
+                    if (IPrw.CustCode=="FOB36") then begin
+                      tstr = store & ";" & month & ";FOB36;";
+                    end else begin
+                    tstr = store & ";" & month & ";STORE;";
+                      if (ConsultInArr["STORE"]==false) then begin
+                        ConsultInArr["STORE"] = true;
+                        ConsultArr[CAi] = "STORE";
+                        CAi = CAi + 1;
+                        ConsultName["STORE"] = "STORE";
+                      end;
                     end;
-                  end;
-                  sumbase = recivedmoneybase - printedprepval;
-                  if (sumbase>0) then begin
-                    Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
-                  end else begin
-                    Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
+                    sumbase = recivedmoneybase - printedprepval;
+                    if (sumbase>0) then begin
+                      Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
+                    end else begin
+                      Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
+                    end;
                   end;
                 end;
               end;
