@@ -85,6 +85,16 @@ begin
     if (IVr.Invalid==1) then begin testf = false; end;
     //if (IVr.CustCode=="FOB36") then begin testf = false; end;
     if (testf) then begin
+      rwcnt = matrowcnt(IVr);
+      for (i=0;i<rwcnt;i=i+1) begin
+        matrowget(IVr,i,IVrw);
+        if (IVrw.stp==kInvoiceRowTypeDownpayment) then begin
+          i = rwcnt;
+          testf = false;
+        end;
+      end;
+    end;
+    if (testf) then begin
       if (currentcompany==9) then begin
         store = "CS";
         if (LocInArr[store]==false) then begin
@@ -405,13 +415,15 @@ begin
                   end;
                 end;
               end;
-              if (Vozvrat[tstr & "naim"]!=0) then begin
-                Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
-                Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-              end;
-              if (Oborot[tstr & "naim"]!=0) then begin
-                Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
-                Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+              if (!InvoiceRowTypeDownpaymentf) then begin
+                if (Vozvrat[tstr & "naim"]!=0) then begin
+                  Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
+                  Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                end;
+                if (Oborot[tstr & "naim"]!=0) then begin
+                  Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
+                  Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                end;
               end;
             end else begin
               if (IPrw.OrderNr!=-1) then begin
