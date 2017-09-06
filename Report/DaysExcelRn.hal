@@ -243,11 +243,11 @@ begin
         end;
         if (cnf) then begin
         end else begin
-          if (Vozvrat[tstr & "naim"]!=0) then begin
+          if (sumvozvrat!=0) then begin
             Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
             Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
           end;
-          if (Oborot[tstr & "naim"]!=0) then begin
+          if (sumoborot!=0) then begin
             Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
             Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
           end;
@@ -442,11 +442,11 @@ begin
                   Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
                   sumoborot = sumoborot + sumbase;
                 end;
-                if (Vozvrat[tstr & "naim"]!=0) then begin
+                if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
                 end;
-                if (Oborot[tstr & "naim"]!=0) then begin
+                if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
                 end;
@@ -490,11 +490,11 @@ begin
                               Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
                               sumoborot = sumoborot + sumbase;
                             end;
-                            if (Vozvrat[tstr & "naim"]!=0) then begin
+                            if (sumvozvrat!=0) then begin
                               Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                               Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
                             end;
-                            if (Oborot[tstr & "naim"]!=0) then begin
+                            if (sumoborot!=0) then begin
                               Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                               Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
                             end;
@@ -540,11 +540,11 @@ begin
                             end;
                           end;
                         end;
-                        if (Vozvrat[tstr & "naim"]!=0) then begin
+                        if (sumvozvrat!=0) then begin
                           Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                           Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
                         end;
-                        if (Oborot[tstr & "naim"]!=0) then begin
+                        if (sumoborot!=0) then begin
                           Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                           Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
                         end;
