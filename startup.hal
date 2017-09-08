@@ -827,6 +827,8 @@ begin
 	StrSetText(AllowPOSerNrChange,"Изменение номера заказа поставщику");
 	StrSetText(AllowQTSerNrChange,"Изменение номера коммерческого предложения");
 	StrSetText(AllowCUSerNrChange,"Изменение номера контракта");
+	StrSetText(AllowOperateAllForBlockedCustomer,"Позволять работать с закрытим клиентом для всех документов"); //Edit***************************Sasha2,11:25 08.09.2017
+	StrSetText(AllowOperateSHForBlockedCustomer,"Позволять работать с закрытим клиентом для Отгрузок"); //Edit***************************Sasha2,11:25 08.09.2017
 	StrSetText(AllowORSerNrChange,"Изменение номера счета клиенту");
 	StrSetText(AllowRestAccSerNrChange,"Изменение номера счета ресторана");
 	StrSetText(AllowIVSerNrChange,"Изменение номера счета-фактуры");
