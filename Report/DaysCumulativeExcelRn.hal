@@ -630,8 +630,6 @@ begin
                       end;
                     end;
                     sumbase = recivedmoneybase - printedprepval;
-                    messagebox(0,"recivedmoneybase" & recivedmoneybase);
-                    messagebox(0,"printedprepval" & printedprepval);
                     if (sumbase>0) then begin
                       Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
                     end else begin
