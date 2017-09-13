@@ -64,7 +64,7 @@ begin
   array integer lvlArray;
   
   setexportcodepage("UTF8");
-  
+    
   Userr.Code = "";
   TrHs = true;
   while (LoopMain(Userr,1,TrHs)) begin
@@ -289,6 +289,7 @@ begin
     if (IPr.OKFlag==0) then begin testf = false; end;
     if (testf) then begin
       recivedmoneybase = 0;
+      printedprepval = 0;// Edit ************************** Wednesday, 13 September 2017 13:51:40
       GetPMRow(IPr.PayMode,PMrw);
       if (left(PMrw.AccNr,1)=="5") then begin
         rwcnt = matrowcnt(IPr);
@@ -629,6 +630,8 @@ begin
                       end;
                     end;
                     sumbase = recivedmoneybase - printedprepval;
+                    messagebox(0,"recivedmoneybase" & recivedmoneybase);
+                    messagebox(0,"printedprepval" & printedprepval);
                     if (sumbase>0) then begin
                       Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
                     end else begin

@@ -266,6 +266,7 @@ begin
     if (IPr.OKFlag==0) then begin testf = false; end;
     if (testf) then begin
       recivedmoneybase = 0;
+      printedprepval = 0;// Edit ************************** Wednesday, 13 September 2017 13:53:11
       GetPMRow(IPr.PayMode,PMrw);
       if (left(PMrw.AccNr,1)=="5") then begin
         rwcnt = matrowcnt(IPr);
