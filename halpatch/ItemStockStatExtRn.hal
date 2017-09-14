@@ -164,7 +164,7 @@ return;
 end;
 
 
-global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur,string brandcur)
+global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur,string brandcur,var val curcost2)
 begin
 	record ItemHistVc IHr,IH2r;
 	record PUVc PUr;
@@ -181,6 +181,7 @@ begin
 	
 	if(todate>=currentdate)then begin
 		curcost = 0;
+		curcost2 = 0;
 		curqty = 0;
 		IHr.ArtCode = artcode;
 		IHr.Location = location;
@@ -195,8 +196,9 @@ begin
 			
 			if(testf)then begin
 				tempcost = 0;
+				curcost = curcost + IHr.RemCostPriceCurncy;
 				if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-					curcost = curcost + IHr.RemCostPriceCurncy;
+					curcost2 = curcost2 + IHr.RemCostPriceCurncy;
 				end else begin
 					if(IHr.CurncyCode=="AZN")then begin
 						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
@@ -204,7 +206,7 @@ begin
 							fr=1; to1=1;
 						end;
 						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-						curcost = curcost + tempcost;
+						curcost2 = curcost2 + tempcost;
 					end else begin
 						GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
 						if(fr==0 or to1==0)then begin
@@ -216,15 +218,17 @@ begin
 							fr=1; to1=1;
 						end;
 						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-						curcost = curcost + tempcost;
+						curcost2 = curcost2 + tempcost;
 					end;
 				end;
 				curqty = curqty + IHr.RemQty;
 			end;
 		end;
 		curcost = curcost/curqty;
+		curcost2 = curcost2/curqty;
 	end else begin
 		curcost = 0;
+		curcost2 = 0;
 		curqty = 0;
 		tempcost = 0;
 		IHr.ArtCode = artcode;
@@ -241,34 +245,9 @@ begin
 			if(testf)then begin
 				tempcost = 0;
 				if(IHr.Qty>=0)then begin
-					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
 					curcost = curcost + IHr.RemCostPriceCurncy;
-				end else begin
-					if(IHr.CurncyCode=="AZN")then begin
-						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-						curcost = curcost + tempcost;
-					end else begin
-						GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = IHr.RemCostPriceCurncy * to1 / fr;
-						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-						curcost = curcost + tempcost;
-					end;
-				end;
-				end else begin
-					tempcost = 0;
 					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-						curcost = curcost - IHr.RemCostPriceCurncy;
+						curcost2 = curcost2 + IHr.RemCostPriceCurncy;
 					end else begin
 						if(IHr.CurncyCode=="AZN")then begin
 							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
@@ -276,7 +255,7 @@ begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-							curcost = curcost - tempcost;
+							curcost2 = curcost2 + tempcost;
 						end else begin
 							GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
 							if(fr==0 or to1==0)then begin
@@ -288,7 +267,34 @@ begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-							curcost = curcost - tempcost;
+							curcost2 = curcost2 + tempcost;
+						end;
+					end;
+				end else begin
+					tempcost = 0;
+					curcost = curcost - IHr.RemCostPriceCurncy;
+					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
+						curcost2 = curcost2 - IHr.RemCostPriceCurncy;
+					end else begin
+						if(IHr.CurncyCode=="AZN")then begin
+							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							curcost2 = curcost2 - tempcost;
+						end else begin
+							GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							curcost2 = curcost2 - tempcost;
 						end;
 					end;
 				end;
@@ -296,6 +302,7 @@ begin
 			end;
 		end;
 		curcost = curcost/curqty;
+		curcost2 = curcost2/curqty;
 	end;
 	
 	FindAwerageCostCur = curcost;
@@ -372,9 +379,9 @@ begin
 	integer pos,cnt,i,pos1;
   string 50 uloc,pricecur,uloc1;
   val fr,to1,to2,br1,br2;
-  val baseprice,cur,price,baseprice5;
+  val baseprice,cur,price,baseprice5,brandprice;
   record INConsVc INCr;
-	val instock,awercost,awercostcur;
+	val instock,awercost,awercostcur,awercostbrandcur,curcost2;
 	record PLDefVc PLDefr;
 	record ItemHistVc IHr;
 	record PUVc PUr;
@@ -600,11 +607,10 @@ begin
 		
 		awercost = 0;
 		awercostcur = 0;
+		awercostbrandcur = 0;
 		awercost = FindAwerageCost(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
-		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur);
-		if(nonblank(brandcur))then begin
-			INr.LastPurchCurncyCode = brandcur;
-		end;
+		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur,curcost2);
+		awercostbrandcur = curcost2;
 		if(costprice>0 and nonblank(serial) and INr.SerNrf>0)then begin
 			awercost = costprice;
 			IHr.ArtCode = INr.Code;
@@ -628,13 +634,21 @@ begin
 		end;
 		if(usercanaction("ViewCostPrice",true))then begin
 			outstring(0,0,awercostcur,false);
+			if(nonblank(brandcur))then begin
+				outstring(0,0,awercostbrandcur,false);
+			end;
 			outstring(0,0,awercost,false);
 			outstring(0,0,awercostcur*instock,false);
+			if(nonblank(brandcur))then begin
+				outstring(0,0,awercostbrandcur*instock,false);
+			end;
 			outstring(0,0,awercost*instock,false);
+			
 		end;
 		total_cost = total_cost + awercost*instock;
 		
 		baseprice = 0;
+		brandprice = 0;
 		PLr.ArtCode = ISr.Code;
 		PLr.PLCode = "RRP";
 		PLr.CustCode = "";
@@ -702,10 +716,27 @@ begin
 			end;	
 		end;
 		
+		if(nonblank(brandcur))then begin
+			GetFullCurncyRate(brandcur,todate,fr,to1,to2,br1,br2);
+			if(fr==0 or to1==0)then begin
+				GetFullCurncyRate(brandcur,currentdate,fr,to1,to2,br1,br2);
+				if(fr==0 or to1==0)then begin
+					fr=1; to1=1;
+				end;
+			end;
+			brandprice = baseprice / to1 * fr;
+		end; 
+		
 		outval(0,0,price,m4val,false);
+		if(nonblank(brandcur))then begin
+			outval(0,0,brandprice,m4val,false);
+		end;
 		outval(0,0,baseprice5,m4val,false);
 		//outstring(0,0,baseprice,false);
 		outstring(0,0,price*instock,false);
+		if(nonblank(brandcur))then begin
+			outval(0,0,brandprice*instock,m4val,false);
+		end;
 		outstring(0,0,baseprice*instock,false);
 		total_price = total_price + baseprice*instock;
 		outstring(0,0,INr.LastPurchCurncyCode,false);
@@ -1236,14 +1267,28 @@ begin
 			if(currentcompany!=10)then begin
 				if(usercanaction("ViewCostPrice",true))then begin
 					outstring(0,0,USetStr(31053),false);
+					if(nonblank(brandcur))then begin
+						outstring(0,0,USetStr(31055) & brandcur,false);
+					end;
 					outstring(0,0,USetStr(31055) & basecur,false);
 					outstring(0,0,USetStr(31056),false);
+					if(nonblank(brandcur))then begin
+						outstring(0,0,USetStr(31058) & brandcur,false);
+					end;
 					outstring(0,0,USetStr(31058) & basecur,false);
+					
 				end;
 				outstring(0,0,USetStr(31059),false);
+				if(nonblank(brandcur))then begin
+					outstring(0,0,USetStr(31064) & brandcur,false);
+				end;
 				outstring(0,0,USetStr(31061) & basecur,false);
 				outstring(0,0,USetStr(31062),false);
+				if(nonblank(brandcur))then begin
+					outstring(0,0,USetStr(31064) & brandcur,false);
+				end;
 				outstring(0,0,USetStr(31064) & basecur,false);
+				
 			end else begin
 				outstring(0,0,USetStr(31053),false);
 				outstring(0,0,USetStr(31171),false);
