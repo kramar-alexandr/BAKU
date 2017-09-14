@@ -299,6 +299,7 @@ begin
         for (i=0;i<rwcnt;i=i+1) begin
           sumvozvrat = 0;
           sumoborot = 0;
+          sumbase = 0;
           matrowget(IPr,i,IPrw);
           if nonblank(RepSpec.ObjStr) then begin
             store = "";
@@ -386,6 +387,24 @@ begin
               printedrmb = 0;
               rwcnt2 = matrowcnt(IVr);
               InvoiceRowTypeDownpaymentf = false;
+              // Edit Start ---------------------------------------------- Edit Start
+	//Thursday, 14 September 2017 15:16:35
+	
+              if(recivedmoneybase<0)then begin// Edit ************************** Thursday, 14 September 2017 15:15:38
+              	for (j=0;j<rwcnt2;j=j+1) begin
+              		matrowget(IVr,j,IVrw);
+									if(IVrw.stp==kInvoiceRowTypeDownpayment)then begin
+										sumbase = recivedmoneybase;
+										sumvozvrat = sumvozvrat + sumbase;
+										Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
+										InvoiceRowTypeDownpaymentf = true;
+										goto LDownpaymentFoundRet;
+									end;
+              	end;
+              end;
+              
+	// Edit End ---------------------------------------------- Edit End
+	
               for (j=0;j<rwcnt2;j=j+1) begin
                 matrowget(IVr,j,IVrw);
                 sumbase = 0;
@@ -453,6 +472,8 @@ begin
                   end;
                 end;
               end;
+LDownpaymentFoundRet:;
+         			messagebox(0,sumoborot);
               if (!InvoiceRowTypeDownpaymentf) then begin
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;

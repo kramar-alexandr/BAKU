@@ -217,7 +217,7 @@ begin
 						if(fr==0 or to1==0)then begin
 							fr=1; to1=1;
 						end;
-						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+						tempcost = tempcost / to1 * fr;
 						curcost2 = curcost2 + tempcost;
 					end;
 				end;
@@ -250,23 +250,35 @@ begin
 						curcost2 = curcost2 + IHr.RemCostPriceCurncy;
 					end else begin
 						if(IHr.CurncyCode=="AZN")then begin
-							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
 							curcost2 = curcost2 + tempcost;
 						end else begin
-							GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(IHr.CurncyCode,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
-							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							tempcost = tempcost / to1 * fr;
 							curcost2 = curcost2 + tempcost;
 						end;
 					end;
@@ -277,23 +289,35 @@ begin
 						curcost2 = curcost2 - IHr.RemCostPriceCurncy;
 					end else begin
 						if(IHr.CurncyCode=="AZN")then begin
-							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
 							curcost2 = curcost2 - tempcost;
 						end else begin
-							GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(IHr.CurncyCode,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
 							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
-							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(nonblankdate(IHr.InDate))then begin
+								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
+							end else begin
+								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							end;
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							tempcost = tempcost / to1 * fr;
 							curcost2 = curcost2 - tempcost;
 						end;
 					end;
