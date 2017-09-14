@@ -164,12 +164,12 @@ return;
 end;
 
 
-global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur,string brandcur,var val curcost2)
+procedure FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur,string brandcur,var val curcost,var val curcost2)
 begin
 	record ItemHistVc IHr,IH2r;
 	record PUVc PUr;
 	row PUVc PUrw;
-	val curcost,curval;
+	val curval;
 	boolean TrHs,testf;
 	longint lastsernr;
 	val fr,to1,to2,br1,br2;
@@ -305,7 +305,6 @@ begin
 		curcost2 = curcost2/curqty;
 	end;
 	
-	FindAwerageCostCur = curcost;
 return;
 end;
 
@@ -381,7 +380,7 @@ begin
   val fr,to1,to2,br1,br2;
   val baseprice,cur,price,baseprice5,brandprice;
   record INConsVc INCr;
-	val instock,awercost,awercostcur,awercostbrandcur,curcost2;
+	val instock,awercost,awercostcur,awercostbrandcur,curcost2,curcost;
 	record PLDefVc PLDefr;
 	record ItemHistVc IHr;
 	record PUVc PUr;
@@ -609,7 +608,8 @@ begin
 		awercostcur = 0;
 		awercostbrandcur = 0;
 		awercost = FindAwerageCost(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
-		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur,curcost2);
+		FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur,curcost,curcost2);
+		awercostcur = curcost;
 		awercostbrandcur = curcost2;
 		if(costprice>0 and nonblank(serial) and INr.SerNrf>0)then begin
 			awercost = costprice;
@@ -1280,7 +1280,7 @@ begin
 				end;
 				outstring(0,0,USetStr(31059),false);
 				if(nonblank(brandcur))then begin
-					outstring(0,0,USetStr(31064) & brandcur,false);
+					outstring(0,0,USetStr(31061) & brandcur,false);
 				end;
 				outstring(0,0,USetStr(31061) & basecur,false);
 				outstring(0,0,USetStr(31062),false);
