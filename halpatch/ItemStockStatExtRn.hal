@@ -9,7 +9,7 @@ remote function boolean CompanyIsJWLikeCompany(Integer);
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
 
-function val ItemQtyPerDate(string artcode, date idate,string location,string serial,var val serialcost,var integer acnt,var vector val cqty,var vector val ccost,var array string acur)
+function val ItemQtyPerDate(string artcode, date idate,string location,string serial,var val serialcost,var integer acnt,var vector val cqty,var vector val ccost,var array string acur,string brandcur)
 begin
 	record ItemHistVc IHr;
 	val res;
@@ -164,7 +164,7 @@ return;
 end;
 
 
-global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur)
+global function val FindAwerageCostCur(string artcode, string location,string curcode,date todate,string realcur,string brandcur)
 begin
 	record ItemHistVc IHr,IH2r;
 	record PUVc PUr;
@@ -176,7 +176,7 @@ begin
 	string 100 oldartcode,oldfilename;
 	longint oldsernr;
   integer oldrow,oldinvalid;
-  val curqty;
+  val curqty,tempcost;
 	
 	
 	if(todate>=currentdate)then begin
@@ -194,7 +194,31 @@ begin
 			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
 			
 			if(testf)then begin
-				curcost = curcost + IHr.RemCostPriceCurncy;
+				tempcost = 0;
+				if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
+					curcost = curcost + IHr.RemCostPriceCurncy;
+				end else begin
+					if(IHr.CurncyCode=="AZN")then begin
+						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+						curcost = curcost + tempcost;
+					end else begin
+						GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+						curcost = curcost + tempcost;
+					end;
+				end;
 				curqty = curqty + IHr.RemQty;
 			end;
 		end;
@@ -202,6 +226,7 @@ begin
 	end else begin
 		curcost = 0;
 		curqty = 0;
+		tempcost = 0;
 		IHr.ArtCode = artcode;
 		IHr.Location = location;
 		TrHs = true;
@@ -214,10 +239,58 @@ begin
 			if(blank(IHr.CurncyCode) and curcode!=realcur)then begin testf=false; end;
 			
 			if(testf)then begin
+				tempcost = 0;
 				if(IHr.Qty>=0)then begin
-					curcost = curcost + IHr.TotCostPriceCurncy;
+					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
+					curcost = curcost + IHr.RemCostPriceCurncy;
 				end else begin
-					curcost = curcost - IHr.TotCostPriceCurncy;
+					if(IHr.CurncyCode=="AZN")then begin
+						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+						curcost = curcost + tempcost;
+					end else begin
+						GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+						if(fr==0 or to1==0)then begin
+							fr=1; to1=1;
+						end;
+						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+						curcost = curcost + tempcost;
+					end;
+				end;
+				end else begin
+					tempcost = 0;
+					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
+						curcost = curcost - IHr.RemCostPriceCurncy;
+					end else begin
+						if(IHr.CurncyCode=="AZN")then begin
+							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							curcost = curcost - tempcost;
+						end else begin
+							GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+							GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
+							if(fr==0 or to1==0)then begin
+								fr=1; to1=1;
+							end;
+							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							curcost = curcost - tempcost;
+						end;
+					end;
 				end;
 				curqty = curqty + IHr.Qty;
 			end;
@@ -292,7 +365,7 @@ begin
 return;
 end;
 
-procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf,string realcur)
+procedure PrintInfo(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var val total_qty,var val total_cost,var val total_price,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf,string realcur,string brandcur)
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
@@ -528,7 +601,10 @@ begin
 		awercost = 0;
 		awercostcur = 0;
 		awercost = FindAwerageCost(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
-		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur);
+		awercostcur = FindAwerageCostCur(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur);
+		if(nonblank(brandcur))then begin
+			INr.LastPurchCurncyCode = brandcur;
+		end;
 		if(costprice>0 and nonblank(serial) and INr.SerNrf>0)then begin
 			awercost = costprice;
 			IHr.ArtCode = INr.Code;
@@ -888,7 +964,7 @@ end; //Edit***************************Sasha2,10:05 19.02.2016 }
 
 
 //Edit----------------------Dima  23.02.2016
-procedure CollectAndPrintData(record RcVc RepSpec,record INVc INr, var record TotalsRepVc Totals,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf)
+procedure CollectAndPrintData(record RcVc RepSpec,record INVc INr, var record TotalsRepVc Totals,var vector string typeval,array string typecode,Integer typescnt,boolean addclassf,string brandcur)
 begin
  record ItemStatusVc ISr;
  record SerBalVc SBr;
@@ -918,7 +994,7 @@ begin
 		
 		if(testf2)then begin
 			SBr.CostPrice = 0;
-			ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
+			ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 		end;
 		if(ISr.Instock<=0)then begin testf2 = false; end;
 		
@@ -939,7 +1015,7 @@ begin
 						INr.LastPurchCurncyCode = acur[i];
 						ISr.Instock = cqty[acur[i]];
 						
-						PrintInfo(INr,ISr,"",0,0,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,realcur);
+						PrintInfo(INr,ISr,"",0,0,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,realcur,brandcur);
 					end;
 				end;
 				
@@ -948,10 +1024,10 @@ begin
 				SBr.Location = ISr.Location;
 				while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 					if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-						ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
+						ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 						
 						if(ISr.Instock>0)then begin
-							PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,INr.LastPurchCurncyCode);
+							PrintInfo(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,Totals.TotQuant,Totals.TotCost,Totals.TotPrice,typeval,typecode,typescnt,addclassf,INr.LastPurchCurncyCode,brandcur);
 						end;
 					end;
 				end;
@@ -994,6 +1070,9 @@ begin
 	row CompaniesBlock Comprw;
 	integer oldcompany;
 	record TotalsRepVc Totals;
+	string 10 brandcur;
+	
+	brandcur = RepSpec.f6;// Edit ************************** Thursday, 14 September 2017 10:19:30
 	
 	
 	if (RepSpec.UsedOnly == 0) then begin
@@ -1200,12 +1279,12 @@ begin
 					if(companies.length>1)then begin			
 						for (i=0;i<companies.length;i=i+1) begin
 							if (SetCompany(companies[i],false)) then begin
-								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf,brandcur);
 							end;
 						end;
 						ResetCompany(oldcompany);	
 					end else begin
-							CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+							CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf,brandcur);
 					end;
 				end;   
 				
@@ -1258,12 +1337,12 @@ begin
 						if(companies.length>1)then begin			
 							for (i=0;i<companies.length;i=i+1) begin
 								if (SetCompany(companies[i],false)) then begin
-									CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+									CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf,brandcur);
 								end;
 							end;
 							ResetCompany(oldcompany);	
 						end else begin
-								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf);
+								CollectAndPrintData(RepSpec,INr,Totals,typeval,typecode,typescnt,addclassf,brandcur);
 						end;
 						
 				end;
@@ -1392,6 +1471,7 @@ begin
   integer acnt;
   vector val cqty,ccost;
   array string 10 acur;
+  string 10 brandcur;
   
 	if (RepSpec.UsedOnly == 1) then begin
 		companies[0] = CurrentCompany;
@@ -1482,7 +1562,7 @@ begin
 								if(ISr.Location==";;;")then begin testf = false; end;
 								if(nonblank(location) and location!=ISr.Location)then begin testf = false; end;
 								if(testf)then begin
-									ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
+									ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 								end;
 								if(ISr.Instock==0)then begin testf = false; end;
 							
@@ -1496,7 +1576,7 @@ begin
 										SBr.Location = ISr.Location;
 										while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 											if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-												ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
+												ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 												if(ISr.Instock>0)then begin
 													PrintInfoWeb(INr,ISr,SBr.Serial,ISr.Instock,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit*********************Sasha2,15:48 21.04.		**	20	****15
 												end;
@@ -1566,7 +1646,7 @@ begin
 									if(ISr.Location==";;;")then begin testf2 = false; end;
 									if(testf2)then begin
 										SBr.CostPrice = 0;
-										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur);
+										ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,"",SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 									end;
 									if(ISr.Instock<=0)then begin testf2 = false; end;
 								
@@ -1578,7 +1658,7 @@ begin
 											SBr.Location = ISr.Location;
 											while(loopmain(SBr,2,(SBr.Item==INr.Code and SBr.Location==ISr.Location))) begin
 												if(SBr.Item==INr.Code and SBr.Location==ISr.Location)then begin
-													ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur);
+													ISr.Instock = ItemQtyPerDate(ISr.Code,todate,ISr.Location,SBr.Serial,SBr.CostPrice,acnt,cqty,ccost,acur,brandcur);
 													if(ISr.Instock>0)then begin
 														PrintInfoWeb(INr,ISr,SBr.Serial,SBr.Quant,SBr.CostPrice,todate,webpage1,serverip,rnd,RepSpec.ArtMode,bcur.BaseCur1); //Edit****	**********	**********	***Sasha2,15:49 21.04.2015
 													end;
