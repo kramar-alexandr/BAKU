@@ -62,9 +62,12 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
+  record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
   
   setexportcodepage("UTF8");
-    
+  
+  BlockLoad(BCb);// Edit ************************** Wednesday, 13 September 2017 16:40:52
+  
   Userr.Code = "";
   TrHs = true;
   while (LoopMain(Userr,1,TrHs)) begin
@@ -346,7 +349,7 @@ begin
               rwcnt2 = MatRowCnt(TRr);
               for(j=0;j<rwcnt2;j=j+1) begin
                 MatRowGet(TRr,j,TRrw);
-                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1)) then begin
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy!=BCb.BaseCur1) then begin// Edit ************************** Wednesday, 13 September 2017 16:40:41
                   to1 = TRrw.DebVal/TRrw.CurDebVal;
                   if (to1==0) then begin
                     to1 = TRrw.CredVal/TRrw.CurCredVal;
