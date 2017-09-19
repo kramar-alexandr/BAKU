@@ -245,9 +245,9 @@ begin
 			if(testf)then begin
 				tempcost = 0;
 				if(IHr.Qty>=0)then begin
-					curcost = curcost + IHr.RemCostPriceCurncy;
+					curcost = curcost + IHr.TotCostPriceCurncy;
 					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-						curcost2 = curcost2 + IHr.RemCostPriceCurncy;
+						curcost2 = curcost2 + IHr.TotCostPriceCurncy;
 					end else begin
 						if(IHr.CurncyCode=="AZN")then begin
 							if(nonblankdate(IHr.InDate))then begin
@@ -258,7 +258,7 @@ begin
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							tempcost = IHr.TotCostPriceCurncy / to1 * fr;
 							curcost2 = curcost2 + tempcost;
 						end else begin
 							if(nonblankdate(IHr.InDate))then begin
@@ -269,7 +269,7 @@ begin
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+							tempcost = IHr.TotCostPriceCurncy * to1 / fr;
 							if(nonblankdate(IHr.InDate))then begin
 								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
 							end else begin
@@ -284,9 +284,9 @@ begin
 					end;
 				end else begin
 					tempcost = 0;
-					curcost = curcost - IHr.RemCostPriceCurncy;
+					curcost = curcost - IHr.TotCostPriceCurncy;
 					if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-						curcost2 = curcost2 - IHr.RemCostPriceCurncy;
+						curcost2 = curcost2 - IHr.TotCostPriceCurncy;
 					end else begin
 						if(IHr.CurncyCode=="AZN")then begin
 							if(nonblankdate(IHr.InDate))then begin
@@ -297,7 +297,7 @@ begin
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy / to1 * fr;
+							tempcost = IHr.TotCostPriceCurncy / to1 * fr;
 							curcost2 = curcost2 - tempcost;
 						end else begin
 							if(nonblankdate(IHr.InDate))then begin
@@ -308,7 +308,7 @@ begin
 							if(fr==0 or to1==0)then begin
 								fr=1; to1=1;
 							end;
-							tempcost = IHr.RemCostPriceCurncy * to1 / fr;
+							tempcost = IHr.TotCostPriceCurncy * to1 / fr;
 							if(nonblankdate(IHr.InDate))then begin
 								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
 							end else begin
@@ -667,7 +667,6 @@ begin
 				outstring(0,0,awercostbrandcur*instock,false);
 			end;
 			outstring(0,0,awercost*instock,false);
-			
 		end;
 		total_cost = total_cost + awercost*instock;
 		
@@ -1312,7 +1311,6 @@ begin
 					outstring(0,0,USetStr(31064) & brandcur,false);
 				end;
 				outstring(0,0,USetStr(31064) & basecur,false);
-				
 			end else begin
 				outstring(0,0,USetStr(31053),false);
 				outstring(0,0,USetStr(31171),false);

@@ -47,11 +47,10 @@ begin
   string 255 tstr,month,store;
   integer rwcnt,rwcnt2,rwcnt3,LAi,MAi,CAi,i,j,k;
   val sumoborot,sumvozvrat,recivedmoneybase,prepayment,gifted,giftsertpaym,loyaltypaym,percent,printedrmb,
-      sumbase,fr,to1,to2,br1,br2,printedprepval,rmbpart;
+      sumbase,fr,to1,to2,br1,br2,printedprepval,rmbpart,recivedmoney;
   vector boolean LocInArr,MonthInArr,ConsultInArr,MonthLoc;
   vector string 100 LocName,ConsultName;
   vector val Oborot,Vozvrat;
-  
   array string 50 sheetNames;
 	array val sheetColls;
 	array string 21 mergeCell;
@@ -63,6 +62,7 @@ begin
   array string 255 mas;
   array integer lvlArray;
   record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
+  boolean f1,f2;
   
   setexportcodepage("UTF8");
   
@@ -365,6 +365,7 @@ begin
               fr = 1; to1 = 1;
             end;
             recivedmoneybase = MulRateToBase1(IPrw.BankCurncy,IPrw.BankVal,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+            recivedmoney = IPrw.InvVal;// Edit ************************** Friday, 15 September 2017 11:15:47
             if (IPrw.InvoiceNr!=-1) then begin
               IVr.SerNr = IPrw.InvoiceNr;
               ReadFirstMain(IVr,1,true);
@@ -398,8 +399,30 @@ begin
 										sumvozvrat = sumvozvrat + sumbase;
 										Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
 										InvoiceRowTypeDownpaymentf = true;
+										logtext(0,IPr.SerNr & "sumvozvrat1 " & sumvozvrat);
 										goto LDownpaymentFoundRet;
 									end;
+              	end;
+              end;
+              f1 = false;
+              f2 = false;
+              if(recivedmoneybase>0)then begin// Edit ************************** Thursday, 14 September 2017 15:15:38
+              	for (j=0;j<rwcnt2;j=j+1) begin
+              		matrowget(IVr,j,IVrw);
+									if(IVrw.stp==kInvoiceRowTypeDownpayment and IVrw.Sum>0)then begin
+										f1 = true;
+									end;
+									if(IVrw.stp==kInvoiceRowTypeNormal)then begin
+										f2 = true;
+									end;
+              	end;
+              	if(f1 and f2)then begin
+              		sumbase = recivedmoneybase;
+              		Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
+              		sumoborot = sumoborot + sumbase;
+                  Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                  InvoiceRowTypeDownpaymentf = true;
+                  goto LDownpaymentFoundRet;
               	end;
               end;
               
@@ -429,6 +452,7 @@ begin
                   if (sumvozvrat!=0) then begin
                     Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                     Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                    logtext(0,IPr.SerNr & "sumvozvrat2 " & sumvozvrat);
                   end;
                   if (sumoborot!=0) then begin
                     Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
@@ -473,11 +497,11 @@ begin
                 end;
               end;
 LDownpaymentFoundRet:;
-         			messagebox(0,sumoborot);
               if (!InvoiceRowTypeDownpaymentf) then begin
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                  logtext(0,IPr.SerNr & "sumvozvrat3 " & sumvozvrat);
                 end;
                 if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
