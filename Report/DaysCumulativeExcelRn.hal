@@ -512,6 +512,7 @@ LDownpaymentFoundRet:;
               if (IPrw.OrderNr!=-1) then begin
                 ORr.SerNr = IPrw.OrderNr;
                 ReadFirstMain(ORr,1,true);
+                percent = IPrw.RecVal/ORr.Sum4;
                 if (ConsultInArr[ORr.SalesMan]==false) then begin
                   ConsultInArr[ORr.SalesMan] = true;
                   ConsultArr[CAi] = ORr.SalesMan;
@@ -561,6 +562,7 @@ LDownpaymentFoundRet:;
                       if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
                       if (TrHs2) then begin
                         rmbpart = ARPayHistr.BookVal;
+                        //rmbpart = ARPayHistr.Val*recivedmoneybase/IPrw.RecVal;
                         IVr.SerNr = ARPayHistr.SerNr;
                         ReadFirstMain(IVr,1,true);
                         if (ConsultInArr[IVr.SalesMan]==false) then begin

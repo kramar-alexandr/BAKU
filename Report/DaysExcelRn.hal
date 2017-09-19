@@ -479,6 +479,7 @@ LDownpaymentFoundRet:;
               if (IPrw.OrderNr!=-1) then begin
                 ORr.SerNr = IPrw.OrderNr;
                 ReadFirstMain(ORr,1,true);
+                percent = IPrw.RecVal/ORr.Sum4;
                 printedrmb = 0;
                 rwcnt3 = matrowcnt(ORr);
                 for (k=0;k<rwcnt3;k=k+1) begin
@@ -513,6 +514,7 @@ LDownpaymentFoundRet:;
                       if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
                       if (TrHs2) then begin
                         rmbpart = ARPayHistr.BookVal;
+                        //rmbpart = ARPayHistr.Val*recivedmoneybase/IPrw.RecVal;
                         IVr.SerNr = ARPayHistr.SerNr;
                         ReadFirstMain(IVr,1,true);
                         percent = rmbpart/IVr.BaseSum4;
