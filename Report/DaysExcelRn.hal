@@ -44,12 +44,15 @@ begin
   row TRVc TRrw;
   row ORVc ORrw;
   string 255 tstr,month,store;
-  integer rwcnt,rwcnt2,rwcnt3,LAi,MAi,i,j,k;
+  integer rwcnt,rwcnt2,rwcnt3,LAi,MAi,i,j,k,artcnt,artqty;
   val sumoborot,sumvozvrat,recivedmoneybase,prepayment,gifted,giftsertpaym,loyaltypaym,percent,printedrmb,
       sumbase,fr,to1,to2,br1,br2,printedprepval,rmbpart;
   vector boolean LocInArr,MonthInArr,MonthLoc;
   vector string 100 LocName;
   vector val Oborot,Vozvrat;
+  record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
+  boolean f1,f2;
+  
   array string 50 sheetNames;
 	array val sheetColls;
 	array string 21 mergeCell;
@@ -60,13 +63,10 @@ begin
 	string 6 reportName;
   array string 255 mas;
   array integer lvlArray;
-  record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
-  boolean f1,f2;
   
   setexportcodepage("UTF8");
   
   BlockLoad(BCb);// Edit ************************** Wednesday, 13 September 2017 16:40:52
-  
   if (nonblank(RepSpec.sStartDate)) then begin
     startdate = RepSpec.sStartDate;
     enddate = RepSpec.sEndDate;
@@ -140,6 +140,7 @@ begin
       end;
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
+        logtext(0,"1 " & IPr.SerNr & " " & IVr.BaseSum4)
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
         cnf = true;
       end;
@@ -181,10 +182,19 @@ begin
       percent = recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym);
       if (recivedmoneybase!=0) then begin
         printedrmb = 0;
+        artqty = 0;
+        for (i=0;i<rwcnt;i=i+1) begin
+          matrowget(IVr,i,IVrw);
+          if ((IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeGiftVoucherSold)) then begin
+            artqty = artqty + 1;
+          end;
+        end;
+        artcnt = 0;
         for (i=0;i<rwcnt;i=i+1) begin
           matrowget(IVr,i,IVrw);
           if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-            if (i==rwcnt-1) then begin
+            artcnt = artcnt + 1;
+            if (artcnt==artqty) then begin
               sumbase = recivedmoneybase - printedrmb;
             end else begin
               sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
@@ -203,6 +213,7 @@ begin
             end;
           end;
           if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+            artcnt = artcnt + 1;
             giftf = false;
             for (j=0;j<rwcnt;j=j+1) begin
               matrowget(IVr,j,tIVrw);
@@ -212,7 +223,7 @@ begin
               end;
             end;
             if (!giftf) then begin
-              if (i==rwcnt-1) then begin
+              if (artcnt==artqty) then begin
                 sumbase = recivedmoneybase - printedrmb;
               end else begin
                 sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
@@ -249,17 +260,17 @@ begin
           if (sumvozvrat!=0) then begin
             Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
             Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+            logtext(0,"2 " & IPr.SerNr & " " & sumvozvrat)
           end;
           if (sumoborot!=0) then begin
             Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
             Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+            logtext(0,"3 " & IPr.SerNr & " " & sumoborot)
           end;
         end;
       end;
     end;
   end;
-  
-  
   
   IPr.TransDate = startdate;
   TrHs = true;
@@ -269,7 +280,6 @@ begin
     if (IPr.OKFlag==0) then begin testf = false; end;
     if (testf) then begin
       recivedmoneybase = 0;
-      printedprepval = 0;// Edit ************************** Wednesday, 13 September 2017 13:53:11
       GetPMRow(IPr.PayMode,PMrw);
       if (left(PMrw.AccNr,1)=="5") then begin
         rwcnt = matrowcnt(IPr);
@@ -331,7 +341,7 @@ begin
               rwcnt2 = MatRowCnt(TRr);
               for(j=0;j<rwcnt2;j=j+1) begin
                 MatRowGet(TRr,j,TRrw);
-                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy!=BCb.BaseCur1) then begin
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy!=BCb.BaseCur1) then begin// Edit ************************** Wednesday, 13 September 2017 16:40:41
                   to1 = TRrw.DebVal/TRrw.CurDebVal;
                   if (to1==0) then begin
                     to1 = TRrw.CredVal/TRrw.CurCredVal;
@@ -353,7 +363,6 @@ begin
               printedrmb = 0;
               rwcnt2 = matrowcnt(IVr);
               InvoiceRowTypeDownpaymentf = false;
-              
               // Edit Start ---------------------------------------------- Edit Start
 	//Thursday, 14 September 2017 15:16:35
 	
@@ -364,7 +373,7 @@ begin
 										sumbase = recivedmoneybase;
 										sumvozvrat = sumvozvrat + sumbase;
 										Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
-										logtext(0,IPr.SerNr & "sumvozvrat1 " & sumvozvrat);
+										logtext(0,"4 " & IPr.SerNr & " " & sumbase)
 										InvoiceRowTypeDownpaymentf = true;
 										goto LDownpaymentFoundRet;
 									end;
@@ -387,13 +396,21 @@ begin
               		Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
               		sumoborot = sumoborot + sumbase;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                  logtext(0,"5 " & IPr.SerNr & " " & sumoborot)
                   InvoiceRowTypeDownpaymentf = true;
                   goto LDownpaymentFoundRet;
               	end;
               end;
               
 	// Edit End ---------------------------------------------- Edit End
-              
+              artqty = 0;
+              for (j=0;j<rwcnt2;j=j+1) begin
+                matrowget(IVr,j,IVrw);
+                if ((IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeGiftVoucherSold)) then begin
+                  artqty = artqty + 1;
+                end;
+              end;
+              artcnt = 0;
               for (j=0;j<rwcnt2;j=j+1) begin
                 matrowget(IVr,j,IVrw);
                 sumbase = 0;
@@ -409,7 +426,8 @@ begin
                     if (k==rwcnt3-1) then begin
                       sumbase = recivedmoneybase - printedrmb;
                     end else begin
-                      sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                      //sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                      sumbase = round(ORrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                       printedrmb = printedrmb + sumbase;
                     end;
                     Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
@@ -418,31 +436,34 @@ begin
                   if (sumvozvrat!=0) then begin
                     Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                     Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                    logtext(0,IPr.SerNr & "sumvozvrat2 " & sumvozvrat);
+                    logtext(0,"6 " & IPr.SerNr & " " & sumvozvrat)
                   end;
                   if (sumoborot!=0) then begin
                     Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                     Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                    logtext(0,"7 " & IPr.SerNr & " " & sumoborot)
                   end;
                   j = rwcnt2;
                 end;
                 if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-                  if (j==rwcnt2-1) then begin
+                  artcnt = artcnt + 1;
+                  if (artcnt==artqty) then begin
                     sumbase = recivedmoneybase - printedrmb;
                   end else begin
-                    sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                    //sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                    sumbase = round(IVrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                     printedrmb = printedrmb + sumbase;
                   end;
                   if (IVrw.Quant<0) then begin
                     Vozvrat[tstr & "naim"] = Vozvrat[tstr & "naim"] - IVrw.Quant*percent;
                     sumvozvrat = sumvozvrat + sumbase;
-                    logtext(0,IPr.SerNr & "sumvozvrat3 " & sumvozvrat);
                   end else begin
                     Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + IVrw.Quant*percent;
                     sumoborot = sumoborot + sumbase;
                   end;
                 end;
                 if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+                  artcnt = artcnt + 1;
                   giftf = false;
                   for (j=0;j<rwcnt;j=j+1) begin
                     matrowget(IVr,j,tIVrw);
@@ -452,7 +473,7 @@ begin
                     end;
                   end;
                   if (!giftf) then begin
-                    if (i==rwcnt-1) then begin
+                    if (artcnt==artqty) then begin
                       sumbase = recivedmoneybase - printedrmb;
                     end else begin
                       sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
@@ -468,11 +489,12 @@ LDownpaymentFoundRet:;
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                  logtext(0,IPr.SerNr & "sumvozvrat4 " & sumvozvrat);
+                  logtext(0,"8 " & IPr.SerNr & " " & sumvozvrat)
                 end;
                 if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                  logtext(0,"9 " & IPr.SerNr & " " & sumoborot)
                 end;
               end;
             end else begin
@@ -487,7 +509,8 @@ LDownpaymentFoundRet:;
                   if (k==rwcnt3-1) then begin
                     sumbase = recivedmoneybase - printedrmb;
                   end else begin
-                    sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                    //sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                    sumbase = round(ORrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                     printedrmb = printedrmb + sumbase;
                   end;
                   Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
@@ -496,31 +519,43 @@ LDownpaymentFoundRet:;
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                  logtext(0,"10 " & IPr.SerNr & " " & sumvozvrat)
                 end;
                 if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                  logtext(0,"11 " & IPr.SerNr & " " & sumoborot)
                 end;
               end else begin
                 if (IPrw.CUPNr!=-1) then begin
+                  printedprepval = 0;
                   if (recivedmoneybase>0) then begin
                     ARPayHistr.FileName = "IVVc";
                     ARPayHistr.CUPNr = IPrw.CUPNr;
                     TrHs2 = true;
                     resetloop(ARPayHistr);
-                    printedprepval = 0;
                     while (loopmain(ARPayHistr,2,TrHs2)) begin
                       if (ARPayHistr.FileName!="IVVc") then begin TrHs2=false; end;
                       if (ARPayHistr.CUPNr!=IPrw.CUPNr) then begin TrHs2=false; end;
                       if (TrHs2) then begin
-                        rmbpart = ARPayHistr.BookVal;
-                        //rmbpart = ARPayHistr.Val*recivedmoneybase/IPrw.RecVal;
+                        sumoborot = 0;
+                        sumvozvrat = 0;
+                        //rmbpart = ARPayHistr.BookVal;
+                        rmbpart = ARPayHistr.Val*recivedmoneybase/IPrw.RecVal;
                         IVr.SerNr = ARPayHistr.SerNr;
                         ReadFirstMain(IVr,1,true);
                         percent = rmbpart/IVr.BaseSum4;
                         printedrmb = 0;
                         rwcnt2 = matrowcnt(IVr);
                         InvoiceRowTypeDownpaymentf = false;
+                        artqty = 0;
+                        for (j=0;j<rwcnt2;j=j+1) begin
+                          matrowget(IVr,j,IVrw);
+                          if ((IVrw.stp==kInvoiceRowTypeNormal) or (IVrw.stp==kInvoiceRowTypeGiftVoucherSold)) then begin
+                            artqty = artqty + 1;
+                          end;
+                        end;
+                        artcnt = 0;
                         for (j=0;j<rwcnt2;j=j+1) begin
                           matrowget(IVr,j,IVrw);
                           sumbase = 0;
@@ -534,9 +569,10 @@ LDownpaymentFoundRet:;
                               matrowget(ORr,k,ORrw);
                               sumbase = 0;
                               if (k==rwcnt3-1) then begin
-                                sumbase = recivedmoneybase - printedrmb;
+                                sumbase = rmbpart - printedrmb;
                               end else begin
-                                sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                //sumbase = round(ORrw.Sum/ORr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                sumbase = round(ORrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                                 printedrmb = printedrmb + sumbase;
                               end;
                               Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + ORrw.Quant*percent;
@@ -545,18 +581,22 @@ LDownpaymentFoundRet:;
                             if (sumvozvrat!=0) then begin
                               Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                               Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                              logtext(0,"12 " & IPr.SerNr & " " & sumvozvrat)
                             end;
                             if (sumoborot!=0) then begin
                               Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                               Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                              logtext(0,"13 " & IPr.SerNr & " " & sumoborot)
                             end;
                             j = rwcnt2;
                           end;
                           if (IVrw.stp==kInvoiceRowTypeNormal) then begin
-                            if (j==rwcnt2-1) then begin
-                              sumbase = recivedmoneybase - printedrmb;
+                            artcnt = artcnt + 1;
+                            if (artcnt==artqty) then begin
+                              sumbase = rmbpart - printedrmb;
                             end else begin
-                              sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                              //sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                              sumbase = round(IVrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                               printedrmb = printedrmb + sumbase;
                             end;
                             if (cnf) then begin
@@ -572,6 +612,7 @@ LDownpaymentFoundRet:;
                             end;
                           end;
                           if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
+                            artcnt = artcnt + 1;
                             giftf = false;
                             for (j=0;j<rwcnt;j=j+1) begin
                               matrowget(IVr,j,tIVrw);
@@ -581,10 +622,11 @@ LDownpaymentFoundRet:;
                               end;
                             end;
                             if (!giftf) then begin
-                              if (i==rwcnt-1) then begin
-                                sumbase = recivedmoneybase - printedrmb;
+                              if (artcnt==artqty) then begin
+                                sumbase = rmbpart - printedrmb;
                               end else begin
-                                sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                //sumbase = round(IVrw.Sum/IVr.Sum4*recivedmoneybase,SetRoundModeD(2));
+                                sumbase = round(IVrw.Sum*recivedmoneybase/IPrw.RecVal,SetRoundModeD(2));
                                 printedrmb = printedrmb + sumbase;
                               end;
                               Oborot[tstr & "naim"] = Oborot[tstr & "naim"] + 1*percent;
@@ -595,10 +637,12 @@ LDownpaymentFoundRet:;
                         if (sumvozvrat!=0) then begin
                           Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                           Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
+                          logtext(0,"14 " & IPr.SerNr & " " & sumvozvrat)
                         end;
                         if (sumoborot!=0) then begin
                           Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                           Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
+                          logtext(0,"15 " & IPr.SerNr & " " & sumoborot)
                         end;
                         printedprepval = printedprepval + rmbpart;
                       end;
@@ -608,8 +652,10 @@ LDownpaymentFoundRet:;
                     sumbase = recivedmoneybase - printedprepval;
                     if (sumbase>0) then begin
                       Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
+                      logtext(0,"16 " & IPr.SerNr & " " & sumbase)
                     end else begin
                       Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
+                      logtext(0,"17 " & IPr.SerNr & " " & sumbase)
                     end;
                   end;
                 end;
