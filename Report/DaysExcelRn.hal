@@ -140,7 +140,6 @@ begin
       end;
       if (IVr.PayDeal=="CN") then begin
         Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] - IVr.BaseSum4;
-        logtext(0,"1 " & IPr.SerNr & " " & IVr.BaseSum4)
         Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1;
         cnf = true;
       end;
@@ -260,12 +259,10 @@ begin
           if (sumvozvrat!=0) then begin
             Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
             Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-            logtext(0,"2 " & IPr.SerNr & " " & sumvozvrat)
           end;
           if (sumoborot!=0) then begin
             Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
             Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-            logtext(0,"3 " & IPr.SerNr & " " & sumoborot)
           end;
         end;
       end;
@@ -373,7 +370,6 @@ begin
 										sumbase = recivedmoneybase;
 										sumvozvrat = sumvozvrat + sumbase;
 										Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
-										logtext(0,"4 " & IPr.SerNr & " " & sumbase)
 										InvoiceRowTypeDownpaymentf = true;
 										goto LDownpaymentFoundRet;
 									end;
@@ -396,7 +392,6 @@ begin
               		Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1;
               		sumoborot = sumoborot + sumbase;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                  logtext(0,"5 " & IPr.SerNr & " " & sumoborot)
                   InvoiceRowTypeDownpaymentf = true;
                   goto LDownpaymentFoundRet;
               	end;
@@ -436,12 +431,10 @@ begin
                   if (sumvozvrat!=0) then begin
                     Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                     Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                    logtext(0,"6 " & IPr.SerNr & " " & sumvozvrat)
                   end;
                   if (sumoborot!=0) then begin
                     Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                     Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                    logtext(0,"7 " & IPr.SerNr & " " & sumoborot)
                   end;
                   j = rwcnt2;
                 end;
@@ -489,12 +482,10 @@ LDownpaymentFoundRet:;
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                  logtext(0,"8 " & IPr.SerNr & " " & sumvozvrat)
                 end;
                 if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                  logtext(0,"9 " & IPr.SerNr & " " & sumoborot)
                 end;
               end;
             end else begin
@@ -519,12 +510,10 @@ LDownpaymentFoundRet:;
                 if (sumvozvrat!=0) then begin
                   Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                   Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                  logtext(0,"10 " & IPr.SerNr & " " & sumvozvrat)
                 end;
                 if (sumoborot!=0) then begin
                   Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                   Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                  logtext(0,"11 " & IPr.SerNr & " " & sumoborot)
                 end;
               end else begin
                 if (IPrw.CUPNr!=-1) then begin
@@ -581,12 +570,10 @@ LDownpaymentFoundRet:;
                             if (sumvozvrat!=0) then begin
                               Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                               Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                              logtext(0,"12 " & IPr.SerNr & " " & sumvozvrat)
                             end;
                             if (sumoborot!=0) then begin
                               Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                               Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                              logtext(0,"13 " & IPr.SerNr & " " & sumoborot)
                             end;
                             j = rwcnt2;
                           end;
@@ -637,12 +624,10 @@ LDownpaymentFoundRet:;
                         if (sumvozvrat!=0) then begin
                           Vozvrat[tstr & "chek"] = Vozvrat[tstr & "chek"] + 1*percent;
                           Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumvozvrat;
-                          logtext(0,"14 " & IPr.SerNr & " " & sumvozvrat)
                         end;
                         if (sumoborot!=0) then begin
                           Oborot[tstr & "chek"] = Oborot[tstr & "chek"] + 1*percent;
                           Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumoborot;
-                          logtext(0,"15 " & IPr.SerNr & " " & sumoborot)
                         end;
                         printedprepval = printedprepval + rmbpart;
                       end;
@@ -652,10 +637,8 @@ LDownpaymentFoundRet:;
                     sumbase = recivedmoneybase - printedprepval;
                     if (sumbase>0) then begin
                       Oborot[tstr & "sum"] = Oborot[tstr & "sum"] + sumbase;
-                      logtext(0,"16 " & IPr.SerNr & " " & sumbase)
                     end else begin
                       Vozvrat[tstr & "sum"] = Vozvrat[tstr & "sum"] + sumbase;
-                      logtext(0,"17 " & IPr.SerNr & " " & sumbase)
                     end;
                   end;
                 end;
