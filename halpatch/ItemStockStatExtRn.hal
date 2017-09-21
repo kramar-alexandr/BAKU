@@ -416,7 +416,7 @@ begin
   Boolean collf,metalf;
   string 20 collstr,metalstr;
   
-  rmode5 = SetRoundMode(0,kRoundingDirectionToFromPosInf,kRoundingModeHalfUp,kRoundingStep5);	//Edit----------------------Dima  17.04.2015
+  rmode5 = SetRoundMode(0,kRoundingDirectionToFromPosInf,kRoundingModeHalfUp,/*kRoundingStep5*/kRoundingStepNone);	//Edit----------------------Dima  17.04.2015
   
   
   if(serstock==0)then begin
@@ -1579,7 +1579,7 @@ begin
   BlockLoad(bcur); //Edit***************************Sasha2,14:03 27.04.2015
   rnd = DefaultValRoundoff; //Edit***************************Sasha2,15:47 21.04.2015
   rnd.decimals = 0; //Edit***************************Sasha2,15:47 21.04.2015
-	rnd.step = kRoundingStep5; //Edit***************************Sasha2,15:47 21.04.2015
+	//rnd.step = kRoundingStep5; //Edit***************************Sasha2,15:47 21.04.2015
 	rnd.mode = kRoundingModeHalfUp; //Edit***************************Sasha2,15:47 21.04.2015
   
   userlocation = false;
