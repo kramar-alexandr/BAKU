@@ -1048,10 +1048,10 @@ BEGIN
     t = cash + pp;
     
     rnd.mode = kRoundingModeHalfUp;
-    if(CompanyIsJWLikeCompany(currentcompany))then begin
+    /*if(CompanyIsJWLikeCompany(currentcompany))then begin
     	rnd.decimals = 0;
     	rnd.step = kRoundingStep5;
-    end;
+    end;*/
     IVr.RetnValue = round(t - IVr.Sum4,rnd); 
     IVr.RetValue = round(t - IVr.Sum4,rnd); //2 files for same thing
   end;
