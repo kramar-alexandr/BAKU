@@ -52,6 +52,8 @@ begin
   vector val Oborot,Vozvrat;
   record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
   boolean f1,f2;
+  record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
   
   array string 50 sheetNames;
 	array val sheetColls;
@@ -67,6 +69,8 @@ begin
   setexportcodepage("UTF8");
   
   BlockLoad(BCb);// Edit ************************** Wednesday, 13 September 2017 16:40:52
+  BlockLoad(Compb);
+  MatRowGet(Compb,currentcompany-1,Comprw);
   if (nonblank(RepSpec.sStartDate)) then begin
     startdate = RepSpec.sStartDate;
     enddate = RepSpec.sEndDate;
@@ -98,13 +102,13 @@ begin
       end;
     end;
     if (testf) then begin
-      if (currentcompany==9) then begin
-        store = "CS";
+      if (RepSpec.flags[1]==1) then begin
+        store = Comprw.ShortName;
         if (LocInArr[store]==false) then begin
           LocInArr[store] = true;
           LocArr[LAi] = store;
           LAi = LAi + 1;
-          LocName[store] = "CreativeSystem";
+          LocName[store] = Comprw.CompName;
         end;
       end else begin
         store = "";
@@ -291,13 +295,13 @@ begin
             if (RepSpec.ObjStr!=store) then begin testf = false; end;
           end;
           if (testf) then begin
-            if (currentcompany==9) then begin
-              store = "CS";
+            if (RepSpec.flags[1]==1) then begin
+              store = Comprw.ShortName;
               if (LocInArr[store]==false) then begin
                 LocInArr[store] = true;
                 LocArr[LAi] = store;
                 LAi = LAi + 1;
-                LocName[store] = "CreativeSystem";
+                LocName[store] = Comprw.CompName;
               end;
             end else begin
               store = "";
@@ -768,7 +772,7 @@ LDownpaymentFoundRet:;
           EndRow(sheetnum,fileToSave,rownum);
           for (i=1;i<32;i=i+1) begin
             tstr = LocArr[LAi] & ";" & MonthArr[MAi] & ";" & i & ";";
-            if ((Oborot[tstr & "chek"]!=blankval) or (Vozvrat[tstr & "chek"]!=blankval)) then begin
+            if ((Oborot[tstr & "sum"]!=blankval) or (Vozvrat[tstr & "sum"]!=blankval)) then begin
               colnum = 2;
               BeginRow(sheetnum,fileToSave,rownum,0,blankval);
                 style = 9;
