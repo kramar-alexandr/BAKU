@@ -13,7 +13,7 @@ external procedure MergeCells(integer,string,array string,integer);
 external procedure FillSharedStrings(string,array string,integer,integer,array string);
 external procedure ConvertToXLSX(string,boolean);
 
-global procedure ItemWithoutPicRn(record RcVc RepSpec,var area areatofile)
+procedure ItemWithoutPic(record RcVc RepSpec)
 begin
 	record CompaniesBlock Compb;
 	row CompaniesBlock Comprw;
@@ -38,10 +38,11 @@ begin
   
   reportName = "DummyRn";
 	if(windowsmode==1)then begin
-		fileToSave = "tmpxlsx.xlsx";
+		fileToSave = RepSpec.f6;
 	end else begin
-		fileToSave = "/tmpxlsx.xlsx";
+		fileToSave = "/" & RepSpec.f6;
 	end;
+  delete_file(fileToSave);
 	deletefolder(Left(fileToSave,(len(fileToSave) - 5)));
   
   curcomp = CurrentCompany;
@@ -75,18 +76,20 @@ begin
           end else begin
             inrcode = INr.Code;
           end;
-          imgfoundf = false;
-          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
-            imgfoundf = true;
-          end;
-          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
-            imgfoundf = true;
-          end;
-          if (!imgfoundf) then begin
-            ISr.Code = INr.Code;
-            ISr.Location = ";;;";
-            if (readfirstmain(ISr,2,true)) then begin
-              if (ISr.Instock>0) then begin
+          ISr.Code = INr.Code;
+          ISr.Location = ";;;";
+          if (readfirstmain(ISr,2,true)) then begin
+            if (ISr.Instock>0) then begin
+              imgfoundf = false;
+              if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+                imgfoundf = true;
+              end;
+              if (!imgfoundf) then begin
+                if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+                  imgfoundf = true;
+                end;
+              end;
+              if (!imgfoundf) then begin
                 colnum = 1;
                 BeginRow(sheetnum,fileToSave,rownum,0,blankval);
                   style = 1;
@@ -111,8 +114,33 @@ begin
   FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
 	ConvertToXLSX(fileToSave,false);
 	MilliSleep(2000);
-	addfiletoarea(fileToSave,areatofile,false);
-	delete_file(fileToSave);
-  resetcompany(curcomp);
+	resetcompany(curcomp);
 return;
+end;
+
+global procedure ItemWithoutPicRn(record RcVc RepSpec)
+begin
+  string 250 filename,tstr;
+  record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+  record ProgramStatusBlock PSb;
+  
+  RepSpec.Media = mtScreen;
+  tstr = "ItemWithoutPic";
+  BlockLoad(Compb);
+  MatRowGet(Compb,currentcompany-1,Comprw);
+  tstr = tstr & "_" & CurrentUser;
+  filename = tstr & ".xlsx";
+  RepSpec.f6 = filename;
+  ItemWithoutPic(RepSpec);
+  BlockLoad(Compb);
+  MatRowGet(Compb,currentcompany-1,Comprw);
+  blockload(PSb);
+  StartReportNoHeaderJob("Еженедельный отчет директоров");
+		StartFormat(15);
+			OutString(0,"DblImagesExcel","http://" & Comprw.TCPIP & ":" & PSb.httpPort & "/" & filename,false);
+    EndFormat;
+	EndJob;
+	
+  return;
 end;
