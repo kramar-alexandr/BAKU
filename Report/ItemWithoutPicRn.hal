@@ -1,0 +1,118 @@
+external procedure XmlXlsxWorkBegin(string,string);
+external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
+external procedure EndSheet(integer,string,integer);
+external procedure SetSheetsCols(integer,array val,array integer,string);
+external procedure BeginSheetData(integer,string);
+external procedure EndSheetData(integer,string);
+external procedure BeginRow(integer,string,integer,integer,val);
+external procedure EndRow(integer,string,var integer);
+external procedure StringCell(integer,string,var integer,integer,integer,string,var array string,var integer,var integer);
+external procedure NumericCell(integer,string,var integer,integer,integer,val);
+external procedure EmptyCell(integer,string,var integer,integer,integer,integer);
+external procedure MergeCells(integer,string,array string,integer);
+external procedure FillSharedStrings(string,array string,integer,integer,array string);
+external procedure ConvertToXLSX(string,boolean);
+
+global procedure ItemWithoutPicRn(record RcVc RepSpec,var area areatofile)
+begin
+	record CompaniesBlock Compb;
+	row CompaniesBlock Comprw;
+  integer curcomp,mtrw,i;
+  record INVc INr;
+  record ItemStatusVc ISr;
+  boolean imgfoundf;
+  string 100 inrcode;
+  
+  array string 50 sheetNames;
+	array val sheetColls;
+	array string 21 mergeCell;
+	string 255 fileToSave;
+	integer qtyOfSheets,sheetnum,rownum,colnum,style,qtyOfEmpStr;
+	array string 100 SharedStrings;
+	integer numOfUniqueSharedStrings,numOfSharedStrings,qtyMergeCell;
+	string 6 reportName;
+  array string 255 mas;
+  array integer lvlArray;
+  
+  setexportcodepage("UTF8");
+  
+  reportName = "DummyRn";
+	if(windowsmode==1)then begin
+		fileToSave = "tmpxlsx.xlsx";
+	end else begin
+		fileToSave = "/tmpxlsx.xlsx";
+	end;
+	deletefolder(Left(fileToSave,(len(fileToSave) - 5)));
+  
+  curcomp = CurrentCompany;
+  BlockLoad(Compb);
+  mtrw = matrowcnt(Compb);
+  for (i=0;i<mtrw;i=i+1) begin
+    MatRowGet(Compb,i,Comprw);
+    sheetNames[qtyOfSheets] = Comprw.CompName;
+    qtyOfSheets = qtyOfSheets + 1;
+  end;
+  sheetColls[0] = 12.14;
+  numOfUniqueSharedStrings = 0;
+	numOfSharedStrings = 0;
+	XmlXlsxWorkBegin(fileToSave,reportName);
+	CreateSheetsXLSX(qtyOfSheets,sheetNames,fileToSave,0,true);
+  sheetnum = 0;
+  
+  for (i=0;i<mtrw;i=i+1) begin
+    SetCompany(i+1,false);
+    MatRowGet(Compb,i,Comprw);
+    sheetnum = sheetnum + 1;
+    SetSheetsCols(sheetnum,sheetColls,lvlArray,fileToSave);
+    BeginSheetData(sheetnum,fileToSave);
+      rownum = 1;
+      if DirExists("webcust/" & Comprw.ShortName) then begin
+        resetloop(INr);
+        INr.Code = "";
+        while loopmain(INr,1,true) begin
+          if (i==8) then begin
+            inrcode = INr.AlternativeCode;
+          end else begin
+            inrcode = INr.Code;
+          end;
+          imgfoundf = false;
+          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+            imgfoundf = true;
+          end;
+          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+            imgfoundf = true;
+          end;
+          if (!imgfoundf) then begin
+            ISr.Code = INr.Code;
+            ISr.Location = ";;;";
+            if (readfirstmain(ISr,2,true)) then begin
+              if (ISr.Instock>0) then begin
+                colnum = 1;
+                BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+                  style = 1;
+                  StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.Code,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                EndRow(sheetnum,fileToSave,rownum);
+              end;
+            end;
+          end;
+        end;
+      end else begin
+        colnum = 1;
+        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+          style = 1;
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,"No directory",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+        EndRow(sheetnum,fileToSave,rownum);
+      end;
+    EndSheetData(sheetnum,fileToSave);
+    MergeCells(sheetnum,fileToSave,mergeCell,qtyMergeCell);
+    EndSheet(sheetnum,fileToSave,0);
+  end;
+  
+  FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
+	ConvertToXLSX(fileToSave,false);
+	MilliSleep(2000);
+	addfiletoarea(fileToSave,areatofile,false);
+	delete_file(fileToSave);
+  resetcompany(curcomp);
+return;
+end;
