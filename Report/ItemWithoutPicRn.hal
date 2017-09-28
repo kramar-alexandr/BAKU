@@ -112,33 +112,26 @@ begin
   end;
   
   FillSharedStrings(fileToSave,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings,mas);
-	ConvertToXLSX(fileToSave,false);
-	MilliSleep(2000);
+	ConvertToXLSX(fileToSave,true);
+	MilliSleep(5000);
 	resetcompany(curcomp);
 return;
 end;
 
-global procedure ItemWithoutPicRn(record RcVc RepSpec)
+global
+procedure ItemWithoutPicRn(record RcVc RepSpec)
 begin
   string 250 filename,tstr;
-  record CompaniesBlock Compb;
-	row CompaniesBlock Comprw;
-  record ProgramStatusBlock PSb;
   
   RepSpec.Media = mtScreen;
   tstr = "ItemWithoutPic";
-  BlockLoad(Compb);
-  MatRowGet(Compb,currentcompany-1,Comprw);
   tstr = tstr & "_" & CurrentUser;
   filename = tstr & ".xlsx";
   RepSpec.f6 = filename;
   ItemWithoutPic(RepSpec);
-  BlockLoad(Compb);
-  MatRowGet(Compb,currentcompany-1,Comprw);
-  blockload(PSb);
-  StartReportNoHeaderJob("Еженедельный отчет директоров");
+  StartReportNoHeaderJob("Download Link");
 		StartFormat(15);
-			OutString(0,"DblImagesExcel","http://" & Comprw.TCPIP & ":" & PSb.httpPort & "/" & filename,false);
+			OutString(0,"DblImagesExcel",RepSpec.f7 & filename,false);
     EndFormat;
 	EndJob;
 	
