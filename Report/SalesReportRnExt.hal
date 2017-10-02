@@ -124,15 +124,18 @@ begin
 					if(readfirstmain(INr,1,true))then begin
 						if(INr.LastPurchCurncyCode!="AZN")then begin
 							IH2r.FileName = "IVVc";
-							IH2r.TransNr = sernr;
-							IH2r.Row = rownr;
+							IH2r.ArtCode = IHr.ArtCode;
+							IH2r.TransDate = IHr.TransDate;
+							IH2r.SerNr = IHr.SerNr;
 							TrHs2 = true;
-							while(loopbackkey("FNTransNr",IH2r,3,TrHs2))begin
-								if(IH2r.FileName!="IVVc")then begin TrHs = false; end;
+							while(loopbackkey("FNArtCode",IH2r,4,TrHs2))begin
+								if(IH2r.FileName!="IVVc")then begin TrHs2 = false; end;
+								if(IH2r.ArtCode!=IHr.ArtCode)then begin TrHs2 = false; end;
 								
-								if(TrHs and IH2r.CurncyCode==INr.LastPurchCurncyCode and IHr.TotCostPrice==IHr.TotCostPrice)then begin
+								if(TrHs2 and IH2r.CurncyCode==INr.LastPurchCurncyCode and IHr.TotCostPrice==IHr.TotCostPrice)then begin
 									IHr.TotCostPriceCurncy = IH2r.TotCostPriceCurncy;
 									IHr.CurncyCode = IH2r.CurncyCode;
+									TrHs2 = false;
 								end;
 							end;
 							resetloop(IH2r);
@@ -195,15 +198,18 @@ begin
 										if(readfirstmain(INr,1,true))then begin
 											if(INr.LastPurchCurncyCode!="AZN")then begin
 												IH2r.FileName = "IVVc";
-												IH2r.TransNr = sernr;
-												IH2r.Row = rownr;
+												IH2r.ArtCode = IHr.ArtCode;
+												IH2r.TransDate = IHr.TransDate;
+												IH2r.SerNr = IHr.SerNr;
 												TrHs2 = true;
-												while(loopbackkey("FNTransNr",IH2r,3,TrHs2))begin
-													if(IH2r.FileName!="IVVc")then begin TrHs = false; end;
+												while(loopbackkey("FNArtCode",IH2r,4,TrHs2))begin
+													if(IH2r.FileName!="IVVc")then begin TrHs2 = false; end;
+													if(IH2r.ArtCode!=IHr.ArtCode)then begin TrHs2 = false; end;
 								
-													if(TrHs and IH2r.CurncyCode==INr.LastPurchCurncyCode and IHr.TotCostPrice==IHr.TotCostPrice)then begin
+													if(TrHs2 and IH2r.CurncyCode==INr.LastPurchCurncyCode and IHr.TotCostPrice==IHr.TotCostPrice)then begin
 														IHr.TotCostPriceCurncy = IH2r.TotCostPriceCurncy;
 														IHr.CurncyCode = IH2r.CurncyCode;
+														TrHs2 = false;
 													end;
 												end;
 												resetloop(IH2r);
