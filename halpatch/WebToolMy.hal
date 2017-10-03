@@ -306,8 +306,10 @@ return;
 end;
 
 //Edit***************************Sasha2,15:59 27.04.2017 {
-procedure CheckImagePath(string filename,string filepathP,var string filepathC)
+procedure CheckImagePath(string filename1,string filepathP,var string filepathC)
 begin
+  string 50 filename;
+  filename = StrReplace(filename1,"/","-");
   
   if (FILEEXISTS(filepathP & filename & ".jpeg")) then begin
 		filepathC = filepathP & filename & ".jpeg";
@@ -332,23 +334,24 @@ return;
 end; //Edit***************************Sasha2,15:18 27.04.2017 }
 
 global //Edit***************************Sasha2,15:18 27.04.2017 {
-procedure SendToServerArtCode(string artcode,string user,string localmachine,integer company)
+procedure SendToServerArtCode(string artcode1,string user,string localmachine,integer company)
 begin
 	area art;
 	string 100 filename;
 	record INVc INr;
 	row INVc INrw;
-	string 255 imgName,filepathP,filepathC;
+	string 255 imgName,filepathP,filepathC,artcode;
 	record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
   integer oldcompany,i,rwcnt;
-
+	
+	artcode = artcode1;
   /*Добавить блок компаний для взятия адреса хоста*/
 	
 	if(nonblank(artcode))then begin		
 		INr.Code = artcode;
 		ReadFirstMain(INr,1,true);
-		
+		artcode = StrReplace(artcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 18:07:53
 		oldcompany = company;
 		BlockLoad(Compb);
 		rwcnt = MatRowCnt(Compb);
