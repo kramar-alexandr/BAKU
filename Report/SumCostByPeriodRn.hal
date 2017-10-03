@@ -2,9 +2,13 @@ external procedure ExtractObj(string,var Integer,var string);
 external procedure CntPOSCurrencies(var Array string,var Array Boolean,var Integer);
 external procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Wednesday, 19 June 2013 13:43:37
 external function boolean CompanyIsJWLikeCompany(Integer);
+external procedure CalcCostInCurncyOldDate(record ItemHistVc,var val, string,integer);
+external procedure CalcCostInCurncyCurDate(record ItemHistVc,var val, string,integer);
+external function val ItemQtyPerDateGlob(string, date,string);
 
 
-procedure GroupCostIHSerch(string item,date sd,date ed,var val totcostsd,var val ivtotsum,
+
+procedure GroupCostIHSerch(string item,date sd,date ed,var val sqty,var val eqty,var val totcostsd,var val ivtotsum,
                            var val ivshtotsum,var val ivshpricesum,var val putotsum,var val sdtotsum,var val smpozitivtotsum,
                            var val smnegativtotsum,var val totcosted,string location,var val retsum,var integer qty,var array val sdcost,var val inpo,var val qtynotpay, var val retpu,var val srval,string curcode,string basecur)
 begin
@@ -103,6 +107,8 @@ begin
     end;
     if testf then begin
     	
+    	/*
+    	
     	if(curcode==basecur)then begin// Edit ************************** Thursday, 8 October 2015 14:00:53
     		torate = 1;
     	end else begin
@@ -156,9 +162,17 @@ begin
     		end;
     	end;// Edit ************************** Thursday, 8 October 2015 14:00:51
     	
-    	ihcost = ihcost * torate;// Edit ************************** Thursday, 8 October 2015 14:00:49
-    	
+    	*/
+    	if(curcode!=basecur)then begin
+    		ihcost = blankval;
+				CalcCostInCurncyOldDate(IHr,ihcost,curcode,1);
+    	end;// else begin
+    	//ihcost = ihcost * torate;// Edit ************************** Thursday, 8 October 2015 14:00:49
+    	//end;
       if IHr.TransDate<sd then begin
+      	if(IHr.StockAffectf==1)then begin
+					sqty = sqty + IHr.Qty;
+      	end;
         switch (IHr.FileName) begin
           case "IVVc":
             if IHr.StockAffectf==1 then begin
@@ -192,6 +206,9 @@ begin
 						end;
         end;
       end else begin
+      	if(IHr.StockAffectf==1)then begin
+					eqty = eqty + IHr.Qty;
+      	end;
         switch (IHr.FileName) begin
           case "IVVc":
             qty = qty+1;
@@ -379,6 +396,9 @@ begin
 	record BaseCurBlock BCBb;
 	string 20 tempcur,tempdi;
 	Boolean checkctypef; //Edit***************************Sasha2,11:37 09.02.2016
+	val prevcostsd,sqty,eqty,prevcosted;
+	record ItemStatusVc ISr;
+	boolean ISrTrHs;
   
   if (CompanyIsJWLikeCompany(currentcompany)) then begin
     checkctypef = true; //Edit***************************Sasha2,11:38 09.02.2016
@@ -387,15 +407,6 @@ begin
   location = RepSpec.f1;
   
   rate = 1;
-  /*if(nonblank(RepSpec.f2))then begin
-    fr = 1; to1 = 1;
-		GetFullCurncyRate(RepSpec.f2,CurrentDate,fr,to1,to2,br1,br2);
-		if(fr==0 or to1==0)then begin
-			fr = 1;	to1 = 1;
-		end;
-		rate = fr/to1;
-  end;*/
-
 
 	//Edit--start------------------------------------------Dima  03.02.2015
 	BlockLoad(BCBb);
@@ -541,6 +552,9 @@ begin
         INr.DispGroups = "";
         calc = true;
         while (LoopKey("MyDispGroups",INr,1,true)) begin
+        
+        	//if(setinset("WMF_ACC",INr.DispGroups))then begin// Edit ************************** Monday, 2 October 2017 17:08:15
+					if(true)then begin// Edit ************************** Tuesday, 3 October 2017 17:09:24
           if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
             gi=0;
             tempdi = "";
@@ -684,18 +698,45 @@ begin
               end;  
             end;
 
-          end;
+          end;          
           if(calc)then begin
           
-            GroupCostIHSerch(INr.Code,sd,ed,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
-            if(blank(INr.DispGroups))then begin
-              //messagebox(0,INr.Code & "  2  " & ivshpricesum);
-            end;
+          	ISrTrHs = true;
+          	ISr.Code = INr.Code;
+          	ISr.Location = location;
+          	while(loopmain(ISr,2,ISrTrHs))begin
+							prevcostsd = totcostsd;
+							prevcosted = totcosted;
+							sqty = blankval;
+							eqty = blankval;
+          	
+          		if(ISr.Code!=INr.Code)then begin ISrTrHs = false; end;
+          		if(nonblank(location) and ISr.Location!=location)then begin ISrTrHs = false; end;
+          	
+          		if(ISrTrHs and ISr.Location!=";;;")then begin
+								if(ItemQtyPerDateGlob(INr.Code,sd,ISr.Location)>0)then begin
+									GroupCostIHSerch(INr.Code,sd,ed,sqty,eqty,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,ISr.Location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
+          			end;
+          		end;
+          	
+          	
+							if(curcode!=BCBb.BaseCur1)then begin
+								if(sqty<=0)then begin
+									totcostsd = prevcostsd;          		
+								end;
+								if(eqty<=0)then begin
+									totcosted = prevcosted;          		
+								end;
+							end;
+							if(sqty>0)then begin
+								//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
+							end;
+          	end;
+          	resetloop(ISr);
           end;
-        end; 
-      
+          end;
+        end;       
         StartFormat(15);
-          //OutString(0,0,rownr,false);
           tstr = "";
           if(nonblank(curgr))then begin
             DIr.Code = curgr;
