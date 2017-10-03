@@ -22,6 +22,7 @@ external procedure PrepToAddImgToAllSheet(integer,string);
 external procedure AddImageOnCurrentSheet(integer,string,string,integer,integer,integer,integer,integer,longint,longint,longint,longint,integer,longint,longint);
 external procedure EndToAddImgToAllSheet(integer,string);
 external function string 10 GetStringCellNum(integer,integer);
+external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -211,6 +212,7 @@ begin
           end else begin
             inrcode = INr.Code;
           end;
+          inrcode = StrReplace(inrcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:32:38
           pathToImg = "";
           if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
             pathToImg = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
@@ -657,6 +659,7 @@ begin
       end else begin
         inrcode = INr.Code;
       end;
+      inrcode = StrReplace(inrcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:32:38
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
         alldata[INr.Code & ":pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
       end;

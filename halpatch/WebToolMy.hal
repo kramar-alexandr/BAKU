@@ -1,4 +1,5 @@
 external procedure MySendAsyncWebRequest(string,string,boolean,string,string,string,string,area,string,integer);
+external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 
 function string 200 NormalizeFileName(string fname)
 begin
@@ -13,6 +14,7 @@ begin
 	  	newname = newname & mid(fname,i,1);
 	  end;
 	end; 
+	newname = StrReplace(newname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:27:01
 	res = newname;
 	NormalizeFileName = res;
 return;
@@ -35,11 +37,16 @@ begin
 	//Edit-------------------Vitalii 14:19 25.12.2015
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
+	
+	imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:27:01
+
+	
 	logtext(0,user & " webcust/" & Comprw.ShortName & "/" & imname & ".jpg curcomp=" & currentcompany & " curcomp " & curcomp);
 	if (fileexists("webcust/" & Comprw.ShortName & "/" & imname & ".jpg")) then begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".jpg","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".jpg");
 		end;
+		imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:30:58
 		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".jpg";
 	end;
@@ -47,6 +54,7 @@ begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".png","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".png");
 		end;
+		imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:31:06
 		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".png";
 	end;
@@ -75,6 +83,7 @@ begin
 	record ItemStatusVc ISr;
   
   imname = WebGetArg	("image");
+  imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:31:36
   curcomp = WebGetArg	("curcomp");
   loc = WebGetArg	("location");
   
@@ -101,6 +110,7 @@ begin
 				end;
 			end;
 			imname = itemcode;
+			imname = StrReplace(imname,"/","-");
 			
 			ISr.Code = itemcode;
 			ISr.Location = ";;;";

@@ -12,6 +12,7 @@ external procedure EmptyCell(integer,string,var integer,integer,integer,integer)
 external procedure MergeCells(integer,string,array string,integer);
 external procedure FillSharedStrings(string,array string,integer,integer,array string);
 external procedure ConvertToXLSX(string,boolean);
+external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 
 procedure ItemWithoutPic(record RcVc RepSpec)
 begin
@@ -76,6 +77,7 @@ begin
           end else begin
             inrcode = INr.Code;
           end;
+          inrcode = StrReplace(inrcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:32:38
           ISr.Code = INr.Code;
           ISr.Location = ";;;";
           if (readfirstmain(ISr,2,true)) then begin
