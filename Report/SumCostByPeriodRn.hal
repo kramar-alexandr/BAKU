@@ -555,185 +555,184 @@ begin
         
         	//if(setinset("WMF_ACC",INr.DispGroups))then begin// Edit ************************** Monday, 2 October 2017 17:08:15
 					if(true)then begin// Edit ************************** Tuesday, 3 October 2017 17:09:24
-          if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
-            gi=0;
-            tempdi = "";
-            ExtractObj(INr.DispGroups,gi,curgr1);
-            while (NonBlank(curgr1)) begin
-              DIr.Code = curgr1;
-              if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-                tempdi = curgr1;
-                gi = len(INr.DispGroups);                
-              end;
-              ExtractObj(INr.DispGroups,gi,curgr1);
-            end;
-            curgr1 = tempdi;
-          end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
-            gi=0;
-            ExtractObj(INr.DispGroups,gi,curgr1);
-            if(currentcompany==9)then begin
-              ExtractObj(INr.DispGroups,gi,curgr1);
-              DIr.Code = curgr1;
-              if(readfirstmain(DIr,1,true))then begin
-                if(DIr.CType!="BRAND")then begin
-                  curgr1 = "";                
-                end;
-              end;
-            end;
-          end;
+						if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+							gi=0;
+							tempdi = "";
+							ExtractObj(INr.DispGroups,gi,curgr1);
+							while (NonBlank(curgr1)) begin
+								DIr.Code = curgr1;
+								if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+									tempdi = curgr1;
+									gi = len(INr.DispGroups);                
+								end;
+								ExtractObj(INr.DispGroups,gi,curgr1);
+							end;
+							curgr1 = tempdi;
+						end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+							gi=0;
+							ExtractObj(INr.DispGroups,gi,curgr1);
+							if(currentcompany==9)then begin
+								ExtractObj(INr.DispGroups,gi,curgr1);
+								DIr.Code = curgr1;
+								if(readfirstmain(DIr,1,true))then begin
+									if(DIr.CType!="BRAND")then begin
+										curgr1 = "";                
+									end;
+								end;
+							end;
+						end;
  
-          if (curgr!=curgr1) then begin          
-            calc = false;
-          end;
-          if(calc==false)then begin
-          
-          
-            StartFormat(15);
-            //OutString(0,0,rownr,false);
-          
-            tstr = "";
-            if(nonblank(curgr))then begin
-              DIr.Code = curgr;
-              if(readfirstmain(DIr,1,true))then begin 
-                tstr = DIr.Name; 
-              end else begin
-                tstr = "Classification with no card" & "(" & curgr & ")";
-              end;
-            end else begin
-              tstr = "---";
-            end;
-            if(tstr=="---")then begin
-              //messagebox(0,INr.Code & "  1  " & ivshpricesum);
-            end;
-            //OutString(15,0,curgr,false);
-            OutString(0,0,tstr,false);
-						if ((currentcompany==9) and (DIr.CType=="BRAND")) then begin				//Edit----------------------Dima  20.03.2015
-								OutString(40,0,DIr.CCat,false);	
-						end;	          
-            OutString(45,0,totcostsd*rate,false);           
-            OutString(70,0,inpo,false);
-            totalinpo = totalinpo + inpo;
-            totals[0] = totals[0] + totcostsd*rate;
-            OutString(90,0,putotsum*rate,false);
-            totals[1] = totals[1] + putotsum*rate;
-            OutString(135,0,smpozitivtotsum*rate,false);
-            totals[2] = totals[2] + smpozitivtotsum*rate;
-            OutString(180,0,ivtotsum*rate,false);
-            OutString(200,0,retsum*rate,false);// Edit ************************** Monday, 8 October 2012 10:21:45
-            totals[3] = totals[3] + ivtotsum*rate;
-            totals[9] = totals[9] + retsum*rate;
-            OutString(225,0,ivshtotsum*rate,false);
-            totals[4] = totals[4] + ivshtotsum*rate;
-            OutString(270,0,ivshpricesum*rate,false);
-            totals[5] = totals[5] + ivshpricesum*rate;
-            OutString(315,0,smnegativtotsum*rate,false);
-            totals[6] = totals[6] + smnegativtotsum*rate;
-            OutString(360,0,sdcost[0]*rate,false);         
-            totals[7] = totals[7] + sdcost[0]*rate;
-            OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
-            totals[8] = totals[8] + qtynotpay*rate;
-            OutString(380,0,retpu*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
-            totals[11] = totals[11] + retpu*rate;
-            OutString(385,0,srval*rate,false); // Edit ************************** Friday, 26 December 2014 13:31:59
-            totals[12] = totals[12] + srval*rate;
-        
-            totcosted = totcosted + totcostsd;
-            for(j=1;j<spi;j=j+1) begin
-              OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
-              sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
-            end;
-            OutString(405,0,totcosted*rate,false);
-            totals[10] = totals[10] + totcosted*rate;
-            EndFormat;
-            totcostsd = 0;
-            ivtotsum = 0;
-            ivshtotsum = 0;
-            ivshpricesum = 0;
-            putotsum = 0;
-            sdtotsum = 0;
-            smpozitivtotsum = 0;
-            smnegativtotsum = 0;
-            totcosted = 0;
-            qtynotpay = 0;// Edit ************************** Monday, 13 January 2014 13:37:23
-            retsum = 0;
-            inpo = 0;
-            retpu = 0;
-            srval = 0;
-            rownr = rownr + 1;
-            for(j=0;j<spi;j=j+1) begin
-                sdcost[j]=0;
-            end;
-            calc = true;
-            //curgr = INr.DispGroups;
-            if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
-              gi=0;
-              tempdi = "";
-              ExtractObj(INr.DispGroups,gi,curgr);
-              while (NonBlank(curgr)) begin
-                DIr.Code = curgr;
-                if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
-                  tempdi = curgr;
-                  gi = len(INr.DispGroups);                
-                end;
-                ExtractObj(INr.DispGroups,gi,curgr);
-              end;
-              curgr = tempdi;
-              if(currentcompany==9)then begin
-                DIr.Code = curgr1;
-                if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
-                  curgr1 = "";                 
-                end;
-              end;
-            end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
-              gi=0;
-              ExtractObj(INr.DispGroups,gi,curgr);
-              if(currentcompany==9)then begin
-                ExtractObj(INr.DispGroups,gi,curgr);
-                DIr.Code = curgr1;
-                if(readfirstmain(DIr,1,true))then begin
-                  if(DIr.CType!="BRAND")then begin
-                    curgr1 = "";                 
-                  end;
-                end;
-              end;  
-            end;
+						if (curgr!=curgr1) then begin          
+							calc = false;
+						end;
+						if(calc==false)then begin
+							StartFormat(15);          
+							tstr = "";
+							if(nonblank(curgr))then begin
+								DIr.Code = curgr;
+								if(readfirstmain(DIr,1,true))then begin 
+									tstr = DIr.Name; 
+								end else begin
+									tstr = "Classification with no card" & "(" & curgr & ")";
+								end;
+							end else begin
+								tstr = "---";
+							end;
+							if(tstr=="---")then begin
+								//messagebox(0,INr.Code & "  1  " & ivshpricesum);
+							end;
+							//OutString(15,0,curgr,false);
+							OutString(0,0,tstr,false);
+							if ((currentcompany==9) and (DIr.CType=="BRAND")) then begin				//Edit----------------------Dima  20.03.2015
+									OutString(40,0,DIr.CCat,false);	
+							end;	          
+							OutString(45,0,totcostsd*rate,false);           
+							OutString(70,0,inpo,false);
+							totalinpo = totalinpo + inpo;
+							totals[0] = totals[0] + totcostsd*rate;
+							OutString(90,0,putotsum*rate,false);
+							totals[1] = totals[1] + putotsum*rate;
+							OutString(135,0,smpozitivtotsum*rate,false);
+							totals[2] = totals[2] + smpozitivtotsum*rate;
+							OutString(180,0,ivtotsum*rate,false);
+							OutString(200,0,retsum*rate,false);// Edit ************************** Monday, 8 October 2012 10:21:45
+							totals[3] = totals[3] + ivtotsum*rate;
+							totals[9] = totals[9] + retsum*rate;
+							OutString(225,0,ivshtotsum*rate,false);
+							totals[4] = totals[4] + ivshtotsum*rate;
+							OutString(270,0,ivshpricesum*rate,false);
+							totals[5] = totals[5] + ivshpricesum*rate;
+							OutString(315,0,smnegativtotsum*rate,false);
+							totals[6] = totals[6] + smnegativtotsum*rate;
+							OutString(360,0,sdcost[0]*rate,false);         
+							totals[7] = totals[7] + sdcost[0]*rate;
+							OutString(370,0,qtynotpay*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
+							totals[8] = totals[8] + qtynotpay*rate;
+							OutString(380,0,retpu*rate,false); // Edit ************************** Monday, 13 January 2014 13:36:51 
+							totals[11] = totals[11] + retpu*rate;
+							OutString(385,0,srval*rate,false); // Edit ************************** Friday, 26 December 2014 13:31:59
+							totals[12] = totals[12] + srval*rate;
+				
+							totcosted = totcosted + totcostsd;
+							for(j=1;j<spi;j=j+1) begin
+								OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
+								sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
+							end;
+							OutString(405,0,totcosted*rate,false);
+							totals[10] = totals[10] + totcosted*rate;
+							EndFormat;
+							totcostsd = 0;
+							ivtotsum = 0;
+							ivshtotsum = 0;
+							ivshpricesum = 0;
+							putotsum = 0;
+							sdtotsum = 0;
+							smpozitivtotsum = 0;
+							smnegativtotsum = 0;
+							totcosted = 0;
+							qtynotpay = 0;// Edit ************************** Monday, 13 January 2014 13:37:23
+							retsum = 0;
+							inpo = 0;
+							retpu = 0;
+							srval = 0;
+							rownr = rownr + 1;
+							for(j=0;j<spi;j=j+1) begin
+									sdcost[j]=0;
+							end;
+							calc = true;
+							//curgr = INr.DispGroups;
+							if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
+								gi=0;
+								tempdi = "";
+								ExtractObj(INr.DispGroups,gi,curgr);
+								while (NonBlank(curgr)) begin
+									DIr.Code = curgr;
+									if(readfirstmain(DIr,1,true) and (DIr.CType=="BRAND" or DIr.CType=="MODEL"))then begin
+										tempdi = curgr;
+										gi = len(INr.DispGroups);                
+									end;
+									ExtractObj(INr.DispGroups,gi,curgr);
+								end;
+								curgr = tempdi;
+								if(currentcompany==9)then begin
+									DIr.Code = curgr1;
+									if(readfirstmain(DIr,1,true) and DIr.CType!="BRAND")then begin
+										curgr1 = "";                 
+									end;
+								end;
+							end else begin //Edit***************************Sasha2,11:38 09.02.2016 }
+								gi=0;
+								ExtractObj(INr.DispGroups,gi,curgr);
+								if(currentcompany==9)then begin
+									ExtractObj(INr.DispGroups,gi,curgr);
+									DIr.Code = curgr1;
+									if(readfirstmain(DIr,1,true))then begin
+										if(DIr.CType!="BRAND")then begin
+											curgr1 = "";                 
+										end;
+									end;
+								end;  
+							end;
 
-          end;          
-          if(calc)then begin
-          
-          	ISrTrHs = true;
-          	ISr.Code = INr.Code;
-          	ISr.Location = location;
-          	while(loopmain(ISr,2,ISrTrHs))begin
-							prevcostsd = totcostsd;
-							prevcosted = totcosted;
-							sqty = blankval;
-							eqty = blankval;
-          	
-          		if(ISr.Code!=INr.Code)then begin ISrTrHs = false; end;
-          		if(nonblank(location) and ISr.Location!=location)then begin ISrTrHs = false; end;
-          	
-          		if(ISrTrHs and ISr.Location!=";;;")then begin
-								if(ItemQtyPerDateGlob(INr.Code,sd,ISr.Location)>0)then begin
-									GroupCostIHSerch(INr.Code,sd,ed,sqty,eqty,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,ISr.Location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
-          			end;
-          		end;
-          	
-          	
-							if(curcode!=BCBb.BaseCur1)then begin
-								if(sqty<=0)then begin
-									totcostsd = prevcostsd;          		
+						end;          
+						if(calc)then begin
+							if(curcode==BCBb.BaseCur1)then begin
+								GroupCostIHSerch(INr.Code,sd,ed,sqty,eqty,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
+							end else begin
+								ISrTrHs = true;
+								ISr.Code = INr.Code;
+								ISr.Location = location;
+								while(loopmain(ISr,2,ISrTrHs))begin
+									prevcostsd = totcostsd;
+									prevcosted = totcosted;
+									sqty = blankval;
+									eqty = blankval;
+						
+									if(ISr.Code!=INr.Code)then begin ISrTrHs = false; end;
+									if(nonblank(location) and ISr.Location!=location)then begin ISrTrHs = false; end;
+						
+									if(ISrTrHs and ISr.Location!=";;;")then begin
+										if(ItemQtyPerDateGlob(INr.Code,sd,ISr.Location)>0)then begin
+											GroupCostIHSerch(INr.Code,sd,ed,sqty,eqty,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,ISr.Location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
+										end;
+									end;
+						
+						
+									if(curcode!=BCBb.BaseCur1)then begin
+										if(sqty<=0)then begin
+											totcostsd = prevcostsd;          		
+										end;
+										if(eqty<=0)then begin
+											totcosted = prevcosted;          		
+										end;
+									end;
+									if(sqty>0)then begin
+										//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
+									end;
 								end;
-								if(eqty<=0)then begin
-									totcosted = prevcosted;          		
-								end;
+								resetloop(ISr);
 							end;
-							if(sqty>0)then begin
-								//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
-							end;
-          	end;
-          	resetloop(ISr);
-          end;
+						end;
           end;
         end;       
         StartFormat(15);
