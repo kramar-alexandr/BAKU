@@ -50,7 +50,6 @@ begin
   vector boolean LocInArr,MonthInArr,MonthLoc;
   vector string 100 LocName;
   vector val Oborot,Vozvrat;
-  record BaseCurBlock BCb;// Edit ************************** Wednesday, 13 September 2017 16:41:14
   boolean f1,f2;
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
@@ -68,7 +67,6 @@ begin
   
   setexportcodepage("UTF8");
   
-  BlockLoad(BCb);// Edit ************************** Wednesday, 13 September 2017 16:40:52
   BlockLoad(Compb);
   MatRowGet(Compb,currentcompany-1,Comprw);
   if (nonblank(RepSpec.sStartDate)) then begin
@@ -341,7 +339,7 @@ begin
               rwcnt2 = MatRowCnt(TRr);
               for(j=0;j<rwcnt2;j=j+1) begin
                 MatRowGet(TRr,j,TRrw);
-                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy!=BCb.BaseCur1) then begin// Edit ************************** Wednesday, 13 September 2017 16:40:41
+                if ((left(TRrw.AccNumber,1) == "5") and (TRrw.ovst <> 1) and TRrw.Curncy==IPrw.BankCurncy) then begin
                   to1 = TRrw.DebVal/TRrw.CurDebVal;
                   if (to1==0) then begin
                     to1 = TRrw.CredVal/TRrw.CurCredVal;
