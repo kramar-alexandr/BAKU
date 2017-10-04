@@ -185,7 +185,7 @@ begin
 			TrHs = true;
 			While(loopkey(key,IHr,keys,TrHs)) begin
 				testf = true;
-				if (IHr.ArtCode!=artcode or IHr.Location!=location or IHr.TransDate>idate) then begin testf = false; TrHs = false; end;
+				if (IHr.ArtCode!=artcode or IHr.Location!=location or IHr.TransDate>=idate) then begin testf = false; TrHs = false; end;
 				if(IHr.StockAffectf<1)then begin testf = false; end;
 			
 				if(testf)then begin

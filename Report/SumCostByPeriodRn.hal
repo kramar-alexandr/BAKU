@@ -554,7 +554,8 @@ begin
         while (LoopKey("MyDispGroups",INr,1,true)) begin
         
         	//if(setinset("WMF_ACC",INr.DispGroups))then begin// Edit ************************** Monday, 2 October 2017 17:08:15
-					if(true)then begin// Edit ************************** Tuesday, 3 October 2017 17:09:24
+					//if((currentuser=="SA" and setinset("V&B_CL",INr.DispGroups))or(currentuser!="SA"))then begin// Edit ************************** Tuesday, 3 October 2017 17:09:24
+					if(true)then begin
 						if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
 							gi=0;
 							tempdi = "";
@@ -717,7 +718,6 @@ begin
 										end;
 									end;
 						
-						
 									if(curcode!=BCBb.BaseCur1)then begin
 										if(sqty<=0)then begin
 											totcostsd = prevcostsd;          		
@@ -726,8 +726,10 @@ begin
 											totcosted = prevcosted;          		
 										end;
 									end;
-									if(sqty>0)then begin
-										//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
+									if(currentuser=="SA")then begin
+										if(sqty>0)then begin
+											//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
+										end;
 									end;
 								end;
 								resetloop(ISr);
