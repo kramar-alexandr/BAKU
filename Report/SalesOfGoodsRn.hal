@@ -437,30 +437,30 @@ begin
           end;
         end;
       end;
-    end;
-    if ((!pofound) or (planfifobase==0)) then begin
-      ISr.Code = ORrw.ArtCode;
-      ISr.Location = ";;;";
-      readfirstmain(ISr,2,true);
-      if (ISr.Instock>0) then begin
-        INr.Code = ORrw.ArtCode;
-        readfirstmain(INr,1,true);
-        planfifobase = INr.WeighedAvPrice * qty;
-        planfifobrandcur = INr.LastPurchPrice2 * qty;
-        brandcur = INr.LastPurchCurncyCode;
-       end;
-    end;
-    if (planfifobase==0) then begin
-      nopcppr = true;
-      if (ORrw.PlanCostVal!=blankval) then begin
-        planfifobrandcur = ORrw.PlanCostVal*qty;
-        brandcur = ORrw.PlanCostCur;
-        GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
-        if (fr==0 or to1==0) then begin
-          fr = 1; to1 = 1;
+      if ((!pofound) or (planfifobase==0)) then begin
+        ISr.Code = ORrw.ArtCode;
+        ISr.Location = ";;;";
+        readfirstmain(ISr,2,true);
+        if (ISr.Instock>0) then begin
+          INr.Code = ORrw.ArtCode;
+          readfirstmain(INr,1,true);
+          planfifobase = INr.WeighedAvPrice * qty;
+          planfifobrandcur = INr.LastPurchPrice2 * qty;
+          brandcur = INr.LastPurchCurncyCode;
+         end;
+      end;
+      if (planfifobase==0) then begin
+        nopcppr = true;
+        if (ORrw.PlanCostVal!=blankval) then begin
+          planfifobrandcur = ORrw.PlanCostVal*qty;
+          brandcur = ORrw.PlanCostCur;
+          GetFullCurncyRate(brandcur,transdate,fr,to1,to2,br1,br2);
+          if (fr==0 or to1==0) then begin
+            fr = 1; to1 = 1;
+          end;
+          planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
+          nopcppr = false;
         end;
-        planfifobase = MulRateToBase1(brandcur,planfifobrandcur,fr,to1,to2,br1,br2,DefaultCurRoundOff);
-        nopcppr = false;
       end;
     end;
     fifobase = fifobase*percent;
