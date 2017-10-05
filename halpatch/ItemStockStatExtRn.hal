@@ -345,30 +345,6 @@ begin
 			if(testf)then begin
 				tempcost = 0;
 				curcost = curcost + IHr.RemCostPriceCurncy;
-				/*if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-					curcost2 = curcost2 + IHr.RemCostPriceCurncy;
-				end else begin
-					if(IHr.CurncyCode=="AZN")then begin
-						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = IHr.RemCostPriceCurncy / to1 * fr;
-						curcost2 = curcost2 + tempcost;
-					end else begin
-						GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = IHr.RemCostPriceCurncy * to1 / fr;
-						GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-						if(fr==0 or to1==0)then begin
-							fr=1; to1=1;
-						end;
-						tempcost = tempcost / to1 * fr;
-						curcost2 = curcost2 + tempcost;
-					end;
-				end;*/
 				CalcCostInCurncyCurDate(IHr,curcost2,brandcur,1);
 				curqty = curqty + IHr.RemQty;
 			end;
@@ -396,82 +372,10 @@ begin
 				if(IHr.Qty>=0)then begin
 					curcost = curcost + IHr.TotCostPriceCurncy;
 					CalcCostInCurncyOldDate(IHr,curcost2,brandcur,1);
-					/*if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-						curcost2 = curcost2 + IHr.TotCostPriceCurncy;
-					end else begin
-						if(IHr.CurncyCode=="AZN")then begin
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = IHr.TotCostPriceCurncy / to1 * fr;
-							curcost2 = curcost2 + tempcost;
-						end else begin
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(IHr.CurncyCode,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = IHr.TotCostPriceCurncy * to1 / fr;
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = tempcost / to1 * fr;
-							curcost2 = curcost2 + tempcost;
-						end;
-					end;*/
 				end else begin
 					tempcost = 0;
 					curcost = curcost - IHr.TotCostPriceCurncy;
 					CalcCostInCurncyOldDate(IHr,curcost2,brandcur,-1);
-					/*if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
-						curcost2 = curcost2 - IHr.TotCostPriceCurncy;
-					end else begin
-						if(IHr.CurncyCode=="AZN")then begin
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = IHr.TotCostPriceCurncy / to1 * fr;
-							curcost2 = curcost2 - tempcost;
-						end else begin
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(IHr.CurncyCode,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(IHr.CurncyCode,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = IHr.TotCostPriceCurncy * to1 / fr;
-							if(nonblankdate(IHr.InDate))then begin
-								GetFullCurncyRate(brandcur,IHr.InDate,fr,to1,to2,br1,br2);
-							end else begin
-								GetFullCurncyRate(brandcur,IHr.TransDate,fr,to1,to2,br1,br2);
-							end;
-							if(fr==0 or to1==0)then begin
-								fr=1; to1=1;
-							end;
-							tempcost = tempcost / to1 * fr;
-							curcost2 = curcost2 - tempcost;
-						end;
-					end;*/
 				end;
 				curqty = curqty + IHr.Qty;
 			end;
@@ -950,10 +854,12 @@ begin
   record Attach2Vc Attachr;
 	record RLinkVc RLr;
 	string 255 filename,uid,res,inrcode;
-	string 50 comfolder;
+	string 50 comfolder,modelname,brandname;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
 	Boolean founddi; //Edit***************************Sasha2,10:45 25.01.2016
+	string 50 realcur,brandcur;
+	val curcost,curcost2;
 	
   if(serstock==0)then begin
   	instock = ISr.Instock;
@@ -975,24 +881,27 @@ begin
 				
 		ExportString("<td height=\"300\">" & INr.Code & "</td>");
 		ExportString("<td>" & INr.AlternativeCode & "</td>");
+		ExportString("<td>" & INr.BarCode & "</td>");
 		ExportString("<td>" & ISr.Location & "</td>");
 		pos = 0;
 		uloc = ""; 
 		founddi = false; //Edit***************************Sasha2,10:13 25.01.2016 {
 		ExtractObj(INr.DispGroups,pos,uloc); 
+		modelname = "";
+		brandname = "";
 		while(nonblank(uloc)) begin
 			DIr.Code = uloc;
 			readfirstmain(DIr,1,true);
 			if(DIr.CType=="BRAND")then begin
-				ExportString("<td>" & DIr.Name & "</td>");
-				pos = len(INr.DispGroups);
-				founddi = true;
+				brandname = DIr.Name;
+			end;
+			if(DIr.CType=="MODEL")then begin
+				modelname = DIr.Name;
 			end;
 			ExtractObj(INr.DispGroups,pos,uloc);
 		end; 
-		if (founddi==false) then begin
-		  ExportString("<td>" & "" & "</td>");
-		end; //Edit***************************Sasha2,10:13 25.01.2016 }
+		ExportString("<td>" & brandname & "</td>");
+		ExportString("<td>" & modelname & "</td>");
 		
 		/*ExtractObj(INr.DispGroups,pos,uloc);
 		DIr.Code = uloc;
@@ -1006,6 +915,12 @@ begin
 		ExportString("<td>" & INr.Name & "</td>");
 		ExportString("<td>" & serial & "</td>");// Edit ************************** Tuesday, 7 May 2013 10:13:07
 		ExportString("<td>" & instock & "</td>");
+		
+		realcur = INr.LastPurchCurncyCode;
+		curcost = blankval;
+		FindAwerageCostCurProc(INr.Code,ISr.Location,INr.LastPurchCurncyCode,todate,realcur,brandcur,curcost,curcost2);
+		ExportString("<td>" & curcost & INr.LastPurchCurncyCode & "</td>");
+		
 		GetFullCurncyRate(INr.LastPurchCurncyCode,todate,fr,to1,to2,br1,br2);
 		if(fr==0 or to1==0)then begin
 			fr=1; to1=0;
@@ -1064,6 +979,9 @@ begin
 		switch (dispcur) begin //Edit***************************Sasha2,15:50 21.04.2015 {
   		case 0: 
   		  ExportString("<td>" & price & "</td>");
+  		  ExportString("<td>" & round(baseprice,rnd) & "</td>");
+  		  
+  		  
   		  ExportString("<td>" & INr.LastPurchCurncyCode & "</td>");
   		case 1:
   		  ExportString("<td>" & round(baseprice,rnd) & "</td>");
@@ -1754,14 +1672,18 @@ begin
   	endformat;
   end else begin
 		ExportString("<tr>");
-		ExportString("<td>" & USetStr(31042) & "</td>");
-		ExportString("<td>" & USetStr(31042) & "</td>");
+		ExportString("<td>" & USetStr(31042) & "</td>");//Code
+		ExportString("<td>" & USetStr(31042) & "</td>");//AltCode
+		ExportString("<td>BAR/EAN Code</td>");//AltCode
 		ExportString("<td>" & USetStr(31103) & "</td>");
 		ExportString("<td>" & USetStr(31044) & "</td>");
+		ExportString("<td>" & USetStr(31120) & "</td>");//MODEL
 		ExportString("<td>" & USetStr(31204) & "</td>");
 		ExportString("<td>" & USetStr(31051) & "</td>");
 		ExportString("<td>" & USetStr(31121) & "</td>");
+		ExportString("<td>" & USetStr(31160) & "</td>");//cost
 		ExportString("<td>" & USetStr(31059) & "</td>");
+		ExportString("<td>Price, AZN</td>");
 		ExportString("<td>" & USetStr(31169) & "</td>");
 		ExportString("<td>" & USetStr(31170) & "</td>");
 		ExportString("</tr>");
