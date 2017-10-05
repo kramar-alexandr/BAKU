@@ -671,18 +671,6 @@ begin
 	string 50 uloc,location,compfolder;
 	record ProgramStatusBlock PSb;
 
-	/*blockload(PSb);
-	blockload(Cb);
-
-	compnr = currentcompany;
-	matrowget(Cb,compnr-1,Cbrw);
-	serverip = Cbrw.TCPIP & ":" & PSb.httpPort & "/" & Cbrw.ShortName;*/
-	serverip = RepSpec.f6;
-	//setcompany(3,false);
-	/*wn = curwindow;
-	deselectwindow(wn,true);
-	getwindowrecord(wn,RepSpec);*/
-
 	location = RepSpec.f2;
 	userlocation = false;
 
