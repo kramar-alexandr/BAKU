@@ -172,6 +172,7 @@ begin
       if IHr.TransDate<sd then begin
       	if(IHr.StockAffectf==1)then begin
 					sqty = sqty + IHr.Qty;
+					eqty = eqty + IHr.Qty;
       	end;
         switch (IHr.FileName) begin
           case "IVVc":
