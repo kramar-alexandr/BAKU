@@ -1,3 +1,5 @@
+external procedure ExtractObj(string,var Integer,var string);
+
 external procedure XmlXlsxWorkBegin(string,string);
 external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
 external procedure EndSheet(integer,string,integer);
@@ -17,12 +19,13 @@ external function string 255 StrReplace(string,string,string);// Edit **********
 procedure ItemWithoutPic(record RcVc RepSpec)
 begin
 	record CompaniesBlock Compb;
+  record DIVc DIr;
 	row CompaniesBlock Comprw;
-  integer curcomp,mtrw,i;
+  integer curcomp,mtrw,i,pos;
   record INVc INr;
   record ItemStatusVc ISr;
   boolean imgfoundf;
-  string 100 inrcode;
+  string 100 inrcode,brand,class;
   
   array string 50 sheetNames;
 	array val sheetColls;
@@ -69,6 +72,13 @@ begin
     BeginSheetData(sheetnum,fileToSave);
       rownum = 1;
       if DirExists("webcust/" & Comprw.ShortName) then begin
+        colnum = 1;
+        BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+          style = 1;
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Code",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Alternative Code",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          StringCell(sheetnum,fileToSave,colnum,rownum,style,"Brand",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+        EndRow(sheetnum,fileToSave,rownum);
         resetloop(INr);
         INr.Code = "";
         while loopmain(INr,1,true) begin
@@ -96,6 +106,20 @@ begin
                 BeginRow(sheetnum,fileToSave,rownum,0,blankval);
                   style = 1;
                   StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.Code,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                  StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.AlternativeCode,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                  brand = "";
+                  pos = 0;
+                  class = "";
+                  ExtractObj(INr.DispGroups,pos,class);
+                  while (nonblank(class)) begin
+                    DIr.Code = class;
+                    readfirstmain(DIr,1,true);
+                    if(DIr.CType=="BRAND")then begin
+                      brand = DIr.Name;
+                    end;
+                    ExtractObj(INr.DispGroups,pos,class);
+                  end;
+                  StringCell(sheetnum,fileToSave,colnum,rownum,style,brand,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
                 EndRow(sheetnum,fileToSave,rownum);
               end;
             end;
