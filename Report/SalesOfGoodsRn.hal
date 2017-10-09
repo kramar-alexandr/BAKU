@@ -34,7 +34,7 @@ begin
   record IVVc tIVr;
   record INVc INr;
   record BaseCurBlock bcur;
-  record ShopCoefVc SCr;
+  record ShopCoef2Vc SCr;
   record GCSVc GCSr;
   record PDVc PDr;
   record IPrsVc IPrsr;
@@ -186,7 +186,12 @@ begin
         printedrmb = printedrmb + sumbase;
         printedrm = printedrm + sumbrandcur;
       end;
-      CurValToOtherCur(transdate,IVrw.CurncyCode,IVrw.Sum/qty,brandcur,retailbrandcur,DefaultCurRoundOff);
+      if (nonblank(IVrw.CurncyCode)) then begin
+        tstr = IVrw.CurncyCode;
+      end else begin
+        tstr = IVp.CurncyCode;
+      end;
+      CurValToOtherCur(transdate,tstr,IVrw.Sum/qty,brandcur,retailbrandcur,DefaultCurRoundOff);
       retailbase = IVToBaseMy(IVp,IVrw,IVrw.Sum/qty);
       plantot = plantot + planfifobase;
       vplantotcur[brandcur] = vplantotcur[brandcur] + planfifobrandcur;
@@ -195,6 +200,13 @@ begin
       sumtot = sumtot + sumbase;
         
       if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
+        if (planfifobase==0) and ((fifobase==0) and nopcppr) then begin
+          brandcur = bcur.BaseCur1;
+          retailbrandcur = retailbase;
+          planfifobrandcur = planfifobase;
+          fifobrandcur = fifobase;
+          sumbrandcur = sumbase;
+        end;
         startformat(15);
           outstring(tabs[1],0,IVrw.ArtCode,false);                               // Код товара
           if (cupnr==-1) then begin
@@ -554,6 +566,13 @@ begin
     vfacttotcur[brandcur] = vfacttotcur[brandcur] + fifobrandcur;
     sumtot = sumtot + sumbase;
     if ((printf) and ((fifobase!=0) or (planfifobase!=0) or (sumbase!=0))) then begin
+      if (planfifobase==0) and ((fifobase==0) and nopcppr) then begin
+        brandcur = bcur.BaseCur1;
+        retailbrandcur = retailbase;
+        planfifobrandcur = planfifobase;
+        fifobrandcur = fifobase;
+        sumbrandcur = sumbase;
+      end;
       startformat(15);
         outstring(tabs[1],0,ORrw.ArtCode,false);                                // Код товара
         OutStringID(tabs[2],"DblIPVcID","ПЛ/КЛ. " & iprsernr,false,iprsernr);   // Докум.
@@ -614,7 +633,7 @@ begin
   record ItemHistVc IHr;
   record POVc POr;
   record GCSVc GCSr;
-  record ShopCoefVc SCr;
+  record ShopCoef2Vc SCr;
   record ARPayHistVc ARPayHistr;
   record TRVc TRr;
   row PMBlock PMrw;

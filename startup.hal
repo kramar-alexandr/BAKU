@@ -155,6 +155,7 @@ begin
  	Maintenance("Добавить способ оплаты",AddPModeMnVClass,AddPModeMn,modSL);
  	Maintenance("Добавить код НДС",AddVATCodeVClass,AddVATCodeMn,modNL);
  	Maintenance("Добавить ед.изм.",ImportImagesVClass,AddInchesMn,modIN);
+  Maintenance("Fix ShopCoefVc",FIXVClass,FixShopCoefMn,modDBMain);
 
   
   Report("Test",TestRClass,TestRn,0,modDBMain);

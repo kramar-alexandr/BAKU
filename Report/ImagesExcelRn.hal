@@ -2,6 +2,7 @@ external function string 255 MonthName(Date);
 external procedure ExtractObj(string,var Integer,var string);
 external procedure CopyFile(string,string);
 external function string 255 ConvertXml(string);
+external procedure FindAwerageCostCurProc(string,string,string,date,string,string,var val,var val);
 
 external procedure XmlXlsxWorkBegin(string,string);
 external procedure CreateSheetsXLSX(integer,array string,string,integer,boolean);
@@ -136,7 +137,7 @@ begin
     EndRow(sheetnum,fileToSave,rownum);
     
     INr.Code = "";
-    while loopmain(INr,1,true) begin
+    while (loopmain(INr,1,true)) begin
       ClearStocksStuff(SQi,stockInArr,stocks,stockQty);
       ClearClassifStuff(TSi,typeClassif,classif);
 //collect stocks
@@ -144,7 +145,7 @@ begin
 				setcompany(i+1,false);
         ISr.Code = INr.Code;
         TrHs = true;
-        while(loopmain(ISr,1,TrHs)) begin
+        while (loopmain(ISr,1,TrHs)) begin
           testf = true;
           if (ISr.Code!=INr.Code) then begin testf = false; TrHs = false; end;
           if (nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2) then begin testf = false; end;
@@ -189,7 +190,7 @@ begin
           price = 0;
           PLr.ArtCode = INr.Code;
           PLr.PLCode = "RRP";
-          while(loopmain(PLr,2,(PLr.ArtCode==INr.Code)))begin
+          while (loopmain(PLr,2,(PLr.ArtCode==INr.Code))) begin
             if(PLr.ArtCode==INr.Code)then begin
               price = price + PLr.ExVatPrice;
               cnt = cnt + 1;
@@ -427,7 +428,7 @@ begin
           rowcnt = rowcnt + 1;
           
           test2f = true;
-          while test2f begin
+          while (test2f) begin
             BeginRow(sheetnum,fileToSave,rownum,0,blankval);
               colnum = 2;
               if nonblank(stocks[Scntr]) then begin
@@ -531,6 +532,8 @@ begin
   vector boolean stockInArr;
   vector integer stockQty;
   array string 100 classif;
+  string 50 realcur,brandcur;
+	val curcost,curcost2;
   
   integer INCi,TCi;
   array string 100 typeClassif,tempINCodes,INCodes;
@@ -580,7 +583,7 @@ begin
   
   INr.Code = "";
   INCi = 0;
-  while loopmain(INr,1,true) begin
+  while (loopmain(INr,1,true)) begin
     tempINCodes[INCi] = INr.Code;
     INCi = INCi + 1;
     alldata[INr.Code & ":name"] = INr.Name;
@@ -611,7 +614,7 @@ begin
 				setcompany(i+1,false);
         ISr.Code = INr.Code;
         TrHs = true;
-        while(loopmain(ISr,1,TrHs)) begin
+        while (loopmain(ISr,1,TrHs)) begin
           testf = true;
           if (ISr.Code!=INr.Code) then begin testf = false; TrHs = false; end;
           if (nonblank(RepSpec.f2) and ISr.Location!=RepSpec.f2) then begin testf = false; end;
@@ -634,7 +637,7 @@ begin
       price = 0;
       PLr.ArtCode = INr.Code;
       PLr.PLCode = "RRP";
-      while(loopmain(PLr,2,(PLr.ArtCode==INr.Code)))begin
+      while (loopmain(PLr,2,(PLr.ArtCode==INr.Code))) begin
         if(PLr.ArtCode==INr.Code)then begin
           price = price + PLr.ExVatPrice;
           cnt = cnt + 1;
@@ -650,8 +653,13 @@ begin
       resetloop(PLr);
       alldata[INr.Code & ":retail"] = price/cnt;
       alldata[INr.Code & ":cur"] = pricecur;
-      alldata[INr.Code & ":cost"] = INr.LastPurchPrice2;
+		
+      realcur = INr.LastPurchCurncyCode;
+      curcost = blankval;
+      FindAwerageCostCurProc(INr.Code,"",INr.LastPurchCurncyCode,currentdate,realcur,brandcur,curcost,curcost2);
+      alldata[INr.Code & ":cost"] = curcost;
       alldata[INr.Code & ":date"] = INr.LastPriceChange;
+      alldata[INr.Code & ":barcode"] = INr.BarCode;
       BlockLoad(Compb);
       MatRowGet(Compb,currentcompany-1,Comprw);
       if (currentcompany==9) then begin
@@ -735,7 +743,18 @@ begin
         colnum = 1;
         for (k=0;k<INInRow;k=k+1) begin
           style = 6;
-          mas[maslen] = "Бренд: " & ConvertXml(alldata[INCodes[i + k] & ":brand"]) & Chr(13) & Chr(10) & "Ритейл: " & alldata[INCodes[i + k] & ":retail"] & Chr(13) & Chr(10) & "Себестоимость: " & alldata[INCodes[i + k] & ":cost"] & Chr(13) & Chr(10) & "Валюта: " & alldata[INCodes[i + k] & ":cur"] & Chr(13) & Chr(10) & "Дата посл. пост.: " & alldata[INCodes[i + k] & ":date"];
+          //mas[maslen] = "Бренд: " & ConvertXml(alldata[INCodes[i + k] & ":brand"]) & Chr(13) & Chr(10) & "Ритейл: " & alldata[INCodes[i + k] & ":retail"] & Chr(13) & Chr(10) & "Себестоимость: " & alldata[INCodes[i + k] & ":cost"] & Chr(13) & Chr(10) & "Валюта: " & alldata[INCodes[i + k] & ":cur"] & Chr(13) & Chr(10) & "Дата посл. пост.: " & alldata[INCodes[i + k] & ":date"];
+          mas[maslen] = "Бренд: " & ConvertXml(alldata[INCodes[i + k] & ":brand"]) & Chr(13) & Chr(10);
+          maslen = maslen + 1;
+          mas[maslen] = "Ритейл: " & alldata[INCodes[i + k] & ":retail"] & Chr(13) & Chr(10);
+          maslen = maslen + 1;
+          mas[maslen] = "Себестоимость: " & alldata[INCodes[i + k] & ":cost"] & Chr(13) & Chr(10);
+          maslen = maslen + 1;
+          mas[maslen] = "Валюта: " & alldata[INCodes[i + k] & ":cur"] & Chr(13) & Chr(10);
+          maslen = maslen + 1;
+          mas[maslen] = "Дата посл. пост.: " & alldata[INCodes[i + k] & ":date"] & Chr(13) & Chr(10);
+          maslen = maslen + 1;
+          mas[maslen] = "EAN: " & alldata[INCodes[i + k] & ":barcode"];
           maslen = maslen + 1;
           StringCell(sheetnum,fileToSave,colnum,rownum,style,",,," & maslen,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
           style = 7;
