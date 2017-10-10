@@ -5,7 +5,7 @@ external function roundmode SetRoundMode(Integer,Integer,Integer,Integer);
 external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
 remote function boolean CompanyIsJWLikeCompany(Integer);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
-
+external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
@@ -998,7 +998,7 @@ begin
 		end else begin
 			inrcode = INr.Code;
 		end;
-		inrcode = StrReplace(inrcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:27:01
+		inrcode = imgStrReplace(inrcode);// Edit ************************** Tuesday, 3 October 2017 17:27:01
 		
 		if (fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg")) then begin
 			filename = "http://" & serverip & "/" & inrcode & ".jpg";

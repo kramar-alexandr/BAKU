@@ -1,6 +1,18 @@
 external procedure MySendAsyncWebRequest(string,string,boolean,string,string,string,string,area,string,integer);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 
+global function string 255 imgStrReplace(string instr)
+begin
+	string 255 res;
+	
+	res = StrReplace(instr,"/","-");
+	res = StrReplace(instr,"\"","-");
+
+	imgStrReplace = res;
+return;
+end;
+
+
 function string 200 NormalizeFileName(string fname)
 begin
 	string 255 res,newname;
@@ -14,7 +26,7 @@ begin
 	  	newname = newname & mid(fname,i,1);
 	  end;
 	end; 
-	newname = StrReplace(newname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:27:01
+	newname = imgStrReplace(newname);// Edit ************************** Tuesday, 3 October 2017 17:27:01
 	res = newname;
 	NormalizeFileName = res;
 return;
@@ -38,7 +50,7 @@ begin
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
 	
-	imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:27:01
+	imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:27:01
 
 	
 	logtext(0,user & " webcust/" & Comprw.ShortName & "/" & imname & ".jpg curcomp=" & currentcompany & " curcomp " & curcomp);
@@ -46,7 +58,7 @@ begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".jpg","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".jpg");
 		end;
-		imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:30:58
+		imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:30:58
 		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".jpg";
 	end;
@@ -54,7 +66,7 @@ begin
 		if (imname!=urlencode(imname)) then begin
 			renamefile("webcust/" & Comprw.ShortName & "/" & imname & ".png","webcust/" & Comprw.ShortName & "/" & urlencode(imname) & ".png");
 		end;
-		imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:31:06
+		imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:31:06
 		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".png";
 	end;
@@ -83,7 +95,7 @@ begin
 	record ItemStatusVc ISr;
   
   imname = WebGetArg	("image");
-  imname = StrReplace(imname,"/","-");// Edit ************************** Tuesday, 3 October 2017 17:31:36
+  imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:31:36
   curcomp = WebGetArg	("curcomp");
   loc = WebGetArg	("location");
   
@@ -110,7 +122,7 @@ begin
 				end;
 			end;
 			imname = itemcode;
-			imname = StrReplace(imname,"/","-");
+			imname = imgStrReplace(imname);
 			
 			ISr.Code = itemcode;
 			ISr.Location = ";;;";
@@ -309,7 +321,7 @@ end;
 procedure CheckImagePath(string filename1,string filepathP,var string filepathC)
 begin
   string 50 filename;
-  filename = StrReplace(filename1,"/","-");
+  filename = imgStrReplace(filename1);
   
   if (FILEEXISTS(filepathP & filename & ".jpeg")) then begin
 		filepathC = filepathP & filename & ".jpeg";
@@ -351,7 +363,7 @@ begin
 	if(nonblank(artcode))then begin		
 		INr.Code = artcode;
 		ReadFirstMain(INr,1,true);
-		artcode = StrReplace(artcode,"/","-");// Edit ************************** Tuesday, 3 October 2017 18:07:53
+		artcode = imgStrReplace(artcode);// Edit ************************** Tuesday, 3 October 2017 18:07:53
 		oldcompany = company;
 		BlockLoad(Compb);
 		rwcnt = MatRowCnt(Compb);

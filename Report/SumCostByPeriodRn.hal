@@ -179,33 +179,47 @@ begin
             if IHr.StockAffectf==1 then begin
               if IHr.Qty>=0 then begin
                 totcostsd = totcostsd + ihcost;
+                totcosted = totcosted + ihcost;
               end else begin
                 totcostsd = totcostsd + (-ihcost);
+                totcosted = totcosted + (-ihcost);
               end;
             end;
           case "PUVc":
             totcostsd = totcostsd + ihcost;
+            totcosted = totcosted + ihcost;
           case "SHVc":
             totcostsd = totcostsd + (-ihcost);
+            totcosted = totcosted + (-ihcost);
           case "SDVc":
             totcostsd = totcostsd + (-ihcost);
+            totcosted = totcosted + (-ihcost);
           case "StockMovVc":
             if IHr.Qty>=0 then begin
               totcostsd = totcostsd + ihcost;
+              totcosted = totcosted + ihcost;
             end else begin
               totcostsd = totcostsd + (-ihcost);
+              totcosted = totcosted + (-ihcost);
             end;
           case "RetVc":
             totcostsd = totcostsd + ihcost;
+            totcosted = totcosted + ihcost;
           case "RetPUVc":
             totcostsd = totcostsd + (-ihcost);
+            totcosted = totcosted + (-ihcost);
           case "SRVc":
           	if IHr.Qty>=0 then begin
 							totcostsd = totcostsd + ihcost;
+							totcosted = totcosted + ihcost;
 						end else begin
 							totcostsd = totcostsd + (-ihcost);
+							totcosted = totcosted + (-ihcost);
 						end;
         end;
+        
+        //logtext(0,"s " & IHr.ArtCode & " " & IHr.SerNr & " " & totcostsd);
+        
       end else begin
       	if(IHr.StockAffectf==1)then begin
 					eqty = eqty + IHr.Qty;
@@ -369,6 +383,7 @@ begin
           	retpu = retpu + ihcost;
             totcosted = totcosted + (-ihcost);
         end;
+        //logtext(0,"e " & IHr.ArtCode & " " & IHr.SerNr & " " & totcostsd);
       end;
     end;
   end;
@@ -397,7 +412,7 @@ begin
 	record BaseCurBlock BCBb;
 	string 20 tempcur,tempdi;
 	Boolean checkctypef; //Edit***************************Sasha2,11:37 09.02.2016
-	val prevcostsd,sqty,eqty,prevcosted;
+	val prevcostsd,sqty,eqty,prevcosted,allprevcost;
 	record ItemStatusVc ISr;
 	boolean ISrTrHs;
   
@@ -537,6 +552,7 @@ begin
         curgr = "";
         rownr = 1;
         totcostsd = 0;
+        allprevcost = 0;
         ivtotsum = 0;
         ivshtotsum = 0;
         ivshpricesum = 0;
@@ -554,7 +570,7 @@ begin
         calc = true;
         while (LoopKey("MyDispGroups",INr,1,true)) begin
         
-        	//if(setinset("WMF_ACC",INr.DispGroups))then begin// Edit ************************** Monday, 2 October 2017 17:08:15
+        	//if(setinset("KAUFFMAN",INr.DispGroups))then begin// Edit ************************** Monday, 2 October 2017 17:08:15
 					//if((currentuser=="SA" and setinset("V&B_CL",INr.DispGroups))or(currentuser!="SA"))then begin// Edit ************************** Tuesday, 3 October 2017 17:09:24
 					if(true)then begin
 						if (checkctypef) then begin //Edit***************************Sasha2,11:38 09.02.2016 {
@@ -635,7 +651,13 @@ begin
 							OutString(385,0,srval*rate,false); // Edit ************************** Friday, 26 December 2014 13:31:59
 							totals[12] = totals[12] + srval*rate;
 				
-							totcosted = totcosted + totcostsd;
+							
+							//if(curcode!=BCBb.BaseCur1)then begin
+							//	totcosted = allprevcost + totcosted;// Edit ************************** Tuesday, 10 October 2017 12:19:14
+							//end else begin
+								//totcosted = totcosted + totcostsd;
+							//end;
+							
 							for(j=1;j<spi;j=j+1) begin
 								OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
 								sdtotal[j] = sdtotal[j] + sdcost[j]*rate;
@@ -644,6 +666,7 @@ begin
 							totals[10] = totals[10] + totcosted*rate;
 							EndFormat;
 							totcostsd = 0;
+							allprevcost = 0;
 							ivtotsum = 0;
 							ivshtotsum = 0;
 							ivshpricesum = 0;
@@ -714,22 +737,23 @@ begin
 									if(nonblank(location) and ISr.Location!=location)then begin ISrTrHs = false; end;
 						
 									if(ISrTrHs and ISr.Location!=";;;")then begin
-										if(ItemQtyPerDateGlob(INr.Code,sd,ISr.Location)>0)then begin
+										//if(ItemQtyPerDateGlob(INr.Code,sd,ISr.Location)>0 or ItemQtyPerDateGlob(INr.Code,ed,ISr.Location)>0)then begin
 											GroupCostIHSerch(INr.Code,sd,ed,sqty,eqty,totcostsd,ivtotsum,ivshtotsum,ivshpricesum,putotsum,sdtotsum,smpozitivtotsum,smnegativtotsum,totcosted,ISr.Location,retsum,qty,sdcost,inpo,qtynotpay,retpu,srval,curcode,BCBb.BaseCur1);
-										end;
+										//end;
 									end;
-						
+								
 									if(curcode!=BCBb.BaseCur1)then begin
-										if(sqty<=0)then begin
-											totcostsd = prevcostsd;          		
-										end;
 										if(eqty<=0)then begin
-											totcosted = prevcosted;          		
+											totcosted = prevcosted;  
 										end;
+										if(sqty<=0)then begin
+											totcostsd = prevcostsd;    
+										end;
+										
 									end;
 									if(currentuser=="SA")then begin
 										if(sqty>0)then begin
-											//logtext(0,INr.Code & " " & totcostsd-prevcostsd);
+											//logtext(0,INr.Code & " " & totcostsd-prevcostsd & " " & totcosted-prevcosted);
 										end;
 									end;
 								end;
@@ -780,7 +804,13 @@ begin
           totals[11] = totals[11] + retpu*rate;
           OutString(385,0,srval*rate,false);
           totals[12] = totals[12] + srval*rate;
-          totcosted = totcosted + totcostsd;
+          //
+          //if(curcode!=BCBb.BaseCur1)then begin
+						//totcosted = allprevcost + totcosted;// Edit ************************** Tuesday, 10 October 2017 12:19:05
+					//end else begin
+						//totcosted = totcosted + totcostsd;
+					//end;
+          
           for(j=1;j<spi;j=j+1) begin
             OutString(390,0,sdcost[j]*rate,false);// Edit ************************** Wednesday, 31 October 2012 13:57:36
             sdtotal[j] = sdtotal[j] + sdcost[j]*rate;

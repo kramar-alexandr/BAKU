@@ -4,6 +4,7 @@ external function roundmode SetRoundModeD(Integer);
 external function Boolean SetInSet2(string,string);
 external function val AbsoluteVal(val);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
+external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -181,11 +182,11 @@ begin
 								BlockLoad(Compb);
 								MatRowGet(Compb,currentcompany-1,Comprw);
 								
-								if(fileexists("webcust/" & Comprw.ShortName & "/" & StrReplace(INr.Code,"/","-") & ".jpg"))then begin
-									filename = "http://" & serverip & "/" & StrReplace(INr.Code,"/","-") & ".jpg";
+								if(fileexists("webcust/" & Comprw.ShortName & "/" & imgStrReplace(INr.Code) & ".jpg"))then begin
+									filename = "http://" & serverip & "/" & imgStrReplace(INr.Code) & ".jpg";
 								end;
-								if(fileexists("webcust/" & Comprw.ShortName & "/" & StrReplace(INr.Code,"/","-") & ".png"))then begin
-									filename = "http://" & serverip & "/" & StrReplace(INr.Code,"/","-") & ".png";
+								if(fileexists("webcust/" & Comprw.ShortName & "/" & imgStrReplace(INr.Code) & ".png"))then begin
+									filename = "http://" & serverip & "/" & imgStrReplace(INr.Code) & ".png";
 								end;
 							end;
 							
