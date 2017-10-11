@@ -643,7 +643,7 @@ begin
   row SHVc SHrw;
   row POVc POrw;
   row TRVc TRrw;
-  val sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrmb,printedrm,planfifobase,qty;
+  val sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrmb,printedrm,planfifobase,qty,percent;
   val recivedmoneybase,recivedmoneybrandcur,plantot,facttot,sumtot,prepayment,gifted,giftsertpaym,loyaltypaym,printedprepval,rmbpart;
   val aznfr,aznto,fr,to1,to2,br1,br2;
   string 10 tstr,brandcur,store;
@@ -783,7 +783,14 @@ begin
       
       if (recivedmoneybase!=0) then begin
         recivedmoneybase = recivedmoneybase - gifted - giftsertpaym - loyaltypaym;
-        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym),IVr.InvDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
+        PDr.Code = IVr.PayDeal;
+        readfirstmain(PDr,1,true);
+        if (PDr.PDType==kInvoiceTypeCash) then begin
+          percent = recivedmoneybase/(recivedmoneybase + giftsertpaym + prepayment + loyaltypaym);
+        end else begin
+          percent = recivedmoneybase/IVr.BaseSum4;
+        end;
+        SalesOfGoodsRn_processIV(IVr,recivedmoneybase,percent,IVr.InvDate,-1,printf,tabs,InvoiceRowTypeDownpaymentf,plantot,facttot,sumtot,vplantotcur,vfacttotcur);
       end;
       
       
