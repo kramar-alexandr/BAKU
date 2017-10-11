@@ -271,9 +271,6 @@ begin
 	tempcost = 0;
 	if(brandcur==IHr.CurncyCode or blank(brandcur))then begin
 		curcost2 = curcost2 + IHr.TotCostPriceCurncy * neg;
-		/*if(IHr.ArtCode=="0654906020")then begin
-			logtext(0,IHr.SerNr & " " & IHr.FileName & " " & IHr.TransNr & " " & IHr.TotCostPriceCurncy * neg & " " & IHr.Location);
-		end;*/
 	end else begin
 		if(IHr.CurncyCode=="AZN")then begin
 			if(nonblankdate(IHr.InDate))then begin
