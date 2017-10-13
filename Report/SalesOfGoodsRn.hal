@@ -50,7 +50,7 @@ begin
   row ORVc ORrw;
   integer i,j,rwcnt,rwcnt2;
   boolean updst,giftf,found,notprint,nocoef,nopcppr,pofound,TrHs,difbrandcur;
-  val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,tmp,itemsum,qty;
+  val recivedmoneybrandcur,sumbase,sumbrandcur,retailbase,retailbrandcur,fifobase,fifobrandcur,printedrm,printedrmb,planfifobase,planfifobrandcur,tmp,tmp2,itemsum,qty;
   string 10 prevbrandcur,brandcur,tstr,store;
   vector val currencyBalances; //Edit***************************Sasha2,15:49 13.09.2017
 	array string 10 addCurs; //Edit***************************Sasha2,15:50 13.09.2017
@@ -278,21 +278,24 @@ begin
           if (tIVrw.stp==kInvoiceRowTypeNormal) then begin
             itemsum = itemsum + tIVrw.Sum;
             tmp = 0;
+            tmp2 = 0;
             if (tIVr.UpdStockFlag>0 and tIVr.OrderNr<0) then begin
               updst = true;
             end else begin
               updst = false;
             end;
-            FindFIFOOrigValAndCurncyIV(tIVr.SerNr,j,fifobrandcur,brandcur,tmp,updst,addCurs,currencyBalances,false); //Edit***************************Sasha2,14:03 14.09.2017
+            FindFIFOOrigValAndCurncyIV(tIVr.SerNr,j,tmp2,brandcur,tmp,updst,addCurs,currencyBalances,false); //Edit***************************Sasha2,14:03 14.09.2017
             if (tIVrw.CurncyCode=="AZN") then begin
               tmp = tmp*aznfr/aznto;
             end;
             tmp = round(tmp,SetRoundModeD(2));
             fifobase = fifobase + tmp;
+            fifobrandcur = fifobrandcur + tmp2;
           end;
         end;
         if (IVrw.Sum<itemsum) then begin
           fifobase = round(IVrw.Sum/itemsum*fifobase*qty,SetRoundModeD(2));
+          fifobrandcur = round(IVrw.Sum/itemsum*fifobrandcur*qty,SetRoundModeD(2));
         end;
       end;
       tstr = brandcur;
@@ -301,7 +304,7 @@ begin
         fr = 1; to1 = 1;
       end;
       Base1ToOther(brandcur,recivedmoneybase,fr,to1,to2,br1,br2,recivedmoneybrandcur,DefaultCurRoundOff);
-      if (fifobase!=0) then begin
+      if (fifobrandcur==0) then begin
         Base1ToOther(brandcur,fifobase,fr,to1,to2,br1,br2,fifobrandcur,DefaultCurRoundOff);
       end;
       Base1ToOther(brandcur,planfifobase,fr,to1,to2,br1,br2,planfifobrandcur,DefaultCurRoundOff);
