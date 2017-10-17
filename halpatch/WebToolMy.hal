@@ -7,6 +7,8 @@ begin
 	
 	res = StrReplace(instr,"/","-");
 	res = StrReplace(instr,"\"","-");
+	
+	logtext(0,instr & " _ " & res);
 
 	imgStrReplace = res;
 return;
