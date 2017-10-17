@@ -6,7 +6,7 @@ begin
 	string 255 res;
 	
 	res = StrReplace(instr,"/","-");
-	res = StrReplace(instr,"\"","-");
+	res = StrReplace(res,"\"","-");
 	
 	logtext(0,instr & " _ " & res);
 
