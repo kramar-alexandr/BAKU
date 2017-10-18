@@ -1918,7 +1918,8 @@ begin
 				port = PSb.httpPort;
 				path = CBrw.TCPIP;
 				//SWAROVSKI LLADRO J&W V&B Creative Ambiance Carpets Cadenza
-				if(currentcompany==5)then begin
+				//Edit-------------------Vitalii 15:59 18.10.2017
+        /*if(currentcompany==5)then begin
 					tstr1 = GetINImageAttach(IVrw.ArtCode);//J&W Cartier itp
 				end else begin
 					if(currentcompany==9)then begin
@@ -1928,7 +1929,8 @@ begin
 					end else begin
 						tstr1 = IVrw.ArtCode;
 					end;
-				end;
+				end;*/
+        tstr1 = IVrw.ArtCode;
 				setwindowsubset(wn,"http://" & path & ":" & port & "/WebGetINImage.hal?image=" & tstr1 & "&curcomp=" & currentcompany & "&user=" & currentuser);
 				ReRunWindowDef(wn);
 			end;

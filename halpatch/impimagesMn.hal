@@ -42,6 +42,8 @@ external function string 20 ReturnFieldDITypeNotJW(string); //Edit**************
 external function Boolean SetInSet2(string,string);
 external updating procedure CalcPriceListsMn(record RcVc); //Edit***************************Sasha2,10:15 31.03.2017
 external function Boolean TimeInRange(Time,Time,Time); //Edit***************************Sasha2,11:26 27.07.2017
+external function string 255 imgStrReplace(string);
+external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -5665,6 +5667,95 @@ begin
       SC2r.Date = SCr.Date;
       SC2r.Coef = SCr.Coef;
       recordStore(SC2r,true);
+    end;
+  end;
+	
+	ResetCompany(oldcompany);
+  return;
+end;
+
+global
+updating procedure FindAndStoreINVcImgLink(record INVc INr, integer compnr, var string fullpath, var string filename)
+begin
+  record CompaniesBlock Compb;
+  row CompaniesBlock Comprw;
+  string 50 inrcode;
+  integer pos;
+  
+  BlockLoad(Compb);
+  MatRowGet(Compb,compnr-1,Comprw);
+  fullpath = "";
+  /*if (nonblank(INr.ImgLink) and fileexists(INr.ImgLink)) then begin
+    fullpath = INr.ImgLink;
+    pos = 0;
+    ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
+    ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
+    ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);\
+  end else begin*/
+    inrcode = imgStrReplace(INr.Code);
+    if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+      filename = inrcode & ".jpg";
+    end;
+    if (blank(fullpath)) then begin
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+        filename = inrcode & ".png";
+      end;
+    end;
+    if (blank(fullpath)) then begin
+      inrcode = imgStrReplace(INr.AlternativeCode);
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+        filename = inrcode & ".jpg";
+      end;
+    end;
+    if (blank(fullpath)) then begin
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+        filename = inrcode & ".png";
+      end;
+    end;
+    if (blank(fullpath)) then begin
+      inrcode = imgStrReplace(INr.BarCode);
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
+        filename = inrcode & ".jpg";
+      end;
+    end;
+    if (blank(fullpath)) then begin
+      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
+        filename = inrcode & ".png";
+      end;
+    end;
+  //end;
+  if (filename!=urlencode(filename)) then begin
+    renamefile("webcust/" & Comprw.ShortName & "/" & filename,"webcust/" & Comprw.ShortName & "/" & urlencode(filename));
+    filename = urlencode(filename);
+  end;
+  fullpath = "webcust/" & Comprw.ShortName & "/" & filename;
+  /*if (INr.ImgLink!=fullpath) then begin
+    INr.ImgLink = fullpath;
+    recordStore(INr,true);
+  end;*/
+  
+  return;
+end;
+
+global
+updating procedure FillImgInINVcMn(record RcVc RepSpec)
+begin
+  record CompaniesBlock Compb;
+  record INVc INr;
+  row CompaniesBlock Comprw;
+  integer oldcompany,i,rwcnt;
+  string 255 fullpath,filename;
+  
+  oldcompany = CurrentCompany;
+  BlockLoad(Compb);
+  rwcnt = MatRowCnt(Compb); 
+	for (i=0;i<rwcnt;i=i+1) begin
+    MatRowGet(Compb,i,Comprw);
+    SetCompany(i+1,false);
+    resetloop(INr);
+    INr.Code = "";
+    while loopmain(INr,1,true) begin
+      FindAndStoreINVcImgLink(INr,i+1,fullpath,filename);
     end;
   end;
 	

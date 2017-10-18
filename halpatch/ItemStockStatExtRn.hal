@@ -6,6 +6,7 @@ external procedure ExtractObjWithSeparator(string,string,Boolean,var Integer,var
 remote function boolean CompanyIsJWLikeCompany(Integer);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
+external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
 //SetLangMode(LangRussian,"RUS",0); //Edit***************************Sasha2,18:20 11.12.2014
 
@@ -832,7 +833,7 @@ begin
 return;
 end;
 
-procedure PrintInfoWeb(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var area webpage1,string serverip,roundmode rnd,integer dispcur,string basecurr) //Edit***************************Sasha2,15:48 21.04.2015
+updating procedure PrintInfoWeb(record INVc INr, record ItemStatusVc ISr,string serial,val serstock,val costprice,date todate,var area webpage1,string serverip,roundmode rnd,integer dispcur,string basecurr) //Edit***************************Sasha2,15:48 21.04.2015
 begin 
 	record DIVc DIr;
 	record PLVc PLr;
@@ -850,7 +851,7 @@ begin
   row IVVc IVrw;
   record Attach2Vc Attachr;
 	record RLinkVc RLr;
-	string 255 filename,uid,res,inrcode;
+	string 255 filename,uid,res,inrcode,tstr;
 	string 50 comfolder,modelname,brandname;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
@@ -989,7 +990,7 @@ begin
 		uid = "";
 		
 		BlockLoad(Compb);
-		MatRowGet(Compb,currentcompany-1,Comprw);
+		/*MatRowGet(Compb,currentcompany-1,Comprw);
 		if (currentcompany==9) then begin
 			inrcode = INr.AlternativeCode;
 		end else begin
@@ -1002,8 +1003,9 @@ begin
 		end;
 		if (fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png")) then begin
 			filename = "http://" & serverip & "/" & inrcode & ".png";
-		end;
-				
+		end;*/
+    FindAndStoreINVcImgLink(INr,currentcompany,tstr,filename);
+    filename = "http://" & serverip & "/" & filename;
 		if(nonblank(filename))then begin
 			ExportString("<td width=\"300\" height=\"300\" align=\"center\"><div align=\"justify\"><img src=\"" & filename & "\" width=\"100%\" height=\"100%\"/></div></td>");
 		end else begin
@@ -1561,7 +1563,7 @@ begin
 return;
 end;
 
-global procedure ItemStockStatExtManRClassReportDefaults(integer wn)
+global updating procedure ItemStockStatExtManRClassReportDefaults(integer wn)
 begin
 	record RcVc RepSpec;
 	record UserVc User;
@@ -1583,7 +1585,7 @@ return;
 end;
 
 
-global procedure ItemStockStatExtWebRn(record RcVc RepSpec,var area webpage1,string serverip)
+global updating procedure ItemStockStatExtWebRn(record RcVc RepSpec,var area webpage1,string serverip)
 begin
   record ItemStatusVc ISr;
   record PLVc PLr;

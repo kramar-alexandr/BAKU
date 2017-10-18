@@ -25,6 +25,7 @@ external procedure EndToAddImgToAllSheet(integer,string);
 external function string 10 GetStringCellNum(integer,integer);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
+external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
 
 SetLangMode(LangRussian,"RUS",0);
@@ -56,7 +57,7 @@ integer i;
 return;
 end;
 
-procedure ImagesExcel(record RcVc RepSpec)
+updating procedure ImagesExcel(record RcVc RepSpec)
 begin
 	
 	array string 50 sheetNames;
@@ -74,14 +75,13 @@ begin
   integer imgCounter;
 	
   record CompaniesBlock Compb;
-	row CompaniesBlock Comprw;
-  record DIVc DIr;
+	record DIVc DIr;
   record PLVc PLr;
   record PLDefVc PLDefr;
   record ItemStatusVc ISr;
   record INVc INr;
   record CTypeVc CTyper;
-  string 100 inrcode;
+  string 100 tstr;
   string 50 uloc,brand,brandcode,pricecur;
   integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt,mtrw,curcomp;
   boolean TrHs,testf,test2f;
@@ -207,22 +207,7 @@ begin
           resetloop(PLr);
           price = price/cnt;
 //path to image
-          //BlockLoad(Compb);
-          MatRowGet(Compb,currentcompany-1,Comprw);
-          if (currentcompany==9) then begin
-            inrcode = INr.AlternativeCode;
-          end else begin
-            inrcode = INr.Code;
-          end;
-          inrcode = imgStrReplace(inrcode);// Edit ************************** Tuesday, 3 October 2017 17:32:38
-          pathToImg = "";
-          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
-            pathToImg = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
-          end;
-          if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
-            pathToImg = "webcust/" & Comprw.ShortName & "/" & inrcode & ".png";
-          end;
-          
+          FindAndStoreINVcImgLink(INr,currentcompany,pathToImg,tstr);
           Ccntr = 0;
           Scntr = 0;
           rowcnt = 0;
@@ -499,7 +484,7 @@ begin
   return;
 end;
 
-procedure ImagesExcel2(record RcVc RepSpec)
+updating procedure ImagesExcel2(record RcVc RepSpec)
 begin
 	
 	array string 50 sheetNames;
@@ -518,14 +503,13 @@ begin
   integer imgCounter;
 	
   record CompaniesBlock Compb;
-	row CompaniesBlock Comprw;
-  record DIVc DIr;
+	record DIVc DIr;
   record PLVc PLr;
   record PLDefVc PLDefr;
   record ItemStatusVc ISr;
   record INVc INr;
   record CTypeVc CTyper;
-  string 100 inrcode;
+  string 100 tstr;
   string 50 uloc,brand,brandcode,pricecur;
   integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt,j,INInRow,k,curcomp,mtrw;
   boolean TrHs,testf,test2f;
@@ -661,20 +645,8 @@ begin
       alldata[INr.Code & ":cost"] = curcost;
       alldata[INr.Code & ":date"] = INr.LastPriceChange;
       alldata[INr.Code & ":barcode"] = INr.BarCode;
-      BlockLoad(Compb);
-      MatRowGet(Compb,currentcompany-1,Comprw);
-      if (currentcompany==9) then begin
-        inrcode = INr.AlternativeCode;
-      end else begin
-        inrcode = INr.Code;
-      end;
-      inrcode = imgStrReplace(inrcode);// Edit ************************** Tuesday, 3 October 2017 17:32:38
-      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
-        alldata[INr.Code & ":pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg";
-      end;
-      if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
-        alldata[INr.Code & ":pathToImg"] = "webcust/" & Comprw.ShortName & "/" & inrcode & ".png";
-      end;
+      FindAndStoreINVcImgLink(INr,currentcompany,alldata[INr.Code & ":pathToImg"],tstr);
+      
     end;
   end;
   
@@ -813,7 +785,7 @@ return;
 end;
 
 
-global
+global updating
 procedure ImagesExcelRn(record RcVc RepSpec)
 begin
   string 250 filename,tstr,errstr,tstr2;
@@ -877,7 +849,6 @@ begin
     end else begin
       ImagesExcel(RepSpec);
     end;
-    //OpenWebBrowser("http://" & Comprw.TCPIP & ":" & PSb.httpPort & "/" & filename);
     StartReportNoHeaderJob("Ћстатки по складам с картинками");
       StartFormat(15);
         OutString(0,"DblImagesExcel",RepSpec.f7 & filename,false);

@@ -1,5 +1,6 @@
 external procedure MySendAsyncWebRequest(string,string,boolean,string,string,string,string,area,string,integer);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
+external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
 global function string 255 imgStrReplace(string instr)
 begin
@@ -8,8 +9,6 @@ begin
 	res = StrReplace(instr,"/","-");
 	res = StrReplace(res,"\"","-");
 	
-	logtext(0,instr & " _ " & res);
-
 	imgStrReplace = res;
 return;
 end;
@@ -34,12 +33,13 @@ begin
 return;
 end;
 
-webpublic global
+webpublic global updating
 procedure WebGetINImage()
 begin
   LongInt ser;
   record Attach2Vc Attachr;
-  string 100 imname,curcomp,nimname;
+  record INVc INr;
+  string 100 imname,curcomp,nimname,tstr;
   string 255 filename,user;
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
@@ -51,8 +51,12 @@ begin
 	//Edit-------------------Vitalii 14:19 25.12.2015
 	BlockLoad(Compb);
 	MatRowGet(Compb,StringToInt(curcomp)-1,Comprw);
+	INr.Code = imname;
+  readfirstmain(INr,1,true);
+  imname = "";
+  FindAndStoreINVcImgLink(INr,currentcompany,tstr,imname);
 	
-	imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:27:01
+  /*imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:27:01
 
 	
 	logtext(0,user & " webcust/" & Comprw.ShortName & "/" & imname & ".jpg curcomp=" & currentcompany & " curcomp " & curcomp);
@@ -71,9 +75,9 @@ begin
 		imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:31:06
 		imname = urlencode(imname);
 		filename = Comprw.ShortName & "/" & imname & ".png";
-	end;
+	end;*/
 	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
-	logtext(0,"<img src=\"" & filename & "\" height=\"400\"/></div></td>");
+	//logtext(0,"<img src=\"" & filename & "\" height=\"400\"/></div></td>");
     
   return;
 end;

@@ -16,8 +16,9 @@ external procedure FillSharedStrings(string,array string,integer,integer,array s
 external procedure ConvertToXLSX(string,boolean);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
+external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
-procedure ItemWithoutPic(record RcVc RepSpec)
+updating procedure ItemWithoutPic(record RcVc RepSpec)
 begin
 	record CompaniesBlock Compb;
   record DIVc DIr;
@@ -25,7 +26,7 @@ begin
   integer curcomp,mtrw,i,pos;
   record INVc INr;
   record ItemStatusVc ISr;
-  boolean imgfoundf;
+  string 255 fullpath,tstr;
   string 100 inrcode,brand,class;
   
   array string 50 sheetNames;
@@ -83,26 +84,12 @@ begin
         resetloop(INr);
         INr.Code = "";
         while loopmain(INr,1,true) begin
-          if (i==8) then begin
-            inrcode = INr.AlternativeCode;
-          end else begin
-            inrcode = INr.Code;
-          end;
-          inrcode = imgStrReplace(inrcode);// Edit ************************** Tuesday, 3 October 2017 17:32:38
           ISr.Code = INr.Code;
           ISr.Location = ";;;";
           if (readfirstmain(ISr,2,true)) then begin
             if (ISr.Instock>0) then begin
-              imgfoundf = false;
-              if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
-                imgfoundf = true;
-              end;
-              if (!imgfoundf) then begin
-                if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
-                  imgfoundf = true;
-                end;
-              end;
-              if (!imgfoundf) then begin
+              FindAndStoreINVcImgLink(INr,i+1,fullpath,tstr);
+              if (blank(fullpath)) then begin
                 colnum = 1;
                 BeginRow(sheetnum,fileToSave,rownum,0,blankval);
                   style = 1;
@@ -145,7 +132,7 @@ begin
 return;
 end;
 
-global
+global updating
 procedure ItemWithoutPicRn(record RcVc RepSpec)
 begin
   string 250 filename,tstr;
