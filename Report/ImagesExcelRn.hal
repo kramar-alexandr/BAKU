@@ -509,7 +509,7 @@ begin
   record ItemStatusVc ISr;
   record INVc INr;
   record CTypeVc CTyper;
-  string 100 tstr;
+  string 255 tstr,fullpath;
   string 50 uloc,brand,brandcode,pricecur;
   integer pos,cnt,SQi,TSi,i,Ccntr,Scntr,rowcnt,j,INInRow,k,curcomp,mtrw;
   boolean TrHs,testf,test2f;
@@ -645,8 +645,9 @@ begin
       alldata[INr.Code & ":cost"] = curcost;
       alldata[INr.Code & ":date"] = INr.LastPriceChange;
       alldata[INr.Code & ":barcode"] = INr.BarCode;
-      FindAndStoreINVcImgLink(INr,currentcompany,alldata[INr.Code & ":pathToImg"],tstr);
-      
+      fullpath = "";
+      FindAndStoreINVcImgLink(INr,currentcompany,fullpath,tstr);
+      alldata[INr.Code & ":pathToImg"] = fullpath;
     end;
   end;
   
