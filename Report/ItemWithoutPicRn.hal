@@ -28,6 +28,7 @@ begin
   record ItemStatusVc ISr;
   string 255 fullpath,tstr;
   string 100 inrcode,brand,class;
+  boolean mainf,cs1f;
   
   array string 50 sheetNames;
 	array val sheetColls;
@@ -80,35 +81,80 @@ begin
           StringCell(sheetnum,fileToSave,colnum,rownum,style,"Code",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
           StringCell(sheetnum,fileToSave,colnum,rownum,style,"Alternative Code",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
           StringCell(sheetnum,fileToSave,colnum,rownum,style,"Brand",SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+          EmptyCell(sheetnum,fileToSave,colnum,rownum,style,1);
+          NumericCell(sheetnum,fileToSave,colnum,rownum,style,CountRecords("INVc"));
         EndRow(sheetnum,fileToSave,rownum);
         resetloop(INr);
         INr.Code = "";
         while loopmain(INr,1,true) begin
-          ISr.Code = INr.Code;
-          ISr.Location = ";;;";
-          if (readfirstmain(ISr,2,true)) then begin
-            if (ISr.Instock>0) then begin
+          if (i==8) then begin
+            mainf = false;
+            cs1f = false;
+            ISr.Code = INr.Code;
+            ISr.Location = "MAIN";
+            if (readfirstmain(ISr,2,true)) then begin
+              if (ISr.Instock>0) then begin
+                mainf = true;
+              end;
+            end;
+            ISr.Code = INr.Code;
+            ISr.Location = "CS1";
+            if (readfirstmain(ISr,2,true)) then begin
+              if (ISr.Instock>0) then begin
+                cs1f = true;
+              end;
+            end;
+            if (mainf or cs1f) then begin
               FindAndStoreINVcImgLink(INr,i+1,fullpath,tstr);
-              if (blank(fullpath)) then begin
-                colnum = 1;
-                BeginRow(sheetnum,fileToSave,rownum,0,blankval);
-                  style = 1;
-                  StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.Code,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-                  StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.AlternativeCode,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-                  brand = "";
-                  pos = 0;
-                  class = "";
-                  ExtractObj(INr.DispGroups,pos,class);
-                  while (nonblank(class)) begin
-                    DIr.Code = class;
-                    readfirstmain(DIr,1,true);
-                    if(DIr.CType=="BRAND")then begin
-                      brand = DIr.Name;
-                    end;
+                if (blank(fullpath)) then begin
+                  colnum = 1;
+                  BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+                    style = 1;
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.Code,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.AlternativeCode,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                    brand = "";
+                    pos = 0;
+                    class = "";
                     ExtractObj(INr.DispGroups,pos,class);
-                  end;
-                  StringCell(sheetnum,fileToSave,colnum,rownum,style,brand,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
-                EndRow(sheetnum,fileToSave,rownum);
+                    while (nonblank(class)) begin
+                      DIr.Code = class;
+                      readfirstmain(DIr,1,true);
+                      if(DIr.CType=="BRAND")then begin
+                        brand = DIr.Name;
+                      end;
+                      ExtractObj(INr.DispGroups,pos,class);
+                    end;
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,brand,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                  EndRow(sheetnum,fileToSave,rownum);
+                end;
+            end;
+          end else begin
+            ISr.Code = INr.Code;
+            ISr.Location = ";;;";
+            if (readfirstmain(ISr,2,true)) then begin
+              if (ISr.Instock>0) then begin
+                FindAndStoreINVcImgLink(INr,i+1,fullpath,tstr);
+                if (blank(fullpath)) then begin
+                  colnum = 1;
+                  BeginRow(sheetnum,fileToSave,rownum,0,blankval);
+                    style = 1;
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.Code,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,INr.AlternativeCode,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                    brand = "";
+                    pos = 0;
+                    class = "";
+                    ExtractObj(INr.DispGroups,pos,class);
+                    while (nonblank(class)) begin
+                      DIr.Code = class;
+                      readfirstmain(DIr,1,true);
+                      if(DIr.CType=="BRAND")then begin
+                        brand = DIr.Name;
+                      end;
+                      ExtractObj(INr.DispGroups,pos,class);
+                    end;
+                    StringCell(sheetnum,fileToSave,colnum,rownum,style,brand,SharedStrings,numOfUniqueSharedStrings,numOfSharedStrings);
+                  EndRow(sheetnum,fileToSave,rownum);
+                end;
               end;
             end;
           end;

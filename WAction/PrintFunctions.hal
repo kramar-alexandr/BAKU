@@ -1,6 +1,5 @@
 remote procedure CreatePrintNoter(record RcVc, record ORVc);
 remote function Boolean Getformcode(Integer,Integer,string,string,string,LongInt,LongInt,string,string,Integer,string,var string); 
-remote procedure ItemWithoutPicRn(record RcVc,var area);//Edit-------------------Vitalii 16:37 27.09.2017
 
 global function string 255 GetTextForPrint(integer i, string rec)
 begin
