@@ -683,7 +683,7 @@ global procedure GetTAXBackRetDsm() begin
   record RebVc Rebr;
   
 	//blockload(BRb);
-	BRb.PrcRebate = 10.2;
+	BRb.PrcRebate = 18;
 	wn = CurWindow;
 	getwindowrecord(wn,IVr);
 	CUr.Code = IVr.CustCode;
