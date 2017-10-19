@@ -1886,7 +1886,7 @@ begin
   row CompaniesBlock CBrw;// Edit ************************** Tuesday, 4 December 2012 15:41:08
   string 50 path,port,tstr1;// Edit ************************** Tuesday, 4 December 2012 15:58:05
   record ProgramStatusBlock PSb;	
-  string 255 tag;
+  string 255 tag,hostIp;
   record IVVc IVr;
   row IVVc IVrw;
   record INVc INr;
@@ -1917,6 +1917,7 @@ begin
 				blockload(PSb);
 				port = PSb.httpPort;
 				path = CBrw.TCPIP;
+				hostIp = CBrw.TCPIP;
 				//SWAROVSKI LLADRO J&W V&B Creative Ambiance Carpets Cadenza
 				//Edit-------------------Vitalii 15:59 18.10.2017
         /*if(currentcompany==5)then begin
@@ -1931,7 +1932,9 @@ begin
 					end;
 				end;*/
         tstr1 = IVrw.ArtCode;
-				setwindowsubset(wn,"http://" & path & ":" & port & "/WebGetINImage.hal?image=" & tstr1 & "&curcomp=" & currentcompany & "&user=" & currentuser);
+        
+       	setwindowsubset(wn,"http://" & hostIp & ":1070/index?user=" & currentuser & curmachinename & CurrentCompany);
+				//setwindowsubset(wn,"http://" & path & ":" & port & "/WebGetINImage.hal?image=" & tstr1 & "&curcomp=" & currentcompany & "&user=" & currentuser);
 				ReRunWindowDef(wn);
 			end;
 		end;

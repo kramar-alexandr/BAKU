@@ -74,8 +74,9 @@ begin
 		end;
 		imname = imgStrReplace(imname);// Edit ************************** Tuesday, 3 October 2017 17:31:06
 		imname = urlencode(imname);
-		filename = Comprw.ShortName & "/" & imname & ".png";
+		
 	end;*/
+	filename = Comprw.ShortName & "/" & imname;
 	weboutstring("<img src=\"" & filename & "\" height=\"400\"/></div></td>");
 	//logtext(0,"<img src=\"" & filename & "\" height=\"400\"/></div></td>");
     
@@ -396,7 +397,6 @@ begin
 			  end;
 			end;
 		end;
-		Logtext(0,1);
     MySendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
 
 	end;
