@@ -5685,6 +5685,7 @@ begin
   BlockLoad(Compb);
   MatRowGet(Compb,compnr-1,Comprw);
   fullpath = "";
+  filename = "";
   /*if (nonblank(INr.ImgLink) and fileexists(INr.ImgLink)) then begin
     fullpath = INr.ImgLink;
     pos = 0;
@@ -5696,43 +5697,45 @@ begin
     if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
       filename = inrcode & ".jpg";
     end;
-    if (blank(fullpath)) then begin
+    if (blank(filename)) then begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
         filename = inrcode & ".png";
       end;
     end;
-    if (blank(fullpath)) then begin
+    if (blank(filename)) then begin
       inrcode = imgStrReplace(INr.AlternativeCode);
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
         filename = inrcode & ".jpg";
       end;
     end;
-    if (blank(fullpath)) then begin
+    if (blank(filename)) then begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
         filename = inrcode & ".png";
       end;
     end;
-    if (blank(fullpath)) then begin
+    if (blank(filename)) then begin
       inrcode = imgStrReplace(INr.BarCode);
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
         filename = inrcode & ".jpg";
       end;
     end;
-    if (blank(fullpath)) then begin
+    if (blank(filename)) then begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".png") then begin
         filename = inrcode & ".png";
       end;
     end;
   //end;
-  if (filename!=urlencode(filename)) then begin
-    renamefile("webcust/" & Comprw.ShortName & "/" & filename,"webcust/" & Comprw.ShortName & "/" & urlencode(filename));
-    filename = urlencode(filename);
+  if (nonblank(filename)) then begin
+    if (filename!=urlencode(filename)) then begin
+      renamefile("webcust/" & Comprw.ShortName & "/" & filename,"webcust/" & Comprw.ShortName & "/" & urlencode(filename));
+      filename = urlencode(filename);
+    end;
+    fullpath = "webcust/" & Comprw.ShortName & "/" & filename;
+    /*if (INr.ImgLink!=fullpath) then begin
+      INr.ImgLink = fullpath;
+      recordStore(INr,true);
+    end;*/
   end;
-  fullpath = "webcust/" & Comprw.ShortName & "/" & filename;
-  /*if (INr.ImgLink!=fullpath) then begin
-    INr.ImgLink = fullpath;
-    recordStore(INr,true);
-  end;*/
   
   return;
 end;
