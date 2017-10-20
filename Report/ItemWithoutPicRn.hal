@@ -16,9 +16,9 @@ external procedure FillSharedStrings(string,array string,integer,integer,array s
 external procedure ConvertToXLSX(string,boolean);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
-external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
+external procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
-updating procedure ItemWithoutPic(record RcVc RepSpec)
+procedure ItemWithoutPic(record RcVc RepSpec)
 begin
 	record CompaniesBlock Compb;
   record DIVc DIr;
@@ -178,7 +178,7 @@ begin
 return;
 end;
 
-global updating
+global
 procedure ItemWithoutPicRn(record RcVc RepSpec)
 begin
   string 250 filename,tstr;
@@ -188,9 +188,10 @@ begin
   tstr = tstr & "_" & CurrentUser;
   filename = tstr & ".xlsx";
   RepSpec.f6 = filename;
-  ItemWithoutPic(RepSpec);
+  
   StartReportNoHeaderJob("Download Link");
 		StartFormat(15);
+      ItemWithoutPic(RepSpec);
 			OutString(0,"DblImagesExcel",RepSpec.f7 & filename,false);
     EndFormat;
 	EndJob;

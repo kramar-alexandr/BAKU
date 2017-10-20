@@ -5,7 +5,7 @@ external function Boolean SetInSet2(string,string);
 external function val AbsoluteVal(val);
 external function string 255 StrReplace(string,string,string);// Edit ************************** Tuesday, 3 October 2017 17:25:37
 external function string 255 imgStrReplace(string);// Edit ************************** Tuesday, 10 October 2017 15:20:55
-external updating procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
+external procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
 
 SetLangMode(LangRussian,"RUS",0);
 
@@ -40,7 +40,7 @@ begin
 return;
 end;*/
 
-global updating
+global
 procedure SalesReportExtPictRn(record RcVc RepSpec,var area webpage1,string serverip)
 begin
   record INVc INr;

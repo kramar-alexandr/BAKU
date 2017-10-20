@@ -373,8 +373,7 @@ begin
           end else begin
             outstring(tabs[10],0,"",false);
           end;
-          if (fifofound) then begin
-            logtext(0,fifobrandcur);
+          if (fifobrandcur!=0) and (fifofound) then begin
             outstring(tabs[11],0,fifobrandcur,false);                          // ”акт. себест. в вал. бренда
           end else begin
             outstring(tabs[11],0,"",false);

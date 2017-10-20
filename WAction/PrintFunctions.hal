@@ -261,6 +261,7 @@ begin
   record ProgramStatusBlock PSb;
   record RcVc RepSpec;
 
+  getwindowrecord(wn,RepSpec);
 	BlockLoad(Compb);
   MatRowGet(Compb,currentcompany-1,Comprw);
   blockload(PSb);

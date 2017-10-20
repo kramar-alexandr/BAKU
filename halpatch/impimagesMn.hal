@@ -5675,7 +5675,7 @@ begin
 end;
 
 global
-updating procedure FindAndStoreINVcImgLink(record INVc INr, integer compnr, var string fullpath, var string filename)
+procedure FindAndStoreINVcImgLink(record INVc INr, integer compnr, var string fullpath, var string filename)
 begin
   record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
@@ -5691,7 +5691,7 @@ begin
     pos = 0;
     ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
     ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
-    ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);\
+    ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
   end else begin*/
     inrcode = imgStrReplace(INr.Code);
     if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
@@ -5741,7 +5741,7 @@ begin
 end;
 
 global
-updating procedure FillImgInINVcMn(record RcVc RepSpec)
+procedure FillImgInINVcMn(record RcVc RepSpec)
 begin
   record CompaniesBlock Compb;
   record INVc INr;
