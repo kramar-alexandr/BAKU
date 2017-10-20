@@ -5693,7 +5693,7 @@ begin
     ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
     ExtractObjWithSeparator("/",INr.ImgLink,true,pos,filename);
   end else begin*/
-    inrcode = imgStrReplace(INr.Code);
+    inrcode = urlencode(imgStrReplace(INr.Code));
     if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
       filename = inrcode & ".jpg";
     end;
@@ -5703,7 +5703,7 @@ begin
       end;
     end;
     if (blank(filename)) then begin
-      inrcode = imgStrReplace(INr.AlternativeCode);
+      inrcode = urlencode(imgStrReplace(INr.AlternativeCode));
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
         filename = inrcode & ".jpg";
       end;
@@ -5714,7 +5714,7 @@ begin
       end;
     end;
     if (blank(filename)) then begin
-      inrcode = imgStrReplace(INr.BarCode);
+      inrcode = urlencode(imgStrReplace(INr.BarCode));
       if fileexists("webcust/" & Comprw.ShortName & "/" & inrcode & ".jpg") then begin
         filename = inrcode & ".jpg";
       end;
@@ -5726,10 +5726,10 @@ begin
     end;
   //end;
   if (nonblank(filename)) then begin
-    if (filename!=urlencode(filename)) then begin
+    /*if (filename!=urlencode(filename)) then begin
       renamefile("webcust/" & Comprw.ShortName & "/" & filename,"webcust/" & Comprw.ShortName & "/" & urlencode(filename));
       filename = urlencode(filename);
-    end;
+    end;*/
     fullpath = "webcust/" & Comprw.ShortName & "/" & filename;
     /*if (INr.ImgLink!=fullpath) then begin
       INr.ImgLink = fullpath;
