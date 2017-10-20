@@ -1,0 +1,399 @@
+event startup
+begin
+
+	SetLangMode(LangFarsi,"ENG",0);
+	
+	Module("خدمات مشتریان ","",730,modMYCRM);
+	
+	Register("ARVc","ARVc",ARVc,modDBMain);
+  Register("ARPayVc","ARPayVc",ARPayVc,modDBMain);
+	Register("لینک های ثبت ","لینک های ثبت ",RLinkVc,modDBMain);  
+	Register("محصولات جدید ","محصولات جدید ",NewINVc,modPO);
+	Register("اطلاعات تماس ","اطلاعات تماس ",CUVc,modMYCRM);
+  Register("ساختمان و ذخیره سازی بر روی سرور ","ساختمان و ذخیره سازی بر روی سرور ",GlobalLocationVc,modMYCRM);
+  Register("ساختمان و ذخیره سازی ","ساختمان و ذخیره سازی ",LocationVc,modMYCRM);
+	Register("فروشگاه خارجی ","فروشگاه خارجی ",ExternalStoreVc,modMYCRM);
+  Register("فروش خارجی ","فروش خارجی ",ExternalSalesVc,modMYCRM);
+  Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modMYCRM);
+  Register("رفع بازدیدکننده داشته است ","رفع بازدیدکننده داشته است ",MarketingVc,modSL);
+	
+	Setting("محصولات جدید ",NewINLClass,modPO);
+	Setting("واردات آیتم تصاویر ",ImportImagesTClass,modIN);  
+  Setting("لیست قیمت نقطه ",PricePointListLClass,modIN);  
+  Setting("تنظیم کارکنان تخفیف ",RebTableBlockTClass,modPOS);  
+	Setting("کارت وفاداری",LoyaltyCardLClass,modPOS);
+	Setting("تاریخ تنظیمات تغییرات قیمت ",PLHistSetTClass,modDI);
+  Setting("قیمت های تاریخی ",PLHistLClass,modDI);
+	Setting("محصولات محموله ",INConsLClass,modIN);
+	
+	Maintenance("واردات آیتم تصاویر ",ImportImagesVClass,ImportImagesMn,modIN);
+	Maintenance("پاک کردن تاریخچه تغییرات قیمت ",EmptyVClass,DelPLHistMn,modDI);
+  Maintenance("حذف طبقه بندی ",EmptyVClass,DelDIVcMn,modSL);
+  Maintenance("ایجاد هشدار برای تغییرات در قیمت ها ",EmptyVClass,CreatePLActivityMn,modDI);
+	Maintenance("تغییر واحد پول لول. ",CUChangeCurVClass,CUChangeCurMn,modSL);
+  Maintenance("تعادل از سلول. ",FIXVClass,CUChangeBAlMn,modSL);
+  Maintenance("حذف هزینه به روز رسانی کالا ",INChangeCSTVClass,INChangeCSTMn,modIN);
+  Maintenance("تحویل صحیح از فاکتورها ",INChangeCSTVClass,FixIVChangeBackMn,modDBMain);
+  Maintenance("ثابت مورد خطا تاریخ ",FIXVClass,FIXIHMn,modDBMain);
+  Maintenance("سهام UnOk / اسناد باله ",FIXVClass,UNOKStockFinDockMn,modDBMain);
+	Maintenance("خالی کردن به عکسهای ضمیمه شده ",ExtractINAttachVClass,ExtractINAttachMn,modDBMain);
+	Maintenance("پر کردن سهام در بازارهای جهانی ",FIXVClass,CreateGlobalLocationsMn,modMYCRM);
+  Maintenance("را پر کنید در مجموعه ای از کالا از مرتبه n. ",FIXVClass,UpdateINReferenceFromPOMn,modDBMain);
+	  
+  if(currentcompany==1)then begin
+  	Report("ترازنامه گردش مالی گسترش توسط کالاها ",ItemSaldoExtRClass,ItemSaldoExtRn,0,modSL);
+  end;
+  Report("همچنان انبار ",ItemStockStatRClass,ItemStockStatRn,0,modIN);
+  Report("در محموله محصولات ",ConsignationReportRClass,ConsignationReportRn,0,modIN);
+  Report("پرداخت به فروشنده در صورت درخواست RRP ",CalcPricesFromPORClass,CalcPricesFromPORn,0,modPO);
+  Report("گزارش به دستور لازم را برای تامین کنندگان ",POfromORRClass,POFromORRn,0,modSO);
+  Report("وضعیت محصولات سفارش داده شده ",POfromORstatusRClass,POFromORstatusRn,0,modSO);
+  Report("مشتریان حسابداری ",SOofPeriodRClass,SOofPeriodRn,0,modSO);//Edit***********************Vitalii 15:12 21.08.2014
+  Report("جستجوی پیشرفته گزارش فروش ",SalesReportExtRClass,SalesReportExtRn,0,modSL);
+  Report("مواد گزارش فروش و مجموعه ",SalesReportExtRClass,SalesReportExtRnByGold,0,modSL);
+  Report("گزارش یک ماده جدید ",MatReportRClass,MatReportRn,0,modSL);
+  if(currentcompany!=9)then begin
+		Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtRn,0,modIN);
+  end else begin
+		Report("گزارش در توازن افزایش یافته است ",ItemStockStatExtRClass,ItemStockStatExtCreativeRn,0,modIN);
+  end;
+  Report("همچنان از مدیران انبار ",ItemStockStatExtManRClass,ItemStockStatExtCreative1Rn,0,modIN);
+  Report("وضعیت حساب مشتری ",OrderStatusRClass,OrderStatusRn,0,modSO);
+  Report("وضعیت سفارشات مشتری ",OrderPOStatusRClass,OrderStatusDeliverRn,0,modSO);
+  Report("بدهی های کارکنان شرکت ",CustDebByCompRClass,CustDebByCompRn,0,modSL);
+  Report("حساب های دریافتنی کارکنان ",CustDebByCompRClass,CustDebByComp1Rn,0,modSL);
+  Report("اطلاعات مربوط به مشتری در ابتدا ",CustInfoCRMRClass,CustInfoCRMRn,0,modMYCRM);
+  Report("مشتریان فعال در دوره ",CustBayPeriodRClass,CustBayPeriodRn,0,modMYCRM);
+  Report("جستجو برای تماس با ما ",SearchContactRClass,SearchContactRn,0,modMYCRM);
+  Report("فعالیت گزارش شماره ",BayAcivityRClass,BayAcivityRn,0,modMYCRM);
+  Report("گزارش فعالیت درسایت به بوتیک ",BayAcivityButiqueRClass,BayAcivityButiqueRn,0,modMYCRM);
+  
+  Report("گزارش در بازاریابی ",MarketingRClass,MarketingRn,0,modMYCRM);//Edit by Victor 22.08.2014
+  
+  Document("در حال ارسال نامه ",SpamSendRClass,SpamSendForm,SpamSendFClass,modMYCRM);
+  Document("برچسب بر روی محصولات ",INinStockRClass,INinStockForm,INinStockFClass,modIN);
+  Document("کارت های پس انداز ",LoyaltyCardFormRClass,LoyaltyCardForm,LoyaltyCardFormFClass,modPOS);
+
+  Export("گزارش فروش با عکس ",SalesWithImagesRClass,ProdajiSKartinkamiRn,modSL);
+  Export("همچنان تصویر انبار",ItemStockStatExtWebRClass,OstatkiSKartinkamiRn,modIN);
+
+  	
+	SString(1111,"تمام فاکتورها ");
+  SString(1112,"صورت حساب ");
+  SString(1104,"کلیه مشتریان");
+  SString(1105,"مشتریان");
+  SString(1106,"همه موارد ");
+  SString(1107,"آیتم ها");
+  SString(1108,"سال ");
+  SString(1109,"ماه ");
+  SString(1110,"دوره ");
+   SString(1135,"مورد گروه: ");
+  SString(1136,"هیچ یک");
+  SString(1137,"تنها تایید ");
+  SString(1138,"نه تنها مورد تایید ");
+  SString(1139,"هر دو مورد تایید و مورد تایید نیست ");
+  SString(1140,"حالت پرداخت: ");
+  SString(1141,"شماره سریال: ");
+  SString(1142,"تاریخ اشتباه ");
+  SString(1143,"بدون و با توجه عضویت: ");
+  SString(1144,"دوره: ");
+    SString(1163,"ماه کامل مورد نیاز ");
+	
+	SString(2320,"خرید گزینه قیمت ");
+  SString(2321,"لیست قیمت ");
+  SString(2322,"فهرست بورس ");
+  SString(2323,"فهرست کمبود ");
+  SString(2324,"گزینه ");
+  SString(2325,"هیچ موردی ");
+  SString(2326,"نام");
+  SString(2327,"واحد ");
+  SString(2328,"مالیات بر ارزش افزوده به جز ");
+  SString(2329,"مالیات بر ارزش افزوده نرم ");
+  SString(2330,"موجودی ");
+  SString(2331,"هزینه واحد");
+  SString(2332,"ارزش ");
+  SString(2333,"موجود ");
+  SString(2334,"پیشنهادات ");
+  SString(2335,"قیمت ");
+  SString(2336,"همه موارد ");
+  SString(2337,"مالیات بر ارزش افزوده کد ");
+  SString(2338,"گروه");
+  SString(2339,"حداقل ");
+  SString(2340,"مالیات بر ارزش افزوده٪ ");
+  SString(2341,"تفاوت ");
+  SString(2342,"در انبار ");
+  SString(2343,"در سفارش ");
+  SString(2344,"ورودی سهام ترانس. ");
+  SString(2345,"نرخ ارز در محصولات رسید ");
+  SString(2346,"نرخ ارز کنونی ");
+  SString(2347,"پور ارد ");
+  SString(2348,"خالص ");
+  SString(2349,"پیشنهاد خرید ");
+  SString(2350,"B-قیمت ");
+	
+	/* ShipRn */
+  SString(2581,"تحویل مجله ");
+  SString(2582,"شماره تحویل");
+  SString(2583,"تاریخ تحویل");
+  SString(2584,"ترتیب بدون ");
+  SString(2585,"شماره مشتری");
+  SString(2586,"نام");
+  SString(2587,"اصطلاحات ");
+  SString(2588,"کلیه تحویلی ها");
+  SString(2589,"کلیه سفارشات");
+  SString(2590,"سفارش داده شده");
+  SString(2591,"تحویل داده شده");
+  SString(2592,"میانگین پستها در طول مورد");
+  SString(2593,"کالا ");
+  SString(2594,"توصیف");
+  SString(2595,"ارزش تحویل ");
+  SString(2596,"فهرست تحویل ");
+  SString(2597,"تلفن ");
+	
+	//	PUJRn
+	SString(2598,"از جمله محموله سهام ");
+  SString(2599,"به استثنای محموله سهام ");
+  SString(2600,"محمولهسهاممنحصرا");
+  SString(2601,"دفتر روزنامه کالاهای دریافتی");
+  SString(2602,"شماره GR");
+  SString(2603,"تاریخ انتقال");
+  SString(2604,"سفارش خرید بدون ");
+  SString(2605,"فروشنده");
+  SString(2606,"نام");
+  SString(2607,"تفسیر");
+  SString(2608,"محصولات رسید ");
+  SString(2609,"محصولات رسید ");
+  SString(2610,"تمام سفارشات خرید ");
+  SString(2611,"سفارش خرید ");
+  SString(2612,"شماره سریال");
+  SString(2613,"قیمت ");
+  SString(2614,"بارکد");
+  SString(2615,"گمرک");
+  SString(2616,"اضافی");
+  SString(2617,"هزینه بر اساس");
+  SString(2618,"تامین کننده / مورد آمار ");
+  SString(2619,"کل هزینه ");
+  SString(2620,"تعداد");
+  
+  /* StockTakeRn */
+  SString(2761,"فهرست پیگیری ");
+  SString(2762,"کالا ");
+  SString(2763,"تفسیر");
+  SString(2764,"واحد ");
+  SString(2765,"در انبار ");
+  SString(2767,"قفسه ");
+  SString(2768,"محل سکونت ");
+  SString(2769,"قفسه کد ");
+  SString(2770,"پیگیری در مقایسه ");
+  SString(2771,"تعداد شمارش شده");
+  SString(2772,"تنظیم");
+  SString(2773,"روز شمارش");
+  SString(2774,"قیمت تمام شده ");
+  SString(2775,"جمع");
+  SString(2776,"تعداد فرض شمارش صفر برای موارد ثبت نشده است. در پیگیری ");
+  SString(2777,"فرض کنید تعداد تعدیل صفر برای موارد ثبت نشده است. در پیگیری ");
+  SString(2778,"آیا در مورد ثبت نشده را نشان نمی دهد. در پیگیری ");
+  SString(2779,"موقعیت ");
+
+/* StockTakeRn */
+  SString(2901,"موقعیت ");
+  SString(2902,"واریانس ارزش ");
+  
+  /* MBAList */
+  SString(3461,"تحلیلی موجودی گزارش ");
+  SString(3462,"حساب");
+  SString(3463,"باید پستها در طول debet ");
+  SString(3464,"میانگین پستها در طول اعتباری ");
+  SString(3465,"باید دسترسی به اینترنت،");
+  SString(3466,"دسترسی به اینترنت، اعتباری ");
+  SString(3467,"موجودی ");
+  SString(3468,"بازگشت / به پیش بال ");
+  SString(3469,"به جلو موجودی کالک عضویت ");
+  SString(3470,"کد");
+  SString(3471,"نام");
+  SString(3472,"اعتباری ");
+  SString(3473,"اعتباری ");
+  SString(3474,"دوره ");
+  SString(3475,"انباشته ");
+  SString(3476,"خاطرات ");//Ledger?, 
+  SString(3477,"انباشته ");//Fisc purp
+  SString(3478,"جمع ");
+
+/* ArtStatList */
+  SString(2455,"مورد گروه فروش آمار، به غیر از تخفیف ");
+  SString(2456,"هزینه ");
+  SString(2457,"جمع");
+  SString(2458,"قیمت پایه ");
+  SString(2459,"برای گروه ها ");
+  SString(2460,"آمار کالا/فروشنده");
+  SString(2461,"مورد آمار ");
+  SString(2462,"هیچ موردی ");
+  SString(2463,"کالا ");
+  SString(2464,"تعداد");
+  SString(2465,"قیمت ");
+  SString(2466,"گردش مالی");
+  SString(2467,"بدون شماره مورد ");
+  SString(2468,"سود");
+  SString(2469,"مورد فروش آمار ");
+
+/* CustArtStatList */
+  SString(2470,"مشتری / مورد آمار ");
+  SString(2471,"این بازه زمانی");
+  SString(2472,"دوره مقایسه");
+  SString(2473,"برای رده مجموع ");
+  SString(2474,"دسته کالا ");
+  SString(2475,"تغییر ");
+  SString(2476,"گردش مالی ");
+
+/* CustStatList */
+  SString(2477,"DPT ");
+  SString(2478,"اعضای هیات ");
+  SString(2479,"تعداد مشتریان ");
+  SString(2480,"دوره بیانیه با مشتری ");
+  SString(2481,"آمار مشتری  ");
+  SString(2482,"شماره مشتری");
+  SString(2483,"نام");
+  SString(2484,"گردش مالی");
+  SString(2485,"فاکتور ");/*###*/
+  SString(2486,"رکورد ");
+  SString(2487,"اعتبار ");
+  SString(2488,"نقدی ");
+  SString(2489,"موجودی ");
+  SString(2490,"اعتباری ");
+  SString(2491,"اعتباری ");
+  SString(2492,"موجودی به جلو ");
+  SString(2493,"سود");
+  SString(2494,"حاشیه ");
+  SString(2495,"موجودی به جلو ");
+  SString(2496,"تغییر خالص ");
+  SString(2497,"در آکرا. ");
+  SString(2498,"حداقل. گردش مالی: ");
+  SString(2499,"حداقل. گروه: ");
+  SString(2500,"فروش به مشتری آمار ");
+  SString(7025,"شماره تلفن ");
+  SString(7026,"شماره فکس ");
+  
+// INQtyRn  
+  SString(8960,"آمار کالا/تعداد"); 
+  SString(8961,"همه جا ");
+  SString(8962,"امروز ");   
+  SString(8963,"قبلی. سال ");
+  
+//IStatRn
+  SString(8553,"کل:");
+  SString(8554,"آمار کالا/فروشنده");
+  SString(8555,"آمار فروشنده / مورد");
+  
+  // StockMovList
+  SString(5239,"از طریق  ");
+  SString(5240,"جنبش سهام مجله ");
+  SString(5241,"خیر");
+  SString(5242,"تاریخ انتقال");
+  SString(5243,"تفسیر");
+  SString(5244,"از");
+  SString(5245,"به مکان");
+  SString(5246,"ارز");
+  SString(5247,"نرخ ");
+  SString(5248,"کالا ");
+  SString(5249,"تعداد دریافت شده");
+  SString(5250,"خصوصیات");
+  SString(5251,"قیمت ");
+  SString(5252,"شماره سریال");
+  SString(5253,"قیمت اصلی");
+  SString(5254,"دریافت شده");
+  SString(5255,"دریافت نشد ");
+  SString(5256,"ارسال شده");
+  SString(5257,"ارسال نشده");
+  SString(5258,"سفارش داده شده");
+  SString(5259,"سفارش داده نشده");
+  SString(5260,"شی / سفارش آمار ");
+  SString(5261,"دوره: ");
+  SString(5262,"گردش مالی");
+  SString(5263,"تعداد");
+  SString(5264,"میانگین ارزش");
+  SString(5265,"از طریق  ");
+  SString(5266,"قیمت جدید");
+  SString(5267," قدیمی قیمت ");
+  SString(5268,"قیمت جدید ");
+  SString(5269,"قدیمی قیمت ");
+  SString(5270,"هزینه اضافی ");
+  
+  /* StockDepRn */
+  SString(7600,"مجله استهلاک سهام ");
+  SString(7601,"شماره سریال");
+  SString(7602,"تاریخ انتقال");
+  SString(7603,"حساب");
+  SString(7604,"موقعیت");
+  SString(7605,"کالاها  ");
+  SString(7606,"تعداد");
+  SString(7607,"ارزش ");
+
+  
+  /*RetGoodsJRn*/
+  SString(14580,"محصولات بازگشت به مجله کننده ");
+  SString(14581,"کلیه کالاهای مرجوعی");
+  SString(14582,"اجناس مرجوعی");
+  SString(14583,"شماره");
+  SString(14584,"تاریخ");
+  SString(14585,"تعداد سفارش ");
+  SString(14586,"فروشنده");
+  SString(14587,"نام");
+  SString(14588,"کالا ");
+  SString(14589,"نام");
+  SString(14590,"قیمت واحد");
+  SString(14591,"هزینه اضافی");
+  SString(14592,"قیمت تمام شده ");
+  SString(14593,"تعداد");
+  SString(14594,"کل:");
+  
+  /*RetGoodsJRn*/
+  SString(14580,"محصولات بازگشت به مجله کننده ");
+  SString(14581,"کلیه کالاهای مرجوعی");
+  SString(14582,"اجناس مرجوعی");
+  SString(14583,"شماره");
+  SString(14584,"تاریخ");
+  SString(14585,"تعداد سفارش ");
+  SString(14586,"فروشنده");
+  SString(14587,"نام");
+  SString(14588,"کالا ");
+  SString(14589,"نام");
+  SString(14590,"قیمت واحد");
+  SString(14591,"هزینه اضافی");
+  SString(14592,"قیمت تمام شده ");
+  SString(14593,"تعداد");
+  SString(14594,"کل:");
+  
+  /*INrsRn*/   
+  SString(11674,"محصولات. عملیات ");
+  SString(11675,"POS فاکتور");
+  SString(11676,"سهام کشیش ");
+    SString(11687,"شما می توانید طیف وسیعی از موقعیت ها مشخص نیست ");
+  SString(11688,"تاریخ هزینه ");
+  SString(11689,"ترانس عضویت ");
+  SString(11690,"فقط  انبار شده  کالاها");
+  SString(11691,"تعادل برای موارد بدون تاریخ ");
+  SString(11692,"شامل رکوردهای آینده");
+  SString(11693,"عدم نمایش تعداد 2");
+  SString(11694,"نمایش مقدار 2 ");
+  SString(11695,"نمایش ضریب");
+  SString(11696,"پیش فرض  فروشنده ");
+  SString(11697,"سفارش تولید");
+  SString(11698,"معرض رطوبت قرار دادن. به تامین کننده محصولات ");
+  SString(11699,"هر موقعیت ");
+  
+  /*INrsRn*/   
+  SString(11700,"جستجوی پست ");
+  SString(11701,"به: "); // Selection
+  SString(11702,"از: ");
+  SString(11703,"به و یا از: ");
+  SString(11704,"جستجو برای: ");
+  SString(11705,"موضوع ");
+  SString(11706,"آدرس");
+  SString(11707,"تاریخ");
+  SString(11708,"زمان");
+  SString(11709,"به: "); // Part of Address
+  SString(11710,"(بدون موضوع) ");
+  SString(11711,"تعداد بازدید");
+  
+ return;
+end;  
