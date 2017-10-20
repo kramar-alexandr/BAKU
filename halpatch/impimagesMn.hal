@@ -5718,7 +5718,7 @@ begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inalturl & ".png") then begin
         filename = inalturl & ".png";
       end;
-    end;.
+    end;
     
     if (blank(filename)) then begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inbarurl & ".jpg") then begin
@@ -5751,7 +5751,7 @@ begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inalt & ".png") then begin
         filename = inalt & ".png";
       end;
-    end;.
+    end;
     
     if (blank(filename)) then begin
       if fileexists("webcust/" & Comprw.ShortName & "/" & inbar & ".jpg") then begin
@@ -5773,7 +5773,8 @@ begin
     fullpath = "webcust/" & Comprw.ShortName & "/" & filename;
     /*if (INr.ImgLink!=fullpath) then begin
       INr.ImgLink = fullpath;
-      recordStore(INr,true);
+      recordStore(INr,true);5720
+      
     end;*/
   end;
   
