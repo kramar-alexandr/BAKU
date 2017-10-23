@@ -654,7 +654,7 @@ BEGIN
     //if (errcode!=0) then begin
     USr.Code = IVp.SalesMan;
   	if(readfirstmain(USr,1,true)==false)then begin
-      RecordCheckError(errcode,": " & tstr,-1,"SalesMan");   
+      RecordCheckError(20170,": " & tstr,-1,"SalesMan");   // Edit ************************** Monday, 23 October 2017 10:59:40
       res = -1; 
       goto L99;
     end;
