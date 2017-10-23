@@ -44,6 +44,8 @@ begin
 	record CompaniesBlock Compb;//Edit-------------------Vitalii 14:14 25.12.2015
 	row CompaniesBlock Comprw;//Edit-------------------Vitalii 14:14 25.12.2015
   
+  logtext(0,"WebGetINImage");
+  
   imname = WebGetArg	("image");
   curcomp = WebGetArg	("curcomp");
   user = WebGetArg	("user");

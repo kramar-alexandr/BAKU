@@ -538,7 +538,7 @@ BEGIN
 			cuobj1 = PMrw.Objects;
 		end;
 	end;
-	
+	logtext(0,"IVVc_CASHRow " & currentuser);
 	// Edit End ---------------------------------------------- Edit End
 	
 	
