@@ -367,7 +367,7 @@ begin
 	
 	artcode = artcode1;
   /*Добавить блок компаний для взятия адреса хоста*/
-	
+	logtext(0,"SendToServerArtCode");
 	if(nonblank(artcode))then begin		
 		INr.Code = artcode;
 		ReadFirstMain(INr,1,true);
