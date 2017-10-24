@@ -5808,3 +5808,15 @@ begin
 	ResetCompany(oldcompany);
   return;
 end;
+
+global updating procedure ChangeOptionalFeaturedMn()
+begin
+	record ModuleBlock MBb;
+	
+	blockload(MBb);
+		MBb.ReportSlots = 8;
+		MBb.WebRequestThreads = 8;
+		MBb.HTTPThreads = 4;
+	blockstore(MBb);
+return;
+end;

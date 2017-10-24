@@ -147,6 +147,7 @@ begin
 
   Maintenance("FICLOYOAY",EmptyVClass,FixLoyPaymentsCards,modDBMain);
   Maintenance("Заполнить PhoneVc",EmptyVClass,FillPhoneVcMn,modDBMain);
+  Maintenance("ChangeOptionalFeaturedMn",EmptyVClass,ChangeOptionalFeaturedMn,modDBMain);
   
   Maintenance("Coin Stock to DROMOS",EmptyVClass,GruppoCoinStockCountMn,modIN);
   Maintenance("Проверить в карточке товара галочку \"Изменять ст-ть при поступлении\"",FIXVClass,SetUpdateCostINToLastPurchPriceMn,modDBMain); //Edit***************************Sasha2,11:16 19.06.2017
