@@ -923,11 +923,21 @@ begin
 										rwcnt2 = MatRowCnt(CLOutr);
 										for (k=0;k<rwcnt2;k=k+1) begin
 											MatRowGet(CLOutr,k,CLOutrw);
-											if nonblank(CLOutrw.Comment) and (CLOutrw.Comment!="") and (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
-												tempTRrw.ExtraComment = CLOutrw.Comment;
-                        CLOutrw.Comment = "";
-                        matrowput(CLOutr,k,CLOutrw);
-                        k = rwcnt2;
+											
+											if(CLOutrw.Sum>0)then begin
+												if nonblank(CLOutrw.Comment) and (CLOutrw.Comment!="") and (((CLOutrw.Sum == TRrw.CurCredVal) or (CLOutrw.Sum == -TRrw.CurDebVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
+													tempTRrw.ExtraComment = CLOutrw.Comment;
+													CLOutrw.Comment = "";
+													matrowput(CLOutr,k,CLOutrw);
+													k = rwcnt2;
+												end;
+											end else begin
+												if nonblank(CLOutrw.Comment) and (CLOutrw.Comment!="") and (((CLOutrw.Sum == TRrw.CurDebVal) or (CLOutrw.Sum == -TRrw.CurCredVal)) and ((nonblank(CLOutrw.Objects) and nonblank(TRrw.Objects) and SetInSet(CLOutrw.Objects,TRrw.Objects)) or (blank(CLOutrw.Objects)))) then begin
+													tempTRrw.ExtraComment = CLOutrw.Comment;
+													CLOutrw.Comment = "";
+													matrowput(CLOutr,k,CLOutrw);
+													k = rwcnt2;
+												end;
 											end;
 										end;
 										if blank(tempTRrw.ExtraComment) then begin
