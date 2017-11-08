@@ -299,6 +299,8 @@ begin
   Import("Импорт баркодов",ImportMyINClass,ImportBarCodesIn,modIN);
   Import("CLOutImport",ImportMyINClass,ImpCLOut,modCL);
   Import("Импорт форм документов",ImportMyINClass,ImpDocVc,modSY);
+  
+  Import("IHFix",ImportMyINClass,IHFixINVc,modDBMain);
 
 	SetBegin(900);
 		SetText(0,"Обычный");
