@@ -29,7 +29,7 @@ external procedure InitLongArray(Integer,var Array LongInt);
 external procedure SumLine2(record RcVc,Boolean,string,string,string,var val,var val,var val,var val,var val,
                             var val,Boolean,val,Boolean,Date,Integer,LongInt,Boolean);
 external procedure ObjMainRnForResRn(record RcVc);  // Edit ************************** Friday, 22 January 2016 11:19:42                          
-external procedure RunSalesOfGoodsRn(record RcVc,boolean,var val,var val,var vector val,var vector val);//Edit-------------------Vitalii 13:58 28.08.2017
+external procedure RunSalesOfGoodsRn(record RcVc,boolean,var val,var val,var vector val,var vector val, var val);//Edit-------------------Vitalii 13:58 28.08.2017
 
 procedure ALPB2ResGr(record RcVc RepSpec,Boolean PLf,record UserDefRepLinesVc UserDefRepLinesr,record AccVc Accp,string anru,
                 var val S3bp,var val Pbp,var val Ebp,var val S4bp,var val S5bp,var val S6bp,
@@ -484,16 +484,16 @@ BEGIN
   Integer np;
   Boolean headflag;
   string 255 tstr;
-  val plantot,facttot,plantot2,facttot2;
+  val plantot,facttot,plantot2,facttot2,tmpval;
   vector val vplantotcur,vfacttotcur,vplantotcur2,vfacttotcur2;
   record RcVc RepSpec2;
   
-  RunSalesOfGoodsRn(RepSpec,false,plantot,facttot,vplantotcur,vfacttotcur);
+  RunSalesOfGoodsRn(RepSpec,false,plantot,facttot,vplantotcur,vfacttotcur,tmpval);
   RepSpec2.ObjStr = RepSpec.ObjStr;
   if (RepSpec.Comparison==1) then begin
     RepSpec2.sStartDate = addyear(RepSpec.sStartDate,-1);
     RepSpec2.sEndDate = addyear(RepSpec.sEndDate,-1);
-    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2);
+    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2,tmpval);
     if blank(UserDefRepLinesr.CurncyCode) then begin
       Pbp = plantot + facttot;
       S3bp = plantot2 + facttot2;
@@ -505,7 +505,7 @@ BEGIN
   if (RepSpec.Comparison==0) then begin
     RepSpec2.sStartDate = addyear(RepSpec.sStartDate,-1980);
     RepSpec2.sEndDate = RepSpec.sEndDate;
-    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2);
+    RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2,tmpval);
     if blank(UserDefRepLinesr.CurncyCode) then begin
       S3bp = plantot + facttot;
       Pbp = plantot2 + facttot2;
