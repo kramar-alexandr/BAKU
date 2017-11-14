@@ -8,7 +8,6 @@ begin
 	
 	res = StrReplace(instr,"/","-");
 	res = StrReplace(res,"\"","-");
-	res = urlencode(res);
 	
 	imgStrReplace = res;
 return;
