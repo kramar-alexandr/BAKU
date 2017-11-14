@@ -360,7 +360,7 @@ begin
 	string 100 filename;
 	record INVc INr;
 	row INVc INrw;
-	string 255 imgName,filepathP,filepathC,artcode;
+	string 255 imgName,filepathP,filepathC,artcode,tstr;
 	record CompaniesBlock Compb;
   row CompaniesBlock Comprw;
   integer oldcompany,i,rwcnt;
@@ -383,7 +383,7 @@ begin
 		end;
 		
 		filepathC = "";
-		if (NonBlank(filepathP)) then begin
+		/*if (NonBlank(filepathP)) then begin
 		  if (StringToInt(Comprw.CompCode)==9) then begin
 				CheckImagePath(INr.AlternativeCode,filepathP,filepathC);
 			end else begin
@@ -397,7 +397,19 @@ begin
 			  end;
 			end;
 		end;
-    MySendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & artcode & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
+		
+		logtext(0,artcode);
+    logtext(0,filepathC);*/
+		
+    FindAndStoreINVcImgLink(INr,currentcompany,filepathC,tstr);	
+    	
+    //filepathC = right(filepathC,len(filepathC)-8);
+		
+		filepathC = UrlEncode(CURRENTPATH & "/" & filepathC);
+		
+    MySendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & INr.Code & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
+    logtext(0,INr.Code);
+    logtext(0,filepathC);
 
 	end;
 	
