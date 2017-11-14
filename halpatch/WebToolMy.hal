@@ -383,33 +383,11 @@ begin
 		end;
 		
 		filepathC = "";
-		/*if (NonBlank(filepathP)) then begin
-		  if (StringToInt(Comprw.CompCode)==9) then begin
-				CheckImagePath(INr.AlternativeCode,filepathP,filepathC);
-			end else begin
-				CheckImagePath(INr.Code,filepathP,filepathC);
-			end;
-			if (NonBlank(filepathC)) then begin
-			  if (WindowsMode==1) then begin
-			    filepathC = UrlEncode(CURRENTPATH & "/" & filepathC);
-			  end else begin
-			    filepathC = UrlEncode(CURRENTPATH & filepathC);
-			  end;
-			end;
-		end;
-		
-		logtext(0,artcode);
-    logtext(0,filepathC);*/
-		
     FindAndStoreINVcImgLink(INr,currentcompany,filepathC,tstr);	
-    	
-    //filepathC = right(filepathC,len(filepathC)-8);
-		
 		filepathC = UrlEncode(CURRENTPATH & "/" & filepathC);
 		
     MySendAsyncWebRequest("127.0.0.1","1070",false,"GET","/setUserImageUsingAbsPath?user=" & user & localmachine & company & "&artcode=" & INr.Code & "&filepathC=" & filepathC,"text/xml","",art,"SendToServerArtCodeReply",20);
-    logtext(0,INr.Code);
-    logtext(0,filepathC);
+
 
 	end;
 	
