@@ -10,9 +10,26 @@ BEGIN
   Date td;
 
   GetWindowRecord(wn,INr);
-  SendArtStat(INr.Code,"",INr.Recepy,t,tproc,unitprdisc,td,0); // To work with NextRecord etc.
   SendToServerArtCode(INr.Code,currentuser,curmachinename,CurrentCompany); 
+  SendArtStat(INr.Code,"",INr.Recepy,t,tproc,unitprdisc,td,0); // To work with NextRecord etc.
+  
   
   INDClassBeforeEditField = res;
   RETURN;
 END;
+
+
+global
+function Boolean INDClassOnOpenWindow(Integer wn)
+begin
+  Boolean res;
+  record INVc INr;
+  val t,tproc,unitprdisc;
+  Date td;
+
+  GetWindowRecord(wn,INr);
+  SendToServerArtCode(INr.Code,currentuser,curmachinename,CurrentCompany); 
+  
+  INDClassOnOpenWindow = false;
+  return;
+end;

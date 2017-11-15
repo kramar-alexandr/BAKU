@@ -366,6 +366,7 @@ begin
   Integer suspended;
   string 100 val001;// Edit ************************** Thursday, 11 October 2012 14:58:10
   
+  logtext(0,"IVDClasstouchscreenitemEFAfter 1");
   
   res = true;
   
@@ -381,9 +382,13 @@ begin
     ClearRow(IVr,IVrw,1);
     IVrw.ArtCode = GetWindowString(wn,"touchscreenitem");
     
+    logtext(0,"IVDClasstouchscreenitemEFAfter 2");
+    
     rownr = MatRowCnt(IVr);
     MatRowPut(IVr,rownr,IVrw);
+    logtext(0,"IVDClasstouchscreenitemEFAfter 3");
     if (IVVc_PasteArtCode(IVr,rownr,inwarning,inwarning,TouchScreenLook,sernrf)) then begin
+    	logtext(0,"IVDClasstouchscreenitemEFAfter 4");
       if (nonblank(inwarning)) then begin
         MessageBox(0,inwarning);
       end;
@@ -391,7 +396,7 @@ begin
       IVrw.Quant = 1;
       IVrw.SerialNr = val001;
       MatRowPut(IVr,rownr,IVrw);
-      tstr = SaboPromotion(IVr,"paste"); //Edit***************************Sasha2,13:36 01.06.2016 {
+      //tstr = SaboPromotion(IVr,"paste"); //Edit***************************Sasha2,13:36 01.06.2016 {
       if (NonBlank(tstr)) then begin
         MessageBox(0,tstr);
       end; //Edit***************************Sasha2,13:36 01.06.2016 }
@@ -400,21 +405,17 @@ begin
       PutWindowString(wn,"touchscreenitemname",IVrw.Spec);
       PutWindowString(wn,"touchscreenitemqty",IVrw.Quant);
       PutWindowString(wn,"touchscreenitemprice",IVrw.Price);
+      logtext(0,"IVDClasstouchscreenitemEFAfter 5");
       IVSumup(IVr,true);
+      logtext(0,"IVDClasstouchscreenitemEFAfter 51");
 //      IVSumupSoftEditFields(wn,IVr);
       PutWindowRecord(wn,IVr);
+      logtext(0,"IVDClasstouchscreenitemEFAfter 52");
       IVDClass_RefreshStringList(wn,IVr);
+      logtext(0,"IVDClasstouchscreenitemEFAfter 7");
       DisplayIVItem(IVr,rownr);
-/*
-      if (LMb.IncrementalReceiptPrinting!=0) then begin
-        printrownr = StringToLongInt(GetWindowString(wn,"touchscreenitemlastrownr"));
-        if (printrownr>=0) then begin
-          if (IVCashPrintReceipt(wn,IVCashr,prevIVCashr,printrownr,false,false,LMb.IncrementalReceiptPrinting,WindowState(wn))) then begin
-          end;
-        end;
-      end;
-      PutWindowString(wn,"touchscreenitemlastrownr",rownr);
-*/
+			
+			logtext(0,"IVDClasstouchscreenitemEFAfter 6");
       PutWindowString(wn,"ivcashcommandlastitemsernrf","");
       if(blank(val001))then begin
         if (sernrf==1) or (sernrf==2)  then begin
@@ -433,7 +434,9 @@ begin
       end;
     end;
   end;
+  logtext(0,"IVDClasstouchscreenitemEFAfter 8");
   SetWindowNameArg(wn,IVrw.ArtCode & ":" & location);
+  logtext(0,"IVDClasstouchscreenitemEFAfter 9");
   if (TouchScreenLook) begin
     WindowFieldGoto(wn,IVr,-1,"ivcashcommand",false);
   end;
