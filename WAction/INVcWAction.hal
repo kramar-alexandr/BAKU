@@ -1,0 +1,18 @@
+external procedure SendArtStat(string,string,string,val,val,val,Date,Integer);
+remote procedure SendToServerArtCode(string,string,string,integer); //Edit***************************Sasha2,15:20 27.04.2017
+
+global
+function Boolean INDClassBeforeEditField(Integer wn,string fieldname,Integer fn, Integer rownr)
+BEGIN
+  Boolean res;
+  record INVc INr;
+  val t,tproc,unitprdisc;
+  Date td;
+
+  GetWindowRecord(wn,INr);
+  SendArtStat(INr.Code,"",INr.Recepy,t,tproc,unitprdisc,td,0); // To work with NextRecord etc.
+  SendToServerArtCode(INr.Code,currentuser,curmachinename,CurrentCompany); 
+  
+  INDClassBeforeEditField = res;
+  RETURN;
+END;
