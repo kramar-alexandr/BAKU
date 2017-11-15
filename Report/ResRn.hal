@@ -523,7 +523,7 @@ BEGIN
       RepSpec2.sEndDate = addyear(RepSpec.sEndDate,-1);
       RunSalesOfGoodsRn(RepSpec2,false,plantot2,facttot2,vplantotcur2,vfacttotcur2,retailworebatetot2);
       Pbp = retailworebatetot;
-      S3bp = retailworebatetot;
+      S3bp = retailworebatetot2;
     end;
     if (RepSpec.Comparison==0) then begin
       RepSpec2.sStartDate = addyear(RepSpec.sStartDate,-1980);
