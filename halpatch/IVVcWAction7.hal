@@ -365,9 +365,7 @@ begin
   boolean res;
   Integer suspended;
   string 100 val001;// Edit ************************** Thursday, 11 October 2012 14:58:10
-  
-  logtext(0,"IVDClasstouchscreenitemEFAfter 1");
-  
+    
   res = true;
   
   if (changedf) then begin
@@ -381,14 +379,10 @@ begin
     IVr.Suspended = suspended;
     ClearRow(IVr,IVrw,1);
     IVrw.ArtCode = GetWindowString(wn,"touchscreenitem");
-    
-    logtext(0,"IVDClasstouchscreenitemEFAfter 2");
-    
+        
     rownr = MatRowCnt(IVr);
     MatRowPut(IVr,rownr,IVrw);
-    logtext(0,"IVDClasstouchscreenitemEFAfter 3");
     if (IVVc_PasteArtCode(IVr,rownr,inwarning,inwarning,TouchScreenLook,sernrf)) then begin
-    	logtext(0,"IVDClasstouchscreenitemEFAfter 4");
       if (nonblank(inwarning)) then begin
         MessageBox(0,inwarning);
       end;
@@ -405,18 +399,12 @@ begin
       PutWindowString(wn,"touchscreenitemname",IVrw.Spec);
       PutWindowString(wn,"touchscreenitemqty",IVrw.Quant);
       PutWindowString(wn,"touchscreenitemprice",IVrw.Price);
-      logtext(0,"IVDClasstouchscreenitemEFAfter 5");
       IVSumup(IVr,true);
-      logtext(0,"IVDClasstouchscreenitemEFAfter 51");
 //      IVSumupSoftEditFields(wn,IVr);
 			millisleep(500);
       PutWindowRecord(wn,IVr);
-      logtext(0,"IVDClasstouchscreenitemEFAfter 52");
       IVDClass_RefreshStringList(wn,IVr);
-      logtext(0,"IVDClasstouchscreenitemEFAfter 7");
       DisplayIVItem(IVr,rownr);
-			
-			logtext(0,"IVDClasstouchscreenitemEFAfter 6");
       PutWindowString(wn,"ivcashcommandlastitemsernrf","");
       if(blank(val001))then begin
         if (sernrf==1) or (sernrf==2)  then begin
