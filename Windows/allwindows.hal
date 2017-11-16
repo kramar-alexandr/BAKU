@@ -2494,6 +2494,7 @@ begin
     SpecialMenu("OK",'G',0,"OKIVLsm");
     SpecialMenu("Печатать проформу cчета-фактуры",' ',1,"PrintIVLsm");
     SpecialMenu("Статус сч/ф",'r',2,"IVInfoIVLsm");
+    SpecialMenu("Веб счёт-фактура",'r',3,"IVWebLsm");//---------------------------------------------------------------- dima-f 16.11.17
     EndWindow;
 end;
 
@@ -8916,5 +8917,23 @@ begin
   CheckBox(h,v+=16,0,"Предоплата",flags[7]);
   CheckBox(h,v+=16,0,"Cч/ф на авансы",flags[8]);
   CheckBox(h,v+=32,0,"Только сч/ф по З/О",flags[10]);  
+  EndWindow;
+end;
+//----------------------------------------------------------------------------- added by dima-f 16.11.17
+window IVWebDClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real t;
+  t=1;
+  WindowBegin("Счёт-фактура клиенту",IVDClass,CGview,-);
+  SetWRect(20,80,800,750);
+  Sizeable(-1,-1,0,0);
+  UseView(IVVc);
+    WebPage(1,1,-1,300,MasterBannerURL,"$MASTERBANNER");
+    MatrixBegin(1,330,-20,-1,-,40);
+        MatCol(t,30,"Товар",0,ArtCode,false,0);
+        MatCol(t,200,"Описание",0,Spec,false,0);
+        MatCol(t,650,"Цена",0,Price,true,0);
+    EndMatrix;
   EndWindow;
 end;
