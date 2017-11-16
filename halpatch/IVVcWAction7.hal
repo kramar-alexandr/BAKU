@@ -409,6 +409,7 @@ begin
       IVSumup(IVr,true);
       logtext(0,"IVDClasstouchscreenitemEFAfter 51");
 //      IVSumupSoftEditFields(wn,IVr);
+			millisleep(500);
       PutWindowRecord(wn,IVr);
       logtext(0,"IVDClasstouchscreenitemEFAfter 52");
       IVDClass_RefreshStringList(wn,IVr);
