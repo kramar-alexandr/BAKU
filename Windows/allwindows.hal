@@ -2430,7 +2430,7 @@ end else begin
     
     //HalPushButton(480,350,680,680,"IVDClassUpdateWebBrowser","Показать картинку товара");
     SoftEditFieldTLX(20,380,650,"",M4Str,ViewOnly,100,10,patM4black,"CustomerDisplayData_Line3",false,0);
-    	if(WindowsMode==1)then begin
+    	if(WindowsMode==1 or currentuser=="KASSA1" or currentuser=="KASSA2")then begin
     	//if(left(currentuser,2)=="SA")then begin
 				WebPage(20,400,700,-80,"http://" & hostIp & ":1070/indexlong?user=" & currentuser & curmachinename & CurrentCompany,"");
 			end else begin
