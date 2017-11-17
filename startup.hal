@@ -158,6 +158,8 @@ begin
  	Maintenance("Добавить ед.изм.",ImportImagesVClass,AddInchesMn,modIN);
   Maintenance("Fix ShopCoefVc",FIXVClass,FixShopCoefMn,modDBMain);
   Maintenance("Убрать повторное url-кодирование из имен картинок",EmptyVClass,RemDoublURLEncInImgMn,modDBMain);
+	
+	Maintenance("Убрать пробели в альткодах",EmptyVClass,DelSpacesInAltCodeMn,modDBMain);
 
   
   Report("Test",TestRClass,TestRn,0,modDBMain);

@@ -5847,3 +5847,41 @@ begin
 	blockstore(MBb);
 return;
 end;
+
+global updating procedure DelSpacesInAltCodeMn()
+begin
+	record INVc INr;
+	boolean find,updf;
+	
+	while(loopmain(INr,1,true))begin
+		updf = false;
+		find = true;
+		while(find)begin
+			if(left(INr.AlternativeCode,1)==" ")then begin
+				INr.AlternativeCode = right(INr.AlternativeCode,len(INr.AlternativeCode)-1);
+				updf = true;
+			end else begin
+				find = false;
+			end;
+		end;
+		
+		find = true;
+		while(find)begin
+			if(right(INr.AlternativeCode,1)==" ")then begin
+				INr.AlternativeCode = left(INr.AlternativeCode,len(INr.AlternativeCode)-1);
+				updf = true;
+			end else begin
+				find = false;
+			end;
+		end;
+		
+		if(updf)then begin
+			logtext(0,INr.Code & " " & INr.AlternativeCode);
+			recordstore(INr,true);
+		end;
+		
+	end;
+	
+return;
+end;
+
