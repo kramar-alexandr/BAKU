@@ -2430,9 +2430,10 @@ end else begin
     
     //HalPushButton(480,350,680,680,"IVDClassUpdateWebBrowser","Показать картинку товара");
     SoftEditFieldTLX(20,380,650,"",M4Str,ViewOnly,100,10,patM4black,"CustomerDisplayData_Line3",false,0);
-    	if(WindowsMode==1 or currentuser=="KASSA1" or currentuser=="KASSA2")then begin
-    	//if(left(currentuser,2)=="SA")then begin
-				WebPage(20,400,700,-80,"http://" & hostIp & ":1070/indexlong?user=" & currentuser & curmachinename & CurrentCompany,"");
+    	if(WindowsMode==1)then begin
+    		if(currentcompany!=25)then begin    		
+					WebPage(20,400,700,-80,"http://" & hostIp & ":1070/indexlong?user=" & currentuser & curmachinename & CurrentCompany,"");
+				end;
 			end else begin
 				WebPage(20,400,700,-80,"http://" & hostIp & ":1070/index?user=" & currentuser & curmachinename & CurrentCompany,"");
 			end;
@@ -8935,5 +8936,26 @@ begin
         MatCol(t,200,"Описание",0,Spec,false,0);
         MatCol(t,650,"Цена",0,Price,true,0);
     EndMatrix;
+  EndWindow;
+end;
+
+
+window NPTSIVCashItemInfoOClass:1
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  integer wn;
+  record INVc INr;
+  WindowBegin("Item Info",NPTSIVCashItemInfoOClass,CGother,-);
+  DynamicWindow;
+  wn = CurWindow;
+  if (wn>0) then begin
+    GetWindowRecord(wn,INr);
+  end;
+
+  UseView(INVc);
+  SetWRect(0,0,460,480);
+  Sizeable(0,0,0,0);
+  StaticText(12,20,INr.Name,false);
+  WebPage(12,30,-12,-10,"$subset","");
   EndWindow;
 end;

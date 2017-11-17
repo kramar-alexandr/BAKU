@@ -80,6 +80,8 @@ remote procedure ORSumup(var record ORVc);
 external procedure OpenGCBCardckIssueTouchScreenDClass(); //Edit***************************Sasha2,17:30 11.08.2017
 remote procedure GetFullCurncyRate (var string,Date,var val,var val,var val,var val,var val);// Edit ************************** Friday, 20 October 2017 15:15:28
 external function string 60 RemoveObjectFromObjectList(string,string);// Edit ************************** Friday, 14 November 2014 09:35:09
+remote procedure FindAndStoreINVcImgLink(record INVc,integer,var string,var string);
+
 
 enum begin
   kPOSButtonTypeGoodsReturn = 100,
@@ -93,7 +95,8 @@ enum begin
   kPOSButtonTypeGetBirthRebate = 108,
   kPOSButtonTypeIssueCBLoyaltyCard = 109,
   kPOSButtonTypeTAXBackRet = 110,
-  kPOSButtonTypeBlackFriday = 111
+  kPOSButtonTypeBlackFriday = 111,
+  kPOSButtonTypeShowImage = 112
 end;
 
 procedure SetPOSWindowDisplay_PaymentRow(string spec,val v)
@@ -925,6 +928,57 @@ return;
 end;
 	// Edit End ---------------------------------------------- Edit End
 	
+	
+global
+procedure ShowImageIVDsm()
+begin
+	integer sline,matrowix,res,line;
+  string 255 tag,tagstr;
+  record IVVc IVr;
+  row IVVc IVrw;
+  record INVc INr;
+  Integer wn,nwn,mwn,rownr;
+  string 255 filepathC,tstr;
+  record CompaniesBlock CBb;
+  row CompaniesBlock CBrw;
+   
+  wn = curwindow;
+  line = SelectedListLine(wn);
+  tagstr = GetListTag(wn,line);
+  if (line>=0) then begin
+    rownr = StringToInt(tagstr);
+    if (rownr>=0) then begin
+      GetWindowRecord(wn,IVr);
+      MatRowGet(IVr,rownr,IVrw);
+      	if(IVrw.stp==1)then begin
+      		if(nonblank(IVrw.ArtCode))then begin
+      			INr.Code = IVrw.ArtCode;
+      			if(readfirstmain(INr,1,true))then begin
+      				FindAndStoreINVcImgLink(INr,currentcompany,filepathC,tstr);	
+      				//if(nonblank(tstr))then begin
+      					blockload(CBb);
+      					matrowget(CBb,currentcompany-1,CBrw);
+								nwn = OpenWindow("NPTSIVCashItemInfoOClass",0,wn,"http://" & CBrw.TCPIP & ":8033/IndexStatic.html?comcode=" & CBrw.ShortName & "&artcode=" & tstr,"",INr);
+							//end;
+						end; 
+					end;
+        end;  
+    end;
+  end;
+LIVDClassTouchScreenAmendLine:;  
+
+return;
+end;
+
+
+global
+procedure IVDClassTouchScreenShowImage()
+begin
+
+	ShowImageIVDsm;
+	
+return;
+end;
 
 global updating
 procedure IVDClassTouchScreenPasteButtonDo(integer butnr)
@@ -1208,6 +1262,10 @@ begin
       	goto LIVDClassTouchScreenPasteButtonDo;
       case kPOSButtonTypeBlackFriday:// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 17 November 2017 12:27:48
       	BlackFridayDsmDsm;
+      	goto LIVDClassTouchScreenPasteButtonDo;	
+      case kPOSButtonTypeShowImage:// Edit ************************** BPI Ukraine - KramarAlexandr - Friday, 17 November 2017 12:27:48
+      	messagebox(0,1);
+      	ShowImageIVDsm;
       	goto LIVDClassTouchScreenPasteButtonDo;	
       end;
       
@@ -2089,6 +2147,42 @@ end;
 global
 function Boolean IVDClassListDoubleClick(Integer wn,Integer rownr)
 begin
+	integer sline,matrowix,res;
+  string 255 tag;
+  record IVVc IVr;
+  row IVVc IVrw;
+  record INVc INr;
+  Integer nwn;
+
+  /*sline = SelectedListLine(wn);
+  if (sline<>-1) then begin
+    tag = GetListTag(wn,sline);
+    if ((tag==USetStr(24172)) or (tag==USetStr(24173)) or (tag==USetStr(24171))) then begin
+      matrowix = -1;
+    end else begin
+      matrowix = StringToLongInt(tag);
+    end;
+  end else begin
+    matrowix = -1;
+  end;
+  GetWindowRecord(wn,IVr);
+  if (matrowix>=0) then begin
+    MatRowGet(IVr,matrowix,IVrw);
+    switch (IVrw.stp) begin
+      case kInvoiceRowTypeStructuredItemComponent:
+        goto LkInvoiceRowTypeNormal2;
+      case kInvoiceRowTypeNormal:
+LkInvoiceRowTypeNormal2:;
+        INr.Code = IVrw.ArtCode;
+        if (ReadFirstMain(INr,1,true)) then begin
+          nwn = OpenWindow("NPTSIVCashItemInfoOClass",0,wn,"http://google.com","",INr);
+        end;
+      case kInvoiceRowTypeCashPayment:
+      otherwise
+    end;
+  end;
+  IVDClassListDoubleClick = false;*/
+  
 	
 return;
 end;
