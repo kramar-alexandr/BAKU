@@ -701,35 +701,21 @@ begin
 	
 	
 	if(IVr.OKFlag==0)then begin
-		
-		mtrw = matrowcnt(IVr);
-		For(i=0;i<mtrw;i=i+1) begin
-			matrowget(IVr,i,IVrw);
-			if(nonblank(IVrw.ArtCode) and IVrw.stp==1)then begin
-				lastquant = IVrw.Quant;
-				IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+		if(currentcompany==1)then begin
+			mtrw = matrowcnt(IVr);
+			For(i=0;i<mtrw;i=i+1) begin
 				matrowget(IVr,i,IVrw);
-				IVrw.Quant = lastquant;
+				IVrw.Objects = RemoveObjectFromObjectList(IVrw.Objects,"BLACK_FRIDAY");
+				if(!setinset("BLACK_FRIDAY",IVrw.Objects))then begin
+					if(nonblank(IVrw.Objects))then begin
+						IVrw.Objects = IVrw.Objects & ",BLACK_FRIDAY";
+					end else begin
+						IVrw.Objects = "BLACK_FRIDAY";
+					end;
+				end;
 				matrowput(IVr,i,IVrw);
-				IVVc_PasteQuantity(IVr,i);										
-				IVDchrsum(IVr,i);
-				IVDchsum(IVr,i);
 			end;
-		end;
-		IVSumup(IVr,true);
-		
-		IVr.Objects = RemoveObjectFromObjectList(IVr.Objects,"BLACK_FRIDAY");
-		
-		if(IVr.Sum4>=300)then begin
-			rebate = 20;
-		end;
-		if(IVr.Sum4>=500)then begin
-			rebate = 30;
-		end;
-		if(IVr.Sum4>=1000)then begin
-			rebate = 40;
-		end;
-		if(IVr.Sum4>=300)then begin
+		end else begin
 			mtrw = matrowcnt(IVr);
 			For(i=0;i<mtrw;i=i+1) begin
 				matrowget(IVr,i,IVrw);
@@ -738,23 +724,52 @@ begin
 					IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
 					matrowget(IVr,i,IVrw);
 					IVrw.Quant = lastquant;
-					IVrw.vRebate = rebate;
+					IVrw.Objects = RemoveObjectFromObjectList(IVrw.Objects,"BLACK_FRIDAY");
 					matrowput(IVr,i,IVrw);
 					IVVc_PasteQuantity(IVr,i);										
-
 					IVDchrsum(IVr,i);
 					IVDchsum(IVr,i);
 				end;
 			end;
 			IVSumup(IVr,true);
-			if(!setinset("BLACK_FRIDAY",IVr.Objects))then begin
-				if(nonblank(IVr.Objects))then begin
-					IVr.Objects = IVr.Objects & ",BLACK_FRIDAY";
-				end else begin
-					IVr.Objects = "BLACK_FRIDAY";
-				end;
+		
+		
+		
+			if(IVr.Sum4>=300)then begin
+				rebate = 20;
 			end;
-			
+			if(IVr.Sum4>=500)then begin
+				rebate = 30;
+			end;
+			if(IVr.Sum4>=1000)then begin
+				rebate = 40;
+			end;
+			if(IVr.Sum4>=300)then begin
+				mtrw = matrowcnt(IVr);
+				For(i=0;i<mtrw;i=i+1) begin
+					matrowget(IVr,i,IVrw);
+					if(nonblank(IVrw.ArtCode) and IVrw.stp==1)then begin
+						lastquant = IVrw.Quant;
+						IVVc_PasteArtCode(IVr,i,inwarning,warning,TouchScreenLook,sernrf);
+						matrowget(IVr,i,IVrw);
+						IVrw.Quant = lastquant;
+						IVrw.vRebate = rebate;
+					
+						if(!setinset("BLACK_FRIDAY",IVrw.Objects))then begin
+							if(nonblank(IVrw.Objects))then begin
+								IVrw.Objects = IVrw.Objects & ",BLACK_FRIDAY";
+							end else begin
+								IVrw.Objects = "BLACK_FRIDAY";
+							end;
+						end;
+						matrowput(IVr,i,IVrw);
+						IVVc_PasteQuantity(IVr,i);		
+						IVDchrsum(IVr,i);
+						IVDchsum(IVr,i);
+					end;
+				end;
+				IVSumup(IVr,true);
+			end;
 		end;
 		putwindowrecord(wn,IVr);
 		IVDClass_RefreshStringList(wn,IVr);

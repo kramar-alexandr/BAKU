@@ -2329,6 +2329,7 @@ if (HasTouchScreenLook==false) then begin
   if(currentuser=="SA")then begin
 		SpecialMenu("Экспорт регистра",' ',0,"ExportRegIVDsm");
 	end;
+	SpecialMenu("Скидка Black Friday",'',2,"BlackFridayDsmDsm");
 end else begin
 
   date td;
