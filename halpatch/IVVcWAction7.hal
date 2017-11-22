@@ -701,19 +701,31 @@ begin
 	
 	
 	if(IVr.OKFlag==0)then begin
-		if(currentcompany==1)then begin
-			mtrw = matrowcnt(IVr);
-			For(i=0;i<mtrw;i=i+1) begin
-				matrowget(IVr,i,IVrw);
-				IVrw.Objects = RemoveObjectFromObjectList(IVrw.Objects,"BLACK_FRIDAY");
-				if(!setinset("BLACK_FRIDAY",IVrw.Objects))then begin
-					if(nonblank(IVrw.Objects))then begin
-						IVrw.Objects = IVrw.Objects & ",BLACK_FRIDAY";
+		if(currentcompany!=16)then begin
+			if(currentcompany==1)then begin
+				mtrw = matrowcnt(IVr);
+				For(i=0;i<mtrw;i=i+1) begin
+					matrowget(IVr,i,IVrw);
+					IVrw.Objects = RemoveObjectFromObjectList(IVrw.Objects,"BLACK_FRIDAY");
+					if(!setinset("BLACK_FRIDAY",IVrw.Objects))then begin
+						if(nonblank(IVrw.Objects))then begin
+							IVrw.Objects = IVrw.Objects & ",BLACK_FRIDAY";
+						end else begin
+							IVrw.Objects = "BLACK_FRIDAY";
+						end;
+					end;
+					matrowput(IVr,i,IVrw);
+				end;
+			end;
+			if(currentcompany==25)then begin
+				IVr.Objects = RemoveObjectFromObjectList(IVr.Objects,"BLACK_FRIDAY");
+				if(!setinset("BLACK_FRIDAY",IVr.Objects))then begin
+					if(nonblank(IVr.Objects))then begin
+						IVr.Objects = IVr.Objects & ",BLACK_FRIDAY";
 					end else begin
-						IVrw.Objects = "BLACK_FRIDAY";
+						IVr.Objects = "BLACK_FRIDAY";
 					end;
 				end;
-				matrowput(IVr,i,IVrw);
 			end;
 		end else begin
 			mtrw = matrowcnt(IVr);
