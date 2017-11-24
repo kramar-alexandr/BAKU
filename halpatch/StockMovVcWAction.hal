@@ -371,6 +371,11 @@ BEGIN
           if (StockMovr.OKFlag!=0) then begin res = false; end;
       end;
   end;
+  
+  switch (fieldname) begin
+    case "Comment": res = true;
+  end;
+  
   StockMovDClassActiveEditField = res;
   RETURN;
 END;
