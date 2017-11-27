@@ -841,7 +841,7 @@ begin
 						outstring(250,0,"",false);
 					end;
 					
-					outstring(300,0,LCr.PointsBalance,false);
+					outstring(300,0,LCr.CashbackLevelPoints,false);
 					
 					IVr.CustCode = CUr.Code;
 					TrHs = true;
