@@ -4336,7 +4336,20 @@ begin
   h = 160;
 		EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f1,false,CUSClass);
 		EditFieldTL(h,v+=vs, 150,"Накопительная карта",   M4UStr,Normal,30,f2,false,LoyaltyCardSClass); //Edit----------------------Dima  06.07.2015
-	  CheckBox(h,v+=vs,0,"Сводный",flags[0]);
+
+  EndWindow;
+end;
+
+window LoyaltyCardDinamicRClass:1 
+  wtag("language","RUS"), wtag("product","*"), wtag("productcode","*"), wtag("device","computer")
+begin
+  real h,v,vs;
+  WindowBegin("Динамика Cash Back",LoyaltyCardDinamicRClass,CGRcW,RcType);
+  SetWRect(20,80,410,340);
+  vs = 20;
+  h = 160;
+		EditFieldTL(h,v+=vs, 150,"Код клиента",   M4UStr,Normal,30,f1,false,CUSClass);
+		EditFieldTL(h,v+=vs, 150,"Накопительная карта",   M4UStr,Normal,30,f2,false,LoyaltyCardSClass); //Edit----------------------Dima  06.07.2015
 
   EndWindow;
 end;
