@@ -1143,6 +1143,8 @@ begin
   string 20 tstr;
   longint ivsernr;
   
+  LCr.SerNr = cardnr;
+	ReadFirstMain(LCr,1,true);
   tstr = "";
 	pos=0;
 	ExtractObj(ivnr,pos,tstr);
@@ -1151,8 +1153,7 @@ begin
 			ivsernr = StringToLongInt(tstr);
 			IVr.SerNr = ivsernr;
 			ReadFirstMain(IVr,1,true);
-			LCr.SerNr = cardnr;
-			ReadFirstMain(LCr,1,true);
+			
 			if (LCr.LCMLevel=="1") then begin
 				if (blank(IVr.LinkLoyaltyCardNr)) then begin
 					if (blank(IVr.LoyaltyCardNr)) then begin
