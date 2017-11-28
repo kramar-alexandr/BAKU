@@ -225,7 +225,7 @@ BEGIN
 						if (IVr.CustCode!=CUr.Code) then begin TS = false; testf1 = false; end;			
 						if (IVr.OKFlag==0) then begin testf1 = false; end;
 						if (IVr.Invalid==1) then begin testf1 = false; end;
-						if(nonblank(RepSpec.f4))then begin testf1 = false; end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 28 November 2017 11:37:29
+						if(nonblank(RepSpec.f4) and !setinset(RepSpec.f4,IVr.Objects))then begin testf1 = false; end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 28 November 2017 11:37:29
 						
 						
 						If(RepSpec.sStartDate>IVr.TransDate) then begin testf1 = false; end;
@@ -247,7 +247,7 @@ BEGIN
 							for (i=0;i<rwcnt;i=i+1) begin
 							  MatRowGet(IVr,i,IVrw);
 							  testf2 = true;
-							  if(nonblank(RepSpec.f5))then begin testf2 = false; end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 28 November 2017 11:38:55
+							  if(nonblank(RepSpec.f5) and !setinset(RepSpec.f5,IVrw.Objects))then begin testf2 = false; end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 28 November 2017 11:38:55
 							  if(IVrw.stp!=kInvoiceRowTypeNormal)then begin testf2 = false; end;// Edit ************************** BPI Ukraine - KramarAlexandr - Tuesday, 28 November 2017 11:39:13
 							  
 								if (testf2) then begin
