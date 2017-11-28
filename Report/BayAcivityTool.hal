@@ -946,6 +946,7 @@ begin
 						testf1 = true;
 						if(IVr.CustCode!=CUr.Code)then begin TrHs = false; testf1 = false; end;
 						if(IVr.OKFlag==0)then begin testf1 = false; end;
+						if(blank(IVr.LoyaltyCardNr))then begin testf1 = false; end;
 						//if(IVr.LoyaltyCardNr!=LCr.SerNr)then begin testf1 = false; end;
 						
 						if(testf1)then begin

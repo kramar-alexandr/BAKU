@@ -131,6 +131,18 @@ BEGIN
 			outstring(130,0,"Все компании",true);	
 		endformat;
 	end;
+	if(nonblank(RepSpec.f4))then begin
+		Startformat(15);
+			outstring(60,0,"Обьект сч/ф:",true);
+			outstring(130,0,RepSpec.f4,true);	
+		endformat;
+	end;
+	if(nonblank(RepSpec.f5))then begin
+		Startformat(15);
+			outstring(60,0,"Обьект товара:",true);
+			outstring(130,0,RepSpec.f5,true);	
+		endformat;
+	end;
   
   pos = 0;
   fieldPos[0] = pos; pos = pos + 40;
