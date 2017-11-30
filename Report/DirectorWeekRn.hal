@@ -26,6 +26,7 @@ end;
 global
 procedure DirectorWeekRn(record RcVc RepSpec)
 begin
+  
 	record MainVc mainr;
 	record TRVc TRr,tempTRr,tempTRr2;
 	row TRVc TRrw,tempTRrw,tempTRrw2,tempTRrw3;
@@ -540,7 +541,7 @@ begin
 									j = j + 1;
 								end;
 							end;
-							tempTRrw.ReconDate = "";
+              tempTRrw.ReconDate = "";
 							tempTRrw.Curncy = "";
 							tempTRrw.CurDebVal = blankval;
 							tempTRrw.CurCredVal = blankval;
@@ -820,7 +821,7 @@ begin
 								MatRowPut(tempTRr,j,tempTRrw);
 								j = j + 1;
 							end;
-							tempTRrw.ReconDate = "";
+              tempTRrw.ReconDate = "";
 							tempTRrw.Curncy = "";
 							tempTRrw.CurDebVal = blankval;
 							tempTRrw.CurCredVal = blankval;
@@ -828,6 +829,7 @@ begin
 							tempTRrw.CredVal = blankval;
 							tempTRrw.MyVal1 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
 							tempTRrw.MyVal2 = blankval;// Edit ************************** Wednesday, 26 August 2015 11:34:24
+              tempTRrw.MyVal3 = blankval;
 							tempTRrw.Comment = "";
 							tempTRrw.ExtraComment = "";
 						end;
@@ -1333,7 +1335,7 @@ begin
 									j = j + 1;
 								end;
 							end;
-							tempTRrw.ReconDate = "";
+              tempTRrw.ReconDate = "";
 							tempTRrw.Curncy = "";
 							tempTRrw.MyVal7 = blankval;
 							tempTRrw.MyVal9 = blankval;
