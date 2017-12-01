@@ -345,13 +345,6 @@ BEGIN
     end;
   end;
   
-  if(currentcompany==25)then begin
-  	if(currenttime<stringtotime("03:00:00"))then begin
-  		IVp.TransDate = addday(currentdate,-1);
-  		IVp.PayDate = addday(currentdate,-1);
-  		IVp.InvDate = addday(currentdate,-1);
-  	end;
-  end;
   
   if (blank(IVp.CustCode)) then begin
     RecordCheckError(1125,"",-1,"CustCode");      
