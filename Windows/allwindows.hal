@@ -4986,9 +4986,9 @@ begin
 	CheckBox(h+350,v=v+vs,0,"Разрешить звонок",AllowSendCall);
 	CheckBox(h+350,v=v+vs,0,"Разрешить куръерскую почту",AllowSendkMail);
 	
-	ButtonFrame(h+350,v=100,100,3,"");
-  RadioButton(h+350,v,0,0,"Г-н",Gender);
-  RadioButton(h+350,v+=17,1,0,"Г-жа",Gender);
+	ButtonFrame(h+350,v=120,100,3,"");
+  RadioButton(h+350,v,0,0,"Мужчина",Gender);
+  RadioButton(h+350,v+=17,1,0,"Женщина",Gender);
   RadioButton(h+350,v+=17,2,0,"Компания",Gender);// Edit ************************** Wednesday, 16 December 2015 11:17:28
 	
 	v=120;

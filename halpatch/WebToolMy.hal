@@ -8,6 +8,7 @@ begin
 	
 	res = StrReplace(instr,"/","-");
 	res = StrReplace(res,"\"","-");
+  res = StrReplace(res,"*","-");
 	
 	imgStrReplace = res;
 return;
