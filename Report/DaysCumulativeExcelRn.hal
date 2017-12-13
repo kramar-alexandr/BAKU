@@ -959,7 +959,7 @@ begin
   integer i,char;
   
   testf = true;
-  
+  logtext(0,"Report DaysCumulativeExcelRn");
   if nonblank(RepSpec.ObjStr) then begin
     Objr.Code = RepSpec.ObjStr;
     if readfirstmain(Objr,1,true) then begin
@@ -984,7 +984,7 @@ begin
           tstr2 = tstr2 & Chr(char);
         end;
       end;
-      tstr = tstr & "_" & tstr2;
+      tstr = tstr & "_" & tstr2 & "_" & CurrentUser;
       filename = tstr & ".xlsx";
       RepSpec.f6 = filename;
       DaysCumulativeExcel(RepSpec);
