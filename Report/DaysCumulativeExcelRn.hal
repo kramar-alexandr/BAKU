@@ -510,11 +510,11 @@ begin
                 if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
                   artcnt = artcnt + 1;
                   giftf = false;
-                  for (j=0;j<rwcnt;j=j+1) begin
-                    matrowget(IVr,j,tIVrw);
+                  for (k=0;k<rwcnt2;k=k+1) begin
+                    matrowget(IVr,k,tIVrw);
                     if (tIVrw.PayMode=="G") then begin
                       giftf = true;
-                      j = rwcnt;
+                      k = rwcnt2;
                     end;
                   end;
                   if (!giftf) then begin
@@ -693,11 +693,11 @@ LDownpaymentFoundRet:;
                           if (IVrw.stp==kInvoiceRowTypeGiftVoucherSold) then begin
                             artcnt = artcnt + 1;
                             giftf = false;
-                            for (j=0;j<rwcnt;j=j+1) begin
-                              matrowget(IVr,j,tIVrw);
+                            for (k=0;k<rwcnt2;k=k+1) begin
+                              matrowget(IVr,k,tIVrw);
                               if (tIVrw.PayMode=="G") then begin
                                 giftf = true;
-                                j = rwcnt;
+                                k = rwcnt2;
                               end;
                             end;
                             if (!giftf) then begin
