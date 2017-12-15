@@ -984,16 +984,17 @@ begin
           tstr2 = tstr2 & Chr(char);
         end;
       end;
-      tstr = tstr & "_" & tstr2 & "_" & CurrentUser;
-      filename = tstr & ".xlsx";
-      RepSpec.f6 = filename;
-      DaysCumulativeExcel(RepSpec);
-      StartReportNoHeaderJob("Отчет за день с накопительным эффектом");
-      StartFormat(15);
-        OutString(0,"DblImagesExcel",RepSpec.f7 & filename,false);
-      EndFormat;
-    EndJob;
+      tstr = tstr & "_" & tstr2;
     end;
+    tstr = tstr & "_" & CurrentUser;
+    filename = tstr & ".xlsx";
+    RepSpec.f6 = filename;
+    DaysCumulativeExcel(RepSpec);
+    StartReportNoHeaderJob("Отчет за день с накопительным эффектом");
+    StartFormat(15);
+      OutString(0,"DblImagesExcel",RepSpec.f7 & filename,false);
+    EndFormat;
+    EndJob;
   end else begin
     StartReportNoHeaderJob("Отчет за день с накопительным эффектом");
       StartFormat(15);
