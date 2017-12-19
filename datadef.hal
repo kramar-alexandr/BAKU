@@ -741,7 +741,7 @@ begin
 	RecordField(OrderDoneDate,M4Date,0,0);// Edit ************************** Wednesday, 13 November 2013 17:15:48
 	RecordField(CheckCurncyCode,M4Code,5,CurncyCodeVc);
 	RecordField(OfficialSerNr,M4Str,40,0);//Edit----------------------Dima  31.03.2015
-	
+	RecordField(AllowOtherVEItem,M4Int,0,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Monday, 11 December 2017 15:06:14
   ArrayBegin(Math,-,1);
   ArrayField(stp,M4Int,0,0);
   ArrayField(ovst,M4Int,0,0);
@@ -4494,7 +4494,8 @@ begin
   RecordField(inDirBackUp,M4Str,255,0);
   RecordField(outDirBackUp,M4Str,255,0);
   RecordField(LastPackageEANNum,M4Str,15,0); //Edit***************************Sasha2,15:41 02.08.2016
-  RecordField(outDirBackUp2,M4Str,255,0); //Edit***************************Sasha2,17:08 13.09.2016
+  RecordField(outDirBackUp2,M4Str,255,0); //Edit***************************Sasha2,17:08 13.09.2016\
+  RecordField(LastMNDate,m4Date,0,0);// Edit ************************** BPI Ukraine - KramarAlexandr - Wednesday, 29 November 2017 10:36:37
   EndBlock;  
   
   RecordBegin(CoinPackListVc,-,"coinpacklist"); //Edit***************************Sasha2,12:07 01.07.2016 {
